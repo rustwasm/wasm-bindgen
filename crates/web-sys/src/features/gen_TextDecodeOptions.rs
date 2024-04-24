@@ -10,8 +10,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextDecodeOptions`*"]
     pub type TextDecodeOptions;
+    #[wasm_bindgen(method, getter = "stream")]
+    fn stream_shim(this: &TextDecodeOptions) -> bool;
     #[wasm_bindgen(method, setter = "stream")]
-    fn stream_shim(this: &TextDecodeOptions, val: bool);
+    fn set_stream_shim(this: &TextDecodeOptions, val: bool);
+}
+#[doc = "The trait to access properties on the `TextDecodeOptions` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `TextDecodeOptions`*"]
+pub trait TextDecodeOptionsGetters {
+    #[doc = "Get the `stream` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TextDecodeOptions`*"]
+    fn stream(&self) -> bool;
+}
+impl TextDecodeOptionsGetters for TextDecodeOptions {
+    fn stream(&self) -> bool {
+        self.stream_shim()
+    }
 }
 impl TextDecodeOptions {
     #[doc = "Construct a new `TextDecodeOptions`."]
@@ -26,7 +42,7 @@ impl TextDecodeOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextDecodeOptions`*"]
     pub fn stream(&mut self, val: bool) -> &mut Self {
-        self.stream_shim(val);
+        self.set_stream_shim(val);
         self
     }
 }

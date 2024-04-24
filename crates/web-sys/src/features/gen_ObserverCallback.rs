@@ -10,8 +10,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ObserverCallback`*"]
     pub type ObserverCallback;
+    #[wasm_bindgen(method, getter = "handleEvent")]
+    fn handle_event_shim(this: &ObserverCallback) -> &::js_sys::Function;
     #[wasm_bindgen(method, setter = "handleEvent")]
-    fn handle_event_shim(this: &ObserverCallback, val: &::js_sys::Function);
+    fn set_handle_event_shim(this: &ObserverCallback, val: &::js_sys::Function);
+}
+#[doc = "The trait to access properties on the `ObserverCallback` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `ObserverCallback`*"]
+pub trait ObserverCallbackGetters {
+    #[doc = "Get the `handleEvent` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ObserverCallback`*"]
+    fn handle_event(&self) -> &::js_sys::Function;
+}
+impl ObserverCallbackGetters for ObserverCallback {
+    fn handle_event(&self) -> &::js_sys::Function {
+        self.handle_event_shim()
+    }
 }
 impl ObserverCallback {
     #[doc = "Construct a new `ObserverCallback`."]
@@ -26,7 +42,7 @@ impl ObserverCallback {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ObserverCallback`*"]
     pub fn handle_event(&mut self, val: &::js_sys::Function) -> &mut Self {
-        self.handle_event_shim(val);
+        self.set_handle_event_shim(val);
         self
     }
 }

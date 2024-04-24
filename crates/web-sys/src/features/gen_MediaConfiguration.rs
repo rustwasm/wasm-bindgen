@@ -11,11 +11,42 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `MediaConfiguration`*"]
     pub type MediaConfiguration;
     #[cfg(feature = "AudioConfiguration")]
+    #[wasm_bindgen(method, getter = "audio")]
+    fn audio_shim(this: &MediaConfiguration) -> &AudioConfiguration;
+    #[cfg(feature = "AudioConfiguration")]
     #[wasm_bindgen(method, setter = "audio")]
-    fn audio_shim(this: &MediaConfiguration, val: &AudioConfiguration);
+    fn set_audio_shim(this: &MediaConfiguration, val: &AudioConfiguration);
+    #[cfg(feature = "VideoConfiguration")]
+    #[wasm_bindgen(method, getter = "video")]
+    fn video_shim(this: &MediaConfiguration) -> &VideoConfiguration;
     #[cfg(feature = "VideoConfiguration")]
     #[wasm_bindgen(method, setter = "video")]
-    fn video_shim(this: &MediaConfiguration, val: &VideoConfiguration);
+    fn set_video_shim(this: &MediaConfiguration, val: &VideoConfiguration);
+}
+#[doc = "The trait to access properties on the `MediaConfiguration` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `MediaConfiguration`*"]
+pub trait MediaConfigurationGetters {
+    #[cfg(feature = "AudioConfiguration")]
+    #[doc = "Get the `audio` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`, `MediaConfiguration`*"]
+    fn audio(&self) -> &AudioConfiguration;
+    #[cfg(feature = "VideoConfiguration")]
+    #[doc = "Get the `video` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaConfiguration`, `VideoConfiguration`*"]
+    fn video(&self) -> &VideoConfiguration;
+}
+impl MediaConfigurationGetters for MediaConfiguration {
+    #[cfg(feature = "AudioConfiguration")]
+    fn audio(&self) -> &AudioConfiguration {
+        self.audio_shim()
+    }
+    #[cfg(feature = "VideoConfiguration")]
+    fn video(&self) -> &VideoConfiguration {
+        self.video_shim()
+    }
 }
 impl MediaConfiguration {
     #[doc = "Construct a new `MediaConfiguration`."]
@@ -31,7 +62,7 @@ impl MediaConfiguration {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`, `MediaConfiguration`*"]
     pub fn audio(&mut self, val: &AudioConfiguration) -> &mut Self {
-        self.audio_shim(val);
+        self.set_audio_shim(val);
         self
     }
     #[cfg(feature = "VideoConfiguration")]
@@ -39,7 +70,7 @@ impl MediaConfiguration {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaConfiguration`, `VideoConfiguration`*"]
     pub fn video(&mut self, val: &VideoConfiguration) -> &mut Self {
-        self.video_shim(val);
+        self.set_video_shim(val);
         self
     }
 }

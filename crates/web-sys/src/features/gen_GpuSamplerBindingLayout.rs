@@ -15,8 +15,34 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuSamplerBindingLayout;
     #[cfg(feature = "GpuSamplerBindingType")]
+    #[wasm_bindgen(method, getter = "type")]
+    fn type__shim(this: &GpuSamplerBindingLayout) -> GpuSamplerBindingType;
+    #[cfg(feature = "GpuSamplerBindingType")]
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &GpuSamplerBindingLayout, val: GpuSamplerBindingType);
+    fn set_type__shim(this: &GpuSamplerBindingLayout, val: GpuSamplerBindingType);
+}
+#[cfg(web_sys_unstable_apis)]
+#[doc = "The trait to access properties on the `GpuSamplerBindingLayout` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `GpuSamplerBindingLayout`*"]
+pub trait GpuSamplerBindingLayoutGetters {
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuSamplerBindingType")]
+    #[doc = "Get the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuSamplerBindingLayout`, `GpuSamplerBindingType`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn type_(&self) -> GpuSamplerBindingType;
+}
+#[cfg(web_sys_unstable_apis)]
+impl GpuSamplerBindingLayoutGetters for GpuSamplerBindingLayout {
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuSamplerBindingType")]
+    fn type_(&self) -> GpuSamplerBindingType {
+        self.type__shim()
+    }
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuSamplerBindingLayout {
@@ -40,7 +66,7 @@ impl GpuSamplerBindingLayout {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn type_(&mut self, val: GpuSamplerBindingType) -> &mut Self {
-        self.type__shim(val);
+        self.set_type__shim(val);
         self
     }
 }

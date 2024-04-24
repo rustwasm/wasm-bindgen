@@ -10,14 +10,57 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TrackEventInit`*"]
     pub type TrackEventInit;
+    #[wasm_bindgen(method, getter = "bubbles")]
+    fn bubbles_shim(this: &TrackEventInit) -> bool;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &TrackEventInit, val: bool);
+    fn set_bubbles_shim(this: &TrackEventInit, val: bool);
+    #[wasm_bindgen(method, getter = "cancelable")]
+    fn cancelable_shim(this: &TrackEventInit) -> bool;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &TrackEventInit, val: bool);
+    fn set_cancelable_shim(this: &TrackEventInit, val: bool);
+    #[wasm_bindgen(method, getter = "composed")]
+    fn composed_shim(this: &TrackEventInit) -> bool;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &TrackEventInit, val: bool);
+    fn set_composed_shim(this: &TrackEventInit, val: bool);
+    #[wasm_bindgen(method, getter = "track")]
+    fn track_shim(this: &TrackEventInit) -> Option<&::js_sys::Object>;
     #[wasm_bindgen(method, setter = "track")]
-    fn track_shim(this: &TrackEventInit, val: Option<&::js_sys::Object>);
+    fn set_track_shim(this: &TrackEventInit, val: Option<&::js_sys::Object>);
+}
+#[doc = "The trait to access properties on the `TrackEventInit` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `TrackEventInit`*"]
+pub trait TrackEventInitGetters {
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TrackEventInit`*"]
+    fn bubbles(&self) -> bool;
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TrackEventInit`*"]
+    fn cancelable(&self) -> bool;
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TrackEventInit`*"]
+    fn composed(&self) -> bool;
+    #[doc = "Get the `track` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TrackEventInit`*"]
+    fn track(&self) -> Option<&::js_sys::Object>;
+}
+impl TrackEventInitGetters for TrackEventInit {
+    fn bubbles(&self) -> bool {
+        self.bubbles_shim()
+    }
+    fn cancelable(&self) -> bool {
+        self.cancelable_shim()
+    }
+    fn composed(&self) -> bool {
+        self.composed_shim()
+    }
+    fn track(&self) -> Option<&::js_sys::Object> {
+        self.track_shim()
+    }
 }
 impl TrackEventInit {
     #[doc = "Construct a new `TrackEventInit`."]
@@ -32,28 +75,28 @@ impl TrackEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TrackEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles_shim(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TrackEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable_shim(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TrackEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed_shim(val);
         self
     }
     #[doc = "Change the `track` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TrackEventInit`*"]
     pub fn track(&mut self, val: Option<&::js_sys::Object>) -> &mut Self {
-        self.track_shim(val);
+        self.set_track_shim(val);
         self
     }
 }

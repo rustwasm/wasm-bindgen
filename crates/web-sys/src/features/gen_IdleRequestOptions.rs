@@ -10,8 +10,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdleRequestOptions`*"]
     pub type IdleRequestOptions;
+    #[wasm_bindgen(method, getter = "timeout")]
+    fn timeout_shim(this: &IdleRequestOptions) -> u32;
     #[wasm_bindgen(method, setter = "timeout")]
-    fn timeout_shim(this: &IdleRequestOptions, val: u32);
+    fn set_timeout_shim(this: &IdleRequestOptions, val: u32);
+}
+#[doc = "The trait to access properties on the `IdleRequestOptions` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `IdleRequestOptions`*"]
+pub trait IdleRequestOptionsGetters {
+    #[doc = "Get the `timeout` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdleRequestOptions`*"]
+    fn timeout(&self) -> u32;
+}
+impl IdleRequestOptionsGetters for IdleRequestOptions {
+    fn timeout(&self) -> u32 {
+        self.timeout_shim()
+    }
 }
 impl IdleRequestOptions {
     #[doc = "Construct a new `IdleRequestOptions`."]
@@ -26,7 +42,7 @@ impl IdleRequestOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdleRequestOptions`*"]
     pub fn timeout(&mut self, val: u32) -> &mut Self {
-        self.timeout_shim(val);
+        self.set_timeout_shim(val);
         self
     }
 }

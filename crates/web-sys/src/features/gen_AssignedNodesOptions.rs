@@ -10,8 +10,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AssignedNodesOptions`*"]
     pub type AssignedNodesOptions;
+    #[wasm_bindgen(method, getter = "flatten")]
+    fn flatten_shim(this: &AssignedNodesOptions) -> bool;
     #[wasm_bindgen(method, setter = "flatten")]
-    fn flatten_shim(this: &AssignedNodesOptions, val: bool);
+    fn set_flatten_shim(this: &AssignedNodesOptions, val: bool);
+}
+#[doc = "The trait to access properties on the `AssignedNodesOptions` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `AssignedNodesOptions`*"]
+pub trait AssignedNodesOptionsGetters {
+    #[doc = "Get the `flatten` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AssignedNodesOptions`*"]
+    fn flatten(&self) -> bool;
+}
+impl AssignedNodesOptionsGetters for AssignedNodesOptions {
+    fn flatten(&self) -> bool {
+        self.flatten_shim()
+    }
 }
 impl AssignedNodesOptions {
     #[doc = "Construct a new `AssignedNodesOptions`."]
@@ -26,7 +42,7 @@ impl AssignedNodesOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AssignedNodesOptions`*"]
     pub fn flatten(&mut self, val: bool) -> &mut Self {
-        self.flatten_shim(val);
+        self.set_flatten_shim(val);
         self
     }
 }

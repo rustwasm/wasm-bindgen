@@ -10,10 +10,35 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
     pub type RtcIdentityProviderDetails;
+    #[wasm_bindgen(method, getter = "domain")]
+    fn domain_shim(this: &RtcIdentityProviderDetails) -> &str;
     #[wasm_bindgen(method, setter = "domain")]
-    fn domain_shim(this: &RtcIdentityProviderDetails, val: &str);
+    fn set_domain_shim(this: &RtcIdentityProviderDetails, val: &str);
+    #[wasm_bindgen(method, getter = "protocol")]
+    fn protocol_shim(this: &RtcIdentityProviderDetails) -> &str;
     #[wasm_bindgen(method, setter = "protocol")]
-    fn protocol_shim(this: &RtcIdentityProviderDetails, val: &str);
+    fn set_protocol_shim(this: &RtcIdentityProviderDetails, val: &str);
+}
+#[doc = "The trait to access properties on the `RtcIdentityProviderDetails` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
+pub trait RtcIdentityProviderDetailsGetters {
+    #[doc = "Get the `domain` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
+    fn domain(&self) -> &str;
+    #[doc = "Get the `protocol` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
+    fn protocol(&self) -> &str;
+}
+impl RtcIdentityProviderDetailsGetters for RtcIdentityProviderDetails {
+    fn domain(&self) -> &str {
+        self.domain_shim()
+    }
+    fn protocol(&self) -> &str {
+        self.protocol_shim()
+    }
 }
 impl RtcIdentityProviderDetails {
     #[doc = "Construct a new `RtcIdentityProviderDetails`."]
@@ -29,14 +54,14 @@ impl RtcIdentityProviderDetails {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
     pub fn domain(&mut self, val: &str) -> &mut Self {
-        self.domain_shim(val);
+        self.set_domain_shim(val);
         self
     }
     #[doc = "Change the `protocol` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
     pub fn protocol(&mut self, val: &str) -> &mut Self {
-        self.protocol_shim(val);
+        self.set_protocol_shim(val);
         self
     }
 }

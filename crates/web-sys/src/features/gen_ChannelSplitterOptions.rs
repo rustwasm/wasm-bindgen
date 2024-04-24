@@ -10,16 +10,65 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ChannelSplitterOptions`*"]
     pub type ChannelSplitterOptions;
+    #[wasm_bindgen(method, getter = "channelCount")]
+    fn channel_count_shim(this: &ChannelSplitterOptions) -> u32;
     #[wasm_bindgen(method, setter = "channelCount")]
-    fn channel_count_shim(this: &ChannelSplitterOptions, val: u32);
+    fn set_channel_count_shim(this: &ChannelSplitterOptions, val: u32);
+    #[cfg(feature = "ChannelCountMode")]
+    #[wasm_bindgen(method, getter = "channelCountMode")]
+    fn channel_count_mode_shim(this: &ChannelSplitterOptions) -> ChannelCountMode;
     #[cfg(feature = "ChannelCountMode")]
     #[wasm_bindgen(method, setter = "channelCountMode")]
-    fn channel_count_mode_shim(this: &ChannelSplitterOptions, val: ChannelCountMode);
+    fn set_channel_count_mode_shim(this: &ChannelSplitterOptions, val: ChannelCountMode);
+    #[cfg(feature = "ChannelInterpretation")]
+    #[wasm_bindgen(method, getter = "channelInterpretation")]
+    fn channel_interpretation_shim(this: &ChannelSplitterOptions) -> ChannelInterpretation;
     #[cfg(feature = "ChannelInterpretation")]
     #[wasm_bindgen(method, setter = "channelInterpretation")]
-    fn channel_interpretation_shim(this: &ChannelSplitterOptions, val: ChannelInterpretation);
+    fn set_channel_interpretation_shim(this: &ChannelSplitterOptions, val: ChannelInterpretation);
+    #[wasm_bindgen(method, getter = "numberOfOutputs")]
+    fn number_of_outputs_shim(this: &ChannelSplitterOptions) -> u32;
     #[wasm_bindgen(method, setter = "numberOfOutputs")]
-    fn number_of_outputs_shim(this: &ChannelSplitterOptions, val: u32);
+    fn set_number_of_outputs_shim(this: &ChannelSplitterOptions, val: u32);
+}
+#[doc = "The trait to access properties on the `ChannelSplitterOptions` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `ChannelSplitterOptions`*"]
+pub trait ChannelSplitterOptionsGetters {
+    #[doc = "Get the `channelCount` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelSplitterOptions`*"]
+    fn channel_count(&self) -> u32;
+    #[cfg(feature = "ChannelCountMode")]
+    #[doc = "Get the `channelCountMode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelCountMode`, `ChannelSplitterOptions`*"]
+    fn channel_count_mode(&self) -> ChannelCountMode;
+    #[cfg(feature = "ChannelInterpretation")]
+    #[doc = "Get the `channelInterpretation` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelInterpretation`, `ChannelSplitterOptions`*"]
+    fn channel_interpretation(&self) -> ChannelInterpretation;
+    #[doc = "Get the `numberOfOutputs` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelSplitterOptions`*"]
+    fn number_of_outputs(&self) -> u32;
+}
+impl ChannelSplitterOptionsGetters for ChannelSplitterOptions {
+    fn channel_count(&self) -> u32 {
+        self.channel_count_shim()
+    }
+    #[cfg(feature = "ChannelCountMode")]
+    fn channel_count_mode(&self) -> ChannelCountMode {
+        self.channel_count_mode_shim()
+    }
+    #[cfg(feature = "ChannelInterpretation")]
+    fn channel_interpretation(&self) -> ChannelInterpretation {
+        self.channel_interpretation_shim()
+    }
+    fn number_of_outputs(&self) -> u32 {
+        self.number_of_outputs_shim()
+    }
 }
 impl ChannelSplitterOptions {
     #[doc = "Construct a new `ChannelSplitterOptions`."]
@@ -34,7 +83,7 @@ impl ChannelSplitterOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ChannelSplitterOptions`*"]
     pub fn channel_count(&mut self, val: u32) -> &mut Self {
-        self.channel_count_shim(val);
+        self.set_channel_count_shim(val);
         self
     }
     #[cfg(feature = "ChannelCountMode")]
@@ -42,7 +91,7 @@ impl ChannelSplitterOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ChannelCountMode`, `ChannelSplitterOptions`*"]
     pub fn channel_count_mode(&mut self, val: ChannelCountMode) -> &mut Self {
-        self.channel_count_mode_shim(val);
+        self.set_channel_count_mode_shim(val);
         self
     }
     #[cfg(feature = "ChannelInterpretation")]
@@ -50,14 +99,14 @@ impl ChannelSplitterOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ChannelInterpretation`, `ChannelSplitterOptions`*"]
     pub fn channel_interpretation(&mut self, val: ChannelInterpretation) -> &mut Self {
-        self.channel_interpretation_shim(val);
+        self.set_channel_interpretation_shim(val);
         self
     }
     #[doc = "Change the `numberOfOutputs` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ChannelSplitterOptions`*"]
     pub fn number_of_outputs(&mut self, val: u32) -> &mut Self {
-        self.number_of_outputs_shim(val);
+        self.set_number_of_outputs_shim(val);
         self
     }
 }

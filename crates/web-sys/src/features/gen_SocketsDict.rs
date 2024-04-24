@@ -10,12 +10,46 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SocketsDict`*"]
     pub type SocketsDict;
+    #[wasm_bindgen(method, getter = "received")]
+    fn received_shim(this: &SocketsDict) -> f64;
     #[wasm_bindgen(method, setter = "received")]
-    fn received_shim(this: &SocketsDict, val: f64);
+    fn set_received_shim(this: &SocketsDict, val: f64);
+    #[wasm_bindgen(method, getter = "sent")]
+    fn sent_shim(this: &SocketsDict) -> f64;
     #[wasm_bindgen(method, setter = "sent")]
-    fn sent_shim(this: &SocketsDict, val: f64);
+    fn set_sent_shim(this: &SocketsDict, val: f64);
+    #[wasm_bindgen(method, getter = "sockets")]
+    fn sockets_shim(this: &SocketsDict) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "sockets")]
-    fn sockets_shim(this: &SocketsDict, val: &::wasm_bindgen::JsValue);
+    fn set_sockets_shim(this: &SocketsDict, val: &::wasm_bindgen::JsValue);
+}
+#[doc = "The trait to access properties on the `SocketsDict` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `SocketsDict`*"]
+pub trait SocketsDictGetters {
+    #[doc = "Get the `received` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SocketsDict`*"]
+    fn received(&self) -> f64;
+    #[doc = "Get the `sent` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SocketsDict`*"]
+    fn sent(&self) -> f64;
+    #[doc = "Get the `sockets` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SocketsDict`*"]
+    fn sockets(&self) -> &::wasm_bindgen::JsValue;
+}
+impl SocketsDictGetters for SocketsDict {
+    fn received(&self) -> f64 {
+        self.received_shim()
+    }
+    fn sent(&self) -> f64 {
+        self.sent_shim()
+    }
+    fn sockets(&self) -> &::wasm_bindgen::JsValue {
+        self.sockets_shim()
+    }
 }
 impl SocketsDict {
     #[doc = "Construct a new `SocketsDict`."]
@@ -30,21 +64,21 @@ impl SocketsDict {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SocketsDict`*"]
     pub fn received(&mut self, val: f64) -> &mut Self {
-        self.received_shim(val);
+        self.set_received_shim(val);
         self
     }
     #[doc = "Change the `sent` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SocketsDict`*"]
     pub fn sent(&mut self, val: f64) -> &mut Self {
-        self.sent_shim(val);
+        self.set_sent_shim(val);
         self
     }
     #[doc = "Change the `sockets` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SocketsDict`*"]
     pub fn sockets(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.sockets_shim(val);
+        self.set_sockets_shim(val);
         self
     }
 }

@@ -14,15 +14,83 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type EncodedVideoChunkInit;
+    #[wasm_bindgen(method, getter = "data")]
+    fn data_shim(this: &EncodedVideoChunkInit) -> &::js_sys::Object;
     #[wasm_bindgen(method, setter = "data")]
-    fn data_shim(this: &EncodedVideoChunkInit, val: &::js_sys::Object);
+    fn set_data_shim(this: &EncodedVideoChunkInit, val: &::js_sys::Object);
+    #[wasm_bindgen(method, getter = "duration")]
+    fn duration_shim(this: &EncodedVideoChunkInit) -> f64;
     #[wasm_bindgen(method, setter = "duration")]
-    fn duration_shim(this: &EncodedVideoChunkInit, val: f64);
+    fn set_duration_shim(this: &EncodedVideoChunkInit, val: f64);
+    #[wasm_bindgen(method, getter = "timestamp")]
+    fn timestamp_shim(this: &EncodedVideoChunkInit) -> f64;
     #[wasm_bindgen(method, setter = "timestamp")]
-    fn timestamp_shim(this: &EncodedVideoChunkInit, val: f64);
+    fn set_timestamp_shim(this: &EncodedVideoChunkInit, val: f64);
+    #[cfg(feature = "EncodedVideoChunkType")]
+    #[wasm_bindgen(method, getter = "type")]
+    fn type__shim(this: &EncodedVideoChunkInit) -> EncodedVideoChunkType;
     #[cfg(feature = "EncodedVideoChunkType")]
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &EncodedVideoChunkInit, val: EncodedVideoChunkType);
+    fn set_type__shim(this: &EncodedVideoChunkInit, val: EncodedVideoChunkType);
+}
+#[cfg(web_sys_unstable_apis)]
+#[doc = "The trait to access properties on the `EncodedVideoChunkInit` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `EncodedVideoChunkInit`*"]
+pub trait EncodedVideoChunkInitGetters {
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `data` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `EncodedVideoChunkInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn data(&self) -> &::js_sys::Object;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `duration` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `EncodedVideoChunkInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn duration(&self) -> f64;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `timestamp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `EncodedVideoChunkInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn timestamp(&self) -> f64;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "EncodedVideoChunkType")]
+    #[doc = "Get the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `EncodedVideoChunkInit`, `EncodedVideoChunkType`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn type_(&self) -> EncodedVideoChunkType;
+}
+#[cfg(web_sys_unstable_apis)]
+impl EncodedVideoChunkInitGetters for EncodedVideoChunkInit {
+    #[cfg(web_sys_unstable_apis)]
+    fn data(&self) -> &::js_sys::Object {
+        self.data_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    fn duration(&self) -> f64 {
+        self.duration_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    fn timestamp(&self) -> f64 {
+        self.timestamp_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "EncodedVideoChunkType")]
+    fn type_(&self) -> EncodedVideoChunkType {
+        self.type__shim()
+    }
 }
 #[cfg(web_sys_unstable_apis)]
 impl EncodedVideoChunkInit {
@@ -49,7 +117,7 @@ impl EncodedVideoChunkInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn data(&mut self, val: &::js_sys::Object) -> &mut Self {
-        self.data_shim(val);
+        self.set_data_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -60,7 +128,7 @@ impl EncodedVideoChunkInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn duration(&mut self, val: f64) -> &mut Self {
-        self.duration_shim(val);
+        self.set_duration_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -71,7 +139,7 @@ impl EncodedVideoChunkInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn timestamp(&mut self, val: f64) -> &mut Self {
-        self.timestamp_shim(val);
+        self.set_timestamp_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -83,7 +151,7 @@ impl EncodedVideoChunkInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn type_(&mut self, val: EncodedVideoChunkType) -> &mut Self {
-        self.type__shim(val);
+        self.set_type__shim(val);
         self
     }
 }

@@ -10,8 +10,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HttpConnDict`*"]
     pub type HttpConnDict;
+    #[wasm_bindgen(method, getter = "connections")]
+    fn connections_shim(this: &HttpConnDict) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "connections")]
-    fn connections_shim(this: &HttpConnDict, val: &::wasm_bindgen::JsValue);
+    fn set_connections_shim(this: &HttpConnDict, val: &::wasm_bindgen::JsValue);
+}
+#[doc = "The trait to access properties on the `HttpConnDict` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `HttpConnDict`*"]
+pub trait HttpConnDictGetters {
+    #[doc = "Get the `connections` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HttpConnDict`*"]
+    fn connections(&self) -> &::wasm_bindgen::JsValue;
+}
+impl HttpConnDictGetters for HttpConnDict {
+    fn connections(&self) -> &::wasm_bindgen::JsValue {
+        self.connections_shim()
+    }
 }
 impl HttpConnDict {
     #[doc = "Construct a new `HttpConnDict`."]
@@ -26,7 +42,7 @@ impl HttpConnDict {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HttpConnDict`*"]
     pub fn connections(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.connections_shim(val);
+        self.set_connections_shim(val);
         self
     }
 }

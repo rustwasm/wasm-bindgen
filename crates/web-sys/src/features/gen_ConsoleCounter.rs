@@ -10,10 +10,35 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleCounter`*"]
     pub type ConsoleCounter;
+    #[wasm_bindgen(method, getter = "count")]
+    fn count_shim(this: &ConsoleCounter) -> u32;
     #[wasm_bindgen(method, setter = "count")]
-    fn count_shim(this: &ConsoleCounter, val: u32);
+    fn set_count_shim(this: &ConsoleCounter, val: u32);
+    #[wasm_bindgen(method, getter = "label")]
+    fn label_shim(this: &ConsoleCounter) -> &str;
     #[wasm_bindgen(method, setter = "label")]
-    fn label_shim(this: &ConsoleCounter, val: &str);
+    fn set_label_shim(this: &ConsoleCounter, val: &str);
+}
+#[doc = "The trait to access properties on the `ConsoleCounter` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `ConsoleCounter`*"]
+pub trait ConsoleCounterGetters {
+    #[doc = "Get the `count` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleCounter`*"]
+    fn count(&self) -> u32;
+    #[doc = "Get the `label` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleCounter`*"]
+    fn label(&self) -> &str;
+}
+impl ConsoleCounterGetters for ConsoleCounter {
+    fn count(&self) -> u32 {
+        self.count_shim()
+    }
+    fn label(&self) -> &str {
+        self.label_shim()
+    }
 }
 impl ConsoleCounter {
     #[doc = "Construct a new `ConsoleCounter`."]
@@ -28,14 +53,14 @@ impl ConsoleCounter {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleCounter`*"]
     pub fn count(&mut self, val: u32) -> &mut Self {
-        self.count_shim(val);
+        self.set_count_shim(val);
         self
     }
     #[doc = "Change the `label` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleCounter`*"]
     pub fn label(&mut self, val: &str) -> &mut Self {
-        self.label_shim(val);
+        self.set_label_shim(val);
         self
     }
 }

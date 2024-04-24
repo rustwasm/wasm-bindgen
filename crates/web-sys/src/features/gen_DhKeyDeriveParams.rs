@@ -10,11 +10,39 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DhKeyDeriveParams`*"]
     pub type DhKeyDeriveParams;
+    #[wasm_bindgen(method, getter = "name")]
+    fn name_shim(this: &DhKeyDeriveParams) -> &str;
     #[wasm_bindgen(method, setter = "name")]
-    fn name_shim(this: &DhKeyDeriveParams, val: &str);
+    fn set_name_shim(this: &DhKeyDeriveParams, val: &str);
+    #[cfg(feature = "CryptoKey")]
+    #[wasm_bindgen(method, getter = "public")]
+    fn public_shim(this: &DhKeyDeriveParams) -> &CryptoKey;
     #[cfg(feature = "CryptoKey")]
     #[wasm_bindgen(method, setter = "public")]
-    fn public_shim(this: &DhKeyDeriveParams, val: &CryptoKey);
+    fn set_public_shim(this: &DhKeyDeriveParams, val: &CryptoKey);
+}
+#[doc = "The trait to access properties on the `DhKeyDeriveParams` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `DhKeyDeriveParams`*"]
+pub trait DhKeyDeriveParamsGetters {
+    #[doc = "Get the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DhKeyDeriveParams`*"]
+    fn name(&self) -> &str;
+    #[cfg(feature = "CryptoKey")]
+    #[doc = "Get the `public` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `DhKeyDeriveParams`*"]
+    fn public(&self) -> &CryptoKey;
+}
+impl DhKeyDeriveParamsGetters for DhKeyDeriveParams {
+    fn name(&self) -> &str {
+        self.name_shim()
+    }
+    #[cfg(feature = "CryptoKey")]
+    fn public(&self) -> &CryptoKey {
+        self.public_shim()
+    }
 }
 impl DhKeyDeriveParams {
     #[cfg(feature = "CryptoKey")]
@@ -32,7 +60,7 @@ impl DhKeyDeriveParams {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DhKeyDeriveParams`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        self.name_shim(val);
+        self.set_name_shim(val);
         self
     }
     #[cfg(feature = "CryptoKey")]
@@ -40,7 +68,7 @@ impl DhKeyDeriveParams {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `DhKeyDeriveParams`*"]
     pub fn public(&mut self, val: &CryptoKey) -> &mut Self {
-        self.public_shim(val);
+        self.set_public_shim(val);
         self
     }
 }

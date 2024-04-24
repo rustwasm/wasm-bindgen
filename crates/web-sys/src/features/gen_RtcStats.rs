@@ -10,13 +10,50 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcStats`*"]
     pub type RtcStats;
+    #[wasm_bindgen(method, getter = "id")]
+    fn id_shim(this: &RtcStats) -> &str;
     #[wasm_bindgen(method, setter = "id")]
-    fn id_shim(this: &RtcStats, val: &str);
+    fn set_id_shim(this: &RtcStats, val: &str);
+    #[wasm_bindgen(method, getter = "timestamp")]
+    fn timestamp_shim(this: &RtcStats) -> f64;
     #[wasm_bindgen(method, setter = "timestamp")]
-    fn timestamp_shim(this: &RtcStats, val: f64);
+    fn set_timestamp_shim(this: &RtcStats, val: f64);
+    #[cfg(feature = "RtcStatsType")]
+    #[wasm_bindgen(method, getter = "type")]
+    fn type__shim(this: &RtcStats) -> RtcStatsType;
     #[cfg(feature = "RtcStatsType")]
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &RtcStats, val: RtcStatsType);
+    fn set_type__shim(this: &RtcStats, val: RtcStatsType);
+}
+#[doc = "The trait to access properties on the `RtcStats` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `RtcStats`*"]
+pub trait RtcStatsGetters {
+    #[doc = "Get the `id` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcStats`*"]
+    fn id(&self) -> &str;
+    #[doc = "Get the `timestamp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcStats`*"]
+    fn timestamp(&self) -> f64;
+    #[cfg(feature = "RtcStatsType")]
+    #[doc = "Get the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcStats`, `RtcStatsType`*"]
+    fn type_(&self) -> RtcStatsType;
+}
+impl RtcStatsGetters for RtcStats {
+    fn id(&self) -> &str {
+        self.id_shim()
+    }
+    fn timestamp(&self) -> f64 {
+        self.timestamp_shim()
+    }
+    #[cfg(feature = "RtcStatsType")]
+    fn type_(&self) -> RtcStatsType {
+        self.type__shim()
+    }
 }
 impl RtcStats {
     #[doc = "Construct a new `RtcStats`."]
@@ -31,14 +68,14 @@ impl RtcStats {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcStats`*"]
     pub fn id(&mut self, val: &str) -> &mut Self {
-        self.id_shim(val);
+        self.set_id_shim(val);
         self
     }
     #[doc = "Change the `timestamp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcStats`*"]
     pub fn timestamp(&mut self, val: f64) -> &mut Self {
-        self.timestamp_shim(val);
+        self.set_timestamp_shim(val);
         self
     }
     #[cfg(feature = "RtcStatsType")]
@@ -46,7 +83,7 @@ impl RtcStats {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcStats`, `RtcStatsType`*"]
     pub fn type_(&mut self, val: RtcStatsType) -> &mut Self {
-        self.type__shim(val);
+        self.set_type__shim(val);
         self
     }
 }

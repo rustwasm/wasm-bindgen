@@ -10,8 +10,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpHeaderExtensionCapability`*"]
     pub type RtcRtpHeaderExtensionCapability;
+    #[wasm_bindgen(method, getter = "uri")]
+    fn uri_shim(this: &RtcRtpHeaderExtensionCapability) -> &str;
     #[wasm_bindgen(method, setter = "uri")]
-    fn uri_shim(this: &RtcRtpHeaderExtensionCapability, val: &str);
+    fn set_uri_shim(this: &RtcRtpHeaderExtensionCapability, val: &str);
+}
+#[doc = "The trait to access properties on the `RtcRtpHeaderExtensionCapability` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `RtcRtpHeaderExtensionCapability`*"]
+pub trait RtcRtpHeaderExtensionCapabilityGetters {
+    #[doc = "Get the `uri` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpHeaderExtensionCapability`*"]
+    fn uri(&self) -> &str;
+}
+impl RtcRtpHeaderExtensionCapabilityGetters for RtcRtpHeaderExtensionCapability {
+    fn uri(&self) -> &str {
+        self.uri_shim()
+    }
 }
 impl RtcRtpHeaderExtensionCapability {
     #[doc = "Construct a new `RtcRtpHeaderExtensionCapability`."]
@@ -27,7 +43,7 @@ impl RtcRtpHeaderExtensionCapability {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpHeaderExtensionCapability`*"]
     pub fn uri(&mut self, val: &str) -> &mut Self {
-        self.uri_shim(val);
+        self.set_uri_shim(val);
         self
     }
 }

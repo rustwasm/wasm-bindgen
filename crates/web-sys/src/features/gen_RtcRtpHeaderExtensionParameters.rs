@@ -10,12 +10,46 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpHeaderExtensionParameters`*"]
     pub type RtcRtpHeaderExtensionParameters;
+    #[wasm_bindgen(method, getter = "encrypted")]
+    fn encrypted_shim(this: &RtcRtpHeaderExtensionParameters) -> bool;
     #[wasm_bindgen(method, setter = "encrypted")]
-    fn encrypted_shim(this: &RtcRtpHeaderExtensionParameters, val: bool);
+    fn set_encrypted_shim(this: &RtcRtpHeaderExtensionParameters, val: bool);
+    #[wasm_bindgen(method, getter = "id")]
+    fn id_shim(this: &RtcRtpHeaderExtensionParameters) -> u16;
     #[wasm_bindgen(method, setter = "id")]
-    fn id_shim(this: &RtcRtpHeaderExtensionParameters, val: u16);
+    fn set_id_shim(this: &RtcRtpHeaderExtensionParameters, val: u16);
+    #[wasm_bindgen(method, getter = "uri")]
+    fn uri_shim(this: &RtcRtpHeaderExtensionParameters) -> &str;
     #[wasm_bindgen(method, setter = "uri")]
-    fn uri_shim(this: &RtcRtpHeaderExtensionParameters, val: &str);
+    fn set_uri_shim(this: &RtcRtpHeaderExtensionParameters, val: &str);
+}
+#[doc = "The trait to access properties on the `RtcRtpHeaderExtensionParameters` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `RtcRtpHeaderExtensionParameters`*"]
+pub trait RtcRtpHeaderExtensionParametersGetters {
+    #[doc = "Get the `encrypted` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpHeaderExtensionParameters`*"]
+    fn encrypted(&self) -> bool;
+    #[doc = "Get the `id` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpHeaderExtensionParameters`*"]
+    fn id(&self) -> u16;
+    #[doc = "Get the `uri` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpHeaderExtensionParameters`*"]
+    fn uri(&self) -> &str;
+}
+impl RtcRtpHeaderExtensionParametersGetters for RtcRtpHeaderExtensionParameters {
+    fn encrypted(&self) -> bool {
+        self.encrypted_shim()
+    }
+    fn id(&self) -> u16 {
+        self.id_shim()
+    }
+    fn uri(&self) -> &str {
+        self.uri_shim()
+    }
 }
 impl RtcRtpHeaderExtensionParameters {
     #[doc = "Construct a new `RtcRtpHeaderExtensionParameters`."]
@@ -30,21 +64,21 @@ impl RtcRtpHeaderExtensionParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpHeaderExtensionParameters`*"]
     pub fn encrypted(&mut self, val: bool) -> &mut Self {
-        self.encrypted_shim(val);
+        self.set_encrypted_shim(val);
         self
     }
     #[doc = "Change the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpHeaderExtensionParameters`*"]
     pub fn id(&mut self, val: u16) -> &mut Self {
-        self.id_shim(val);
+        self.set_id_shim(val);
         self
     }
     #[doc = "Change the `uri` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpHeaderExtensionParameters`*"]
     pub fn uri(&mut self, val: &str) -> &mut Self {
-        self.uri_shim(val);
+        self.set_uri_shim(val);
         self
     }
 }

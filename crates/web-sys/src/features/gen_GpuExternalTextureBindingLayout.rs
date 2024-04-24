@@ -16,6 +16,13 @@ extern "C" {
     pub type GpuExternalTextureBindingLayout;
 }
 #[cfg(web_sys_unstable_apis)]
+#[doc = "The trait to access properties on the `GpuExternalTextureBindingLayout` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `GpuExternalTextureBindingLayout`*"]
+pub trait GpuExternalTextureBindingLayoutGetters {}
+#[cfg(web_sys_unstable_apis)]
+impl GpuExternalTextureBindingLayoutGetters for GpuExternalTextureBindingLayout {}
+#[cfg(web_sys_unstable_apis)]
 impl GpuExternalTextureBindingLayout {
     #[doc = "Construct a new `GpuExternalTextureBindingLayout`."]
     #[doc = ""]

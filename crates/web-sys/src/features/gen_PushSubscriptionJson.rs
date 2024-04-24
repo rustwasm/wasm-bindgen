@@ -10,11 +10,39 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionJson`*"]
     pub type PushSubscriptionJson;
+    #[wasm_bindgen(method, getter = "endpoint")]
+    fn endpoint_shim(this: &PushSubscriptionJson) -> &str;
     #[wasm_bindgen(method, setter = "endpoint")]
-    fn endpoint_shim(this: &PushSubscriptionJson, val: &str);
+    fn set_endpoint_shim(this: &PushSubscriptionJson, val: &str);
+    #[cfg(feature = "PushSubscriptionKeys")]
+    #[wasm_bindgen(method, getter = "keys")]
+    fn keys_shim(this: &PushSubscriptionJson) -> &PushSubscriptionKeys;
     #[cfg(feature = "PushSubscriptionKeys")]
     #[wasm_bindgen(method, setter = "keys")]
-    fn keys_shim(this: &PushSubscriptionJson, val: &PushSubscriptionKeys);
+    fn set_keys_shim(this: &PushSubscriptionJson, val: &PushSubscriptionKeys);
+}
+#[doc = "The trait to access properties on the `PushSubscriptionJson` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `PushSubscriptionJson`*"]
+pub trait PushSubscriptionJsonGetters {
+    #[doc = "Get the `endpoint` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionJson`*"]
+    fn endpoint(&self) -> &str;
+    #[cfg(feature = "PushSubscriptionKeys")]
+    #[doc = "Get the `keys` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionJson`, `PushSubscriptionKeys`*"]
+    fn keys(&self) -> &PushSubscriptionKeys;
+}
+impl PushSubscriptionJsonGetters for PushSubscriptionJson {
+    fn endpoint(&self) -> &str {
+        self.endpoint_shim()
+    }
+    #[cfg(feature = "PushSubscriptionKeys")]
+    fn keys(&self) -> &PushSubscriptionKeys {
+        self.keys_shim()
+    }
 }
 impl PushSubscriptionJson {
     #[doc = "Construct a new `PushSubscriptionJson`."]
@@ -29,7 +57,7 @@ impl PushSubscriptionJson {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionJson`*"]
     pub fn endpoint(&mut self, val: &str) -> &mut Self {
-        self.endpoint_shim(val);
+        self.set_endpoint_shim(val);
         self
     }
     #[cfg(feature = "PushSubscriptionKeys")]
@@ -37,7 +65,7 @@ impl PushSubscriptionJson {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionJson`, `PushSubscriptionKeys`*"]
     pub fn keys(&mut self, val: &PushSubscriptionKeys) -> &mut Self {
-        self.keys_shim(val);
+        self.set_keys_shim(val);
         self
     }
 }

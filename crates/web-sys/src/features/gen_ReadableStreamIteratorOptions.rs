@@ -10,8 +10,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamIteratorOptions`*"]
     pub type ReadableStreamIteratorOptions;
+    #[wasm_bindgen(method, getter = "preventCancel")]
+    fn prevent_cancel_shim(this: &ReadableStreamIteratorOptions) -> bool;
     #[wasm_bindgen(method, setter = "preventCancel")]
-    fn prevent_cancel_shim(this: &ReadableStreamIteratorOptions, val: bool);
+    fn set_prevent_cancel_shim(this: &ReadableStreamIteratorOptions, val: bool);
+}
+#[doc = "The trait to access properties on the `ReadableStreamIteratorOptions` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `ReadableStreamIteratorOptions`*"]
+pub trait ReadableStreamIteratorOptionsGetters {
+    #[doc = "Get the `preventCancel` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ReadableStreamIteratorOptions`*"]
+    fn prevent_cancel(&self) -> bool;
+}
+impl ReadableStreamIteratorOptionsGetters for ReadableStreamIteratorOptions {
+    fn prevent_cancel(&self) -> bool {
+        self.prevent_cancel_shim()
+    }
 }
 impl ReadableStreamIteratorOptions {
     #[doc = "Construct a new `ReadableStreamIteratorOptions`."]
@@ -26,7 +42,7 @@ impl ReadableStreamIteratorOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamIteratorOptions`*"]
     pub fn prevent_cancel(&mut self, val: bool) -> &mut Self {
-        self.prevent_cancel_shim(val);
+        self.set_prevent_cancel_shim(val);
         self
     }
 }

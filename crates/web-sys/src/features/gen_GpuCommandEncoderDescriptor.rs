@@ -14,8 +14,31 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuCommandEncoderDescriptor;
+    #[wasm_bindgen(method, getter = "label")]
+    fn label_shim(this: &GpuCommandEncoderDescriptor) -> &str;
     #[wasm_bindgen(method, setter = "label")]
-    fn label_shim(this: &GpuCommandEncoderDescriptor, val: &str);
+    fn set_label_shim(this: &GpuCommandEncoderDescriptor, val: &str);
+}
+#[cfg(web_sys_unstable_apis)]
+#[doc = "The trait to access properties on the `GpuCommandEncoderDescriptor` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoderDescriptor`*"]
+pub trait GpuCommandEncoderDescriptorGetters {
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `label` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCommandEncoderDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn label(&self) -> &str;
+}
+#[cfg(web_sys_unstable_apis)]
+impl GpuCommandEncoderDescriptorGetters for GpuCommandEncoderDescriptor {
+    #[cfg(web_sys_unstable_apis)]
+    fn label(&self) -> &str {
+        self.label_shim()
+    }
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuCommandEncoderDescriptor {
@@ -38,7 +61,7 @@ impl GpuCommandEncoderDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn label(&mut self, val: &str) -> &mut Self {
-        self.label_shim(val);
+        self.set_label_shim(val);
         self
     }
 }

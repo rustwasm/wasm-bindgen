@@ -11,11 +11,45 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `CredentialCreationOptions`*"]
     pub type CredentialCreationOptions;
     #[cfg(feature = "PublicKeyCredentialCreationOptions")]
+    #[wasm_bindgen(method, getter = "publicKey")]
+    fn public_key_shim(this: &CredentialCreationOptions) -> &PublicKeyCredentialCreationOptions;
+    #[cfg(feature = "PublicKeyCredentialCreationOptions")]
     #[wasm_bindgen(method, setter = "publicKey")]
-    fn public_key_shim(this: &CredentialCreationOptions, val: &PublicKeyCredentialCreationOptions);
+    fn set_public_key_shim(
+        this: &CredentialCreationOptions,
+        val: &PublicKeyCredentialCreationOptions,
+    );
+    #[cfg(feature = "AbortSignal")]
+    #[wasm_bindgen(method, getter = "signal")]
+    fn signal_shim(this: &CredentialCreationOptions) -> &AbortSignal;
     #[cfg(feature = "AbortSignal")]
     #[wasm_bindgen(method, setter = "signal")]
-    fn signal_shim(this: &CredentialCreationOptions, val: &AbortSignal);
+    fn set_signal_shim(this: &CredentialCreationOptions, val: &AbortSignal);
+}
+#[doc = "The trait to access properties on the `CredentialCreationOptions` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `CredentialCreationOptions`*"]
+pub trait CredentialCreationOptionsGetters {
+    #[cfg(feature = "PublicKeyCredentialCreationOptions")]
+    #[doc = "Get the `publicKey` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CredentialCreationOptions`, `PublicKeyCredentialCreationOptions`*"]
+    fn public_key(&self) -> &PublicKeyCredentialCreationOptions;
+    #[cfg(feature = "AbortSignal")]
+    #[doc = "Get the `signal` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AbortSignal`, `CredentialCreationOptions`*"]
+    fn signal(&self) -> &AbortSignal;
+}
+impl CredentialCreationOptionsGetters for CredentialCreationOptions {
+    #[cfg(feature = "PublicKeyCredentialCreationOptions")]
+    fn public_key(&self) -> &PublicKeyCredentialCreationOptions {
+        self.public_key_shim()
+    }
+    #[cfg(feature = "AbortSignal")]
+    fn signal(&self) -> &AbortSignal {
+        self.signal_shim()
+    }
 }
 impl CredentialCreationOptions {
     #[doc = "Construct a new `CredentialCreationOptions`."]
@@ -31,7 +65,7 @@ impl CredentialCreationOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CredentialCreationOptions`, `PublicKeyCredentialCreationOptions`*"]
     pub fn public_key(&mut self, val: &PublicKeyCredentialCreationOptions) -> &mut Self {
-        self.public_key_shim(val);
+        self.set_public_key_shim(val);
         self
     }
     #[cfg(feature = "AbortSignal")]
@@ -39,7 +73,7 @@ impl CredentialCreationOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AbortSignal`, `CredentialCreationOptions`*"]
     pub fn signal(&mut self, val: &AbortSignal) -> &mut Self {
-        self.signal_shim(val);
+        self.set_signal_shim(val);
         self
     }
 }

@@ -10,8 +10,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GetRootNodeOptions`*"]
     pub type GetRootNodeOptions;
+    #[wasm_bindgen(method, getter = "composed")]
+    fn composed_shim(this: &GetRootNodeOptions) -> bool;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &GetRootNodeOptions, val: bool);
+    fn set_composed_shim(this: &GetRootNodeOptions, val: bool);
+}
+#[doc = "The trait to access properties on the `GetRootNodeOptions` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `GetRootNodeOptions`*"]
+pub trait GetRootNodeOptionsGetters {
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GetRootNodeOptions`*"]
+    fn composed(&self) -> bool;
+}
+impl GetRootNodeOptionsGetters for GetRootNodeOptions {
+    fn composed(&self) -> bool {
+        self.composed_shim()
+    }
 }
 impl GetRootNodeOptions {
     #[doc = "Construct a new `GetRootNodeOptions`."]
@@ -26,7 +42,7 @@ impl GetRootNodeOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GetRootNodeOptions`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed_shim(val);
         self
     }
 }

@@ -10,10 +10,35 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
     pub type EcKeyAlgorithm;
+    #[wasm_bindgen(method, getter = "name")]
+    fn name_shim(this: &EcKeyAlgorithm) -> &str;
     #[wasm_bindgen(method, setter = "name")]
-    fn name_shim(this: &EcKeyAlgorithm, val: &str);
+    fn set_name_shim(this: &EcKeyAlgorithm, val: &str);
+    #[wasm_bindgen(method, getter = "namedCurve")]
+    fn named_curve_shim(this: &EcKeyAlgorithm) -> &str;
     #[wasm_bindgen(method, setter = "namedCurve")]
-    fn named_curve_shim(this: &EcKeyAlgorithm, val: &str);
+    fn set_named_curve_shim(this: &EcKeyAlgorithm, val: &str);
+}
+#[doc = "The trait to access properties on the `EcKeyAlgorithm` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
+pub trait EcKeyAlgorithmGetters {
+    #[doc = "Get the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
+    fn name(&self) -> &str;
+    #[doc = "Get the `namedCurve` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
+    fn named_curve(&self) -> &str;
+}
+impl EcKeyAlgorithmGetters for EcKeyAlgorithm {
+    fn name(&self) -> &str {
+        self.name_shim()
+    }
+    fn named_curve(&self) -> &str {
+        self.named_curve_shim()
+    }
 }
 impl EcKeyAlgorithm {
     #[doc = "Construct a new `EcKeyAlgorithm`."]
@@ -30,14 +55,14 @@ impl EcKeyAlgorithm {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        self.name_shim(val);
+        self.set_name_shim(val);
         self
     }
     #[doc = "Change the `namedCurve` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
     pub fn named_curve(&mut self, val: &str) -> &mut Self {
-        self.named_curve_shim(val);
+        self.set_named_curve_shim(val);
         self
     }
 }

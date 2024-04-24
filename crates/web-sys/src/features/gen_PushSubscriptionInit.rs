@@ -10,16 +10,68 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionInit`*"]
     pub type PushSubscriptionInit;
+    #[wasm_bindgen(method, getter = "appServerKey")]
+    fn app_server_key_shim(this: &PushSubscriptionInit) -> Option<&::js_sys::Object>;
     #[wasm_bindgen(method, setter = "appServerKey")]
-    fn app_server_key_shim(this: &PushSubscriptionInit, val: Option<&::js_sys::Object>);
+    fn set_app_server_key_shim(this: &PushSubscriptionInit, val: Option<&::js_sys::Object>);
+    #[wasm_bindgen(method, getter = "authSecret")]
+    fn auth_secret_shim(this: &PushSubscriptionInit) -> Option<&::js_sys::ArrayBuffer>;
     #[wasm_bindgen(method, setter = "authSecret")]
-    fn auth_secret_shim(this: &PushSubscriptionInit, val: Option<&::js_sys::ArrayBuffer>);
+    fn set_auth_secret_shim(this: &PushSubscriptionInit, val: Option<&::js_sys::ArrayBuffer>);
+    #[wasm_bindgen(method, getter = "endpoint")]
+    fn endpoint_shim(this: &PushSubscriptionInit) -> &str;
     #[wasm_bindgen(method, setter = "endpoint")]
-    fn endpoint_shim(this: &PushSubscriptionInit, val: &str);
+    fn set_endpoint_shim(this: &PushSubscriptionInit, val: &str);
+    #[wasm_bindgen(method, getter = "p256dhKey")]
+    fn p256dh_key_shim(this: &PushSubscriptionInit) -> Option<&::js_sys::ArrayBuffer>;
     #[wasm_bindgen(method, setter = "p256dhKey")]
-    fn p256dh_key_shim(this: &PushSubscriptionInit, val: Option<&::js_sys::ArrayBuffer>);
+    fn set_p256dh_key_shim(this: &PushSubscriptionInit, val: Option<&::js_sys::ArrayBuffer>);
+    #[wasm_bindgen(method, getter = "scope")]
+    fn scope_shim(this: &PushSubscriptionInit) -> &str;
     #[wasm_bindgen(method, setter = "scope")]
-    fn scope_shim(this: &PushSubscriptionInit, val: &str);
+    fn set_scope_shim(this: &PushSubscriptionInit, val: &str);
+}
+#[doc = "The trait to access properties on the `PushSubscriptionInit` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `PushSubscriptionInit`*"]
+pub trait PushSubscriptionInitGetters {
+    #[doc = "Get the `appServerKey` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionInit`*"]
+    fn app_server_key(&self) -> Option<&::js_sys::Object>;
+    #[doc = "Get the `authSecret` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionInit`*"]
+    fn auth_secret(&self) -> Option<&::js_sys::ArrayBuffer>;
+    #[doc = "Get the `endpoint` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionInit`*"]
+    fn endpoint(&self) -> &str;
+    #[doc = "Get the `p256dhKey` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionInit`*"]
+    fn p256dh_key(&self) -> Option<&::js_sys::ArrayBuffer>;
+    #[doc = "Get the `scope` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionInit`*"]
+    fn scope(&self) -> &str;
+}
+impl PushSubscriptionInitGetters for PushSubscriptionInit {
+    fn app_server_key(&self) -> Option<&::js_sys::Object> {
+        self.app_server_key_shim()
+    }
+    fn auth_secret(&self) -> Option<&::js_sys::ArrayBuffer> {
+        self.auth_secret_shim()
+    }
+    fn endpoint(&self) -> &str {
+        self.endpoint_shim()
+    }
+    fn p256dh_key(&self) -> Option<&::js_sys::ArrayBuffer> {
+        self.p256dh_key_shim()
+    }
+    fn scope(&self) -> &str {
+        self.scope_shim()
+    }
 }
 impl PushSubscriptionInit {
     #[doc = "Construct a new `PushSubscriptionInit`."]
@@ -36,35 +88,35 @@ impl PushSubscriptionInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionInit`*"]
     pub fn app_server_key(&mut self, val: Option<&::js_sys::Object>) -> &mut Self {
-        self.app_server_key_shim(val);
+        self.set_app_server_key_shim(val);
         self
     }
     #[doc = "Change the `authSecret` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionInit`*"]
     pub fn auth_secret(&mut self, val: Option<&::js_sys::ArrayBuffer>) -> &mut Self {
-        self.auth_secret_shim(val);
+        self.set_auth_secret_shim(val);
         self
     }
     #[doc = "Change the `endpoint` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionInit`*"]
     pub fn endpoint(&mut self, val: &str) -> &mut Self {
-        self.endpoint_shim(val);
+        self.set_endpoint_shim(val);
         self
     }
     #[doc = "Change the `p256dhKey` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionInit`*"]
     pub fn p256dh_key(&mut self, val: Option<&::js_sys::ArrayBuffer>) -> &mut Self {
-        self.p256dh_key_shim(val);
+        self.set_p256dh_key_shim(val);
         self
     }
     #[doc = "Change the `scope` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionInit`*"]
     pub fn scope(&mut self, val: &str) -> &mut Self {
-        self.scope_shim(val);
+        self.set_scope_shim(val);
         self
     }
 }

@@ -10,10 +10,35 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
     pub type DisplayNameResult;
+    #[wasm_bindgen(method, getter = "locale")]
+    fn locale_shim(this: &DisplayNameResult) -> &str;
     #[wasm_bindgen(method, setter = "locale")]
-    fn locale_shim(this: &DisplayNameResult, val: &str);
+    fn set_locale_shim(this: &DisplayNameResult, val: &str);
+    #[wasm_bindgen(method, getter = "style")]
+    fn style_shim(this: &DisplayNameResult) -> &str;
     #[wasm_bindgen(method, setter = "style")]
-    fn style_shim(this: &DisplayNameResult, val: &str);
+    fn set_style_shim(this: &DisplayNameResult, val: &str);
+}
+#[doc = "The trait to access properties on the `DisplayNameResult` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
+pub trait DisplayNameResultGetters {
+    #[doc = "Get the `locale` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
+    fn locale(&self) -> &str;
+    #[doc = "Get the `style` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
+    fn style(&self) -> &str;
+}
+impl DisplayNameResultGetters for DisplayNameResult {
+    fn locale(&self) -> &str {
+        self.locale_shim()
+    }
+    fn style(&self) -> &str {
+        self.style_shim()
+    }
 }
 impl DisplayNameResult {
     #[doc = "Construct a new `DisplayNameResult`."]
@@ -28,14 +53,14 @@ impl DisplayNameResult {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
     pub fn locale(&mut self, val: &str) -> &mut Self {
-        self.locale_shim(val);
+        self.set_locale_shim(val);
         self
     }
     #[doc = "Change the `style` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
     pub fn style(&mut self, val: &str) -> &mut Self {
-        self.style_shim(val);
+        self.set_style_shim(val);
         self
     }
 }

@@ -10,8 +10,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HalfOpenInfoDict`*"]
     pub type HalfOpenInfoDict;
+    #[wasm_bindgen(method, getter = "speculative")]
+    fn speculative_shim(this: &HalfOpenInfoDict) -> bool;
     #[wasm_bindgen(method, setter = "speculative")]
-    fn speculative_shim(this: &HalfOpenInfoDict, val: bool);
+    fn set_speculative_shim(this: &HalfOpenInfoDict, val: bool);
+}
+#[doc = "The trait to access properties on the `HalfOpenInfoDict` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `HalfOpenInfoDict`*"]
+pub trait HalfOpenInfoDictGetters {
+    #[doc = "Get the `speculative` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HalfOpenInfoDict`*"]
+    fn speculative(&self) -> bool;
+}
+impl HalfOpenInfoDictGetters for HalfOpenInfoDict {
+    fn speculative(&self) -> bool {
+        self.speculative_shim()
+    }
 }
 impl HalfOpenInfoDict {
     #[doc = "Construct a new `HalfOpenInfoDict`."]
@@ -26,7 +42,7 @@ impl HalfOpenInfoDict {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HalfOpenInfoDict`*"]
     pub fn speculative(&mut self, val: bool) -> &mut Self {
-        self.speculative_shim(val);
+        self.set_speculative_shim(val);
         self
     }
 }

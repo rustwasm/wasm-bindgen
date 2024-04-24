@@ -14,8 +14,31 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type IsInputPendingOptions;
+    #[wasm_bindgen(method, getter = "includeContinuous")]
+    fn include_continuous_shim(this: &IsInputPendingOptions) -> bool;
     #[wasm_bindgen(method, setter = "includeContinuous")]
-    fn include_continuous_shim(this: &IsInputPendingOptions, val: bool);
+    fn set_include_continuous_shim(this: &IsInputPendingOptions, val: bool);
+}
+#[cfg(web_sys_unstable_apis)]
+#[doc = "The trait to access properties on the `IsInputPendingOptions` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `IsInputPendingOptions`*"]
+pub trait IsInputPendingOptionsGetters {
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `includeContinuous` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IsInputPendingOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn include_continuous(&self) -> bool;
+}
+#[cfg(web_sys_unstable_apis)]
+impl IsInputPendingOptionsGetters for IsInputPendingOptions {
+    #[cfg(web_sys_unstable_apis)]
+    fn include_continuous(&self) -> bool {
+        self.include_continuous_shim()
+    }
 }
 #[cfg(web_sys_unstable_apis)]
 impl IsInputPendingOptions {
@@ -38,7 +61,7 @@ impl IsInputPendingOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn include_continuous(&mut self, val: bool) -> &mut Self {
-        self.include_continuous_shim(val);
+        self.set_include_continuous_shim(val);
         self
     }
 }

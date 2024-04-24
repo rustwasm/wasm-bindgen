@@ -10,14 +10,57 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
     pub type RegisteredKey;
+    #[wasm_bindgen(method, getter = "appId")]
+    fn app_id_shim(this: &RegisteredKey) -> Option<&str>;
     #[wasm_bindgen(method, setter = "appId")]
-    fn app_id_shim(this: &RegisteredKey, val: Option<&str>);
+    fn set_app_id_shim(this: &RegisteredKey, val: Option<&str>);
+    #[wasm_bindgen(method, getter = "keyHandle")]
+    fn key_handle_shim(this: &RegisteredKey) -> &str;
     #[wasm_bindgen(method, setter = "keyHandle")]
-    fn key_handle_shim(this: &RegisteredKey, val: &str);
+    fn set_key_handle_shim(this: &RegisteredKey, val: &str);
+    #[wasm_bindgen(method, getter = "transports")]
+    fn transports_shim(this: &RegisteredKey) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "transports")]
-    fn transports_shim(this: &RegisteredKey, val: &::wasm_bindgen::JsValue);
+    fn set_transports_shim(this: &RegisteredKey, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, getter = "version")]
+    fn version_shim(this: &RegisteredKey) -> &str;
     #[wasm_bindgen(method, setter = "version")]
-    fn version_shim(this: &RegisteredKey, val: &str);
+    fn set_version_shim(this: &RegisteredKey, val: &str);
+}
+#[doc = "The trait to access properties on the `RegisteredKey` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
+pub trait RegisteredKeyGetters {
+    #[doc = "Get the `appId` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
+    fn app_id(&self) -> Option<&str>;
+    #[doc = "Get the `keyHandle` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
+    fn key_handle(&self) -> &str;
+    #[doc = "Get the `transports` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
+    fn transports(&self) -> Option<&::wasm_bindgen::JsValue>;
+    #[doc = "Get the `version` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
+    fn version(&self) -> &str;
+}
+impl RegisteredKeyGetters for RegisteredKey {
+    fn app_id(&self) -> Option<&str> {
+        self.app_id_shim()
+    }
+    fn key_handle(&self) -> &str {
+        self.key_handle_shim()
+    }
+    fn transports(&self) -> Option<&::wasm_bindgen::JsValue> {
+        self.transports_shim()
+    }
+    fn version(&self) -> &str {
+        self.version_shim()
+    }
 }
 impl RegisteredKey {
     #[doc = "Construct a new `RegisteredKey`."]
@@ -32,28 +75,28 @@ impl RegisteredKey {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
     pub fn app_id(&mut self, val: Option<&str>) -> &mut Self {
-        self.app_id_shim(val);
+        self.set_app_id_shim(val);
         self
     }
     #[doc = "Change the `keyHandle` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
     pub fn key_handle(&mut self, val: &str) -> &mut Self {
-        self.key_handle_shim(val);
+        self.set_key_handle_shim(val);
         self
     }
     #[doc = "Change the `transports` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
     pub fn transports(&mut self, val: Option<&::wasm_bindgen::JsValue>) -> &mut Self {
-        self.transports_shim(val.unwrap_or(&::wasm_bindgen::JsValue::NULL));
+        self.set_transports_shim(val.unwrap_or(&::wasm_bindgen::JsValue::NULL));
         self
     }
     #[doc = "Change the `version` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
     pub fn version(&mut self, val: &str) -> &mut Self {
-        self.version_shim(val);
+        self.set_version_shim(val);
         self
     }
 }

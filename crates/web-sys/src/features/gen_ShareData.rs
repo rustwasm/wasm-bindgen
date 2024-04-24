@@ -10,14 +10,57 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
     pub type ShareData;
+    #[wasm_bindgen(method, getter = "files")]
+    fn files_shim(this: &ShareData) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "files")]
-    fn files_shim(this: &ShareData, val: &::wasm_bindgen::JsValue);
+    fn set_files_shim(this: &ShareData, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, getter = "text")]
+    fn text_shim(this: &ShareData) -> &str;
     #[wasm_bindgen(method, setter = "text")]
-    fn text_shim(this: &ShareData, val: &str);
+    fn set_text_shim(this: &ShareData, val: &str);
+    #[wasm_bindgen(method, getter = "title")]
+    fn title_shim(this: &ShareData) -> &str;
     #[wasm_bindgen(method, setter = "title")]
-    fn title_shim(this: &ShareData, val: &str);
+    fn set_title_shim(this: &ShareData, val: &str);
+    #[wasm_bindgen(method, getter = "url")]
+    fn url_shim(this: &ShareData) -> &str;
     #[wasm_bindgen(method, setter = "url")]
-    fn url_shim(this: &ShareData, val: &str);
+    fn set_url_shim(this: &ShareData, val: &str);
+}
+#[doc = "The trait to access properties on the `ShareData` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
+pub trait ShareDataGetters {
+    #[doc = "Get the `files` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
+    fn files(&self) -> &::wasm_bindgen::JsValue;
+    #[doc = "Get the `text` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
+    fn text(&self) -> &str;
+    #[doc = "Get the `title` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
+    fn title(&self) -> &str;
+    #[doc = "Get the `url` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
+    fn url(&self) -> &str;
+}
+impl ShareDataGetters for ShareData {
+    fn files(&self) -> &::wasm_bindgen::JsValue {
+        self.files_shim()
+    }
+    fn text(&self) -> &str {
+        self.text_shim()
+    }
+    fn title(&self) -> &str {
+        self.title_shim()
+    }
+    fn url(&self) -> &str {
+        self.url_shim()
+    }
 }
 impl ShareData {
     #[doc = "Construct a new `ShareData`."]
@@ -32,28 +75,28 @@ impl ShareData {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
     pub fn files(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.files_shim(val);
+        self.set_files_shim(val);
         self
     }
     #[doc = "Change the `text` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
     pub fn text(&mut self, val: &str) -> &mut Self {
-        self.text_shim(val);
+        self.set_text_shim(val);
         self
     }
     #[doc = "Change the `title` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
     pub fn title(&mut self, val: &str) -> &mut Self {
-        self.title_shim(val);
+        self.set_title_shim(val);
         self
     }
     #[doc = "Change the `url` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
     pub fn url(&mut self, val: &str) -> &mut Self {
-        self.url_shim(val);
+        self.set_url_shim(val);
         self
     }
 }

@@ -11,6 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcAnswerOptions`*"]
     pub type RtcAnswerOptions;
 }
+#[doc = "The trait to access properties on the `RtcAnswerOptions` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `RtcAnswerOptions`*"]
+pub trait RtcAnswerOptionsGetters {}
+impl RtcAnswerOptionsGetters for RtcAnswerOptions {}
 impl RtcAnswerOptions {
     #[doc = "Construct a new `RtcAnswerOptions`."]
     #[doc = ""]

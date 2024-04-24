@@ -10,16 +10,68 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HashChangeEventInit`*"]
     pub type HashChangeEventInit;
+    #[wasm_bindgen(method, getter = "bubbles")]
+    fn bubbles_shim(this: &HashChangeEventInit) -> bool;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &HashChangeEventInit, val: bool);
+    fn set_bubbles_shim(this: &HashChangeEventInit, val: bool);
+    #[wasm_bindgen(method, getter = "cancelable")]
+    fn cancelable_shim(this: &HashChangeEventInit) -> bool;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &HashChangeEventInit, val: bool);
+    fn set_cancelable_shim(this: &HashChangeEventInit, val: bool);
+    #[wasm_bindgen(method, getter = "composed")]
+    fn composed_shim(this: &HashChangeEventInit) -> bool;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &HashChangeEventInit, val: bool);
+    fn set_composed_shim(this: &HashChangeEventInit, val: bool);
+    #[wasm_bindgen(method, getter = "newURL")]
+    fn new_url_shim(this: &HashChangeEventInit) -> &str;
     #[wasm_bindgen(method, setter = "newURL")]
-    fn new_url_shim(this: &HashChangeEventInit, val: &str);
+    fn set_new_url_shim(this: &HashChangeEventInit, val: &str);
+    #[wasm_bindgen(method, getter = "oldURL")]
+    fn old_url_shim(this: &HashChangeEventInit) -> &str;
     #[wasm_bindgen(method, setter = "oldURL")]
-    fn old_url_shim(this: &HashChangeEventInit, val: &str);
+    fn set_old_url_shim(this: &HashChangeEventInit, val: &str);
+}
+#[doc = "The trait to access properties on the `HashChangeEventInit` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `HashChangeEventInit`*"]
+pub trait HashChangeEventInitGetters {
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HashChangeEventInit`*"]
+    fn bubbles(&self) -> bool;
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HashChangeEventInit`*"]
+    fn cancelable(&self) -> bool;
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HashChangeEventInit`*"]
+    fn composed(&self) -> bool;
+    #[doc = "Get the `newURL` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HashChangeEventInit`*"]
+    fn new_url(&self) -> &str;
+    #[doc = "Get the `oldURL` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HashChangeEventInit`*"]
+    fn old_url(&self) -> &str;
+}
+impl HashChangeEventInitGetters for HashChangeEventInit {
+    fn bubbles(&self) -> bool {
+        self.bubbles_shim()
+    }
+    fn cancelable(&self) -> bool {
+        self.cancelable_shim()
+    }
+    fn composed(&self) -> bool {
+        self.composed_shim()
+    }
+    fn new_url(&self) -> &str {
+        self.new_url_shim()
+    }
+    fn old_url(&self) -> &str {
+        self.old_url_shim()
+    }
 }
 impl HashChangeEventInit {
     #[doc = "Construct a new `HashChangeEventInit`."]
@@ -34,35 +86,35 @@ impl HashChangeEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HashChangeEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles_shim(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HashChangeEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable_shim(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HashChangeEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed_shim(val);
         self
     }
     #[doc = "Change the `newURL` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HashChangeEventInit`*"]
     pub fn new_url(&mut self, val: &str) -> &mut Self {
-        self.new_url_shim(val);
+        self.set_new_url_shim(val);
         self
     }
     #[doc = "Change the `oldURL` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HashChangeEventInit`*"]
     pub fn old_url(&mut self, val: &str) -> &mut Self {
-        self.old_url_shim(val);
+        self.set_old_url_shim(val);
         self
     }
 }

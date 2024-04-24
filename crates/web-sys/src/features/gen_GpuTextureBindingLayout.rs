@@ -14,14 +14,71 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuTextureBindingLayout;
+    #[wasm_bindgen(method, getter = "multisampled")]
+    fn multisampled_shim(this: &GpuTextureBindingLayout) -> bool;
     #[wasm_bindgen(method, setter = "multisampled")]
-    fn multisampled_shim(this: &GpuTextureBindingLayout, val: bool);
+    fn set_multisampled_shim(this: &GpuTextureBindingLayout, val: bool);
+    #[cfg(feature = "GpuTextureSampleType")]
+    #[wasm_bindgen(method, getter = "sampleType")]
+    fn sample_type_shim(this: &GpuTextureBindingLayout) -> GpuTextureSampleType;
     #[cfg(feature = "GpuTextureSampleType")]
     #[wasm_bindgen(method, setter = "sampleType")]
-    fn sample_type_shim(this: &GpuTextureBindingLayout, val: GpuTextureSampleType);
+    fn set_sample_type_shim(this: &GpuTextureBindingLayout, val: GpuTextureSampleType);
+    #[cfg(feature = "GpuTextureViewDimension")]
+    #[wasm_bindgen(method, getter = "viewDimension")]
+    fn view_dimension_shim(this: &GpuTextureBindingLayout) -> GpuTextureViewDimension;
     #[cfg(feature = "GpuTextureViewDimension")]
     #[wasm_bindgen(method, setter = "viewDimension")]
-    fn view_dimension_shim(this: &GpuTextureBindingLayout, val: GpuTextureViewDimension);
+    fn set_view_dimension_shim(this: &GpuTextureBindingLayout, val: GpuTextureViewDimension);
+}
+#[cfg(web_sys_unstable_apis)]
+#[doc = "The trait to access properties on the `GpuTextureBindingLayout` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `GpuTextureBindingLayout`*"]
+pub trait GpuTextureBindingLayoutGetters {
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `multisampled` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuTextureBindingLayout`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn multisampled(&self) -> bool;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuTextureSampleType")]
+    #[doc = "Get the `sampleType` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuTextureBindingLayout`, `GpuTextureSampleType`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn sample_type(&self) -> GpuTextureSampleType;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuTextureViewDimension")]
+    #[doc = "Get the `viewDimension` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuTextureBindingLayout`, `GpuTextureViewDimension`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn view_dimension(&self) -> GpuTextureViewDimension;
+}
+#[cfg(web_sys_unstable_apis)]
+impl GpuTextureBindingLayoutGetters for GpuTextureBindingLayout {
+    #[cfg(web_sys_unstable_apis)]
+    fn multisampled(&self) -> bool {
+        self.multisampled_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuTextureSampleType")]
+    fn sample_type(&self) -> GpuTextureSampleType {
+        self.sample_type_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuTextureViewDimension")]
+    fn view_dimension(&self) -> GpuTextureViewDimension {
+        self.view_dimension_shim()
+    }
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuTextureBindingLayout {
@@ -44,7 +101,7 @@ impl GpuTextureBindingLayout {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn multisampled(&mut self, val: bool) -> &mut Self {
-        self.multisampled_shim(val);
+        self.set_multisampled_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -56,7 +113,7 @@ impl GpuTextureBindingLayout {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn sample_type(&mut self, val: GpuTextureSampleType) -> &mut Self {
-        self.sample_type_shim(val);
+        self.set_sample_type_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -68,7 +125,7 @@ impl GpuTextureBindingLayout {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn view_dimension(&mut self, val: GpuTextureViewDimension) -> &mut Self {
-        self.view_dimension_shim(val);
+        self.set_view_dimension_shim(val);
         self
     }
 }

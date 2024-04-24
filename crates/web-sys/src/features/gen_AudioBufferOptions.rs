@@ -10,12 +10,46 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBufferOptions`*"]
     pub type AudioBufferOptions;
+    #[wasm_bindgen(method, getter = "length")]
+    fn length_shim(this: &AudioBufferOptions) -> u32;
     #[wasm_bindgen(method, setter = "length")]
-    fn length_shim(this: &AudioBufferOptions, val: u32);
+    fn set_length_shim(this: &AudioBufferOptions, val: u32);
+    #[wasm_bindgen(method, getter = "numberOfChannels")]
+    fn number_of_channels_shim(this: &AudioBufferOptions) -> u32;
     #[wasm_bindgen(method, setter = "numberOfChannels")]
-    fn number_of_channels_shim(this: &AudioBufferOptions, val: u32);
+    fn set_number_of_channels_shim(this: &AudioBufferOptions, val: u32);
+    #[wasm_bindgen(method, getter = "sampleRate")]
+    fn sample_rate_shim(this: &AudioBufferOptions) -> f32;
     #[wasm_bindgen(method, setter = "sampleRate")]
-    fn sample_rate_shim(this: &AudioBufferOptions, val: f32);
+    fn set_sample_rate_shim(this: &AudioBufferOptions, val: f32);
+}
+#[doc = "The trait to access properties on the `AudioBufferOptions` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `AudioBufferOptions`*"]
+pub trait AudioBufferOptionsGetters {
+    #[doc = "Get the `length` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioBufferOptions`*"]
+    fn length(&self) -> u32;
+    #[doc = "Get the `numberOfChannels` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioBufferOptions`*"]
+    fn number_of_channels(&self) -> u32;
+    #[doc = "Get the `sampleRate` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioBufferOptions`*"]
+    fn sample_rate(&self) -> f32;
+}
+impl AudioBufferOptionsGetters for AudioBufferOptions {
+    fn length(&self) -> u32 {
+        self.length_shim()
+    }
+    fn number_of_channels(&self) -> u32 {
+        self.number_of_channels_shim()
+    }
+    fn sample_rate(&self) -> f32 {
+        self.sample_rate_shim()
+    }
 }
 impl AudioBufferOptions {
     #[doc = "Construct a new `AudioBufferOptions`."]
@@ -32,21 +66,21 @@ impl AudioBufferOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBufferOptions`*"]
     pub fn length(&mut self, val: u32) -> &mut Self {
-        self.length_shim(val);
+        self.set_length_shim(val);
         self
     }
     #[doc = "Change the `numberOfChannels` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBufferOptions`*"]
     pub fn number_of_channels(&mut self, val: u32) -> &mut Self {
-        self.number_of_channels_shim(val);
+        self.set_number_of_channels_shim(val);
         self
     }
     #[doc = "Change the `sampleRate` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBufferOptions`*"]
     pub fn sample_rate(&mut self, val: f32) -> &mut Self {
-        self.sample_rate_shim(val);
+        self.set_sample_rate_shim(val);
         self
     }
 }

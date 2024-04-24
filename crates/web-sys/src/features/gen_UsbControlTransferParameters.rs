@@ -14,18 +14,103 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type UsbControlTransferParameters;
+    #[wasm_bindgen(method, getter = "index")]
+    fn index_shim(this: &UsbControlTransferParameters) -> u16;
     #[wasm_bindgen(method, setter = "index")]
-    fn index_shim(this: &UsbControlTransferParameters, val: u16);
+    fn set_index_shim(this: &UsbControlTransferParameters, val: u16);
+    #[cfg(feature = "UsbRecipient")]
+    #[wasm_bindgen(method, getter = "recipient")]
+    fn recipient_shim(this: &UsbControlTransferParameters) -> UsbRecipient;
     #[cfg(feature = "UsbRecipient")]
     #[wasm_bindgen(method, setter = "recipient")]
-    fn recipient_shim(this: &UsbControlTransferParameters, val: UsbRecipient);
+    fn set_recipient_shim(this: &UsbControlTransferParameters, val: UsbRecipient);
+    #[wasm_bindgen(method, getter = "request")]
+    fn request_shim(this: &UsbControlTransferParameters) -> u8;
     #[wasm_bindgen(method, setter = "request")]
-    fn request_shim(this: &UsbControlTransferParameters, val: u8);
+    fn set_request_shim(this: &UsbControlTransferParameters, val: u8);
+    #[cfg(feature = "UsbRequestType")]
+    #[wasm_bindgen(method, getter = "requestType")]
+    fn request_type_shim(this: &UsbControlTransferParameters) -> UsbRequestType;
     #[cfg(feature = "UsbRequestType")]
     #[wasm_bindgen(method, setter = "requestType")]
-    fn request_type_shim(this: &UsbControlTransferParameters, val: UsbRequestType);
+    fn set_request_type_shim(this: &UsbControlTransferParameters, val: UsbRequestType);
+    #[wasm_bindgen(method, getter = "value")]
+    fn value_shim(this: &UsbControlTransferParameters) -> u16;
     #[wasm_bindgen(method, setter = "value")]
-    fn value_shim(this: &UsbControlTransferParameters, val: u16);
+    fn set_value_shim(this: &UsbControlTransferParameters, val: u16);
+}
+#[cfg(web_sys_unstable_apis)]
+#[doc = "The trait to access properties on the `UsbControlTransferParameters` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `UsbControlTransferParameters`*"]
+pub trait UsbControlTransferParametersGetters {
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `index` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UsbControlTransferParameters`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn index(&self) -> u16;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "UsbRecipient")]
+    #[doc = "Get the `recipient` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UsbControlTransferParameters`, `UsbRecipient`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn recipient(&self) -> UsbRecipient;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `request` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UsbControlTransferParameters`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn request(&self) -> u8;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "UsbRequestType")]
+    #[doc = "Get the `requestType` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UsbControlTransferParameters`, `UsbRequestType`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn request_type(&self) -> UsbRequestType;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `value` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UsbControlTransferParameters`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn value(&self) -> u16;
+}
+#[cfg(web_sys_unstable_apis)]
+impl UsbControlTransferParametersGetters for UsbControlTransferParameters {
+    #[cfg(web_sys_unstable_apis)]
+    fn index(&self) -> u16 {
+        self.index_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "UsbRecipient")]
+    fn recipient(&self) -> UsbRecipient {
+        self.recipient_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    fn request(&self) -> u8 {
+        self.request_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "UsbRequestType")]
+    fn request_type(&self) -> UsbRequestType {
+        self.request_type_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    fn value(&self) -> u16 {
+        self.value_shim()
+    }
 }
 #[cfg(web_sys_unstable_apis)]
 impl UsbControlTransferParameters {
@@ -60,7 +145,7 @@ impl UsbControlTransferParameters {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn index(&mut self, val: u16) -> &mut Self {
-        self.index_shim(val);
+        self.set_index_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -72,7 +157,7 @@ impl UsbControlTransferParameters {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn recipient(&mut self, val: UsbRecipient) -> &mut Self {
-        self.recipient_shim(val);
+        self.set_recipient_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -83,7 +168,7 @@ impl UsbControlTransferParameters {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn request(&mut self, val: u8) -> &mut Self {
-        self.request_shim(val);
+        self.set_request_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -95,7 +180,7 @@ impl UsbControlTransferParameters {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn request_type(&mut self, val: UsbRequestType) -> &mut Self {
-        self.request_type_shim(val);
+        self.set_request_type_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -106,7 +191,7 @@ impl UsbControlTransferParameters {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn value(&mut self, val: u16) -> &mut Self {
-        self.value_shim(val);
+        self.set_value_shim(val);
         self
     }
 }

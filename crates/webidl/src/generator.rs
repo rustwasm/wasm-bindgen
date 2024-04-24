@@ -641,6 +641,7 @@ impl DictionaryField {
     ) -> TokenStream {
         let ty = &self.ty;
         let shim_name = self.shim_name();
+        let set_shim_name = self.set_shim_name();
         let js_name = &self.js_name;
 
         let js_value_ref_type = shared_ref(
@@ -656,12 +657,71 @@ impl DictionaryField {
 
         quote! {
             #cfg_features
+            #[wasm_bindgen(method, getter = #js_name)]
+            fn #shim_name(this: &#parent_ident) -> #ty;
+
+            #cfg_features
             #[wasm_bindgen(method, setter = #js_name)]
-            fn #shim_name(this: &#parent_ident, val: #ty);
+            fn #set_shim_name(this: &#parent_ident, val: #ty);
         }
     }
 
-    fn generate_rust_setter(
+    fn generate_rust_getter(
+        &self,
+        options: &Options,
+        features: &BTreeSet<String>,
+        cfg_features: &Option<syn::Attribute>,
+    ) -> TokenStream {
+        let DictionaryField {
+            name,
+            js_name,
+            ty,
+            is_js_value_ref_option_type: _,
+            required: _,
+            unstable,
+        } = self;
+
+        let unstable_attr = maybe_unstable_attr(*unstable);
+        let unstable_docs = maybe_unstable_docs(*unstable);
+
+        let doc_comment = comment(
+            format!("Get the `{}` field of this object.", js_name),
+            &required_doc_string(options, features),
+        );
+
+        quote! {
+            #unstable_attr
+            #cfg_features
+            #doc_comment
+            #unstable_docs
+            fn #name(&self) -> #ty;
+        }
+    }
+
+    fn generate_rust_getter_impl(&self, cfg_features: &Option<syn::Attribute>) -> TokenStream {
+        let DictionaryField {
+            name,
+            js_name: _,
+            ty,
+            is_js_value_ref_option_type: _,
+            required: _,
+            unstable,
+        } = self;
+
+        let unstable_attr = maybe_unstable_attr(*unstable);
+
+        let shim_name = self.shim_name();
+
+        quote! {
+            #unstable_attr
+            #cfg_features
+            fn #name(&self) -> #ty {
+                self.#shim_name()
+            }
+        }
+    }
+
+    fn generate_rust_setter_impl(
         &self,
         options: &Options,
         features: &BTreeSet<String>,
@@ -684,7 +744,7 @@ impl DictionaryField {
             &required_doc_string(options, features),
         );
 
-        let shim_name = self.shim_name();
+        let set_shim_name = self.set_shim_name();
 
         let shim_args = if self.is_js_value_ref_option_type {
             quote! { val.unwrap_or(&::wasm_bindgen::JsValue::NULL) }
@@ -698,7 +758,7 @@ impl DictionaryField {
             #doc_comment
             #unstable_docs
             pub fn #name(&mut self, val: #ty) -> &mut Self {
-                self.#shim_name(#shim_args);
+                self.#set_shim_name(#shim_args);
                 self
             }
         }
@@ -724,6 +784,10 @@ impl DictionaryField {
 
     fn shim_name(&self) -> Ident {
         format_ident!("{}_shim", self.name)
+    }
+
+    fn set_shim_name(&self) -> Ident {
+        format_ident!("set_{}_shim", self.name)
     }
 }
 
@@ -772,15 +836,20 @@ impl Dictionary {
             format!("The `{}` dictionary.", name),
             &get_features_doc(options, name.to_string()),
         );
-        let ctor_doc_comment = comment(
-            format!("Construct a new `{}`.", name),
-            &required_doc_string(options, &required_features),
-        );
 
         let (field_features, field_cfg_features): (Vec<_>, Vec<_>) = fields
             .iter()
             .map(|field| field.features(options, name.to_string()))
             .unzip();
+
+        let getter_trait_doc_comment = comment(
+            format!(
+                "The trait to access properties on the `{}` dictionary.",
+                name
+            ),
+            &get_features_doc(options, name.to_string()),
+        );
+        let getter_trait_name = format_ident!("{}Getters", name);
 
         let field_shims = fields
             .iter()
@@ -788,12 +857,32 @@ impl Dictionary {
             .map(|(field, cfg_features)| field.generate_rust_shim(name, cfg_features))
             .collect::<Vec<_>>();
 
-        let fields = fields
+        let getter_trait_fields = fields
             .iter()
             .zip(field_features.iter())
             .zip(field_cfg_features.iter())
             .map(|((field, features), cfg_features)| {
-                field.generate_rust_setter(options, features, cfg_features)
+                field.generate_rust_getter(options, features, cfg_features)
+            })
+            .collect::<Vec<_>>();
+
+        let getter_trait_impl_fields = fields
+            .iter()
+            .zip(field_cfg_features.iter())
+            .map(|(field, cfg_features)| field.generate_rust_getter_impl(cfg_features))
+            .collect::<Vec<_>>();
+
+        let ctor_doc_comment = comment(
+            format!("Construct a new `{}`.", name),
+            &required_doc_string(options, &required_features),
+        );
+
+        let setter_impl_fields = fields
+            .iter()
+            .zip(field_features.iter())
+            .zip(field_cfg_features.iter())
+            .map(|((field, features), cfg_features)| {
+                field.generate_rust_setter_impl(options, features, cfg_features)
             })
             .collect::<Vec<_>>();
 
@@ -816,6 +905,17 @@ impl Dictionary {
             }
 
             #unstable_attr
+            #getter_trait_doc_comment
+            pub trait #getter_trait_name {
+                #(#getter_trait_fields)*
+            }
+
+            #unstable_attr
+            impl #getter_trait_name for #name {
+                #(#getter_trait_impl_fields)*
+            }
+
+            #unstable_attr
             impl #name {
                 #cfg_features
                 #ctor_doc_comment
@@ -827,7 +927,7 @@ impl Dictionary {
                     ret
                 }
 
-                #(#fields)*
+                #(#setter_impl_fields)*
             }
         };
 

@@ -11,10 +11,38 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ClientRectsAndTexts`*"]
     pub type ClientRectsAndTexts;
     #[cfg(feature = "DomRectList")]
+    #[wasm_bindgen(method, getter = "rectList")]
+    fn rect_list_shim(this: &ClientRectsAndTexts) -> &DomRectList;
+    #[cfg(feature = "DomRectList")]
     #[wasm_bindgen(method, setter = "rectList")]
-    fn rect_list_shim(this: &ClientRectsAndTexts, val: &DomRectList);
+    fn set_rect_list_shim(this: &ClientRectsAndTexts, val: &DomRectList);
+    #[wasm_bindgen(method, getter = "textList")]
+    fn text_list_shim(this: &ClientRectsAndTexts) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "textList")]
-    fn text_list_shim(this: &ClientRectsAndTexts, val: &::wasm_bindgen::JsValue);
+    fn set_text_list_shim(this: &ClientRectsAndTexts, val: &::wasm_bindgen::JsValue);
+}
+#[doc = "The trait to access properties on the `ClientRectsAndTexts` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `ClientRectsAndTexts`*"]
+pub trait ClientRectsAndTextsGetters {
+    #[cfg(feature = "DomRectList")]
+    #[doc = "Get the `rectList` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ClientRectsAndTexts`, `DomRectList`*"]
+    fn rect_list(&self) -> &DomRectList;
+    #[doc = "Get the `textList` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ClientRectsAndTexts`*"]
+    fn text_list(&self) -> &::wasm_bindgen::JsValue;
+}
+impl ClientRectsAndTextsGetters for ClientRectsAndTexts {
+    #[cfg(feature = "DomRectList")]
+    fn rect_list(&self) -> &DomRectList {
+        self.rect_list_shim()
+    }
+    fn text_list(&self) -> &::wasm_bindgen::JsValue {
+        self.text_list_shim()
+    }
 }
 impl ClientRectsAndTexts {
     #[cfg(feature = "DomRectList")]
@@ -33,14 +61,14 @@ impl ClientRectsAndTexts {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ClientRectsAndTexts`, `DomRectList`*"]
     pub fn rect_list(&mut self, val: &DomRectList) -> &mut Self {
-        self.rect_list_shim(val);
+        self.set_rect_list_shim(val);
         self
     }
     #[doc = "Change the `textList` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ClientRectsAndTexts`*"]
     pub fn text_list(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.text_list_shim(val);
+        self.set_text_list_shim(val);
         self
     }
 }

@@ -10,14 +10,57 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
     pub type AnimationPropertyDetails;
+    #[wasm_bindgen(method, getter = "property")]
+    fn property_shim(this: &AnimationPropertyDetails) -> &str;
     #[wasm_bindgen(method, setter = "property")]
-    fn property_shim(this: &AnimationPropertyDetails, val: &str);
+    fn set_property_shim(this: &AnimationPropertyDetails, val: &str);
+    #[wasm_bindgen(method, getter = "runningOnCompositor")]
+    fn running_on_compositor_shim(this: &AnimationPropertyDetails) -> bool;
     #[wasm_bindgen(method, setter = "runningOnCompositor")]
-    fn running_on_compositor_shim(this: &AnimationPropertyDetails, val: bool);
+    fn set_running_on_compositor_shim(this: &AnimationPropertyDetails, val: bool);
+    #[wasm_bindgen(method, getter = "values")]
+    fn values_shim(this: &AnimationPropertyDetails) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "values")]
-    fn values_shim(this: &AnimationPropertyDetails, val: &::wasm_bindgen::JsValue);
+    fn set_values_shim(this: &AnimationPropertyDetails, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, getter = "warning")]
+    fn warning_shim(this: &AnimationPropertyDetails) -> &str;
     #[wasm_bindgen(method, setter = "warning")]
-    fn warning_shim(this: &AnimationPropertyDetails, val: &str);
+    fn set_warning_shim(this: &AnimationPropertyDetails, val: &str);
+}
+#[doc = "The trait to access properties on the `AnimationPropertyDetails` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
+pub trait AnimationPropertyDetailsGetters {
+    #[doc = "Get the `property` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
+    fn property(&self) -> &str;
+    #[doc = "Get the `runningOnCompositor` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
+    fn running_on_compositor(&self) -> bool;
+    #[doc = "Get the `values` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
+    fn values(&self) -> &::wasm_bindgen::JsValue;
+    #[doc = "Get the `warning` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
+    fn warning(&self) -> &str;
+}
+impl AnimationPropertyDetailsGetters for AnimationPropertyDetails {
+    fn property(&self) -> &str {
+        self.property_shim()
+    }
+    fn running_on_compositor(&self) -> bool {
+        self.running_on_compositor_shim()
+    }
+    fn values(&self) -> &::wasm_bindgen::JsValue {
+        self.values_shim()
+    }
+    fn warning(&self) -> &str {
+        self.warning_shim()
+    }
 }
 impl AnimationPropertyDetails {
     #[doc = "Construct a new `AnimationPropertyDetails`."]
@@ -39,28 +82,28 @@ impl AnimationPropertyDetails {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
     pub fn property(&mut self, val: &str) -> &mut Self {
-        self.property_shim(val);
+        self.set_property_shim(val);
         self
     }
     #[doc = "Change the `runningOnCompositor` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
     pub fn running_on_compositor(&mut self, val: bool) -> &mut Self {
-        self.running_on_compositor_shim(val);
+        self.set_running_on_compositor_shim(val);
         self
     }
     #[doc = "Change the `values` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
     pub fn values(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.values_shim(val);
+        self.set_values_shim(val);
         self
     }
     #[doc = "Change the `warning` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
     pub fn warning(&mut self, val: &str) -> &mut Self {
-        self.warning_shim(val);
+        self.set_warning_shim(val);
         self
     }
 }

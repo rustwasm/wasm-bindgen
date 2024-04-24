@@ -10,15 +10,61 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CheckerboardReport`*"]
     pub type CheckerboardReport;
+    #[wasm_bindgen(method, getter = "log")]
+    fn log_shim(this: &CheckerboardReport) -> &str;
     #[wasm_bindgen(method, setter = "log")]
-    fn log_shim(this: &CheckerboardReport, val: &str);
+    fn set_log_shim(this: &CheckerboardReport, val: &str);
+    #[cfg(feature = "CheckerboardReason")]
+    #[wasm_bindgen(method, getter = "reason")]
+    fn reason_shim(this: &CheckerboardReport) -> CheckerboardReason;
     #[cfg(feature = "CheckerboardReason")]
     #[wasm_bindgen(method, setter = "reason")]
-    fn reason_shim(this: &CheckerboardReport, val: CheckerboardReason);
+    fn set_reason_shim(this: &CheckerboardReport, val: CheckerboardReason);
+    #[wasm_bindgen(method, getter = "severity")]
+    fn severity_shim(this: &CheckerboardReport) -> u32;
     #[wasm_bindgen(method, setter = "severity")]
-    fn severity_shim(this: &CheckerboardReport, val: u32);
+    fn set_severity_shim(this: &CheckerboardReport, val: u32);
+    #[wasm_bindgen(method, getter = "timestamp")]
+    fn timestamp_shim(this: &CheckerboardReport) -> f64;
     #[wasm_bindgen(method, setter = "timestamp")]
-    fn timestamp_shim(this: &CheckerboardReport, val: f64);
+    fn set_timestamp_shim(this: &CheckerboardReport, val: f64);
+}
+#[doc = "The trait to access properties on the `CheckerboardReport` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `CheckerboardReport`*"]
+pub trait CheckerboardReportGetters {
+    #[doc = "Get the `log` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CheckerboardReport`*"]
+    fn log(&self) -> &str;
+    #[cfg(feature = "CheckerboardReason")]
+    #[doc = "Get the `reason` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CheckerboardReason`, `CheckerboardReport`*"]
+    fn reason(&self) -> CheckerboardReason;
+    #[doc = "Get the `severity` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CheckerboardReport`*"]
+    fn severity(&self) -> u32;
+    #[doc = "Get the `timestamp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CheckerboardReport`*"]
+    fn timestamp(&self) -> f64;
+}
+impl CheckerboardReportGetters for CheckerboardReport {
+    fn log(&self) -> &str {
+        self.log_shim()
+    }
+    #[cfg(feature = "CheckerboardReason")]
+    fn reason(&self) -> CheckerboardReason {
+        self.reason_shim()
+    }
+    fn severity(&self) -> u32 {
+        self.severity_shim()
+    }
+    fn timestamp(&self) -> f64 {
+        self.timestamp_shim()
+    }
 }
 impl CheckerboardReport {
     #[doc = "Construct a new `CheckerboardReport`."]
@@ -33,7 +79,7 @@ impl CheckerboardReport {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CheckerboardReport`*"]
     pub fn log(&mut self, val: &str) -> &mut Self {
-        self.log_shim(val);
+        self.set_log_shim(val);
         self
     }
     #[cfg(feature = "CheckerboardReason")]
@@ -41,21 +87,21 @@ impl CheckerboardReport {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CheckerboardReason`, `CheckerboardReport`*"]
     pub fn reason(&mut self, val: CheckerboardReason) -> &mut Self {
-        self.reason_shim(val);
+        self.set_reason_shim(val);
         self
     }
     #[doc = "Change the `severity` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CheckerboardReport`*"]
     pub fn severity(&mut self, val: u32) -> &mut Self {
-        self.severity_shim(val);
+        self.set_severity_shim(val);
         self
     }
     #[doc = "Change the `timestamp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CheckerboardReport`*"]
     pub fn timestamp(&mut self, val: f64) -> &mut Self {
-        self.timestamp_shim(val);
+        self.set_timestamp_shim(val);
         self
     }
 }

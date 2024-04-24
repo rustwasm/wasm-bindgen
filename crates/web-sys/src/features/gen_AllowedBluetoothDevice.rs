@@ -14,12 +14,63 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type AllowedBluetoothDevice;
+    #[wasm_bindgen(method, getter = "allowedServices")]
+    fn allowed_services_shim(this: &AllowedBluetoothDevice) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "allowedServices")]
-    fn allowed_services_shim(this: &AllowedBluetoothDevice, val: &::wasm_bindgen::JsValue);
+    fn set_allowed_services_shim(this: &AllowedBluetoothDevice, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, getter = "deviceId")]
+    fn device_id_shim(this: &AllowedBluetoothDevice) -> &str;
     #[wasm_bindgen(method, setter = "deviceId")]
-    fn device_id_shim(this: &AllowedBluetoothDevice, val: &str);
+    fn set_device_id_shim(this: &AllowedBluetoothDevice, val: &str);
+    #[wasm_bindgen(method, getter = "mayUseGATT")]
+    fn may_use_gatt_shim(this: &AllowedBluetoothDevice) -> bool;
     #[wasm_bindgen(method, setter = "mayUseGATT")]
-    fn may_use_gatt_shim(this: &AllowedBluetoothDevice, val: bool);
+    fn set_may_use_gatt_shim(this: &AllowedBluetoothDevice, val: bool);
+}
+#[cfg(web_sys_unstable_apis)]
+#[doc = "The trait to access properties on the `AllowedBluetoothDevice` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `AllowedBluetoothDevice`*"]
+pub trait AllowedBluetoothDeviceGetters {
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `allowedServices` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AllowedBluetoothDevice`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn allowed_services(&self) -> &::wasm_bindgen::JsValue;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `deviceId` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AllowedBluetoothDevice`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn device_id(&self) -> &str;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `mayUseGATT` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AllowedBluetoothDevice`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn may_use_gatt(&self) -> bool;
+}
+#[cfg(web_sys_unstable_apis)]
+impl AllowedBluetoothDeviceGetters for AllowedBluetoothDevice {
+    #[cfg(web_sys_unstable_apis)]
+    fn allowed_services(&self) -> &::wasm_bindgen::JsValue {
+        self.allowed_services_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    fn device_id(&self) -> &str {
+        self.device_id_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    fn may_use_gatt(&self) -> bool {
+        self.may_use_gatt_shim()
+    }
 }
 #[cfg(web_sys_unstable_apis)]
 impl AllowedBluetoothDevice {
@@ -49,7 +100,7 @@ impl AllowedBluetoothDevice {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn allowed_services(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.allowed_services_shim(val);
+        self.set_allowed_services_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -60,7 +111,7 @@ impl AllowedBluetoothDevice {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn device_id(&mut self, val: &str) -> &mut Self {
-        self.device_id_shim(val);
+        self.set_device_id_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -71,7 +122,7 @@ impl AllowedBluetoothDevice {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn may_use_gatt(&mut self, val: bool) -> &mut Self {
-        self.may_use_gatt_shim(val);
+        self.set_may_use_gatt_shim(val);
         self
     }
 }

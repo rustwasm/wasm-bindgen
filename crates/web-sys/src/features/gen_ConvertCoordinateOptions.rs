@@ -11,11 +11,42 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ConvertCoordinateOptions`*"]
     pub type ConvertCoordinateOptions;
     #[cfg(feature = "CssBoxType")]
+    #[wasm_bindgen(method, getter = "fromBox")]
+    fn from_box_shim(this: &ConvertCoordinateOptions) -> CssBoxType;
+    #[cfg(feature = "CssBoxType")]
     #[wasm_bindgen(method, setter = "fromBox")]
-    fn from_box_shim(this: &ConvertCoordinateOptions, val: CssBoxType);
+    fn set_from_box_shim(this: &ConvertCoordinateOptions, val: CssBoxType);
+    #[cfg(feature = "CssBoxType")]
+    #[wasm_bindgen(method, getter = "toBox")]
+    fn to_box_shim(this: &ConvertCoordinateOptions) -> CssBoxType;
     #[cfg(feature = "CssBoxType")]
     #[wasm_bindgen(method, setter = "toBox")]
-    fn to_box_shim(this: &ConvertCoordinateOptions, val: CssBoxType);
+    fn set_to_box_shim(this: &ConvertCoordinateOptions, val: CssBoxType);
+}
+#[doc = "The trait to access properties on the `ConvertCoordinateOptions` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `ConvertCoordinateOptions`*"]
+pub trait ConvertCoordinateOptionsGetters {
+    #[cfg(feature = "CssBoxType")]
+    #[doc = "Get the `fromBox` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConvertCoordinateOptions`, `CssBoxType`*"]
+    fn from_box(&self) -> CssBoxType;
+    #[cfg(feature = "CssBoxType")]
+    #[doc = "Get the `toBox` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConvertCoordinateOptions`, `CssBoxType`*"]
+    fn to_box(&self) -> CssBoxType;
+}
+impl ConvertCoordinateOptionsGetters for ConvertCoordinateOptions {
+    #[cfg(feature = "CssBoxType")]
+    fn from_box(&self) -> CssBoxType {
+        self.from_box_shim()
+    }
+    #[cfg(feature = "CssBoxType")]
+    fn to_box(&self) -> CssBoxType {
+        self.to_box_shim()
+    }
 }
 impl ConvertCoordinateOptions {
     #[doc = "Construct a new `ConvertCoordinateOptions`."]
@@ -31,7 +62,7 @@ impl ConvertCoordinateOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConvertCoordinateOptions`, `CssBoxType`*"]
     pub fn from_box(&mut self, val: CssBoxType) -> &mut Self {
-        self.from_box_shim(val);
+        self.set_from_box_shim(val);
         self
     }
     #[cfg(feature = "CssBoxType")]
@@ -39,7 +70,7 @@ impl ConvertCoordinateOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConvertCoordinateOptions`, `CssBoxType`*"]
     pub fn to_box(&mut self, val: CssBoxType) -> &mut Self {
-        self.to_box_shim(val);
+        self.set_to_box_shim(val);
         self
     }
 }

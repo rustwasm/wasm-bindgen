@@ -11,10 +11,38 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IdbOpenDbOptions`*"]
     pub type IdbOpenDbOptions;
     #[cfg(feature = "StorageType")]
+    #[wasm_bindgen(method, getter = "storage")]
+    fn storage_shim(this: &IdbOpenDbOptions) -> StorageType;
+    #[cfg(feature = "StorageType")]
     #[wasm_bindgen(method, setter = "storage")]
-    fn storage_shim(this: &IdbOpenDbOptions, val: StorageType);
+    fn set_storage_shim(this: &IdbOpenDbOptions, val: StorageType);
+    #[wasm_bindgen(method, getter = "version")]
+    fn version_shim(this: &IdbOpenDbOptions) -> f64;
     #[wasm_bindgen(method, setter = "version")]
-    fn version_shim(this: &IdbOpenDbOptions, val: f64);
+    fn set_version_shim(this: &IdbOpenDbOptions, val: f64);
+}
+#[doc = "The trait to access properties on the `IdbOpenDbOptions` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `IdbOpenDbOptions`*"]
+pub trait IdbOpenDbOptionsGetters {
+    #[cfg(feature = "StorageType")]
+    #[doc = "Get the `storage` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbOpenDbOptions`, `StorageType`*"]
+    fn storage(&self) -> StorageType;
+    #[doc = "Get the `version` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbOpenDbOptions`*"]
+    fn version(&self) -> f64;
+}
+impl IdbOpenDbOptionsGetters for IdbOpenDbOptions {
+    #[cfg(feature = "StorageType")]
+    fn storage(&self) -> StorageType {
+        self.storage_shim()
+    }
+    fn version(&self) -> f64 {
+        self.version_shim()
+    }
 }
 impl IdbOpenDbOptions {
     #[doc = "Construct a new `IdbOpenDbOptions`."]
@@ -30,14 +58,14 @@ impl IdbOpenDbOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbOpenDbOptions`, `StorageType`*"]
     pub fn storage(&mut self, val: StorageType) -> &mut Self {
-        self.storage_shim(val);
+        self.set_storage_shim(val);
         self
     }
     #[doc = "Change the `version` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbOpenDbOptions`*"]
     pub fn version(&mut self, val: f64) -> &mut Self {
-        self.version_shim(val);
+        self.set_version_shim(val);
         self
     }
 }

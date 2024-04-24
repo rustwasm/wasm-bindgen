@@ -10,8 +10,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcCertificateExpiration`*"]
     pub type RtcCertificateExpiration;
+    #[wasm_bindgen(method, getter = "expires")]
+    fn expires_shim(this: &RtcCertificateExpiration) -> f64;
     #[wasm_bindgen(method, setter = "expires")]
-    fn expires_shim(this: &RtcCertificateExpiration, val: f64);
+    fn set_expires_shim(this: &RtcCertificateExpiration, val: f64);
+}
+#[doc = "The trait to access properties on the `RtcCertificateExpiration` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `RtcCertificateExpiration`*"]
+pub trait RtcCertificateExpirationGetters {
+    #[doc = "Get the `expires` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcCertificateExpiration`*"]
+    fn expires(&self) -> f64;
+}
+impl RtcCertificateExpirationGetters for RtcCertificateExpiration {
+    fn expires(&self) -> f64 {
+        self.expires_shim()
+    }
 }
 impl RtcCertificateExpiration {
     #[doc = "Construct a new `RtcCertificateExpiration`."]
@@ -26,7 +42,7 @@ impl RtcCertificateExpiration {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcCertificateExpiration`*"]
     pub fn expires(&mut self, val: f64) -> &mut Self {
-        self.expires_shim(val);
+        self.set_expires_shim(val);
         self
     }
 }

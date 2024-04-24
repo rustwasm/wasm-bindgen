@@ -10,8 +10,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PeriodicWaveConstraints`*"]
     pub type PeriodicWaveConstraints;
+    #[wasm_bindgen(method, getter = "disableNormalization")]
+    fn disable_normalization_shim(this: &PeriodicWaveConstraints) -> bool;
     #[wasm_bindgen(method, setter = "disableNormalization")]
-    fn disable_normalization_shim(this: &PeriodicWaveConstraints, val: bool);
+    fn set_disable_normalization_shim(this: &PeriodicWaveConstraints, val: bool);
+}
+#[doc = "The trait to access properties on the `PeriodicWaveConstraints` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `PeriodicWaveConstraints`*"]
+pub trait PeriodicWaveConstraintsGetters {
+    #[doc = "Get the `disableNormalization` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PeriodicWaveConstraints`*"]
+    fn disable_normalization(&self) -> bool;
+}
+impl PeriodicWaveConstraintsGetters for PeriodicWaveConstraints {
+    fn disable_normalization(&self) -> bool {
+        self.disable_normalization_shim()
+    }
 }
 impl PeriodicWaveConstraints {
     #[doc = "Construct a new `PeriodicWaveConstraints`."]
@@ -26,7 +42,7 @@ impl PeriodicWaveConstraints {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PeriodicWaveConstraints`*"]
     pub fn disable_normalization(&mut self, val: bool) -> &mut Self {
-        self.disable_normalization_shim(val);
+        self.set_disable_normalization_shim(val);
         self
     }
 }

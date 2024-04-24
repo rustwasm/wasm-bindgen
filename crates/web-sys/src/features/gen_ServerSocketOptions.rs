@@ -11,8 +11,27 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ServerSocketOptions`*"]
     pub type ServerSocketOptions;
     #[cfg(feature = "TcpSocketBinaryType")]
+    #[wasm_bindgen(method, getter = "binaryType")]
+    fn binary_type_shim(this: &ServerSocketOptions) -> TcpSocketBinaryType;
+    #[cfg(feature = "TcpSocketBinaryType")]
     #[wasm_bindgen(method, setter = "binaryType")]
-    fn binary_type_shim(this: &ServerSocketOptions, val: TcpSocketBinaryType);
+    fn set_binary_type_shim(this: &ServerSocketOptions, val: TcpSocketBinaryType);
+}
+#[doc = "The trait to access properties on the `ServerSocketOptions` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `ServerSocketOptions`*"]
+pub trait ServerSocketOptionsGetters {
+    #[cfg(feature = "TcpSocketBinaryType")]
+    #[doc = "Get the `binaryType` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ServerSocketOptions`, `TcpSocketBinaryType`*"]
+    fn binary_type(&self) -> TcpSocketBinaryType;
+}
+impl ServerSocketOptionsGetters for ServerSocketOptions {
+    #[cfg(feature = "TcpSocketBinaryType")]
+    fn binary_type(&self) -> TcpSocketBinaryType {
+        self.binary_type_shim()
+    }
 }
 impl ServerSocketOptions {
     #[doc = "Construct a new `ServerSocketOptions`."]
@@ -28,7 +47,7 @@ impl ServerSocketOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServerSocketOptions`, `TcpSocketBinaryType`*"]
     pub fn binary_type(&mut self, val: TcpSocketBinaryType) -> &mut Self {
-        self.binary_type_shim(val);
+        self.set_binary_type_shim(val);
         self
     }
 }

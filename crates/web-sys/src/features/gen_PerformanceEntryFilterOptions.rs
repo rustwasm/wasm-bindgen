@@ -10,12 +10,46 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryFilterOptions`*"]
     pub type PerformanceEntryFilterOptions;
+    #[wasm_bindgen(method, getter = "entryType")]
+    fn entry_type_shim(this: &PerformanceEntryFilterOptions) -> &str;
     #[wasm_bindgen(method, setter = "entryType")]
-    fn entry_type_shim(this: &PerformanceEntryFilterOptions, val: &str);
+    fn set_entry_type_shim(this: &PerformanceEntryFilterOptions, val: &str);
+    #[wasm_bindgen(method, getter = "initiatorType")]
+    fn initiator_type_shim(this: &PerformanceEntryFilterOptions) -> &str;
     #[wasm_bindgen(method, setter = "initiatorType")]
-    fn initiator_type_shim(this: &PerformanceEntryFilterOptions, val: &str);
+    fn set_initiator_type_shim(this: &PerformanceEntryFilterOptions, val: &str);
+    #[wasm_bindgen(method, getter = "name")]
+    fn name_shim(this: &PerformanceEntryFilterOptions) -> &str;
     #[wasm_bindgen(method, setter = "name")]
-    fn name_shim(this: &PerformanceEntryFilterOptions, val: &str);
+    fn set_name_shim(this: &PerformanceEntryFilterOptions, val: &str);
+}
+#[doc = "The trait to access properties on the `PerformanceEntryFilterOptions` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `PerformanceEntryFilterOptions`*"]
+pub trait PerformanceEntryFilterOptionsGetters {
+    #[doc = "Get the `entryType` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryFilterOptions`*"]
+    fn entry_type(&self) -> &str;
+    #[doc = "Get the `initiatorType` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryFilterOptions`*"]
+    fn initiator_type(&self) -> &str;
+    #[doc = "Get the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryFilterOptions`*"]
+    fn name(&self) -> &str;
+}
+impl PerformanceEntryFilterOptionsGetters for PerformanceEntryFilterOptions {
+    fn entry_type(&self) -> &str {
+        self.entry_type_shim()
+    }
+    fn initiator_type(&self) -> &str {
+        self.initiator_type_shim()
+    }
+    fn name(&self) -> &str {
+        self.name_shim()
+    }
 }
 impl PerformanceEntryFilterOptions {
     #[doc = "Construct a new `PerformanceEntryFilterOptions`."]
@@ -30,21 +64,21 @@ impl PerformanceEntryFilterOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryFilterOptions`*"]
     pub fn entry_type(&mut self, val: &str) -> &mut Self {
-        self.entry_type_shim(val);
+        self.set_entry_type_shim(val);
         self
     }
     #[doc = "Change the `initiatorType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryFilterOptions`*"]
     pub fn initiator_type(&mut self, val: &str) -> &mut Self {
-        self.initiator_type_shim(val);
+        self.set_initiator_type_shim(val);
         self
     }
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryFilterOptions`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        self.name_shim(val);
+        self.set_name_shim(val);
         self
     }
 }

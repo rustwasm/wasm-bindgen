@@ -14,20 +14,127 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type HidCollectionInfo;
+    #[wasm_bindgen(method, getter = "children")]
+    fn children_shim(this: &HidCollectionInfo) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "children")]
-    fn children_shim(this: &HidCollectionInfo, val: &::wasm_bindgen::JsValue);
+    fn set_children_shim(this: &HidCollectionInfo, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, getter = "featureReports")]
+    fn feature_reports_shim(this: &HidCollectionInfo) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "featureReports")]
-    fn feature_reports_shim(this: &HidCollectionInfo, val: &::wasm_bindgen::JsValue);
+    fn set_feature_reports_shim(this: &HidCollectionInfo, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, getter = "inputReports")]
+    fn input_reports_shim(this: &HidCollectionInfo) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "inputReports")]
-    fn input_reports_shim(this: &HidCollectionInfo, val: &::wasm_bindgen::JsValue);
+    fn set_input_reports_shim(this: &HidCollectionInfo, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, getter = "outputReports")]
+    fn output_reports_shim(this: &HidCollectionInfo) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "outputReports")]
-    fn output_reports_shim(this: &HidCollectionInfo, val: &::wasm_bindgen::JsValue);
+    fn set_output_reports_shim(this: &HidCollectionInfo, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, getter = "type")]
+    fn type__shim(this: &HidCollectionInfo) -> u8;
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &HidCollectionInfo, val: u8);
+    fn set_type__shim(this: &HidCollectionInfo, val: u8);
+    #[wasm_bindgen(method, getter = "usage")]
+    fn usage_shim(this: &HidCollectionInfo) -> u16;
     #[wasm_bindgen(method, setter = "usage")]
-    fn usage_shim(this: &HidCollectionInfo, val: u16);
+    fn set_usage_shim(this: &HidCollectionInfo, val: u16);
+    #[wasm_bindgen(method, getter = "usagePage")]
+    fn usage_page_shim(this: &HidCollectionInfo) -> u16;
     #[wasm_bindgen(method, setter = "usagePage")]
-    fn usage_page_shim(this: &HidCollectionInfo, val: u16);
+    fn set_usage_page_shim(this: &HidCollectionInfo, val: u16);
+}
+#[cfg(web_sys_unstable_apis)]
+#[doc = "The trait to access properties on the `HidCollectionInfo` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `HidCollectionInfo`*"]
+pub trait HidCollectionInfoGetters {
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `children` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HidCollectionInfo`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn children(&self) -> &::wasm_bindgen::JsValue;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `featureReports` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HidCollectionInfo`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn feature_reports(&self) -> &::wasm_bindgen::JsValue;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `inputReports` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HidCollectionInfo`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn input_reports(&self) -> &::wasm_bindgen::JsValue;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `outputReports` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HidCollectionInfo`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn output_reports(&self) -> &::wasm_bindgen::JsValue;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HidCollectionInfo`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn type_(&self) -> u8;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `usage` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HidCollectionInfo`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn usage(&self) -> u16;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `usagePage` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HidCollectionInfo`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn usage_page(&self) -> u16;
+}
+#[cfg(web_sys_unstable_apis)]
+impl HidCollectionInfoGetters for HidCollectionInfo {
+    #[cfg(web_sys_unstable_apis)]
+    fn children(&self) -> &::wasm_bindgen::JsValue {
+        self.children_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    fn feature_reports(&self) -> &::wasm_bindgen::JsValue {
+        self.feature_reports_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    fn input_reports(&self) -> &::wasm_bindgen::JsValue {
+        self.input_reports_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    fn output_reports(&self) -> &::wasm_bindgen::JsValue {
+        self.output_reports_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    fn type_(&self) -> u8 {
+        self.type__shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    fn usage(&self) -> u16 {
+        self.usage_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    fn usage_page(&self) -> u16 {
+        self.usage_page_shim()
+    }
 }
 #[cfg(web_sys_unstable_apis)]
 impl HidCollectionInfo {
@@ -50,7 +157,7 @@ impl HidCollectionInfo {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn children(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.children_shim(val);
+        self.set_children_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -61,7 +168,7 @@ impl HidCollectionInfo {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn feature_reports(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.feature_reports_shim(val);
+        self.set_feature_reports_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -72,7 +179,7 @@ impl HidCollectionInfo {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn input_reports(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.input_reports_shim(val);
+        self.set_input_reports_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -83,7 +190,7 @@ impl HidCollectionInfo {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn output_reports(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.output_reports_shim(val);
+        self.set_output_reports_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -94,7 +201,7 @@ impl HidCollectionInfo {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn type_(&mut self, val: u8) -> &mut Self {
-        self.type__shim(val);
+        self.set_type__shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -105,7 +212,7 @@ impl HidCollectionInfo {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn usage(&mut self, val: u16) -> &mut Self {
-        self.usage_shim(val);
+        self.set_usage_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -116,7 +223,7 @@ impl HidCollectionInfo {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn usage_page(&mut self, val: u16) -> &mut Self {
-        self.usage_page_shim(val);
+        self.set_usage_page_shim(val);
         self
     }
 }

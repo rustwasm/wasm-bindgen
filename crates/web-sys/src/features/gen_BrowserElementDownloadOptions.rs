@@ -10,10 +10,35 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementDownloadOptions`*"]
     pub type BrowserElementDownloadOptions;
+    #[wasm_bindgen(method, getter = "filename")]
+    fn filename_shim(this: &BrowserElementDownloadOptions) -> Option<&str>;
     #[wasm_bindgen(method, setter = "filename")]
-    fn filename_shim(this: &BrowserElementDownloadOptions, val: Option<&str>);
+    fn set_filename_shim(this: &BrowserElementDownloadOptions, val: Option<&str>);
+    #[wasm_bindgen(method, getter = "referrer")]
+    fn referrer_shim(this: &BrowserElementDownloadOptions) -> Option<&str>;
     #[wasm_bindgen(method, setter = "referrer")]
-    fn referrer_shim(this: &BrowserElementDownloadOptions, val: Option<&str>);
+    fn set_referrer_shim(this: &BrowserElementDownloadOptions, val: Option<&str>);
+}
+#[doc = "The trait to access properties on the `BrowserElementDownloadOptions` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `BrowserElementDownloadOptions`*"]
+pub trait BrowserElementDownloadOptionsGetters {
+    #[doc = "Get the `filename` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BrowserElementDownloadOptions`*"]
+    fn filename(&self) -> Option<&str>;
+    #[doc = "Get the `referrer` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BrowserElementDownloadOptions`*"]
+    fn referrer(&self) -> Option<&str>;
+}
+impl BrowserElementDownloadOptionsGetters for BrowserElementDownloadOptions {
+    fn filename(&self) -> Option<&str> {
+        self.filename_shim()
+    }
+    fn referrer(&self) -> Option<&str> {
+        self.referrer_shim()
+    }
 }
 impl BrowserElementDownloadOptions {
     #[doc = "Construct a new `BrowserElementDownloadOptions`."]
@@ -28,14 +53,14 @@ impl BrowserElementDownloadOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementDownloadOptions`*"]
     pub fn filename(&mut self, val: Option<&str>) -> &mut Self {
-        self.filename_shim(val);
+        self.set_filename_shim(val);
         self
     }
     #[doc = "Change the `referrer` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementDownloadOptions`*"]
     pub fn referrer(&mut self, val: Option<&str>) -> &mut Self {
-        self.referrer_shim(val);
+        self.set_referrer_shim(val);
         self
     }
 }

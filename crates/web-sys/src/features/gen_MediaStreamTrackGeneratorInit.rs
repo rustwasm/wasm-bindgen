@@ -14,8 +14,31 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type MediaStreamTrackGeneratorInit;
+    #[wasm_bindgen(method, getter = "kind")]
+    fn kind_shim(this: &MediaStreamTrackGeneratorInit) -> &str;
     #[wasm_bindgen(method, setter = "kind")]
-    fn kind_shim(this: &MediaStreamTrackGeneratorInit, val: &str);
+    fn set_kind_shim(this: &MediaStreamTrackGeneratorInit, val: &str);
+}
+#[cfg(web_sys_unstable_apis)]
+#[doc = "The trait to access properties on the `MediaStreamTrackGeneratorInit` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `MediaStreamTrackGeneratorInit`*"]
+pub trait MediaStreamTrackGeneratorInitGetters {
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `kind` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrackGeneratorInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn kind(&self) -> &str;
+}
+#[cfg(web_sys_unstable_apis)]
+impl MediaStreamTrackGeneratorInitGetters for MediaStreamTrackGeneratorInit {
+    #[cfg(web_sys_unstable_apis)]
+    fn kind(&self) -> &str {
+        self.kind_shim()
+    }
 }
 #[cfg(web_sys_unstable_apis)]
 impl MediaStreamTrackGeneratorInit {
@@ -39,7 +62,7 @@ impl MediaStreamTrackGeneratorInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn kind(&mut self, val: &str) -> &mut Self {
-        self.kind_shim(val);
+        self.set_kind_shim(val);
         self
     }
 }

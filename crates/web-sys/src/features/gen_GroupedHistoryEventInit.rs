@@ -10,15 +10,61 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GroupedHistoryEventInit`*"]
     pub type GroupedHistoryEventInit;
+    #[wasm_bindgen(method, getter = "bubbles")]
+    fn bubbles_shim(this: &GroupedHistoryEventInit) -> bool;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &GroupedHistoryEventInit, val: bool);
+    fn set_bubbles_shim(this: &GroupedHistoryEventInit, val: bool);
+    #[wasm_bindgen(method, getter = "cancelable")]
+    fn cancelable_shim(this: &GroupedHistoryEventInit) -> bool;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &GroupedHistoryEventInit, val: bool);
+    fn set_cancelable_shim(this: &GroupedHistoryEventInit, val: bool);
+    #[wasm_bindgen(method, getter = "composed")]
+    fn composed_shim(this: &GroupedHistoryEventInit) -> bool;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &GroupedHistoryEventInit, val: bool);
+    fn set_composed_shim(this: &GroupedHistoryEventInit, val: bool);
+    #[cfg(feature = "Element")]
+    #[wasm_bindgen(method, getter = "otherBrowser")]
+    fn other_browser_shim(this: &GroupedHistoryEventInit) -> Option<&Element>;
     #[cfg(feature = "Element")]
     #[wasm_bindgen(method, setter = "otherBrowser")]
-    fn other_browser_shim(this: &GroupedHistoryEventInit, val: Option<&Element>);
+    fn set_other_browser_shim(this: &GroupedHistoryEventInit, val: Option<&Element>);
+}
+#[doc = "The trait to access properties on the `GroupedHistoryEventInit` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `GroupedHistoryEventInit`*"]
+pub trait GroupedHistoryEventInitGetters {
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GroupedHistoryEventInit`*"]
+    fn bubbles(&self) -> bool;
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GroupedHistoryEventInit`*"]
+    fn cancelable(&self) -> bool;
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GroupedHistoryEventInit`*"]
+    fn composed(&self) -> bool;
+    #[cfg(feature = "Element")]
+    #[doc = "Get the `otherBrowser` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Element`, `GroupedHistoryEventInit`*"]
+    fn other_browser(&self) -> Option<&Element>;
+}
+impl GroupedHistoryEventInitGetters for GroupedHistoryEventInit {
+    fn bubbles(&self) -> bool {
+        self.bubbles_shim()
+    }
+    fn cancelable(&self) -> bool {
+        self.cancelable_shim()
+    }
+    fn composed(&self) -> bool {
+        self.composed_shim()
+    }
+    #[cfg(feature = "Element")]
+    fn other_browser(&self) -> Option<&Element> {
+        self.other_browser_shim()
+    }
 }
 impl GroupedHistoryEventInit {
     #[doc = "Construct a new `GroupedHistoryEventInit`."]
@@ -33,21 +79,21 @@ impl GroupedHistoryEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GroupedHistoryEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles_shim(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GroupedHistoryEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable_shim(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GroupedHistoryEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed_shim(val);
         self
     }
     #[cfg(feature = "Element")]
@@ -55,7 +101,7 @@ impl GroupedHistoryEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`, `GroupedHistoryEventInit`*"]
     pub fn other_browser(&mut self, val: Option<&Element>) -> &mut Self {
-        self.other_browser_shim(val);
+        self.set_other_browser_shim(val);
         self
     }
 }

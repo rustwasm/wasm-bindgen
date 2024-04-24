@@ -14,35 +14,230 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type KeyframeAnimationOptions;
+    #[wasm_bindgen(method, getter = "delay")]
+    fn delay_shim(this: &KeyframeAnimationOptions) -> f64;
     #[wasm_bindgen(method, setter = "delay")]
-    fn delay_shim(this: &KeyframeAnimationOptions, val: f64);
+    fn set_delay_shim(this: &KeyframeAnimationOptions, val: f64);
+    #[cfg(feature = "PlaybackDirection")]
+    #[wasm_bindgen(method, getter = "direction")]
+    fn direction_shim(this: &KeyframeAnimationOptions) -> PlaybackDirection;
     #[cfg(feature = "PlaybackDirection")]
     #[wasm_bindgen(method, setter = "direction")]
-    fn direction_shim(this: &KeyframeAnimationOptions, val: PlaybackDirection);
+    fn set_direction_shim(this: &KeyframeAnimationOptions, val: PlaybackDirection);
+    #[wasm_bindgen(method, getter = "duration")]
+    fn duration_shim(this: &KeyframeAnimationOptions) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "duration")]
-    fn duration_shim(this: &KeyframeAnimationOptions, val: &::wasm_bindgen::JsValue);
+    fn set_duration_shim(this: &KeyframeAnimationOptions, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, getter = "easing")]
+    fn easing_shim(this: &KeyframeAnimationOptions) -> &str;
     #[wasm_bindgen(method, setter = "easing")]
-    fn easing_shim(this: &KeyframeAnimationOptions, val: &str);
+    fn set_easing_shim(this: &KeyframeAnimationOptions, val: &str);
+    #[wasm_bindgen(method, getter = "endDelay")]
+    fn end_delay_shim(this: &KeyframeAnimationOptions) -> f64;
     #[wasm_bindgen(method, setter = "endDelay")]
-    fn end_delay_shim(this: &KeyframeAnimationOptions, val: f64);
+    fn set_end_delay_shim(this: &KeyframeAnimationOptions, val: f64);
+    #[cfg(feature = "FillMode")]
+    #[wasm_bindgen(method, getter = "fill")]
+    fn fill_shim(this: &KeyframeAnimationOptions) -> FillMode;
     #[cfg(feature = "FillMode")]
     #[wasm_bindgen(method, setter = "fill")]
-    fn fill_shim(this: &KeyframeAnimationOptions, val: FillMode);
+    fn set_fill_shim(this: &KeyframeAnimationOptions, val: FillMode);
+    #[wasm_bindgen(method, getter = "iterationStart")]
+    fn iteration_start_shim(this: &KeyframeAnimationOptions) -> f64;
     #[wasm_bindgen(method, setter = "iterationStart")]
-    fn iteration_start_shim(this: &KeyframeAnimationOptions, val: f64);
+    fn set_iteration_start_shim(this: &KeyframeAnimationOptions, val: f64);
+    #[wasm_bindgen(method, getter = "iterations")]
+    fn iterations_shim(this: &KeyframeAnimationOptions) -> f64;
     #[wasm_bindgen(method, setter = "iterations")]
-    fn iterations_shim(this: &KeyframeAnimationOptions, val: f64);
+    fn set_iterations_shim(this: &KeyframeAnimationOptions, val: f64);
+    #[cfg(feature = "CompositeOperation")]
+    #[wasm_bindgen(method, getter = "composite")]
+    fn composite_shim(this: &KeyframeAnimationOptions) -> CompositeOperation;
     #[cfg(feature = "CompositeOperation")]
     #[wasm_bindgen(method, setter = "composite")]
-    fn composite_shim(this: &KeyframeAnimationOptions, val: CompositeOperation);
+    fn set_composite_shim(this: &KeyframeAnimationOptions, val: CompositeOperation);
+    #[cfg(feature = "IterationCompositeOperation")]
+    #[wasm_bindgen(method, getter = "iterationComposite")]
+    fn iteration_composite_shim(this: &KeyframeAnimationOptions) -> IterationCompositeOperation;
     #[cfg(feature = "IterationCompositeOperation")]
     #[wasm_bindgen(method, setter = "iterationComposite")]
-    fn iteration_composite_shim(this: &KeyframeAnimationOptions, val: IterationCompositeOperation);
+    fn set_iteration_composite_shim(
+        this: &KeyframeAnimationOptions,
+        val: IterationCompositeOperation,
+    );
+    #[wasm_bindgen(method, getter = "id")]
+    fn id_shim(this: &KeyframeAnimationOptions) -> &str;
     #[wasm_bindgen(method, setter = "id")]
-    fn id_shim(this: &KeyframeAnimationOptions, val: &str);
+    fn set_id_shim(this: &KeyframeAnimationOptions, val: &str);
+    #[cfg(feature = "AnimationTimeline")]
+    #[wasm_bindgen(method, getter = "timeline")]
+    fn timeline_shim(this: &KeyframeAnimationOptions) -> Option<&AnimationTimeline>;
     #[cfg(feature = "AnimationTimeline")]
     #[wasm_bindgen(method, setter = "timeline")]
-    fn timeline_shim(this: &KeyframeAnimationOptions, val: Option<&AnimationTimeline>);
+    fn set_timeline_shim(this: &KeyframeAnimationOptions, val: Option<&AnimationTimeline>);
+}
+#[cfg(web_sys_unstable_apis)]
+#[doc = "The trait to access properties on the `KeyframeAnimationOptions` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `KeyframeAnimationOptions`*"]
+pub trait KeyframeAnimationOptionsGetters {
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `delay` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `KeyframeAnimationOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn delay(&self) -> f64;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "PlaybackDirection")]
+    #[doc = "Get the `direction` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `KeyframeAnimationOptions`, `PlaybackDirection`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn direction(&self) -> PlaybackDirection;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `duration` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `KeyframeAnimationOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn duration(&self) -> &::wasm_bindgen::JsValue;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `easing` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `KeyframeAnimationOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn easing(&self) -> &str;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `endDelay` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `KeyframeAnimationOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn end_delay(&self) -> f64;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "FillMode")]
+    #[doc = "Get the `fill` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FillMode`, `KeyframeAnimationOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn fill(&self) -> FillMode;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `iterationStart` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `KeyframeAnimationOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn iteration_start(&self) -> f64;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `iterations` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `KeyframeAnimationOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn iterations(&self) -> f64;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "CompositeOperation")]
+    #[doc = "Get the `composite` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CompositeOperation`, `KeyframeAnimationOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn composite(&self) -> CompositeOperation;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "IterationCompositeOperation")]
+    #[doc = "Get the `iterationComposite` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IterationCompositeOperation`, `KeyframeAnimationOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn iteration_composite(&self) -> IterationCompositeOperation;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `id` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `KeyframeAnimationOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn id(&self) -> &str;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "AnimationTimeline")]
+    #[doc = "Get the `timeline` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationTimeline`, `KeyframeAnimationOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn timeline(&self) -> Option<&AnimationTimeline>;
+}
+#[cfg(web_sys_unstable_apis)]
+impl KeyframeAnimationOptionsGetters for KeyframeAnimationOptions {
+    #[cfg(web_sys_unstable_apis)]
+    fn delay(&self) -> f64 {
+        self.delay_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "PlaybackDirection")]
+    fn direction(&self) -> PlaybackDirection {
+        self.direction_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    fn duration(&self) -> &::wasm_bindgen::JsValue {
+        self.duration_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    fn easing(&self) -> &str {
+        self.easing_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    fn end_delay(&self) -> f64 {
+        self.end_delay_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "FillMode")]
+    fn fill(&self) -> FillMode {
+        self.fill_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    fn iteration_start(&self) -> f64 {
+        self.iteration_start_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    fn iterations(&self) -> f64 {
+        self.iterations_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "CompositeOperation")]
+    fn composite(&self) -> CompositeOperation {
+        self.composite_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "IterationCompositeOperation")]
+    fn iteration_composite(&self) -> IterationCompositeOperation {
+        self.iteration_composite_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    fn id(&self) -> &str {
+        self.id_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "AnimationTimeline")]
+    fn timeline(&self) -> Option<&AnimationTimeline> {
+        self.timeline_shim()
+    }
 }
 #[cfg(web_sys_unstable_apis)]
 impl KeyframeAnimationOptions {
@@ -65,7 +260,7 @@ impl KeyframeAnimationOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn delay(&mut self, val: f64) -> &mut Self {
-        self.delay_shim(val);
+        self.set_delay_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -77,7 +272,7 @@ impl KeyframeAnimationOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn direction(&mut self, val: PlaybackDirection) -> &mut Self {
-        self.direction_shim(val);
+        self.set_direction_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -88,7 +283,7 @@ impl KeyframeAnimationOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn duration(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.duration_shim(val);
+        self.set_duration_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -99,7 +294,7 @@ impl KeyframeAnimationOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn easing(&mut self, val: &str) -> &mut Self {
-        self.easing_shim(val);
+        self.set_easing_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -110,7 +305,7 @@ impl KeyframeAnimationOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn end_delay(&mut self, val: f64) -> &mut Self {
-        self.end_delay_shim(val);
+        self.set_end_delay_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -122,7 +317,7 @@ impl KeyframeAnimationOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn fill(&mut self, val: FillMode) -> &mut Self {
-        self.fill_shim(val);
+        self.set_fill_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -133,7 +328,7 @@ impl KeyframeAnimationOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn iteration_start(&mut self, val: f64) -> &mut Self {
-        self.iteration_start_shim(val);
+        self.set_iteration_start_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -144,7 +339,7 @@ impl KeyframeAnimationOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn iterations(&mut self, val: f64) -> &mut Self {
-        self.iterations_shim(val);
+        self.set_iterations_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -156,7 +351,7 @@ impl KeyframeAnimationOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn composite(&mut self, val: CompositeOperation) -> &mut Self {
-        self.composite_shim(val);
+        self.set_composite_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -168,7 +363,7 @@ impl KeyframeAnimationOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn iteration_composite(&mut self, val: IterationCompositeOperation) -> &mut Self {
-        self.iteration_composite_shim(val);
+        self.set_iteration_composite_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -179,7 +374,7 @@ impl KeyframeAnimationOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn id(&mut self, val: &str) -> &mut Self {
-        self.id_shim(val);
+        self.set_id_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -191,7 +386,7 @@ impl KeyframeAnimationOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn timeline(&mut self, val: Option<&AnimationTimeline>) -> &mut Self {
-        self.timeline_shim(val);
+        self.set_timeline_shim(val);
         self
     }
 }

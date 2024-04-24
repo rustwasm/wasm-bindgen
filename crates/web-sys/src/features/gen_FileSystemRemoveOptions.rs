@@ -10,8 +10,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemRemoveOptions`*"]
     pub type FileSystemRemoveOptions;
+    #[wasm_bindgen(method, getter = "recursive")]
+    fn recursive_shim(this: &FileSystemRemoveOptions) -> bool;
     #[wasm_bindgen(method, setter = "recursive")]
-    fn recursive_shim(this: &FileSystemRemoveOptions, val: bool);
+    fn set_recursive_shim(this: &FileSystemRemoveOptions, val: bool);
+}
+#[doc = "The trait to access properties on the `FileSystemRemoveOptions` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `FileSystemRemoveOptions`*"]
+pub trait FileSystemRemoveOptionsGetters {
+    #[doc = "Get the `recursive` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemRemoveOptions`*"]
+    fn recursive(&self) -> bool;
+}
+impl FileSystemRemoveOptionsGetters for FileSystemRemoveOptions {
+    fn recursive(&self) -> bool {
+        self.recursive_shim()
+    }
 }
 impl FileSystemRemoveOptions {
     #[doc = "Construct a new `FileSystemRemoveOptions`."]
@@ -26,7 +42,7 @@ impl FileSystemRemoveOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemRemoveOptions`*"]
     pub fn recursive(&mut self, val: bool) -> &mut Self {
-        self.recursive_shim(val);
+        self.set_recursive_shim(val);
         self
     }
 }

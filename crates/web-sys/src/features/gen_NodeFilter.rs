@@ -10,8 +10,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NodeFilter`*"]
     pub type NodeFilter;
+    #[wasm_bindgen(method, getter = "acceptNode")]
+    fn accept_node_shim(this: &NodeFilter) -> &::js_sys::Function;
     #[wasm_bindgen(method, setter = "acceptNode")]
-    fn accept_node_shim(this: &NodeFilter, val: &::js_sys::Function);
+    fn set_accept_node_shim(this: &NodeFilter, val: &::js_sys::Function);
+}
+#[doc = "The trait to access properties on the `NodeFilter` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `NodeFilter`*"]
+pub trait NodeFilterGetters {
+    #[doc = "Get the `acceptNode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `NodeFilter`*"]
+    fn accept_node(&self) -> &::js_sys::Function;
+}
+impl NodeFilterGetters for NodeFilter {
+    fn accept_node(&self) -> &::js_sys::Function {
+        self.accept_node_shim()
+    }
 }
 impl NodeFilter {
     #[doc = "Construct a new `NodeFilter`."]
@@ -26,7 +42,7 @@ impl NodeFilter {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NodeFilter`*"]
     pub fn accept_node(&mut self, val: &::js_sys::Function) -> &mut Self {
-        self.accept_node_shim(val);
+        self.set_accept_node_shim(val);
         self
     }
 }

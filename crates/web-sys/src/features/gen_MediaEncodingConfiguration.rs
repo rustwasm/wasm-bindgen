@@ -11,14 +11,57 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `MediaEncodingConfiguration`*"]
     pub type MediaEncodingConfiguration;
     #[cfg(feature = "AudioConfiguration")]
+    #[wasm_bindgen(method, getter = "audio")]
+    fn audio_shim(this: &MediaEncodingConfiguration) -> &AudioConfiguration;
+    #[cfg(feature = "AudioConfiguration")]
     #[wasm_bindgen(method, setter = "audio")]
-    fn audio_shim(this: &MediaEncodingConfiguration, val: &AudioConfiguration);
+    fn set_audio_shim(this: &MediaEncodingConfiguration, val: &AudioConfiguration);
+    #[cfg(feature = "VideoConfiguration")]
+    #[wasm_bindgen(method, getter = "video")]
+    fn video_shim(this: &MediaEncodingConfiguration) -> &VideoConfiguration;
     #[cfg(feature = "VideoConfiguration")]
     #[wasm_bindgen(method, setter = "video")]
-    fn video_shim(this: &MediaEncodingConfiguration, val: &VideoConfiguration);
+    fn set_video_shim(this: &MediaEncodingConfiguration, val: &VideoConfiguration);
+    #[cfg(feature = "MediaEncodingType")]
+    #[wasm_bindgen(method, getter = "type")]
+    fn type__shim(this: &MediaEncodingConfiguration) -> MediaEncodingType;
     #[cfg(feature = "MediaEncodingType")]
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &MediaEncodingConfiguration, val: MediaEncodingType);
+    fn set_type__shim(this: &MediaEncodingConfiguration, val: MediaEncodingType);
+}
+#[doc = "The trait to access properties on the `MediaEncodingConfiguration` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `MediaEncodingConfiguration`*"]
+pub trait MediaEncodingConfigurationGetters {
+    #[cfg(feature = "AudioConfiguration")]
+    #[doc = "Get the `audio` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`, `MediaEncodingConfiguration`*"]
+    fn audio(&self) -> &AudioConfiguration;
+    #[cfg(feature = "VideoConfiguration")]
+    #[doc = "Get the `video` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaEncodingConfiguration`, `VideoConfiguration`*"]
+    fn video(&self) -> &VideoConfiguration;
+    #[cfg(feature = "MediaEncodingType")]
+    #[doc = "Get the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaEncodingConfiguration`, `MediaEncodingType`*"]
+    fn type_(&self) -> MediaEncodingType;
+}
+impl MediaEncodingConfigurationGetters for MediaEncodingConfiguration {
+    #[cfg(feature = "AudioConfiguration")]
+    fn audio(&self) -> &AudioConfiguration {
+        self.audio_shim()
+    }
+    #[cfg(feature = "VideoConfiguration")]
+    fn video(&self) -> &VideoConfiguration {
+        self.video_shim()
+    }
+    #[cfg(feature = "MediaEncodingType")]
+    fn type_(&self) -> MediaEncodingType {
+        self.type__shim()
+    }
 }
 impl MediaEncodingConfiguration {
     #[cfg(feature = "MediaEncodingType")]
@@ -36,7 +79,7 @@ impl MediaEncodingConfiguration {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`, `MediaEncodingConfiguration`*"]
     pub fn audio(&mut self, val: &AudioConfiguration) -> &mut Self {
-        self.audio_shim(val);
+        self.set_audio_shim(val);
         self
     }
     #[cfg(feature = "VideoConfiguration")]
@@ -44,7 +87,7 @@ impl MediaEncodingConfiguration {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaEncodingConfiguration`, `VideoConfiguration`*"]
     pub fn video(&mut self, val: &VideoConfiguration) -> &mut Self {
-        self.video_shim(val);
+        self.set_video_shim(val);
         self
     }
     #[cfg(feature = "MediaEncodingType")]
@@ -52,7 +95,7 @@ impl MediaEncodingConfiguration {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaEncodingConfiguration`, `MediaEncodingType`*"]
     pub fn type_(&mut self, val: MediaEncodingType) -> &mut Self {
-        self.type__shim(val);
+        self.set_type__shim(val);
         self
     }
 }

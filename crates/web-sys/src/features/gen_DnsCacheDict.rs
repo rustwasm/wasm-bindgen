@@ -10,8 +10,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsCacheDict`*"]
     pub type DnsCacheDict;
+    #[wasm_bindgen(method, getter = "entries")]
+    fn entries_shim(this: &DnsCacheDict) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "entries")]
-    fn entries_shim(this: &DnsCacheDict, val: &::wasm_bindgen::JsValue);
+    fn set_entries_shim(this: &DnsCacheDict, val: &::wasm_bindgen::JsValue);
+}
+#[doc = "The trait to access properties on the `DnsCacheDict` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `DnsCacheDict`*"]
+pub trait DnsCacheDictGetters {
+    #[doc = "Get the `entries` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DnsCacheDict`*"]
+    fn entries(&self) -> &::wasm_bindgen::JsValue;
+}
+impl DnsCacheDictGetters for DnsCacheDict {
+    fn entries(&self) -> &::wasm_bindgen::JsValue {
+        self.entries_shim()
+    }
 }
 impl DnsCacheDict {
     #[doc = "Construct a new `DnsCacheDict`."]
@@ -26,7 +42,7 @@ impl DnsCacheDict {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsCacheDict`*"]
     pub fn entries(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.entries_shim(val);
+        self.set_entries_shim(val);
         self
     }
 }

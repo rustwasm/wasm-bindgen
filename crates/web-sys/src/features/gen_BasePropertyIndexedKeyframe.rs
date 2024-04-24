@@ -10,12 +10,46 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasePropertyIndexedKeyframe`*"]
     pub type BasePropertyIndexedKeyframe;
+    #[wasm_bindgen(method, getter = "composite")]
+    fn composite_shim(this: &BasePropertyIndexedKeyframe) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "composite")]
-    fn composite_shim(this: &BasePropertyIndexedKeyframe, val: &::wasm_bindgen::JsValue);
+    fn set_composite_shim(this: &BasePropertyIndexedKeyframe, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, getter = "easing")]
+    fn easing_shim(this: &BasePropertyIndexedKeyframe) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "easing")]
-    fn easing_shim(this: &BasePropertyIndexedKeyframe, val: &::wasm_bindgen::JsValue);
+    fn set_easing_shim(this: &BasePropertyIndexedKeyframe, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, getter = "offset")]
+    fn offset_shim(this: &BasePropertyIndexedKeyframe) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "offset")]
-    fn offset_shim(this: &BasePropertyIndexedKeyframe, val: &::wasm_bindgen::JsValue);
+    fn set_offset_shim(this: &BasePropertyIndexedKeyframe, val: &::wasm_bindgen::JsValue);
+}
+#[doc = "The trait to access properties on the `BasePropertyIndexedKeyframe` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `BasePropertyIndexedKeyframe`*"]
+pub trait BasePropertyIndexedKeyframeGetters {
+    #[doc = "Get the `composite` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BasePropertyIndexedKeyframe`*"]
+    fn composite(&self) -> &::wasm_bindgen::JsValue;
+    #[doc = "Get the `easing` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BasePropertyIndexedKeyframe`*"]
+    fn easing(&self) -> &::wasm_bindgen::JsValue;
+    #[doc = "Get the `offset` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BasePropertyIndexedKeyframe`*"]
+    fn offset(&self) -> &::wasm_bindgen::JsValue;
+}
+impl BasePropertyIndexedKeyframeGetters for BasePropertyIndexedKeyframe {
+    fn composite(&self) -> &::wasm_bindgen::JsValue {
+        self.composite_shim()
+    }
+    fn easing(&self) -> &::wasm_bindgen::JsValue {
+        self.easing_shim()
+    }
+    fn offset(&self) -> &::wasm_bindgen::JsValue {
+        self.offset_shim()
+    }
 }
 impl BasePropertyIndexedKeyframe {
     #[doc = "Construct a new `BasePropertyIndexedKeyframe`."]
@@ -30,21 +64,21 @@ impl BasePropertyIndexedKeyframe {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasePropertyIndexedKeyframe`*"]
     pub fn composite(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.composite_shim(val);
+        self.set_composite_shim(val);
         self
     }
     #[doc = "Change the `easing` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasePropertyIndexedKeyframe`*"]
     pub fn easing(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.easing_shim(val);
+        self.set_easing_shim(val);
         self
     }
     #[doc = "Change the `offset` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasePropertyIndexedKeyframe`*"]
     pub fn offset(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.offset_shim(val);
+        self.set_offset_shim(val);
         self
     }
 }

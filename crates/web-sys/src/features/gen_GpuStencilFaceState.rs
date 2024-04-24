@@ -15,17 +15,94 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuStencilFaceState;
     #[cfg(feature = "GpuCompareFunction")]
+    #[wasm_bindgen(method, getter = "compare")]
+    fn compare_shim(this: &GpuStencilFaceState) -> GpuCompareFunction;
+    #[cfg(feature = "GpuCompareFunction")]
     #[wasm_bindgen(method, setter = "compare")]
-    fn compare_shim(this: &GpuStencilFaceState, val: GpuCompareFunction);
+    fn set_compare_shim(this: &GpuStencilFaceState, val: GpuCompareFunction);
+    #[cfg(feature = "GpuStencilOperation")]
+    #[wasm_bindgen(method, getter = "depthFailOp")]
+    fn depth_fail_op_shim(this: &GpuStencilFaceState) -> GpuStencilOperation;
     #[cfg(feature = "GpuStencilOperation")]
     #[wasm_bindgen(method, setter = "depthFailOp")]
-    fn depth_fail_op_shim(this: &GpuStencilFaceState, val: GpuStencilOperation);
+    fn set_depth_fail_op_shim(this: &GpuStencilFaceState, val: GpuStencilOperation);
+    #[cfg(feature = "GpuStencilOperation")]
+    #[wasm_bindgen(method, getter = "failOp")]
+    fn fail_op_shim(this: &GpuStencilFaceState) -> GpuStencilOperation;
     #[cfg(feature = "GpuStencilOperation")]
     #[wasm_bindgen(method, setter = "failOp")]
-    fn fail_op_shim(this: &GpuStencilFaceState, val: GpuStencilOperation);
+    fn set_fail_op_shim(this: &GpuStencilFaceState, val: GpuStencilOperation);
+    #[cfg(feature = "GpuStencilOperation")]
+    #[wasm_bindgen(method, getter = "passOp")]
+    fn pass_op_shim(this: &GpuStencilFaceState) -> GpuStencilOperation;
     #[cfg(feature = "GpuStencilOperation")]
     #[wasm_bindgen(method, setter = "passOp")]
-    fn pass_op_shim(this: &GpuStencilFaceState, val: GpuStencilOperation);
+    fn set_pass_op_shim(this: &GpuStencilFaceState, val: GpuStencilOperation);
+}
+#[cfg(web_sys_unstable_apis)]
+#[doc = "The trait to access properties on the `GpuStencilFaceState` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `GpuStencilFaceState`*"]
+pub trait GpuStencilFaceStateGetters {
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuCompareFunction")]
+    #[doc = "Get the `compare` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCompareFunction`, `GpuStencilFaceState`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn compare(&self) -> GpuCompareFunction;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuStencilOperation")]
+    #[doc = "Get the `depthFailOp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuStencilFaceState`, `GpuStencilOperation`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn depth_fail_op(&self) -> GpuStencilOperation;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuStencilOperation")]
+    #[doc = "Get the `failOp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuStencilFaceState`, `GpuStencilOperation`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn fail_op(&self) -> GpuStencilOperation;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuStencilOperation")]
+    #[doc = "Get the `passOp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuStencilFaceState`, `GpuStencilOperation`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn pass_op(&self) -> GpuStencilOperation;
+}
+#[cfg(web_sys_unstable_apis)]
+impl GpuStencilFaceStateGetters for GpuStencilFaceState {
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuCompareFunction")]
+    fn compare(&self) -> GpuCompareFunction {
+        self.compare_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuStencilOperation")]
+    fn depth_fail_op(&self) -> GpuStencilOperation {
+        self.depth_fail_op_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuStencilOperation")]
+    fn fail_op(&self) -> GpuStencilOperation {
+        self.fail_op_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuStencilOperation")]
+    fn pass_op(&self) -> GpuStencilOperation {
+        self.pass_op_shim()
+    }
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuStencilFaceState {
@@ -49,7 +126,7 @@ impl GpuStencilFaceState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn compare(&mut self, val: GpuCompareFunction) -> &mut Self {
-        self.compare_shim(val);
+        self.set_compare_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -61,7 +138,7 @@ impl GpuStencilFaceState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn depth_fail_op(&mut self, val: GpuStencilOperation) -> &mut Self {
-        self.depth_fail_op_shim(val);
+        self.set_depth_fail_op_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -73,7 +150,7 @@ impl GpuStencilFaceState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn fail_op(&mut self, val: GpuStencilOperation) -> &mut Self {
-        self.fail_op_shim(val);
+        self.set_fail_op_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -85,7 +162,7 @@ impl GpuStencilFaceState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn pass_op(&mut self, val: GpuStencilOperation) -> &mut Self {
-        self.pass_op_shim(val);
+        self.set_pass_op_shim(val);
         self
     }
 }

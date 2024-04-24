@@ -10,8 +10,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyIdsInitData`*"]
     pub type KeyIdsInitData;
+    #[wasm_bindgen(method, getter = "kids")]
+    fn kids_shim(this: &KeyIdsInitData) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "kids")]
-    fn kids_shim(this: &KeyIdsInitData, val: &::wasm_bindgen::JsValue);
+    fn set_kids_shim(this: &KeyIdsInitData, val: &::wasm_bindgen::JsValue);
+}
+#[doc = "The trait to access properties on the `KeyIdsInitData` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `KeyIdsInitData`*"]
+pub trait KeyIdsInitDataGetters {
+    #[doc = "Get the `kids` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `KeyIdsInitData`*"]
+    fn kids(&self) -> &::wasm_bindgen::JsValue;
+}
+impl KeyIdsInitDataGetters for KeyIdsInitData {
+    fn kids(&self) -> &::wasm_bindgen::JsValue {
+        self.kids_shim()
+    }
 }
 impl KeyIdsInitData {
     #[doc = "Construct a new `KeyIdsInitData`."]
@@ -27,7 +43,7 @@ impl KeyIdsInitData {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyIdsInitData`*"]
     pub fn kids(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.kids_shim(val);
+        self.set_kids_shim(val);
         self
     }
 }

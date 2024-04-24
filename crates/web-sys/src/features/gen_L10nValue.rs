@@ -10,10 +10,35 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nValue`*"]
     pub type L10nValue;
+    #[wasm_bindgen(method, getter = "attributes")]
+    fn attributes_shim(this: &L10nValue) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "attributes")]
-    fn attributes_shim(this: &L10nValue, val: &::wasm_bindgen::JsValue);
+    fn set_attributes_shim(this: &L10nValue, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, getter = "value")]
+    fn value_shim(this: &L10nValue) -> Option<&str>;
     #[wasm_bindgen(method, setter = "value")]
-    fn value_shim(this: &L10nValue, val: Option<&str>);
+    fn set_value_shim(this: &L10nValue, val: Option<&str>);
+}
+#[doc = "The trait to access properties on the `L10nValue` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `L10nValue`*"]
+pub trait L10nValueGetters {
+    #[doc = "Get the `attributes` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `L10nValue`*"]
+    fn attributes(&self) -> Option<&::wasm_bindgen::JsValue>;
+    #[doc = "Get the `value` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `L10nValue`*"]
+    fn value(&self) -> Option<&str>;
+}
+impl L10nValueGetters for L10nValue {
+    fn attributes(&self) -> Option<&::wasm_bindgen::JsValue> {
+        self.attributes_shim()
+    }
+    fn value(&self) -> Option<&str> {
+        self.value_shim()
+    }
 }
 impl L10nValue {
     #[doc = "Construct a new `L10nValue`."]
@@ -28,14 +53,14 @@ impl L10nValue {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nValue`*"]
     pub fn attributes(&mut self, val: Option<&::wasm_bindgen::JsValue>) -> &mut Self {
-        self.attributes_shim(val.unwrap_or(&::wasm_bindgen::JsValue::NULL));
+        self.set_attributes_shim(val.unwrap_or(&::wasm_bindgen::JsValue::NULL));
         self
     }
     #[doc = "Change the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nValue`*"]
     pub fn value(&mut self, val: Option<&str>) -> &mut Self {
-        self.value_shim(val);
+        self.set_value_shim(val);
         self
     }
 }

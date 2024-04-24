@@ -10,14 +10,57 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UserProximityEventInit`*"]
     pub type UserProximityEventInit;
+    #[wasm_bindgen(method, getter = "bubbles")]
+    fn bubbles_shim(this: &UserProximityEventInit) -> bool;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &UserProximityEventInit, val: bool);
+    fn set_bubbles_shim(this: &UserProximityEventInit, val: bool);
+    #[wasm_bindgen(method, getter = "cancelable")]
+    fn cancelable_shim(this: &UserProximityEventInit) -> bool;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &UserProximityEventInit, val: bool);
+    fn set_cancelable_shim(this: &UserProximityEventInit, val: bool);
+    #[wasm_bindgen(method, getter = "composed")]
+    fn composed_shim(this: &UserProximityEventInit) -> bool;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &UserProximityEventInit, val: bool);
+    fn set_composed_shim(this: &UserProximityEventInit, val: bool);
+    #[wasm_bindgen(method, getter = "near")]
+    fn near_shim(this: &UserProximityEventInit) -> bool;
     #[wasm_bindgen(method, setter = "near")]
-    fn near_shim(this: &UserProximityEventInit, val: bool);
+    fn set_near_shim(this: &UserProximityEventInit, val: bool);
+}
+#[doc = "The trait to access properties on the `UserProximityEventInit` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `UserProximityEventInit`*"]
+pub trait UserProximityEventInitGetters {
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UserProximityEventInit`*"]
+    fn bubbles(&self) -> bool;
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UserProximityEventInit`*"]
+    fn cancelable(&self) -> bool;
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UserProximityEventInit`*"]
+    fn composed(&self) -> bool;
+    #[doc = "Get the `near` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UserProximityEventInit`*"]
+    fn near(&self) -> bool;
+}
+impl UserProximityEventInitGetters for UserProximityEventInit {
+    fn bubbles(&self) -> bool {
+        self.bubbles_shim()
+    }
+    fn cancelable(&self) -> bool {
+        self.cancelable_shim()
+    }
+    fn composed(&self) -> bool {
+        self.composed_shim()
+    }
+    fn near(&self) -> bool {
+        self.near_shim()
+    }
 }
 impl UserProximityEventInit {
     #[doc = "Construct a new `UserProximityEventInit`."]
@@ -32,28 +75,28 @@ impl UserProximityEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UserProximityEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles_shim(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UserProximityEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable_shim(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UserProximityEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed_shim(val);
         self
     }
     #[doc = "Change the `near` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UserProximityEventInit`*"]
     pub fn near(&mut self, val: bool) -> &mut Self {
-        self.near_shim(val);
+        self.set_near_shim(val);
         self
     }
 }

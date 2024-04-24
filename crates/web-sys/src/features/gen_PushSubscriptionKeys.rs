@@ -10,10 +10,35 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionKeys`*"]
     pub type PushSubscriptionKeys;
+    #[wasm_bindgen(method, getter = "auth")]
+    fn auth_shim(this: &PushSubscriptionKeys) -> &str;
     #[wasm_bindgen(method, setter = "auth")]
-    fn auth_shim(this: &PushSubscriptionKeys, val: &str);
+    fn set_auth_shim(this: &PushSubscriptionKeys, val: &str);
+    #[wasm_bindgen(method, getter = "p256dh")]
+    fn p256dh_shim(this: &PushSubscriptionKeys) -> &str;
     #[wasm_bindgen(method, setter = "p256dh")]
-    fn p256dh_shim(this: &PushSubscriptionKeys, val: &str);
+    fn set_p256dh_shim(this: &PushSubscriptionKeys, val: &str);
+}
+#[doc = "The trait to access properties on the `PushSubscriptionKeys` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `PushSubscriptionKeys`*"]
+pub trait PushSubscriptionKeysGetters {
+    #[doc = "Get the `auth` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionKeys`*"]
+    fn auth(&self) -> &str;
+    #[doc = "Get the `p256dh` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionKeys`*"]
+    fn p256dh(&self) -> &str;
+}
+impl PushSubscriptionKeysGetters for PushSubscriptionKeys {
+    fn auth(&self) -> &str {
+        self.auth_shim()
+    }
+    fn p256dh(&self) -> &str {
+        self.p256dh_shim()
+    }
 }
 impl PushSubscriptionKeys {
     #[doc = "Construct a new `PushSubscriptionKeys`."]
@@ -28,14 +53,14 @@ impl PushSubscriptionKeys {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionKeys`*"]
     pub fn auth(&mut self, val: &str) -> &mut Self {
-        self.auth_shim(val);
+        self.set_auth_shim(val);
         self
     }
     #[doc = "Change the `p256dh` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionKeys`*"]
     pub fn p256dh(&mut self, val: &str) -> &mut Self {
-        self.p256dh_shim(val);
+        self.set_p256dh_shim(val);
         self
     }
 }

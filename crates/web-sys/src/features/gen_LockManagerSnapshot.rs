@@ -14,10 +14,47 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type LockManagerSnapshot;
+    #[wasm_bindgen(method, getter = "held")]
+    fn held_shim(this: &LockManagerSnapshot) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "held")]
-    fn held_shim(this: &LockManagerSnapshot, val: &::wasm_bindgen::JsValue);
+    fn set_held_shim(this: &LockManagerSnapshot, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, getter = "pending")]
+    fn pending_shim(this: &LockManagerSnapshot) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "pending")]
-    fn pending_shim(this: &LockManagerSnapshot, val: &::wasm_bindgen::JsValue);
+    fn set_pending_shim(this: &LockManagerSnapshot, val: &::wasm_bindgen::JsValue);
+}
+#[cfg(web_sys_unstable_apis)]
+#[doc = "The trait to access properties on the `LockManagerSnapshot` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `LockManagerSnapshot`*"]
+pub trait LockManagerSnapshotGetters {
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `held` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `LockManagerSnapshot`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn held(&self) -> &::wasm_bindgen::JsValue;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `pending` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `LockManagerSnapshot`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn pending(&self) -> &::wasm_bindgen::JsValue;
+}
+#[cfg(web_sys_unstable_apis)]
+impl LockManagerSnapshotGetters for LockManagerSnapshot {
+    #[cfg(web_sys_unstable_apis)]
+    fn held(&self) -> &::wasm_bindgen::JsValue {
+        self.held_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    fn pending(&self) -> &::wasm_bindgen::JsValue {
+        self.pending_shim()
+    }
 }
 #[cfg(web_sys_unstable_apis)]
 impl LockManagerSnapshot {
@@ -40,7 +77,7 @@ impl LockManagerSnapshot {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn held(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.held_shim(val);
+        self.set_held_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -51,7 +88,7 @@ impl LockManagerSnapshot {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn pending(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.pending_shim(val);
+        self.set_pending_shim(val);
         self
     }
 }

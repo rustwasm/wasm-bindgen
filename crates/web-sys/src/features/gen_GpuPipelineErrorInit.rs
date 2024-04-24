@@ -15,8 +15,34 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuPipelineErrorInit;
     #[cfg(feature = "GpuPipelineErrorReason")]
+    #[wasm_bindgen(method, getter = "reason")]
+    fn reason_shim(this: &GpuPipelineErrorInit) -> GpuPipelineErrorReason;
+    #[cfg(feature = "GpuPipelineErrorReason")]
     #[wasm_bindgen(method, setter = "reason")]
-    fn reason_shim(this: &GpuPipelineErrorInit, val: GpuPipelineErrorReason);
+    fn set_reason_shim(this: &GpuPipelineErrorInit, val: GpuPipelineErrorReason);
+}
+#[cfg(web_sys_unstable_apis)]
+#[doc = "The trait to access properties on the `GpuPipelineErrorInit` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `GpuPipelineErrorInit`*"]
+pub trait GpuPipelineErrorInitGetters {
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuPipelineErrorReason")]
+    #[doc = "Get the `reason` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuPipelineErrorInit`, `GpuPipelineErrorReason`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn reason(&self) -> GpuPipelineErrorReason;
+}
+#[cfg(web_sys_unstable_apis)]
+impl GpuPipelineErrorInitGetters for GpuPipelineErrorInit {
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuPipelineErrorReason")]
+    fn reason(&self) -> GpuPipelineErrorReason {
+        self.reason_shim()
+    }
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuPipelineErrorInit {
@@ -42,7 +68,7 @@ impl GpuPipelineErrorInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn reason(&mut self, val: GpuPipelineErrorReason) -> &mut Self {
-        self.reason_shim(val);
+        self.set_reason_shim(val);
         self
     }
 }

@@ -11,6 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `FetchReadableStreamReadDataArray`*"]
     pub type FetchReadableStreamReadDataArray;
 }
+#[doc = "The trait to access properties on the `FetchReadableStreamReadDataArray` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `FetchReadableStreamReadDataArray`*"]
+pub trait FetchReadableStreamReadDataArrayGetters {}
+impl FetchReadableStreamReadDataArrayGetters for FetchReadableStreamReadDataArray {}
 impl FetchReadableStreamReadDataArray {
     #[doc = "Construct a new `FetchReadableStreamReadDataArray`."]
     #[doc = ""]

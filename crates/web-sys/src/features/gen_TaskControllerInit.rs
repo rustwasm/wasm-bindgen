@@ -15,8 +15,34 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type TaskControllerInit;
     #[cfg(feature = "TaskPriority")]
+    #[wasm_bindgen(method, getter = "priority")]
+    fn priority_shim(this: &TaskControllerInit) -> TaskPriority;
+    #[cfg(feature = "TaskPriority")]
     #[wasm_bindgen(method, setter = "priority")]
-    fn priority_shim(this: &TaskControllerInit, val: TaskPriority);
+    fn set_priority_shim(this: &TaskControllerInit, val: TaskPriority);
+}
+#[cfg(web_sys_unstable_apis)]
+#[doc = "The trait to access properties on the `TaskControllerInit` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `TaskControllerInit`*"]
+pub trait TaskControllerInitGetters {
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "TaskPriority")]
+    #[doc = "Get the `priority` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TaskControllerInit`, `TaskPriority`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn priority(&self) -> TaskPriority;
+}
+#[cfg(web_sys_unstable_apis)]
+impl TaskControllerInitGetters for TaskControllerInit {
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "TaskPriority")]
+    fn priority(&self) -> TaskPriority {
+        self.priority_shim()
+    }
 }
 #[cfg(web_sys_unstable_apis)]
 impl TaskControllerInit {
@@ -40,7 +66,7 @@ impl TaskControllerInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn priority(&mut self, val: TaskPriority) -> &mut Self {
-        self.priority_shim(val);
+        self.set_priority_shim(val);
         self
     }
 }

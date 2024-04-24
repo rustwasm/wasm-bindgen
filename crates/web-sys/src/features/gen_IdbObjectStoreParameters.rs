@@ -10,10 +10,35 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbObjectStoreParameters`*"]
     pub type IdbObjectStoreParameters;
+    #[wasm_bindgen(method, getter = "autoIncrement")]
+    fn auto_increment_shim(this: &IdbObjectStoreParameters) -> bool;
     #[wasm_bindgen(method, setter = "autoIncrement")]
-    fn auto_increment_shim(this: &IdbObjectStoreParameters, val: bool);
+    fn set_auto_increment_shim(this: &IdbObjectStoreParameters, val: bool);
+    #[wasm_bindgen(method, getter = "keyPath")]
+    fn key_path_shim(this: &IdbObjectStoreParameters) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "keyPath")]
-    fn key_path_shim(this: &IdbObjectStoreParameters, val: &::wasm_bindgen::JsValue);
+    fn set_key_path_shim(this: &IdbObjectStoreParameters, val: &::wasm_bindgen::JsValue);
+}
+#[doc = "The trait to access properties on the `IdbObjectStoreParameters` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `IdbObjectStoreParameters`*"]
+pub trait IdbObjectStoreParametersGetters {
+    #[doc = "Get the `autoIncrement` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbObjectStoreParameters`*"]
+    fn auto_increment(&self) -> bool;
+    #[doc = "Get the `keyPath` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbObjectStoreParameters`*"]
+    fn key_path(&self) -> Option<&::wasm_bindgen::JsValue>;
+}
+impl IdbObjectStoreParametersGetters for IdbObjectStoreParameters {
+    fn auto_increment(&self) -> bool {
+        self.auto_increment_shim()
+    }
+    fn key_path(&self) -> Option<&::wasm_bindgen::JsValue> {
+        self.key_path_shim()
+    }
 }
 impl IdbObjectStoreParameters {
     #[doc = "Construct a new `IdbObjectStoreParameters`."]
@@ -28,14 +53,14 @@ impl IdbObjectStoreParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbObjectStoreParameters`*"]
     pub fn auto_increment(&mut self, val: bool) -> &mut Self {
-        self.auto_increment_shim(val);
+        self.set_auto_increment_shim(val);
         self
     }
     #[doc = "Change the `keyPath` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbObjectStoreParameters`*"]
     pub fn key_path(&mut self, val: Option<&::wasm_bindgen::JsValue>) -> &mut Self {
-        self.key_path_shim(val.unwrap_or(&::wasm_bindgen::JsValue::NULL));
+        self.set_key_path_shim(val.unwrap_or(&::wasm_bindgen::JsValue::NULL));
         self
     }
 }

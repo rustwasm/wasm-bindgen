@@ -10,10 +10,35 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NativeOsFileReadOptions`*"]
     pub type NativeOsFileReadOptions;
+    #[wasm_bindgen(method, getter = "bytes")]
+    fn bytes_shim(this: &NativeOsFileReadOptions) -> Option<f64>;
     #[wasm_bindgen(method, setter = "bytes")]
-    fn bytes_shim(this: &NativeOsFileReadOptions, val: Option<f64>);
+    fn set_bytes_shim(this: &NativeOsFileReadOptions, val: Option<f64>);
+    #[wasm_bindgen(method, getter = "encoding")]
+    fn encoding_shim(this: &NativeOsFileReadOptions) -> Option<&str>;
     #[wasm_bindgen(method, setter = "encoding")]
-    fn encoding_shim(this: &NativeOsFileReadOptions, val: Option<&str>);
+    fn set_encoding_shim(this: &NativeOsFileReadOptions, val: Option<&str>);
+}
+#[doc = "The trait to access properties on the `NativeOsFileReadOptions` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `NativeOsFileReadOptions`*"]
+pub trait NativeOsFileReadOptionsGetters {
+    #[doc = "Get the `bytes` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `NativeOsFileReadOptions`*"]
+    fn bytes(&self) -> Option<f64>;
+    #[doc = "Get the `encoding` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `NativeOsFileReadOptions`*"]
+    fn encoding(&self) -> Option<&str>;
+}
+impl NativeOsFileReadOptionsGetters for NativeOsFileReadOptions {
+    fn bytes(&self) -> Option<f64> {
+        self.bytes_shim()
+    }
+    fn encoding(&self) -> Option<&str> {
+        self.encoding_shim()
+    }
 }
 impl NativeOsFileReadOptions {
     #[doc = "Construct a new `NativeOsFileReadOptions`."]
@@ -28,14 +53,14 @@ impl NativeOsFileReadOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NativeOsFileReadOptions`*"]
     pub fn bytes(&mut self, val: Option<f64>) -> &mut Self {
-        self.bytes_shim(val);
+        self.set_bytes_shim(val);
         self
     }
     #[doc = "Change the `encoding` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NativeOsFileReadOptions`*"]
     pub fn encoding(&mut self, val: Option<&str>) -> &mut Self {
-        self.encoding_shim(val);
+        self.set_encoding_shim(val);
         self
     }
 }

@@ -11,14 +11,60 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
     pub type AnimationPropertyValueDetails;
     #[cfg(feature = "CompositeOperation")]
+    #[wasm_bindgen(method, getter = "composite")]
+    fn composite_shim(this: &AnimationPropertyValueDetails) -> CompositeOperation;
+    #[cfg(feature = "CompositeOperation")]
     #[wasm_bindgen(method, setter = "composite")]
-    fn composite_shim(this: &AnimationPropertyValueDetails, val: CompositeOperation);
+    fn set_composite_shim(this: &AnimationPropertyValueDetails, val: CompositeOperation);
+    #[wasm_bindgen(method, getter = "easing")]
+    fn easing_shim(this: &AnimationPropertyValueDetails) -> &str;
     #[wasm_bindgen(method, setter = "easing")]
-    fn easing_shim(this: &AnimationPropertyValueDetails, val: &str);
+    fn set_easing_shim(this: &AnimationPropertyValueDetails, val: &str);
+    #[wasm_bindgen(method, getter = "offset")]
+    fn offset_shim(this: &AnimationPropertyValueDetails) -> f64;
     #[wasm_bindgen(method, setter = "offset")]
-    fn offset_shim(this: &AnimationPropertyValueDetails, val: f64);
+    fn set_offset_shim(this: &AnimationPropertyValueDetails, val: f64);
+    #[wasm_bindgen(method, getter = "value")]
+    fn value_shim(this: &AnimationPropertyValueDetails) -> &str;
     #[wasm_bindgen(method, setter = "value")]
-    fn value_shim(this: &AnimationPropertyValueDetails, val: &str);
+    fn set_value_shim(this: &AnimationPropertyValueDetails, val: &str);
+}
+#[doc = "The trait to access properties on the `AnimationPropertyValueDetails` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
+pub trait AnimationPropertyValueDetailsGetters {
+    #[cfg(feature = "CompositeOperation")]
+    #[doc = "Get the `composite` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`, `CompositeOperation`*"]
+    fn composite(&self) -> CompositeOperation;
+    #[doc = "Get the `easing` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
+    fn easing(&self) -> &str;
+    #[doc = "Get the `offset` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
+    fn offset(&self) -> f64;
+    #[doc = "Get the `value` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
+    fn value(&self) -> &str;
+}
+impl AnimationPropertyValueDetailsGetters for AnimationPropertyValueDetails {
+    #[cfg(feature = "CompositeOperation")]
+    fn composite(&self) -> CompositeOperation {
+        self.composite_shim()
+    }
+    fn easing(&self) -> &str {
+        self.easing_shim()
+    }
+    fn offset(&self) -> f64 {
+        self.offset_shim()
+    }
+    fn value(&self) -> &str {
+        self.value_shim()
+    }
 }
 impl AnimationPropertyValueDetails {
     #[cfg(feature = "CompositeOperation")]
@@ -37,28 +83,28 @@ impl AnimationPropertyValueDetails {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`, `CompositeOperation`*"]
     pub fn composite(&mut self, val: CompositeOperation) -> &mut Self {
-        self.composite_shim(val);
+        self.set_composite_shim(val);
         self
     }
     #[doc = "Change the `easing` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
     pub fn easing(&mut self, val: &str) -> &mut Self {
-        self.easing_shim(val);
+        self.set_easing_shim(val);
         self
     }
     #[doc = "Change the `offset` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
     pub fn offset(&mut self, val: f64) -> &mut Self {
-        self.offset_shim(val);
+        self.set_offset_shim(val);
         self
     }
     #[doc = "Change the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
     pub fn value(&mut self, val: &str) -> &mut Self {
-        self.value_shim(val);
+        self.set_value_shim(val);
         self
     }
 }

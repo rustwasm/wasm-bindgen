@@ -10,8 +10,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VoidCallback`*"]
     pub type VoidCallback;
+    #[wasm_bindgen(method, getter = "handleEvent")]
+    fn handle_event_shim(this: &VoidCallback) -> &::js_sys::Function;
     #[wasm_bindgen(method, setter = "handleEvent")]
-    fn handle_event_shim(this: &VoidCallback, val: &::js_sys::Function);
+    fn set_handle_event_shim(this: &VoidCallback, val: &::js_sys::Function);
+}
+#[doc = "The trait to access properties on the `VoidCallback` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `VoidCallback`*"]
+pub trait VoidCallbackGetters {
+    #[doc = "Get the `handleEvent` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VoidCallback`*"]
+    fn handle_event(&self) -> &::js_sys::Function;
+}
+impl VoidCallbackGetters for VoidCallback {
+    fn handle_event(&self) -> &::js_sys::Function {
+        self.handle_event_shim()
+    }
 }
 impl VoidCallback {
     #[doc = "Construct a new `VoidCallback`."]
@@ -26,7 +42,7 @@ impl VoidCallback {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VoidCallback`*"]
     pub fn handle_event(&mut self, val: &::js_sys::Function) -> &mut Self {
-        self.handle_event_shim(val);
+        self.set_handle_event_shim(val);
         self
     }
 }

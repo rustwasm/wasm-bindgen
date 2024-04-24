@@ -14,8 +14,31 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type VideoEncoderEncodeOptions;
+    #[wasm_bindgen(method, getter = "keyFrame")]
+    fn key_frame_shim(this: &VideoEncoderEncodeOptions) -> bool;
     #[wasm_bindgen(method, setter = "keyFrame")]
-    fn key_frame_shim(this: &VideoEncoderEncodeOptions, val: bool);
+    fn set_key_frame_shim(this: &VideoEncoderEncodeOptions, val: bool);
+}
+#[cfg(web_sys_unstable_apis)]
+#[doc = "The trait to access properties on the `VideoEncoderEncodeOptions` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `VideoEncoderEncodeOptions`*"]
+pub trait VideoEncoderEncodeOptionsGetters {
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `keyFrame` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoEncoderEncodeOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn key_frame(&self) -> bool;
+}
+#[cfg(web_sys_unstable_apis)]
+impl VideoEncoderEncodeOptionsGetters for VideoEncoderEncodeOptions {
+    #[cfg(web_sys_unstable_apis)]
+    fn key_frame(&self) -> bool {
+        self.key_frame_shim()
+    }
 }
 #[cfg(web_sys_unstable_apis)]
 impl VideoEncoderEncodeOptions {
@@ -38,7 +61,7 @@ impl VideoEncoderEncodeOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn key_frame(&mut self, val: bool) -> &mut Self {
-        self.key_frame_shim(val);
+        self.set_key_frame_shim(val);
         self
     }
 }

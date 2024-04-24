@@ -10,15 +10,61 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WriteParams`*"]
     pub type WriteParams;
+    #[wasm_bindgen(method, getter = "data")]
+    fn data_shim(this: &WriteParams) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "data")]
-    fn data_shim(this: &WriteParams, val: &::wasm_bindgen::JsValue);
+    fn set_data_shim(this: &WriteParams, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, getter = "position")]
+    fn position_shim(this: &WriteParams) -> Option<f64>;
     #[wasm_bindgen(method, setter = "position")]
-    fn position_shim(this: &WriteParams, val: Option<f64>);
+    fn set_position_shim(this: &WriteParams, val: Option<f64>);
+    #[wasm_bindgen(method, getter = "size")]
+    fn size_shim(this: &WriteParams) -> Option<f64>;
     #[wasm_bindgen(method, setter = "size")]
-    fn size_shim(this: &WriteParams, val: Option<f64>);
+    fn set_size_shim(this: &WriteParams, val: Option<f64>);
+    #[cfg(feature = "WriteCommandType")]
+    #[wasm_bindgen(method, getter = "type")]
+    fn type__shim(this: &WriteParams) -> WriteCommandType;
     #[cfg(feature = "WriteCommandType")]
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &WriteParams, val: WriteCommandType);
+    fn set_type__shim(this: &WriteParams, val: WriteCommandType);
+}
+#[doc = "The trait to access properties on the `WriteParams` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `WriteParams`*"]
+pub trait WriteParamsGetters {
+    #[doc = "Get the `data` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WriteParams`*"]
+    fn data(&self) -> Option<&::wasm_bindgen::JsValue>;
+    #[doc = "Get the `position` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WriteParams`*"]
+    fn position(&self) -> Option<f64>;
+    #[doc = "Get the `size` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WriteParams`*"]
+    fn size(&self) -> Option<f64>;
+    #[cfg(feature = "WriteCommandType")]
+    #[doc = "Get the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WriteCommandType`, `WriteParams`*"]
+    fn type_(&self) -> WriteCommandType;
+}
+impl WriteParamsGetters for WriteParams {
+    fn data(&self) -> Option<&::wasm_bindgen::JsValue> {
+        self.data_shim()
+    }
+    fn position(&self) -> Option<f64> {
+        self.position_shim()
+    }
+    fn size(&self) -> Option<f64> {
+        self.size_shim()
+    }
+    #[cfg(feature = "WriteCommandType")]
+    fn type_(&self) -> WriteCommandType {
+        self.type__shim()
+    }
 }
 impl WriteParams {
     #[cfg(feature = "WriteCommandType")]
@@ -35,21 +81,21 @@ impl WriteParams {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WriteParams`*"]
     pub fn data(&mut self, val: Option<&::wasm_bindgen::JsValue>) -> &mut Self {
-        self.data_shim(val.unwrap_or(&::wasm_bindgen::JsValue::NULL));
+        self.set_data_shim(val.unwrap_or(&::wasm_bindgen::JsValue::NULL));
         self
     }
     #[doc = "Change the `position` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WriteParams`*"]
     pub fn position(&mut self, val: Option<f64>) -> &mut Self {
-        self.position_shim(val);
+        self.set_position_shim(val);
         self
     }
     #[doc = "Change the `size` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WriteParams`*"]
     pub fn size(&mut self, val: Option<f64>) -> &mut Self {
-        self.size_shim(val);
+        self.set_size_shim(val);
         self
     }
     #[cfg(feature = "WriteCommandType")]
@@ -57,7 +103,7 @@ impl WriteParams {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WriteCommandType`, `WriteParams`*"]
     pub fn type_(&mut self, val: WriteCommandType) -> &mut Self {
-        self.type__shim(val);
+        self.set_type__shim(val);
         self
     }
 }

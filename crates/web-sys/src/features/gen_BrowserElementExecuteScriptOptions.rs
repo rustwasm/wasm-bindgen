@@ -10,10 +10,35 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementExecuteScriptOptions`*"]
     pub type BrowserElementExecuteScriptOptions;
+    #[wasm_bindgen(method, getter = "origin")]
+    fn origin_shim(this: &BrowserElementExecuteScriptOptions) -> Option<&str>;
     #[wasm_bindgen(method, setter = "origin")]
-    fn origin_shim(this: &BrowserElementExecuteScriptOptions, val: Option<&str>);
+    fn set_origin_shim(this: &BrowserElementExecuteScriptOptions, val: Option<&str>);
+    #[wasm_bindgen(method, getter = "url")]
+    fn url_shim(this: &BrowserElementExecuteScriptOptions) -> Option<&str>;
     #[wasm_bindgen(method, setter = "url")]
-    fn url_shim(this: &BrowserElementExecuteScriptOptions, val: Option<&str>);
+    fn set_url_shim(this: &BrowserElementExecuteScriptOptions, val: Option<&str>);
+}
+#[doc = "The trait to access properties on the `BrowserElementExecuteScriptOptions` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `BrowserElementExecuteScriptOptions`*"]
+pub trait BrowserElementExecuteScriptOptionsGetters {
+    #[doc = "Get the `origin` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BrowserElementExecuteScriptOptions`*"]
+    fn origin(&self) -> Option<&str>;
+    #[doc = "Get the `url` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BrowserElementExecuteScriptOptions`*"]
+    fn url(&self) -> Option<&str>;
+}
+impl BrowserElementExecuteScriptOptionsGetters for BrowserElementExecuteScriptOptions {
+    fn origin(&self) -> Option<&str> {
+        self.origin_shim()
+    }
+    fn url(&self) -> Option<&str> {
+        self.url_shim()
+    }
 }
 impl BrowserElementExecuteScriptOptions {
     #[doc = "Construct a new `BrowserElementExecuteScriptOptions`."]
@@ -28,14 +53,14 @@ impl BrowserElementExecuteScriptOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementExecuteScriptOptions`*"]
     pub fn origin(&mut self, val: Option<&str>) -> &mut Self {
-        self.origin_shim(val);
+        self.set_origin_shim(val);
         self
     }
     #[doc = "Change the `url` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementExecuteScriptOptions`*"]
     pub fn url(&mut self, val: Option<&str>) -> &mut Self {
-        self.url_shim(val);
+        self.set_url_shim(val);
         self
     }
 }

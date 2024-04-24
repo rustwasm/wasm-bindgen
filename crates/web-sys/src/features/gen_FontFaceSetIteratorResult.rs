@@ -10,10 +10,35 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSetIteratorResult`*"]
     pub type FontFaceSetIteratorResult;
+    #[wasm_bindgen(method, getter = "done")]
+    fn done_shim(this: &FontFaceSetIteratorResult) -> bool;
     #[wasm_bindgen(method, setter = "done")]
-    fn done_shim(this: &FontFaceSetIteratorResult, val: bool);
+    fn set_done_shim(this: &FontFaceSetIteratorResult, val: bool);
+    #[wasm_bindgen(method, getter = "value")]
+    fn value_shim(this: &FontFaceSetIteratorResult) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "value")]
-    fn value_shim(this: &FontFaceSetIteratorResult, val: &::wasm_bindgen::JsValue);
+    fn set_value_shim(this: &FontFaceSetIteratorResult, val: &::wasm_bindgen::JsValue);
+}
+#[doc = "The trait to access properties on the `FontFaceSetIteratorResult` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `FontFaceSetIteratorResult`*"]
+pub trait FontFaceSetIteratorResultGetters {
+    #[doc = "Get the `done` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FontFaceSetIteratorResult`*"]
+    fn done(&self) -> bool;
+    #[doc = "Get the `value` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FontFaceSetIteratorResult`*"]
+    fn value(&self) -> &::wasm_bindgen::JsValue;
+}
+impl FontFaceSetIteratorResultGetters for FontFaceSetIteratorResult {
+    fn done(&self) -> bool {
+        self.done_shim()
+    }
+    fn value(&self) -> &::wasm_bindgen::JsValue {
+        self.value_shim()
+    }
 }
 impl FontFaceSetIteratorResult {
     #[doc = "Construct a new `FontFaceSetIteratorResult`."]
@@ -30,14 +55,14 @@ impl FontFaceSetIteratorResult {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSetIteratorResult`*"]
     pub fn done(&mut self, val: bool) -> &mut Self {
-        self.done_shim(val);
+        self.set_done_shim(val);
         self
     }
     #[doc = "Change the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSetIteratorResult`*"]
     pub fn value(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.value_shim(val);
+        self.set_value_shim(val);
         self
     }
 }

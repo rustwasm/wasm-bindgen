@@ -10,10 +10,35 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomWindowResizeEventDetail`*"]
     pub type DomWindowResizeEventDetail;
+    #[wasm_bindgen(method, getter = "height")]
+    fn height_shim(this: &DomWindowResizeEventDetail) -> i32;
     #[wasm_bindgen(method, setter = "height")]
-    fn height_shim(this: &DomWindowResizeEventDetail, val: i32);
+    fn set_height_shim(this: &DomWindowResizeEventDetail, val: i32);
+    #[wasm_bindgen(method, getter = "width")]
+    fn width_shim(this: &DomWindowResizeEventDetail) -> i32;
     #[wasm_bindgen(method, setter = "width")]
-    fn width_shim(this: &DomWindowResizeEventDetail, val: i32);
+    fn set_width_shim(this: &DomWindowResizeEventDetail, val: i32);
+}
+#[doc = "The trait to access properties on the `DomWindowResizeEventDetail` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `DomWindowResizeEventDetail`*"]
+pub trait DomWindowResizeEventDetailGetters {
+    #[doc = "Get the `height` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomWindowResizeEventDetail`*"]
+    fn height(&self) -> i32;
+    #[doc = "Get the `width` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomWindowResizeEventDetail`*"]
+    fn width(&self) -> i32;
+}
+impl DomWindowResizeEventDetailGetters for DomWindowResizeEventDetail {
+    fn height(&self) -> i32 {
+        self.height_shim()
+    }
+    fn width(&self) -> i32 {
+        self.width_shim()
+    }
 }
 impl DomWindowResizeEventDetail {
     #[doc = "Construct a new `DomWindowResizeEventDetail`."]
@@ -28,14 +53,14 @@ impl DomWindowResizeEventDetail {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomWindowResizeEventDetail`*"]
     pub fn height(&mut self, val: i32) -> &mut Self {
-        self.height_shim(val);
+        self.set_height_shim(val);
         self
     }
     #[doc = "Change the `width` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomWindowResizeEventDetail`*"]
     pub fn width(&mut self, val: i32) -> &mut Self {
-        self.width_shim(val);
+        self.set_width_shim(val);
         self
     }
 }

@@ -10,10 +10,35 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FilePropertyBag`*"]
     pub type FilePropertyBag;
+    #[wasm_bindgen(method, getter = "lastModified")]
+    fn last_modified_shim(this: &FilePropertyBag) -> f64;
     #[wasm_bindgen(method, setter = "lastModified")]
-    fn last_modified_shim(this: &FilePropertyBag, val: f64);
+    fn set_last_modified_shim(this: &FilePropertyBag, val: f64);
+    #[wasm_bindgen(method, getter = "type")]
+    fn type__shim(this: &FilePropertyBag) -> &str;
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &FilePropertyBag, val: &str);
+    fn set_type__shim(this: &FilePropertyBag, val: &str);
+}
+#[doc = "The trait to access properties on the `FilePropertyBag` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `FilePropertyBag`*"]
+pub trait FilePropertyBagGetters {
+    #[doc = "Get the `lastModified` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FilePropertyBag`*"]
+    fn last_modified(&self) -> f64;
+    #[doc = "Get the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FilePropertyBag`*"]
+    fn type_(&self) -> &str;
+}
+impl FilePropertyBagGetters for FilePropertyBag {
+    fn last_modified(&self) -> f64 {
+        self.last_modified_shim()
+    }
+    fn type_(&self) -> &str {
+        self.type__shim()
+    }
 }
 impl FilePropertyBag {
     #[doc = "Construct a new `FilePropertyBag`."]
@@ -28,14 +53,14 @@ impl FilePropertyBag {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FilePropertyBag`*"]
     pub fn last_modified(&mut self, val: f64) -> &mut Self {
-        self.last_modified_shim(val);
+        self.set_last_modified_shim(val);
         self
     }
     #[doc = "Change the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FilePropertyBag`*"]
     pub fn type_(&mut self, val: &str) -> &mut Self {
-        self.type__shim(val);
+        self.set_type__shim(val);
         self
     }
 }

@@ -10,14 +10,57 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
     pub type PublicKeyCredentialUserEntity;
+    #[wasm_bindgen(method, getter = "icon")]
+    fn icon_shim(this: &PublicKeyCredentialUserEntity) -> &str;
     #[wasm_bindgen(method, setter = "icon")]
-    fn icon_shim(this: &PublicKeyCredentialUserEntity, val: &str);
+    fn set_icon_shim(this: &PublicKeyCredentialUserEntity, val: &str);
+    #[wasm_bindgen(method, getter = "name")]
+    fn name_shim(this: &PublicKeyCredentialUserEntity) -> &str;
     #[wasm_bindgen(method, setter = "name")]
-    fn name_shim(this: &PublicKeyCredentialUserEntity, val: &str);
+    fn set_name_shim(this: &PublicKeyCredentialUserEntity, val: &str);
+    #[wasm_bindgen(method, getter = "displayName")]
+    fn display_name_shim(this: &PublicKeyCredentialUserEntity) -> &str;
     #[wasm_bindgen(method, setter = "displayName")]
-    fn display_name_shim(this: &PublicKeyCredentialUserEntity, val: &str);
+    fn set_display_name_shim(this: &PublicKeyCredentialUserEntity, val: &str);
+    #[wasm_bindgen(method, getter = "id")]
+    fn id_shim(this: &PublicKeyCredentialUserEntity) -> &::js_sys::Object;
     #[wasm_bindgen(method, setter = "id")]
-    fn id_shim(this: &PublicKeyCredentialUserEntity, val: &::js_sys::Object);
+    fn set_id_shim(this: &PublicKeyCredentialUserEntity, val: &::js_sys::Object);
+}
+#[doc = "The trait to access properties on the `PublicKeyCredentialUserEntity` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
+pub trait PublicKeyCredentialUserEntityGetters {
+    #[doc = "Get the `icon` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
+    fn icon(&self) -> &str;
+    #[doc = "Get the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
+    fn name(&self) -> &str;
+    #[doc = "Get the `displayName` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
+    fn display_name(&self) -> &str;
+    #[doc = "Get the `id` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
+    fn id(&self) -> &::js_sys::Object;
+}
+impl PublicKeyCredentialUserEntityGetters for PublicKeyCredentialUserEntity {
+    fn icon(&self) -> &str {
+        self.icon_shim()
+    }
+    fn name(&self) -> &str {
+        self.name_shim()
+    }
+    fn display_name(&self) -> &str {
+        self.display_name_shim()
+    }
+    fn id(&self) -> &::js_sys::Object {
+        self.id_shim()
+    }
 }
 impl PublicKeyCredentialUserEntity {
     #[doc = "Construct a new `PublicKeyCredentialUserEntity`."]
@@ -35,28 +78,28 @@ impl PublicKeyCredentialUserEntity {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
     pub fn icon(&mut self, val: &str) -> &mut Self {
-        self.icon_shim(val);
+        self.set_icon_shim(val);
         self
     }
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        self.name_shim(val);
+        self.set_name_shim(val);
         self
     }
     #[doc = "Change the `displayName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
     pub fn display_name(&mut self, val: &str) -> &mut Self {
-        self.display_name_shim(val);
+        self.set_display_name_shim(val);
         self
     }
     #[doc = "Change the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
     pub fn id(&mut self, val: &::js_sys::Object) -> &mut Self {
-        self.id_shim(val);
+        self.set_id_shim(val);
         self
     }
 }

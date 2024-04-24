@@ -11,8 +11,27 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ShadowRootInit`*"]
     pub type ShadowRootInit;
     #[cfg(feature = "ShadowRootMode")]
+    #[wasm_bindgen(method, getter = "mode")]
+    fn mode_shim(this: &ShadowRootInit) -> ShadowRootMode;
+    #[cfg(feature = "ShadowRootMode")]
     #[wasm_bindgen(method, setter = "mode")]
-    fn mode_shim(this: &ShadowRootInit, val: ShadowRootMode);
+    fn set_mode_shim(this: &ShadowRootInit, val: ShadowRootMode);
+}
+#[doc = "The trait to access properties on the `ShadowRootInit` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `ShadowRootInit`*"]
+pub trait ShadowRootInitGetters {
+    #[cfg(feature = "ShadowRootMode")]
+    #[doc = "Get the `mode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ShadowRootInit`, `ShadowRootMode`*"]
+    fn mode(&self) -> ShadowRootMode;
+}
+impl ShadowRootInitGetters for ShadowRootInit {
+    #[cfg(feature = "ShadowRootMode")]
+    fn mode(&self) -> ShadowRootMode {
+        self.mode_shim()
+    }
 }
 impl ShadowRootInit {
     #[cfg(feature = "ShadowRootMode")]
@@ -30,7 +49,7 @@ impl ShadowRootInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShadowRootInit`, `ShadowRootMode`*"]
     pub fn mode(&mut self, val: ShadowRootMode) -> &mut Self {
-        self.mode_shim(val);
+        self.set_mode_shim(val);
         self
     }
 }

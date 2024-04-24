@@ -14,12 +14,63 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuMultisampleState;
+    #[wasm_bindgen(method, getter = "alphaToCoverageEnabled")]
+    fn alpha_to_coverage_enabled_shim(this: &GpuMultisampleState) -> bool;
     #[wasm_bindgen(method, setter = "alphaToCoverageEnabled")]
-    fn alpha_to_coverage_enabled_shim(this: &GpuMultisampleState, val: bool);
+    fn set_alpha_to_coverage_enabled_shim(this: &GpuMultisampleState, val: bool);
+    #[wasm_bindgen(method, getter = "count")]
+    fn count_shim(this: &GpuMultisampleState) -> u32;
     #[wasm_bindgen(method, setter = "count")]
-    fn count_shim(this: &GpuMultisampleState, val: u32);
+    fn set_count_shim(this: &GpuMultisampleState, val: u32);
+    #[wasm_bindgen(method, getter = "mask")]
+    fn mask_shim(this: &GpuMultisampleState) -> u32;
     #[wasm_bindgen(method, setter = "mask")]
-    fn mask_shim(this: &GpuMultisampleState, val: u32);
+    fn set_mask_shim(this: &GpuMultisampleState, val: u32);
+}
+#[cfg(web_sys_unstable_apis)]
+#[doc = "The trait to access properties on the `GpuMultisampleState` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `GpuMultisampleState`*"]
+pub trait GpuMultisampleStateGetters {
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `alphaToCoverageEnabled` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuMultisampleState`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn alpha_to_coverage_enabled(&self) -> bool;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `count` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuMultisampleState`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn count(&self) -> u32;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `mask` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuMultisampleState`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn mask(&self) -> u32;
+}
+#[cfg(web_sys_unstable_apis)]
+impl GpuMultisampleStateGetters for GpuMultisampleState {
+    #[cfg(web_sys_unstable_apis)]
+    fn alpha_to_coverage_enabled(&self) -> bool {
+        self.alpha_to_coverage_enabled_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    fn count(&self) -> u32 {
+        self.count_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    fn mask(&self) -> u32 {
+        self.mask_shim()
+    }
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuMultisampleState {
@@ -42,7 +93,7 @@ impl GpuMultisampleState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn alpha_to_coverage_enabled(&mut self, val: bool) -> &mut Self {
-        self.alpha_to_coverage_enabled_shim(val);
+        self.set_alpha_to_coverage_enabled_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -53,7 +104,7 @@ impl GpuMultisampleState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn count(&mut self, val: u32) -> &mut Self {
-        self.count_shim(val);
+        self.set_count_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -64,7 +115,7 @@ impl GpuMultisampleState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn mask(&mut self, val: u32) -> &mut Self {
-        self.mask_shim(val);
+        self.set_mask_shim(val);
         self
     }
 }

@@ -10,8 +10,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemReadWriteOptions`*"]
     pub type FileSystemReadWriteOptions;
+    #[wasm_bindgen(method, getter = "at")]
+    fn at_shim(this: &FileSystemReadWriteOptions) -> f64;
     #[wasm_bindgen(method, setter = "at")]
-    fn at_shim(this: &FileSystemReadWriteOptions, val: f64);
+    fn set_at_shim(this: &FileSystemReadWriteOptions, val: f64);
+}
+#[doc = "The trait to access properties on the `FileSystemReadWriteOptions` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `FileSystemReadWriteOptions`*"]
+pub trait FileSystemReadWriteOptionsGetters {
+    #[doc = "Get the `at` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemReadWriteOptions`*"]
+    fn at(&self) -> f64;
+}
+impl FileSystemReadWriteOptionsGetters for FileSystemReadWriteOptions {
+    fn at(&self) -> f64 {
+        self.at_shim()
+    }
 }
 impl FileSystemReadWriteOptions {
     #[doc = "Construct a new `FileSystemReadWriteOptions`."]
@@ -26,7 +42,7 @@ impl FileSystemReadWriteOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemReadWriteOptions`*"]
     pub fn at(&mut self, val: f64) -> &mut Self {
-        self.at_shim(val);
+        self.set_at_shim(val);
         self
     }
 }

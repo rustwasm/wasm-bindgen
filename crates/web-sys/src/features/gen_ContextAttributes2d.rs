@@ -10,10 +10,35 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ContextAttributes2d`*"]
     pub type ContextAttributes2d;
+    #[wasm_bindgen(method, getter = "alpha")]
+    fn alpha_shim(this: &ContextAttributes2d) -> bool;
     #[wasm_bindgen(method, setter = "alpha")]
-    fn alpha_shim(this: &ContextAttributes2d, val: bool);
+    fn set_alpha_shim(this: &ContextAttributes2d, val: bool);
+    #[wasm_bindgen(method, getter = "willReadFrequently")]
+    fn will_read_frequently_shim(this: &ContextAttributes2d) -> bool;
     #[wasm_bindgen(method, setter = "willReadFrequently")]
-    fn will_read_frequently_shim(this: &ContextAttributes2d, val: bool);
+    fn set_will_read_frequently_shim(this: &ContextAttributes2d, val: bool);
+}
+#[doc = "The trait to access properties on the `ContextAttributes2d` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `ContextAttributes2d`*"]
+pub trait ContextAttributes2dGetters {
+    #[doc = "Get the `alpha` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ContextAttributes2d`*"]
+    fn alpha(&self) -> bool;
+    #[doc = "Get the `willReadFrequently` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ContextAttributes2d`*"]
+    fn will_read_frequently(&self) -> bool;
+}
+impl ContextAttributes2dGetters for ContextAttributes2d {
+    fn alpha(&self) -> bool {
+        self.alpha_shim()
+    }
+    fn will_read_frequently(&self) -> bool {
+        self.will_read_frequently_shim()
+    }
 }
 impl ContextAttributes2d {
     #[doc = "Construct a new `ContextAttributes2d`."]
@@ -28,14 +53,14 @@ impl ContextAttributes2d {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ContextAttributes2d`*"]
     pub fn alpha(&mut self, val: bool) -> &mut Self {
-        self.alpha_shim(val);
+        self.set_alpha_shim(val);
         self
     }
     #[doc = "Change the `willReadFrequently` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ContextAttributes2d`*"]
     pub fn will_read_frequently(&mut self, val: bool) -> &mut Self {
-        self.will_read_frequently_shim(val);
+        self.set_will_read_frequently_shim(val);
         self
     }
 }

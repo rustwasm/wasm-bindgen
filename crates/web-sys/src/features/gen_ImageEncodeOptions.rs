@@ -10,10 +10,35 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageEncodeOptions`*"]
     pub type ImageEncodeOptions;
+    #[wasm_bindgen(method, getter = "quality")]
+    fn quality_shim(this: &ImageEncodeOptions) -> f64;
     #[wasm_bindgen(method, setter = "quality")]
-    fn quality_shim(this: &ImageEncodeOptions, val: f64);
+    fn set_quality_shim(this: &ImageEncodeOptions, val: f64);
+    #[wasm_bindgen(method, getter = "type")]
+    fn type__shim(this: &ImageEncodeOptions) -> &str;
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &ImageEncodeOptions, val: &str);
+    fn set_type__shim(this: &ImageEncodeOptions, val: &str);
+}
+#[doc = "The trait to access properties on the `ImageEncodeOptions` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `ImageEncodeOptions`*"]
+pub trait ImageEncodeOptionsGetters {
+    #[doc = "Get the `quality` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ImageEncodeOptions`*"]
+    fn quality(&self) -> f64;
+    #[doc = "Get the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ImageEncodeOptions`*"]
+    fn type_(&self) -> &str;
+}
+impl ImageEncodeOptionsGetters for ImageEncodeOptions {
+    fn quality(&self) -> f64 {
+        self.quality_shim()
+    }
+    fn type_(&self) -> &str {
+        self.type__shim()
+    }
 }
 impl ImageEncodeOptions {
     #[doc = "Construct a new `ImageEncodeOptions`."]
@@ -28,14 +53,14 @@ impl ImageEncodeOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageEncodeOptions`*"]
     pub fn quality(&mut self, val: f64) -> &mut Self {
-        self.quality_shim(val);
+        self.set_quality_shim(val);
         self
     }
     #[doc = "Change the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageEncodeOptions`*"]
     pub fn type_(&mut self, val: &str) -> &mut Self {
-        self.type__shim(val);
+        self.set_type__shim(val);
         self
     }
 }

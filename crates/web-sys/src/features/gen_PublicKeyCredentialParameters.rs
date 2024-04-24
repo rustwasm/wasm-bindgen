@@ -10,11 +10,39 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialParameters`*"]
     pub type PublicKeyCredentialParameters;
+    #[wasm_bindgen(method, getter = "alg")]
+    fn alg_shim(this: &PublicKeyCredentialParameters) -> i32;
     #[wasm_bindgen(method, setter = "alg")]
-    fn alg_shim(this: &PublicKeyCredentialParameters, val: i32);
+    fn set_alg_shim(this: &PublicKeyCredentialParameters, val: i32);
+    #[cfg(feature = "PublicKeyCredentialType")]
+    #[wasm_bindgen(method, getter = "type")]
+    fn type__shim(this: &PublicKeyCredentialParameters) -> PublicKeyCredentialType;
     #[cfg(feature = "PublicKeyCredentialType")]
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &PublicKeyCredentialParameters, val: PublicKeyCredentialType);
+    fn set_type__shim(this: &PublicKeyCredentialParameters, val: PublicKeyCredentialType);
+}
+#[doc = "The trait to access properties on the `PublicKeyCredentialParameters` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialParameters`*"]
+pub trait PublicKeyCredentialParametersGetters {
+    #[doc = "Get the `alg` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialParameters`*"]
+    fn alg(&self) -> i32;
+    #[cfg(feature = "PublicKeyCredentialType")]
+    #[doc = "Get the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialParameters`, `PublicKeyCredentialType`*"]
+    fn type_(&self) -> PublicKeyCredentialType;
+}
+impl PublicKeyCredentialParametersGetters for PublicKeyCredentialParameters {
+    fn alg(&self) -> i32 {
+        self.alg_shim()
+    }
+    #[cfg(feature = "PublicKeyCredentialType")]
+    fn type_(&self) -> PublicKeyCredentialType {
+        self.type__shim()
+    }
 }
 impl PublicKeyCredentialParameters {
     #[cfg(feature = "PublicKeyCredentialType")]
@@ -32,7 +60,7 @@ impl PublicKeyCredentialParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialParameters`*"]
     pub fn alg(&mut self, val: i32) -> &mut Self {
-        self.alg_shim(val);
+        self.set_alg_shim(val);
         self
     }
     #[cfg(feature = "PublicKeyCredentialType")]
@@ -40,7 +68,7 @@ impl PublicKeyCredentialParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialParameters`, `PublicKeyCredentialType`*"]
     pub fn type_(&mut self, val: PublicKeyCredentialType) -> &mut Self {
-        self.type__shim(val);
+        self.set_type__shim(val);
         self
     }
 }

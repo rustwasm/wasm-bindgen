@@ -14,13 +14,67 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuBindGroupDescriptor;
+    #[wasm_bindgen(method, getter = "label")]
+    fn label_shim(this: &GpuBindGroupDescriptor) -> &str;
     #[wasm_bindgen(method, setter = "label")]
-    fn label_shim(this: &GpuBindGroupDescriptor, val: &str);
+    fn set_label_shim(this: &GpuBindGroupDescriptor, val: &str);
+    #[wasm_bindgen(method, getter = "entries")]
+    fn entries_shim(this: &GpuBindGroupDescriptor) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "entries")]
-    fn entries_shim(this: &GpuBindGroupDescriptor, val: &::wasm_bindgen::JsValue);
+    fn set_entries_shim(this: &GpuBindGroupDescriptor, val: &::wasm_bindgen::JsValue);
+    #[cfg(feature = "GpuBindGroupLayout")]
+    #[wasm_bindgen(method, getter = "layout")]
+    fn layout_shim(this: &GpuBindGroupDescriptor) -> &GpuBindGroupLayout;
     #[cfg(feature = "GpuBindGroupLayout")]
     #[wasm_bindgen(method, setter = "layout")]
-    fn layout_shim(this: &GpuBindGroupDescriptor, val: &GpuBindGroupLayout);
+    fn set_layout_shim(this: &GpuBindGroupDescriptor, val: &GpuBindGroupLayout);
+}
+#[cfg(web_sys_unstable_apis)]
+#[doc = "The trait to access properties on the `GpuBindGroupDescriptor` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `GpuBindGroupDescriptor`*"]
+pub trait GpuBindGroupDescriptorGetters {
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `label` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn label(&self) -> &str;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `entries` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn entries(&self) -> &::wasm_bindgen::JsValue;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuBindGroupLayout")]
+    #[doc = "Get the `layout` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupDescriptor`, `GpuBindGroupLayout`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn layout(&self) -> &GpuBindGroupLayout;
+}
+#[cfg(web_sys_unstable_apis)]
+impl GpuBindGroupDescriptorGetters for GpuBindGroupDescriptor {
+    #[cfg(web_sys_unstable_apis)]
+    fn label(&self) -> &str {
+        self.label_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    fn entries(&self) -> &::wasm_bindgen::JsValue {
+        self.entries_shim()
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuBindGroupLayout")]
+    fn layout(&self) -> &GpuBindGroupLayout {
+        self.layout_shim()
+    }
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuBindGroupDescriptor {
@@ -46,7 +100,7 @@ impl GpuBindGroupDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn label(&mut self, val: &str) -> &mut Self {
-        self.label_shim(val);
+        self.set_label_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -57,7 +111,7 @@ impl GpuBindGroupDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn entries(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.entries_shim(val);
+        self.set_entries_shim(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -69,7 +123,7 @@ impl GpuBindGroupDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn layout(&mut self, val: &GpuBindGroupLayout) -> &mut Self {
-        self.layout_shim(val);
+        self.set_layout_shim(val);
         self
     }
 }

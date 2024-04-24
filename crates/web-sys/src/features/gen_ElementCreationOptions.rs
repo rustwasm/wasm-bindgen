@@ -10,10 +10,35 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ElementCreationOptions`*"]
     pub type ElementCreationOptions;
+    #[wasm_bindgen(method, getter = "is")]
+    fn is_shim(this: &ElementCreationOptions) -> &str;
     #[wasm_bindgen(method, setter = "is")]
-    fn is_shim(this: &ElementCreationOptions, val: &str);
+    fn set_is_shim(this: &ElementCreationOptions, val: &str);
+    #[wasm_bindgen(method, getter = "pseudo")]
+    fn pseudo_shim(this: &ElementCreationOptions) -> &str;
     #[wasm_bindgen(method, setter = "pseudo")]
-    fn pseudo_shim(this: &ElementCreationOptions, val: &str);
+    fn set_pseudo_shim(this: &ElementCreationOptions, val: &str);
+}
+#[doc = "The trait to access properties on the `ElementCreationOptions` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `ElementCreationOptions`*"]
+pub trait ElementCreationOptionsGetters {
+    #[doc = "Get the `is` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ElementCreationOptions`*"]
+    fn is(&self) -> &str;
+    #[doc = "Get the `pseudo` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ElementCreationOptions`*"]
+    fn pseudo(&self) -> &str;
+}
+impl ElementCreationOptionsGetters for ElementCreationOptions {
+    fn is(&self) -> &str {
+        self.is_shim()
+    }
+    fn pseudo(&self) -> &str {
+        self.pseudo_shim()
+    }
 }
 impl ElementCreationOptions {
     #[doc = "Construct a new `ElementCreationOptions`."]
@@ -28,14 +53,14 @@ impl ElementCreationOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ElementCreationOptions`*"]
     pub fn is(&mut self, val: &str) -> &mut Self {
-        self.is_shim(val);
+        self.set_is_shim(val);
         self
     }
     #[doc = "Change the `pseudo` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ElementCreationOptions`*"]
     pub fn pseudo(&mut self, val: &str) -> &mut Self {
-        self.pseudo_shim(val);
+        self.set_pseudo_shim(val);
         self
     }
 }

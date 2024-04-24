@@ -10,16 +10,68 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
     pub type IdbVersionChangeEventInit;
+    #[wasm_bindgen(method, getter = "bubbles")]
+    fn bubbles_shim(this: &IdbVersionChangeEventInit) -> bool;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &IdbVersionChangeEventInit, val: bool);
+    fn set_bubbles_shim(this: &IdbVersionChangeEventInit, val: bool);
+    #[wasm_bindgen(method, getter = "cancelable")]
+    fn cancelable_shim(this: &IdbVersionChangeEventInit) -> bool;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &IdbVersionChangeEventInit, val: bool);
+    fn set_cancelable_shim(this: &IdbVersionChangeEventInit, val: bool);
+    #[wasm_bindgen(method, getter = "composed")]
+    fn composed_shim(this: &IdbVersionChangeEventInit) -> bool;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &IdbVersionChangeEventInit, val: bool);
+    fn set_composed_shim(this: &IdbVersionChangeEventInit, val: bool);
+    #[wasm_bindgen(method, getter = "newVersion")]
+    fn new_version_shim(this: &IdbVersionChangeEventInit) -> Option<f64>;
     #[wasm_bindgen(method, setter = "newVersion")]
-    fn new_version_shim(this: &IdbVersionChangeEventInit, val: Option<f64>);
+    fn set_new_version_shim(this: &IdbVersionChangeEventInit, val: Option<f64>);
+    #[wasm_bindgen(method, getter = "oldVersion")]
+    fn old_version_shim(this: &IdbVersionChangeEventInit) -> f64;
     #[wasm_bindgen(method, setter = "oldVersion")]
-    fn old_version_shim(this: &IdbVersionChangeEventInit, val: f64);
+    fn set_old_version_shim(this: &IdbVersionChangeEventInit, val: f64);
+}
+#[doc = "The trait to access properties on the `IdbVersionChangeEventInit` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
+pub trait IdbVersionChangeEventInitGetters {
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
+    fn bubbles(&self) -> bool;
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
+    fn cancelable(&self) -> bool;
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
+    fn composed(&self) -> bool;
+    #[doc = "Get the `newVersion` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
+    fn new_version(&self) -> Option<f64>;
+    #[doc = "Get the `oldVersion` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
+    fn old_version(&self) -> f64;
+}
+impl IdbVersionChangeEventInitGetters for IdbVersionChangeEventInit {
+    fn bubbles(&self) -> bool {
+        self.bubbles_shim()
+    }
+    fn cancelable(&self) -> bool {
+        self.cancelable_shim()
+    }
+    fn composed(&self) -> bool {
+        self.composed_shim()
+    }
+    fn new_version(&self) -> Option<f64> {
+        self.new_version_shim()
+    }
+    fn old_version(&self) -> f64 {
+        self.old_version_shim()
+    }
 }
 impl IdbVersionChangeEventInit {
     #[doc = "Construct a new `IdbVersionChangeEventInit`."]
@@ -34,35 +86,35 @@ impl IdbVersionChangeEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles_shim(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable_shim(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed_shim(val);
         self
     }
     #[doc = "Change the `newVersion` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
     pub fn new_version(&mut self, val: Option<f64>) -> &mut Self {
-        self.new_version_shim(val);
+        self.set_new_version_shim(val);
         self
     }
     #[doc = "Change the `oldVersion` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbVersionChangeEventInit`*"]
     pub fn old_version(&mut self, val: f64) -> &mut Self {
-        self.old_version_shim(val);
+        self.set_old_version_shim(val);
         self
     }
 }

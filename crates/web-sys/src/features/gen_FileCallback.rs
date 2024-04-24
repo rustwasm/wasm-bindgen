@@ -10,8 +10,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileCallback`*"]
     pub type FileCallback;
+    #[wasm_bindgen(method, getter = "handleEvent")]
+    fn handle_event_shim(this: &FileCallback) -> &::js_sys::Function;
     #[wasm_bindgen(method, setter = "handleEvent")]
-    fn handle_event_shim(this: &FileCallback, val: &::js_sys::Function);
+    fn set_handle_event_shim(this: &FileCallback, val: &::js_sys::Function);
+}
+#[doc = "The trait to access properties on the `FileCallback` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `FileCallback`*"]
+pub trait FileCallbackGetters {
+    #[doc = "Get the `handleEvent` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileCallback`*"]
+    fn handle_event(&self) -> &::js_sys::Function;
+}
+impl FileCallbackGetters for FileCallback {
+    fn handle_event(&self) -> &::js_sys::Function {
+        self.handle_event_shim()
+    }
 }
 impl FileCallback {
     #[doc = "Construct a new `FileCallback`."]
@@ -26,7 +42,7 @@ impl FileCallback {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileCallback`*"]
     pub fn handle_event(&mut self, val: &::js_sys::Function) -> &mut Self {
-        self.handle_event_shim(val);
+        self.set_handle_event_shim(val);
         self
     }
 }

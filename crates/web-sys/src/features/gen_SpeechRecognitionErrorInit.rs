@@ -10,17 +10,72 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionErrorInit`*"]
     pub type SpeechRecognitionErrorInit;
+    #[wasm_bindgen(method, getter = "bubbles")]
+    fn bubbles_shim(this: &SpeechRecognitionErrorInit) -> bool;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &SpeechRecognitionErrorInit, val: bool);
+    fn set_bubbles_shim(this: &SpeechRecognitionErrorInit, val: bool);
+    #[wasm_bindgen(method, getter = "cancelable")]
+    fn cancelable_shim(this: &SpeechRecognitionErrorInit) -> bool;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &SpeechRecognitionErrorInit, val: bool);
+    fn set_cancelable_shim(this: &SpeechRecognitionErrorInit, val: bool);
+    #[wasm_bindgen(method, getter = "composed")]
+    fn composed_shim(this: &SpeechRecognitionErrorInit) -> bool;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &SpeechRecognitionErrorInit, val: bool);
+    fn set_composed_shim(this: &SpeechRecognitionErrorInit, val: bool);
+    #[cfg(feature = "SpeechRecognitionErrorCode")]
+    #[wasm_bindgen(method, getter = "error")]
+    fn error_shim(this: &SpeechRecognitionErrorInit) -> SpeechRecognitionErrorCode;
     #[cfg(feature = "SpeechRecognitionErrorCode")]
     #[wasm_bindgen(method, setter = "error")]
-    fn error_shim(this: &SpeechRecognitionErrorInit, val: SpeechRecognitionErrorCode);
+    fn set_error_shim(this: &SpeechRecognitionErrorInit, val: SpeechRecognitionErrorCode);
+    #[wasm_bindgen(method, getter = "message")]
+    fn message_shim(this: &SpeechRecognitionErrorInit) -> &str;
     #[wasm_bindgen(method, setter = "message")]
-    fn message_shim(this: &SpeechRecognitionErrorInit, val: &str);
+    fn set_message_shim(this: &SpeechRecognitionErrorInit, val: &str);
+}
+#[doc = "The trait to access properties on the `SpeechRecognitionErrorInit` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionErrorInit`*"]
+pub trait SpeechRecognitionErrorInitGetters {
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionErrorInit`*"]
+    fn bubbles(&self) -> bool;
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionErrorInit`*"]
+    fn cancelable(&self) -> bool;
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionErrorInit`*"]
+    fn composed(&self) -> bool;
+    #[cfg(feature = "SpeechRecognitionErrorCode")]
+    #[doc = "Get the `error` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionErrorCode`, `SpeechRecognitionErrorInit`*"]
+    fn error(&self) -> SpeechRecognitionErrorCode;
+    #[doc = "Get the `message` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionErrorInit`*"]
+    fn message(&self) -> &str;
+}
+impl SpeechRecognitionErrorInitGetters for SpeechRecognitionErrorInit {
+    fn bubbles(&self) -> bool {
+        self.bubbles_shim()
+    }
+    fn cancelable(&self) -> bool {
+        self.cancelable_shim()
+    }
+    fn composed(&self) -> bool {
+        self.composed_shim()
+    }
+    #[cfg(feature = "SpeechRecognitionErrorCode")]
+    fn error(&self) -> SpeechRecognitionErrorCode {
+        self.error_shim()
+    }
+    fn message(&self) -> &str {
+        self.message_shim()
+    }
 }
 impl SpeechRecognitionErrorInit {
     #[doc = "Construct a new `SpeechRecognitionErrorInit`."]
@@ -35,21 +90,21 @@ impl SpeechRecognitionErrorInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionErrorInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles_shim(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionErrorInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable_shim(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionErrorInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed_shim(val);
         self
     }
     #[cfg(feature = "SpeechRecognitionErrorCode")]
@@ -57,14 +112,14 @@ impl SpeechRecognitionErrorInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionErrorCode`, `SpeechRecognitionErrorInit`*"]
     pub fn error(&mut self, val: SpeechRecognitionErrorCode) -> &mut Self {
-        self.error_shim(val);
+        self.set_error_shim(val);
         self
     }
     #[doc = "Change the `message` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionErrorInit`*"]
     pub fn message(&mut self, val: &str) -> &mut Self {
-        self.message_shim(val);
+        self.set_message_shim(val);
         self
     }
 }

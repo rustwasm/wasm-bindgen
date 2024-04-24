@@ -11,8 +11,27 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamGetReaderOptions`*"]
     pub type ReadableStreamGetReaderOptions;
     #[cfg(feature = "ReadableStreamReaderMode")]
+    #[wasm_bindgen(method, getter = "mode")]
+    fn mode_shim(this: &ReadableStreamGetReaderOptions) -> ReadableStreamReaderMode;
+    #[cfg(feature = "ReadableStreamReaderMode")]
     #[wasm_bindgen(method, setter = "mode")]
-    fn mode_shim(this: &ReadableStreamGetReaderOptions, val: ReadableStreamReaderMode);
+    fn set_mode_shim(this: &ReadableStreamGetReaderOptions, val: ReadableStreamReaderMode);
+}
+#[doc = "The trait to access properties on the `ReadableStreamGetReaderOptions` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `ReadableStreamGetReaderOptions`*"]
+pub trait ReadableStreamGetReaderOptionsGetters {
+    #[cfg(feature = "ReadableStreamReaderMode")]
+    #[doc = "Get the `mode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ReadableStreamGetReaderOptions`, `ReadableStreamReaderMode`*"]
+    fn mode(&self) -> ReadableStreamReaderMode;
+}
+impl ReadableStreamGetReaderOptionsGetters for ReadableStreamGetReaderOptions {
+    #[cfg(feature = "ReadableStreamReaderMode")]
+    fn mode(&self) -> ReadableStreamReaderMode {
+        self.mode_shim()
+    }
 }
 impl ReadableStreamGetReaderOptions {
     #[doc = "Construct a new `ReadableStreamGetReaderOptions`."]
@@ -28,7 +47,7 @@ impl ReadableStreamGetReaderOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamGetReaderOptions`, `ReadableStreamReaderMode`*"]
     pub fn mode(&mut self, val: ReadableStreamReaderMode) -> &mut Self {
-        self.mode_shim(val);
+        self.set_mode_shim(val);
         self
     }
 }

@@ -14,8 +14,31 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuRenderBundleDescriptor;
+    #[wasm_bindgen(method, getter = "label")]
+    fn label_shim(this: &GpuRenderBundleDescriptor) -> &str;
     #[wasm_bindgen(method, setter = "label")]
-    fn label_shim(this: &GpuRenderBundleDescriptor, val: &str);
+    fn set_label_shim(this: &GpuRenderBundleDescriptor, val: &str);
+}
+#[cfg(web_sys_unstable_apis)]
+#[doc = "The trait to access properties on the `GpuRenderBundleDescriptor` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `GpuRenderBundleDescriptor`*"]
+pub trait GpuRenderBundleDescriptorGetters {
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `label` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderBundleDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    fn label(&self) -> &str;
+}
+#[cfg(web_sys_unstable_apis)]
+impl GpuRenderBundleDescriptorGetters for GpuRenderBundleDescriptor {
+    #[cfg(web_sys_unstable_apis)]
+    fn label(&self) -> &str {
+        self.label_shim()
+    }
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuRenderBundleDescriptor {
@@ -38,7 +61,7 @@ impl GpuRenderBundleDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn label(&mut self, val: &str) -> &mut Self {
-        self.label_shim(val);
+        self.set_label_shim(val);
         self
     }
 }

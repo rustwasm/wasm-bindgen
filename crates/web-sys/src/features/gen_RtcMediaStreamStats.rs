@@ -10,17 +10,72 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcMediaStreamStats`*"]
     pub type RtcMediaStreamStats;
+    #[wasm_bindgen(method, getter = "id")]
+    fn id_shim(this: &RtcMediaStreamStats) -> &str;
     #[wasm_bindgen(method, setter = "id")]
-    fn id_shim(this: &RtcMediaStreamStats, val: &str);
+    fn set_id_shim(this: &RtcMediaStreamStats, val: &str);
+    #[wasm_bindgen(method, getter = "timestamp")]
+    fn timestamp_shim(this: &RtcMediaStreamStats) -> f64;
     #[wasm_bindgen(method, setter = "timestamp")]
-    fn timestamp_shim(this: &RtcMediaStreamStats, val: f64);
+    fn set_timestamp_shim(this: &RtcMediaStreamStats, val: f64);
+    #[cfg(feature = "RtcStatsType")]
+    #[wasm_bindgen(method, getter = "type")]
+    fn type__shim(this: &RtcMediaStreamStats) -> RtcStatsType;
     #[cfg(feature = "RtcStatsType")]
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &RtcMediaStreamStats, val: RtcStatsType);
+    fn set_type__shim(this: &RtcMediaStreamStats, val: RtcStatsType);
+    #[wasm_bindgen(method, getter = "streamIdentifier")]
+    fn stream_identifier_shim(this: &RtcMediaStreamStats) -> &str;
     #[wasm_bindgen(method, setter = "streamIdentifier")]
-    fn stream_identifier_shim(this: &RtcMediaStreamStats, val: &str);
+    fn set_stream_identifier_shim(this: &RtcMediaStreamStats, val: &str);
+    #[wasm_bindgen(method, getter = "trackIds")]
+    fn track_ids_shim(this: &RtcMediaStreamStats) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "trackIds")]
-    fn track_ids_shim(this: &RtcMediaStreamStats, val: &::wasm_bindgen::JsValue);
+    fn set_track_ids_shim(this: &RtcMediaStreamStats, val: &::wasm_bindgen::JsValue);
+}
+#[doc = "The trait to access properties on the `RtcMediaStreamStats` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `RtcMediaStreamStats`*"]
+pub trait RtcMediaStreamStatsGetters {
+    #[doc = "Get the `id` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcMediaStreamStats`*"]
+    fn id(&self) -> &str;
+    #[doc = "Get the `timestamp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcMediaStreamStats`*"]
+    fn timestamp(&self) -> f64;
+    #[cfg(feature = "RtcStatsType")]
+    #[doc = "Get the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcMediaStreamStats`, `RtcStatsType`*"]
+    fn type_(&self) -> RtcStatsType;
+    #[doc = "Get the `streamIdentifier` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcMediaStreamStats`*"]
+    fn stream_identifier(&self) -> &str;
+    #[doc = "Get the `trackIds` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcMediaStreamStats`*"]
+    fn track_ids(&self) -> &::wasm_bindgen::JsValue;
+}
+impl RtcMediaStreamStatsGetters for RtcMediaStreamStats {
+    fn id(&self) -> &str {
+        self.id_shim()
+    }
+    fn timestamp(&self) -> f64 {
+        self.timestamp_shim()
+    }
+    #[cfg(feature = "RtcStatsType")]
+    fn type_(&self) -> RtcStatsType {
+        self.type__shim()
+    }
+    fn stream_identifier(&self) -> &str {
+        self.stream_identifier_shim()
+    }
+    fn track_ids(&self) -> &::wasm_bindgen::JsValue {
+        self.track_ids_shim()
+    }
 }
 impl RtcMediaStreamStats {
     #[doc = "Construct a new `RtcMediaStreamStats`."]
@@ -35,14 +90,14 @@ impl RtcMediaStreamStats {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcMediaStreamStats`*"]
     pub fn id(&mut self, val: &str) -> &mut Self {
-        self.id_shim(val);
+        self.set_id_shim(val);
         self
     }
     #[doc = "Change the `timestamp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcMediaStreamStats`*"]
     pub fn timestamp(&mut self, val: f64) -> &mut Self {
-        self.timestamp_shim(val);
+        self.set_timestamp_shim(val);
         self
     }
     #[cfg(feature = "RtcStatsType")]
@@ -50,21 +105,21 @@ impl RtcMediaStreamStats {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcMediaStreamStats`, `RtcStatsType`*"]
     pub fn type_(&mut self, val: RtcStatsType) -> &mut Self {
-        self.type__shim(val);
+        self.set_type__shim(val);
         self
     }
     #[doc = "Change the `streamIdentifier` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcMediaStreamStats`*"]
     pub fn stream_identifier(&mut self, val: &str) -> &mut Self {
-        self.stream_identifier_shim(val);
+        self.set_stream_identifier_shim(val);
         self
     }
     #[doc = "Change the `trackIds` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcMediaStreamStats`*"]
     pub fn track_ids(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.track_ids_shim(val);
+        self.set_track_ids_shim(val);
         self
     }
 }

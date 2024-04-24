@@ -10,10 +10,35 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemMediaCapability`*"]
     pub type MediaKeySystemMediaCapability;
+    #[wasm_bindgen(method, getter = "contentType")]
+    fn content_type_shim(this: &MediaKeySystemMediaCapability) -> &str;
     #[wasm_bindgen(method, setter = "contentType")]
-    fn content_type_shim(this: &MediaKeySystemMediaCapability, val: &str);
+    fn set_content_type_shim(this: &MediaKeySystemMediaCapability, val: &str);
+    #[wasm_bindgen(method, getter = "robustness")]
+    fn robustness_shim(this: &MediaKeySystemMediaCapability) -> &str;
     #[wasm_bindgen(method, setter = "robustness")]
-    fn robustness_shim(this: &MediaKeySystemMediaCapability, val: &str);
+    fn set_robustness_shim(this: &MediaKeySystemMediaCapability, val: &str);
+}
+#[doc = "The trait to access properties on the `MediaKeySystemMediaCapability` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `MediaKeySystemMediaCapability`*"]
+pub trait MediaKeySystemMediaCapabilityGetters {
+    #[doc = "Get the `contentType` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemMediaCapability`*"]
+    fn content_type(&self) -> &str;
+    #[doc = "Get the `robustness` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemMediaCapability`*"]
+    fn robustness(&self) -> &str;
+}
+impl MediaKeySystemMediaCapabilityGetters for MediaKeySystemMediaCapability {
+    fn content_type(&self) -> &str {
+        self.content_type_shim()
+    }
+    fn robustness(&self) -> &str {
+        self.robustness_shim()
+    }
 }
 impl MediaKeySystemMediaCapability {
     #[doc = "Construct a new `MediaKeySystemMediaCapability`."]
@@ -28,14 +53,14 @@ impl MediaKeySystemMediaCapability {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemMediaCapability`*"]
     pub fn content_type(&mut self, val: &str) -> &mut Self {
-        self.content_type_shim(val);
+        self.set_content_type_shim(val);
         self
     }
     #[doc = "Change the `robustness` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemMediaCapability`*"]
     pub fn robustness(&mut self, val: &str) -> &mut Self {
-        self.robustness_shim(val);
+        self.set_robustness_shim(val);
         self
     }
 }

@@ -10,8 +10,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventListener`*"]
     pub type EventListener;
+    #[wasm_bindgen(method, getter = "handleEvent")]
+    fn handle_event_shim(this: &EventListener) -> &::js_sys::Function;
     #[wasm_bindgen(method, setter = "handleEvent")]
-    fn handle_event_shim(this: &EventListener, val: &::js_sys::Function);
+    fn set_handle_event_shim(this: &EventListener, val: &::js_sys::Function);
+}
+#[doc = "The trait to access properties on the `EventListener` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `EventListener`*"]
+pub trait EventListenerGetters {
+    #[doc = "Get the `handleEvent` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `EventListener`*"]
+    fn handle_event(&self) -> &::js_sys::Function;
+}
+impl EventListenerGetters for EventListener {
+    fn handle_event(&self) -> &::js_sys::Function {
+        self.handle_event_shim()
+    }
 }
 impl EventListener {
     #[doc = "Construct a new `EventListener`."]
@@ -26,7 +42,7 @@ impl EventListener {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventListener`*"]
     pub fn handle_event(&mut self, val: &::js_sys::Function) -> &mut Self {
-        self.handle_event_shim(val);
+        self.set_handle_event_shim(val);
         self
     }
 }

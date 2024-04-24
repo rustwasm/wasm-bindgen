@@ -10,10 +10,35 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCapabilities`*"]
     pub type RtcRtpCapabilities;
+    #[wasm_bindgen(method, getter = "codecs")]
+    fn codecs_shim(this: &RtcRtpCapabilities) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "codecs")]
-    fn codecs_shim(this: &RtcRtpCapabilities, val: &::wasm_bindgen::JsValue);
+    fn set_codecs_shim(this: &RtcRtpCapabilities, val: &::wasm_bindgen::JsValue);
+    #[wasm_bindgen(method, getter = "headerExtensions")]
+    fn header_extensions_shim(this: &RtcRtpCapabilities) -> &::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "headerExtensions")]
-    fn header_extensions_shim(this: &RtcRtpCapabilities, val: &::wasm_bindgen::JsValue);
+    fn set_header_extensions_shim(this: &RtcRtpCapabilities, val: &::wasm_bindgen::JsValue);
+}
+#[doc = "The trait to access properties on the `RtcRtpCapabilities` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `RtcRtpCapabilities`*"]
+pub trait RtcRtpCapabilitiesGetters {
+    #[doc = "Get the `codecs` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCapabilities`*"]
+    fn codecs(&self) -> &::wasm_bindgen::JsValue;
+    #[doc = "Get the `headerExtensions` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCapabilities`*"]
+    fn header_extensions(&self) -> &::wasm_bindgen::JsValue;
+}
+impl RtcRtpCapabilitiesGetters for RtcRtpCapabilities {
+    fn codecs(&self) -> &::wasm_bindgen::JsValue {
+        self.codecs_shim()
+    }
+    fn header_extensions(&self) -> &::wasm_bindgen::JsValue {
+        self.header_extensions_shim()
+    }
 }
 impl RtcRtpCapabilities {
     #[doc = "Construct a new `RtcRtpCapabilities`."]
@@ -33,14 +58,14 @@ impl RtcRtpCapabilities {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCapabilities`*"]
     pub fn codecs(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.codecs_shim(val);
+        self.set_codecs_shim(val);
         self
     }
     #[doc = "Change the `headerExtensions` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCapabilities`*"]
     pub fn header_extensions(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.header_extensions_shim(val);
+        self.set_header_extensions_shim(val);
         self
     }
 }

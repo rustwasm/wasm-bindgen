@@ -10,11 +10,39 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityAssertionResult`*"]
     pub type RtcIdentityAssertionResult;
+    #[wasm_bindgen(method, getter = "assertion")]
+    fn assertion_shim(this: &RtcIdentityAssertionResult) -> &str;
     #[wasm_bindgen(method, setter = "assertion")]
-    fn assertion_shim(this: &RtcIdentityAssertionResult, val: &str);
+    fn set_assertion_shim(this: &RtcIdentityAssertionResult, val: &str);
+    #[cfg(feature = "RtcIdentityProviderDetails")]
+    #[wasm_bindgen(method, getter = "idp")]
+    fn idp_shim(this: &RtcIdentityAssertionResult) -> &RtcIdentityProviderDetails;
     #[cfg(feature = "RtcIdentityProviderDetails")]
     #[wasm_bindgen(method, setter = "idp")]
-    fn idp_shim(this: &RtcIdentityAssertionResult, val: &RtcIdentityProviderDetails);
+    fn set_idp_shim(this: &RtcIdentityAssertionResult, val: &RtcIdentityProviderDetails);
+}
+#[doc = "The trait to access properties on the `RtcIdentityAssertionResult` dictionary."]
+#[doc = ""]
+#[doc = "*This API requires the following crate features to be activated: `RtcIdentityAssertionResult`*"]
+pub trait RtcIdentityAssertionResultGetters {
+    #[doc = "Get the `assertion` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityAssertionResult`*"]
+    fn assertion(&self) -> &str;
+    #[cfg(feature = "RtcIdentityProviderDetails")]
+    #[doc = "Get the `idp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityAssertionResult`, `RtcIdentityProviderDetails`*"]
+    fn idp(&self) -> &RtcIdentityProviderDetails;
+}
+impl RtcIdentityAssertionResultGetters for RtcIdentityAssertionResult {
+    fn assertion(&self) -> &str {
+        self.assertion_shim()
+    }
+    #[cfg(feature = "RtcIdentityProviderDetails")]
+    fn idp(&self) -> &RtcIdentityProviderDetails {
+        self.idp_shim()
+    }
 }
 impl RtcIdentityAssertionResult {
     #[cfg(feature = "RtcIdentityProviderDetails")]
@@ -32,7 +60,7 @@ impl RtcIdentityAssertionResult {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityAssertionResult`*"]
     pub fn assertion(&mut self, val: &str) -> &mut Self {
-        self.assertion_shim(val);
+        self.set_assertion_shim(val);
         self
     }
     #[cfg(feature = "RtcIdentityProviderDetails")]
@@ -40,7 +68,7 @@ impl RtcIdentityAssertionResult {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityAssertionResult`, `RtcIdentityProviderDetails`*"]
     pub fn idp(&mut self, val: &RtcIdentityProviderDetails) -> &mut Self {
-        self.idp_shim(val);
+        self.set_idp_shim(val);
         self
     }
 }
