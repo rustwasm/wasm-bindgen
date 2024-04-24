@@ -124,7 +124,7 @@ impl XrReferenceSpaceEventInit {
     pub fn new(reference_space: &XrReferenceSpace) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.reference_space(reference_space);
+        Self::reference_space(&mut ret, reference_space);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

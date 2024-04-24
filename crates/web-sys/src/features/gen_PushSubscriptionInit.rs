@@ -80,8 +80,8 @@ impl PushSubscriptionInit {
     pub fn new(endpoint: &str, scope: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.endpoint(endpoint);
-        ret.scope(scope);
+        Self::endpoint(&mut ret, endpoint);
+        Self::scope(&mut ret, scope);
         ret
     }
     #[doc = "Change the `appServerKey` field of this object."]

@@ -83,7 +83,7 @@ impl GpuExtent3dDict {
     pub fn new(width: u32) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.width(width);
+        Self::width(&mut ret, width);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

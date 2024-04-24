@@ -58,7 +58,7 @@ impl PublicKeyCredentialRpEntity {
     pub fn new(name: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
+        Self::name(&mut ret, name);
         ret
     }
     #[doc = "Change the `icon` field of this object."]

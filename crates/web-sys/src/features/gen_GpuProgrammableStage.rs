@@ -72,7 +72,7 @@ impl GpuProgrammableStage {
     pub fn new(module: &GpuShaderModule) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.module(module);
+        Self::module(&mut ret, module);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

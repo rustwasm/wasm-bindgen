@@ -83,8 +83,8 @@ impl AllowedUsbDevice {
     pub fn new(product_id: u8, vendor_id: u8) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.product_id(product_id);
-        ret.vendor_id(vendor_id);
+        Self::product_id(&mut ret, product_id);
+        Self::vendor_id(&mut ret, vendor_id);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

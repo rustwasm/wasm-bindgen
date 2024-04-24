@@ -124,8 +124,8 @@ impl XrInputSourceEventInit {
     pub fn new(frame: &XrFrame, input_source: &XrInputSource) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.frame(frame);
-        ret.input_source(input_source);
+        Self::frame(&mut ret, frame);
+        Self::input_source(&mut ret, input_source);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

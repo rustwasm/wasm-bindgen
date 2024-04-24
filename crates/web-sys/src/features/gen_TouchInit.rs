@@ -162,8 +162,8 @@ impl TouchInit {
     pub fn new(identifier: i32, target: &EventTarget) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.identifier(identifier);
-        ret.target(target);
+        Self::identifier(&mut ret, identifier);
+        Self::target(&mut ret, target);
         ret
     }
     #[doc = "Change the `clientX` field of this object."]

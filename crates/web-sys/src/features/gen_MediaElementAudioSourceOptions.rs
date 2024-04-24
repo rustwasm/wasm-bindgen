@@ -41,7 +41,7 @@ impl MediaElementAudioSourceOptions {
     pub fn new(media_element: &HtmlMediaElement) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.media_element(media_element);
+        Self::media_element(&mut ret, media_element);
         ret
     }
     #[cfg(feature = "HtmlMediaElement")]

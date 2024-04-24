@@ -58,8 +58,8 @@ impl RtcRtpContributingSource {
     pub fn new(source: u32, timestamp: f64) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.source(source);
-        ret.timestamp(timestamp);
+        Self::source(&mut ret, source);
+        Self::timestamp(&mut ret, timestamp);
         ret
     }
     #[doc = "Change the `audioLevel` field of this object."]

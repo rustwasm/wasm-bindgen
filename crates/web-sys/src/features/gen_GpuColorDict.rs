@@ -99,10 +99,10 @@ impl GpuColorDict {
     pub fn new(a: f64, b: f64, g: f64, r: f64) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.a(a);
-        ret.b(b);
-        ret.g(g);
-        ret.r(r);
+        Self::a(&mut ret, a);
+        Self::b(&mut ret, b);
+        Self::g(&mut ret, g);
+        Self::r(&mut ret, r);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

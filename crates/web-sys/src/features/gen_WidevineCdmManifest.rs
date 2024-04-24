@@ -110,13 +110,13 @@ impl WidevineCdmManifest {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.description(description);
-        ret.name(name);
-        ret.version(version);
-        ret.x_cdm_codecs(x_cdm_codecs);
-        ret.x_cdm_host_versions(x_cdm_host_versions);
-        ret.x_cdm_interface_versions(x_cdm_interface_versions);
-        ret.x_cdm_module_versions(x_cdm_module_versions);
+        Self::description(&mut ret, description);
+        Self::name(&mut ret, name);
+        Self::version(&mut ret, version);
+        Self::x_cdm_codecs(&mut ret, x_cdm_codecs);
+        Self::x_cdm_host_versions(&mut ret, x_cdm_host_versions);
+        Self::x_cdm_interface_versions(&mut ret, x_cdm_interface_versions);
+        Self::x_cdm_module_versions(&mut ret, x_cdm_module_versions);
         ret
     }
     #[doc = "Change the `description` field of this object."]

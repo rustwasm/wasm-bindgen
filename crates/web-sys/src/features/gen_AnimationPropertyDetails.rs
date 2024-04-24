@@ -73,9 +73,9 @@ impl AnimationPropertyDetails {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.property(property);
-        ret.running_on_compositor(running_on_compositor);
-        ret.values(values);
+        Self::property(&mut ret, property);
+        Self::running_on_compositor(&mut ret, running_on_compositor);
+        Self::values(&mut ret, values);
         ret
     }
     #[doc = "Change the `property` field of this object."]

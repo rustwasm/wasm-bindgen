@@ -213,10 +213,10 @@ impl VideoFrameBufferInit {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.coded_height(coded_height);
-        ret.coded_width(coded_width);
-        ret.format(format);
-        ret.timestamp(timestamp);
+        Self::coded_height(&mut ret, coded_height);
+        Self::coded_width(&mut ret, coded_width);
+        Self::format(&mut ret, format);
+        Self::timestamp(&mut ret, timestamp);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

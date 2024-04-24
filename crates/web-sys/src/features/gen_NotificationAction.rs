@@ -58,8 +58,8 @@ impl NotificationAction {
     pub fn new(action: &str, title: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.action(action);
-        ret.title(title);
+        Self::action(&mut ret, action);
+        Self::title(&mut ret, title);
         ret
     }
     #[doc = "Change the `action` field of this object."]

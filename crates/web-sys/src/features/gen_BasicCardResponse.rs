@@ -95,7 +95,7 @@ impl BasicCardResponse {
     pub fn new(card_number: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.card_number(card_number);
+        Self::card_number(&mut ret, card_number);
         ret
     }
     #[cfg(feature = "PaymentAddress")]

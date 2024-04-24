@@ -50,8 +50,8 @@ impl RtcRtpCapabilities {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.codecs(codecs);
-        ret.header_extensions(header_extensions);
+        Self::codecs(&mut ret, codecs);
+        Self::header_extensions(&mut ret, header_extensions);
         ret
     }
     #[doc = "Change the `codecs` field of this object."]

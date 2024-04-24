@@ -200,7 +200,7 @@ impl GpuRenderPassDepthStencilAttachment {
     pub fn new(view: &GpuTextureView) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.view(view);
+        Self::view(&mut ret, view);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

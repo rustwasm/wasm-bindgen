@@ -47,8 +47,8 @@ impl EcdsaParams {
     pub fn new(name: &str, hash: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.hash(hash);
+        Self::name(&mut ret, name);
+        Self::hash(&mut ret, hash);
         ret
     }
     #[doc = "Change the `name` field of this object."]

@@ -98,10 +98,10 @@ impl CollectedClientData {
     pub fn new(challenge: &str, hash_algorithm: &str, origin: &str, type_: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.challenge(challenge);
-        ret.hash_algorithm(hash_algorithm);
-        ret.origin(origin);
-        ret.type_(type_);
+        Self::challenge(&mut ret, challenge);
+        Self::hash_algorithm(&mut ret, hash_algorithm);
+        Self::origin(&mut ret, origin);
+        Self::type_(&mut ret, type_);
         ret
     }
     #[doc = "Change the `challenge` field of this object."]

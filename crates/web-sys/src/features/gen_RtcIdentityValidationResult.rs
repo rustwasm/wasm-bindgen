@@ -47,8 +47,8 @@ impl RtcIdentityValidationResult {
     pub fn new(contents: &str, identity: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.contents(contents);
-        ret.identity(identity);
+        Self::contents(&mut ret, contents);
+        Self::identity(&mut ret, identity);
         ret
     }
     #[doc = "Change the `contents` field of this object."]

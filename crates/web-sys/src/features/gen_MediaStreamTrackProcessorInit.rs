@@ -72,7 +72,7 @@ impl MediaStreamTrackProcessorInit {
     pub fn new(track: &MediaStreamTrack) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.track(track);
+        Self::track(&mut ret, track);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

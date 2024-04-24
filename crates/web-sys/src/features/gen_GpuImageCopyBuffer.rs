@@ -104,7 +104,7 @@ impl GpuImageCopyBuffer {
     pub fn new(buffer: &GpuBuffer) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.buffer(buffer);
+        Self::buffer(&mut ret, buffer);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

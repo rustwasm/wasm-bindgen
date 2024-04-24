@@ -88,8 +88,8 @@ impl IirFilterOptions {
     pub fn new(feedback: &::wasm_bindgen::JsValue, feedforward: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.feedback(feedback);
-        ret.feedforward(feedforward);
+        Self::feedback(&mut ret, feedback);
+        Self::feedforward(&mut ret, feedforward);
         ret
     }
     #[doc = "Change the `channelCount` field of this object."]

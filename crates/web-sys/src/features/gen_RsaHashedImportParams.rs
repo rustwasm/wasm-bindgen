@@ -36,7 +36,7 @@ impl RsaHashedImportParams {
     pub fn new(hash: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.hash(hash);
+        Self::hash(&mut ret, hash);
         ret
     }
     #[doc = "Change the `hash` field of this object."]

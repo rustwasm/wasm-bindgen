@@ -47,8 +47,8 @@ impl AesKeyGenParams {
     pub fn new(name: &str, length: u16) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.length(length);
+        Self::name(&mut ret, name);
+        Self::length(&mut ret, length);
         ret
     }
     #[doc = "Change the `name` field of this object."]

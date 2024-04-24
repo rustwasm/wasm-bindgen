@@ -47,8 +47,8 @@ impl AesCbcParams {
     pub fn new(name: &str, iv: &::js_sys::Object) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.iv(iv);
+        Self::name(&mut ret, name);
+        Self::iv(&mut ret, iv);
         ret
     }
     #[doc = "Change the `name` field of this object."]

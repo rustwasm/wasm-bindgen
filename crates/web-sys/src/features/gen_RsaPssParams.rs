@@ -47,8 +47,8 @@ impl RsaPssParams {
     pub fn new(name: &str, salt_length: u32) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.salt_length(salt_length);
+        Self::name(&mut ret, name);
+        Self::salt_length(&mut ret, salt_length);
         ret
     }
     #[doc = "Change the `name` field of this object."]

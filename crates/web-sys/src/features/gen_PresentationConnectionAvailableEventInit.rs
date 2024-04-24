@@ -77,7 +77,7 @@ impl PresentationConnectionAvailableEventInit {
     pub fn new(connection: &PresentationConnection) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.connection(connection);
+        Self::connection(&mut ret, connection);
         ret
     }
     #[doc = "Change the `bubbles` field of this object."]

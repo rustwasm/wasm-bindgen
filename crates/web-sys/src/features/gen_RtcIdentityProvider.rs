@@ -50,8 +50,8 @@ impl RtcIdentityProvider {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.generate_assertion(generate_assertion);
-        ret.validate_assertion(validate_assertion);
+        Self::generate_assertion(&mut ret, generate_assertion);
+        Self::validate_assertion(&mut ret, validate_assertion);
         ret
     }
     #[doc = "Change the `generateAssertion` field of this object."]

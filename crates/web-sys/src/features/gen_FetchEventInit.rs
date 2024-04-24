@@ -96,7 +96,7 @@ impl FetchEventInit {
     pub fn new(request: &Request) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.request(request);
+        Self::request(&mut ret, request);
         ret
     }
     #[doc = "Change the `bubbles` field of this object."]

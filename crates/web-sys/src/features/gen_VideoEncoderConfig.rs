@@ -223,9 +223,9 @@ impl VideoEncoderConfig {
     pub fn new(codec: &str, height: u32, width: u32) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.codec(codec);
-        ret.height(height);
-        ret.width(width);
+        Self::codec(&mut ret, codec);
+        Self::height(&mut ret, height);
+        Self::width(&mut ret, width);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

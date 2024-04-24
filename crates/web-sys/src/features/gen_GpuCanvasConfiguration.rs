@@ -128,8 +128,8 @@ impl GpuCanvasConfiguration {
     pub fn new(device: &GpuDevice, format: GpuTextureFormat) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.device(device);
-        ret.format(format);
+        Self::device(&mut ret, device);
+        Self::format(&mut ret, format);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

@@ -104,7 +104,7 @@ impl MediaSessionActionDetails {
     pub fn new(action: MediaSessionAction) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.action(action);
+        Self::action(&mut ret, action);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

@@ -80,7 +80,7 @@ impl PromiseRejectionEventInit {
     pub fn new(promise: &::js_sys::Promise) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.promise(promise);
+        Self::promise(&mut ret, promise);
         ret
     }
     #[doc = "Change the `bubbles` field of this object."]

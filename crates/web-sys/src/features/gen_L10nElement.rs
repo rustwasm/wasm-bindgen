@@ -91,9 +91,9 @@ impl L10nElement {
     pub fn new(l10n_id: &str, local_name: &str, namespace_uri: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.l10n_id(l10n_id);
-        ret.local_name(local_name);
-        ret.namespace_uri(namespace_uri);
+        Self::l10n_id(&mut ret, l10n_id);
+        Self::local_name(&mut ret, local_name);
+        Self::namespace_uri(&mut ret, namespace_uri);
         ret
     }
     #[doc = "Change the `l10nArgs` field of this object."]

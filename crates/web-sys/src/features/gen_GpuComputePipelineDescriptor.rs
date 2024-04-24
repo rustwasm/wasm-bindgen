@@ -88,8 +88,8 @@ impl GpuComputePipelineDescriptor {
     pub fn new(layout: &::wasm_bindgen::JsValue, compute: &GpuProgrammableStage) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.layout(layout);
-        ret.compute(compute);
+        Self::layout(&mut ret, layout);
+        Self::compute(&mut ret, compute);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

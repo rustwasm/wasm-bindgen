@@ -140,9 +140,9 @@ impl XrInputSourcesChangeEventInit {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.added(added);
-        ret.removed(removed);
-        ret.session(session);
+        Self::added(&mut ret, added);
+        Self::removed(&mut ret, removed);
+        Self::session(&mut ret, session);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

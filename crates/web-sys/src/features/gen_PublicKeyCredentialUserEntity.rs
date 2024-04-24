@@ -69,9 +69,9 @@ impl PublicKeyCredentialUserEntity {
     pub fn new(name: &str, display_name: &str, id: &::js_sys::Object) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.display_name(display_name);
-        ret.id(id);
+        Self::name(&mut ret, name);
+        Self::display_name(&mut ret, display_name);
+        Self::id(&mut ret, id);
         ret
     }
     #[doc = "Change the `icon` field of this object."]

@@ -85,9 +85,9 @@ impl RtcRtpSourceEntry {
     pub fn new(source: u32, timestamp: f64, source_type: RtcRtpSourceEntryType) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.source(source);
-        ret.timestamp(timestamp);
-        ret.source_type(source_type);
+        Self::source(&mut ret, source);
+        Self::timestamp(&mut ret, timestamp);
+        Self::source_type(&mut ret, source_type);
         ret
     }
     #[doc = "Change the `audioLevel` field of this object."]

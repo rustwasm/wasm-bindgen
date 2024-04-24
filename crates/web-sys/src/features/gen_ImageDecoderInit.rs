@@ -155,8 +155,8 @@ impl ImageDecoderInit {
     pub fn new(data: &::wasm_bindgen::JsValue, type_: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.data(data);
-        ret.type_(type_);
+        Self::data(&mut ret, data);
+        Self::type_(&mut ret, type_);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

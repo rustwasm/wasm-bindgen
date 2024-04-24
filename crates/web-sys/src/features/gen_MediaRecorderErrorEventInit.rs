@@ -74,7 +74,7 @@ impl MediaRecorderErrorEventInit {
     pub fn new(error: &DomException) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.error(error);
+        Self::error(&mut ret, error);
         ret
     }
     #[doc = "Change the `bubbles` field of this object."]

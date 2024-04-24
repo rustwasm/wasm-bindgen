@@ -47,8 +47,8 @@ impl AttributeNameValue {
     pub fn new(name: &str, value: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.value(value);
+        Self::name(&mut ret, name);
+        Self::value(&mut ret, value);
         ret
     }
     #[doc = "Change the `name` field of this object."]

@@ -76,8 +76,8 @@ impl GpuBlendState {
     pub fn new(alpha: &GpuBlendComponent, color: &GpuBlendComponent) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.alpha(alpha);
-        ret.color(color);
+        Self::alpha(&mut ret, alpha);
+        Self::color(&mut ret, color);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

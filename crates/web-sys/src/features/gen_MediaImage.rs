@@ -83,7 +83,7 @@ impl MediaImage {
     pub fn new(src: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.src(src);
+        Self::src(&mut ret, src);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

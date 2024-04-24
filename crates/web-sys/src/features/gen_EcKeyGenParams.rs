@@ -47,8 +47,8 @@ impl EcKeyGenParams {
     pub fn new(name: &str, named_curve: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.named_curve(named_curve);
+        Self::name(&mut ret, name);
+        Self::named_curve(&mut ret, named_curve);
         ret
     }
     #[doc = "Change the `name` field of this object."]

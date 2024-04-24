@@ -104,9 +104,9 @@ impl EncodedVideoChunkInit {
     pub fn new(data: &::js_sys::Object, timestamp: f64, type_: EncodedVideoChunkType) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.data(data);
-        ret.timestamp(timestamp);
-        ret.type_(type_);
+        Self::data(&mut ret, data);
+        Self::timestamp(&mut ret, timestamp);
+        Self::type_(&mut ret, type_);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

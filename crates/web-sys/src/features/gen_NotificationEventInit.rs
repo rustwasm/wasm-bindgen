@@ -74,7 +74,7 @@ impl NotificationEventInit {
     pub fn new(notification: &Notification) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.notification(notification);
+        Self::notification(&mut ret, notification);
         ret
     }
     #[doc = "Change the `bubbles` field of this object."]

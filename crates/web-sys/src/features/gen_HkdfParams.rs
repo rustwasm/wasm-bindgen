@@ -74,10 +74,10 @@ impl HkdfParams {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.hash(hash);
-        ret.info(info);
-        ret.salt(salt);
+        Self::name(&mut ret, name);
+        Self::hash(&mut ret, hash);
+        Self::info(&mut ret, info);
+        Self::salt(&mut ret, salt);
         ret
     }
     #[doc = "Change the `name` field of this object."]

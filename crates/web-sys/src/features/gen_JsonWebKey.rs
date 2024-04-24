@@ -223,7 +223,7 @@ impl JsonWebKey {
     pub fn new(kty: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.kty(kty);
+        Self::kty(&mut ret, kty);
         ret
     }
     #[doc = "Change the `alg` field of this object."]

@@ -56,8 +56,8 @@ impl ReadableWritablePair {
     pub fn new(readable: &ReadableStream, writable: &WritableStream) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.readable(readable);
-        ret.writable(writable);
+        Self::readable(&mut ret, readable);
+        Self::writable(&mut ret, writable);
         ret
     }
     #[cfg(feature = "ReadableStream")]

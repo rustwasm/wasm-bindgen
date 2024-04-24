@@ -847,7 +847,7 @@ impl Dictionary {
                 let name = &field.name;
                 let ty = &field.ty;
                 required_args.push(quote!( #name: #ty ));
-                required_calls.push(quote!( ret.#name(#name); ));
+                required_calls.push(quote!( Self::#name(&mut ret, #name); ));
                 add_features(&mut required_features, &field.ty);
             }
         }

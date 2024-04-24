@@ -168,8 +168,8 @@ impl GpuRenderPipelineDescriptor {
     pub fn new(layout: &::wasm_bindgen::JsValue, vertex: &GpuVertexState) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.layout(layout);
-        ret.vertex(vertex);
+        Self::layout(&mut ret, layout);
+        Self::vertex(&mut ret, vertex);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

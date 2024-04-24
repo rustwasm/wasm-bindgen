@@ -99,9 +99,9 @@ impl AudioDecoderConfig {
     pub fn new(codec: &str, number_of_channels: u32, sample_rate: u32) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.codec(codec);
-        ret.number_of_channels(number_of_channels);
-        ret.sample_rate(sample_rate);
+        Self::codec(&mut ret, codec);
+        Self::number_of_channels(&mut ret, number_of_channels);
+        Self::sample_rate(&mut ret, sample_rate);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

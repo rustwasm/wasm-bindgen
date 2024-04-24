@@ -52,8 +52,8 @@ impl DhKeyDeriveParams {
     pub fn new(name: &str, public: &CryptoKey) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.public(public);
+        Self::name(&mut ret, name);
+        Self::public(&mut ret, public);
         ret
     }
     #[doc = "Change the `name` field of this object."]

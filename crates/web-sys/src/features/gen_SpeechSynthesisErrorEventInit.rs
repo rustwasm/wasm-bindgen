@@ -136,8 +136,8 @@ impl SpeechSynthesisErrorEventInit {
     pub fn new(utterance: &SpeechSynthesisUtterance, error: SpeechSynthesisErrorCode) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.utterance(utterance);
-        ret.error(error);
+        Self::utterance(&mut ret, utterance);
+        Self::error(&mut ret, error);
         ret
     }
     #[doc = "Change the `bubbles` field of this object."]

@@ -47,7 +47,7 @@ impl PerformanceObserverInit {
     pub fn new(entry_types: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.entry_types(entry_types);
+        Self::entry_types(&mut ret, entry_types);
         ret
     }
     #[doc = "Change the `buffered` field of this object."]

@@ -58,8 +58,8 @@ impl OfflineAudioContextOptions {
     pub fn new(length: u32, sample_rate: f32) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.length(length);
-        ret.sample_rate(sample_rate);
+        Self::length(&mut ret, length);
+        Self::sample_rate(&mut ret, sample_rate);
         ret
     }
     #[doc = "Change the `length` field of this object."]

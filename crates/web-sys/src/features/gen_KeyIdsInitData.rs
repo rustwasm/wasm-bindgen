@@ -36,7 +36,7 @@ impl KeyIdsInitData {
     pub fn new(kids: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.kids(kids);
+        Self::kids(&mut ret, kids);
         ret
     }
     #[doc = "Change the `kids` field of this object."]

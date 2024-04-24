@@ -51,7 +51,7 @@ impl MediaStreamTrackGeneratorInit {
     pub fn new(kind: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.kind(kind);
+        Self::kind(&mut ret, kind);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

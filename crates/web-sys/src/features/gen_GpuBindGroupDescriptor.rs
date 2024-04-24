@@ -88,8 +88,8 @@ impl GpuBindGroupDescriptor {
     pub fn new(entries: &::wasm_bindgen::JsValue, layout: &GpuBindGroupLayout) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.entries(entries);
-        ret.layout(layout);
+        Self::entries(&mut ret, entries);
+        Self::layout(&mut ret, layout);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

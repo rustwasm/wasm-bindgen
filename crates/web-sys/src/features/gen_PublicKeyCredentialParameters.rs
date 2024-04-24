@@ -52,8 +52,8 @@ impl PublicKeyCredentialParameters {
     pub fn new(alg: i32, type_: PublicKeyCredentialType) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.alg(alg);
-        ret.type_(type_);
+        Self::alg(&mut ret, alg);
+        Self::type_(&mut ret, type_);
         ret
     }
     #[doc = "Change the `alg` field of this object."]

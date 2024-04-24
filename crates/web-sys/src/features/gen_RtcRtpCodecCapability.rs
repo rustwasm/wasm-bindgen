@@ -69,8 +69,8 @@ impl RtcRtpCodecCapability {
     pub fn new(clock_rate: u32, mime_type: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.clock_rate(clock_rate);
-        ret.mime_type(mime_type);
+        Self::clock_rate(&mut ret, clock_rate);
+        Self::mime_type(&mut ret, mime_type);
         ret
     }
     #[doc = "Change the `channels` field of this object."]

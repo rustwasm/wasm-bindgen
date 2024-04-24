@@ -63,8 +63,8 @@ impl PublicKeyCredentialDescriptor {
     pub fn new(id: &::js_sys::Object, type_: PublicKeyCredentialType) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.id(id);
-        ret.type_(type_);
+        Self::id(&mut ret, id);
+        Self::type_(&mut ret, type_);
         ret
     }
     #[doc = "Change the `id` field of this object."]

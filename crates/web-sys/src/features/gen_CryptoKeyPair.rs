@@ -56,8 +56,8 @@ impl CryptoKeyPair {
     pub fn new(private_key: &CryptoKey, public_key: &CryptoKey) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.private_key(private_key);
-        ret.public_key(public_key);
+        Self::private_key(&mut ret, private_key);
+        Self::public_key(&mut ret, public_key);
         ret
     }
     #[cfg(feature = "CryptoKey")]

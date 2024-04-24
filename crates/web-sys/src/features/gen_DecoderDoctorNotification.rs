@@ -111,9 +111,9 @@ impl DecoderDoctorNotification {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.decoder_doctor_report_id(decoder_doctor_report_id);
-        ret.is_solved(is_solved);
-        ret.type_(type_);
+        Self::decoder_doctor_report_id(&mut ret, decoder_doctor_report_id);
+        Self::is_solved(&mut ret, is_solved);
+        Self::type_(&mut ret, type_);
         ret
     }
     #[doc = "Change the `decodeIssue` field of this object."]

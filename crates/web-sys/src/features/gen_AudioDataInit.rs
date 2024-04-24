@@ -143,12 +143,12 @@ impl AudioDataInit {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.data(data);
-        ret.format(format);
-        ret.number_of_channels(number_of_channels);
-        ret.number_of_frames(number_of_frames);
-        ret.sample_rate(sample_rate);
-        ret.timestamp(timestamp);
+        Self::data(&mut ret, data);
+        Self::format(&mut ret, format);
+        Self::number_of_channels(&mut ret, number_of_channels);
+        Self::number_of_frames(&mut ret, number_of_frames);
+        Self::sample_rate(&mut ret, sample_rate);
+        Self::timestamp(&mut ret, timestamp);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

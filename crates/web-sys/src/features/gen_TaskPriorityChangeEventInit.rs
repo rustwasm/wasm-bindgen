@@ -104,7 +104,7 @@ impl TaskPriorityChangeEventInit {
     pub fn new(previous_priority: TaskPriority) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.previous_priority(previous_priority);
+        Self::previous_priority(&mut ret, previous_priority);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

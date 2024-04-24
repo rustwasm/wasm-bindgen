@@ -52,7 +52,7 @@ impl RtcSessionDescriptionInit {
     pub fn new(type_: RtcSdpType) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.type_(type_);
+        Self::type_(&mut ret, type_);
         ret
     }
     #[doc = "Change the `sdp` field of this object."]

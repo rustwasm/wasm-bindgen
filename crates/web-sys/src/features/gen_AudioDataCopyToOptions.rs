@@ -103,7 +103,7 @@ impl AudioDataCopyToOptions {
     pub fn new(plane_index: u32) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.plane_index(plane_index);
+        Self::plane_index(&mut ret, plane_index);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

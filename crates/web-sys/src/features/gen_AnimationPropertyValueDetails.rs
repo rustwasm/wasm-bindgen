@@ -74,8 +74,8 @@ impl AnimationPropertyValueDetails {
     pub fn new(composite: CompositeOperation, offset: f64) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.composite(composite);
-        ret.offset(offset);
+        Self::composite(&mut ret, composite);
+        Self::offset(&mut ret, offset);
         ret
     }
     #[cfg(feature = "CompositeOperation")]

@@ -52,8 +52,8 @@ impl RequestMediaKeySystemAccessNotification {
     pub fn new(key_system: &str, status: MediaKeySystemStatus) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.key_system(key_system);
-        ret.status(status);
+        Self::key_system(&mut ret, key_system);
+        Self::status(&mut ret, status);
         ret
     }
     #[doc = "Change the `keySystem` field of this object."]

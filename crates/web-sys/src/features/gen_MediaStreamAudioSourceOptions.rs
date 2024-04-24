@@ -41,7 +41,7 @@ impl MediaStreamAudioSourceOptions {
     pub fn new(media_stream: &MediaStream) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.media_stream(media_stream);
+        Self::media_stream(&mut ret, media_stream);
         ret
     }
     #[cfg(feature = "MediaStream")]

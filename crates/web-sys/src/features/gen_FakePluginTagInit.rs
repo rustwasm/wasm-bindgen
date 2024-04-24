@@ -124,8 +124,8 @@ impl FakePluginTagInit {
     pub fn new(handler_uri: &str, mime_entries: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.handler_uri(handler_uri);
-        ret.mime_entries(mime_entries);
+        Self::handler_uri(&mut ret, handler_uri);
+        Self::mime_entries(&mut ret, mime_entries);
         ret
     }
     #[doc = "Change the `description` field of this object."]

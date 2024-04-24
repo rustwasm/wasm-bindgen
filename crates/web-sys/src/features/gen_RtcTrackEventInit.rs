@@ -123,9 +123,9 @@ impl RtcTrackEventInit {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.receiver(receiver);
-        ret.track(track);
-        ret.transceiver(transceiver);
+        Self::receiver(&mut ret, receiver);
+        Self::track(&mut ret, track);
+        Self::transceiver(&mut ret, transceiver);
         ret
     }
     #[doc = "Change the `bubbles` field of this object."]

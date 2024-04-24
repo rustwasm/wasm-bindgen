@@ -67,7 +67,7 @@ impl GpuExternalTextureDescriptor {
     pub fn new(source: &::js_sys::Object) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.source(source);
+        Self::source(&mut ret, source);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

@@ -90,7 +90,7 @@ impl PresentationConnectionCloseEventInit {
     pub fn new(reason: PresentationConnectionClosedReason) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.reason(reason);
+        Self::reason(&mut ret, reason);
         ret
     }
     #[doc = "Change the `bubbles` field of this object."]

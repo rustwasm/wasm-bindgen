@@ -104,7 +104,7 @@ impl HidConnectionEventInit {
     pub fn new(device: &HidDevice) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.device(device);
+        Self::device(&mut ret, device);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

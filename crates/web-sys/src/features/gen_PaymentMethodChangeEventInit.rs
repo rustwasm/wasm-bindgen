@@ -80,7 +80,7 @@ impl PaymentMethodChangeEventInit {
     pub fn new(method_name: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.method_name(method_name);
+        Self::method_name(&mut ret, method_name);
         ret
     }
     #[doc = "Change the `bubbles` field of this object."]

@@ -58,9 +58,9 @@ impl RsaOtherPrimesInfo {
     pub fn new(d: &str, r: &str, t: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.d(d);
-        ret.r(r);
-        ret.t(t);
+        Self::d(&mut ret, d);
+        Self::r(&mut ret, r);
+        Self::t(&mut ret, t);
         ret
     }
     #[doc = "Change the `d` field of this object."]

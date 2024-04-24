@@ -52,8 +52,8 @@ impl RtcIdentityAssertionResult {
     pub fn new(assertion: &str, idp: &RtcIdentityProviderDetails) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.assertion(assertion);
-        ret.idp(idp);
+        Self::assertion(&mut ret, assertion);
+        Self::idp(&mut ret, idp);
         ret
     }
     #[doc = "Change the `assertion` field of this object."]

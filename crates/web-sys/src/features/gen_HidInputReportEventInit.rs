@@ -136,9 +136,9 @@ impl HidInputReportEventInit {
     pub fn new(data: &::js_sys::DataView, device: &HidDevice, report_id: u8) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.data(data);
-        ret.device(device);
-        ret.report_id(report_id);
+        Self::data(&mut ret, data);
+        Self::device(&mut ret, device);
+        Self::report_id(&mut ret, report_id);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

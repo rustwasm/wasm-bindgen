@@ -63,9 +63,9 @@ impl HmacKeyAlgorithm {
     pub fn new(name: &str, hash: &KeyAlgorithm, length: u32) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.hash(hash);
-        ret.length(length);
+        Self::name(&mut ret, name);
+        Self::hash(&mut ret, hash);
+        Self::length(&mut ret, length);
         ret
     }
     #[doc = "Change the `name` field of this object."]

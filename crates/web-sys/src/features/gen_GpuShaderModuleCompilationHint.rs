@@ -67,7 +67,7 @@ impl GpuShaderModuleCompilationHint {
     pub fn new(entry_point: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.entry_point(entry_point);
+        Self::entry_point(&mut ret, entry_point);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

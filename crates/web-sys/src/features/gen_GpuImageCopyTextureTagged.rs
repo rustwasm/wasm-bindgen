@@ -124,7 +124,7 @@ impl GpuImageCopyTextureTagged {
     pub fn new(texture: &GpuTexture) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.texture(texture);
+        Self::texture(&mut ret, texture);
         ret
     }
     #[cfg(web_sys_unstable_apis)]
