@@ -32,8 +32,7 @@ dictionary ManyTypes {
   short n4;
   unsigned long n5;
   long n6;
-  // TODO: needs fixing
-  // OtherDict c;
+  OtherDict c;
 };
 
 dictionary OtherDict {

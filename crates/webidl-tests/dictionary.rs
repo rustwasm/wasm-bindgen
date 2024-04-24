@@ -1,4 +1,4 @@
-use crate::generated::{CamelCaseMe, ManyTypes, PreserveNames, Required, A, B, C};
+use crate::generated::{CamelCaseMe, ManyTypes, OtherDict, PreserveNames, Required, A, B, C};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 
@@ -67,6 +67,9 @@ fn roundtrip_set_get() {
     many_types.n4(4);
     many_types.n5(5);
     many_types.n6(6);
+    let mut other_dict = OtherDict::new();
+    other_dict.a(42);
+    many_types.c(&other_dict);
 
     {
         use crate::generated::ManyTypesGetters;
@@ -77,5 +80,6 @@ fn roundtrip_set_get() {
         assert_eq!(many_types.n4(), 4);
         assert_eq!(many_types.n5(), 5);
         assert_eq!(many_types.n6(), 6);
+        assert_eq!(many_types.c(), other_dict);
     }
 }
