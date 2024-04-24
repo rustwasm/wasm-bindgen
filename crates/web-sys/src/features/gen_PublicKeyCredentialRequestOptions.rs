@@ -23,16 +23,14 @@ extern "C" {
         this: &PublicKeyCredentialRequestOptions,
         val: &AuthenticationExtensionsClientInputs,
     );
+    #[wasm_bindgen(method, setter = "hints")]
+    fn hints_shim(this: &PublicKeyCredentialRequestOptions, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, setter = "rpId")]
     fn rp_id_shim(this: &PublicKeyCredentialRequestOptions, val: &str);
     #[wasm_bindgen(method, setter = "timeout")]
     fn timeout_shim(this: &PublicKeyCredentialRequestOptions, val: u32);
-    #[cfg(feature = "UserVerificationRequirement")]
     #[wasm_bindgen(method, setter = "userVerification")]
-    fn user_verification_shim(
-        this: &PublicKeyCredentialRequestOptions,
-        val: UserVerificationRequirement,
-    );
+    fn user_verification_shim(this: &PublicKeyCredentialRequestOptions, val: &str);
 }
 impl PublicKeyCredentialRequestOptions {
     #[doc = "Construct a new `PublicKeyCredentialRequestOptions`."]
@@ -66,6 +64,13 @@ impl PublicKeyCredentialRequestOptions {
         self.extensions_shim(val);
         self
     }
+    #[doc = "Change the `hints` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRequestOptions`*"]
+    pub fn hints(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
+        self.hints_shim(val);
+        self
+    }
     #[doc = "Change the `rpId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRequestOptions`*"]
@@ -80,11 +85,10 @@ impl PublicKeyCredentialRequestOptions {
         self.timeout_shim(val);
         self
     }
-    #[cfg(feature = "UserVerificationRequirement")]
     #[doc = "Change the `userVerification` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRequestOptions`, `UserVerificationRequirement`*"]
-    pub fn user_verification(&mut self, val: UserVerificationRequirement) -> &mut Self {
+    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRequestOptions`*"]
+    pub fn user_verification(&mut self, val: &str) -> &mut Self {
         self.user_verification_shim(val);
         self
     }

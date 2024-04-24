@@ -13,6 +13,9 @@ extern "C" {
     #[cfg(feature = "PublicKeyCredentialCreationOptions")]
     #[wasm_bindgen(method, setter = "publicKey")]
     fn public_key_shim(this: &CredentialCreationOptions, val: &PublicKeyCredentialCreationOptions);
+    #[cfg(feature = "PublicKeyCredentialCreationOptions")]
+    #[wasm_bindgen(method, setter = "publicKey")]
+    fn public_key_shim(this: &CredentialCreationOptions, val: &PublicKeyCredentialCreationOptions);
     #[cfg(feature = "AbortSignal")]
     #[wasm_bindgen(method, setter = "signal")]
     fn signal_shim(this: &CredentialCreationOptions, val: &AbortSignal);
@@ -25,6 +28,14 @@ impl CredentialCreationOptions {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
+    }
+    #[cfg(feature = "PublicKeyCredentialCreationOptions")]
+    #[doc = "Change the `publicKey` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CredentialCreationOptions`, `PublicKeyCredentialCreationOptions`*"]
+    pub fn public_key(&mut self, val: &PublicKeyCredentialCreationOptions) -> &mut Self {
+        self.public_key_shim(val);
+        self
     }
     #[cfg(feature = "PublicKeyCredentialCreationOptions")]
     #[doc = "Change the `publicKey` field of this object."]

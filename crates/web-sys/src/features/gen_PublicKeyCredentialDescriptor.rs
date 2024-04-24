@@ -14,16 +14,14 @@ extern "C" {
     fn id_shim(this: &PublicKeyCredentialDescriptor, val: &::js_sys::Object);
     #[wasm_bindgen(method, setter = "transports")]
     fn transports_shim(this: &PublicKeyCredentialDescriptor, val: &::wasm_bindgen::JsValue);
-    #[cfg(feature = "PublicKeyCredentialType")]
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &PublicKeyCredentialDescriptor, val: PublicKeyCredentialType);
+    fn type__shim(this: &PublicKeyCredentialDescriptor, val: &str);
 }
 impl PublicKeyCredentialDescriptor {
-    #[cfg(feature = "PublicKeyCredentialType")]
     #[doc = "Construct a new `PublicKeyCredentialDescriptor`."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialDescriptor`, `PublicKeyCredentialType`*"]
-    pub fn new(id: &::js_sys::Object, type_: PublicKeyCredentialType) -> Self {
+    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialDescriptor`*"]
+    pub fn new(id: &::js_sys::Object, type_: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret.id(id);
@@ -44,11 +42,10 @@ impl PublicKeyCredentialDescriptor {
         self.transports_shim(val);
         self
     }
-    #[cfg(feature = "PublicKeyCredentialType")]
     #[doc = "Change the `type` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialDescriptor`, `PublicKeyCredentialType`*"]
-    pub fn type_(&mut self, val: PublicKeyCredentialType) -> &mut Self {
+    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialDescriptor`*"]
+    pub fn type_(&mut self, val: &str) -> &mut Self {
         self.type__shim(val);
         self
     }

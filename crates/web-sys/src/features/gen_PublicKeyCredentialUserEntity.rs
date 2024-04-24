@@ -10,8 +10,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
     pub type PublicKeyCredentialUserEntity;
-    #[wasm_bindgen(method, setter = "icon")]
-    fn icon_shim(this: &PublicKeyCredentialUserEntity, val: &str);
     #[wasm_bindgen(method, setter = "name")]
     fn name_shim(this: &PublicKeyCredentialUserEntity, val: &str);
     #[wasm_bindgen(method, setter = "displayName")]
@@ -30,13 +28,6 @@ impl PublicKeyCredentialUserEntity {
         ret.display_name(display_name);
         ret.id(id);
         ret
-    }
-    #[doc = "Change the `icon` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
-    pub fn icon(&mut self, val: &str) -> &mut Self {
-        self.icon_shim(val);
-        self
     }
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]

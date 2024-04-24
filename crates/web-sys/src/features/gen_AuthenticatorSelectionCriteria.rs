@@ -10,20 +10,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticatorSelectionCriteria`*"]
     pub type AuthenticatorSelectionCriteria;
-    #[cfg(feature = "AuthenticatorAttachment")]
     #[wasm_bindgen(method, setter = "authenticatorAttachment")]
-    fn authenticator_attachment_shim(
-        this: &AuthenticatorSelectionCriteria,
-        val: AuthenticatorAttachment,
-    );
+    fn authenticator_attachment_shim(this: &AuthenticatorSelectionCriteria, val: &str);
     #[wasm_bindgen(method, setter = "requireResidentKey")]
     fn require_resident_key_shim(this: &AuthenticatorSelectionCriteria, val: bool);
-    #[cfg(feature = "UserVerificationRequirement")]
+    #[wasm_bindgen(method, setter = "residentKey")]
+    fn resident_key_shim(this: &AuthenticatorSelectionCriteria, val: &str);
     #[wasm_bindgen(method, setter = "userVerification")]
-    fn user_verification_shim(
-        this: &AuthenticatorSelectionCriteria,
-        val: UserVerificationRequirement,
-    );
+    fn user_verification_shim(this: &AuthenticatorSelectionCriteria, val: &str);
 }
 impl AuthenticatorSelectionCriteria {
     #[doc = "Construct a new `AuthenticatorSelectionCriteria`."]
@@ -34,11 +28,10 @@ impl AuthenticatorSelectionCriteria {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[cfg(feature = "AuthenticatorAttachment")]
     #[doc = "Change the `authenticatorAttachment` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AuthenticatorAttachment`, `AuthenticatorSelectionCriteria`*"]
-    pub fn authenticator_attachment(&mut self, val: AuthenticatorAttachment) -> &mut Self {
+    #[doc = "*This API requires the following crate features to be activated: `AuthenticatorSelectionCriteria`*"]
+    pub fn authenticator_attachment(&mut self, val: &str) -> &mut Self {
         self.authenticator_attachment_shim(val);
         self
     }
@@ -49,11 +42,17 @@ impl AuthenticatorSelectionCriteria {
         self.require_resident_key_shim(val);
         self
     }
-    #[cfg(feature = "UserVerificationRequirement")]
+    #[doc = "Change the `residentKey` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AuthenticatorSelectionCriteria`*"]
+    pub fn resident_key(&mut self, val: &str) -> &mut Self {
+        self.resident_key_shim(val);
+        self
+    }
     #[doc = "Change the `userVerification` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AuthenticatorSelectionCriteria`, `UserVerificationRequirement`*"]
-    pub fn user_verification(&mut self, val: UserVerificationRequirement) -> &mut Self {
+    #[doc = "*This API requires the following crate features to be activated: `AuthenticatorSelectionCriteria`*"]
+    pub fn user_verification(&mut self, val: &str) -> &mut Self {
         self.user_verification_shim(val);
         self
     }
