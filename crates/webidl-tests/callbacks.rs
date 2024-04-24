@@ -1,4 +1,4 @@
-use crate::generated::*;
+use crate::generated::{CallbackInterface1, CallbackInterface2, TakeCallbackInterface};
 use js_sys::Function;
 use wasm_bindgen_test::*;
 

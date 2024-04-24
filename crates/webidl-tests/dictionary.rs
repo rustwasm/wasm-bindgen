@@ -1,4 +1,4 @@
-use crate::generated::*;
+use crate::generated::{CamelCaseMe, ManyTypes, PreserveNames, Required, A, B, C};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 
