@@ -72,7 +72,7 @@ fn roundtrip_set_get() {
     many_types.c(&other_dict);
 
     {
-        use crate::generated::ManyTypesGetters;
+        use crate::generated::{ManyTypesGetters, OtherDictGetters};
         assert_eq!(many_types.a(), "a");
         assert_eq!(many_types.n1(), 1);
         assert_eq!(many_types.n2(), 2);
@@ -81,5 +81,13 @@ fn roundtrip_set_get() {
         assert_eq!(many_types.n5(), 5);
         assert_eq!(many_types.n6(), 6);
         assert_eq!(many_types.c(), other_dict);
+        assert_eq!(many_types.c().a(), 42);
+    }
+
+    crate::generated::ManyTypesGetters::c(&many_types).a(1337);
+
+    {
+        use crate::generated::{ManyTypesGetters, OtherDictGetters};
+        assert_eq!(many_types.c().a(), 1337);
     }
 }
