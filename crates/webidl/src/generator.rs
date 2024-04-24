@@ -701,9 +701,7 @@ impl DictionaryField {
             &required_doc_string(options, features),
         );
 
-        let Some(return_ty) = return_ty else {
-            return None;
-        };
+        let return_ty = return_ty.as_ref()?;
 
         quote! {
             #unstable_attr
@@ -731,9 +729,7 @@ impl DictionaryField {
 
         let unstable_attr = maybe_unstable_attr(*unstable);
 
-        let Some(return_ty) = return_ty else {
-            return None;
-        };
+        let return_ty = return_ty.as_ref()?;
         let shim_name = self.shim_name();
 
         quote! {
