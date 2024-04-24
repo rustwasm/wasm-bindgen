@@ -56,3 +56,26 @@ fn required() {
 fn correct_casing_in_js() {
     assert_camel_case(PreserveNames::new().weird_field_name(1));
 }
+
+#[wasm_bindgen_test]
+fn roundtrip_set_get() {
+    let mut many_types = ManyTypes::new();
+    many_types.a("a");
+    many_types.n1(1);
+    many_types.n2(2);
+    many_types.n3(3);
+    many_types.n4(4);
+    many_types.n5(5);
+    many_types.n6(6);
+
+    {
+        use crate::generated::ManyTypesGetters;
+        assert_eq!(many_types.a(), "a");
+        assert_eq!(many_types.n1(), 1);
+        assert_eq!(many_types.n2(), 2);
+        assert_eq!(many_types.n3(), 3);
+        assert_eq!(many_types.n4(), 4);
+        assert_eq!(many_types.n5(), 5);
+        assert_eq!(many_types.n6(), 6);
+    }
+}
