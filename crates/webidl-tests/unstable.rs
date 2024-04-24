@@ -1,5 +1,5 @@
 #[cfg(web_sys_unstable_apis)]
-use crate::generated::*;
+use crate::generated::{GetUnstableInterface, UnstableDictionary, UnstableEnum};
 #[cfg(web_sys_unstable_apis)]
 use wasm_bindgen_test::*;
 
