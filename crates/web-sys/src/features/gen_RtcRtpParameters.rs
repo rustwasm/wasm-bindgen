@@ -11,20 +11,20 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpParameters`*"]
     pub type RtcRtpParameters;
     #[wasm_bindgen(method, getter = "codecs")]
-    fn codecs_shim(this: &RtcRtpParameters) -> &::wasm_bindgen::JsValue;
+    fn codecs_shim(this: &RtcRtpParameters) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "codecs")]
     fn set_codecs_shim(this: &RtcRtpParameters, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "encodings")]
-    fn encodings_shim(this: &RtcRtpParameters) -> &::wasm_bindgen::JsValue;
+    fn encodings_shim(this: &RtcRtpParameters) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "encodings")]
     fn set_encodings_shim(this: &RtcRtpParameters, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "headerExtensions")]
-    fn header_extensions_shim(this: &RtcRtpParameters) -> &::wasm_bindgen::JsValue;
+    fn header_extensions_shim(this: &RtcRtpParameters) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "headerExtensions")]
     fn set_header_extensions_shim(this: &RtcRtpParameters, val: &::wasm_bindgen::JsValue);
     #[cfg(feature = "RtcRtcpParameters")]
     #[wasm_bindgen(method, getter = "rtcp")]
-    fn rtcp_shim(this: &RtcRtpParameters) -> &RtcRtcpParameters;
+    fn rtcp_shim(this: &RtcRtpParameters) -> RtcRtcpParameters;
     #[cfg(feature = "RtcRtcpParameters")]
     #[wasm_bindgen(method, setter = "rtcp")]
     fn set_rtcp_shim(this: &RtcRtpParameters, val: &RtcRtcpParameters);
@@ -36,33 +36,33 @@ pub trait RtcRtpParametersGetters {
     #[doc = "Get the `codecs` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpParameters`*"]
-    fn codecs(&self) -> &::wasm_bindgen::JsValue;
+    fn codecs(&self) -> ::js_sys::Array;
     #[doc = "Get the `encodings` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpParameters`*"]
-    fn encodings(&self) -> &::wasm_bindgen::JsValue;
+    fn encodings(&self) -> ::js_sys::Array;
     #[doc = "Get the `headerExtensions` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpParameters`*"]
-    fn header_extensions(&self) -> &::wasm_bindgen::JsValue;
+    fn header_extensions(&self) -> ::js_sys::Array;
     #[cfg(feature = "RtcRtcpParameters")]
     #[doc = "Get the `rtcp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtcpParameters`, `RtcRtpParameters`*"]
-    fn rtcp(&self) -> &RtcRtcpParameters;
+    fn rtcp(&self) -> RtcRtcpParameters;
 }
 impl RtcRtpParametersGetters for RtcRtpParameters {
-    fn codecs(&self) -> &::wasm_bindgen::JsValue {
+    fn codecs(&self) -> ::js_sys::Array {
         self.codecs_shim()
     }
-    fn encodings(&self) -> &::wasm_bindgen::JsValue {
+    fn encodings(&self) -> ::js_sys::Array {
         self.encodings_shim()
     }
-    fn header_extensions(&self) -> &::wasm_bindgen::JsValue {
+    fn header_extensions(&self) -> ::js_sys::Array {
         self.header_extensions_shim()
     }
     #[cfg(feature = "RtcRtcpParameters")]
-    fn rtcp(&self) -> &RtcRtcpParameters {
+    fn rtcp(&self) -> RtcRtcpParameters {
         self.rtcp_shim()
     }
 }

@@ -25,7 +25,7 @@ extern "C" {
     );
     #[cfg(feature = "RtcFecParameters")]
     #[wasm_bindgen(method, getter = "fec")]
-    fn fec_shim(this: &RtcRtpEncodingParameters) -> &RtcFecParameters;
+    fn fec_shim(this: &RtcRtpEncodingParameters) -> RtcFecParameters;
     #[cfg(feature = "RtcFecParameters")]
     #[wasm_bindgen(method, setter = "fec")]
     fn set_fec_shim(this: &RtcRtpEncodingParameters, val: &RtcFecParameters);
@@ -40,17 +40,17 @@ extern "C" {
     #[wasm_bindgen(method, setter = "priority")]
     fn set_priority_shim(this: &RtcRtpEncodingParameters, val: RtcPriorityType);
     #[wasm_bindgen(method, getter = "rid")]
-    fn rid_shim(this: &RtcRtpEncodingParameters) -> &str;
+    fn rid_shim(this: &RtcRtpEncodingParameters) -> String;
     #[wasm_bindgen(method, setter = "rid")]
     fn set_rid_shim(this: &RtcRtpEncodingParameters, val: &str);
     #[cfg(feature = "RtcRtxParameters")]
     #[wasm_bindgen(method, getter = "rtx")]
-    fn rtx_shim(this: &RtcRtpEncodingParameters) -> &RtcRtxParameters;
+    fn rtx_shim(this: &RtcRtpEncodingParameters) -> RtcRtxParameters;
     #[cfg(feature = "RtcRtxParameters")]
     #[wasm_bindgen(method, setter = "rtx")]
     fn set_rtx_shim(this: &RtcRtpEncodingParameters, val: &RtcRtxParameters);
     #[wasm_bindgen(method, getter = "scalabilityMode")]
-    fn scalability_mode_shim(this: &RtcRtpEncodingParameters) -> &str;
+    fn scalability_mode_shim(this: &RtcRtpEncodingParameters) -> String;
     #[wasm_bindgen(method, setter = "scalabilityMode")]
     fn set_scalability_mode_shim(this: &RtcRtpEncodingParameters, val: &str);
     #[wasm_bindgen(method, getter = "scaleResolutionDownBy")]
@@ -79,7 +79,7 @@ pub trait RtcRtpEncodingParametersGetters {
     #[doc = "Get the `fec` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcFecParameters`, `RtcRtpEncodingParameters`*"]
-    fn fec(&self) -> &RtcFecParameters;
+    fn fec(&self) -> RtcFecParameters;
     #[doc = "Get the `maxBitrate` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpEncodingParameters`*"]
@@ -92,12 +92,12 @@ pub trait RtcRtpEncodingParametersGetters {
     #[doc = "Get the `rid` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpEncodingParameters`*"]
-    fn rid(&self) -> &str;
+    fn rid(&self) -> String;
     #[cfg(feature = "RtcRtxParameters")]
     #[doc = "Get the `rtx` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpEncodingParameters`, `RtcRtxParameters`*"]
-    fn rtx(&self) -> &RtcRtxParameters;
+    fn rtx(&self) -> RtcRtxParameters;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `scalabilityMode` field of this object."]
     #[doc = ""]
@@ -105,7 +105,7 @@ pub trait RtcRtpEncodingParametersGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn scalability_mode(&self) -> &str;
+    fn scalability_mode(&self) -> String;
     #[doc = "Get the `scaleResolutionDownBy` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpEncodingParameters`*"]
@@ -124,7 +124,7 @@ impl RtcRtpEncodingParametersGetters for RtcRtpEncodingParameters {
         self.degradation_preference_shim()
     }
     #[cfg(feature = "RtcFecParameters")]
-    fn fec(&self) -> &RtcFecParameters {
+    fn fec(&self) -> RtcFecParameters {
         self.fec_shim()
     }
     fn max_bitrate(&self) -> u32 {
@@ -134,15 +134,15 @@ impl RtcRtpEncodingParametersGetters for RtcRtpEncodingParameters {
     fn priority(&self) -> RtcPriorityType {
         self.priority_shim()
     }
-    fn rid(&self) -> &str {
+    fn rid(&self) -> String {
         self.rid_shim()
     }
     #[cfg(feature = "RtcRtxParameters")]
-    fn rtx(&self) -> &RtcRtxParameters {
+    fn rtx(&self) -> RtcRtxParameters {
         self.rtx_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn scalability_mode(&self) -> &str {
+    fn scalability_mode(&self) -> String {
         self.scalability_mode_shim()
     }
     fn scale_resolution_down_by(&self) -> f32 {

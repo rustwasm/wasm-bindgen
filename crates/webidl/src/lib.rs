@@ -396,6 +396,8 @@ impl<'src> FirstPassRecord<'src> {
             .to_syn_type(TypePosition::Argument)
             .unwrap_or(None)?;
 
+        let return_ty = idl_type.to_syn_type(TypePosition::Return).unwrap_or(None);
+
         // Slice types aren't supported because they don't implement
         // `Into<JsValue>`
         match ty {
@@ -437,6 +439,7 @@ impl<'src> FirstPassRecord<'src> {
             name: rust_ident(&snake_case_ident(field.identifier.0)),
             js_name: field.identifier.0.to_string(),
             ty,
+            return_ty,
             is_js_value_ref_option_type,
             unstable: unstable_override,
         })
@@ -781,6 +784,9 @@ impl<'src> FirstPassRecord<'src> {
                             .to_syn_type(pos)
                             .unwrap()
                             .unwrap(),
+                        return_ty: idl_type::IdlType::Callback
+                            .to_syn_type(TypePosition::Return)
+                            .unwrap_or(None),
                         is_js_value_ref_option_type: false,
                         unstable: false,
                     })

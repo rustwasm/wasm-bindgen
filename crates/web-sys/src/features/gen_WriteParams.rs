@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `WriteParams`*"]
     pub type WriteParams;
     #[wasm_bindgen(method, getter = "data")]
-    fn data_shim(this: &WriteParams) -> &::wasm_bindgen::JsValue;
+    fn data_shim(this: &WriteParams) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "data")]
     fn set_data_shim(this: &WriteParams, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "position")]
@@ -36,7 +36,7 @@ pub trait WriteParamsGetters {
     #[doc = "Get the `data` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WriteParams`*"]
-    fn data(&self) -> Option<&::wasm_bindgen::JsValue>;
+    fn data(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `position` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WriteParams`*"]
@@ -52,7 +52,7 @@ pub trait WriteParamsGetters {
     fn type_(&self) -> WriteCommandType;
 }
 impl WriteParamsGetters for WriteParams {
-    fn data(&self) -> Option<&::wasm_bindgen::JsValue> {
+    fn data(&self) -> ::wasm_bindgen::JsValue {
         self.data_shim()
     }
     fn position(&self) -> Option<f64> {

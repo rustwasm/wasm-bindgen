@@ -16,7 +16,7 @@ extern "C" {
     pub type VideoEncoderSupport;
     #[cfg(feature = "VideoEncoderConfig")]
     #[wasm_bindgen(method, getter = "config")]
-    fn config_shim(this: &VideoEncoderSupport) -> &VideoEncoderConfig;
+    fn config_shim(this: &VideoEncoderSupport) -> VideoEncoderConfig;
     #[cfg(feature = "VideoEncoderConfig")]
     #[wasm_bindgen(method, setter = "config")]
     fn set_config_shim(this: &VideoEncoderSupport, val: &VideoEncoderConfig);
@@ -38,7 +38,7 @@ pub trait VideoEncoderSupportGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn config(&self) -> &VideoEncoderConfig;
+    fn config(&self) -> VideoEncoderConfig;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `supported` field of this object."]
     #[doc = ""]
@@ -52,7 +52,7 @@ pub trait VideoEncoderSupportGetters {
 impl VideoEncoderSupportGetters for VideoEncoderSupport {
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "VideoEncoderConfig")]
-    fn config(&self) -> &VideoEncoderConfig {
+    fn config(&self) -> VideoEncoderConfig {
         self.config_shim()
     }
     #[cfg(web_sys_unstable_apis)]

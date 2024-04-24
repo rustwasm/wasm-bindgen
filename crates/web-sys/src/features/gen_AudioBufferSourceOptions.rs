@@ -12,7 +12,7 @@ extern "C" {
     pub type AudioBufferSourceOptions;
     #[cfg(feature = "AudioBuffer")]
     #[wasm_bindgen(method, getter = "buffer")]
-    fn buffer_shim(this: &AudioBufferSourceOptions) -> Option<&AudioBuffer>;
+    fn buffer_shim(this: &AudioBufferSourceOptions) -> Option<AudioBuffer>;
     #[cfg(feature = "AudioBuffer")]
     #[wasm_bindgen(method, setter = "buffer")]
     fn set_buffer_shim(this: &AudioBufferSourceOptions, val: Option<&AudioBuffer>);
@@ -45,7 +45,7 @@ pub trait AudioBufferSourceOptionsGetters {
     #[doc = "Get the `buffer` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`, `AudioBufferSourceOptions`*"]
-    fn buffer(&self) -> Option<&AudioBuffer>;
+    fn buffer(&self) -> Option<AudioBuffer>;
     #[doc = "Get the `detune` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBufferSourceOptions`*"]
@@ -69,7 +69,7 @@ pub trait AudioBufferSourceOptionsGetters {
 }
 impl AudioBufferSourceOptionsGetters for AudioBufferSourceOptions {
     #[cfg(feature = "AudioBuffer")]
-    fn buffer(&self) -> Option<&AudioBuffer> {
+    fn buffer(&self) -> Option<AudioBuffer> {
         self.buffer_shim()
     }
     fn detune(&self) -> f32 {

@@ -25,11 +25,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "direction")]
     fn set_direction_shim(this: &KeyframeAnimationOptions, val: PlaybackDirection);
     #[wasm_bindgen(method, getter = "duration")]
-    fn duration_shim(this: &KeyframeAnimationOptions) -> &::wasm_bindgen::JsValue;
+    fn duration_shim(this: &KeyframeAnimationOptions) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "duration")]
     fn set_duration_shim(this: &KeyframeAnimationOptions, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "easing")]
-    fn easing_shim(this: &KeyframeAnimationOptions) -> &str;
+    fn easing_shim(this: &KeyframeAnimationOptions) -> String;
     #[wasm_bindgen(method, setter = "easing")]
     fn set_easing_shim(this: &KeyframeAnimationOptions, val: &str);
     #[wasm_bindgen(method, getter = "endDelay")]
@@ -66,12 +66,12 @@ extern "C" {
         val: IterationCompositeOperation,
     );
     #[wasm_bindgen(method, getter = "id")]
-    fn id_shim(this: &KeyframeAnimationOptions) -> &str;
+    fn id_shim(this: &KeyframeAnimationOptions) -> String;
     #[wasm_bindgen(method, setter = "id")]
     fn set_id_shim(this: &KeyframeAnimationOptions, val: &str);
     #[cfg(feature = "AnimationTimeline")]
     #[wasm_bindgen(method, getter = "timeline")]
-    fn timeline_shim(this: &KeyframeAnimationOptions) -> Option<&AnimationTimeline>;
+    fn timeline_shim(this: &KeyframeAnimationOptions) -> Option<AnimationTimeline>;
     #[cfg(feature = "AnimationTimeline")]
     #[wasm_bindgen(method, setter = "timeline")]
     fn set_timeline_shim(this: &KeyframeAnimationOptions, val: Option<&AnimationTimeline>);
@@ -105,7 +105,7 @@ pub trait KeyframeAnimationOptionsGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn duration(&self) -> &::wasm_bindgen::JsValue;
+    fn duration(&self) -> ::wasm_bindgen::JsValue;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `easing` field of this object."]
     #[doc = ""]
@@ -113,7 +113,7 @@ pub trait KeyframeAnimationOptionsGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn easing(&self) -> &str;
+    fn easing(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `endDelay` field of this object."]
     #[doc = ""]
@@ -172,7 +172,7 @@ pub trait KeyframeAnimationOptionsGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn id(&self) -> &str;
+    fn id(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "AnimationTimeline")]
     #[doc = "Get the `timeline` field of this object."]
@@ -181,7 +181,7 @@ pub trait KeyframeAnimationOptionsGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn timeline(&self) -> Option<&AnimationTimeline>;
+    fn timeline(&self) -> Option<AnimationTimeline>;
 }
 #[cfg(web_sys_unstable_apis)]
 impl KeyframeAnimationOptionsGetters for KeyframeAnimationOptions {
@@ -195,11 +195,11 @@ impl KeyframeAnimationOptionsGetters for KeyframeAnimationOptions {
         self.direction_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn duration(&self) -> &::wasm_bindgen::JsValue {
+    fn duration(&self) -> ::wasm_bindgen::JsValue {
         self.duration_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn easing(&self) -> &str {
+    fn easing(&self) -> String {
         self.easing_shim()
     }
     #[cfg(web_sys_unstable_apis)]
@@ -230,12 +230,12 @@ impl KeyframeAnimationOptionsGetters for KeyframeAnimationOptions {
         self.iteration_composite_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn id(&self) -> &str {
+    fn id(&self) -> String {
         self.id_shim()
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "AnimationTimeline")]
-    fn timeline(&self) -> Option<&AnimationTimeline> {
+    fn timeline(&self) -> Option<AnimationTimeline> {
         self.timeline_shim()
     }
 }

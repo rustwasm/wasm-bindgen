@@ -15,11 +15,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "bitrate")]
     fn set_bitrate_shim(this: &VideoConfiguration, val: f64);
     #[wasm_bindgen(method, getter = "contentType")]
-    fn content_type_shim(this: &VideoConfiguration) -> &str;
+    fn content_type_shim(this: &VideoConfiguration) -> String;
     #[wasm_bindgen(method, setter = "contentType")]
     fn set_content_type_shim(this: &VideoConfiguration, val: &str);
     #[wasm_bindgen(method, getter = "framerate")]
-    fn framerate_shim(this: &VideoConfiguration) -> &str;
+    fn framerate_shim(this: &VideoConfiguration) -> String;
     #[wasm_bindgen(method, setter = "framerate")]
     fn set_framerate_shim(this: &VideoConfiguration, val: &str);
     #[wasm_bindgen(method, getter = "height")]
@@ -42,11 +42,11 @@ pub trait VideoConfigurationGetters {
     #[doc = "Get the `contentType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VideoConfiguration`*"]
-    fn content_type(&self) -> &str;
+    fn content_type(&self) -> String;
     #[doc = "Get the `framerate` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VideoConfiguration`*"]
-    fn framerate(&self) -> &str;
+    fn framerate(&self) -> String;
     #[doc = "Get the `height` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VideoConfiguration`*"]
@@ -60,10 +60,10 @@ impl VideoConfigurationGetters for VideoConfiguration {
     fn bitrate(&self) -> f64 {
         self.bitrate_shim()
     }
-    fn content_type(&self) -> &str {
+    fn content_type(&self) -> String {
         self.content_type_shim()
     }
-    fn framerate(&self) -> &str {
+    fn framerate(&self) -> String {
         self.framerate_shim()
     }
     fn height(&self) -> u32 {

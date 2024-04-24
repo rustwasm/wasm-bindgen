@@ -16,7 +16,7 @@ extern "C" {
     pub type XrRenderStateInit;
     #[cfg(feature = "XrWebGlLayer")]
     #[wasm_bindgen(method, getter = "baseLayer")]
-    fn base_layer_shim(this: &XrRenderStateInit) -> Option<&XrWebGlLayer>;
+    fn base_layer_shim(this: &XrRenderStateInit) -> Option<XrWebGlLayer>;
     #[cfg(feature = "XrWebGlLayer")]
     #[wasm_bindgen(method, setter = "baseLayer")]
     fn set_base_layer_shim(this: &XrRenderStateInit, val: Option<&XrWebGlLayer>);
@@ -33,7 +33,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "inlineVerticalFieldOfView")]
     fn set_inline_vertical_field_of_view_shim(this: &XrRenderStateInit, val: f64);
     #[wasm_bindgen(method, getter = "layers")]
-    fn layers_shim(this: &XrRenderStateInit) -> &::wasm_bindgen::JsValue;
+    fn layers_shim(this: &XrRenderStateInit) -> Option<::js_sys::Array>;
     #[wasm_bindgen(method, setter = "layers")]
     fn set_layers_shim(this: &XrRenderStateInit, val: &::wasm_bindgen::JsValue);
 }
@@ -50,7 +50,7 @@ pub trait XrRenderStateInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn base_layer(&self) -> Option<&XrWebGlLayer>;
+    fn base_layer(&self) -> Option<XrWebGlLayer>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `depthFar` field of this object."]
     #[doc = ""]
@@ -82,13 +82,13 @@ pub trait XrRenderStateInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn layers(&self) -> Option<&::wasm_bindgen::JsValue>;
+    fn layers(&self) -> Option<::js_sys::Array>;
 }
 #[cfg(web_sys_unstable_apis)]
 impl XrRenderStateInitGetters for XrRenderStateInit {
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrWebGlLayer")]
-    fn base_layer(&self) -> Option<&XrWebGlLayer> {
+    fn base_layer(&self) -> Option<XrWebGlLayer> {
         self.base_layer_shim()
     }
     #[cfg(web_sys_unstable_apis)]
@@ -104,7 +104,7 @@ impl XrRenderStateInitGetters for XrRenderStateInit {
         self.inline_vertical_field_of_view_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn layers(&self) -> Option<&::wasm_bindgen::JsValue> {
+    fn layers(&self) -> Option<::js_sys::Array> {
         self.layers_shim()
     }
 }

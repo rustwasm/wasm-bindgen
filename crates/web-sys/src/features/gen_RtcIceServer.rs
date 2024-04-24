@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcIceServer`*"]
     pub type RtcIceServer;
     #[wasm_bindgen(method, getter = "credential")]
-    fn credential_shim(this: &RtcIceServer) -> &str;
+    fn credential_shim(this: &RtcIceServer) -> String;
     #[wasm_bindgen(method, setter = "credential")]
     fn set_credential_shim(this: &RtcIceServer, val: &str);
     #[cfg(feature = "RtcIceCredentialType")]
@@ -21,15 +21,15 @@ extern "C" {
     #[wasm_bindgen(method, setter = "credentialType")]
     fn set_credential_type_shim(this: &RtcIceServer, val: RtcIceCredentialType);
     #[wasm_bindgen(method, getter = "url")]
-    fn url_shim(this: &RtcIceServer) -> &str;
+    fn url_shim(this: &RtcIceServer) -> String;
     #[wasm_bindgen(method, setter = "url")]
     fn set_url_shim(this: &RtcIceServer, val: &str);
     #[wasm_bindgen(method, getter = "urls")]
-    fn urls_shim(this: &RtcIceServer) -> &::wasm_bindgen::JsValue;
+    fn urls_shim(this: &RtcIceServer) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "urls")]
     fn set_urls_shim(this: &RtcIceServer, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "username")]
-    fn username_shim(this: &RtcIceServer) -> &str;
+    fn username_shim(this: &RtcIceServer) -> String;
     #[wasm_bindgen(method, setter = "username")]
     fn set_username_shim(this: &RtcIceServer, val: &str);
 }
@@ -40,7 +40,7 @@ pub trait RtcIceServerGetters {
     #[doc = "Get the `credential` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceServer`*"]
-    fn credential(&self) -> &str;
+    fn credential(&self) -> String;
     #[cfg(feature = "RtcIceCredentialType")]
     #[doc = "Get the `credentialType` field of this object."]
     #[doc = ""]
@@ -49,31 +49,31 @@ pub trait RtcIceServerGetters {
     #[doc = "Get the `url` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceServer`*"]
-    fn url(&self) -> &str;
+    fn url(&self) -> String;
     #[doc = "Get the `urls` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceServer`*"]
-    fn urls(&self) -> &::wasm_bindgen::JsValue;
+    fn urls(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `username` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceServer`*"]
-    fn username(&self) -> &str;
+    fn username(&self) -> String;
 }
 impl RtcIceServerGetters for RtcIceServer {
-    fn credential(&self) -> &str {
+    fn credential(&self) -> String {
         self.credential_shim()
     }
     #[cfg(feature = "RtcIceCredentialType")]
     fn credential_type(&self) -> RtcIceCredentialType {
         self.credential_type_shim()
     }
-    fn url(&self) -> &str {
+    fn url(&self) -> String {
         self.url_shim()
     }
-    fn urls(&self) -> &::wasm_bindgen::JsValue {
+    fn urls(&self) -> ::wasm_bindgen::JsValue {
         self.urls_shim()
     }
-    fn username(&self) -> &str {
+    fn username(&self) -> String {
         self.username_shim()
     }
 }

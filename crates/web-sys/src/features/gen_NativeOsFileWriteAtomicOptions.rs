@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `NativeOsFileWriteAtomicOptions`*"]
     pub type NativeOsFileWriteAtomicOptions;
     #[wasm_bindgen(method, getter = "backupTo")]
-    fn backup_to_shim(this: &NativeOsFileWriteAtomicOptions) -> Option<&str>;
+    fn backup_to_shim(this: &NativeOsFileWriteAtomicOptions) -> Option<String>;
     #[wasm_bindgen(method, setter = "backupTo")]
     fn set_backup_to_shim(this: &NativeOsFileWriteAtomicOptions, val: Option<&str>);
     #[wasm_bindgen(method, getter = "bytes")]
@@ -27,7 +27,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "noOverwrite")]
     fn set_no_overwrite_shim(this: &NativeOsFileWriteAtomicOptions, val: bool);
     #[wasm_bindgen(method, getter = "tmpPath")]
-    fn tmp_path_shim(this: &NativeOsFileWriteAtomicOptions) -> Option<&str>;
+    fn tmp_path_shim(this: &NativeOsFileWriteAtomicOptions) -> Option<String>;
     #[wasm_bindgen(method, setter = "tmpPath")]
     fn set_tmp_path_shim(this: &NativeOsFileWriteAtomicOptions, val: Option<&str>);
 }
@@ -38,7 +38,7 @@ pub trait NativeOsFileWriteAtomicOptionsGetters {
     #[doc = "Get the `backupTo` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NativeOsFileWriteAtomicOptions`*"]
-    fn backup_to(&self) -> Option<&str>;
+    fn backup_to(&self) -> Option<String>;
     #[doc = "Get the `bytes` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NativeOsFileWriteAtomicOptions`*"]
@@ -54,10 +54,10 @@ pub trait NativeOsFileWriteAtomicOptionsGetters {
     #[doc = "Get the `tmpPath` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NativeOsFileWriteAtomicOptions`*"]
-    fn tmp_path(&self) -> Option<&str>;
+    fn tmp_path(&self) -> Option<String>;
 }
 impl NativeOsFileWriteAtomicOptionsGetters for NativeOsFileWriteAtomicOptions {
-    fn backup_to(&self) -> Option<&str> {
+    fn backup_to(&self) -> Option<String> {
         self.backup_to_shim()
     }
     fn bytes(&self) -> Option<f64> {
@@ -69,7 +69,7 @@ impl NativeOsFileWriteAtomicOptionsGetters for NativeOsFileWriteAtomicOptions {
     fn no_overwrite(&self) -> bool {
         self.no_overwrite_shim()
     }
-    fn tmp_path(&self) -> Option<&str> {
+    fn tmp_path(&self) -> Option<String> {
         self.tmp_path_shim()
     }
 }

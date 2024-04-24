@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AesCtrParams`*"]
     pub type AesCtrParams;
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &AesCtrParams) -> &str;
+    fn name_shim(this: &AesCtrParams) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &AesCtrParams, val: &str);
     #[wasm_bindgen(method, getter = "counter")]
-    fn counter_shim(this: &AesCtrParams) -> &::js_sys::Object;
+    fn counter_shim(this: &AesCtrParams) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "counter")]
     fn set_counter_shim(this: &AesCtrParams, val: &::js_sys::Object);
     #[wasm_bindgen(method, getter = "length")]
@@ -30,21 +30,21 @@ pub trait AesCtrParamsGetters {
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesCtrParams`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
     #[doc = "Get the `counter` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesCtrParams`*"]
-    fn counter(&self) -> &::js_sys::Object;
+    fn counter(&self) -> ::js_sys::Object;
     #[doc = "Get the `length` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesCtrParams`*"]
     fn length(&self) -> u8;
 }
 impl AesCtrParamsGetters for AesCtrParams {
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
-    fn counter(&self) -> &::js_sys::Object {
+    fn counter(&self) -> ::js_sys::Object {
         self.counter_shim()
     }
     fn length(&self) -> u8 {

@@ -27,7 +27,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "code")]
     fn set_code_shim(this: &CloseEventInit, val: u16);
     #[wasm_bindgen(method, getter = "reason")]
-    fn reason_shim(this: &CloseEventInit) -> &str;
+    fn reason_shim(this: &CloseEventInit) -> String;
     #[wasm_bindgen(method, setter = "reason")]
     fn set_reason_shim(this: &CloseEventInit, val: &str);
     #[wasm_bindgen(method, getter = "wasClean")]
@@ -58,7 +58,7 @@ pub trait CloseEventInitGetters {
     #[doc = "Get the `reason` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CloseEventInit`*"]
-    fn reason(&self) -> &str;
+    fn reason(&self) -> String;
     #[doc = "Get the `wasClean` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CloseEventInit`*"]
@@ -77,7 +77,7 @@ impl CloseEventInitGetters for CloseEventInit {
     fn code(&self) -> u16 {
         self.code_shim()
     }
-    fn reason(&self) -> &str {
+    fn reason(&self) -> String {
         self.reason_shim()
     }
     fn was_clean(&self) -> bool {

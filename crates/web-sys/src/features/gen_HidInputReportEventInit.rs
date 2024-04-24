@@ -27,12 +27,12 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &HidInputReportEventInit, val: bool);
     #[wasm_bindgen(method, getter = "data")]
-    fn data_shim(this: &HidInputReportEventInit) -> &::js_sys::DataView;
+    fn data_shim(this: &HidInputReportEventInit) -> ::js_sys::DataView;
     #[wasm_bindgen(method, setter = "data")]
     fn set_data_shim(this: &HidInputReportEventInit, val: &::js_sys::DataView);
     #[cfg(feature = "HidDevice")]
     #[wasm_bindgen(method, getter = "device")]
-    fn device_shim(this: &HidInputReportEventInit) -> &HidDevice;
+    fn device_shim(this: &HidInputReportEventInit) -> HidDevice;
     #[cfg(feature = "HidDevice")]
     #[wasm_bindgen(method, setter = "device")]
     fn set_device_shim(this: &HidInputReportEventInit, val: &HidDevice);
@@ -77,7 +77,7 @@ pub trait HidInputReportEventInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn data(&self) -> &::js_sys::DataView;
+    fn data(&self) -> ::js_sys::DataView;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "HidDevice")]
     #[doc = "Get the `device` field of this object."]
@@ -86,7 +86,7 @@ pub trait HidInputReportEventInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn device(&self) -> &HidDevice;
+    fn device(&self) -> HidDevice;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `reportId` field of this object."]
     #[doc = ""]
@@ -111,12 +111,12 @@ impl HidInputReportEventInitGetters for HidInputReportEventInit {
         self.composed_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn data(&self) -> &::js_sys::DataView {
+    fn data(&self) -> ::js_sys::DataView {
         self.data_shim()
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "HidDevice")]
-    fn device(&self) -> &HidDevice {
+    fn device(&self) -> HidDevice {
         self.device_shim()
     }
     #[cfg(web_sys_unstable_apis)]

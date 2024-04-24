@@ -11,12 +11,12 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `HmacKeyAlgorithm`*"]
     pub type HmacKeyAlgorithm;
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &HmacKeyAlgorithm) -> &str;
+    fn name_shim(this: &HmacKeyAlgorithm) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &HmacKeyAlgorithm, val: &str);
     #[cfg(feature = "KeyAlgorithm")]
     #[wasm_bindgen(method, getter = "hash")]
-    fn hash_shim(this: &HmacKeyAlgorithm) -> &KeyAlgorithm;
+    fn hash_shim(this: &HmacKeyAlgorithm) -> KeyAlgorithm;
     #[cfg(feature = "KeyAlgorithm")]
     #[wasm_bindgen(method, setter = "hash")]
     fn set_hash_shim(this: &HmacKeyAlgorithm, val: &KeyAlgorithm);
@@ -32,23 +32,23 @@ pub trait HmacKeyAlgorithmGetters {
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HmacKeyAlgorithm`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
     #[cfg(feature = "KeyAlgorithm")]
     #[doc = "Get the `hash` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HmacKeyAlgorithm`, `KeyAlgorithm`*"]
-    fn hash(&self) -> &KeyAlgorithm;
+    fn hash(&self) -> KeyAlgorithm;
     #[doc = "Get the `length` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HmacKeyAlgorithm`*"]
     fn length(&self) -> u32;
 }
 impl HmacKeyAlgorithmGetters for HmacKeyAlgorithm {
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
     #[cfg(feature = "KeyAlgorithm")]
-    fn hash(&self) -> &KeyAlgorithm {
+    fn hash(&self) -> KeyAlgorithm {
         self.hash_shim()
     }
     fn length(&self) -> u32 {

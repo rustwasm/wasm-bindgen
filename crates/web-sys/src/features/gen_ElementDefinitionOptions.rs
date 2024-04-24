@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ElementDefinitionOptions`*"]
     pub type ElementDefinitionOptions;
     #[wasm_bindgen(method, getter = "extends")]
-    fn extends_shim(this: &ElementDefinitionOptions) -> &str;
+    fn extends_shim(this: &ElementDefinitionOptions) -> String;
     #[wasm_bindgen(method, setter = "extends")]
     fn set_extends_shim(this: &ElementDefinitionOptions, val: &str);
 }
@@ -22,10 +22,10 @@ pub trait ElementDefinitionOptionsGetters {
     #[doc = "Get the `extends` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ElementDefinitionOptions`*"]
-    fn extends(&self) -> &str;
+    fn extends(&self) -> String;
 }
 impl ElementDefinitionOptionsGetters for ElementDefinitionOptions {
-    fn extends(&self) -> &str {
+    fn extends(&self) -> String {
         self.extends_shim()
     }
 }

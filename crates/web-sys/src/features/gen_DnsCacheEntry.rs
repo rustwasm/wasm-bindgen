@@ -15,15 +15,15 @@ extern "C" {
     #[wasm_bindgen(method, setter = "expiration")]
     fn set_expiration_shim(this: &DnsCacheEntry, val: f64);
     #[wasm_bindgen(method, getter = "family")]
-    fn family_shim(this: &DnsCacheEntry) -> &str;
+    fn family_shim(this: &DnsCacheEntry) -> String;
     #[wasm_bindgen(method, setter = "family")]
     fn set_family_shim(this: &DnsCacheEntry, val: &str);
     #[wasm_bindgen(method, getter = "hostaddr")]
-    fn hostaddr_shim(this: &DnsCacheEntry) -> &::wasm_bindgen::JsValue;
+    fn hostaddr_shim(this: &DnsCacheEntry) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "hostaddr")]
     fn set_hostaddr_shim(this: &DnsCacheEntry, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "hostname")]
-    fn hostname_shim(this: &DnsCacheEntry) -> &str;
+    fn hostname_shim(this: &DnsCacheEntry) -> String;
     #[wasm_bindgen(method, setter = "hostname")]
     fn set_hostname_shim(this: &DnsCacheEntry, val: &str);
     #[wasm_bindgen(method, getter = "trr")]
@@ -42,15 +42,15 @@ pub trait DnsCacheEntryGetters {
     #[doc = "Get the `family` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsCacheEntry`*"]
-    fn family(&self) -> &str;
+    fn family(&self) -> String;
     #[doc = "Get the `hostaddr` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsCacheEntry`*"]
-    fn hostaddr(&self) -> &::wasm_bindgen::JsValue;
+    fn hostaddr(&self) -> ::js_sys::Array;
     #[doc = "Get the `hostname` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsCacheEntry`*"]
-    fn hostname(&self) -> &str;
+    fn hostname(&self) -> String;
     #[doc = "Get the `trr` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsCacheEntry`*"]
@@ -60,13 +60,13 @@ impl DnsCacheEntryGetters for DnsCacheEntry {
     fn expiration(&self) -> f64 {
         self.expiration_shim()
     }
-    fn family(&self) -> &str {
+    fn family(&self) -> String {
         self.family_shim()
     }
-    fn hostaddr(&self) -> &::wasm_bindgen::JsValue {
+    fn hostaddr(&self) -> ::js_sys::Array {
         self.hostaddr_shim()
     }
-    fn hostname(&self) -> &str {
+    fn hostname(&self) -> String {
         self.hostname_shim()
     }
     fn trr(&self) -> bool {

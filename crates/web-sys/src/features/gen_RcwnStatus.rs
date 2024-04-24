@@ -19,7 +19,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "cacheSlowCount")]
     fn set_cache_slow_count_shim(this: &RcwnStatus, val: u32);
     #[wasm_bindgen(method, getter = "perfStats")]
-    fn perf_stats_shim(this: &RcwnStatus) -> &::wasm_bindgen::JsValue;
+    fn perf_stats_shim(this: &RcwnStatus) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "perfStats")]
     fn set_perf_stats_shim(this: &RcwnStatus, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "rcwnCacheWonCount")]
@@ -50,7 +50,7 @@ pub trait RcwnStatusGetters {
     #[doc = "Get the `perfStats` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RcwnStatus`*"]
-    fn perf_stats(&self) -> &::wasm_bindgen::JsValue;
+    fn perf_stats(&self) -> ::js_sys::Array;
     #[doc = "Get the `rcwnCacheWonCount` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RcwnStatus`*"]
@@ -71,7 +71,7 @@ impl RcwnStatusGetters for RcwnStatus {
     fn cache_slow_count(&self) -> u32 {
         self.cache_slow_count_shim()
     }
-    fn perf_stats(&self) -> &::wasm_bindgen::JsValue {
+    fn perf_stats(&self) -> ::js_sys::Array {
         self.perf_stats_shim()
     }
     fn rcwn_cache_won_count(&self) -> u32 {

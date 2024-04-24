@@ -15,7 +15,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type DirectoryPickerOptions;
     #[wasm_bindgen(method, getter = "id")]
-    fn id_shim(this: &DirectoryPickerOptions) -> &str;
+    fn id_shim(this: &DirectoryPickerOptions) -> String;
     #[wasm_bindgen(method, setter = "id")]
     fn set_id_shim(this: &DirectoryPickerOptions, val: &str);
     #[cfg(feature = "FileSystemPermissionMode")]
@@ -25,7 +25,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "mode")]
     fn set_mode_shim(this: &DirectoryPickerOptions, val: FileSystemPermissionMode);
     #[wasm_bindgen(method, getter = "startIn")]
-    fn start_in_shim(this: &DirectoryPickerOptions) -> &::wasm_bindgen::JsValue;
+    fn start_in_shim(this: &DirectoryPickerOptions) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "startIn")]
     fn set_start_in_shim(this: &DirectoryPickerOptions, val: &::wasm_bindgen::JsValue);
 }
@@ -41,7 +41,7 @@ pub trait DirectoryPickerOptionsGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn id(&self) -> &str;
+    fn id(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "FileSystemPermissionMode")]
     #[doc = "Get the `mode` field of this object."]
@@ -58,12 +58,12 @@ pub trait DirectoryPickerOptionsGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn start_in(&self) -> &::wasm_bindgen::JsValue;
+    fn start_in(&self) -> ::wasm_bindgen::JsValue;
 }
 #[cfg(web_sys_unstable_apis)]
 impl DirectoryPickerOptionsGetters for DirectoryPickerOptions {
     #[cfg(web_sys_unstable_apis)]
-    fn id(&self) -> &str {
+    fn id(&self) -> String {
         self.id_shim()
     }
     #[cfg(web_sys_unstable_apis)]
@@ -72,7 +72,7 @@ impl DirectoryPickerOptionsGetters for DirectoryPickerOptions {
         self.mode_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn start_in(&self) -> &::wasm_bindgen::JsValue {
+    fn start_in(&self) -> ::wasm_bindgen::JsValue {
         self.start_in_shim()
     }
 }

@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcCodecStats`*"]
     pub type RtcCodecStats;
     #[wasm_bindgen(method, getter = "id")]
-    fn id_shim(this: &RtcCodecStats) -> &str;
+    fn id_shim(this: &RtcCodecStats) -> String;
     #[wasm_bindgen(method, setter = "id")]
     fn set_id_shim(this: &RtcCodecStats, val: &str);
     #[wasm_bindgen(method, getter = "timestamp")]
@@ -33,11 +33,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "clockRate")]
     fn set_clock_rate_shim(this: &RtcCodecStats, val: u32);
     #[wasm_bindgen(method, getter = "codec")]
-    fn codec_shim(this: &RtcCodecStats) -> &str;
+    fn codec_shim(this: &RtcCodecStats) -> String;
     #[wasm_bindgen(method, setter = "codec")]
     fn set_codec_shim(this: &RtcCodecStats, val: &str);
     #[wasm_bindgen(method, getter = "parameters")]
-    fn parameters_shim(this: &RtcCodecStats) -> &str;
+    fn parameters_shim(this: &RtcCodecStats) -> String;
     #[wasm_bindgen(method, setter = "parameters")]
     fn set_parameters_shim(this: &RtcCodecStats, val: &str);
     #[wasm_bindgen(method, getter = "payloadType")]
@@ -52,7 +52,7 @@ pub trait RtcCodecStatsGetters {
     #[doc = "Get the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcCodecStats`*"]
-    fn id(&self) -> &str;
+    fn id(&self) -> String;
     #[doc = "Get the `timestamp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcCodecStats`*"]
@@ -73,18 +73,18 @@ pub trait RtcCodecStatsGetters {
     #[doc = "Get the `codec` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcCodecStats`*"]
-    fn codec(&self) -> &str;
+    fn codec(&self) -> String;
     #[doc = "Get the `parameters` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcCodecStats`*"]
-    fn parameters(&self) -> &str;
+    fn parameters(&self) -> String;
     #[doc = "Get the `payloadType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcCodecStats`*"]
     fn payload_type(&self) -> u32;
 }
 impl RtcCodecStatsGetters for RtcCodecStats {
-    fn id(&self) -> &str {
+    fn id(&self) -> String {
         self.id_shim()
     }
     fn timestamp(&self) -> f64 {
@@ -100,10 +100,10 @@ impl RtcCodecStatsGetters for RtcCodecStats {
     fn clock_rate(&self) -> u32 {
         self.clock_rate_shim()
     }
-    fn codec(&self) -> &str {
+    fn codec(&self) -> String {
         self.codec_shim()
     }
-    fn parameters(&self) -> &str {
+    fn parameters(&self) -> String {
         self.parameters_shim()
     }
     fn payload_type(&self) -> u32 {

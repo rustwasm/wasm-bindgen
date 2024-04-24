@@ -15,7 +15,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "buffered")]
     fn set_buffered_shim(this: &PerformanceObserverInit, val: bool);
     #[wasm_bindgen(method, getter = "entryTypes")]
-    fn entry_types_shim(this: &PerformanceObserverInit) -> &::wasm_bindgen::JsValue;
+    fn entry_types_shim(this: &PerformanceObserverInit) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "entryTypes")]
     fn set_entry_types_shim(this: &PerformanceObserverInit, val: &::wasm_bindgen::JsValue);
 }
@@ -30,13 +30,13 @@ pub trait PerformanceObserverInitGetters {
     #[doc = "Get the `entryTypes` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceObserverInit`*"]
-    fn entry_types(&self) -> &::wasm_bindgen::JsValue;
+    fn entry_types(&self) -> ::js_sys::Array;
 }
 impl PerformanceObserverInitGetters for PerformanceObserverInit {
     fn buffered(&self) -> bool {
         self.buffered_shim()
     }
-    fn entry_types(&self) -> &::wasm_bindgen::JsValue {
+    fn entry_types(&self) -> ::js_sys::Array {
         self.entry_types_shim()
     }
 }

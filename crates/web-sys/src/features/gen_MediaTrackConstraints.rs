@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraints`*"]
     pub type MediaTrackConstraints;
     #[wasm_bindgen(method, getter = "autoGainControl")]
-    fn auto_gain_control_shim(this: &MediaTrackConstraints) -> &::wasm_bindgen::JsValue;
+    fn auto_gain_control_shim(this: &MediaTrackConstraints) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "autoGainControl")]
     fn set_auto_gain_control_shim(this: &MediaTrackConstraints, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "browserWindow")]
@@ -19,35 +19,35 @@ extern "C" {
     #[wasm_bindgen(method, setter = "browserWindow")]
     fn set_browser_window_shim(this: &MediaTrackConstraints, val: f64);
     #[wasm_bindgen(method, getter = "channelCount")]
-    fn channel_count_shim(this: &MediaTrackConstraints) -> &::wasm_bindgen::JsValue;
+    fn channel_count_shim(this: &MediaTrackConstraints) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "channelCount")]
     fn set_channel_count_shim(this: &MediaTrackConstraints, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "deviceId")]
-    fn device_id_shim(this: &MediaTrackConstraints) -> &::wasm_bindgen::JsValue;
+    fn device_id_shim(this: &MediaTrackConstraints) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "deviceId")]
     fn set_device_id_shim(this: &MediaTrackConstraints, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "echoCancellation")]
-    fn echo_cancellation_shim(this: &MediaTrackConstraints) -> &::wasm_bindgen::JsValue;
+    fn echo_cancellation_shim(this: &MediaTrackConstraints) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "echoCancellation")]
     fn set_echo_cancellation_shim(this: &MediaTrackConstraints, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "facingMode")]
-    fn facing_mode_shim(this: &MediaTrackConstraints) -> &::wasm_bindgen::JsValue;
+    fn facing_mode_shim(this: &MediaTrackConstraints) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "facingMode")]
     fn set_facing_mode_shim(this: &MediaTrackConstraints, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "frameRate")]
-    fn frame_rate_shim(this: &MediaTrackConstraints) -> &::wasm_bindgen::JsValue;
+    fn frame_rate_shim(this: &MediaTrackConstraints) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "frameRate")]
     fn set_frame_rate_shim(this: &MediaTrackConstraints, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "height")]
-    fn height_shim(this: &MediaTrackConstraints) -> &::wasm_bindgen::JsValue;
+    fn height_shim(this: &MediaTrackConstraints) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "height")]
     fn set_height_shim(this: &MediaTrackConstraints, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "mediaSource")]
-    fn media_source_shim(this: &MediaTrackConstraints) -> &str;
+    fn media_source_shim(this: &MediaTrackConstraints) -> String;
     #[wasm_bindgen(method, setter = "mediaSource")]
     fn set_media_source_shim(this: &MediaTrackConstraints, val: &str);
     #[wasm_bindgen(method, getter = "noiseSuppression")]
-    fn noise_suppression_shim(this: &MediaTrackConstraints) -> &::wasm_bindgen::JsValue;
+    fn noise_suppression_shim(this: &MediaTrackConstraints) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "noiseSuppression")]
     fn set_noise_suppression_shim(this: &MediaTrackConstraints, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "scrollWithPage")]
@@ -55,27 +55,27 @@ extern "C" {
     #[wasm_bindgen(method, setter = "scrollWithPage")]
     fn set_scroll_with_page_shim(this: &MediaTrackConstraints, val: bool);
     #[wasm_bindgen(method, getter = "viewportHeight")]
-    fn viewport_height_shim(this: &MediaTrackConstraints) -> &::wasm_bindgen::JsValue;
+    fn viewport_height_shim(this: &MediaTrackConstraints) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "viewportHeight")]
     fn set_viewport_height_shim(this: &MediaTrackConstraints, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "viewportOffsetX")]
-    fn viewport_offset_x_shim(this: &MediaTrackConstraints) -> &::wasm_bindgen::JsValue;
+    fn viewport_offset_x_shim(this: &MediaTrackConstraints) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "viewportOffsetX")]
     fn set_viewport_offset_x_shim(this: &MediaTrackConstraints, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "viewportOffsetY")]
-    fn viewport_offset_y_shim(this: &MediaTrackConstraints) -> &::wasm_bindgen::JsValue;
+    fn viewport_offset_y_shim(this: &MediaTrackConstraints) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "viewportOffsetY")]
     fn set_viewport_offset_y_shim(this: &MediaTrackConstraints, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "viewportWidth")]
-    fn viewport_width_shim(this: &MediaTrackConstraints) -> &::wasm_bindgen::JsValue;
+    fn viewport_width_shim(this: &MediaTrackConstraints) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "viewportWidth")]
     fn set_viewport_width_shim(this: &MediaTrackConstraints, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "width")]
-    fn width_shim(this: &MediaTrackConstraints) -> &::wasm_bindgen::JsValue;
+    fn width_shim(this: &MediaTrackConstraints) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "width")]
     fn set_width_shim(this: &MediaTrackConstraints, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "advanced")]
-    fn advanced_shim(this: &MediaTrackConstraints) -> &::wasm_bindgen::JsValue;
+    fn advanced_shim(this: &MediaTrackConstraints) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "advanced")]
     fn set_advanced_shim(this: &MediaTrackConstraints, val: &::wasm_bindgen::JsValue);
 }
@@ -86,7 +86,7 @@ pub trait MediaTrackConstraintsGetters {
     #[doc = "Get the `autoGainControl` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraints`*"]
-    fn auto_gain_control(&self) -> &::wasm_bindgen::JsValue;
+    fn auto_gain_control(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `browserWindow` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraints`*"]
@@ -94,35 +94,35 @@ pub trait MediaTrackConstraintsGetters {
     #[doc = "Get the `channelCount` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraints`*"]
-    fn channel_count(&self) -> &::wasm_bindgen::JsValue;
+    fn channel_count(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `deviceId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraints`*"]
-    fn device_id(&self) -> &::wasm_bindgen::JsValue;
+    fn device_id(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `echoCancellation` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraints`*"]
-    fn echo_cancellation(&self) -> &::wasm_bindgen::JsValue;
+    fn echo_cancellation(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `facingMode` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraints`*"]
-    fn facing_mode(&self) -> &::wasm_bindgen::JsValue;
+    fn facing_mode(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `frameRate` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraints`*"]
-    fn frame_rate(&self) -> &::wasm_bindgen::JsValue;
+    fn frame_rate(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `height` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraints`*"]
-    fn height(&self) -> &::wasm_bindgen::JsValue;
+    fn height(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `mediaSource` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraints`*"]
-    fn media_source(&self) -> &str;
+    fn media_source(&self) -> String;
     #[doc = "Get the `noiseSuppression` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraints`*"]
-    fn noise_suppression(&self) -> &::wasm_bindgen::JsValue;
+    fn noise_suppression(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `scrollWithPage` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraints`*"]
@@ -130,78 +130,78 @@ pub trait MediaTrackConstraintsGetters {
     #[doc = "Get the `viewportHeight` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraints`*"]
-    fn viewport_height(&self) -> &::wasm_bindgen::JsValue;
+    fn viewport_height(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `viewportOffsetX` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraints`*"]
-    fn viewport_offset_x(&self) -> &::wasm_bindgen::JsValue;
+    fn viewport_offset_x(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `viewportOffsetY` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraints`*"]
-    fn viewport_offset_y(&self) -> &::wasm_bindgen::JsValue;
+    fn viewport_offset_y(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `viewportWidth` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraints`*"]
-    fn viewport_width(&self) -> &::wasm_bindgen::JsValue;
+    fn viewport_width(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `width` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraints`*"]
-    fn width(&self) -> &::wasm_bindgen::JsValue;
+    fn width(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `advanced` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraints`*"]
-    fn advanced(&self) -> &::wasm_bindgen::JsValue;
+    fn advanced(&self) -> ::js_sys::Array;
 }
 impl MediaTrackConstraintsGetters for MediaTrackConstraints {
-    fn auto_gain_control(&self) -> &::wasm_bindgen::JsValue {
+    fn auto_gain_control(&self) -> ::wasm_bindgen::JsValue {
         self.auto_gain_control_shim()
     }
     fn browser_window(&self) -> f64 {
         self.browser_window_shim()
     }
-    fn channel_count(&self) -> &::wasm_bindgen::JsValue {
+    fn channel_count(&self) -> ::wasm_bindgen::JsValue {
         self.channel_count_shim()
     }
-    fn device_id(&self) -> &::wasm_bindgen::JsValue {
+    fn device_id(&self) -> ::wasm_bindgen::JsValue {
         self.device_id_shim()
     }
-    fn echo_cancellation(&self) -> &::wasm_bindgen::JsValue {
+    fn echo_cancellation(&self) -> ::wasm_bindgen::JsValue {
         self.echo_cancellation_shim()
     }
-    fn facing_mode(&self) -> &::wasm_bindgen::JsValue {
+    fn facing_mode(&self) -> ::wasm_bindgen::JsValue {
         self.facing_mode_shim()
     }
-    fn frame_rate(&self) -> &::wasm_bindgen::JsValue {
+    fn frame_rate(&self) -> ::wasm_bindgen::JsValue {
         self.frame_rate_shim()
     }
-    fn height(&self) -> &::wasm_bindgen::JsValue {
+    fn height(&self) -> ::wasm_bindgen::JsValue {
         self.height_shim()
     }
-    fn media_source(&self) -> &str {
+    fn media_source(&self) -> String {
         self.media_source_shim()
     }
-    fn noise_suppression(&self) -> &::wasm_bindgen::JsValue {
+    fn noise_suppression(&self) -> ::wasm_bindgen::JsValue {
         self.noise_suppression_shim()
     }
     fn scroll_with_page(&self) -> bool {
         self.scroll_with_page_shim()
     }
-    fn viewport_height(&self) -> &::wasm_bindgen::JsValue {
+    fn viewport_height(&self) -> ::wasm_bindgen::JsValue {
         self.viewport_height_shim()
     }
-    fn viewport_offset_x(&self) -> &::wasm_bindgen::JsValue {
+    fn viewport_offset_x(&self) -> ::wasm_bindgen::JsValue {
         self.viewport_offset_x_shim()
     }
-    fn viewport_offset_y(&self) -> &::wasm_bindgen::JsValue {
+    fn viewport_offset_y(&self) -> ::wasm_bindgen::JsValue {
         self.viewport_offset_y_shim()
     }
-    fn viewport_width(&self) -> &::wasm_bindgen::JsValue {
+    fn viewport_width(&self) -> ::wasm_bindgen::JsValue {
         self.viewport_width_shim()
     }
-    fn width(&self) -> &::wasm_bindgen::JsValue {
+    fn width(&self) -> ::wasm_bindgen::JsValue {
         self.width_shim()
     }
-    fn advanced(&self) -> &::wasm_bindgen::JsValue {
+    fn advanced(&self) -> ::js_sys::Array {
         self.advanced_shim()
     }
 }

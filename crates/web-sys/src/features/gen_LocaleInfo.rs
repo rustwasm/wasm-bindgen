@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `LocaleInfo`*"]
     pub type LocaleInfo;
     #[wasm_bindgen(method, getter = "direction")]
-    fn direction_shim(this: &LocaleInfo) -> &str;
+    fn direction_shim(this: &LocaleInfo) -> String;
     #[wasm_bindgen(method, setter = "direction")]
     fn set_direction_shim(this: &LocaleInfo, val: &str);
     #[wasm_bindgen(method, getter = "locale")]
-    fn locale_shim(this: &LocaleInfo) -> &str;
+    fn locale_shim(this: &LocaleInfo) -> String;
     #[wasm_bindgen(method, setter = "locale")]
     fn set_locale_shim(this: &LocaleInfo, val: &str);
 }
@@ -26,17 +26,17 @@ pub trait LocaleInfoGetters {
     #[doc = "Get the `direction` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `LocaleInfo`*"]
-    fn direction(&self) -> &str;
+    fn direction(&self) -> String;
     #[doc = "Get the `locale` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `LocaleInfo`*"]
-    fn locale(&self) -> &str;
+    fn locale(&self) -> String;
 }
 impl LocaleInfoGetters for LocaleInfo {
-    fn direction(&self) -> &str {
+    fn direction(&self) -> String {
         self.direction_shim()
     }
-    fn locale(&self) -> &str {
+    fn locale(&self) -> String {
         self.locale_shim()
     }
 }

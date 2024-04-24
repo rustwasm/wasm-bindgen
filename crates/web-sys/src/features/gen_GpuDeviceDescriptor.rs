@@ -15,17 +15,17 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuDeviceDescriptor;
     #[wasm_bindgen(method, getter = "label")]
-    fn label_shim(this: &GpuDeviceDescriptor) -> &str;
+    fn label_shim(this: &GpuDeviceDescriptor) -> String;
     #[wasm_bindgen(method, setter = "label")]
     fn set_label_shim(this: &GpuDeviceDescriptor, val: &str);
     #[cfg(feature = "GpuQueueDescriptor")]
     #[wasm_bindgen(method, getter = "defaultQueue")]
-    fn default_queue_shim(this: &GpuDeviceDescriptor) -> &GpuQueueDescriptor;
+    fn default_queue_shim(this: &GpuDeviceDescriptor) -> GpuQueueDescriptor;
     #[cfg(feature = "GpuQueueDescriptor")]
     #[wasm_bindgen(method, setter = "defaultQueue")]
     fn set_default_queue_shim(this: &GpuDeviceDescriptor, val: &GpuQueueDescriptor);
     #[wasm_bindgen(method, getter = "requiredFeatures")]
-    fn required_features_shim(this: &GpuDeviceDescriptor) -> &::wasm_bindgen::JsValue;
+    fn required_features_shim(this: &GpuDeviceDescriptor) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "requiredFeatures")]
     fn set_required_features_shim(this: &GpuDeviceDescriptor, val: &::wasm_bindgen::JsValue);
 }
@@ -41,7 +41,7 @@ pub trait GpuDeviceDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn label(&self) -> &str;
+    fn label(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuQueueDescriptor")]
     #[doc = "Get the `defaultQueue` field of this object."]
@@ -50,7 +50,7 @@ pub trait GpuDeviceDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn default_queue(&self) -> &GpuQueueDescriptor;
+    fn default_queue(&self) -> GpuQueueDescriptor;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `requiredFeatures` field of this object."]
     #[doc = ""]
@@ -58,21 +58,21 @@ pub trait GpuDeviceDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn required_features(&self) -> &::wasm_bindgen::JsValue;
+    fn required_features(&self) -> ::js_sys::Array;
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuDeviceDescriptorGetters for GpuDeviceDescriptor {
     #[cfg(web_sys_unstable_apis)]
-    fn label(&self) -> &str {
+    fn label(&self) -> String {
         self.label_shim()
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuQueueDescriptor")]
-    fn default_queue(&self) -> &GpuQueueDescriptor {
+    fn default_queue(&self) -> GpuQueueDescriptor {
         self.default_queue_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn required_features(&self) -> &::wasm_bindgen::JsValue {
+    fn required_features(&self) -> ::js_sys::Array {
         self.required_features_shim()
     }
 }

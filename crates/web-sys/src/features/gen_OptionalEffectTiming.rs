@@ -21,11 +21,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "direction")]
     fn set_direction_shim(this: &OptionalEffectTiming, val: PlaybackDirection);
     #[wasm_bindgen(method, getter = "duration")]
-    fn duration_shim(this: &OptionalEffectTiming) -> &::wasm_bindgen::JsValue;
+    fn duration_shim(this: &OptionalEffectTiming) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "duration")]
     fn set_duration_shim(this: &OptionalEffectTiming, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "easing")]
-    fn easing_shim(this: &OptionalEffectTiming) -> &str;
+    fn easing_shim(this: &OptionalEffectTiming) -> String;
     #[wasm_bindgen(method, setter = "easing")]
     fn set_easing_shim(this: &OptionalEffectTiming, val: &str);
     #[wasm_bindgen(method, getter = "endDelay")]
@@ -63,11 +63,11 @@ pub trait OptionalEffectTimingGetters {
     #[doc = "Get the `duration` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OptionalEffectTiming`*"]
-    fn duration(&self) -> &::wasm_bindgen::JsValue;
+    fn duration(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `easing` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OptionalEffectTiming`*"]
-    fn easing(&self) -> &str;
+    fn easing(&self) -> String;
     #[doc = "Get the `endDelay` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OptionalEffectTiming`*"]
@@ -94,10 +94,10 @@ impl OptionalEffectTimingGetters for OptionalEffectTiming {
     fn direction(&self) -> PlaybackDirection {
         self.direction_shim()
     }
-    fn duration(&self) -> &::wasm_bindgen::JsValue {
+    fn duration(&self) -> ::wasm_bindgen::JsValue {
         self.duration_shim()
     }
-    fn easing(&self) -> &str {
+    fn easing(&self) -> String {
         self.easing_shim()
     }
     fn end_delay(&self) -> f64 {

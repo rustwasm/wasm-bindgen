@@ -19,7 +19,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "bitsPerSecond")]
     fn set_bits_per_second_shim(this: &MediaRecorderOptions, val: u32);
     #[wasm_bindgen(method, getter = "mimeType")]
-    fn mime_type_shim(this: &MediaRecorderOptions) -> &str;
+    fn mime_type_shim(this: &MediaRecorderOptions) -> String;
     #[wasm_bindgen(method, setter = "mimeType")]
     fn set_mime_type_shim(this: &MediaRecorderOptions, val: &str);
     #[wasm_bindgen(method, getter = "videoBitsPerSecond")]
@@ -42,7 +42,7 @@ pub trait MediaRecorderOptionsGetters {
     #[doc = "Get the `mimeType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorderOptions`*"]
-    fn mime_type(&self) -> &str;
+    fn mime_type(&self) -> String;
     #[doc = "Get the `videoBitsPerSecond` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorderOptions`*"]
@@ -55,7 +55,7 @@ impl MediaRecorderOptionsGetters for MediaRecorderOptions {
     fn bits_per_second(&self) -> u32 {
         self.bits_per_second_shim()
     }
-    fn mime_type(&self) -> &str {
+    fn mime_type(&self) -> String {
         self.mime_type_shim()
     }
     fn video_bits_per_second(&self) -> u32 {

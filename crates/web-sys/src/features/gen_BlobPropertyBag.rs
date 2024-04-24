@@ -17,7 +17,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "endings")]
     fn set_endings_shim(this: &BlobPropertyBag, val: EndingTypes);
     #[wasm_bindgen(method, getter = "type")]
-    fn type__shim(this: &BlobPropertyBag) -> &str;
+    fn type__shim(this: &BlobPropertyBag) -> String;
     #[wasm_bindgen(method, setter = "type")]
     fn set_type__shim(this: &BlobPropertyBag, val: &str);
 }
@@ -33,14 +33,14 @@ pub trait BlobPropertyBagGetters {
     #[doc = "Get the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BlobPropertyBag`*"]
-    fn type_(&self) -> &str;
+    fn type_(&self) -> String;
 }
 impl BlobPropertyBagGetters for BlobPropertyBag {
     #[cfg(feature = "EndingTypes")]
     fn endings(&self) -> EndingTypes {
         self.endings_shim()
     }
-    fn type_(&self) -> &str {
+    fn type_(&self) -> String {
         self.type__shim()
     }
 }

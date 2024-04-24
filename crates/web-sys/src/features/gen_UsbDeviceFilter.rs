@@ -27,7 +27,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "protocolCode")]
     fn set_protocol_code_shim(this: &UsbDeviceFilter, val: u8);
     #[wasm_bindgen(method, getter = "serialNumber")]
-    fn serial_number_shim(this: &UsbDeviceFilter) -> &str;
+    fn serial_number_shim(this: &UsbDeviceFilter) -> String;
     #[wasm_bindgen(method, setter = "serialNumber")]
     fn set_serial_number_shim(this: &UsbDeviceFilter, val: &str);
     #[wasm_bindgen(method, getter = "subclassCode")]
@@ -75,7 +75,7 @@ pub trait UsbDeviceFilterGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn serial_number(&self) -> &str;
+    fn serial_number(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `subclassCode` field of this object."]
     #[doc = ""]
@@ -108,7 +108,7 @@ impl UsbDeviceFilterGetters for UsbDeviceFilter {
         self.protocol_code_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn serial_number(&self) -> &str {
+    fn serial_number(&self) -> String {
         self.serial_number_shim()
     }
     #[cfg(web_sys_unstable_apis)]

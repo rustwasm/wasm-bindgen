@@ -35,7 +35,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "ordered")]
     fn set_ordered_shim(this: &RtcDataChannelInit, val: bool);
     #[wasm_bindgen(method, getter = "protocol")]
-    fn protocol_shim(this: &RtcDataChannelInit) -> &str;
+    fn protocol_shim(this: &RtcDataChannelInit) -> String;
     #[wasm_bindgen(method, setter = "protocol")]
     fn set_protocol_shim(this: &RtcDataChannelInit, val: &str);
 }
@@ -70,7 +70,7 @@ pub trait RtcDataChannelInitGetters {
     #[doc = "Get the `protocol` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcDataChannelInit`*"]
-    fn protocol(&self) -> &str;
+    fn protocol(&self) -> String;
 }
 impl RtcDataChannelInitGetters for RtcDataChannelInit {
     fn id(&self) -> u16 {
@@ -91,7 +91,7 @@ impl RtcDataChannelInitGetters for RtcDataChannelInit {
     fn ordered(&self) -> bool {
         self.ordered_shim()
     }
-    fn protocol(&self) -> &str {
+    fn protocol(&self) -> String {
         self.protocol_shim()
     }
 }

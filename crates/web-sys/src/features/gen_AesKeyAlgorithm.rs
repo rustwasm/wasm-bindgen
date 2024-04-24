@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AesKeyAlgorithm`*"]
     pub type AesKeyAlgorithm;
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &AesKeyAlgorithm) -> &str;
+    fn name_shim(this: &AesKeyAlgorithm) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &AesKeyAlgorithm, val: &str);
     #[wasm_bindgen(method, getter = "length")]
@@ -26,14 +26,14 @@ pub trait AesKeyAlgorithmGetters {
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesKeyAlgorithm`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
     #[doc = "Get the `length` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesKeyAlgorithm`*"]
     fn length(&self) -> u16;
 }
 impl AesKeyAlgorithmGetters for AesKeyAlgorithm {
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
     fn length(&self) -> u16 {

@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `L10nValue`*"]
     pub type L10nValue;
     #[wasm_bindgen(method, getter = "attributes")]
-    fn attributes_shim(this: &L10nValue) -> &::wasm_bindgen::JsValue;
+    fn attributes_shim(this: &L10nValue) -> Option<::js_sys::Array>;
     #[wasm_bindgen(method, setter = "attributes")]
     fn set_attributes_shim(this: &L10nValue, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "value")]
-    fn value_shim(this: &L10nValue) -> Option<&str>;
+    fn value_shim(this: &L10nValue) -> Option<String>;
     #[wasm_bindgen(method, setter = "value")]
     fn set_value_shim(this: &L10nValue, val: Option<&str>);
 }
@@ -26,17 +26,17 @@ pub trait L10nValueGetters {
     #[doc = "Get the `attributes` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nValue`*"]
-    fn attributes(&self) -> Option<&::wasm_bindgen::JsValue>;
+    fn attributes(&self) -> Option<::js_sys::Array>;
     #[doc = "Get the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nValue`*"]
-    fn value(&self) -> Option<&str>;
+    fn value(&self) -> Option<String>;
 }
 impl L10nValueGetters for L10nValue {
-    fn attributes(&self) -> Option<&::wasm_bindgen::JsValue> {
+    fn attributes(&self) -> Option<::js_sys::Array> {
         self.attributes_shim()
     }
-    fn value(&self) -> Option<&str> {
+    fn value(&self) -> Option<String> {
         self.value_shim()
     }
 }

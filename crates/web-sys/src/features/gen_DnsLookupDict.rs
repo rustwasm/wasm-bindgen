@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `DnsLookupDict`*"]
     pub type DnsLookupDict;
     #[wasm_bindgen(method, getter = "address")]
-    fn address_shim(this: &DnsLookupDict) -> &::wasm_bindgen::JsValue;
+    fn address_shim(this: &DnsLookupDict) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "address")]
     fn set_address_shim(this: &DnsLookupDict, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "answer")]
@@ -19,7 +19,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "answer")]
     fn set_answer_shim(this: &DnsLookupDict, val: bool);
     #[wasm_bindgen(method, getter = "error")]
-    fn error_shim(this: &DnsLookupDict) -> &str;
+    fn error_shim(this: &DnsLookupDict) -> String;
     #[wasm_bindgen(method, setter = "error")]
     fn set_error_shim(this: &DnsLookupDict, val: &str);
 }
@@ -30,7 +30,7 @@ pub trait DnsLookupDictGetters {
     #[doc = "Get the `address` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsLookupDict`*"]
-    fn address(&self) -> &::wasm_bindgen::JsValue;
+    fn address(&self) -> ::js_sys::Array;
     #[doc = "Get the `answer` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsLookupDict`*"]
@@ -38,16 +38,16 @@ pub trait DnsLookupDictGetters {
     #[doc = "Get the `error` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsLookupDict`*"]
-    fn error(&self) -> &str;
+    fn error(&self) -> String;
 }
 impl DnsLookupDictGetters for DnsLookupDict {
-    fn address(&self) -> &::wasm_bindgen::JsValue {
+    fn address(&self) -> ::js_sys::Array {
         self.address_shim()
     }
     fn answer(&self) -> bool {
         self.answer_shim()
     }
-    fn error(&self) -> &str {
+    fn error(&self) -> String {
         self.error_shim()
     }
 }

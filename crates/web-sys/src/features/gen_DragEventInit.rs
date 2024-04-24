@@ -28,7 +28,7 @@ extern "C" {
     fn set_detail_shim(this: &DragEventInit, val: i32);
     #[cfg(feature = "Window")]
     #[wasm_bindgen(method, getter = "view")]
-    fn view_shim(this: &DragEventInit) -> Option<&Window>;
+    fn view_shim(this: &DragEventInit) -> Option<Window>;
     #[cfg(feature = "Window")]
     #[wasm_bindgen(method, setter = "view")]
     fn set_view_shim(this: &DragEventInit, val: Option<&Window>);
@@ -110,7 +110,7 @@ extern "C" {
     fn set_movement_y_shim(this: &DragEventInit, val: i32);
     #[cfg(feature = "EventTarget")]
     #[wasm_bindgen(method, getter = "relatedTarget")]
-    fn related_target_shim(this: &DragEventInit) -> Option<&EventTarget>;
+    fn related_target_shim(this: &DragEventInit) -> Option<EventTarget>;
     #[cfg(feature = "EventTarget")]
     #[wasm_bindgen(method, setter = "relatedTarget")]
     fn set_related_target_shim(this: &DragEventInit, val: Option<&EventTarget>);
@@ -124,7 +124,7 @@ extern "C" {
     fn set_screen_y_shim(this: &DragEventInit, val: i32);
     #[cfg(feature = "DataTransfer")]
     #[wasm_bindgen(method, getter = "dataTransfer")]
-    fn data_transfer_shim(this: &DragEventInit) -> Option<&DataTransfer>;
+    fn data_transfer_shim(this: &DragEventInit) -> Option<DataTransfer>;
     #[cfg(feature = "DataTransfer")]
     #[wasm_bindgen(method, setter = "dataTransfer")]
     fn set_data_transfer_shim(this: &DragEventInit, val: Option<&DataTransfer>);
@@ -153,7 +153,7 @@ pub trait DragEventInitGetters {
     #[doc = "Get the `view` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DragEventInit`, `Window`*"]
-    fn view(&self) -> Option<&Window>;
+    fn view(&self) -> Option<Window>;
     #[doc = "Get the `altKey` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DragEventInit`*"]
@@ -234,7 +234,7 @@ pub trait DragEventInitGetters {
     #[doc = "Get the `relatedTarget` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DragEventInit`, `EventTarget`*"]
-    fn related_target(&self) -> Option<&EventTarget>;
+    fn related_target(&self) -> Option<EventTarget>;
     #[doc = "Get the `screenX` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DragEventInit`*"]
@@ -247,7 +247,7 @@ pub trait DragEventInitGetters {
     #[doc = "Get the `dataTransfer` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DataTransfer`, `DragEventInit`*"]
-    fn data_transfer(&self) -> Option<&DataTransfer>;
+    fn data_transfer(&self) -> Option<DataTransfer>;
 }
 impl DragEventInitGetters for DragEventInit {
     fn bubbles(&self) -> bool {
@@ -263,7 +263,7 @@ impl DragEventInitGetters for DragEventInit {
         self.detail_shim()
     }
     #[cfg(feature = "Window")]
-    fn view(&self) -> Option<&Window> {
+    fn view(&self) -> Option<Window> {
         self.view_shim()
     }
     fn alt_key(&self) -> bool {
@@ -324,7 +324,7 @@ impl DragEventInitGetters for DragEventInit {
         self.movement_y_shim()
     }
     #[cfg(feature = "EventTarget")]
-    fn related_target(&self) -> Option<&EventTarget> {
+    fn related_target(&self) -> Option<EventTarget> {
         self.related_target_shim()
     }
     fn screen_x(&self) -> i32 {
@@ -334,7 +334,7 @@ impl DragEventInitGetters for DragEventInit {
         self.screen_y_shim()
     }
     #[cfg(feature = "DataTransfer")]
-    fn data_transfer(&self) -> Option<&DataTransfer> {
+    fn data_transfer(&self) -> Option<DataTransfer> {
         self.data_transfer_shim()
     }
 }

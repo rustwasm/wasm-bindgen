@@ -11,15 +11,15 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `FakePluginMimeEntry`*"]
     pub type FakePluginMimeEntry;
     #[wasm_bindgen(method, getter = "description")]
-    fn description_shim(this: &FakePluginMimeEntry) -> &str;
+    fn description_shim(this: &FakePluginMimeEntry) -> String;
     #[wasm_bindgen(method, setter = "description")]
     fn set_description_shim(this: &FakePluginMimeEntry, val: &str);
     #[wasm_bindgen(method, getter = "extension")]
-    fn extension_shim(this: &FakePluginMimeEntry) -> &str;
+    fn extension_shim(this: &FakePluginMimeEntry) -> String;
     #[wasm_bindgen(method, setter = "extension")]
     fn set_extension_shim(this: &FakePluginMimeEntry, val: &str);
     #[wasm_bindgen(method, getter = "type")]
-    fn type__shim(this: &FakePluginMimeEntry) -> &str;
+    fn type__shim(this: &FakePluginMimeEntry) -> String;
     #[wasm_bindgen(method, setter = "type")]
     fn set_type__shim(this: &FakePluginMimeEntry, val: &str);
 }
@@ -30,24 +30,24 @@ pub trait FakePluginMimeEntryGetters {
     #[doc = "Get the `description` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginMimeEntry`*"]
-    fn description(&self) -> &str;
+    fn description(&self) -> String;
     #[doc = "Get the `extension` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginMimeEntry`*"]
-    fn extension(&self) -> &str;
+    fn extension(&self) -> String;
     #[doc = "Get the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginMimeEntry`*"]
-    fn type_(&self) -> &str;
+    fn type_(&self) -> String;
 }
 impl FakePluginMimeEntryGetters for FakePluginMimeEntry {
-    fn description(&self) -> &str {
+    fn description(&self) -> String {
         self.description_shim()
     }
-    fn extension(&self) -> &str {
+    fn extension(&self) -> String {
         self.extension_shim()
     }
-    fn type_(&self) -> &str {
+    fn type_(&self) -> String {
         self.type__shim()
     }
 }

@@ -24,7 +24,7 @@ extern "C" {
     fn set_composed_shim(this: &TcpServerSocketEventInit, val: bool);
     #[cfg(feature = "TcpSocket")]
     #[wasm_bindgen(method, getter = "socket")]
-    fn socket_shim(this: &TcpServerSocketEventInit) -> Option<&TcpSocket>;
+    fn socket_shim(this: &TcpServerSocketEventInit) -> Option<TcpSocket>;
     #[cfg(feature = "TcpSocket")]
     #[wasm_bindgen(method, setter = "socket")]
     fn set_socket_shim(this: &TcpServerSocketEventInit, val: Option<&TcpSocket>);
@@ -49,7 +49,7 @@ pub trait TcpServerSocketEventInitGetters {
     #[doc = "Get the `socket` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpServerSocketEventInit`, `TcpSocket`*"]
-    fn socket(&self) -> Option<&TcpSocket>;
+    fn socket(&self) -> Option<TcpSocket>;
 }
 impl TcpServerSocketEventInitGetters for TcpServerSocketEventInit {
     fn bubbles(&self) -> bool {
@@ -62,7 +62,7 @@ impl TcpServerSocketEventInitGetters for TcpServerSocketEventInit {
         self.composed_shim()
     }
     #[cfg(feature = "TcpSocket")]
-    fn socket(&self) -> Option<&TcpSocket> {
+    fn socket(&self) -> Option<TcpSocket> {
         self.socket_shim()
     }
 }

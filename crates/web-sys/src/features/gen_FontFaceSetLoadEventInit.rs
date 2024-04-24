@@ -23,7 +23,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &FontFaceSetLoadEventInit, val: bool);
     #[wasm_bindgen(method, getter = "fontfaces")]
-    fn fontfaces_shim(this: &FontFaceSetLoadEventInit) -> &::wasm_bindgen::JsValue;
+    fn fontfaces_shim(this: &FontFaceSetLoadEventInit) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "fontfaces")]
     fn set_fontfaces_shim(this: &FontFaceSetLoadEventInit, val: &::wasm_bindgen::JsValue);
 }
@@ -46,7 +46,7 @@ pub trait FontFaceSetLoadEventInitGetters {
     #[doc = "Get the `fontfaces` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSetLoadEventInit`*"]
-    fn fontfaces(&self) -> &::wasm_bindgen::JsValue;
+    fn fontfaces(&self) -> ::js_sys::Array;
 }
 impl FontFaceSetLoadEventInitGetters for FontFaceSetLoadEventInit {
     fn bubbles(&self) -> bool {
@@ -58,7 +58,7 @@ impl FontFaceSetLoadEventInitGetters for FontFaceSetLoadEventInit {
     fn composed(&self) -> bool {
         self.composed_shim()
     }
-    fn fontfaces(&self) -> &::wasm_bindgen::JsValue {
+    fn fontfaces(&self) -> ::js_sys::Array {
         self.fontfaces_shim()
     }
 }

@@ -23,7 +23,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &PluginCrashedEventInit, val: bool);
     #[wasm_bindgen(method, getter = "browserDumpID")]
-    fn browser_dump_id_shim(this: &PluginCrashedEventInit) -> Option<&str>;
+    fn browser_dump_id_shim(this: &PluginCrashedEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "browserDumpID")]
     fn set_browser_dump_id_shim(this: &PluginCrashedEventInit, val: Option<&str>);
     #[wasm_bindgen(method, getter = "gmpPlugin")]
@@ -31,11 +31,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "gmpPlugin")]
     fn set_gmp_plugin_shim(this: &PluginCrashedEventInit, val: bool);
     #[wasm_bindgen(method, getter = "pluginDumpID")]
-    fn plugin_dump_id_shim(this: &PluginCrashedEventInit) -> &str;
+    fn plugin_dump_id_shim(this: &PluginCrashedEventInit) -> String;
     #[wasm_bindgen(method, setter = "pluginDumpID")]
     fn set_plugin_dump_id_shim(this: &PluginCrashedEventInit, val: &str);
     #[wasm_bindgen(method, getter = "pluginFilename")]
-    fn plugin_filename_shim(this: &PluginCrashedEventInit) -> Option<&str>;
+    fn plugin_filename_shim(this: &PluginCrashedEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "pluginFilename")]
     fn set_plugin_filename_shim(this: &PluginCrashedEventInit, val: Option<&str>);
     #[wasm_bindgen(method, getter = "pluginID")]
@@ -43,7 +43,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "pluginID")]
     fn set_plugin_id_shim(this: &PluginCrashedEventInit, val: u32);
     #[wasm_bindgen(method, getter = "pluginName")]
-    fn plugin_name_shim(this: &PluginCrashedEventInit) -> &str;
+    fn plugin_name_shim(this: &PluginCrashedEventInit) -> String;
     #[wasm_bindgen(method, setter = "pluginName")]
     fn set_plugin_name_shim(this: &PluginCrashedEventInit, val: &str);
     #[wasm_bindgen(method, getter = "submittedCrashReport")]
@@ -70,7 +70,7 @@ pub trait PluginCrashedEventInitGetters {
     #[doc = "Get the `browserDumpID` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PluginCrashedEventInit`*"]
-    fn browser_dump_id(&self) -> Option<&str>;
+    fn browser_dump_id(&self) -> Option<String>;
     #[doc = "Get the `gmpPlugin` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PluginCrashedEventInit`*"]
@@ -78,11 +78,11 @@ pub trait PluginCrashedEventInitGetters {
     #[doc = "Get the `pluginDumpID` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PluginCrashedEventInit`*"]
-    fn plugin_dump_id(&self) -> &str;
+    fn plugin_dump_id(&self) -> String;
     #[doc = "Get the `pluginFilename` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PluginCrashedEventInit`*"]
-    fn plugin_filename(&self) -> Option<&str>;
+    fn plugin_filename(&self) -> Option<String>;
     #[doc = "Get the `pluginID` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PluginCrashedEventInit`*"]
@@ -90,7 +90,7 @@ pub trait PluginCrashedEventInitGetters {
     #[doc = "Get the `pluginName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PluginCrashedEventInit`*"]
-    fn plugin_name(&self) -> &str;
+    fn plugin_name(&self) -> String;
     #[doc = "Get the `submittedCrashReport` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PluginCrashedEventInit`*"]
@@ -106,22 +106,22 @@ impl PluginCrashedEventInitGetters for PluginCrashedEventInit {
     fn composed(&self) -> bool {
         self.composed_shim()
     }
-    fn browser_dump_id(&self) -> Option<&str> {
+    fn browser_dump_id(&self) -> Option<String> {
         self.browser_dump_id_shim()
     }
     fn gmp_plugin(&self) -> bool {
         self.gmp_plugin_shim()
     }
-    fn plugin_dump_id(&self) -> &str {
+    fn plugin_dump_id(&self) -> String {
         self.plugin_dump_id_shim()
     }
-    fn plugin_filename(&self) -> Option<&str> {
+    fn plugin_filename(&self) -> Option<String> {
         self.plugin_filename_shim()
     }
     fn plugin_id(&self) -> u32 {
         self.plugin_id_shim()
     }
-    fn plugin_name(&self) -> &str {
+    fn plugin_name(&self) -> String {
         self.plugin_name_shim()
     }
     fn submitted_crash_report(&self) -> bool {

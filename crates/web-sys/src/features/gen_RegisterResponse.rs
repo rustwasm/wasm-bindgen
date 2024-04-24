@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     pub type RegisterResponse;
     #[wasm_bindgen(method, getter = "clientData")]
-    fn client_data_shim(this: &RegisterResponse) -> &str;
+    fn client_data_shim(this: &RegisterResponse) -> String;
     #[wasm_bindgen(method, setter = "clientData")]
     fn set_client_data_shim(this: &RegisterResponse, val: &str);
     #[wasm_bindgen(method, getter = "errorCode")]
@@ -19,15 +19,15 @@ extern "C" {
     #[wasm_bindgen(method, setter = "errorCode")]
     fn set_error_code_shim(this: &RegisterResponse, val: Option<u16>);
     #[wasm_bindgen(method, getter = "errorMessage")]
-    fn error_message_shim(this: &RegisterResponse) -> Option<&str>;
+    fn error_message_shim(this: &RegisterResponse) -> Option<String>;
     #[wasm_bindgen(method, setter = "errorMessage")]
     fn set_error_message_shim(this: &RegisterResponse, val: Option<&str>);
     #[wasm_bindgen(method, getter = "registrationData")]
-    fn registration_data_shim(this: &RegisterResponse) -> &str;
+    fn registration_data_shim(this: &RegisterResponse) -> String;
     #[wasm_bindgen(method, setter = "registrationData")]
     fn set_registration_data_shim(this: &RegisterResponse, val: &str);
     #[wasm_bindgen(method, getter = "version")]
-    fn version_shim(this: &RegisterResponse) -> &str;
+    fn version_shim(this: &RegisterResponse) -> String;
     #[wasm_bindgen(method, setter = "version")]
     fn set_version_shim(this: &RegisterResponse, val: &str);
 }
@@ -38,7 +38,7 @@ pub trait RegisterResponseGetters {
     #[doc = "Get the `clientData` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
-    fn client_data(&self) -> &str;
+    fn client_data(&self) -> String;
     #[doc = "Get the `errorCode` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
@@ -46,30 +46,30 @@ pub trait RegisterResponseGetters {
     #[doc = "Get the `errorMessage` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
-    fn error_message(&self) -> Option<&str>;
+    fn error_message(&self) -> Option<String>;
     #[doc = "Get the `registrationData` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
-    fn registration_data(&self) -> &str;
+    fn registration_data(&self) -> String;
     #[doc = "Get the `version` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
-    fn version(&self) -> &str;
+    fn version(&self) -> String;
 }
 impl RegisterResponseGetters for RegisterResponse {
-    fn client_data(&self) -> &str {
+    fn client_data(&self) -> String {
         self.client_data_shim()
     }
     fn error_code(&self) -> Option<u16> {
         self.error_code_shim()
     }
-    fn error_message(&self) -> Option<&str> {
+    fn error_message(&self) -> Option<String> {
         self.error_message_shim()
     }
-    fn registration_data(&self) -> &str {
+    fn registration_data(&self) -> String {
         self.registration_data_shim()
     }
-    fn version(&self) -> &str {
+    fn version(&self) -> String {
         self.version_shim()
     }
 }

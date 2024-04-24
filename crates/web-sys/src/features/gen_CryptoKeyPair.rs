@@ -12,13 +12,13 @@ extern "C" {
     pub type CryptoKeyPair;
     #[cfg(feature = "CryptoKey")]
     #[wasm_bindgen(method, getter = "privateKey")]
-    fn private_key_shim(this: &CryptoKeyPair) -> &CryptoKey;
+    fn private_key_shim(this: &CryptoKeyPair) -> CryptoKey;
     #[cfg(feature = "CryptoKey")]
     #[wasm_bindgen(method, setter = "privateKey")]
     fn set_private_key_shim(this: &CryptoKeyPair, val: &CryptoKey);
     #[cfg(feature = "CryptoKey")]
     #[wasm_bindgen(method, getter = "publicKey")]
-    fn public_key_shim(this: &CryptoKeyPair) -> &CryptoKey;
+    fn public_key_shim(this: &CryptoKeyPair) -> CryptoKey;
     #[cfg(feature = "CryptoKey")]
     #[wasm_bindgen(method, setter = "publicKey")]
     fn set_public_key_shim(this: &CryptoKeyPair, val: &CryptoKey);
@@ -31,20 +31,20 @@ pub trait CryptoKeyPairGetters {
     #[doc = "Get the `privateKey` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `CryptoKeyPair`*"]
-    fn private_key(&self) -> &CryptoKey;
+    fn private_key(&self) -> CryptoKey;
     #[cfg(feature = "CryptoKey")]
     #[doc = "Get the `publicKey` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `CryptoKeyPair`*"]
-    fn public_key(&self) -> &CryptoKey;
+    fn public_key(&self) -> CryptoKey;
 }
 impl CryptoKeyPairGetters for CryptoKeyPair {
     #[cfg(feature = "CryptoKey")]
-    fn private_key(&self) -> &CryptoKey {
+    fn private_key(&self) -> CryptoKey {
         self.private_key_shim()
     }
     #[cfg(feature = "CryptoKey")]
-    fn public_key(&self) -> &CryptoKey {
+    fn public_key(&self) -> CryptoKey {
         self.public_key_shim()
     }
 }

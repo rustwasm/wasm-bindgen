@@ -24,7 +24,7 @@ extern "C" {
     fn set_composed_shim(this: &GroupedHistoryEventInit, val: bool);
     #[cfg(feature = "Element")]
     #[wasm_bindgen(method, getter = "otherBrowser")]
-    fn other_browser_shim(this: &GroupedHistoryEventInit) -> Option<&Element>;
+    fn other_browser_shim(this: &GroupedHistoryEventInit) -> Option<Element>;
     #[cfg(feature = "Element")]
     #[wasm_bindgen(method, setter = "otherBrowser")]
     fn set_other_browser_shim(this: &GroupedHistoryEventInit, val: Option<&Element>);
@@ -49,7 +49,7 @@ pub trait GroupedHistoryEventInitGetters {
     #[doc = "Get the `otherBrowser` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`, `GroupedHistoryEventInit`*"]
-    fn other_browser(&self) -> Option<&Element>;
+    fn other_browser(&self) -> Option<Element>;
 }
 impl GroupedHistoryEventInitGetters for GroupedHistoryEventInit {
     fn bubbles(&self) -> bool {
@@ -62,7 +62,7 @@ impl GroupedHistoryEventInitGetters for GroupedHistoryEventInit {
         self.composed_shim()
     }
     #[cfg(feature = "Element")]
-    fn other_browser(&self) -> Option<&Element> {
+    fn other_browser(&self) -> Option<Element> {
         self.other_browser_shim()
     }
 }

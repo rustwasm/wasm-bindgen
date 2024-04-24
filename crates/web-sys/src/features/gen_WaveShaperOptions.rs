@@ -27,7 +27,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "channelInterpretation")]
     fn set_channel_interpretation_shim(this: &WaveShaperOptions, val: ChannelInterpretation);
     #[wasm_bindgen(method, getter = "curve")]
-    fn curve_shim(this: &WaveShaperOptions) -> &::wasm_bindgen::JsValue;
+    fn curve_shim(this: &WaveShaperOptions) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "curve")]
     fn set_curve_shim(this: &WaveShaperOptions, val: &::wasm_bindgen::JsValue);
     #[cfg(feature = "OverSampleType")]
@@ -58,7 +58,7 @@ pub trait WaveShaperOptionsGetters {
     #[doc = "Get the `curve` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WaveShaperOptions`*"]
-    fn curve(&self) -> &::wasm_bindgen::JsValue;
+    fn curve(&self) -> ::js_sys::Array;
     #[cfg(feature = "OverSampleType")]
     #[doc = "Get the `oversample` field of this object."]
     #[doc = ""]
@@ -77,7 +77,7 @@ impl WaveShaperOptionsGetters for WaveShaperOptions {
     fn channel_interpretation(&self) -> ChannelInterpretation {
         self.channel_interpretation_shim()
     }
-    fn curve(&self) -> &::wasm_bindgen::JsValue {
+    fn curve(&self) -> ::js_sys::Array {
         self.curve_shim()
     }
     #[cfg(feature = "OverSampleType")]

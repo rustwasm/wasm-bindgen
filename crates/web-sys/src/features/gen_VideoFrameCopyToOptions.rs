@@ -15,12 +15,12 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type VideoFrameCopyToOptions;
     #[wasm_bindgen(method, getter = "layout")]
-    fn layout_shim(this: &VideoFrameCopyToOptions) -> &::wasm_bindgen::JsValue;
+    fn layout_shim(this: &VideoFrameCopyToOptions) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "layout")]
     fn set_layout_shim(this: &VideoFrameCopyToOptions, val: &::wasm_bindgen::JsValue);
     #[cfg(feature = "DomRectInit")]
     #[wasm_bindgen(method, getter = "rect")]
-    fn rect_shim(this: &VideoFrameCopyToOptions) -> &DomRectInit;
+    fn rect_shim(this: &VideoFrameCopyToOptions) -> DomRectInit;
     #[cfg(feature = "DomRectInit")]
     #[wasm_bindgen(method, setter = "rect")]
     fn set_rect_shim(this: &VideoFrameCopyToOptions, val: &DomRectInit);
@@ -37,7 +37,7 @@ pub trait VideoFrameCopyToOptionsGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn layout(&self) -> &::wasm_bindgen::JsValue;
+    fn layout(&self) -> ::js_sys::Array;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "DomRectInit")]
     #[doc = "Get the `rect` field of this object."]
@@ -46,17 +46,17 @@ pub trait VideoFrameCopyToOptionsGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn rect(&self) -> &DomRectInit;
+    fn rect(&self) -> DomRectInit;
 }
 #[cfg(web_sys_unstable_apis)]
 impl VideoFrameCopyToOptionsGetters for VideoFrameCopyToOptions {
     #[cfg(web_sys_unstable_apis)]
-    fn layout(&self) -> &::wasm_bindgen::JsValue {
+    fn layout(&self) -> ::js_sys::Array {
         self.layout_shim()
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "DomRectInit")]
-    fn rect(&self) -> &DomRectInit {
+    fn rect(&self) -> DomRectInit {
         self.rect_shim()
     }
 }

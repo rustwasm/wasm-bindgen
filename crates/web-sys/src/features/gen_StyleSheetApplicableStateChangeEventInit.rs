@@ -28,7 +28,7 @@ extern "C" {
     fn set_applicable_shim(this: &StyleSheetApplicableStateChangeEventInit, val: bool);
     #[cfg(feature = "CssStyleSheet")]
     #[wasm_bindgen(method, getter = "stylesheet")]
-    fn stylesheet_shim(this: &StyleSheetApplicableStateChangeEventInit) -> Option<&CssStyleSheet>;
+    fn stylesheet_shim(this: &StyleSheetApplicableStateChangeEventInit) -> Option<CssStyleSheet>;
     #[cfg(feature = "CssStyleSheet")]
     #[wasm_bindgen(method, setter = "stylesheet")]
     fn set_stylesheet_shim(
@@ -60,7 +60,7 @@ pub trait StyleSheetApplicableStateChangeEventInitGetters {
     #[doc = "Get the `stylesheet` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssStyleSheet`, `StyleSheetApplicableStateChangeEventInit`*"]
-    fn stylesheet(&self) -> Option<&CssStyleSheet>;
+    fn stylesheet(&self) -> Option<CssStyleSheet>;
 }
 impl StyleSheetApplicableStateChangeEventInitGetters for StyleSheetApplicableStateChangeEventInit {
     fn bubbles(&self) -> bool {
@@ -76,7 +76,7 @@ impl StyleSheetApplicableStateChangeEventInitGetters for StyleSheetApplicableSta
         self.applicable_shim()
     }
     #[cfg(feature = "CssStyleSheet")]
-    fn stylesheet(&self) -> Option<&CssStyleSheet> {
+    fn stylesheet(&self) -> Option<CssStyleSheet> {
         self.stylesheet_shim()
     }
 }

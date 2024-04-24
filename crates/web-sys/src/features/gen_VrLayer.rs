@@ -11,16 +11,16 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `VrLayer`*"]
     pub type VrLayer;
     #[wasm_bindgen(method, getter = "leftBounds")]
-    fn left_bounds_shim(this: &VrLayer) -> &::wasm_bindgen::JsValue;
+    fn left_bounds_shim(this: &VrLayer) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "leftBounds")]
     fn set_left_bounds_shim(this: &VrLayer, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "rightBounds")]
-    fn right_bounds_shim(this: &VrLayer) -> &::wasm_bindgen::JsValue;
+    fn right_bounds_shim(this: &VrLayer) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "rightBounds")]
     fn set_right_bounds_shim(this: &VrLayer, val: &::wasm_bindgen::JsValue);
     #[cfg(feature = "HtmlCanvasElement")]
     #[wasm_bindgen(method, getter = "source")]
-    fn source_shim(this: &VrLayer) -> Option<&HtmlCanvasElement>;
+    fn source_shim(this: &VrLayer) -> Option<HtmlCanvasElement>;
     #[cfg(feature = "HtmlCanvasElement")]
     #[wasm_bindgen(method, setter = "source")]
     fn set_source_shim(this: &VrLayer, val: Option<&HtmlCanvasElement>);
@@ -32,26 +32,26 @@ pub trait VrLayerGetters {
     #[doc = "Get the `leftBounds` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrLayer`*"]
-    fn left_bounds(&self) -> &::wasm_bindgen::JsValue;
+    fn left_bounds(&self) -> ::js_sys::Array;
     #[doc = "Get the `rightBounds` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrLayer`*"]
-    fn right_bounds(&self) -> &::wasm_bindgen::JsValue;
+    fn right_bounds(&self) -> ::js_sys::Array;
     #[cfg(feature = "HtmlCanvasElement")]
     #[doc = "Get the `source` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlCanvasElement`, `VrLayer`*"]
-    fn source(&self) -> Option<&HtmlCanvasElement>;
+    fn source(&self) -> Option<HtmlCanvasElement>;
 }
 impl VrLayerGetters for VrLayer {
-    fn left_bounds(&self) -> &::wasm_bindgen::JsValue {
+    fn left_bounds(&self) -> ::js_sys::Array {
         self.left_bounds_shim()
     }
-    fn right_bounds(&self) -> &::wasm_bindgen::JsValue {
+    fn right_bounds(&self) -> ::js_sys::Array {
         self.right_bounds_shim()
     }
     #[cfg(feature = "HtmlCanvasElement")]
-    fn source(&self) -> Option<&HtmlCanvasElement> {
+    fn source(&self) -> Option<HtmlCanvasElement> {
         self.source_shim()
     }
 }

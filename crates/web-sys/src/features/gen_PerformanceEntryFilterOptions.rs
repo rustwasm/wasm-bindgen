@@ -11,15 +11,15 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryFilterOptions`*"]
     pub type PerformanceEntryFilterOptions;
     #[wasm_bindgen(method, getter = "entryType")]
-    fn entry_type_shim(this: &PerformanceEntryFilterOptions) -> &str;
+    fn entry_type_shim(this: &PerformanceEntryFilterOptions) -> String;
     #[wasm_bindgen(method, setter = "entryType")]
     fn set_entry_type_shim(this: &PerformanceEntryFilterOptions, val: &str);
     #[wasm_bindgen(method, getter = "initiatorType")]
-    fn initiator_type_shim(this: &PerformanceEntryFilterOptions) -> &str;
+    fn initiator_type_shim(this: &PerformanceEntryFilterOptions) -> String;
     #[wasm_bindgen(method, setter = "initiatorType")]
     fn set_initiator_type_shim(this: &PerformanceEntryFilterOptions, val: &str);
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &PerformanceEntryFilterOptions) -> &str;
+    fn name_shim(this: &PerformanceEntryFilterOptions) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &PerformanceEntryFilterOptions, val: &str);
 }
@@ -30,24 +30,24 @@ pub trait PerformanceEntryFilterOptionsGetters {
     #[doc = "Get the `entryType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryFilterOptions`*"]
-    fn entry_type(&self) -> &str;
+    fn entry_type(&self) -> String;
     #[doc = "Get the `initiatorType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryFilterOptions`*"]
-    fn initiator_type(&self) -> &str;
+    fn initiator_type(&self) -> String;
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryFilterOptions`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
 }
 impl PerformanceEntryFilterOptionsGetters for PerformanceEntryFilterOptions {
-    fn entry_type(&self) -> &str {
+    fn entry_type(&self) -> String {
         self.entry_type_shim()
     }
-    fn initiator_type(&self) -> &str {
+    fn initiator_type(&self) -> String {
         self.initiator_type_shim()
     }
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
 }

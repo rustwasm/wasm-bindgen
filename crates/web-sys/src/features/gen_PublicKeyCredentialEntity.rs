@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialEntity`*"]
     pub type PublicKeyCredentialEntity;
     #[wasm_bindgen(method, getter = "icon")]
-    fn icon_shim(this: &PublicKeyCredentialEntity) -> &str;
+    fn icon_shim(this: &PublicKeyCredentialEntity) -> String;
     #[wasm_bindgen(method, setter = "icon")]
     fn set_icon_shim(this: &PublicKeyCredentialEntity, val: &str);
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &PublicKeyCredentialEntity) -> &str;
+    fn name_shim(this: &PublicKeyCredentialEntity) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &PublicKeyCredentialEntity, val: &str);
 }
@@ -26,17 +26,17 @@ pub trait PublicKeyCredentialEntityGetters {
     #[doc = "Get the `icon` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialEntity`*"]
-    fn icon(&self) -> &str;
+    fn icon(&self) -> String;
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialEntity`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
 }
 impl PublicKeyCredentialEntityGetters for PublicKeyCredentialEntity {
-    fn icon(&self) -> &str {
+    fn icon(&self) -> String {
         self.icon_shim()
     }
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
 }

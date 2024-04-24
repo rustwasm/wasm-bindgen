@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
     pub type IdbIndexParameters;
     #[wasm_bindgen(method, getter = "locale")]
-    fn locale_shim(this: &IdbIndexParameters) -> Option<&str>;
+    fn locale_shim(this: &IdbIndexParameters) -> Option<String>;
     #[wasm_bindgen(method, setter = "locale")]
     fn set_locale_shim(this: &IdbIndexParameters, val: Option<&str>);
     #[wasm_bindgen(method, getter = "multiEntry")]
@@ -30,7 +30,7 @@ pub trait IdbIndexParametersGetters {
     #[doc = "Get the `locale` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
-    fn locale(&self) -> Option<&str>;
+    fn locale(&self) -> Option<String>;
     #[doc = "Get the `multiEntry` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
@@ -41,7 +41,7 @@ pub trait IdbIndexParametersGetters {
     fn unique(&self) -> bool;
 }
 impl IdbIndexParametersGetters for IdbIndexParameters {
-    fn locale(&self) -> Option<&str> {
+    fn locale(&self) -> Option<String> {
         self.locale_shim()
     }
     fn multi_entry(&self) -> bool {

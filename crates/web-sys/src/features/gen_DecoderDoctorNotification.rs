@@ -11,19 +11,19 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `DecoderDoctorNotification`*"]
     pub type DecoderDoctorNotification;
     #[wasm_bindgen(method, getter = "decodeIssue")]
-    fn decode_issue_shim(this: &DecoderDoctorNotification) -> &str;
+    fn decode_issue_shim(this: &DecoderDoctorNotification) -> String;
     #[wasm_bindgen(method, setter = "decodeIssue")]
     fn set_decode_issue_shim(this: &DecoderDoctorNotification, val: &str);
     #[wasm_bindgen(method, getter = "decoderDoctorReportId")]
-    fn decoder_doctor_report_id_shim(this: &DecoderDoctorNotification) -> &str;
+    fn decoder_doctor_report_id_shim(this: &DecoderDoctorNotification) -> String;
     #[wasm_bindgen(method, setter = "decoderDoctorReportId")]
     fn set_decoder_doctor_report_id_shim(this: &DecoderDoctorNotification, val: &str);
     #[wasm_bindgen(method, getter = "docURL")]
-    fn doc_url_shim(this: &DecoderDoctorNotification) -> &str;
+    fn doc_url_shim(this: &DecoderDoctorNotification) -> String;
     #[wasm_bindgen(method, setter = "docURL")]
     fn set_doc_url_shim(this: &DecoderDoctorNotification, val: &str);
     #[wasm_bindgen(method, getter = "formats")]
-    fn formats_shim(this: &DecoderDoctorNotification) -> &str;
+    fn formats_shim(this: &DecoderDoctorNotification) -> String;
     #[wasm_bindgen(method, setter = "formats")]
     fn set_formats_shim(this: &DecoderDoctorNotification, val: &str);
     #[wasm_bindgen(method, getter = "isSolved")]
@@ -31,7 +31,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "isSolved")]
     fn set_is_solved_shim(this: &DecoderDoctorNotification, val: bool);
     #[wasm_bindgen(method, getter = "resourceURL")]
-    fn resource_url_shim(this: &DecoderDoctorNotification) -> &str;
+    fn resource_url_shim(this: &DecoderDoctorNotification) -> String;
     #[wasm_bindgen(method, setter = "resourceURL")]
     fn set_resource_url_shim(this: &DecoderDoctorNotification, val: &str);
     #[cfg(feature = "DecoderDoctorNotificationType")]
@@ -48,19 +48,19 @@ pub trait DecoderDoctorNotificationGetters {
     #[doc = "Get the `decodeIssue` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DecoderDoctorNotification`*"]
-    fn decode_issue(&self) -> &str;
+    fn decode_issue(&self) -> String;
     #[doc = "Get the `decoderDoctorReportId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DecoderDoctorNotification`*"]
-    fn decoder_doctor_report_id(&self) -> &str;
+    fn decoder_doctor_report_id(&self) -> String;
     #[doc = "Get the `docURL` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DecoderDoctorNotification`*"]
-    fn doc_url(&self) -> &str;
+    fn doc_url(&self) -> String;
     #[doc = "Get the `formats` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DecoderDoctorNotification`*"]
-    fn formats(&self) -> &str;
+    fn formats(&self) -> String;
     #[doc = "Get the `isSolved` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DecoderDoctorNotification`*"]
@@ -68,7 +68,7 @@ pub trait DecoderDoctorNotificationGetters {
     #[doc = "Get the `resourceURL` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DecoderDoctorNotification`*"]
-    fn resource_url(&self) -> &str;
+    fn resource_url(&self) -> String;
     #[cfg(feature = "DecoderDoctorNotificationType")]
     #[doc = "Get the `type` field of this object."]
     #[doc = ""]
@@ -76,22 +76,22 @@ pub trait DecoderDoctorNotificationGetters {
     fn type_(&self) -> DecoderDoctorNotificationType;
 }
 impl DecoderDoctorNotificationGetters for DecoderDoctorNotification {
-    fn decode_issue(&self) -> &str {
+    fn decode_issue(&self) -> String {
         self.decode_issue_shim()
     }
-    fn decoder_doctor_report_id(&self) -> &str {
+    fn decoder_doctor_report_id(&self) -> String {
         self.decoder_doctor_report_id_shim()
     }
-    fn doc_url(&self) -> &str {
+    fn doc_url(&self) -> String {
         self.doc_url_shim()
     }
-    fn formats(&self) -> &str {
+    fn formats(&self) -> String {
         self.formats_shim()
     }
     fn is_solved(&self) -> bool {
         self.is_solved_shim()
     }
-    fn resource_url(&self) -> &str {
+    fn resource_url(&self) -> String {
         self.resource_url_shim()
     }
     #[cfg(feature = "DecoderDoctorNotificationType")]

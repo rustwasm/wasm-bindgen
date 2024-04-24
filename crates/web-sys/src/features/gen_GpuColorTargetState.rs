@@ -16,7 +16,7 @@ extern "C" {
     pub type GpuColorTargetState;
     #[cfg(feature = "GpuBlendState")]
     #[wasm_bindgen(method, getter = "blend")]
-    fn blend_shim(this: &GpuColorTargetState) -> &GpuBlendState;
+    fn blend_shim(this: &GpuColorTargetState) -> GpuBlendState;
     #[cfg(feature = "GpuBlendState")]
     #[wasm_bindgen(method, setter = "blend")]
     fn set_blend_shim(this: &GpuColorTargetState, val: &GpuBlendState);
@@ -44,7 +44,7 @@ pub trait GpuColorTargetStateGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn blend(&self) -> &GpuBlendState;
+    fn blend(&self) -> GpuBlendState;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureFormat")]
     #[doc = "Get the `format` field of this object."]
@@ -67,7 +67,7 @@ pub trait GpuColorTargetStateGetters {
 impl GpuColorTargetStateGetters for GpuColorTargetState {
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBlendState")]
-    fn blend(&self) -> &GpuBlendState {
+    fn blend(&self) -> GpuBlendState {
         self.blend_shim()
     }
     #[cfg(web_sys_unstable_apis)]

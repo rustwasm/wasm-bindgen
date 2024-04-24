@@ -15,11 +15,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "disableNormalization")]
     fn set_disable_normalization_shim(this: &PeriodicWaveOptions, val: bool);
     #[wasm_bindgen(method, getter = "imag")]
-    fn imag_shim(this: &PeriodicWaveOptions) -> &::wasm_bindgen::JsValue;
+    fn imag_shim(this: &PeriodicWaveOptions) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "imag")]
     fn set_imag_shim(this: &PeriodicWaveOptions, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "real")]
-    fn real_shim(this: &PeriodicWaveOptions) -> &::wasm_bindgen::JsValue;
+    fn real_shim(this: &PeriodicWaveOptions) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "real")]
     fn set_real_shim(this: &PeriodicWaveOptions, val: &::wasm_bindgen::JsValue);
 }
@@ -34,20 +34,20 @@ pub trait PeriodicWaveOptionsGetters {
     #[doc = "Get the `imag` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PeriodicWaveOptions`*"]
-    fn imag(&self) -> &::wasm_bindgen::JsValue;
+    fn imag(&self) -> ::js_sys::Array;
     #[doc = "Get the `real` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PeriodicWaveOptions`*"]
-    fn real(&self) -> &::wasm_bindgen::JsValue;
+    fn real(&self) -> ::js_sys::Array;
 }
 impl PeriodicWaveOptionsGetters for PeriodicWaveOptions {
     fn disable_normalization(&self) -> bool {
         self.disable_normalization_shim()
     }
-    fn imag(&self) -> &::wasm_bindgen::JsValue {
+    fn imag(&self) -> ::js_sys::Array {
         self.imag_shim()
     }
-    fn real(&self) -> &::wasm_bindgen::JsValue {
+    fn real(&self) -> ::js_sys::Array {
         self.real_shim()
     }
 }

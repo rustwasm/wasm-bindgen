@@ -24,7 +24,7 @@ extern "C" {
     fn set_bytes_sent_shim(this: &WebTransportStats, val: f64);
     #[cfg(feature = "WebTransportDatagramStats")]
     #[wasm_bindgen(method, getter = "datagrams")]
-    fn datagrams_shim(this: &WebTransportStats) -> &WebTransportDatagramStats;
+    fn datagrams_shim(this: &WebTransportStats) -> WebTransportDatagramStats;
     #[cfg(feature = "WebTransportDatagramStats")]
     #[wasm_bindgen(method, setter = "datagrams")]
     fn set_datagrams_shim(this: &WebTransportStats, val: &WebTransportDatagramStats);
@@ -94,7 +94,7 @@ pub trait WebTransportStatsGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn datagrams(&self) -> &WebTransportDatagramStats;
+    fn datagrams(&self) -> WebTransportDatagramStats;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `minRtt` field of this object."]
     #[doc = ""]
@@ -180,7 +180,7 @@ impl WebTransportStatsGetters for WebTransportStats {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "WebTransportDatagramStats")]
-    fn datagrams(&self) -> &WebTransportDatagramStats {
+    fn datagrams(&self) -> WebTransportDatagramStats {
         self.datagrams_shim()
     }
     #[cfg(web_sys_unstable_apis)]

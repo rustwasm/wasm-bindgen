@@ -28,12 +28,12 @@ extern "C" {
     fn set_detail_shim(this: &CompositionEventInit, val: i32);
     #[cfg(feature = "Window")]
     #[wasm_bindgen(method, getter = "view")]
-    fn view_shim(this: &CompositionEventInit) -> Option<&Window>;
+    fn view_shim(this: &CompositionEventInit) -> Option<Window>;
     #[cfg(feature = "Window")]
     #[wasm_bindgen(method, setter = "view")]
     fn set_view_shim(this: &CompositionEventInit, val: Option<&Window>);
     #[wasm_bindgen(method, getter = "data")]
-    fn data_shim(this: &CompositionEventInit) -> &str;
+    fn data_shim(this: &CompositionEventInit) -> String;
     #[wasm_bindgen(method, setter = "data")]
     fn set_data_shim(this: &CompositionEventInit, val: &str);
 }
@@ -61,11 +61,11 @@ pub trait CompositionEventInitGetters {
     #[doc = "Get the `view` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CompositionEventInit`, `Window`*"]
-    fn view(&self) -> Option<&Window>;
+    fn view(&self) -> Option<Window>;
     #[doc = "Get the `data` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CompositionEventInit`*"]
-    fn data(&self) -> &str;
+    fn data(&self) -> String;
 }
 impl CompositionEventInitGetters for CompositionEventInit {
     fn bubbles(&self) -> bool {
@@ -81,10 +81,10 @@ impl CompositionEventInitGetters for CompositionEventInit {
         self.detail_shim()
     }
     #[cfg(feature = "Window")]
-    fn view(&self) -> Option<&Window> {
+    fn view(&self) -> Option<Window> {
         self.view_shim()
     }
-    fn data(&self) -> &str {
+    fn data(&self) -> String {
         self.data_shim()
     }
 }

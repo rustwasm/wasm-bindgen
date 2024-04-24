@@ -24,23 +24,23 @@ extern "C" {
     fn set_composed_shim(this: &RtcTrackEventInit, val: bool);
     #[cfg(feature = "RtcRtpReceiver")]
     #[wasm_bindgen(method, getter = "receiver")]
-    fn receiver_shim(this: &RtcTrackEventInit) -> &RtcRtpReceiver;
+    fn receiver_shim(this: &RtcTrackEventInit) -> RtcRtpReceiver;
     #[cfg(feature = "RtcRtpReceiver")]
     #[wasm_bindgen(method, setter = "receiver")]
     fn set_receiver_shim(this: &RtcTrackEventInit, val: &RtcRtpReceiver);
     #[wasm_bindgen(method, getter = "streams")]
-    fn streams_shim(this: &RtcTrackEventInit) -> &::wasm_bindgen::JsValue;
+    fn streams_shim(this: &RtcTrackEventInit) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "streams")]
     fn set_streams_shim(this: &RtcTrackEventInit, val: &::wasm_bindgen::JsValue);
     #[cfg(feature = "MediaStreamTrack")]
     #[wasm_bindgen(method, getter = "track")]
-    fn track_shim(this: &RtcTrackEventInit) -> &MediaStreamTrack;
+    fn track_shim(this: &RtcTrackEventInit) -> MediaStreamTrack;
     #[cfg(feature = "MediaStreamTrack")]
     #[wasm_bindgen(method, setter = "track")]
     fn set_track_shim(this: &RtcTrackEventInit, val: &MediaStreamTrack);
     #[cfg(feature = "RtcRtpTransceiver")]
     #[wasm_bindgen(method, getter = "transceiver")]
-    fn transceiver_shim(this: &RtcTrackEventInit) -> &RtcRtpTransceiver;
+    fn transceiver_shim(this: &RtcTrackEventInit) -> RtcRtpTransceiver;
     #[cfg(feature = "RtcRtpTransceiver")]
     #[wasm_bindgen(method, setter = "transceiver")]
     fn set_transceiver_shim(this: &RtcTrackEventInit, val: &RtcRtpTransceiver);
@@ -65,21 +65,21 @@ pub trait RtcTrackEventInitGetters {
     #[doc = "Get the `receiver` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpReceiver`, `RtcTrackEventInit`*"]
-    fn receiver(&self) -> &RtcRtpReceiver;
+    fn receiver(&self) -> RtcRtpReceiver;
     #[doc = "Get the `streams` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcTrackEventInit`*"]
-    fn streams(&self) -> &::wasm_bindgen::JsValue;
+    fn streams(&self) -> ::js_sys::Array;
     #[cfg(feature = "MediaStreamTrack")]
     #[doc = "Get the `track` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `RtcTrackEventInit`*"]
-    fn track(&self) -> &MediaStreamTrack;
+    fn track(&self) -> MediaStreamTrack;
     #[cfg(feature = "RtcRtpTransceiver")]
     #[doc = "Get the `transceiver` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpTransceiver`, `RtcTrackEventInit`*"]
-    fn transceiver(&self) -> &RtcRtpTransceiver;
+    fn transceiver(&self) -> RtcRtpTransceiver;
 }
 impl RtcTrackEventInitGetters for RtcTrackEventInit {
     fn bubbles(&self) -> bool {
@@ -92,18 +92,18 @@ impl RtcTrackEventInitGetters for RtcTrackEventInit {
         self.composed_shim()
     }
     #[cfg(feature = "RtcRtpReceiver")]
-    fn receiver(&self) -> &RtcRtpReceiver {
+    fn receiver(&self) -> RtcRtpReceiver {
         self.receiver_shim()
     }
-    fn streams(&self) -> &::wasm_bindgen::JsValue {
+    fn streams(&self) -> ::js_sys::Array {
         self.streams_shim()
     }
     #[cfg(feature = "MediaStreamTrack")]
-    fn track(&self) -> &MediaStreamTrack {
+    fn track(&self) -> MediaStreamTrack {
         self.track_shim()
     }
     #[cfg(feature = "RtcRtpTransceiver")]
-    fn transceiver(&self) -> &RtcRtpTransceiver {
+    fn transceiver(&self) -> RtcRtpTransceiver {
         self.transceiver_shim()
     }
 }

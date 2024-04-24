@@ -12,12 +12,12 @@ extern "C" {
     pub type ClientRectsAndTexts;
     #[cfg(feature = "DomRectList")]
     #[wasm_bindgen(method, getter = "rectList")]
-    fn rect_list_shim(this: &ClientRectsAndTexts) -> &DomRectList;
+    fn rect_list_shim(this: &ClientRectsAndTexts) -> DomRectList;
     #[cfg(feature = "DomRectList")]
     #[wasm_bindgen(method, setter = "rectList")]
     fn set_rect_list_shim(this: &ClientRectsAndTexts, val: &DomRectList);
     #[wasm_bindgen(method, getter = "textList")]
-    fn text_list_shim(this: &ClientRectsAndTexts) -> &::wasm_bindgen::JsValue;
+    fn text_list_shim(this: &ClientRectsAndTexts) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "textList")]
     fn set_text_list_shim(this: &ClientRectsAndTexts, val: &::wasm_bindgen::JsValue);
 }
@@ -29,18 +29,18 @@ pub trait ClientRectsAndTextsGetters {
     #[doc = "Get the `rectList` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ClientRectsAndTexts`, `DomRectList`*"]
-    fn rect_list(&self) -> &DomRectList;
+    fn rect_list(&self) -> DomRectList;
     #[doc = "Get the `textList` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ClientRectsAndTexts`*"]
-    fn text_list(&self) -> &::wasm_bindgen::JsValue;
+    fn text_list(&self) -> ::js_sys::Array;
 }
 impl ClientRectsAndTextsGetters for ClientRectsAndTexts {
     #[cfg(feature = "DomRectList")]
-    fn rect_list(&self) -> &DomRectList {
+    fn rect_list(&self) -> DomRectList {
         self.rect_list_shim()
     }
-    fn text_list(&self) -> &::wasm_bindgen::JsValue {
+    fn text_list(&self) -> ::js_sys::Array {
         self.text_list_shim()
     }
 }

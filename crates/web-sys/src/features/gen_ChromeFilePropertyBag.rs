@@ -15,7 +15,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "lastModified")]
     fn set_last_modified_shim(this: &ChromeFilePropertyBag, val: f64);
     #[wasm_bindgen(method, getter = "type")]
-    fn type__shim(this: &ChromeFilePropertyBag) -> &str;
+    fn type__shim(this: &ChromeFilePropertyBag) -> String;
     #[wasm_bindgen(method, setter = "type")]
     fn set_type__shim(this: &ChromeFilePropertyBag, val: &str);
     #[wasm_bindgen(method, getter = "existenceCheck")]
@@ -23,7 +23,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "existenceCheck")]
     fn set_existence_check_shim(this: &ChromeFilePropertyBag, val: bool);
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &ChromeFilePropertyBag) -> &str;
+    fn name_shim(this: &ChromeFilePropertyBag) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &ChromeFilePropertyBag, val: &str);
 }
@@ -38,7 +38,7 @@ pub trait ChromeFilePropertyBagGetters {
     #[doc = "Get the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ChromeFilePropertyBag`*"]
-    fn type_(&self) -> &str;
+    fn type_(&self) -> String;
     #[doc = "Get the `existenceCheck` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ChromeFilePropertyBag`*"]
@@ -46,19 +46,19 @@ pub trait ChromeFilePropertyBagGetters {
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ChromeFilePropertyBag`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
 }
 impl ChromeFilePropertyBagGetters for ChromeFilePropertyBag {
     fn last_modified(&self) -> f64 {
         self.last_modified_shim()
     }
-    fn type_(&self) -> &str {
+    fn type_(&self) -> String {
         self.type__shim()
     }
     fn existence_check(&self) -> bool {
         self.existence_check_shim()
     }
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
 }

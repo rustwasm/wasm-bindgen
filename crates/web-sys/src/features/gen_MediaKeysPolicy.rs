@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `MediaKeysPolicy`*"]
     pub type MediaKeysPolicy;
     #[wasm_bindgen(method, getter = "minHdcpVersion")]
-    fn min_hdcp_version_shim(this: &MediaKeysPolicy) -> &str;
+    fn min_hdcp_version_shim(this: &MediaKeysPolicy) -> String;
     #[wasm_bindgen(method, setter = "minHdcpVersion")]
     fn set_min_hdcp_version_shim(this: &MediaKeysPolicy, val: &str);
 }
@@ -22,10 +22,10 @@ pub trait MediaKeysPolicyGetters {
     #[doc = "Get the `minHdcpVersion` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeysPolicy`*"]
-    fn min_hdcp_version(&self) -> &str;
+    fn min_hdcp_version(&self) -> String;
 }
 impl MediaKeysPolicyGetters for MediaKeysPolicy {
-    fn min_hdcp_version(&self) -> &str {
+    fn min_hdcp_version(&self) -> String {
         self.min_hdcp_version_shim()
     }
 }

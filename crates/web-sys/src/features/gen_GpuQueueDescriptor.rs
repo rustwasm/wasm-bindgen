@@ -15,7 +15,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuQueueDescriptor;
     #[wasm_bindgen(method, getter = "label")]
-    fn label_shim(this: &GpuQueueDescriptor) -> &str;
+    fn label_shim(this: &GpuQueueDescriptor) -> String;
     #[wasm_bindgen(method, setter = "label")]
     fn set_label_shim(this: &GpuQueueDescriptor, val: &str);
 }
@@ -31,12 +31,12 @@ pub trait GpuQueueDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn label(&self) -> &str;
+    fn label(&self) -> String;
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuQueueDescriptorGetters for GpuQueueDescriptor {
     #[cfg(web_sys_unstable_apis)]
-    fn label(&self) -> &str {
+    fn label(&self) -> String {
         self.label_shim()
     }
 }

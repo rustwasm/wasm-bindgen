@@ -24,14 +24,13 @@ extern "C" {
     fn set_composed_shim(this: &DeviceMotionEventInit, val: bool);
     #[cfg(feature = "DeviceAccelerationInit")]
     #[wasm_bindgen(method, getter = "acceleration")]
-    fn acceleration_shim(this: &DeviceMotionEventInit) -> &DeviceAccelerationInit;
+    fn acceleration_shim(this: &DeviceMotionEventInit) -> DeviceAccelerationInit;
     #[cfg(feature = "DeviceAccelerationInit")]
     #[wasm_bindgen(method, setter = "acceleration")]
     fn set_acceleration_shim(this: &DeviceMotionEventInit, val: &DeviceAccelerationInit);
     #[cfg(feature = "DeviceAccelerationInit")]
     #[wasm_bindgen(method, getter = "accelerationIncludingGravity")]
-    fn acceleration_including_gravity_shim(this: &DeviceMotionEventInit)
-        -> &DeviceAccelerationInit;
+    fn acceleration_including_gravity_shim(this: &DeviceMotionEventInit) -> DeviceAccelerationInit;
     #[cfg(feature = "DeviceAccelerationInit")]
     #[wasm_bindgen(method, setter = "accelerationIncludingGravity")]
     fn set_acceleration_including_gravity_shim(
@@ -44,7 +43,7 @@ extern "C" {
     fn set_interval_shim(this: &DeviceMotionEventInit, val: Option<f64>);
     #[cfg(feature = "DeviceRotationRateInit")]
     #[wasm_bindgen(method, getter = "rotationRate")]
-    fn rotation_rate_shim(this: &DeviceMotionEventInit) -> &DeviceRotationRateInit;
+    fn rotation_rate_shim(this: &DeviceMotionEventInit) -> DeviceRotationRateInit;
     #[cfg(feature = "DeviceRotationRateInit")]
     #[wasm_bindgen(method, setter = "rotationRate")]
     fn set_rotation_rate_shim(this: &DeviceMotionEventInit, val: &DeviceRotationRateInit);
@@ -69,12 +68,12 @@ pub trait DeviceMotionEventInitGetters {
     #[doc = "Get the `acceleration` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceAccelerationInit`, `DeviceMotionEventInit`*"]
-    fn acceleration(&self) -> &DeviceAccelerationInit;
+    fn acceleration(&self) -> DeviceAccelerationInit;
     #[cfg(feature = "DeviceAccelerationInit")]
     #[doc = "Get the `accelerationIncludingGravity` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceAccelerationInit`, `DeviceMotionEventInit`*"]
-    fn acceleration_including_gravity(&self) -> &DeviceAccelerationInit;
+    fn acceleration_including_gravity(&self) -> DeviceAccelerationInit;
     #[doc = "Get the `interval` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceMotionEventInit`*"]
@@ -83,7 +82,7 @@ pub trait DeviceMotionEventInitGetters {
     #[doc = "Get the `rotationRate` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceMotionEventInit`, `DeviceRotationRateInit`*"]
-    fn rotation_rate(&self) -> &DeviceRotationRateInit;
+    fn rotation_rate(&self) -> DeviceRotationRateInit;
 }
 impl DeviceMotionEventInitGetters for DeviceMotionEventInit {
     fn bubbles(&self) -> bool {
@@ -96,18 +95,18 @@ impl DeviceMotionEventInitGetters for DeviceMotionEventInit {
         self.composed_shim()
     }
     #[cfg(feature = "DeviceAccelerationInit")]
-    fn acceleration(&self) -> &DeviceAccelerationInit {
+    fn acceleration(&self) -> DeviceAccelerationInit {
         self.acceleration_shim()
     }
     #[cfg(feature = "DeviceAccelerationInit")]
-    fn acceleration_including_gravity(&self) -> &DeviceAccelerationInit {
+    fn acceleration_including_gravity(&self) -> DeviceAccelerationInit {
         self.acceleration_including_gravity_shim()
     }
     fn interval(&self) -> Option<f64> {
         self.interval_shim()
     }
     #[cfg(feature = "DeviceRotationRateInit")]
-    fn rotation_rate(&self) -> &DeviceRotationRateInit {
+    fn rotation_rate(&self) -> DeviceRotationRateInit {
         self.rotation_rate_shim()
     }
 }

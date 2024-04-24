@@ -24,7 +24,7 @@ extern "C" {
     fn set_composed_shim(this: &GamepadEventInit, val: bool);
     #[cfg(feature = "Gamepad")]
     #[wasm_bindgen(method, getter = "gamepad")]
-    fn gamepad_shim(this: &GamepadEventInit) -> Option<&Gamepad>;
+    fn gamepad_shim(this: &GamepadEventInit) -> Option<Gamepad>;
     #[cfg(feature = "Gamepad")]
     #[wasm_bindgen(method, setter = "gamepad")]
     fn set_gamepad_shim(this: &GamepadEventInit, val: Option<&Gamepad>);
@@ -49,7 +49,7 @@ pub trait GamepadEventInitGetters {
     #[doc = "Get the `gamepad` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Gamepad`, `GamepadEventInit`*"]
-    fn gamepad(&self) -> Option<&Gamepad>;
+    fn gamepad(&self) -> Option<Gamepad>;
 }
 impl GamepadEventInitGetters for GamepadEventInit {
     fn bubbles(&self) -> bool {
@@ -62,7 +62,7 @@ impl GamepadEventInitGetters for GamepadEventInit {
         self.composed_shim()
     }
     #[cfg(feature = "Gamepad")]
-    fn gamepad(&self) -> Option<&Gamepad> {
+    fn gamepad(&self) -> Option<Gamepad> {
         self.gamepad_shim()
     }
 }

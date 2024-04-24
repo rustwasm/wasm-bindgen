@@ -11,15 +11,15 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderOptions`*"]
     pub type RtcIdentityProviderOptions;
     #[wasm_bindgen(method, getter = "peerIdentity")]
-    fn peer_identity_shim(this: &RtcIdentityProviderOptions) -> &str;
+    fn peer_identity_shim(this: &RtcIdentityProviderOptions) -> String;
     #[wasm_bindgen(method, setter = "peerIdentity")]
     fn set_peer_identity_shim(this: &RtcIdentityProviderOptions, val: &str);
     #[wasm_bindgen(method, getter = "protocol")]
-    fn protocol_shim(this: &RtcIdentityProviderOptions) -> &str;
+    fn protocol_shim(this: &RtcIdentityProviderOptions) -> String;
     #[wasm_bindgen(method, setter = "protocol")]
     fn set_protocol_shim(this: &RtcIdentityProviderOptions, val: &str);
     #[wasm_bindgen(method, getter = "usernameHint")]
-    fn username_hint_shim(this: &RtcIdentityProviderOptions) -> &str;
+    fn username_hint_shim(this: &RtcIdentityProviderOptions) -> String;
     #[wasm_bindgen(method, setter = "usernameHint")]
     fn set_username_hint_shim(this: &RtcIdentityProviderOptions, val: &str);
 }
@@ -30,24 +30,24 @@ pub trait RtcIdentityProviderOptionsGetters {
     #[doc = "Get the `peerIdentity` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderOptions`*"]
-    fn peer_identity(&self) -> &str;
+    fn peer_identity(&self) -> String;
     #[doc = "Get the `protocol` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderOptions`*"]
-    fn protocol(&self) -> &str;
+    fn protocol(&self) -> String;
     #[doc = "Get the `usernameHint` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderOptions`*"]
-    fn username_hint(&self) -> &str;
+    fn username_hint(&self) -> String;
 }
 impl RtcIdentityProviderOptionsGetters for RtcIdentityProviderOptions {
-    fn peer_identity(&self) -> &str {
+    fn peer_identity(&self) -> String {
         self.peer_identity_shim()
     }
-    fn protocol(&self) -> &str {
+    fn protocol(&self) -> String {
         self.protocol_shim()
     }
-    fn username_hint(&self) -> &str {
+    fn username_hint(&self) -> String {
         self.username_hint_shim()
     }
 }

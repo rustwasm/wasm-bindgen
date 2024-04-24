@@ -12,13 +12,13 @@ extern "C" {
     pub type MediaConfiguration;
     #[cfg(feature = "AudioConfiguration")]
     #[wasm_bindgen(method, getter = "audio")]
-    fn audio_shim(this: &MediaConfiguration) -> &AudioConfiguration;
+    fn audio_shim(this: &MediaConfiguration) -> AudioConfiguration;
     #[cfg(feature = "AudioConfiguration")]
     #[wasm_bindgen(method, setter = "audio")]
     fn set_audio_shim(this: &MediaConfiguration, val: &AudioConfiguration);
     #[cfg(feature = "VideoConfiguration")]
     #[wasm_bindgen(method, getter = "video")]
-    fn video_shim(this: &MediaConfiguration) -> &VideoConfiguration;
+    fn video_shim(this: &MediaConfiguration) -> VideoConfiguration;
     #[cfg(feature = "VideoConfiguration")]
     #[wasm_bindgen(method, setter = "video")]
     fn set_video_shim(this: &MediaConfiguration, val: &VideoConfiguration);
@@ -31,20 +31,20 @@ pub trait MediaConfigurationGetters {
     #[doc = "Get the `audio` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`, `MediaConfiguration`*"]
-    fn audio(&self) -> &AudioConfiguration;
+    fn audio(&self) -> AudioConfiguration;
     #[cfg(feature = "VideoConfiguration")]
     #[doc = "Get the `video` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaConfiguration`, `VideoConfiguration`*"]
-    fn video(&self) -> &VideoConfiguration;
+    fn video(&self) -> VideoConfiguration;
 }
 impl MediaConfigurationGetters for MediaConfiguration {
     #[cfg(feature = "AudioConfiguration")]
-    fn audio(&self) -> &AudioConfiguration {
+    fn audio(&self) -> AudioConfiguration {
         self.audio_shim()
     }
     #[cfg(feature = "VideoConfiguration")]
-    fn video(&self) -> &VideoConfiguration {
+    fn video(&self) -> VideoConfiguration {
         self.video_shim()
     }
 }

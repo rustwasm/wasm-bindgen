@@ -15,7 +15,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "highWaterMark")]
     fn set_high_water_mark_shim(this: &QueuingStrategy, val: f64);
     #[wasm_bindgen(method, getter = "size")]
-    fn size_shim(this: &QueuingStrategy) -> &::js_sys::Function;
+    fn size_shim(this: &QueuingStrategy) -> ::js_sys::Function;
     #[wasm_bindgen(method, setter = "size")]
     fn set_size_shim(this: &QueuingStrategy, val: &::js_sys::Function);
 }
@@ -30,13 +30,13 @@ pub trait QueuingStrategyGetters {
     #[doc = "Get the `size` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `QueuingStrategy`*"]
-    fn size(&self) -> &::js_sys::Function;
+    fn size(&self) -> ::js_sys::Function;
 }
 impl QueuingStrategyGetters for QueuingStrategy {
     fn high_water_mark(&self) -> f64 {
         self.high_water_mark_shim()
     }
-    fn size(&self) -> &::js_sys::Function {
+    fn size(&self) -> ::js_sys::Function {
         self.size_shim()
     }
 }

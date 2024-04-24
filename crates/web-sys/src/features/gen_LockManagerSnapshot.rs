@@ -15,11 +15,11 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type LockManagerSnapshot;
     #[wasm_bindgen(method, getter = "held")]
-    fn held_shim(this: &LockManagerSnapshot) -> &::wasm_bindgen::JsValue;
+    fn held_shim(this: &LockManagerSnapshot) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "held")]
     fn set_held_shim(this: &LockManagerSnapshot, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "pending")]
-    fn pending_shim(this: &LockManagerSnapshot) -> &::wasm_bindgen::JsValue;
+    fn pending_shim(this: &LockManagerSnapshot) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "pending")]
     fn set_pending_shim(this: &LockManagerSnapshot, val: &::wasm_bindgen::JsValue);
 }
@@ -35,7 +35,7 @@ pub trait LockManagerSnapshotGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn held(&self) -> &::wasm_bindgen::JsValue;
+    fn held(&self) -> ::js_sys::Array;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `pending` field of this object."]
     #[doc = ""]
@@ -43,16 +43,16 @@ pub trait LockManagerSnapshotGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn pending(&self) -> &::wasm_bindgen::JsValue;
+    fn pending(&self) -> ::js_sys::Array;
 }
 #[cfg(web_sys_unstable_apis)]
 impl LockManagerSnapshotGetters for LockManagerSnapshot {
     #[cfg(web_sys_unstable_apis)]
-    fn held(&self) -> &::wasm_bindgen::JsValue {
+    fn held(&self) -> ::js_sys::Array {
         self.held_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn pending(&self) -> &::wasm_bindgen::JsValue {
+    fn pending(&self) -> ::js_sys::Array {
         self.pending_shim()
     }
 }

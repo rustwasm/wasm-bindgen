@@ -15,11 +15,11 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type AudioDecoderConfig;
     #[wasm_bindgen(method, getter = "codec")]
-    fn codec_shim(this: &AudioDecoderConfig) -> &str;
+    fn codec_shim(this: &AudioDecoderConfig) -> String;
     #[wasm_bindgen(method, setter = "codec")]
     fn set_codec_shim(this: &AudioDecoderConfig, val: &str);
     #[wasm_bindgen(method, getter = "description")]
-    fn description_shim(this: &AudioDecoderConfig) -> &::js_sys::Object;
+    fn description_shim(this: &AudioDecoderConfig) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "description")]
     fn set_description_shim(this: &AudioDecoderConfig, val: &::js_sys::Object);
     #[wasm_bindgen(method, getter = "numberOfChannels")]
@@ -43,7 +43,7 @@ pub trait AudioDecoderConfigGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn codec(&self) -> &str;
+    fn codec(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `description` field of this object."]
     #[doc = ""]
@@ -51,7 +51,7 @@ pub trait AudioDecoderConfigGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn description(&self) -> &::js_sys::Object;
+    fn description(&self) -> ::js_sys::Object;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `numberOfChannels` field of this object."]
     #[doc = ""]
@@ -72,11 +72,11 @@ pub trait AudioDecoderConfigGetters {
 #[cfg(web_sys_unstable_apis)]
 impl AudioDecoderConfigGetters for AudioDecoderConfig {
     #[cfg(web_sys_unstable_apis)]
-    fn codec(&self) -> &str {
+    fn codec(&self) -> String {
         self.codec_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn description(&self) -> &::js_sys::Object {
+    fn description(&self) -> ::js_sys::Object {
         self.description_shim()
     }
     #[cfg(web_sys_unstable_apis)]

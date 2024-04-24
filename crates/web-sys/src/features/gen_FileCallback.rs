@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `FileCallback`*"]
     pub type FileCallback;
     #[wasm_bindgen(method, getter = "handleEvent")]
-    fn handle_event_shim(this: &FileCallback) -> &::js_sys::Function;
+    fn handle_event_shim(this: &FileCallback) -> ::js_sys::Function;
     #[wasm_bindgen(method, setter = "handleEvent")]
     fn set_handle_event_shim(this: &FileCallback, val: &::js_sys::Function);
 }
@@ -22,10 +22,10 @@ pub trait FileCallbackGetters {
     #[doc = "Get the `handleEvent` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileCallback`*"]
-    fn handle_event(&self) -> &::js_sys::Function;
+    fn handle_event(&self) -> ::js_sys::Function;
 }
 impl FileCallbackGetters for FileCallback {
-    fn handle_event(&self) -> &::js_sys::Function {
+    fn handle_event(&self) -> ::js_sys::Function {
         self.handle_event_shim()
     }
 }

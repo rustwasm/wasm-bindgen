@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `BasicCardRequest`*"]
     pub type BasicCardRequest;
     #[wasm_bindgen(method, getter = "supportedNetworks")]
-    fn supported_networks_shim(this: &BasicCardRequest) -> &::wasm_bindgen::JsValue;
+    fn supported_networks_shim(this: &BasicCardRequest) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "supportedNetworks")]
     fn set_supported_networks_shim(this: &BasicCardRequest, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "supportedTypes")]
-    fn supported_types_shim(this: &BasicCardRequest) -> &::wasm_bindgen::JsValue;
+    fn supported_types_shim(this: &BasicCardRequest) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "supportedTypes")]
     fn set_supported_types_shim(this: &BasicCardRequest, val: &::wasm_bindgen::JsValue);
 }
@@ -26,17 +26,17 @@ pub trait BasicCardRequestGetters {
     #[doc = "Get the `supportedNetworks` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasicCardRequest`*"]
-    fn supported_networks(&self) -> &::wasm_bindgen::JsValue;
+    fn supported_networks(&self) -> ::js_sys::Array;
     #[doc = "Get the `supportedTypes` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasicCardRequest`*"]
-    fn supported_types(&self) -> &::wasm_bindgen::JsValue;
+    fn supported_types(&self) -> ::js_sys::Array;
 }
 impl BasicCardRequestGetters for BasicCardRequest {
-    fn supported_networks(&self) -> &::wasm_bindgen::JsValue {
+    fn supported_networks(&self) -> ::js_sys::Array {
         self.supported_networks_shim()
     }
-    fn supported_types(&self) -> &::wasm_bindgen::JsValue {
+    fn supported_types(&self) -> ::js_sys::Array {
         self.supported_types_shim()
     }
 }

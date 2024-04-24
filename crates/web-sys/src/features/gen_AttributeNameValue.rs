@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AttributeNameValue`*"]
     pub type AttributeNameValue;
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &AttributeNameValue) -> &str;
+    fn name_shim(this: &AttributeNameValue) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &AttributeNameValue, val: &str);
     #[wasm_bindgen(method, getter = "value")]
-    fn value_shim(this: &AttributeNameValue) -> &str;
+    fn value_shim(this: &AttributeNameValue) -> String;
     #[wasm_bindgen(method, setter = "value")]
     fn set_value_shim(this: &AttributeNameValue, val: &str);
 }
@@ -26,17 +26,17 @@ pub trait AttributeNameValueGetters {
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AttributeNameValue`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
     #[doc = "Get the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AttributeNameValue`*"]
-    fn value(&self) -> &str;
+    fn value(&self) -> String;
 }
 impl AttributeNameValueGetters for AttributeNameValue {
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
-    fn value(&self) -> &str {
+    fn value(&self) -> String {
         self.value_shim()
     }
 }

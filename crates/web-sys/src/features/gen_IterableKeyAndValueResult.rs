@@ -15,7 +15,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "done")]
     fn set_done_shim(this: &IterableKeyAndValueResult, val: bool);
     #[wasm_bindgen(method, getter = "value")]
-    fn value_shim(this: &IterableKeyAndValueResult) -> &::wasm_bindgen::JsValue;
+    fn value_shim(this: &IterableKeyAndValueResult) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "value")]
     fn set_value_shim(this: &IterableKeyAndValueResult, val: &::wasm_bindgen::JsValue);
 }
@@ -30,13 +30,13 @@ pub trait IterableKeyAndValueResultGetters {
     #[doc = "Get the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IterableKeyAndValueResult`*"]
-    fn value(&self) -> &::wasm_bindgen::JsValue;
+    fn value(&self) -> ::js_sys::Array;
 }
 impl IterableKeyAndValueResultGetters for IterableKeyAndValueResult {
     fn done(&self) -> bool {
         self.done_shim()
     }
-    fn value(&self) -> &::wasm_bindgen::JsValue {
+    fn value(&self) -> ::js_sys::Array {
         self.value_shim()
     }
 }

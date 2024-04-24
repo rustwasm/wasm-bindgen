@@ -15,7 +15,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "autoIncrement")]
     fn set_auto_increment_shim(this: &IdbObjectStoreParameters, val: bool);
     #[wasm_bindgen(method, getter = "keyPath")]
-    fn key_path_shim(this: &IdbObjectStoreParameters) -> &::wasm_bindgen::JsValue;
+    fn key_path_shim(this: &IdbObjectStoreParameters) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "keyPath")]
     fn set_key_path_shim(this: &IdbObjectStoreParameters, val: &::wasm_bindgen::JsValue);
 }
@@ -30,13 +30,13 @@ pub trait IdbObjectStoreParametersGetters {
     #[doc = "Get the `keyPath` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbObjectStoreParameters`*"]
-    fn key_path(&self) -> Option<&::wasm_bindgen::JsValue>;
+    fn key_path(&self) -> ::wasm_bindgen::JsValue;
 }
 impl IdbObjectStoreParametersGetters for IdbObjectStoreParameters {
     fn auto_increment(&self) -> bool {
         self.auto_increment_shim()
     }
-    fn key_path(&self) -> Option<&::wasm_bindgen::JsValue> {
+    fn key_path(&self) -> ::wasm_bindgen::JsValue {
         self.key_path_shim()
     }
 }

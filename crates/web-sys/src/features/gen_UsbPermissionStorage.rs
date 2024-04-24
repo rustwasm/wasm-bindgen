@@ -15,7 +15,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type UsbPermissionStorage;
     #[wasm_bindgen(method, getter = "allowedDevices")]
-    fn allowed_devices_shim(this: &UsbPermissionStorage) -> &::wasm_bindgen::JsValue;
+    fn allowed_devices_shim(this: &UsbPermissionStorage) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "allowedDevices")]
     fn set_allowed_devices_shim(this: &UsbPermissionStorage, val: &::wasm_bindgen::JsValue);
 }
@@ -31,12 +31,12 @@ pub trait UsbPermissionStorageGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn allowed_devices(&self) -> &::wasm_bindgen::JsValue;
+    fn allowed_devices(&self) -> ::js_sys::Array;
 }
 #[cfg(web_sys_unstable_apis)]
 impl UsbPermissionStorageGetters for UsbPermissionStorage {
     #[cfg(web_sys_unstable_apis)]
-    fn allowed_devices(&self) -> &::wasm_bindgen::JsValue {
+    fn allowed_devices(&self) -> ::js_sys::Array {
         self.allowed_devices_shim()
     }
 }

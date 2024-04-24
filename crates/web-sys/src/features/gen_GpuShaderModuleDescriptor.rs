@@ -15,19 +15,19 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuShaderModuleDescriptor;
     #[wasm_bindgen(method, getter = "label")]
-    fn label_shim(this: &GpuShaderModuleDescriptor) -> &str;
+    fn label_shim(this: &GpuShaderModuleDescriptor) -> String;
     #[wasm_bindgen(method, setter = "label")]
     fn set_label_shim(this: &GpuShaderModuleDescriptor, val: &str);
     #[wasm_bindgen(method, getter = "code")]
-    fn code_shim(this: &GpuShaderModuleDescriptor) -> &str;
+    fn code_shim(this: &GpuShaderModuleDescriptor) -> String;
     #[wasm_bindgen(method, setter = "code")]
     fn set_code_shim(this: &GpuShaderModuleDescriptor, val: &str);
     #[wasm_bindgen(method, getter = "compilationHints")]
-    fn compilation_hints_shim(this: &GpuShaderModuleDescriptor) -> &::wasm_bindgen::JsValue;
+    fn compilation_hints_shim(this: &GpuShaderModuleDescriptor) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "compilationHints")]
     fn set_compilation_hints_shim(this: &GpuShaderModuleDescriptor, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "sourceMap")]
-    fn source_map_shim(this: &GpuShaderModuleDescriptor) -> &::js_sys::Object;
+    fn source_map_shim(this: &GpuShaderModuleDescriptor) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "sourceMap")]
     fn set_source_map_shim(this: &GpuShaderModuleDescriptor, val: &::js_sys::Object);
 }
@@ -43,7 +43,7 @@ pub trait GpuShaderModuleDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn label(&self) -> &str;
+    fn label(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `code` field of this object."]
     #[doc = ""]
@@ -51,7 +51,7 @@ pub trait GpuShaderModuleDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn code(&self) -> &str;
+    fn code(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `compilationHints` field of this object."]
     #[doc = ""]
@@ -59,7 +59,7 @@ pub trait GpuShaderModuleDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn compilation_hints(&self) -> &::wasm_bindgen::JsValue;
+    fn compilation_hints(&self) -> ::js_sys::Array;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `sourceMap` field of this object."]
     #[doc = ""]
@@ -67,24 +67,24 @@ pub trait GpuShaderModuleDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn source_map(&self) -> &::js_sys::Object;
+    fn source_map(&self) -> ::js_sys::Object;
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuShaderModuleDescriptorGetters for GpuShaderModuleDescriptor {
     #[cfg(web_sys_unstable_apis)]
-    fn label(&self) -> &str {
+    fn label(&self) -> String {
         self.label_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn code(&self) -> &str {
+    fn code(&self) -> String {
         self.code_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn compilation_hints(&self) -> &::wasm_bindgen::JsValue {
+    fn compilation_hints(&self) -> ::js_sys::Array {
         self.compilation_hints_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn source_map(&self) -> &::js_sys::Object {
+    fn source_map(&self) -> ::js_sys::Object {
         self.source_map_shim()
     }
 }

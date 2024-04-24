@@ -21,7 +21,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &UsbPermissionDescriptor, val: PermissionName);
     #[wasm_bindgen(method, getter = "filters")]
-    fn filters_shim(this: &UsbPermissionDescriptor) -> &::wasm_bindgen::JsValue;
+    fn filters_shim(this: &UsbPermissionDescriptor) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "filters")]
     fn set_filters_shim(this: &UsbPermissionDescriptor, val: &::wasm_bindgen::JsValue);
 }
@@ -46,7 +46,7 @@ pub trait UsbPermissionDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn filters(&self) -> &::wasm_bindgen::JsValue;
+    fn filters(&self) -> ::js_sys::Array;
 }
 #[cfg(web_sys_unstable_apis)]
 impl UsbPermissionDescriptorGetters for UsbPermissionDescriptor {
@@ -56,7 +56,7 @@ impl UsbPermissionDescriptorGetters for UsbPermissionDescriptor {
         self.name_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn filters(&self) -> &::wasm_bindgen::JsValue {
+    fn filters(&self) -> ::js_sys::Array {
         self.filters_shim()
     }
 }

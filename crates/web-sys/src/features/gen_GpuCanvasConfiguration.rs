@@ -22,7 +22,7 @@ extern "C" {
     fn set_alpha_mode_shim(this: &GpuCanvasConfiguration, val: GpuCanvasAlphaMode);
     #[cfg(feature = "GpuDevice")]
     #[wasm_bindgen(method, getter = "device")]
-    fn device_shim(this: &GpuCanvasConfiguration) -> &GpuDevice;
+    fn device_shim(this: &GpuCanvasConfiguration) -> GpuDevice;
     #[cfg(feature = "GpuDevice")]
     #[wasm_bindgen(method, setter = "device")]
     fn set_device_shim(this: &GpuCanvasConfiguration, val: &GpuDevice);
@@ -37,7 +37,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "usage")]
     fn set_usage_shim(this: &GpuCanvasConfiguration, val: u32);
     #[wasm_bindgen(method, getter = "viewFormats")]
-    fn view_formats_shim(this: &GpuCanvasConfiguration) -> &::wasm_bindgen::JsValue;
+    fn view_formats_shim(this: &GpuCanvasConfiguration) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "viewFormats")]
     fn set_view_formats_shim(this: &GpuCanvasConfiguration, val: &::wasm_bindgen::JsValue);
 }
@@ -63,7 +63,7 @@ pub trait GpuCanvasConfigurationGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn device(&self) -> &GpuDevice;
+    fn device(&self) -> GpuDevice;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureFormat")]
     #[doc = "Get the `format` field of this object."]
@@ -88,7 +88,7 @@ pub trait GpuCanvasConfigurationGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn view_formats(&self) -> &::wasm_bindgen::JsValue;
+    fn view_formats(&self) -> ::js_sys::Array;
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuCanvasConfigurationGetters for GpuCanvasConfiguration {
@@ -99,7 +99,7 @@ impl GpuCanvasConfigurationGetters for GpuCanvasConfiguration {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuDevice")]
-    fn device(&self) -> &GpuDevice {
+    fn device(&self) -> GpuDevice {
         self.device_shim()
     }
     #[cfg(web_sys_unstable_apis)]
@@ -112,7 +112,7 @@ impl GpuCanvasConfigurationGetters for GpuCanvasConfiguration {
         self.usage_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn view_formats(&self) -> &::wasm_bindgen::JsValue {
+    fn view_formats(&self) -> ::js_sys::Array {
         self.view_formats_shim()
     }
 }

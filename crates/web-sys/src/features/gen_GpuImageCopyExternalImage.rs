@@ -19,11 +19,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "flipY")]
     fn set_flip_y_shim(this: &GpuImageCopyExternalImage, val: bool);
     #[wasm_bindgen(method, getter = "origin")]
-    fn origin_shim(this: &GpuImageCopyExternalImage) -> &::wasm_bindgen::JsValue;
+    fn origin_shim(this: &GpuImageCopyExternalImage) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "origin")]
     fn set_origin_shim(this: &GpuImageCopyExternalImage, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "source")]
-    fn source_shim(this: &GpuImageCopyExternalImage) -> &::js_sys::Object;
+    fn source_shim(this: &GpuImageCopyExternalImage) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "source")]
     fn set_source_shim(this: &GpuImageCopyExternalImage, val: &::js_sys::Object);
 }
@@ -47,7 +47,7 @@ pub trait GpuImageCopyExternalImageGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn origin(&self) -> &::wasm_bindgen::JsValue;
+    fn origin(&self) -> ::wasm_bindgen::JsValue;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `source` field of this object."]
     #[doc = ""]
@@ -55,7 +55,7 @@ pub trait GpuImageCopyExternalImageGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn source(&self) -> &::js_sys::Object;
+    fn source(&self) -> ::js_sys::Object;
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuImageCopyExternalImageGetters for GpuImageCopyExternalImage {
@@ -64,11 +64,11 @@ impl GpuImageCopyExternalImageGetters for GpuImageCopyExternalImage {
         self.flip_y_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn origin(&self) -> &::wasm_bindgen::JsValue {
+    fn origin(&self) -> ::wasm_bindgen::JsValue {
         self.origin_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn source(&self) -> &::js_sys::Object {
+    fn source(&self) -> ::js_sys::Object {
         self.source_shim()
     }
 }

@@ -44,13 +44,13 @@ extern "C" {
     fn set_format_shim(this: &GpuDepthStencilState, val: GpuTextureFormat);
     #[cfg(feature = "GpuStencilFaceState")]
     #[wasm_bindgen(method, getter = "stencilBack")]
-    fn stencil_back_shim(this: &GpuDepthStencilState) -> &GpuStencilFaceState;
+    fn stencil_back_shim(this: &GpuDepthStencilState) -> GpuStencilFaceState;
     #[cfg(feature = "GpuStencilFaceState")]
     #[wasm_bindgen(method, setter = "stencilBack")]
     fn set_stencil_back_shim(this: &GpuDepthStencilState, val: &GpuStencilFaceState);
     #[cfg(feature = "GpuStencilFaceState")]
     #[wasm_bindgen(method, getter = "stencilFront")]
-    fn stencil_front_shim(this: &GpuDepthStencilState) -> &GpuStencilFaceState;
+    fn stencil_front_shim(this: &GpuDepthStencilState) -> GpuStencilFaceState;
     #[cfg(feature = "GpuStencilFaceState")]
     #[wasm_bindgen(method, setter = "stencilFront")]
     fn set_stencil_front_shim(this: &GpuDepthStencilState, val: &GpuStencilFaceState);
@@ -126,7 +126,7 @@ pub trait GpuDepthStencilStateGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn stencil_back(&self) -> &GpuStencilFaceState;
+    fn stencil_back(&self) -> GpuStencilFaceState;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuStencilFaceState")]
     #[doc = "Get the `stencilFront` field of this object."]
@@ -135,7 +135,7 @@ pub trait GpuDepthStencilStateGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn stencil_front(&self) -> &GpuStencilFaceState;
+    fn stencil_front(&self) -> GpuStencilFaceState;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `stencilReadMask` field of this object."]
     #[doc = ""]
@@ -183,12 +183,12 @@ impl GpuDepthStencilStateGetters for GpuDepthStencilState {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuStencilFaceState")]
-    fn stencil_back(&self) -> &GpuStencilFaceState {
+    fn stencil_back(&self) -> GpuStencilFaceState {
         self.stencil_back_shim()
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuStencilFaceState")]
-    fn stencil_front(&self) -> &GpuStencilFaceState {
+    fn stencil_front(&self) -> GpuStencilFaceState {
         self.stencil_front_shim()
     }
     #[cfg(web_sys_unstable_apis)]

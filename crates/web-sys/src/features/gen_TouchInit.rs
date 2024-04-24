@@ -56,7 +56,7 @@ extern "C" {
     fn set_screen_y_shim(this: &TouchInit, val: i32);
     #[cfg(feature = "EventTarget")]
     #[wasm_bindgen(method, getter = "target")]
-    fn target_shim(this: &TouchInit) -> &EventTarget;
+    fn target_shim(this: &TouchInit) -> EventTarget;
     #[cfg(feature = "EventTarget")]
     #[wasm_bindgen(method, setter = "target")]
     fn set_target_shim(this: &TouchInit, val: &EventTarget);
@@ -113,7 +113,7 @@ pub trait TouchInitGetters {
     #[doc = "Get the `target` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventTarget`, `TouchInit`*"]
-    fn target(&self) -> &EventTarget;
+    fn target(&self) -> EventTarget;
 }
 impl TouchInitGetters for TouchInit {
     fn client_x(&self) -> i32 {
@@ -150,7 +150,7 @@ impl TouchInitGetters for TouchInit {
         self.screen_y_shim()
     }
     #[cfg(feature = "EventTarget")]
-    fn target(&self) -> &EventTarget {
+    fn target(&self) -> EventTarget {
         self.target_shim()
     }
 }

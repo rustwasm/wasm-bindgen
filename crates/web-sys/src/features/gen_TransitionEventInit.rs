@@ -27,11 +27,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "elapsedTime")]
     fn set_elapsed_time_shim(this: &TransitionEventInit, val: f32);
     #[wasm_bindgen(method, getter = "propertyName")]
-    fn property_name_shim(this: &TransitionEventInit) -> &str;
+    fn property_name_shim(this: &TransitionEventInit) -> String;
     #[wasm_bindgen(method, setter = "propertyName")]
     fn set_property_name_shim(this: &TransitionEventInit, val: &str);
     #[wasm_bindgen(method, getter = "pseudoElement")]
-    fn pseudo_element_shim(this: &TransitionEventInit) -> &str;
+    fn pseudo_element_shim(this: &TransitionEventInit) -> String;
     #[wasm_bindgen(method, setter = "pseudoElement")]
     fn set_pseudo_element_shim(this: &TransitionEventInit, val: &str);
 }
@@ -58,11 +58,11 @@ pub trait TransitionEventInitGetters {
     #[doc = "Get the `propertyName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TransitionEventInit`*"]
-    fn property_name(&self) -> &str;
+    fn property_name(&self) -> String;
     #[doc = "Get the `pseudoElement` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TransitionEventInit`*"]
-    fn pseudo_element(&self) -> &str;
+    fn pseudo_element(&self) -> String;
 }
 impl TransitionEventInitGetters for TransitionEventInit {
     fn bubbles(&self) -> bool {
@@ -77,10 +77,10 @@ impl TransitionEventInitGetters for TransitionEventInit {
     fn elapsed_time(&self) -> f32 {
         self.elapsed_time_shim()
     }
-    fn property_name(&self) -> &str {
+    fn property_name(&self) -> String {
         self.property_name_shim()
     }
-    fn pseudo_element(&self) -> &str {
+    fn pseudo_element(&self) -> String {
         self.pseudo_element_shim()
     }
 }

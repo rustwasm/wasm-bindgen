@@ -25,7 +25,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "bitrate")]
     fn set_bitrate_shim(this: &VideoEncoderConfig, val: f64);
     #[wasm_bindgen(method, getter = "codec")]
-    fn codec_shim(this: &VideoEncoderConfig) -> &str;
+    fn codec_shim(this: &VideoEncoderConfig) -> String;
     #[wasm_bindgen(method, setter = "codec")]
     fn set_codec_shim(this: &VideoEncoderConfig, val: &str);
     #[wasm_bindgen(method, getter = "displayHeight")]
@@ -57,7 +57,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "latencyMode")]
     fn set_latency_mode_shim(this: &VideoEncoderConfig, val: LatencyMode);
     #[wasm_bindgen(method, getter = "scalabilityMode")]
-    fn scalability_mode_shim(this: &VideoEncoderConfig) -> &str;
+    fn scalability_mode_shim(this: &VideoEncoderConfig) -> String;
     #[wasm_bindgen(method, setter = "scalabilityMode")]
     fn set_scalability_mode_shim(this: &VideoEncoderConfig, val: &str);
     #[wasm_bindgen(method, getter = "width")]
@@ -94,7 +94,7 @@ pub trait VideoEncoderConfigGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn codec(&self) -> &str;
+    fn codec(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `displayHeight` field of this object."]
     #[doc = ""]
@@ -152,7 +152,7 @@ pub trait VideoEncoderConfigGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn scalability_mode(&self) -> &str;
+    fn scalability_mode(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `width` field of this object."]
     #[doc = ""]
@@ -174,7 +174,7 @@ impl VideoEncoderConfigGetters for VideoEncoderConfig {
         self.bitrate_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn codec(&self) -> &str {
+    fn codec(&self) -> String {
         self.codec_shim()
     }
     #[cfg(web_sys_unstable_apis)]
@@ -204,7 +204,7 @@ impl VideoEncoderConfigGetters for VideoEncoderConfig {
         self.latency_mode_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn scalability_mode(&self) -> &str {
+    fn scalability_mode(&self) -> String {
         self.scalability_mode_shim()
     }
     #[cfg(web_sys_unstable_apis)]

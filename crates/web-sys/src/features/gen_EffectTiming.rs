@@ -21,11 +21,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "direction")]
     fn set_direction_shim(this: &EffectTiming, val: PlaybackDirection);
     #[wasm_bindgen(method, getter = "duration")]
-    fn duration_shim(this: &EffectTiming) -> &::wasm_bindgen::JsValue;
+    fn duration_shim(this: &EffectTiming) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "duration")]
     fn set_duration_shim(this: &EffectTiming, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "easing")]
-    fn easing_shim(this: &EffectTiming) -> &str;
+    fn easing_shim(this: &EffectTiming) -> String;
     #[wasm_bindgen(method, setter = "easing")]
     fn set_easing_shim(this: &EffectTiming, val: &str);
     #[wasm_bindgen(method, getter = "endDelay")]
@@ -63,11 +63,11 @@ pub trait EffectTimingGetters {
     #[doc = "Get the `duration` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EffectTiming`*"]
-    fn duration(&self) -> &::wasm_bindgen::JsValue;
+    fn duration(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `easing` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EffectTiming`*"]
-    fn easing(&self) -> &str;
+    fn easing(&self) -> String;
     #[doc = "Get the `endDelay` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EffectTiming`*"]
@@ -94,10 +94,10 @@ impl EffectTimingGetters for EffectTiming {
     fn direction(&self) -> PlaybackDirection {
         self.direction_shim()
     }
-    fn duration(&self) -> &::wasm_bindgen::JsValue {
+    fn duration(&self) -> ::wasm_bindgen::JsValue {
         self.duration_shim()
     }
-    fn easing(&self) -> &str {
+    fn easing(&self) -> String {
         self.easing_shim()
     }
     fn end_delay(&self) -> f64 {

@@ -24,7 +24,7 @@ extern "C" {
     fn set_composed_shim(this: &BlobEventInit, val: bool);
     #[cfg(feature = "Blob")]
     #[wasm_bindgen(method, getter = "data")]
-    fn data_shim(this: &BlobEventInit) -> Option<&Blob>;
+    fn data_shim(this: &BlobEventInit) -> Option<Blob>;
     #[cfg(feature = "Blob")]
     #[wasm_bindgen(method, setter = "data")]
     fn set_data_shim(this: &BlobEventInit, val: Option<&Blob>);
@@ -49,7 +49,7 @@ pub trait BlobEventInitGetters {
     #[doc = "Get the `data` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`, `BlobEventInit`*"]
-    fn data(&self) -> Option<&Blob>;
+    fn data(&self) -> Option<Blob>;
 }
 impl BlobEventInitGetters for BlobEventInit {
     fn bubbles(&self) -> bool {
@@ -62,7 +62,7 @@ impl BlobEventInitGetters for BlobEventInit {
         self.composed_shim()
     }
     #[cfg(feature = "Blob")]
-    fn data(&self) -> Option<&Blob> {
+    fn data(&self) -> Option<Blob> {
         self.data_shim()
     }
 }

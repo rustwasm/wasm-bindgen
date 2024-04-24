@@ -11,19 +11,19 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
     pub type HkdfParams;
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &HkdfParams) -> &str;
+    fn name_shim(this: &HkdfParams) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &HkdfParams, val: &str);
     #[wasm_bindgen(method, getter = "hash")]
-    fn hash_shim(this: &HkdfParams) -> &::wasm_bindgen::JsValue;
+    fn hash_shim(this: &HkdfParams) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "hash")]
     fn set_hash_shim(this: &HkdfParams, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "info")]
-    fn info_shim(this: &HkdfParams) -> &::js_sys::Object;
+    fn info_shim(this: &HkdfParams) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "info")]
     fn set_info_shim(this: &HkdfParams, val: &::js_sys::Object);
     #[wasm_bindgen(method, getter = "salt")]
-    fn salt_shim(this: &HkdfParams) -> &::js_sys::Object;
+    fn salt_shim(this: &HkdfParams) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "salt")]
     fn set_salt_shim(this: &HkdfParams, val: &::js_sys::Object);
 }
@@ -34,31 +34,31 @@ pub trait HkdfParamsGetters {
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
     #[doc = "Get the `hash` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
-    fn hash(&self) -> &::wasm_bindgen::JsValue;
+    fn hash(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `info` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
-    fn info(&self) -> &::js_sys::Object;
+    fn info(&self) -> ::js_sys::Object;
     #[doc = "Get the `salt` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
-    fn salt(&self) -> &::js_sys::Object;
+    fn salt(&self) -> ::js_sys::Object;
 }
 impl HkdfParamsGetters for HkdfParams {
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
-    fn hash(&self) -> &::wasm_bindgen::JsValue {
+    fn hash(&self) -> ::wasm_bindgen::JsValue {
         self.hash_shim()
     }
-    fn info(&self) -> &::js_sys::Object {
+    fn info(&self) -> ::js_sys::Object {
         self.info_shim()
     }
-    fn salt(&self) -> &::js_sys::Object {
+    fn salt(&self) -> ::js_sys::Object {
         self.salt_shim()
     }
 }

@@ -11,21 +11,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `OpenWindowEventDetail`*"]
     pub type OpenWindowEventDetail;
     #[wasm_bindgen(method, getter = "features")]
-    fn features_shim(this: &OpenWindowEventDetail) -> &str;
+    fn features_shim(this: &OpenWindowEventDetail) -> String;
     #[wasm_bindgen(method, setter = "features")]
     fn set_features_shim(this: &OpenWindowEventDetail, val: &str);
     #[cfg(feature = "Node")]
     #[wasm_bindgen(method, getter = "frameElement")]
-    fn frame_element_shim(this: &OpenWindowEventDetail) -> Option<&Node>;
+    fn frame_element_shim(this: &OpenWindowEventDetail) -> Option<Node>;
     #[cfg(feature = "Node")]
     #[wasm_bindgen(method, setter = "frameElement")]
     fn set_frame_element_shim(this: &OpenWindowEventDetail, val: Option<&Node>);
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &OpenWindowEventDetail) -> &str;
+    fn name_shim(this: &OpenWindowEventDetail) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &OpenWindowEventDetail, val: &str);
     #[wasm_bindgen(method, getter = "url")]
-    fn url_shim(this: &OpenWindowEventDetail) -> &str;
+    fn url_shim(this: &OpenWindowEventDetail) -> String;
     #[wasm_bindgen(method, setter = "url")]
     fn set_url_shim(this: &OpenWindowEventDetail, val: &str);
 }
@@ -36,33 +36,33 @@ pub trait OpenWindowEventDetailGetters {
     #[doc = "Get the `features` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OpenWindowEventDetail`*"]
-    fn features(&self) -> &str;
+    fn features(&self) -> String;
     #[cfg(feature = "Node")]
     #[doc = "Get the `frameElement` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Node`, `OpenWindowEventDetail`*"]
-    fn frame_element(&self) -> Option<&Node>;
+    fn frame_element(&self) -> Option<Node>;
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OpenWindowEventDetail`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
     #[doc = "Get the `url` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OpenWindowEventDetail`*"]
-    fn url(&self) -> &str;
+    fn url(&self) -> String;
 }
 impl OpenWindowEventDetailGetters for OpenWindowEventDetail {
-    fn features(&self) -> &str {
+    fn features(&self) -> String {
         self.features_shim()
     }
     #[cfg(feature = "Node")]
-    fn frame_element(&self) -> Option<&Node> {
+    fn frame_element(&self) -> Option<Node> {
         self.frame_element_shim()
     }
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
-    fn url(&self) -> &str {
+    fn url(&self) -> String {
         self.url_shim()
     }
 }

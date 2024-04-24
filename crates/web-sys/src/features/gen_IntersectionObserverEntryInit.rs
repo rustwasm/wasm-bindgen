@@ -12,25 +12,25 @@ extern "C" {
     pub type IntersectionObserverEntryInit;
     #[cfg(feature = "DomRectInit")]
     #[wasm_bindgen(method, getter = "boundingClientRect")]
-    fn bounding_client_rect_shim(this: &IntersectionObserverEntryInit) -> &DomRectInit;
+    fn bounding_client_rect_shim(this: &IntersectionObserverEntryInit) -> DomRectInit;
     #[cfg(feature = "DomRectInit")]
     #[wasm_bindgen(method, setter = "boundingClientRect")]
     fn set_bounding_client_rect_shim(this: &IntersectionObserverEntryInit, val: &DomRectInit);
     #[cfg(feature = "DomRectInit")]
     #[wasm_bindgen(method, getter = "intersectionRect")]
-    fn intersection_rect_shim(this: &IntersectionObserverEntryInit) -> &DomRectInit;
+    fn intersection_rect_shim(this: &IntersectionObserverEntryInit) -> DomRectInit;
     #[cfg(feature = "DomRectInit")]
     #[wasm_bindgen(method, setter = "intersectionRect")]
     fn set_intersection_rect_shim(this: &IntersectionObserverEntryInit, val: &DomRectInit);
     #[cfg(feature = "DomRectInit")]
     #[wasm_bindgen(method, getter = "rootBounds")]
-    fn root_bounds_shim(this: &IntersectionObserverEntryInit) -> &DomRectInit;
+    fn root_bounds_shim(this: &IntersectionObserverEntryInit) -> DomRectInit;
     #[cfg(feature = "DomRectInit")]
     #[wasm_bindgen(method, setter = "rootBounds")]
     fn set_root_bounds_shim(this: &IntersectionObserverEntryInit, val: &DomRectInit);
     #[cfg(feature = "Element")]
     #[wasm_bindgen(method, getter = "target")]
-    fn target_shim(this: &IntersectionObserverEntryInit) -> &Element;
+    fn target_shim(this: &IntersectionObserverEntryInit) -> Element;
     #[cfg(feature = "Element")]
     #[wasm_bindgen(method, setter = "target")]
     fn set_target_shim(this: &IntersectionObserverEntryInit, val: &Element);
@@ -47,22 +47,22 @@ pub trait IntersectionObserverEntryInitGetters {
     #[doc = "Get the `boundingClientRect` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomRectInit`, `IntersectionObserverEntryInit`*"]
-    fn bounding_client_rect(&self) -> &DomRectInit;
+    fn bounding_client_rect(&self) -> DomRectInit;
     #[cfg(feature = "DomRectInit")]
     #[doc = "Get the `intersectionRect` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomRectInit`, `IntersectionObserverEntryInit`*"]
-    fn intersection_rect(&self) -> &DomRectInit;
+    fn intersection_rect(&self) -> DomRectInit;
     #[cfg(feature = "DomRectInit")]
     #[doc = "Get the `rootBounds` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomRectInit`, `IntersectionObserverEntryInit`*"]
-    fn root_bounds(&self) -> &DomRectInit;
+    fn root_bounds(&self) -> DomRectInit;
     #[cfg(feature = "Element")]
     #[doc = "Get the `target` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`, `IntersectionObserverEntryInit`*"]
-    fn target(&self) -> &Element;
+    fn target(&self) -> Element;
     #[doc = "Get the `time` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IntersectionObserverEntryInit`*"]
@@ -70,19 +70,19 @@ pub trait IntersectionObserverEntryInitGetters {
 }
 impl IntersectionObserverEntryInitGetters for IntersectionObserverEntryInit {
     #[cfg(feature = "DomRectInit")]
-    fn bounding_client_rect(&self) -> &DomRectInit {
+    fn bounding_client_rect(&self) -> DomRectInit {
         self.bounding_client_rect_shim()
     }
     #[cfg(feature = "DomRectInit")]
-    fn intersection_rect(&self) -> &DomRectInit {
+    fn intersection_rect(&self) -> DomRectInit {
         self.intersection_rect_shim()
     }
     #[cfg(feature = "DomRectInit")]
-    fn root_bounds(&self) -> &DomRectInit {
+    fn root_bounds(&self) -> DomRectInit {
         self.root_bounds_shim()
     }
     #[cfg(feature = "Element")]
-    fn target(&self) -> &Element {
+    fn target(&self) -> Element {
         self.target_shim()
     }
     fn time(&self) -> f64 {

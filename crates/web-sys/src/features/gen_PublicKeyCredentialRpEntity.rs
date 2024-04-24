@@ -11,15 +11,15 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRpEntity`*"]
     pub type PublicKeyCredentialRpEntity;
     #[wasm_bindgen(method, getter = "icon")]
-    fn icon_shim(this: &PublicKeyCredentialRpEntity) -> &str;
+    fn icon_shim(this: &PublicKeyCredentialRpEntity) -> String;
     #[wasm_bindgen(method, setter = "icon")]
     fn set_icon_shim(this: &PublicKeyCredentialRpEntity, val: &str);
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &PublicKeyCredentialRpEntity) -> &str;
+    fn name_shim(this: &PublicKeyCredentialRpEntity) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &PublicKeyCredentialRpEntity, val: &str);
     #[wasm_bindgen(method, getter = "id")]
-    fn id_shim(this: &PublicKeyCredentialRpEntity) -> &str;
+    fn id_shim(this: &PublicKeyCredentialRpEntity) -> String;
     #[wasm_bindgen(method, setter = "id")]
     fn set_id_shim(this: &PublicKeyCredentialRpEntity, val: &str);
 }
@@ -30,24 +30,24 @@ pub trait PublicKeyCredentialRpEntityGetters {
     #[doc = "Get the `icon` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRpEntity`*"]
-    fn icon(&self) -> &str;
+    fn icon(&self) -> String;
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRpEntity`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
     #[doc = "Get the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRpEntity`*"]
-    fn id(&self) -> &str;
+    fn id(&self) -> String;
 }
 impl PublicKeyCredentialRpEntityGetters for PublicKeyCredentialRpEntity {
-    fn icon(&self) -> &str {
+    fn icon(&self) -> String {
         self.icon_shim()
     }
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
-    fn id(&self) -> &str {
+    fn id(&self) -> String {
         self.id_shim()
     }
 }

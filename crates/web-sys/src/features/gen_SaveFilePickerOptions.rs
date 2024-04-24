@@ -19,19 +19,19 @@ extern "C" {
     #[wasm_bindgen(method, setter = "excludeAcceptAllOption")]
     fn set_exclude_accept_all_option_shim(this: &SaveFilePickerOptions, val: bool);
     #[wasm_bindgen(method, getter = "id")]
-    fn id_shim(this: &SaveFilePickerOptions) -> &str;
+    fn id_shim(this: &SaveFilePickerOptions) -> String;
     #[wasm_bindgen(method, setter = "id")]
     fn set_id_shim(this: &SaveFilePickerOptions, val: &str);
     #[wasm_bindgen(method, getter = "startIn")]
-    fn start_in_shim(this: &SaveFilePickerOptions) -> &::wasm_bindgen::JsValue;
+    fn start_in_shim(this: &SaveFilePickerOptions) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "startIn")]
     fn set_start_in_shim(this: &SaveFilePickerOptions, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "types")]
-    fn types_shim(this: &SaveFilePickerOptions) -> &::wasm_bindgen::JsValue;
+    fn types_shim(this: &SaveFilePickerOptions) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "types")]
     fn set_types_shim(this: &SaveFilePickerOptions, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "suggestedName")]
-    fn suggested_name_shim(this: &SaveFilePickerOptions) -> Option<&str>;
+    fn suggested_name_shim(this: &SaveFilePickerOptions) -> Option<String>;
     #[wasm_bindgen(method, setter = "suggestedName")]
     fn set_suggested_name_shim(this: &SaveFilePickerOptions, val: Option<&str>);
 }
@@ -55,7 +55,7 @@ pub trait SaveFilePickerOptionsGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn id(&self) -> &str;
+    fn id(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `startIn` field of this object."]
     #[doc = ""]
@@ -63,7 +63,7 @@ pub trait SaveFilePickerOptionsGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn start_in(&self) -> &::wasm_bindgen::JsValue;
+    fn start_in(&self) -> ::wasm_bindgen::JsValue;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `types` field of this object."]
     #[doc = ""]
@@ -71,7 +71,7 @@ pub trait SaveFilePickerOptionsGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn types(&self) -> &::wasm_bindgen::JsValue;
+    fn types(&self) -> ::js_sys::Array;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `suggestedName` field of this object."]
     #[doc = ""]
@@ -79,7 +79,7 @@ pub trait SaveFilePickerOptionsGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn suggested_name(&self) -> Option<&str>;
+    fn suggested_name(&self) -> Option<String>;
 }
 #[cfg(web_sys_unstable_apis)]
 impl SaveFilePickerOptionsGetters for SaveFilePickerOptions {
@@ -88,19 +88,19 @@ impl SaveFilePickerOptionsGetters for SaveFilePickerOptions {
         self.exclude_accept_all_option_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn id(&self) -> &str {
+    fn id(&self) -> String {
         self.id_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn start_in(&self) -> &::wasm_bindgen::JsValue {
+    fn start_in(&self) -> ::wasm_bindgen::JsValue {
         self.start_in_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn types(&self) -> &::wasm_bindgen::JsValue {
+    fn types(&self) -> ::js_sys::Array {
         self.types_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn suggested_name(&self) -> Option<&str> {
+    fn suggested_name(&self) -> Option<String> {
         self.suggested_name_shim()
     }
 }

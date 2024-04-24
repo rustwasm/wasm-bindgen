@@ -15,11 +15,11 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuExternalTextureDescriptor;
     #[wasm_bindgen(method, getter = "label")]
-    fn label_shim(this: &GpuExternalTextureDescriptor) -> &str;
+    fn label_shim(this: &GpuExternalTextureDescriptor) -> String;
     #[wasm_bindgen(method, setter = "label")]
     fn set_label_shim(this: &GpuExternalTextureDescriptor, val: &str);
     #[wasm_bindgen(method, getter = "source")]
-    fn source_shim(this: &GpuExternalTextureDescriptor) -> &::js_sys::Object;
+    fn source_shim(this: &GpuExternalTextureDescriptor) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "source")]
     fn set_source_shim(this: &GpuExternalTextureDescriptor, val: &::js_sys::Object);
 }
@@ -35,7 +35,7 @@ pub trait GpuExternalTextureDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn label(&self) -> &str;
+    fn label(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `source` field of this object."]
     #[doc = ""]
@@ -43,16 +43,16 @@ pub trait GpuExternalTextureDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn source(&self) -> &::js_sys::Object;
+    fn source(&self) -> ::js_sys::Object;
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuExternalTextureDescriptorGetters for GpuExternalTextureDescriptor {
     #[cfg(web_sys_unstable_apis)]
-    fn label(&self) -> &str {
+    fn label(&self) -> String {
         self.label_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn source(&self) -> &::js_sys::Object {
+    fn source(&self) -> ::js_sys::Object {
         self.source_shim()
     }
 }

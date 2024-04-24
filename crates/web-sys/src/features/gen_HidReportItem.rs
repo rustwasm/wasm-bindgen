@@ -75,7 +75,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "reportSize")]
     fn set_report_size_shim(this: &HidReportItem, val: u16);
     #[wasm_bindgen(method, getter = "strings")]
-    fn strings_shim(this: &HidReportItem) -> &::wasm_bindgen::JsValue;
+    fn strings_shim(this: &HidReportItem) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "strings")]
     fn set_strings_shim(this: &HidReportItem, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "unitExponent")]
@@ -121,7 +121,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "usageMinimum")]
     fn set_usage_minimum_shim(this: &HidReportItem, val: u32);
     #[wasm_bindgen(method, getter = "usages")]
-    fn usages_shim(this: &HidReportItem) -> &::wasm_bindgen::JsValue;
+    fn usages_shim(this: &HidReportItem) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "usages")]
     fn set_usages_shim(this: &HidReportItem, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "wrap")]
@@ -261,7 +261,7 @@ pub trait HidReportItemGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn strings(&self) -> &::wasm_bindgen::JsValue;
+    fn strings(&self) -> ::js_sys::Array;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `unitExponent` field of this object."]
     #[doc = ""]
@@ -350,7 +350,7 @@ pub trait HidReportItemGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn usages(&self) -> &::wasm_bindgen::JsValue;
+    fn usages(&self) -> ::js_sys::Array;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `wrap` field of this object."]
     #[doc = ""]
@@ -423,7 +423,7 @@ impl HidReportItemGetters for HidReportItem {
         self.report_size_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn strings(&self) -> &::wasm_bindgen::JsValue {
+    fn strings(&self) -> ::js_sys::Array {
         self.strings_shim()
     }
     #[cfg(web_sys_unstable_apis)]
@@ -468,7 +468,7 @@ impl HidReportItemGetters for HidReportItem {
         self.usage_minimum_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn usages(&self) -> &::wasm_bindgen::JsValue {
+    fn usages(&self) -> ::js_sys::Array {
         self.usages_shim()
     }
     #[cfg(web_sys_unstable_apis)]

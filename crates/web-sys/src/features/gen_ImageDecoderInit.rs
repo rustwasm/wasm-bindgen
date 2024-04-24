@@ -21,7 +21,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "colorSpaceConversion")]
     fn set_color_space_conversion_shim(this: &ImageDecoderInit, val: ColorSpaceConversion);
     #[wasm_bindgen(method, getter = "data")]
-    fn data_shim(this: &ImageDecoderInit) -> &::wasm_bindgen::JsValue;
+    fn data_shim(this: &ImageDecoderInit) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "data")]
     fn set_data_shim(this: &ImageDecoderInit, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "desiredHeight")]
@@ -43,7 +43,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "premultiplyAlpha")]
     fn set_premultiply_alpha_shim(this: &ImageDecoderInit, val: PremultiplyAlpha);
     #[wasm_bindgen(method, getter = "type")]
-    fn type__shim(this: &ImageDecoderInit) -> &str;
+    fn type__shim(this: &ImageDecoderInit) -> String;
     #[wasm_bindgen(method, setter = "type")]
     fn set_type__shim(this: &ImageDecoderInit, val: &str);
 }
@@ -68,7 +68,7 @@ pub trait ImageDecoderInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn data(&self) -> &::wasm_bindgen::JsValue;
+    fn data(&self) -> ::wasm_bindgen::JsValue;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `desiredHeight` field of this object."]
     #[doc = ""]
@@ -109,7 +109,7 @@ pub trait ImageDecoderInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn type_(&self) -> &str;
+    fn type_(&self) -> String;
 }
 #[cfg(web_sys_unstable_apis)]
 impl ImageDecoderInitGetters for ImageDecoderInit {
@@ -119,7 +119,7 @@ impl ImageDecoderInitGetters for ImageDecoderInit {
         self.color_space_conversion_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn data(&self) -> &::wasm_bindgen::JsValue {
+    fn data(&self) -> ::wasm_bindgen::JsValue {
         self.data_shim()
     }
     #[cfg(web_sys_unstable_apis)]
@@ -140,7 +140,7 @@ impl ImageDecoderInitGetters for ImageDecoderInit {
         self.premultiply_alpha_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn type_(&self) -> &str {
+    fn type_(&self) -> String {
         self.type__shim()
     }
 }

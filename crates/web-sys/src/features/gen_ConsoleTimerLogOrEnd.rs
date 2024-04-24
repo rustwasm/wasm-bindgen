@@ -15,7 +15,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "duration")]
     fn set_duration_shim(this: &ConsoleTimerLogOrEnd, val: f64);
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &ConsoleTimerLogOrEnd) -> &str;
+    fn name_shim(this: &ConsoleTimerLogOrEnd) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &ConsoleTimerLogOrEnd, val: &str);
 }
@@ -30,13 +30,13 @@ pub trait ConsoleTimerLogOrEndGetters {
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerLogOrEnd`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
 }
 impl ConsoleTimerLogOrEndGetters for ConsoleTimerLogOrEnd {
     fn duration(&self) -> f64 {
         self.duration_shim()
     }
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
 }

@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcSessionDescriptionInit`*"]
     pub type RtcSessionDescriptionInit;
     #[wasm_bindgen(method, getter = "sdp")]
-    fn sdp_shim(this: &RtcSessionDescriptionInit) -> &str;
+    fn sdp_shim(this: &RtcSessionDescriptionInit) -> String;
     #[wasm_bindgen(method, setter = "sdp")]
     fn set_sdp_shim(this: &RtcSessionDescriptionInit, val: &str);
     #[cfg(feature = "RtcSdpType")]
@@ -28,7 +28,7 @@ pub trait RtcSessionDescriptionInitGetters {
     #[doc = "Get the `sdp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcSessionDescriptionInit`*"]
-    fn sdp(&self) -> &str;
+    fn sdp(&self) -> String;
     #[cfg(feature = "RtcSdpType")]
     #[doc = "Get the `type` field of this object."]
     #[doc = ""]
@@ -36,7 +36,7 @@ pub trait RtcSessionDescriptionInitGetters {
     fn type_(&self) -> RtcSdpType;
 }
 impl RtcSessionDescriptionInitGetters for RtcSessionDescriptionInit {
-    fn sdp(&self) -> &str {
+    fn sdp(&self) -> String {
         self.sdp_shim()
     }
     #[cfg(feature = "RtcSdpType")]

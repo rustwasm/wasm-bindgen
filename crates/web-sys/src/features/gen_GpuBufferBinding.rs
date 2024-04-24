@@ -16,7 +16,7 @@ extern "C" {
     pub type GpuBufferBinding;
     #[cfg(feature = "GpuBuffer")]
     #[wasm_bindgen(method, getter = "buffer")]
-    fn buffer_shim(this: &GpuBufferBinding) -> &GpuBuffer;
+    fn buffer_shim(this: &GpuBufferBinding) -> GpuBuffer;
     #[cfg(feature = "GpuBuffer")]
     #[wasm_bindgen(method, setter = "buffer")]
     fn set_buffer_shim(this: &GpuBufferBinding, val: &GpuBuffer);
@@ -42,7 +42,7 @@ pub trait GpuBufferBindingGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn buffer(&self) -> &GpuBuffer;
+    fn buffer(&self) -> GpuBuffer;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `offset` field of this object."]
     #[doc = ""]
@@ -64,7 +64,7 @@ pub trait GpuBufferBindingGetters {
 impl GpuBufferBindingGetters for GpuBufferBinding {
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    fn buffer(&self) -> &GpuBuffer {
+    fn buffer(&self) -> GpuBuffer {
         self.buffer_shim()
     }
     #[cfg(web_sys_unstable_apis)]

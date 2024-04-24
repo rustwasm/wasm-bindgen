@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ConsoleProfileEvent`*"]
     pub type ConsoleProfileEvent;
     #[wasm_bindgen(method, getter = "action")]
-    fn action_shim(this: &ConsoleProfileEvent) -> &str;
+    fn action_shim(this: &ConsoleProfileEvent) -> String;
     #[wasm_bindgen(method, setter = "action")]
     fn set_action_shim(this: &ConsoleProfileEvent, val: &str);
     #[wasm_bindgen(method, getter = "arguments")]
-    fn arguments_shim(this: &ConsoleProfileEvent) -> &::wasm_bindgen::JsValue;
+    fn arguments_shim(this: &ConsoleProfileEvent) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "arguments")]
     fn set_arguments_shim(this: &ConsoleProfileEvent, val: &::wasm_bindgen::JsValue);
 }
@@ -26,17 +26,17 @@ pub trait ConsoleProfileEventGetters {
     #[doc = "Get the `action` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleProfileEvent`*"]
-    fn action(&self) -> &str;
+    fn action(&self) -> String;
     #[doc = "Get the `arguments` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleProfileEvent`*"]
-    fn arguments(&self) -> &::wasm_bindgen::JsValue;
+    fn arguments(&self) -> ::js_sys::Array;
 }
 impl ConsoleProfileEventGetters for ConsoleProfileEvent {
-    fn action(&self) -> &str {
+    fn action(&self) -> String {
         self.action_shim()
     }
-    fn arguments(&self) -> &::wasm_bindgen::JsValue {
+    fn arguments(&self) -> ::js_sys::Array {
         self.arguments_shim()
     }
 }

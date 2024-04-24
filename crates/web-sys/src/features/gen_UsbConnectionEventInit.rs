@@ -28,7 +28,7 @@ extern "C" {
     fn set_composed_shim(this: &UsbConnectionEventInit, val: bool);
     #[cfg(feature = "UsbDevice")]
     #[wasm_bindgen(method, getter = "device")]
-    fn device_shim(this: &UsbConnectionEventInit) -> &UsbDevice;
+    fn device_shim(this: &UsbConnectionEventInit) -> UsbDevice;
     #[cfg(feature = "UsbDevice")]
     #[wasm_bindgen(method, setter = "device")]
     fn set_device_shim(this: &UsbConnectionEventInit, val: &UsbDevice);
@@ -70,7 +70,7 @@ pub trait UsbConnectionEventInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn device(&self) -> &UsbDevice;
+    fn device(&self) -> UsbDevice;
 }
 #[cfg(web_sys_unstable_apis)]
 impl UsbConnectionEventInitGetters for UsbConnectionEventInit {
@@ -88,7 +88,7 @@ impl UsbConnectionEventInitGetters for UsbConnectionEventInit {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "UsbDevice")]
-    fn device(&self) -> &UsbDevice {
+    fn device(&self) -> UsbDevice {
         self.device_shim()
     }
 }

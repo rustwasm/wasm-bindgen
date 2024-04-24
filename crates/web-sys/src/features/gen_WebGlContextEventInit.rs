@@ -23,7 +23,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &WebGlContextEventInit, val: bool);
     #[wasm_bindgen(method, getter = "statusMessage")]
-    fn status_message_shim(this: &WebGlContextEventInit) -> &str;
+    fn status_message_shim(this: &WebGlContextEventInit) -> String;
     #[wasm_bindgen(method, setter = "statusMessage")]
     fn set_status_message_shim(this: &WebGlContextEventInit, val: &str);
 }
@@ -46,7 +46,7 @@ pub trait WebGlContextEventInitGetters {
     #[doc = "Get the `statusMessage` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGlContextEventInit`*"]
-    fn status_message(&self) -> &str;
+    fn status_message(&self) -> String;
 }
 impl WebGlContextEventInitGetters for WebGlContextEventInit {
     fn bubbles(&self) -> bool {
@@ -58,7 +58,7 @@ impl WebGlContextEventInitGetters for WebGlContextEventInit {
     fn composed(&self) -> bool {
         self.composed_shim()
     }
-    fn status_message(&self) -> &str {
+    fn status_message(&self) -> String {
         self.status_message_shim()
     }
 }

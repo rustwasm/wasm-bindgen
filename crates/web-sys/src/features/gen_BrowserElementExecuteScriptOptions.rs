@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementExecuteScriptOptions`*"]
     pub type BrowserElementExecuteScriptOptions;
     #[wasm_bindgen(method, getter = "origin")]
-    fn origin_shim(this: &BrowserElementExecuteScriptOptions) -> Option<&str>;
+    fn origin_shim(this: &BrowserElementExecuteScriptOptions) -> Option<String>;
     #[wasm_bindgen(method, setter = "origin")]
     fn set_origin_shim(this: &BrowserElementExecuteScriptOptions, val: Option<&str>);
     #[wasm_bindgen(method, getter = "url")]
-    fn url_shim(this: &BrowserElementExecuteScriptOptions) -> Option<&str>;
+    fn url_shim(this: &BrowserElementExecuteScriptOptions) -> Option<String>;
     #[wasm_bindgen(method, setter = "url")]
     fn set_url_shim(this: &BrowserElementExecuteScriptOptions, val: Option<&str>);
 }
@@ -26,17 +26,17 @@ pub trait BrowserElementExecuteScriptOptionsGetters {
     #[doc = "Get the `origin` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementExecuteScriptOptions`*"]
-    fn origin(&self) -> Option<&str>;
+    fn origin(&self) -> Option<String>;
     #[doc = "Get the `url` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementExecuteScriptOptions`*"]
-    fn url(&self) -> Option<&str>;
+    fn url(&self) -> Option<String>;
 }
 impl BrowserElementExecuteScriptOptionsGetters for BrowserElementExecuteScriptOptions {
-    fn origin(&self) -> Option<&str> {
+    fn origin(&self) -> Option<String> {
         self.origin_shim()
     }
-    fn url(&self) -> Option<&str> {
+    fn url(&self) -> Option<String> {
         self.url_shim()
     }
 }

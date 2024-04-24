@@ -24,7 +24,7 @@ extern "C" {
     fn set_composed_shim(this: &ImageCaptureErrorEventInit, val: bool);
     #[cfg(feature = "ImageCaptureError")]
     #[wasm_bindgen(method, getter = "imageCaptureError")]
-    fn image_capture_error_shim(this: &ImageCaptureErrorEventInit) -> Option<&ImageCaptureError>;
+    fn image_capture_error_shim(this: &ImageCaptureErrorEventInit) -> Option<ImageCaptureError>;
     #[cfg(feature = "ImageCaptureError")]
     #[wasm_bindgen(method, setter = "imageCaptureError")]
     fn set_image_capture_error_shim(
@@ -52,7 +52,7 @@ pub trait ImageCaptureErrorEventInitGetters {
     #[doc = "Get the `imageCaptureError` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageCaptureError`, `ImageCaptureErrorEventInit`*"]
-    fn image_capture_error(&self) -> Option<&ImageCaptureError>;
+    fn image_capture_error(&self) -> Option<ImageCaptureError>;
 }
 impl ImageCaptureErrorEventInitGetters for ImageCaptureErrorEventInit {
     fn bubbles(&self) -> bool {
@@ -65,7 +65,7 @@ impl ImageCaptureErrorEventInitGetters for ImageCaptureErrorEventInit {
         self.composed_shim()
     }
     #[cfg(feature = "ImageCaptureError")]
-    fn image_capture_error(&self) -> Option<&ImageCaptureError> {
+    fn image_capture_error(&self) -> Option<ImageCaptureError> {
         self.image_capture_error_shim()
     }
 }

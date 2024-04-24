@@ -23,7 +23,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &RtcdtmfToneChangeEventInit, val: bool);
     #[wasm_bindgen(method, getter = "tone")]
-    fn tone_shim(this: &RtcdtmfToneChangeEventInit) -> &str;
+    fn tone_shim(this: &RtcdtmfToneChangeEventInit) -> String;
     #[wasm_bindgen(method, setter = "tone")]
     fn set_tone_shim(this: &RtcdtmfToneChangeEventInit, val: &str);
 }
@@ -46,7 +46,7 @@ pub trait RtcdtmfToneChangeEventInitGetters {
     #[doc = "Get the `tone` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcdtmfToneChangeEventInit`*"]
-    fn tone(&self) -> &str;
+    fn tone(&self) -> String;
 }
 impl RtcdtmfToneChangeEventInitGetters for RtcdtmfToneChangeEventInit {
     fn bubbles(&self) -> bool {
@@ -58,7 +58,7 @@ impl RtcdtmfToneChangeEventInitGetters for RtcdtmfToneChangeEventInit {
     fn composed(&self) -> bool {
         self.composed_shim()
     }
-    fn tone(&self) -> &str {
+    fn tone(&self) -> String {
         self.tone_shim()
     }
 }

@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcIceComponentStats`*"]
     pub type RtcIceComponentStats;
     #[wasm_bindgen(method, getter = "id")]
-    fn id_shim(this: &RtcIceComponentStats) -> &str;
+    fn id_shim(this: &RtcIceComponentStats) -> String;
     #[wasm_bindgen(method, setter = "id")]
     fn set_id_shim(this: &RtcIceComponentStats, val: &str);
     #[wasm_bindgen(method, getter = "timestamp")]
@@ -41,7 +41,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "component")]
     fn set_component_shim(this: &RtcIceComponentStats, val: i32);
     #[wasm_bindgen(method, getter = "transportId")]
-    fn transport_id_shim(this: &RtcIceComponentStats) -> &str;
+    fn transport_id_shim(this: &RtcIceComponentStats) -> String;
     #[wasm_bindgen(method, setter = "transportId")]
     fn set_transport_id_shim(this: &RtcIceComponentStats, val: &str);
 }
@@ -52,7 +52,7 @@ pub trait RtcIceComponentStatsGetters {
     #[doc = "Get the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceComponentStats`*"]
-    fn id(&self) -> &str;
+    fn id(&self) -> String;
     #[doc = "Get the `timestamp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceComponentStats`*"]
@@ -81,10 +81,10 @@ pub trait RtcIceComponentStatsGetters {
     #[doc = "Get the `transportId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceComponentStats`*"]
-    fn transport_id(&self) -> &str;
+    fn transport_id(&self) -> String;
 }
 impl RtcIceComponentStatsGetters for RtcIceComponentStats {
-    fn id(&self) -> &str {
+    fn id(&self) -> String {
         self.id_shim()
     }
     fn timestamp(&self) -> f64 {
@@ -106,7 +106,7 @@ impl RtcIceComponentStatsGetters for RtcIceComponentStats {
     fn component(&self) -> i32 {
         self.component_shim()
     }
-    fn transport_id(&self) -> &str {
+    fn transport_id(&self) -> String {
         self.transport_id_shim()
     }
 }

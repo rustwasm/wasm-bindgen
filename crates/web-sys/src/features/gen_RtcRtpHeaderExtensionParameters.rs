@@ -19,7 +19,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "id")]
     fn set_id_shim(this: &RtcRtpHeaderExtensionParameters, val: u16);
     #[wasm_bindgen(method, getter = "uri")]
-    fn uri_shim(this: &RtcRtpHeaderExtensionParameters) -> &str;
+    fn uri_shim(this: &RtcRtpHeaderExtensionParameters) -> String;
     #[wasm_bindgen(method, setter = "uri")]
     fn set_uri_shim(this: &RtcRtpHeaderExtensionParameters, val: &str);
 }
@@ -38,7 +38,7 @@ pub trait RtcRtpHeaderExtensionParametersGetters {
     #[doc = "Get the `uri` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpHeaderExtensionParameters`*"]
-    fn uri(&self) -> &str;
+    fn uri(&self) -> String;
 }
 impl RtcRtpHeaderExtensionParametersGetters for RtcRtpHeaderExtensionParameters {
     fn encrypted(&self) -> bool {
@@ -47,7 +47,7 @@ impl RtcRtpHeaderExtensionParametersGetters for RtcRtpHeaderExtensionParameters 
     fn id(&self) -> u16 {
         self.id_shim()
     }
-    fn uri(&self) -> &str {
+    fn uri(&self) -> String {
         self.uri_shim()
     }
 }

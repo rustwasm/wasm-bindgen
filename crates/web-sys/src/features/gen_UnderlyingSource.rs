@@ -15,15 +15,15 @@ extern "C" {
     #[wasm_bindgen(method, setter = "autoAllocateChunkSize")]
     fn set_auto_allocate_chunk_size_shim(this: &UnderlyingSource, val: f64);
     #[wasm_bindgen(method, getter = "cancel")]
-    fn cancel_shim(this: &UnderlyingSource) -> &::js_sys::Function;
+    fn cancel_shim(this: &UnderlyingSource) -> ::js_sys::Function;
     #[wasm_bindgen(method, setter = "cancel")]
     fn set_cancel_shim(this: &UnderlyingSource, val: &::js_sys::Function);
     #[wasm_bindgen(method, getter = "pull")]
-    fn pull_shim(this: &UnderlyingSource) -> &::js_sys::Function;
+    fn pull_shim(this: &UnderlyingSource) -> ::js_sys::Function;
     #[wasm_bindgen(method, setter = "pull")]
     fn set_pull_shim(this: &UnderlyingSource, val: &::js_sys::Function);
     #[wasm_bindgen(method, getter = "start")]
-    fn start_shim(this: &UnderlyingSource) -> &::js_sys::Function;
+    fn start_shim(this: &UnderlyingSource) -> ::js_sys::Function;
     #[wasm_bindgen(method, setter = "start")]
     fn set_start_shim(this: &UnderlyingSource, val: &::js_sys::Function);
     #[cfg(feature = "ReadableStreamType")]
@@ -44,15 +44,15 @@ pub trait UnderlyingSourceGetters {
     #[doc = "Get the `cancel` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UnderlyingSource`*"]
-    fn cancel(&self) -> &::js_sys::Function;
+    fn cancel(&self) -> ::js_sys::Function;
     #[doc = "Get the `pull` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UnderlyingSource`*"]
-    fn pull(&self) -> &::js_sys::Function;
+    fn pull(&self) -> ::js_sys::Function;
     #[doc = "Get the `start` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UnderlyingSource`*"]
-    fn start(&self) -> &::js_sys::Function;
+    fn start(&self) -> ::js_sys::Function;
     #[cfg(feature = "ReadableStreamType")]
     #[doc = "Get the `type` field of this object."]
     #[doc = ""]
@@ -63,13 +63,13 @@ impl UnderlyingSourceGetters for UnderlyingSource {
     fn auto_allocate_chunk_size(&self) -> f64 {
         self.auto_allocate_chunk_size_shim()
     }
-    fn cancel(&self) -> &::js_sys::Function {
+    fn cancel(&self) -> ::js_sys::Function {
         self.cancel_shim()
     }
-    fn pull(&self) -> &::js_sys::Function {
+    fn pull(&self) -> ::js_sys::Function {
         self.pull_shim()
     }
-    fn start(&self) -> &::js_sys::Function {
+    fn start(&self) -> ::js_sys::Function {
         self.start_shim()
     }
     #[cfg(feature = "ReadableStreamType")]

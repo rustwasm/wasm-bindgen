@@ -11,15 +11,15 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `U2fClientData`*"]
     pub type U2fClientData;
     #[wasm_bindgen(method, getter = "challenge")]
-    fn challenge_shim(this: &U2fClientData) -> &str;
+    fn challenge_shim(this: &U2fClientData) -> String;
     #[wasm_bindgen(method, setter = "challenge")]
     fn set_challenge_shim(this: &U2fClientData, val: &str);
     #[wasm_bindgen(method, getter = "origin")]
-    fn origin_shim(this: &U2fClientData) -> &str;
+    fn origin_shim(this: &U2fClientData) -> String;
     #[wasm_bindgen(method, setter = "origin")]
     fn set_origin_shim(this: &U2fClientData, val: &str);
     #[wasm_bindgen(method, getter = "typ")]
-    fn typ_shim(this: &U2fClientData) -> &str;
+    fn typ_shim(this: &U2fClientData) -> String;
     #[wasm_bindgen(method, setter = "typ")]
     fn set_typ_shim(this: &U2fClientData, val: &str);
 }
@@ -30,24 +30,24 @@ pub trait U2fClientDataGetters {
     #[doc = "Get the `challenge` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `U2fClientData`*"]
-    fn challenge(&self) -> &str;
+    fn challenge(&self) -> String;
     #[doc = "Get the `origin` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `U2fClientData`*"]
-    fn origin(&self) -> &str;
+    fn origin(&self) -> String;
     #[doc = "Get the `typ` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `U2fClientData`*"]
-    fn typ(&self) -> &str;
+    fn typ(&self) -> String;
 }
 impl U2fClientDataGetters for U2fClientData {
-    fn challenge(&self) -> &str {
+    fn challenge(&self) -> String {
         self.challenge_shim()
     }
-    fn origin(&self) -> &str {
+    fn origin(&self) -> String {
         self.origin_shim()
     }
-    fn typ(&self) -> &str {
+    fn typ(&self) -> String {
         self.typ_shim()
     }
 }

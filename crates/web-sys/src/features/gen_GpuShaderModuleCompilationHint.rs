@@ -15,11 +15,11 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuShaderModuleCompilationHint;
     #[wasm_bindgen(method, getter = "entryPoint")]
-    fn entry_point_shim(this: &GpuShaderModuleCompilationHint) -> &str;
+    fn entry_point_shim(this: &GpuShaderModuleCompilationHint) -> String;
     #[wasm_bindgen(method, setter = "entryPoint")]
     fn set_entry_point_shim(this: &GpuShaderModuleCompilationHint, val: &str);
     #[wasm_bindgen(method, getter = "layout")]
-    fn layout_shim(this: &GpuShaderModuleCompilationHint) -> &::wasm_bindgen::JsValue;
+    fn layout_shim(this: &GpuShaderModuleCompilationHint) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "layout")]
     fn set_layout_shim(this: &GpuShaderModuleCompilationHint, val: &::wasm_bindgen::JsValue);
 }
@@ -35,7 +35,7 @@ pub trait GpuShaderModuleCompilationHintGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn entry_point(&self) -> &str;
+    fn entry_point(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `layout` field of this object."]
     #[doc = ""]
@@ -43,16 +43,16 @@ pub trait GpuShaderModuleCompilationHintGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn layout(&self) -> &::wasm_bindgen::JsValue;
+    fn layout(&self) -> ::wasm_bindgen::JsValue;
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuShaderModuleCompilationHintGetters for GpuShaderModuleCompilationHint {
     #[cfg(web_sys_unstable_apis)]
-    fn entry_point(&self) -> &str {
+    fn entry_point(&self) -> String {
         self.entry_point_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn layout(&self) -> &::wasm_bindgen::JsValue {
+    fn layout(&self) -> ::wasm_bindgen::JsValue {
         self.layout_shim()
     }
 }

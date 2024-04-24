@@ -15,12 +15,12 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuComputePassDescriptor;
     #[wasm_bindgen(method, getter = "label")]
-    fn label_shim(this: &GpuComputePassDescriptor) -> &str;
+    fn label_shim(this: &GpuComputePassDescriptor) -> String;
     #[wasm_bindgen(method, setter = "label")]
     fn set_label_shim(this: &GpuComputePassDescriptor, val: &str);
     #[cfg(feature = "GpuComputePassTimestampWrites")]
     #[wasm_bindgen(method, getter = "timestampWrites")]
-    fn timestamp_writes_shim(this: &GpuComputePassDescriptor) -> &GpuComputePassTimestampWrites;
+    fn timestamp_writes_shim(this: &GpuComputePassDescriptor) -> GpuComputePassTimestampWrites;
     #[cfg(feature = "GpuComputePassTimestampWrites")]
     #[wasm_bindgen(method, setter = "timestampWrites")]
     fn set_timestamp_writes_shim(
@@ -40,7 +40,7 @@ pub trait GpuComputePassDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn label(&self) -> &str;
+    fn label(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuComputePassTimestampWrites")]
     #[doc = "Get the `timestampWrites` field of this object."]
@@ -49,17 +49,17 @@ pub trait GpuComputePassDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn timestamp_writes(&self) -> &GpuComputePassTimestampWrites;
+    fn timestamp_writes(&self) -> GpuComputePassTimestampWrites;
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuComputePassDescriptorGetters for GpuComputePassDescriptor {
     #[cfg(web_sys_unstable_apis)]
-    fn label(&self) -> &str {
+    fn label(&self) -> String {
         self.label_shim()
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuComputePassTimestampWrites")]
-    fn timestamp_writes(&self) -> &GpuComputePassTimestampWrites {
+    fn timestamp_writes(&self) -> GpuComputePassTimestampWrites {
         self.timestamp_writes_shim()
     }
 }

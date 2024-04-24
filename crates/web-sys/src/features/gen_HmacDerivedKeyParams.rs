@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `HmacDerivedKeyParams`*"]
     pub type HmacDerivedKeyParams;
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &HmacDerivedKeyParams) -> &str;
+    fn name_shim(this: &HmacDerivedKeyParams) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &HmacDerivedKeyParams, val: &str);
     #[wasm_bindgen(method, getter = "hash")]
-    fn hash_shim(this: &HmacDerivedKeyParams) -> &::wasm_bindgen::JsValue;
+    fn hash_shim(this: &HmacDerivedKeyParams) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "hash")]
     fn set_hash_shim(this: &HmacDerivedKeyParams, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "length")]
@@ -30,21 +30,21 @@ pub trait HmacDerivedKeyParamsGetters {
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HmacDerivedKeyParams`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
     #[doc = "Get the `hash` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HmacDerivedKeyParams`*"]
-    fn hash(&self) -> &::wasm_bindgen::JsValue;
+    fn hash(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `length` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HmacDerivedKeyParams`*"]
     fn length(&self) -> u32;
 }
 impl HmacDerivedKeyParamsGetters for HmacDerivedKeyParams {
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
-    fn hash(&self) -> &::wasm_bindgen::JsValue {
+    fn hash(&self) -> ::wasm_bindgen::JsValue {
         self.hash_shim()
     }
     fn length(&self) -> u32 {

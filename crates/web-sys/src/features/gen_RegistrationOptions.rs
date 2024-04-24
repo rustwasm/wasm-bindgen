@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RegistrationOptions`*"]
     pub type RegistrationOptions;
     #[wasm_bindgen(method, getter = "scope")]
-    fn scope_shim(this: &RegistrationOptions) -> &str;
+    fn scope_shim(this: &RegistrationOptions) -> String;
     #[wasm_bindgen(method, setter = "scope")]
     fn set_scope_shim(this: &RegistrationOptions, val: &str);
     #[wasm_bindgen(method, getter = "type")]
-    fn type__shim(this: &RegistrationOptions) -> &str;
+    fn type__shim(this: &RegistrationOptions) -> String;
     #[wasm_bindgen(method, setter = "type")]
     fn set_type__shim(this: &RegistrationOptions, val: &str);
     #[cfg(feature = "ServiceWorkerUpdateViaCache")]
@@ -32,11 +32,11 @@ pub trait RegistrationOptionsGetters {
     #[doc = "Get the `scope` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegistrationOptions`*"]
-    fn scope(&self) -> &str;
+    fn scope(&self) -> String;
     #[doc = "Get the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegistrationOptions`*"]
-    fn type_(&self) -> &str;
+    fn type_(&self) -> String;
     #[cfg(feature = "ServiceWorkerUpdateViaCache")]
     #[doc = "Get the `updateViaCache` field of this object."]
     #[doc = ""]
@@ -44,10 +44,10 @@ pub trait RegistrationOptionsGetters {
     fn update_via_cache(&self) -> ServiceWorkerUpdateViaCache;
 }
 impl RegistrationOptionsGetters for RegistrationOptions {
-    fn scope(&self) -> &str {
+    fn scope(&self) -> String {
         self.scope_shim()
     }
-    fn type_(&self) -> &str {
+    fn type_(&self) -> String {
         self.type__shim()
     }
     #[cfg(feature = "ServiceWorkerUpdateViaCache")]

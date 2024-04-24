@@ -23,11 +23,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &PaymentMethodChangeEventInit, val: bool);
     #[wasm_bindgen(method, getter = "methodDetails")]
-    fn method_details_shim(this: &PaymentMethodChangeEventInit) -> Option<&::js_sys::Object>;
+    fn method_details_shim(this: &PaymentMethodChangeEventInit) -> Option<::js_sys::Object>;
     #[wasm_bindgen(method, setter = "methodDetails")]
     fn set_method_details_shim(this: &PaymentMethodChangeEventInit, val: Option<&::js_sys::Object>);
     #[wasm_bindgen(method, getter = "methodName")]
-    fn method_name_shim(this: &PaymentMethodChangeEventInit) -> &str;
+    fn method_name_shim(this: &PaymentMethodChangeEventInit) -> String;
     #[wasm_bindgen(method, setter = "methodName")]
     fn set_method_name_shim(this: &PaymentMethodChangeEventInit, val: &str);
 }
@@ -50,11 +50,11 @@ pub trait PaymentMethodChangeEventInitGetters {
     #[doc = "Get the `methodDetails` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PaymentMethodChangeEventInit`*"]
-    fn method_details(&self) -> Option<&::js_sys::Object>;
+    fn method_details(&self) -> Option<::js_sys::Object>;
     #[doc = "Get the `methodName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PaymentMethodChangeEventInit`*"]
-    fn method_name(&self) -> &str;
+    fn method_name(&self) -> String;
 }
 impl PaymentMethodChangeEventInitGetters for PaymentMethodChangeEventInit {
     fn bubbles(&self) -> bool {
@@ -66,10 +66,10 @@ impl PaymentMethodChangeEventInitGetters for PaymentMethodChangeEventInit {
     fn composed(&self) -> bool {
         self.composed_shim()
     }
-    fn method_details(&self) -> Option<&::js_sys::Object> {
+    fn method_details(&self) -> Option<::js_sys::Object> {
         self.method_details_shim()
     }
-    fn method_name(&self) -> &str {
+    fn method_name(&self) -> String {
         self.method_name_shim()
     }
 }

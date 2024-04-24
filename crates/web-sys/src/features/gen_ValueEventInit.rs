@@ -27,7 +27,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &ValueEventInit, val: bool);
     #[wasm_bindgen(method, getter = "value")]
-    fn value_shim(this: &ValueEventInit) -> &::wasm_bindgen::JsValue;
+    fn value_shim(this: &ValueEventInit) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "value")]
     fn set_value_shim(this: &ValueEventInit, val: &::wasm_bindgen::JsValue);
 }
@@ -67,7 +67,7 @@ pub trait ValueEventInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn value(&self) -> &::wasm_bindgen::JsValue;
+    fn value(&self) -> ::wasm_bindgen::JsValue;
 }
 #[cfg(web_sys_unstable_apis)]
 impl ValueEventInitGetters for ValueEventInit {
@@ -84,7 +84,7 @@ impl ValueEventInitGetters for ValueEventInit {
         self.composed_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn value(&self) -> &::wasm_bindgen::JsValue {
+    fn value(&self) -> ::wasm_bindgen::JsValue {
         self.value_shim()
     }
 }

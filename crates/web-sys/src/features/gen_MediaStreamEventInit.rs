@@ -24,7 +24,7 @@ extern "C" {
     fn set_composed_shim(this: &MediaStreamEventInit, val: bool);
     #[cfg(feature = "MediaStream")]
     #[wasm_bindgen(method, getter = "stream")]
-    fn stream_shim(this: &MediaStreamEventInit) -> Option<&MediaStream>;
+    fn stream_shim(this: &MediaStreamEventInit) -> Option<MediaStream>;
     #[cfg(feature = "MediaStream")]
     #[wasm_bindgen(method, setter = "stream")]
     fn set_stream_shim(this: &MediaStreamEventInit, val: Option<&MediaStream>);
@@ -49,7 +49,7 @@ pub trait MediaStreamEventInitGetters {
     #[doc = "Get the `stream` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStream`, `MediaStreamEventInit`*"]
-    fn stream(&self) -> Option<&MediaStream>;
+    fn stream(&self) -> Option<MediaStream>;
 }
 impl MediaStreamEventInitGetters for MediaStreamEventInit {
     fn bubbles(&self) -> bool {
@@ -62,7 +62,7 @@ impl MediaStreamEventInitGetters for MediaStreamEventInit {
         self.composed_shim()
     }
     #[cfg(feature = "MediaStream")]
-    fn stream(&self) -> Option<&MediaStream> {
+    fn stream(&self) -> Option<MediaStream> {
         self.stream_shim()
     }
 }

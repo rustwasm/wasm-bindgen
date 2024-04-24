@@ -12,7 +12,7 @@ extern "C" {
     pub type CredentialRequestOptions;
     #[cfg(feature = "PublicKeyCredentialRequestOptions")]
     #[wasm_bindgen(method, getter = "publicKey")]
-    fn public_key_shim(this: &CredentialRequestOptions) -> &PublicKeyCredentialRequestOptions;
+    fn public_key_shim(this: &CredentialRequestOptions) -> PublicKeyCredentialRequestOptions;
     #[cfg(feature = "PublicKeyCredentialRequestOptions")]
     #[wasm_bindgen(method, setter = "publicKey")]
     fn set_public_key_shim(
@@ -21,7 +21,7 @@ extern "C" {
     );
     #[cfg(feature = "AbortSignal")]
     #[wasm_bindgen(method, getter = "signal")]
-    fn signal_shim(this: &CredentialRequestOptions) -> &AbortSignal;
+    fn signal_shim(this: &CredentialRequestOptions) -> AbortSignal;
     #[cfg(feature = "AbortSignal")]
     #[wasm_bindgen(method, setter = "signal")]
     fn set_signal_shim(this: &CredentialRequestOptions, val: &AbortSignal);
@@ -34,20 +34,20 @@ pub trait CredentialRequestOptionsGetters {
     #[doc = "Get the `publicKey` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CredentialRequestOptions`, `PublicKeyCredentialRequestOptions`*"]
-    fn public_key(&self) -> &PublicKeyCredentialRequestOptions;
+    fn public_key(&self) -> PublicKeyCredentialRequestOptions;
     #[cfg(feature = "AbortSignal")]
     #[doc = "Get the `signal` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AbortSignal`, `CredentialRequestOptions`*"]
-    fn signal(&self) -> &AbortSignal;
+    fn signal(&self) -> AbortSignal;
 }
 impl CredentialRequestOptionsGetters for CredentialRequestOptions {
     #[cfg(feature = "PublicKeyCredentialRequestOptions")]
-    fn public_key(&self) -> &PublicKeyCredentialRequestOptions {
+    fn public_key(&self) -> PublicKeyCredentialRequestOptions {
         self.public_key_shim()
     }
     #[cfg(feature = "AbortSignal")]
-    fn signal(&self) -> &AbortSignal {
+    fn signal(&self) -> AbortSignal {
         self.signal_shim()
     }
 }

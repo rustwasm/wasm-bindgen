@@ -20,13 +20,13 @@ extern "C" {
     fn set_binding_shim(this: &GpuBindGroupLayoutEntry, val: u32);
     #[cfg(feature = "GpuBufferBindingLayout")]
     #[wasm_bindgen(method, getter = "buffer")]
-    fn buffer_shim(this: &GpuBindGroupLayoutEntry) -> &GpuBufferBindingLayout;
+    fn buffer_shim(this: &GpuBindGroupLayoutEntry) -> GpuBufferBindingLayout;
     #[cfg(feature = "GpuBufferBindingLayout")]
     #[wasm_bindgen(method, setter = "buffer")]
     fn set_buffer_shim(this: &GpuBindGroupLayoutEntry, val: &GpuBufferBindingLayout);
     #[cfg(feature = "GpuExternalTextureBindingLayout")]
     #[wasm_bindgen(method, getter = "externalTexture")]
-    fn external_texture_shim(this: &GpuBindGroupLayoutEntry) -> &GpuExternalTextureBindingLayout;
+    fn external_texture_shim(this: &GpuBindGroupLayoutEntry) -> GpuExternalTextureBindingLayout;
     #[cfg(feature = "GpuExternalTextureBindingLayout")]
     #[wasm_bindgen(method, setter = "externalTexture")]
     fn set_external_texture_shim(
@@ -35,13 +35,13 @@ extern "C" {
     );
     #[cfg(feature = "GpuSamplerBindingLayout")]
     #[wasm_bindgen(method, getter = "sampler")]
-    fn sampler_shim(this: &GpuBindGroupLayoutEntry) -> &GpuSamplerBindingLayout;
+    fn sampler_shim(this: &GpuBindGroupLayoutEntry) -> GpuSamplerBindingLayout;
     #[cfg(feature = "GpuSamplerBindingLayout")]
     #[wasm_bindgen(method, setter = "sampler")]
     fn set_sampler_shim(this: &GpuBindGroupLayoutEntry, val: &GpuSamplerBindingLayout);
     #[cfg(feature = "GpuStorageTextureBindingLayout")]
     #[wasm_bindgen(method, getter = "storageTexture")]
-    fn storage_texture_shim(this: &GpuBindGroupLayoutEntry) -> &GpuStorageTextureBindingLayout;
+    fn storage_texture_shim(this: &GpuBindGroupLayoutEntry) -> GpuStorageTextureBindingLayout;
     #[cfg(feature = "GpuStorageTextureBindingLayout")]
     #[wasm_bindgen(method, setter = "storageTexture")]
     fn set_storage_texture_shim(
@@ -50,7 +50,7 @@ extern "C" {
     );
     #[cfg(feature = "GpuTextureBindingLayout")]
     #[wasm_bindgen(method, getter = "texture")]
-    fn texture_shim(this: &GpuBindGroupLayoutEntry) -> &GpuTextureBindingLayout;
+    fn texture_shim(this: &GpuBindGroupLayoutEntry) -> GpuTextureBindingLayout;
     #[cfg(feature = "GpuTextureBindingLayout")]
     #[wasm_bindgen(method, setter = "texture")]
     fn set_texture_shim(this: &GpuBindGroupLayoutEntry, val: &GpuTextureBindingLayout);
@@ -80,7 +80,7 @@ pub trait GpuBindGroupLayoutEntryGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn buffer(&self) -> &GpuBufferBindingLayout;
+    fn buffer(&self) -> GpuBufferBindingLayout;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuExternalTextureBindingLayout")]
     #[doc = "Get the `externalTexture` field of this object."]
@@ -89,7 +89,7 @@ pub trait GpuBindGroupLayoutEntryGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn external_texture(&self) -> &GpuExternalTextureBindingLayout;
+    fn external_texture(&self) -> GpuExternalTextureBindingLayout;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuSamplerBindingLayout")]
     #[doc = "Get the `sampler` field of this object."]
@@ -98,7 +98,7 @@ pub trait GpuBindGroupLayoutEntryGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn sampler(&self) -> &GpuSamplerBindingLayout;
+    fn sampler(&self) -> GpuSamplerBindingLayout;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuStorageTextureBindingLayout")]
     #[doc = "Get the `storageTexture` field of this object."]
@@ -107,7 +107,7 @@ pub trait GpuBindGroupLayoutEntryGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn storage_texture(&self) -> &GpuStorageTextureBindingLayout;
+    fn storage_texture(&self) -> GpuStorageTextureBindingLayout;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureBindingLayout")]
     #[doc = "Get the `texture` field of this object."]
@@ -116,7 +116,7 @@ pub trait GpuBindGroupLayoutEntryGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn texture(&self) -> &GpuTextureBindingLayout;
+    fn texture(&self) -> GpuTextureBindingLayout;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `visibility` field of this object."]
     #[doc = ""]
@@ -134,27 +134,27 @@ impl GpuBindGroupLayoutEntryGetters for GpuBindGroupLayoutEntry {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBufferBindingLayout")]
-    fn buffer(&self) -> &GpuBufferBindingLayout {
+    fn buffer(&self) -> GpuBufferBindingLayout {
         self.buffer_shim()
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuExternalTextureBindingLayout")]
-    fn external_texture(&self) -> &GpuExternalTextureBindingLayout {
+    fn external_texture(&self) -> GpuExternalTextureBindingLayout {
         self.external_texture_shim()
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuSamplerBindingLayout")]
-    fn sampler(&self) -> &GpuSamplerBindingLayout {
+    fn sampler(&self) -> GpuSamplerBindingLayout {
         self.sampler_shim()
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuStorageTextureBindingLayout")]
-    fn storage_texture(&self) -> &GpuStorageTextureBindingLayout {
+    fn storage_texture(&self) -> GpuStorageTextureBindingLayout {
         self.storage_texture_shim()
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureBindingLayout")]
-    fn texture(&self) -> &GpuTextureBindingLayout {
+    fn texture(&self) -> GpuTextureBindingLayout {
         self.texture_shim()
     }
     #[cfg(web_sys_unstable_apis)]

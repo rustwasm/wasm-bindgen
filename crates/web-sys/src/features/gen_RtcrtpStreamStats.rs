@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcrtpStreamStats`*"]
     pub type RtcrtpStreamStats;
     #[wasm_bindgen(method, getter = "id")]
-    fn id_shim(this: &RtcrtpStreamStats) -> &str;
+    fn id_shim(this: &RtcrtpStreamStats) -> String;
     #[wasm_bindgen(method, setter = "id")]
     fn set_id_shim(this: &RtcrtpStreamStats, val: &str);
     #[wasm_bindgen(method, getter = "timestamp")]
@@ -33,7 +33,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "bitrateStdDev")]
     fn set_bitrate_std_dev_shim(this: &RtcrtpStreamStats, val: f64);
     #[wasm_bindgen(method, getter = "codecId")]
-    fn codec_id_shim(this: &RtcrtpStreamStats) -> &str;
+    fn codec_id_shim(this: &RtcrtpStreamStats) -> String;
     #[wasm_bindgen(method, setter = "codecId")]
     fn set_codec_id_shim(this: &RtcrtpStreamStats, val: &str);
     #[wasm_bindgen(method, getter = "firCount")]
@@ -53,11 +53,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "isRemote")]
     fn set_is_remote_shim(this: &RtcrtpStreamStats, val: bool);
     #[wasm_bindgen(method, getter = "mediaTrackId")]
-    fn media_track_id_shim(this: &RtcrtpStreamStats) -> &str;
+    fn media_track_id_shim(this: &RtcrtpStreamStats) -> String;
     #[wasm_bindgen(method, setter = "mediaTrackId")]
     fn set_media_track_id_shim(this: &RtcrtpStreamStats, val: &str);
     #[wasm_bindgen(method, getter = "mediaType")]
-    fn media_type_shim(this: &RtcrtpStreamStats) -> &str;
+    fn media_type_shim(this: &RtcrtpStreamStats) -> String;
     #[wasm_bindgen(method, setter = "mediaType")]
     fn set_media_type_shim(this: &RtcrtpStreamStats, val: &str);
     #[wasm_bindgen(method, getter = "nackCount")]
@@ -69,15 +69,15 @@ extern "C" {
     #[wasm_bindgen(method, setter = "pliCount")]
     fn set_pli_count_shim(this: &RtcrtpStreamStats, val: u32);
     #[wasm_bindgen(method, getter = "remoteId")]
-    fn remote_id_shim(this: &RtcrtpStreamStats) -> &str;
+    fn remote_id_shim(this: &RtcrtpStreamStats) -> String;
     #[wasm_bindgen(method, setter = "remoteId")]
     fn set_remote_id_shim(this: &RtcrtpStreamStats, val: &str);
     #[wasm_bindgen(method, getter = "ssrc")]
-    fn ssrc_shim(this: &RtcrtpStreamStats) -> &str;
+    fn ssrc_shim(this: &RtcrtpStreamStats) -> String;
     #[wasm_bindgen(method, setter = "ssrc")]
     fn set_ssrc_shim(this: &RtcrtpStreamStats, val: &str);
     #[wasm_bindgen(method, getter = "transportId")]
-    fn transport_id_shim(this: &RtcrtpStreamStats) -> &str;
+    fn transport_id_shim(this: &RtcrtpStreamStats) -> String;
     #[wasm_bindgen(method, setter = "transportId")]
     fn set_transport_id_shim(this: &RtcrtpStreamStats, val: &str);
 }
@@ -88,7 +88,7 @@ pub trait RtcrtpStreamStatsGetters {
     #[doc = "Get the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcrtpStreamStats`*"]
-    fn id(&self) -> &str;
+    fn id(&self) -> String;
     #[doc = "Get the `timestamp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcrtpStreamStats`*"]
@@ -109,7 +109,7 @@ pub trait RtcrtpStreamStatsGetters {
     #[doc = "Get the `codecId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcrtpStreamStats`*"]
-    fn codec_id(&self) -> &str;
+    fn codec_id(&self) -> String;
     #[doc = "Get the `firCount` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcrtpStreamStats`*"]
@@ -129,11 +129,11 @@ pub trait RtcrtpStreamStatsGetters {
     #[doc = "Get the `mediaTrackId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcrtpStreamStats`*"]
-    fn media_track_id(&self) -> &str;
+    fn media_track_id(&self) -> String;
     #[doc = "Get the `mediaType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcrtpStreamStats`*"]
-    fn media_type(&self) -> &str;
+    fn media_type(&self) -> String;
     #[doc = "Get the `nackCount` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcrtpStreamStats`*"]
@@ -145,18 +145,18 @@ pub trait RtcrtpStreamStatsGetters {
     #[doc = "Get the `remoteId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcrtpStreamStats`*"]
-    fn remote_id(&self) -> &str;
+    fn remote_id(&self) -> String;
     #[doc = "Get the `ssrc` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcrtpStreamStats`*"]
-    fn ssrc(&self) -> &str;
+    fn ssrc(&self) -> String;
     #[doc = "Get the `transportId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcrtpStreamStats`*"]
-    fn transport_id(&self) -> &str;
+    fn transport_id(&self) -> String;
 }
 impl RtcrtpStreamStatsGetters for RtcrtpStreamStats {
-    fn id(&self) -> &str {
+    fn id(&self) -> String {
         self.id_shim()
     }
     fn timestamp(&self) -> f64 {
@@ -172,7 +172,7 @@ impl RtcrtpStreamStatsGetters for RtcrtpStreamStats {
     fn bitrate_std_dev(&self) -> f64 {
         self.bitrate_std_dev_shim()
     }
-    fn codec_id(&self) -> &str {
+    fn codec_id(&self) -> String {
         self.codec_id_shim()
     }
     fn fir_count(&self) -> u32 {
@@ -187,10 +187,10 @@ impl RtcrtpStreamStatsGetters for RtcrtpStreamStats {
     fn is_remote(&self) -> bool {
         self.is_remote_shim()
     }
-    fn media_track_id(&self) -> &str {
+    fn media_track_id(&self) -> String {
         self.media_track_id_shim()
     }
-    fn media_type(&self) -> &str {
+    fn media_type(&self) -> String {
         self.media_type_shim()
     }
     fn nack_count(&self) -> u32 {
@@ -199,13 +199,13 @@ impl RtcrtpStreamStatsGetters for RtcrtpStreamStats {
     fn pli_count(&self) -> u32 {
         self.pli_count_shim()
     }
-    fn remote_id(&self) -> &str {
+    fn remote_id(&self) -> String {
         self.remote_id_shim()
     }
-    fn ssrc(&self) -> &str {
+    fn ssrc(&self) -> String {
         self.ssrc_shim()
     }
-    fn transport_id(&self) -> &str {
+    fn transport_id(&self) -> String {
         self.transport_id_shim()
     }
 }

@@ -15,11 +15,11 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuRenderPassLayout;
     #[wasm_bindgen(method, getter = "label")]
-    fn label_shim(this: &GpuRenderPassLayout) -> &str;
+    fn label_shim(this: &GpuRenderPassLayout) -> String;
     #[wasm_bindgen(method, setter = "label")]
     fn set_label_shim(this: &GpuRenderPassLayout, val: &str);
     #[wasm_bindgen(method, getter = "colorFormats")]
-    fn color_formats_shim(this: &GpuRenderPassLayout) -> &::wasm_bindgen::JsValue;
+    fn color_formats_shim(this: &GpuRenderPassLayout) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "colorFormats")]
     fn set_color_formats_shim(this: &GpuRenderPassLayout, val: &::wasm_bindgen::JsValue);
     #[cfg(feature = "GpuTextureFormat")]
@@ -45,7 +45,7 @@ pub trait GpuRenderPassLayoutGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn label(&self) -> &str;
+    fn label(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `colorFormats` field of this object."]
     #[doc = ""]
@@ -53,7 +53,7 @@ pub trait GpuRenderPassLayoutGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn color_formats(&self) -> &::wasm_bindgen::JsValue;
+    fn color_formats(&self) -> ::js_sys::Array;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureFormat")]
     #[doc = "Get the `depthStencilFormat` field of this object."]
@@ -75,11 +75,11 @@ pub trait GpuRenderPassLayoutGetters {
 #[cfg(web_sys_unstable_apis)]
 impl GpuRenderPassLayoutGetters for GpuRenderPassLayout {
     #[cfg(web_sys_unstable_apis)]
-    fn label(&self) -> &str {
+    fn label(&self) -> String {
         self.label_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn color_formats(&self) -> &::wasm_bindgen::JsValue {
+    fn color_formats(&self) -> ::js_sys::Array {
         self.color_formats_shim()
     }
     #[cfg(web_sys_unstable_apis)]

@@ -628,6 +628,7 @@ pub struct DictionaryField {
     pub name: Ident,
     pub js_name: String,
     pub ty: Type,
+    pub return_ty: Option<Type>,
     pub is_js_value_ref_option_type: bool,
     pub required: bool,
     pub unstable: bool,
@@ -655,14 +656,24 @@ impl DictionaryField {
             ty.clone()
         };
 
-        quote! {
-            #cfg_features
-            #[wasm_bindgen(method, getter = #js_name)]
-            fn #shim_name(this: &#parent_ident) -> #ty;
+        let getter = self.return_ty.as_ref().map(|return_ty| {
+            quote! {
+                #cfg_features
+                #[wasm_bindgen(method, getter = #js_name)]
+                fn #shim_name(this: &#parent_ident) -> #return_ty;
+            }
+        });
 
+        let setter = quote! {
             #cfg_features
             #[wasm_bindgen(method, setter = #js_name)]
             fn #set_shim_name(this: &#parent_ident, val: #ty);
+        };
+
+        quote! {
+            #getter
+
+            #setter
         }
     }
 
@@ -671,11 +682,12 @@ impl DictionaryField {
         options: &Options,
         features: &BTreeSet<String>,
         cfg_features: &Option<syn::Attribute>,
-    ) -> TokenStream {
+    ) -> Option<TokenStream> {
         let DictionaryField {
             name,
             js_name,
-            ty,
+            ty: _,
+            return_ty,
             is_js_value_ref_option_type: _,
             required: _,
             unstable,
@@ -689,20 +701,29 @@ impl DictionaryField {
             &required_doc_string(options, features),
         );
 
+        let Some(return_ty) = return_ty else {
+            return None;
+        };
+
         quote! {
             #unstable_attr
             #cfg_features
             #doc_comment
             #unstable_docs
-            fn #name(&self) -> #ty;
+            fn #name(&self) -> #return_ty;
         }
+        .into()
     }
 
-    fn generate_rust_getter_impl(&self, cfg_features: &Option<syn::Attribute>) -> TokenStream {
+    fn generate_rust_getter_impl(
+        &self,
+        cfg_features: &Option<syn::Attribute>,
+    ) -> Option<TokenStream> {
         let DictionaryField {
             name,
             js_name: _,
-            ty,
+            ty: _,
+            return_ty,
             is_js_value_ref_option_type: _,
             required: _,
             unstable,
@@ -710,15 +731,19 @@ impl DictionaryField {
 
         let unstable_attr = maybe_unstable_attr(*unstable);
 
+        let Some(return_ty) = return_ty else {
+            return None;
+        };
         let shim_name = self.shim_name();
 
         quote! {
             #unstable_attr
             #cfg_features
-            fn #name(&self) -> #ty {
+            fn #name(&self) -> #return_ty {
                 self.#shim_name()
             }
         }
+        .into()
     }
 
     fn generate_rust_setter_impl(
@@ -731,6 +756,7 @@ impl DictionaryField {
             name,
             js_name,
             ty,
+            return_ty: _,
             is_js_value_ref_option_type: _,
             required: _,
             unstable,

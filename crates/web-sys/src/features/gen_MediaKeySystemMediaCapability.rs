@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemMediaCapability`*"]
     pub type MediaKeySystemMediaCapability;
     #[wasm_bindgen(method, getter = "contentType")]
-    fn content_type_shim(this: &MediaKeySystemMediaCapability) -> &str;
+    fn content_type_shim(this: &MediaKeySystemMediaCapability) -> String;
     #[wasm_bindgen(method, setter = "contentType")]
     fn set_content_type_shim(this: &MediaKeySystemMediaCapability, val: &str);
     #[wasm_bindgen(method, getter = "robustness")]
-    fn robustness_shim(this: &MediaKeySystemMediaCapability) -> &str;
+    fn robustness_shim(this: &MediaKeySystemMediaCapability) -> String;
     #[wasm_bindgen(method, setter = "robustness")]
     fn set_robustness_shim(this: &MediaKeySystemMediaCapability, val: &str);
 }
@@ -26,17 +26,17 @@ pub trait MediaKeySystemMediaCapabilityGetters {
     #[doc = "Get the `contentType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemMediaCapability`*"]
-    fn content_type(&self) -> &str;
+    fn content_type(&self) -> String;
     #[doc = "Get the `robustness` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemMediaCapability`*"]
-    fn robustness(&self) -> &str;
+    fn robustness(&self) -> String;
 }
 impl MediaKeySystemMediaCapabilityGetters for MediaKeySystemMediaCapability {
-    fn content_type(&self) -> &str {
+    fn content_type(&self) -> String {
         self.content_type_shim()
     }
-    fn robustness(&self) -> &str {
+    fn robustness(&self) -> String {
         self.robustness_shim()
     }
 }

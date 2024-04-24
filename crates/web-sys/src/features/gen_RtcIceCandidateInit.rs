@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateInit`*"]
     pub type RtcIceCandidateInit;
     #[wasm_bindgen(method, getter = "candidate")]
-    fn candidate_shim(this: &RtcIceCandidateInit) -> &str;
+    fn candidate_shim(this: &RtcIceCandidateInit) -> String;
     #[wasm_bindgen(method, setter = "candidate")]
     fn set_candidate_shim(this: &RtcIceCandidateInit, val: &str);
     #[wasm_bindgen(method, getter = "sdpMLineIndex")]
@@ -19,7 +19,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "sdpMLineIndex")]
     fn set_sdp_m_line_index_shim(this: &RtcIceCandidateInit, val: Option<u16>);
     #[wasm_bindgen(method, getter = "sdpMid")]
-    fn sdp_mid_shim(this: &RtcIceCandidateInit) -> Option<&str>;
+    fn sdp_mid_shim(this: &RtcIceCandidateInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "sdpMid")]
     fn set_sdp_mid_shim(this: &RtcIceCandidateInit, val: Option<&str>);
 }
@@ -30,7 +30,7 @@ pub trait RtcIceCandidateInitGetters {
     #[doc = "Get the `candidate` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateInit`*"]
-    fn candidate(&self) -> &str;
+    fn candidate(&self) -> String;
     #[doc = "Get the `sdpMLineIndex` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateInit`*"]
@@ -38,16 +38,16 @@ pub trait RtcIceCandidateInitGetters {
     #[doc = "Get the `sdpMid` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateInit`*"]
-    fn sdp_mid(&self) -> Option<&str>;
+    fn sdp_mid(&self) -> Option<String>;
 }
 impl RtcIceCandidateInitGetters for RtcIceCandidateInit {
-    fn candidate(&self) -> &str {
+    fn candidate(&self) -> String {
         self.candidate_shim()
     }
     fn sdp_m_line_index(&self) -> Option<u16> {
         self.sdp_m_line_index_shim()
     }
-    fn sdp_mid(&self) -> Option<&str> {
+    fn sdp_mid(&self) -> Option<String> {
         self.sdp_mid_shim()
     }
 }

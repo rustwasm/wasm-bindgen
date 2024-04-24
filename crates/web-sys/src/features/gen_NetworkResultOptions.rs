@@ -15,11 +15,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "broadcast")]
     fn set_broadcast_shim(this: &NetworkResultOptions, val: bool);
     #[wasm_bindgen(method, getter = "curExternalIfname")]
-    fn cur_external_ifname_shim(this: &NetworkResultOptions) -> &str;
+    fn cur_external_ifname_shim(this: &NetworkResultOptions) -> String;
     #[wasm_bindgen(method, setter = "curExternalIfname")]
     fn set_cur_external_ifname_shim(this: &NetworkResultOptions, val: &str);
     #[wasm_bindgen(method, getter = "curInternalIfname")]
-    fn cur_internal_ifname_shim(this: &NetworkResultOptions) -> &str;
+    fn cur_internal_ifname_shim(this: &NetworkResultOptions) -> String;
     #[wasm_bindgen(method, setter = "curInternalIfname")]
     fn set_cur_internal_ifname_shim(this: &NetworkResultOptions, val: &str);
     #[wasm_bindgen(method, getter = "dns1")]
@@ -27,7 +27,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "dns1")]
     fn set_dns1_shim(this: &NetworkResultOptions, val: i32);
     #[wasm_bindgen(method, getter = "dns1_str")]
-    fn dns1_str_shim(this: &NetworkResultOptions) -> &str;
+    fn dns1_str_shim(this: &NetworkResultOptions) -> String;
     #[wasm_bindgen(method, setter = "dns1_str")]
     fn set_dns1_str_shim(this: &NetworkResultOptions, val: &str);
     #[wasm_bindgen(method, getter = "dns2")]
@@ -35,7 +35,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "dns2")]
     fn set_dns2_shim(this: &NetworkResultOptions, val: i32);
     #[wasm_bindgen(method, getter = "dns2_str")]
-    fn dns2_str_shim(this: &NetworkResultOptions) -> &str;
+    fn dns2_str_shim(this: &NetworkResultOptions) -> String;
     #[wasm_bindgen(method, setter = "dns2_str")]
     fn set_dns2_str_shim(this: &NetworkResultOptions, val: &str);
     #[wasm_bindgen(method, getter = "enable")]
@@ -47,7 +47,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "error")]
     fn set_error_shim(this: &NetworkResultOptions, val: bool);
     #[wasm_bindgen(method, getter = "flag")]
-    fn flag_shim(this: &NetworkResultOptions) -> &str;
+    fn flag_shim(this: &NetworkResultOptions) -> String;
     #[wasm_bindgen(method, setter = "flag")]
     fn set_flag_shim(this: &NetworkResultOptions, val: &str);
     #[wasm_bindgen(method, getter = "gateway")]
@@ -55,7 +55,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "gateway")]
     fn set_gateway_shim(this: &NetworkResultOptions, val: i32);
     #[wasm_bindgen(method, getter = "gateway_str")]
-    fn gateway_str_shim(this: &NetworkResultOptions) -> &str;
+    fn gateway_str_shim(this: &NetworkResultOptions) -> String;
     #[wasm_bindgen(method, setter = "gateway_str")]
     fn set_gateway_str_shim(this: &NetworkResultOptions, val: &str);
     #[wasm_bindgen(method, getter = "id")]
@@ -63,11 +63,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "id")]
     fn set_id_shim(this: &NetworkResultOptions, val: i32);
     #[wasm_bindgen(method, getter = "interfaceList")]
-    fn interface_list_shim(this: &NetworkResultOptions) -> &::wasm_bindgen::JsValue;
+    fn interface_list_shim(this: &NetworkResultOptions) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "interfaceList")]
     fn set_interface_list_shim(this: &NetworkResultOptions, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "ipAddr")]
-    fn ip_addr_shim(this: &NetworkResultOptions) -> &str;
+    fn ip_addr_shim(this: &NetworkResultOptions) -> String;
     #[wasm_bindgen(method, setter = "ipAddr")]
     fn set_ip_addr_shim(this: &NetworkResultOptions, val: &str);
     #[wasm_bindgen(method, getter = "ipaddr")]
@@ -75,7 +75,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "ipaddr")]
     fn set_ipaddr_shim(this: &NetworkResultOptions, val: i32);
     #[wasm_bindgen(method, getter = "ipaddr_str")]
-    fn ipaddr_str_shim(this: &NetworkResultOptions) -> &str;
+    fn ipaddr_str_shim(this: &NetworkResultOptions) -> String;
     #[wasm_bindgen(method, setter = "ipaddr_str")]
     fn set_ipaddr_str_shim(this: &NetworkResultOptions, val: &str);
     #[wasm_bindgen(method, getter = "lease")]
@@ -83,7 +83,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "lease")]
     fn set_lease_shim(this: &NetworkResultOptions, val: i32);
     #[wasm_bindgen(method, getter = "macAddr")]
-    fn mac_addr_shim(this: &NetworkResultOptions) -> &str;
+    fn mac_addr_shim(this: &NetworkResultOptions) -> String;
     #[wasm_bindgen(method, setter = "macAddr")]
     fn set_mac_addr_shim(this: &NetworkResultOptions, val: &str);
     #[wasm_bindgen(method, getter = "mask")]
@@ -91,11 +91,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "mask")]
     fn set_mask_shim(this: &NetworkResultOptions, val: i32);
     #[wasm_bindgen(method, getter = "mask_str")]
-    fn mask_str_shim(this: &NetworkResultOptions) -> &str;
+    fn mask_str_shim(this: &NetworkResultOptions) -> String;
     #[wasm_bindgen(method, setter = "mask_str")]
     fn set_mask_str_shim(this: &NetworkResultOptions, val: &str);
     #[wasm_bindgen(method, getter = "netId")]
-    fn net_id_shim(this: &NetworkResultOptions) -> &str;
+    fn net_id_shim(this: &NetworkResultOptions) -> String;
     #[wasm_bindgen(method, setter = "netId")]
     fn set_net_id_shim(this: &NetworkResultOptions, val: &str);
     #[wasm_bindgen(method, getter = "prefixLength")]
@@ -103,11 +103,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "prefixLength")]
     fn set_prefix_length_shim(this: &NetworkResultOptions, val: i32);
     #[wasm_bindgen(method, getter = "reason")]
-    fn reason_shim(this: &NetworkResultOptions) -> &str;
+    fn reason_shim(this: &NetworkResultOptions) -> String;
     #[wasm_bindgen(method, setter = "reason")]
     fn set_reason_shim(this: &NetworkResultOptions, val: &str);
     #[wasm_bindgen(method, getter = "reply")]
-    fn reply_shim(this: &NetworkResultOptions) -> &str;
+    fn reply_shim(this: &NetworkResultOptions) -> String;
     #[wasm_bindgen(method, setter = "reply")]
     fn set_reply_shim(this: &NetworkResultOptions, val: &str);
     #[wasm_bindgen(method, getter = "result")]
@@ -119,7 +119,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "resultCode")]
     fn set_result_code_shim(this: &NetworkResultOptions, val: i32);
     #[wasm_bindgen(method, getter = "resultReason")]
-    fn result_reason_shim(this: &NetworkResultOptions) -> &str;
+    fn result_reason_shim(this: &NetworkResultOptions) -> String;
     #[wasm_bindgen(method, setter = "resultReason")]
     fn set_result_reason_shim(this: &NetworkResultOptions, val: &str);
     #[wasm_bindgen(method, getter = "ret")]
@@ -127,7 +127,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "ret")]
     fn set_ret_shim(this: &NetworkResultOptions, val: bool);
     #[wasm_bindgen(method, getter = "route")]
-    fn route_shim(this: &NetworkResultOptions) -> &str;
+    fn route_shim(this: &NetworkResultOptions) -> String;
     #[wasm_bindgen(method, setter = "route")]
     fn set_route_shim(this: &NetworkResultOptions, val: &str);
     #[wasm_bindgen(method, getter = "server")]
@@ -135,7 +135,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "server")]
     fn set_server_shim(this: &NetworkResultOptions, val: i32);
     #[wasm_bindgen(method, getter = "server_str")]
-    fn server_str_shim(this: &NetworkResultOptions) -> &str;
+    fn server_str_shim(this: &NetworkResultOptions) -> String;
     #[wasm_bindgen(method, setter = "server_str")]
     fn set_server_str_shim(this: &NetworkResultOptions, val: &str);
     #[wasm_bindgen(method, getter = "success")]
@@ -143,11 +143,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "success")]
     fn set_success_shim(this: &NetworkResultOptions, val: bool);
     #[wasm_bindgen(method, getter = "topic")]
-    fn topic_shim(this: &NetworkResultOptions) -> &str;
+    fn topic_shim(this: &NetworkResultOptions) -> String;
     #[wasm_bindgen(method, setter = "topic")]
     fn set_topic_shim(this: &NetworkResultOptions, val: &str);
     #[wasm_bindgen(method, getter = "vendor_str")]
-    fn vendor_str_shim(this: &NetworkResultOptions) -> &str;
+    fn vendor_str_shim(this: &NetworkResultOptions) -> String;
     #[wasm_bindgen(method, setter = "vendor_str")]
     fn set_vendor_str_shim(this: &NetworkResultOptions, val: &str);
 }
@@ -162,11 +162,11 @@ pub trait NetworkResultOptionsGetters {
     #[doc = "Get the `curExternalIfname` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
-    fn cur_external_ifname(&self) -> &str;
+    fn cur_external_ifname(&self) -> String;
     #[doc = "Get the `curInternalIfname` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
-    fn cur_internal_ifname(&self) -> &str;
+    fn cur_internal_ifname(&self) -> String;
     #[doc = "Get the `dns1` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
@@ -174,7 +174,7 @@ pub trait NetworkResultOptionsGetters {
     #[doc = "Get the `dns1_str` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
-    fn dns1_str(&self) -> &str;
+    fn dns1_str(&self) -> String;
     #[doc = "Get the `dns2` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
@@ -182,7 +182,7 @@ pub trait NetworkResultOptionsGetters {
     #[doc = "Get the `dns2_str` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
-    fn dns2_str(&self) -> &str;
+    fn dns2_str(&self) -> String;
     #[doc = "Get the `enable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
@@ -194,7 +194,7 @@ pub trait NetworkResultOptionsGetters {
     #[doc = "Get the `flag` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
-    fn flag(&self) -> &str;
+    fn flag(&self) -> String;
     #[doc = "Get the `gateway` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
@@ -202,7 +202,7 @@ pub trait NetworkResultOptionsGetters {
     #[doc = "Get the `gateway_str` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
-    fn gateway_str(&self) -> &str;
+    fn gateway_str(&self) -> String;
     #[doc = "Get the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
@@ -210,11 +210,11 @@ pub trait NetworkResultOptionsGetters {
     #[doc = "Get the `interfaceList` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
-    fn interface_list(&self) -> &::wasm_bindgen::JsValue;
+    fn interface_list(&self) -> ::js_sys::Array;
     #[doc = "Get the `ipAddr` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
-    fn ip_addr(&self) -> &str;
+    fn ip_addr(&self) -> String;
     #[doc = "Get the `ipaddr` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
@@ -222,7 +222,7 @@ pub trait NetworkResultOptionsGetters {
     #[doc = "Get the `ipaddr_str` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
-    fn ipaddr_str(&self) -> &str;
+    fn ipaddr_str(&self) -> String;
     #[doc = "Get the `lease` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
@@ -230,7 +230,7 @@ pub trait NetworkResultOptionsGetters {
     #[doc = "Get the `macAddr` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
-    fn mac_addr(&self) -> &str;
+    fn mac_addr(&self) -> String;
     #[doc = "Get the `mask` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
@@ -238,11 +238,11 @@ pub trait NetworkResultOptionsGetters {
     #[doc = "Get the `mask_str` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
-    fn mask_str(&self) -> &str;
+    fn mask_str(&self) -> String;
     #[doc = "Get the `netId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
-    fn net_id(&self) -> &str;
+    fn net_id(&self) -> String;
     #[doc = "Get the `prefixLength` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
@@ -250,11 +250,11 @@ pub trait NetworkResultOptionsGetters {
     #[doc = "Get the `reason` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
-    fn reason(&self) -> &str;
+    fn reason(&self) -> String;
     #[doc = "Get the `reply` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
-    fn reply(&self) -> &str;
+    fn reply(&self) -> String;
     #[doc = "Get the `result` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
@@ -266,7 +266,7 @@ pub trait NetworkResultOptionsGetters {
     #[doc = "Get the `resultReason` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
-    fn result_reason(&self) -> &str;
+    fn result_reason(&self) -> String;
     #[doc = "Get the `ret` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
@@ -274,7 +274,7 @@ pub trait NetworkResultOptionsGetters {
     #[doc = "Get the `route` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
-    fn route(&self) -> &str;
+    fn route(&self) -> String;
     #[doc = "Get the `server` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
@@ -282,7 +282,7 @@ pub trait NetworkResultOptionsGetters {
     #[doc = "Get the `server_str` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
-    fn server_str(&self) -> &str;
+    fn server_str(&self) -> String;
     #[doc = "Get the `success` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
@@ -290,32 +290,32 @@ pub trait NetworkResultOptionsGetters {
     #[doc = "Get the `topic` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
-    fn topic(&self) -> &str;
+    fn topic(&self) -> String;
     #[doc = "Get the `vendor_str` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkResultOptions`*"]
-    fn vendor_str(&self) -> &str;
+    fn vendor_str(&self) -> String;
 }
 impl NetworkResultOptionsGetters for NetworkResultOptions {
     fn broadcast(&self) -> bool {
         self.broadcast_shim()
     }
-    fn cur_external_ifname(&self) -> &str {
+    fn cur_external_ifname(&self) -> String {
         self.cur_external_ifname_shim()
     }
-    fn cur_internal_ifname(&self) -> &str {
+    fn cur_internal_ifname(&self) -> String {
         self.cur_internal_ifname_shim()
     }
     fn dns1(&self) -> i32 {
         self.dns1_shim()
     }
-    fn dns1_str(&self) -> &str {
+    fn dns1_str(&self) -> String {
         self.dns1_str_shim()
     }
     fn dns2(&self) -> i32 {
         self.dns2_shim()
     }
-    fn dns2_str(&self) -> &str {
+    fn dns2_str(&self) -> String {
         self.dns2_str_shim()
     }
     fn enable(&self) -> bool {
@@ -324,52 +324,52 @@ impl NetworkResultOptionsGetters for NetworkResultOptions {
     fn error(&self) -> bool {
         self.error_shim()
     }
-    fn flag(&self) -> &str {
+    fn flag(&self) -> String {
         self.flag_shim()
     }
     fn gateway(&self) -> i32 {
         self.gateway_shim()
     }
-    fn gateway_str(&self) -> &str {
+    fn gateway_str(&self) -> String {
         self.gateway_str_shim()
     }
     fn id(&self) -> i32 {
         self.id_shim()
     }
-    fn interface_list(&self) -> &::wasm_bindgen::JsValue {
+    fn interface_list(&self) -> ::js_sys::Array {
         self.interface_list_shim()
     }
-    fn ip_addr(&self) -> &str {
+    fn ip_addr(&self) -> String {
         self.ip_addr_shim()
     }
     fn ipaddr(&self) -> i32 {
         self.ipaddr_shim()
     }
-    fn ipaddr_str(&self) -> &str {
+    fn ipaddr_str(&self) -> String {
         self.ipaddr_str_shim()
     }
     fn lease(&self) -> i32 {
         self.lease_shim()
     }
-    fn mac_addr(&self) -> &str {
+    fn mac_addr(&self) -> String {
         self.mac_addr_shim()
     }
     fn mask(&self) -> i32 {
         self.mask_shim()
     }
-    fn mask_str(&self) -> &str {
+    fn mask_str(&self) -> String {
         self.mask_str_shim()
     }
-    fn net_id(&self) -> &str {
+    fn net_id(&self) -> String {
         self.net_id_shim()
     }
     fn prefix_length(&self) -> i32 {
         self.prefix_length_shim()
     }
-    fn reason(&self) -> &str {
+    fn reason(&self) -> String {
         self.reason_shim()
     }
-    fn reply(&self) -> &str {
+    fn reply(&self) -> String {
         self.reply_shim()
     }
     fn result(&self) -> bool {
@@ -378,28 +378,28 @@ impl NetworkResultOptionsGetters for NetworkResultOptions {
     fn result_code(&self) -> i32 {
         self.result_code_shim()
     }
-    fn result_reason(&self) -> &str {
+    fn result_reason(&self) -> String {
         self.result_reason_shim()
     }
     fn ret(&self) -> bool {
         self.ret_shim()
     }
-    fn route(&self) -> &str {
+    fn route(&self) -> String {
         self.route_shim()
     }
     fn server(&self) -> i32 {
         self.server_shim()
     }
-    fn server_str(&self) -> &str {
+    fn server_str(&self) -> String {
         self.server_str_shim()
     }
     fn success(&self) -> bool {
         self.success_shim()
     }
-    fn topic(&self) -> &str {
+    fn topic(&self) -> String {
         self.topic_shim()
     }
-    fn vendor_str(&self) -> &str {
+    fn vendor_str(&self) -> String {
         self.vendor_str_shim()
     }
 }

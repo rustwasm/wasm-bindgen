@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ConsoleCounterError`*"]
     pub type ConsoleCounterError;
     #[wasm_bindgen(method, getter = "error")]
-    fn error_shim(this: &ConsoleCounterError) -> &str;
+    fn error_shim(this: &ConsoleCounterError) -> String;
     #[wasm_bindgen(method, setter = "error")]
     fn set_error_shim(this: &ConsoleCounterError, val: &str);
     #[wasm_bindgen(method, getter = "label")]
-    fn label_shim(this: &ConsoleCounterError) -> &str;
+    fn label_shim(this: &ConsoleCounterError) -> String;
     #[wasm_bindgen(method, setter = "label")]
     fn set_label_shim(this: &ConsoleCounterError, val: &str);
 }
@@ -26,17 +26,17 @@ pub trait ConsoleCounterErrorGetters {
     #[doc = "Get the `error` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleCounterError`*"]
-    fn error(&self) -> &str;
+    fn error(&self) -> String;
     #[doc = "Get the `label` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleCounterError`*"]
-    fn label(&self) -> &str;
+    fn label(&self) -> String;
 }
 impl ConsoleCounterErrorGetters for ConsoleCounterError {
-    fn error(&self) -> &str {
+    fn error(&self) -> String {
         self.error_shim()
     }
-    fn label(&self) -> &str {
+    fn label(&self) -> String {
         self.label_shim()
     }
 }

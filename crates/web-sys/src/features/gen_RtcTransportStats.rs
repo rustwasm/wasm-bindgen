@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcTransportStats`*"]
     pub type RtcTransportStats;
     #[wasm_bindgen(method, getter = "id")]
-    fn id_shim(this: &RtcTransportStats) -> &str;
+    fn id_shim(this: &RtcTransportStats) -> String;
     #[wasm_bindgen(method, setter = "id")]
     fn set_id_shim(this: &RtcTransportStats, val: &str);
     #[wasm_bindgen(method, getter = "timestamp")]
@@ -40,7 +40,7 @@ pub trait RtcTransportStatsGetters {
     #[doc = "Get the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcTransportStats`*"]
-    fn id(&self) -> &str;
+    fn id(&self) -> String;
     #[doc = "Get the `timestamp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcTransportStats`*"]
@@ -60,7 +60,7 @@ pub trait RtcTransportStatsGetters {
     fn bytes_sent(&self) -> u32;
 }
 impl RtcTransportStatsGetters for RtcTransportStats {
-    fn id(&self) -> &str {
+    fn id(&self) -> String {
         self.id_shim()
     }
     fn timestamp(&self) -> f64 {

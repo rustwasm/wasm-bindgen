@@ -35,12 +35,12 @@ extern "C" {
     #[wasm_bindgen(method, setter = "elapsedTime")]
     fn set_elapsed_time_shim(this: &SpeechSynthesisEventInit, val: f32);
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &SpeechSynthesisEventInit) -> &str;
+    fn name_shim(this: &SpeechSynthesisEventInit) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &SpeechSynthesisEventInit, val: &str);
     #[cfg(feature = "SpeechSynthesisUtterance")]
     #[wasm_bindgen(method, getter = "utterance")]
-    fn utterance_shim(this: &SpeechSynthesisEventInit) -> &SpeechSynthesisUtterance;
+    fn utterance_shim(this: &SpeechSynthesisEventInit) -> SpeechSynthesisUtterance;
     #[cfg(feature = "SpeechSynthesisUtterance")]
     #[wasm_bindgen(method, setter = "utterance")]
     fn set_utterance_shim(this: &SpeechSynthesisEventInit, val: &SpeechSynthesisUtterance);
@@ -76,12 +76,12 @@ pub trait SpeechSynthesisEventInitGetters {
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisEventInit`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
     #[cfg(feature = "SpeechSynthesisUtterance")]
     #[doc = "Get the `utterance` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisEventInit`, `SpeechSynthesisUtterance`*"]
-    fn utterance(&self) -> &SpeechSynthesisUtterance;
+    fn utterance(&self) -> SpeechSynthesisUtterance;
 }
 impl SpeechSynthesisEventInitGetters for SpeechSynthesisEventInit {
     fn bubbles(&self) -> bool {
@@ -102,11 +102,11 @@ impl SpeechSynthesisEventInitGetters for SpeechSynthesisEventInit {
     fn elapsed_time(&self) -> f32 {
         self.elapsed_time_shim()
     }
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
     #[cfg(feature = "SpeechSynthesisUtterance")]
-    fn utterance(&self) -> &SpeechSynthesisUtterance {
+    fn utterance(&self) -> SpeechSynthesisUtterance {
         self.utterance_shim()
     }
 }

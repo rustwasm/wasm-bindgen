@@ -29,7 +29,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "error")]
     fn set_error_shim(this: &SpeechRecognitionErrorInit, val: SpeechRecognitionErrorCode);
     #[wasm_bindgen(method, getter = "message")]
-    fn message_shim(this: &SpeechRecognitionErrorInit) -> &str;
+    fn message_shim(this: &SpeechRecognitionErrorInit) -> String;
     #[wasm_bindgen(method, setter = "message")]
     fn set_message_shim(this: &SpeechRecognitionErrorInit, val: &str);
 }
@@ -57,7 +57,7 @@ pub trait SpeechRecognitionErrorInitGetters {
     #[doc = "Get the `message` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionErrorInit`*"]
-    fn message(&self) -> &str;
+    fn message(&self) -> String;
 }
 impl SpeechRecognitionErrorInitGetters for SpeechRecognitionErrorInit {
     fn bubbles(&self) -> bool {
@@ -73,7 +73,7 @@ impl SpeechRecognitionErrorInitGetters for SpeechRecognitionErrorInit {
     fn error(&self) -> SpeechRecognitionErrorCode {
         self.error_shim()
     }
-    fn message(&self) -> &str {
+    fn message(&self) -> String {
         self.message_shim()
     }
 }

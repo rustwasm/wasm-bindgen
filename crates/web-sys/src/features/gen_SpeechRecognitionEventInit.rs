@@ -24,12 +24,12 @@ extern "C" {
     fn set_composed_shim(this: &SpeechRecognitionEventInit, val: bool);
     #[cfg(feature = "Document")]
     #[wasm_bindgen(method, getter = "emma")]
-    fn emma_shim(this: &SpeechRecognitionEventInit) -> Option<&Document>;
+    fn emma_shim(this: &SpeechRecognitionEventInit) -> Option<Document>;
     #[cfg(feature = "Document")]
     #[wasm_bindgen(method, setter = "emma")]
     fn set_emma_shim(this: &SpeechRecognitionEventInit, val: Option<&Document>);
     #[wasm_bindgen(method, getter = "interpretation")]
-    fn interpretation_shim(this: &SpeechRecognitionEventInit) -> &::wasm_bindgen::JsValue;
+    fn interpretation_shim(this: &SpeechRecognitionEventInit) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "interpretation")]
     fn set_interpretation_shim(this: &SpeechRecognitionEventInit, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "resultIndex")]
@@ -38,7 +38,7 @@ extern "C" {
     fn set_result_index_shim(this: &SpeechRecognitionEventInit, val: u32);
     #[cfg(feature = "SpeechRecognitionResultList")]
     #[wasm_bindgen(method, getter = "results")]
-    fn results_shim(this: &SpeechRecognitionEventInit) -> Option<&SpeechRecognitionResultList>;
+    fn results_shim(this: &SpeechRecognitionEventInit) -> Option<SpeechRecognitionResultList>;
     #[cfg(feature = "SpeechRecognitionResultList")]
     #[wasm_bindgen(method, setter = "results")]
     fn set_results_shim(
@@ -66,11 +66,11 @@ pub trait SpeechRecognitionEventInitGetters {
     #[doc = "Get the `emma` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`, `SpeechRecognitionEventInit`*"]
-    fn emma(&self) -> Option<&Document>;
+    fn emma(&self) -> Option<Document>;
     #[doc = "Get the `interpretation` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEventInit`*"]
-    fn interpretation(&self) -> &::wasm_bindgen::JsValue;
+    fn interpretation(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `resultIndex` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEventInit`*"]
@@ -79,7 +79,7 @@ pub trait SpeechRecognitionEventInitGetters {
     #[doc = "Get the `results` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEventInit`, `SpeechRecognitionResultList`*"]
-    fn results(&self) -> Option<&SpeechRecognitionResultList>;
+    fn results(&self) -> Option<SpeechRecognitionResultList>;
 }
 impl SpeechRecognitionEventInitGetters for SpeechRecognitionEventInit {
     fn bubbles(&self) -> bool {
@@ -92,17 +92,17 @@ impl SpeechRecognitionEventInitGetters for SpeechRecognitionEventInit {
         self.composed_shim()
     }
     #[cfg(feature = "Document")]
-    fn emma(&self) -> Option<&Document> {
+    fn emma(&self) -> Option<Document> {
         self.emma_shim()
     }
-    fn interpretation(&self) -> &::wasm_bindgen::JsValue {
+    fn interpretation(&self) -> ::wasm_bindgen::JsValue {
         self.interpretation_shim()
     }
     fn result_index(&self) -> u32 {
         self.result_index_shim()
     }
     #[cfg(feature = "SpeechRecognitionResultList")]
-    fn results(&self) -> Option<&SpeechRecognitionResultList> {
+    fn results(&self) -> Option<SpeechRecognitionResultList> {
         self.results_shim()
     }
 }

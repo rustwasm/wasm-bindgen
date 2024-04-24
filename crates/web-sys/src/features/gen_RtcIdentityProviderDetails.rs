@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
     pub type RtcIdentityProviderDetails;
     #[wasm_bindgen(method, getter = "domain")]
-    fn domain_shim(this: &RtcIdentityProviderDetails) -> &str;
+    fn domain_shim(this: &RtcIdentityProviderDetails) -> String;
     #[wasm_bindgen(method, setter = "domain")]
     fn set_domain_shim(this: &RtcIdentityProviderDetails, val: &str);
     #[wasm_bindgen(method, getter = "protocol")]
-    fn protocol_shim(this: &RtcIdentityProviderDetails) -> &str;
+    fn protocol_shim(this: &RtcIdentityProviderDetails) -> String;
     #[wasm_bindgen(method, setter = "protocol")]
     fn set_protocol_shim(this: &RtcIdentityProviderDetails, val: &str);
 }
@@ -26,17 +26,17 @@ pub trait RtcIdentityProviderDetailsGetters {
     #[doc = "Get the `domain` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
-    fn domain(&self) -> &str;
+    fn domain(&self) -> String;
     #[doc = "Get the `protocol` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
-    fn protocol(&self) -> &str;
+    fn protocol(&self) -> String;
 }
 impl RtcIdentityProviderDetailsGetters for RtcIdentityProviderDetails {
-    fn domain(&self) -> &str {
+    fn domain(&self) -> String {
         self.domain_shim()
     }
-    fn protocol(&self) -> &str {
+    fn protocol(&self) -> String {
         self.protocol_shim()
     }
 }

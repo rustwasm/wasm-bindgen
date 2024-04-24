@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]
     pub type SignResponse;
     #[wasm_bindgen(method, getter = "clientData")]
-    fn client_data_shim(this: &SignResponse) -> &str;
+    fn client_data_shim(this: &SignResponse) -> String;
     #[wasm_bindgen(method, setter = "clientData")]
     fn set_client_data_shim(this: &SignResponse, val: &str);
     #[wasm_bindgen(method, getter = "errorCode")]
@@ -19,15 +19,15 @@ extern "C" {
     #[wasm_bindgen(method, setter = "errorCode")]
     fn set_error_code_shim(this: &SignResponse, val: Option<u16>);
     #[wasm_bindgen(method, getter = "errorMessage")]
-    fn error_message_shim(this: &SignResponse) -> Option<&str>;
+    fn error_message_shim(this: &SignResponse) -> Option<String>;
     #[wasm_bindgen(method, setter = "errorMessage")]
     fn set_error_message_shim(this: &SignResponse, val: Option<&str>);
     #[wasm_bindgen(method, getter = "keyHandle")]
-    fn key_handle_shim(this: &SignResponse) -> &str;
+    fn key_handle_shim(this: &SignResponse) -> String;
     #[wasm_bindgen(method, setter = "keyHandle")]
     fn set_key_handle_shim(this: &SignResponse, val: &str);
     #[wasm_bindgen(method, getter = "signatureData")]
-    fn signature_data_shim(this: &SignResponse) -> &str;
+    fn signature_data_shim(this: &SignResponse) -> String;
     #[wasm_bindgen(method, setter = "signatureData")]
     fn set_signature_data_shim(this: &SignResponse, val: &str);
 }
@@ -38,7 +38,7 @@ pub trait SignResponseGetters {
     #[doc = "Get the `clientData` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]
-    fn client_data(&self) -> &str;
+    fn client_data(&self) -> String;
     #[doc = "Get the `errorCode` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]
@@ -46,30 +46,30 @@ pub trait SignResponseGetters {
     #[doc = "Get the `errorMessage` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]
-    fn error_message(&self) -> Option<&str>;
+    fn error_message(&self) -> Option<String>;
     #[doc = "Get the `keyHandle` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]
-    fn key_handle(&self) -> &str;
+    fn key_handle(&self) -> String;
     #[doc = "Get the `signatureData` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]
-    fn signature_data(&self) -> &str;
+    fn signature_data(&self) -> String;
 }
 impl SignResponseGetters for SignResponse {
-    fn client_data(&self) -> &str {
+    fn client_data(&self) -> String {
         self.client_data_shim()
     }
     fn error_code(&self) -> Option<u16> {
         self.error_code_shim()
     }
-    fn error_message(&self) -> Option<&str> {
+    fn error_message(&self) -> Option<String> {
         self.error_message_shim()
     }
-    fn key_handle(&self) -> &str {
+    fn key_handle(&self) -> String {
         self.key_handle_shim()
     }
-    fn signature_data(&self) -> &str {
+    fn signature_data(&self) -> String {
         self.signature_data_shim()
     }
 }

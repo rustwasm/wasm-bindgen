@@ -24,7 +24,7 @@ extern "C" {
     fn set_composed_shim(this: &RtcPeerConnectionIceEventInit, val: bool);
     #[cfg(feature = "RtcIceCandidate")]
     #[wasm_bindgen(method, getter = "candidate")]
-    fn candidate_shim(this: &RtcPeerConnectionIceEventInit) -> Option<&RtcIceCandidate>;
+    fn candidate_shim(this: &RtcPeerConnectionIceEventInit) -> Option<RtcIceCandidate>;
     #[cfg(feature = "RtcIceCandidate")]
     #[wasm_bindgen(method, setter = "candidate")]
     fn set_candidate_shim(this: &RtcPeerConnectionIceEventInit, val: Option<&RtcIceCandidate>);
@@ -49,7 +49,7 @@ pub trait RtcPeerConnectionIceEventInitGetters {
     #[doc = "Get the `candidate` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidate`, `RtcPeerConnectionIceEventInit`*"]
-    fn candidate(&self) -> Option<&RtcIceCandidate>;
+    fn candidate(&self) -> Option<RtcIceCandidate>;
 }
 impl RtcPeerConnectionIceEventInitGetters for RtcPeerConnectionIceEventInit {
     fn bubbles(&self) -> bool {
@@ -62,7 +62,7 @@ impl RtcPeerConnectionIceEventInitGetters for RtcPeerConnectionIceEventInit {
         self.composed_shim()
     }
     #[cfg(feature = "RtcIceCandidate")]
-    fn candidate(&self) -> Option<&RtcIceCandidate> {
+    fn candidate(&self) -> Option<RtcIceCandidate> {
         self.candidate_shim()
     }
 }

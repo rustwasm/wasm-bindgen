@@ -23,11 +23,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &UdpMessageEventInit, val: bool);
     #[wasm_bindgen(method, getter = "data")]
-    fn data_shim(this: &UdpMessageEventInit) -> &::wasm_bindgen::JsValue;
+    fn data_shim(this: &UdpMessageEventInit) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "data")]
     fn set_data_shim(this: &UdpMessageEventInit, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "remoteAddress")]
-    fn remote_address_shim(this: &UdpMessageEventInit) -> &str;
+    fn remote_address_shim(this: &UdpMessageEventInit) -> String;
     #[wasm_bindgen(method, setter = "remoteAddress")]
     fn set_remote_address_shim(this: &UdpMessageEventInit, val: &str);
     #[wasm_bindgen(method, getter = "remotePort")]
@@ -54,11 +54,11 @@ pub trait UdpMessageEventInitGetters {
     #[doc = "Get the `data` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UdpMessageEventInit`*"]
-    fn data(&self) -> &::wasm_bindgen::JsValue;
+    fn data(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `remoteAddress` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UdpMessageEventInit`*"]
-    fn remote_address(&self) -> &str;
+    fn remote_address(&self) -> String;
     #[doc = "Get the `remotePort` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UdpMessageEventInit`*"]
@@ -74,10 +74,10 @@ impl UdpMessageEventInitGetters for UdpMessageEventInit {
     fn composed(&self) -> bool {
         self.composed_shim()
     }
-    fn data(&self) -> &::wasm_bindgen::JsValue {
+    fn data(&self) -> ::wasm_bindgen::JsValue {
         self.data_shim()
     }
-    fn remote_address(&self) -> &str {
+    fn remote_address(&self) -> String {
         self.remote_address_shim()
     }
     fn remote_port(&self) -> u16 {

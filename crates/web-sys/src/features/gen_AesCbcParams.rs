@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AesCbcParams`*"]
     pub type AesCbcParams;
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &AesCbcParams) -> &str;
+    fn name_shim(this: &AesCbcParams) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &AesCbcParams, val: &str);
     #[wasm_bindgen(method, getter = "iv")]
-    fn iv_shim(this: &AesCbcParams) -> &::js_sys::Object;
+    fn iv_shim(this: &AesCbcParams) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "iv")]
     fn set_iv_shim(this: &AesCbcParams, val: &::js_sys::Object);
 }
@@ -26,17 +26,17 @@ pub trait AesCbcParamsGetters {
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesCbcParams`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
     #[doc = "Get the `iv` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesCbcParams`*"]
-    fn iv(&self) -> &::js_sys::Object;
+    fn iv(&self) -> ::js_sys::Object;
 }
 impl AesCbcParamsGetters for AesCbcParams {
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
-    fn iv(&self) -> &::js_sys::Object {
+    fn iv(&self) -> ::js_sys::Object {
         self.iv_shim()
     }
 }

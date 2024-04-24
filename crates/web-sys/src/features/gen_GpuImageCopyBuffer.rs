@@ -28,7 +28,7 @@ extern "C" {
     fn set_rows_per_image_shim(this: &GpuImageCopyBuffer, val: u32);
     #[cfg(feature = "GpuBuffer")]
     #[wasm_bindgen(method, getter = "buffer")]
-    fn buffer_shim(this: &GpuImageCopyBuffer) -> &GpuBuffer;
+    fn buffer_shim(this: &GpuImageCopyBuffer) -> GpuBuffer;
     #[cfg(feature = "GpuBuffer")]
     #[wasm_bindgen(method, setter = "buffer")]
     fn set_buffer_shim(this: &GpuImageCopyBuffer, val: &GpuBuffer);
@@ -70,7 +70,7 @@ pub trait GpuImageCopyBufferGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn buffer(&self) -> &GpuBuffer;
+    fn buffer(&self) -> GpuBuffer;
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuImageCopyBufferGetters for GpuImageCopyBuffer {
@@ -88,7 +88,7 @@ impl GpuImageCopyBufferGetters for GpuImageCopyBuffer {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    fn buffer(&self) -> &GpuBuffer {
+    fn buffer(&self) -> GpuBuffer {
         self.buffer_shim()
     }
 }

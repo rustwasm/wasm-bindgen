@@ -11,15 +11,15 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AesGcmParams`*"]
     pub type AesGcmParams;
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &AesGcmParams) -> &str;
+    fn name_shim(this: &AesGcmParams) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &AesGcmParams, val: &str);
     #[wasm_bindgen(method, getter = "additionalData")]
-    fn additional_data_shim(this: &AesGcmParams) -> &::js_sys::Object;
+    fn additional_data_shim(this: &AesGcmParams) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "additionalData")]
     fn set_additional_data_shim(this: &AesGcmParams, val: &::js_sys::Object);
     #[wasm_bindgen(method, getter = "iv")]
-    fn iv_shim(this: &AesGcmParams) -> &::js_sys::Object;
+    fn iv_shim(this: &AesGcmParams) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "iv")]
     fn set_iv_shim(this: &AesGcmParams, val: &::js_sys::Object);
     #[wasm_bindgen(method, getter = "tagLength")]
@@ -34,28 +34,28 @@ pub trait AesGcmParamsGetters {
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesGcmParams`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
     #[doc = "Get the `additionalData` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesGcmParams`*"]
-    fn additional_data(&self) -> &::js_sys::Object;
+    fn additional_data(&self) -> ::js_sys::Object;
     #[doc = "Get the `iv` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesGcmParams`*"]
-    fn iv(&self) -> &::js_sys::Object;
+    fn iv(&self) -> ::js_sys::Object;
     #[doc = "Get the `tagLength` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesGcmParams`*"]
     fn tag_length(&self) -> u8;
 }
 impl AesGcmParamsGetters for AesGcmParams {
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
-    fn additional_data(&self) -> &::js_sys::Object {
+    fn additional_data(&self) -> ::js_sys::Object {
         self.additional_data_shim()
     }
-    fn iv(&self) -> &::js_sys::Object {
+    fn iv(&self) -> ::js_sys::Object {
         self.iv_shim()
     }
     fn tag_length(&self) -> u8 {

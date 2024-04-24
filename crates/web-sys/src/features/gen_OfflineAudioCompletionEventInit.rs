@@ -24,7 +24,7 @@ extern "C" {
     fn set_composed_shim(this: &OfflineAudioCompletionEventInit, val: bool);
     #[cfg(feature = "AudioBuffer")]
     #[wasm_bindgen(method, getter = "renderedBuffer")]
-    fn rendered_buffer_shim(this: &OfflineAudioCompletionEventInit) -> &AudioBuffer;
+    fn rendered_buffer_shim(this: &OfflineAudioCompletionEventInit) -> AudioBuffer;
     #[cfg(feature = "AudioBuffer")]
     #[wasm_bindgen(method, setter = "renderedBuffer")]
     fn set_rendered_buffer_shim(this: &OfflineAudioCompletionEventInit, val: &AudioBuffer);
@@ -49,7 +49,7 @@ pub trait OfflineAudioCompletionEventInitGetters {
     #[doc = "Get the `renderedBuffer` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`, `OfflineAudioCompletionEventInit`*"]
-    fn rendered_buffer(&self) -> &AudioBuffer;
+    fn rendered_buffer(&self) -> AudioBuffer;
 }
 impl OfflineAudioCompletionEventInitGetters for OfflineAudioCompletionEventInit {
     fn bubbles(&self) -> bool {
@@ -62,7 +62,7 @@ impl OfflineAudioCompletionEventInitGetters for OfflineAudioCompletionEventInit 
         self.composed_shim()
     }
     #[cfg(feature = "AudioBuffer")]
-    fn rendered_buffer(&self) -> &AudioBuffer {
+    fn rendered_buffer(&self) -> AudioBuffer {
         self.rendered_buffer_shim()
     }
 }

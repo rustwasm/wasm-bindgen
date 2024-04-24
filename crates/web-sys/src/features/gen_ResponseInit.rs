@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ResponseInit`*"]
     pub type ResponseInit;
     #[wasm_bindgen(method, getter = "headers")]
-    fn headers_shim(this: &ResponseInit) -> &::wasm_bindgen::JsValue;
+    fn headers_shim(this: &ResponseInit) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "headers")]
     fn set_headers_shim(this: &ResponseInit, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "status")]
@@ -19,7 +19,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "status")]
     fn set_status_shim(this: &ResponseInit, val: u16);
     #[wasm_bindgen(method, getter = "statusText")]
-    fn status_text_shim(this: &ResponseInit) -> &str;
+    fn status_text_shim(this: &ResponseInit) -> String;
     #[wasm_bindgen(method, setter = "statusText")]
     fn set_status_text_shim(this: &ResponseInit, val: &str);
 }
@@ -30,7 +30,7 @@ pub trait ResponseInitGetters {
     #[doc = "Get the `headers` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ResponseInit`*"]
-    fn headers(&self) -> &::wasm_bindgen::JsValue;
+    fn headers(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `status` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ResponseInit`*"]
@@ -38,16 +38,16 @@ pub trait ResponseInitGetters {
     #[doc = "Get the `statusText` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ResponseInit`*"]
-    fn status_text(&self) -> &str;
+    fn status_text(&self) -> String;
 }
 impl ResponseInitGetters for ResponseInit {
-    fn headers(&self) -> &::wasm_bindgen::JsValue {
+    fn headers(&self) -> ::wasm_bindgen::JsValue {
         self.headers_shim()
     }
     fn status(&self) -> u16 {
         self.status_shim()
     }
-    fn status_text(&self) -> &str {
+    fn status_text(&self) -> String {
         self.status_text_shim()
     }
 }

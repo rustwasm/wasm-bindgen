@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerStart`*"]
     pub type ConsoleTimerStart;
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &ConsoleTimerStart) -> &str;
+    fn name_shim(this: &ConsoleTimerStart) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &ConsoleTimerStart, val: &str);
 }
@@ -22,10 +22,10 @@ pub trait ConsoleTimerStartGetters {
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerStart`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
 }
 impl ConsoleTimerStartGetters for ConsoleTimerStart {
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
 }

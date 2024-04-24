@@ -28,7 +28,7 @@ extern "C" {
     fn set_detail_shim(this: &KeyboardEventInit, val: i32);
     #[cfg(feature = "Window")]
     #[wasm_bindgen(method, getter = "view")]
-    fn view_shim(this: &KeyboardEventInit) -> Option<&Window>;
+    fn view_shim(this: &KeyboardEventInit) -> Option<Window>;
     #[cfg(feature = "Window")]
     #[wasm_bindgen(method, setter = "view")]
     fn set_view_shim(this: &KeyboardEventInit, val: Option<&Window>);
@@ -89,7 +89,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "charCode")]
     fn set_char_code_shim(this: &KeyboardEventInit, val: u32);
     #[wasm_bindgen(method, getter = "code")]
-    fn code_shim(this: &KeyboardEventInit) -> &str;
+    fn code_shim(this: &KeyboardEventInit) -> String;
     #[wasm_bindgen(method, setter = "code")]
     fn set_code_shim(this: &KeyboardEventInit, val: &str);
     #[wasm_bindgen(method, getter = "isComposing")]
@@ -97,7 +97,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "isComposing")]
     fn set_is_composing_shim(this: &KeyboardEventInit, val: bool);
     #[wasm_bindgen(method, getter = "key")]
-    fn key_shim(this: &KeyboardEventInit) -> &str;
+    fn key_shim(this: &KeyboardEventInit) -> String;
     #[wasm_bindgen(method, setter = "key")]
     fn set_key_shim(this: &KeyboardEventInit, val: &str);
     #[wasm_bindgen(method, getter = "keyCode")]
@@ -141,7 +141,7 @@ pub trait KeyboardEventInitGetters {
     #[doc = "Get the `view` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyboardEventInit`, `Window`*"]
-    fn view(&self) -> Option<&Window>;
+    fn view(&self) -> Option<Window>;
     #[doc = "Get the `altKey` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyboardEventInit`*"]
@@ -201,7 +201,7 @@ pub trait KeyboardEventInitGetters {
     #[doc = "Get the `code` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyboardEventInit`*"]
-    fn code(&self) -> &str;
+    fn code(&self) -> String;
     #[doc = "Get the `isComposing` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyboardEventInit`*"]
@@ -209,7 +209,7 @@ pub trait KeyboardEventInitGetters {
     #[doc = "Get the `key` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyboardEventInit`*"]
-    fn key(&self) -> &str;
+    fn key(&self) -> String;
     #[doc = "Get the `keyCode` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyboardEventInit`*"]
@@ -241,7 +241,7 @@ impl KeyboardEventInitGetters for KeyboardEventInit {
         self.detail_shim()
     }
     #[cfg(feature = "Window")]
-    fn view(&self) -> Option<&Window> {
+    fn view(&self) -> Option<Window> {
         self.view_shim()
     }
     fn alt_key(&self) -> bool {
@@ -286,13 +286,13 @@ impl KeyboardEventInitGetters for KeyboardEventInit {
     fn char_code(&self) -> u32 {
         self.char_code_shim()
     }
-    fn code(&self) -> &str {
+    fn code(&self) -> String {
         self.code_shim()
     }
     fn is_composing(&self) -> bool {
         self.is_composing_shim()
     }
-    fn key(&self) -> &str {
+    fn key(&self) -> String {
         self.key_shim()
     }
     fn key_code(&self) -> u32 {

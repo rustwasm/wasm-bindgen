@@ -11,19 +11,19 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
     pub type NotificationOptions;
     #[wasm_bindgen(method, getter = "actions")]
-    fn actions_shim(this: &NotificationOptions) -> &::wasm_bindgen::JsValue;
+    fn actions_shim(this: &NotificationOptions) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "actions")]
     fn set_actions_shim(this: &NotificationOptions, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "badge")]
-    fn badge_shim(this: &NotificationOptions) -> &str;
+    fn badge_shim(this: &NotificationOptions) -> String;
     #[wasm_bindgen(method, setter = "badge")]
     fn set_badge_shim(this: &NotificationOptions, val: &str);
     #[wasm_bindgen(method, getter = "body")]
-    fn body_shim(this: &NotificationOptions) -> &str;
+    fn body_shim(this: &NotificationOptions) -> String;
     #[wasm_bindgen(method, setter = "body")]
     fn set_body_shim(this: &NotificationOptions, val: &str);
     #[wasm_bindgen(method, getter = "data")]
-    fn data_shim(this: &NotificationOptions) -> &::wasm_bindgen::JsValue;
+    fn data_shim(this: &NotificationOptions) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "data")]
     fn set_data_shim(this: &NotificationOptions, val: &::wasm_bindgen::JsValue);
     #[cfg(feature = "NotificationDirection")]
@@ -33,15 +33,15 @@ extern "C" {
     #[wasm_bindgen(method, setter = "dir")]
     fn set_dir_shim(this: &NotificationOptions, val: NotificationDirection);
     #[wasm_bindgen(method, getter = "icon")]
-    fn icon_shim(this: &NotificationOptions) -> &str;
+    fn icon_shim(this: &NotificationOptions) -> String;
     #[wasm_bindgen(method, setter = "icon")]
     fn set_icon_shim(this: &NotificationOptions, val: &str);
     #[wasm_bindgen(method, getter = "image")]
-    fn image_shim(this: &NotificationOptions) -> &str;
+    fn image_shim(this: &NotificationOptions) -> String;
     #[wasm_bindgen(method, setter = "image")]
     fn set_image_shim(this: &NotificationOptions, val: &str);
     #[wasm_bindgen(method, getter = "lang")]
-    fn lang_shim(this: &NotificationOptions) -> &str;
+    fn lang_shim(this: &NotificationOptions) -> String;
     #[wasm_bindgen(method, setter = "lang")]
     fn set_lang_shim(this: &NotificationOptions, val: &str);
     #[wasm_bindgen(method, getter = "renotify")]
@@ -57,7 +57,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "silent")]
     fn set_silent_shim(this: &NotificationOptions, val: Option<bool>);
     #[wasm_bindgen(method, getter = "tag")]
-    fn tag_shim(this: &NotificationOptions) -> &str;
+    fn tag_shim(this: &NotificationOptions) -> String;
     #[wasm_bindgen(method, setter = "tag")]
     fn set_tag_shim(this: &NotificationOptions, val: &str);
     #[wasm_bindgen(method, getter = "timestamp")]
@@ -72,19 +72,19 @@ pub trait NotificationOptionsGetters {
     #[doc = "Get the `actions` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
-    fn actions(&self) -> &::wasm_bindgen::JsValue;
+    fn actions(&self) -> ::js_sys::Array;
     #[doc = "Get the `badge` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
-    fn badge(&self) -> &str;
+    fn badge(&self) -> String;
     #[doc = "Get the `body` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
-    fn body(&self) -> &str;
+    fn body(&self) -> String;
     #[doc = "Get the `data` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
-    fn data(&self) -> &::wasm_bindgen::JsValue;
+    fn data(&self) -> ::wasm_bindgen::JsValue;
     #[cfg(feature = "NotificationDirection")]
     #[doc = "Get the `dir` field of this object."]
     #[doc = ""]
@@ -93,15 +93,15 @@ pub trait NotificationOptionsGetters {
     #[doc = "Get the `icon` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
-    fn icon(&self) -> &str;
+    fn icon(&self) -> String;
     #[doc = "Get the `image` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
-    fn image(&self) -> &str;
+    fn image(&self) -> String;
     #[doc = "Get the `lang` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
-    fn lang(&self) -> &str;
+    fn lang(&self) -> String;
     #[doc = "Get the `renotify` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
@@ -117,36 +117,36 @@ pub trait NotificationOptionsGetters {
     #[doc = "Get the `tag` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
-    fn tag(&self) -> &str;
+    fn tag(&self) -> String;
     #[doc = "Get the `timestamp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
     fn timestamp(&self) -> f64;
 }
 impl NotificationOptionsGetters for NotificationOptions {
-    fn actions(&self) -> &::wasm_bindgen::JsValue {
+    fn actions(&self) -> ::js_sys::Array {
         self.actions_shim()
     }
-    fn badge(&self) -> &str {
+    fn badge(&self) -> String {
         self.badge_shim()
     }
-    fn body(&self) -> &str {
+    fn body(&self) -> String {
         self.body_shim()
     }
-    fn data(&self) -> &::wasm_bindgen::JsValue {
+    fn data(&self) -> ::wasm_bindgen::JsValue {
         self.data_shim()
     }
     #[cfg(feature = "NotificationDirection")]
     fn dir(&self) -> NotificationDirection {
         self.dir_shim()
     }
-    fn icon(&self) -> &str {
+    fn icon(&self) -> String {
         self.icon_shim()
     }
-    fn image(&self) -> &str {
+    fn image(&self) -> String {
         self.image_shim()
     }
-    fn lang(&self) -> &str {
+    fn lang(&self) -> String {
         self.lang_shim()
     }
     fn renotify(&self) -> bool {
@@ -158,7 +158,7 @@ impl NotificationOptionsGetters for NotificationOptions {
     fn silent(&self) -> Option<bool> {
         self.silent_shim()
     }
-    fn tag(&self) -> &str {
+    fn tag(&self) -> String {
         self.tag_shim()
     }
     fn timestamp(&self) -> f64 {

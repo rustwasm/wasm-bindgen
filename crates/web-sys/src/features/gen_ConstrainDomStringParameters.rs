@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ConstrainDomStringParameters`*"]
     pub type ConstrainDomStringParameters;
     #[wasm_bindgen(method, getter = "exact")]
-    fn exact_shim(this: &ConstrainDomStringParameters) -> &::wasm_bindgen::JsValue;
+    fn exact_shim(this: &ConstrainDomStringParameters) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "exact")]
     fn set_exact_shim(this: &ConstrainDomStringParameters, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "ideal")]
-    fn ideal_shim(this: &ConstrainDomStringParameters) -> &::wasm_bindgen::JsValue;
+    fn ideal_shim(this: &ConstrainDomStringParameters) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "ideal")]
     fn set_ideal_shim(this: &ConstrainDomStringParameters, val: &::wasm_bindgen::JsValue);
 }
@@ -26,17 +26,17 @@ pub trait ConstrainDomStringParametersGetters {
     #[doc = "Get the `exact` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConstrainDomStringParameters`*"]
-    fn exact(&self) -> &::wasm_bindgen::JsValue;
+    fn exact(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `ideal` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConstrainDomStringParameters`*"]
-    fn ideal(&self) -> &::wasm_bindgen::JsValue;
+    fn ideal(&self) -> ::wasm_bindgen::JsValue;
 }
 impl ConstrainDomStringParametersGetters for ConstrainDomStringParameters {
-    fn exact(&self) -> &::wasm_bindgen::JsValue {
+    fn exact(&self) -> ::wasm_bindgen::JsValue {
         self.exact_shim()
     }
-    fn ideal(&self) -> &::wasm_bindgen::JsValue {
+    fn ideal(&self) -> ::wasm_bindgen::JsValue {
         self.ideal_shim()
     }
 }

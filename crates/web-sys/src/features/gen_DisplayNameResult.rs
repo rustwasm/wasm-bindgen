@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
     pub type DisplayNameResult;
     #[wasm_bindgen(method, getter = "locale")]
-    fn locale_shim(this: &DisplayNameResult) -> &str;
+    fn locale_shim(this: &DisplayNameResult) -> String;
     #[wasm_bindgen(method, setter = "locale")]
     fn set_locale_shim(this: &DisplayNameResult, val: &str);
     #[wasm_bindgen(method, getter = "style")]
-    fn style_shim(this: &DisplayNameResult) -> &str;
+    fn style_shim(this: &DisplayNameResult) -> String;
     #[wasm_bindgen(method, setter = "style")]
     fn set_style_shim(this: &DisplayNameResult, val: &str);
 }
@@ -26,17 +26,17 @@ pub trait DisplayNameResultGetters {
     #[doc = "Get the `locale` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
-    fn locale(&self) -> &str;
+    fn locale(&self) -> String;
     #[doc = "Get the `style` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
-    fn style(&self) -> &str;
+    fn style(&self) -> String;
 }
 impl DisplayNameResultGetters for DisplayNameResult {
-    fn locale(&self) -> &str {
+    fn locale(&self) -> String {
         self.locale_shim()
     }
-    fn style(&self) -> &str {
+    fn style(&self) -> String {
         self.style_shim()
     }
 }

@@ -15,7 +15,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "encrypted")]
     fn set_encrypted_shim(this: &WebSocketElement, val: bool);
     #[wasm_bindgen(method, getter = "hostport")]
-    fn hostport_shim(this: &WebSocketElement) -> &str;
+    fn hostport_shim(this: &WebSocketElement) -> String;
     #[wasm_bindgen(method, setter = "hostport")]
     fn set_hostport_shim(this: &WebSocketElement, val: &str);
     #[wasm_bindgen(method, getter = "msgreceived")]
@@ -46,7 +46,7 @@ pub trait WebSocketElementGetters {
     #[doc = "Get the `hostport` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebSocketElement`*"]
-    fn hostport(&self) -> &str;
+    fn hostport(&self) -> String;
     #[doc = "Get the `msgreceived` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebSocketElement`*"]
@@ -68,7 +68,7 @@ impl WebSocketElementGetters for WebSocketElement {
     fn encrypted(&self) -> bool {
         self.encrypted_shim()
     }
-    fn hostport(&self) -> &str {
+    fn hostport(&self) -> String {
         self.hostport_shim()
     }
     fn msgreceived(&self) -> u32 {

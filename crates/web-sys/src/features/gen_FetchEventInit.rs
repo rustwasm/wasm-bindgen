@@ -23,7 +23,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &FetchEventInit, val: bool);
     #[wasm_bindgen(method, getter = "clientId")]
-    fn client_id_shim(this: &FetchEventInit) -> Option<&str>;
+    fn client_id_shim(this: &FetchEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "clientId")]
     fn set_client_id_shim(this: &FetchEventInit, val: Option<&str>);
     #[wasm_bindgen(method, getter = "isReload")]
@@ -32,7 +32,7 @@ extern "C" {
     fn set_is_reload_shim(this: &FetchEventInit, val: bool);
     #[cfg(feature = "Request")]
     #[wasm_bindgen(method, getter = "request")]
-    fn request_shim(this: &FetchEventInit) -> &Request;
+    fn request_shim(this: &FetchEventInit) -> Request;
     #[cfg(feature = "Request")]
     #[wasm_bindgen(method, setter = "request")]
     fn set_request_shim(this: &FetchEventInit, val: &Request);
@@ -56,7 +56,7 @@ pub trait FetchEventInitGetters {
     #[doc = "Get the `clientId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FetchEventInit`*"]
-    fn client_id(&self) -> Option<&str>;
+    fn client_id(&self) -> Option<String>;
     #[doc = "Get the `isReload` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FetchEventInit`*"]
@@ -65,7 +65,7 @@ pub trait FetchEventInitGetters {
     #[doc = "Get the `request` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FetchEventInit`, `Request`*"]
-    fn request(&self) -> &Request;
+    fn request(&self) -> Request;
 }
 impl FetchEventInitGetters for FetchEventInit {
     fn bubbles(&self) -> bool {
@@ -77,14 +77,14 @@ impl FetchEventInitGetters for FetchEventInit {
     fn composed(&self) -> bool {
         self.composed_shim()
     }
-    fn client_id(&self) -> Option<&str> {
+    fn client_id(&self) -> Option<String> {
         self.client_id_shim()
     }
     fn is_reload(&self) -> bool {
         self.is_reload_shim()
     }
     #[cfg(feature = "Request")]
-    fn request(&self) -> &Request {
+    fn request(&self) -> Request {
         self.request_shim()
     }
 }

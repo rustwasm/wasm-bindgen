@@ -15,7 +15,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "addressReuse")]
     fn set_address_reuse_shim(this: &UdpOptions, val: bool);
     #[wasm_bindgen(method, getter = "localAddress")]
-    fn local_address_shim(this: &UdpOptions) -> &str;
+    fn local_address_shim(this: &UdpOptions) -> String;
     #[wasm_bindgen(method, setter = "localAddress")]
     fn set_local_address_shim(this: &UdpOptions, val: &str);
     #[wasm_bindgen(method, getter = "localPort")]
@@ -27,7 +27,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "loopback")]
     fn set_loopback_shim(this: &UdpOptions, val: bool);
     #[wasm_bindgen(method, getter = "remoteAddress")]
-    fn remote_address_shim(this: &UdpOptions) -> &str;
+    fn remote_address_shim(this: &UdpOptions) -> String;
     #[wasm_bindgen(method, setter = "remoteAddress")]
     fn set_remote_address_shim(this: &UdpOptions, val: &str);
     #[wasm_bindgen(method, getter = "remotePort")]
@@ -46,7 +46,7 @@ pub trait UdpOptionsGetters {
     #[doc = "Get the `localAddress` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
-    fn local_address(&self) -> &str;
+    fn local_address(&self) -> String;
     #[doc = "Get the `localPort` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
@@ -58,7 +58,7 @@ pub trait UdpOptionsGetters {
     #[doc = "Get the `remoteAddress` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
-    fn remote_address(&self) -> &str;
+    fn remote_address(&self) -> String;
     #[doc = "Get the `remotePort` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
@@ -68,7 +68,7 @@ impl UdpOptionsGetters for UdpOptions {
     fn address_reuse(&self) -> bool {
         self.address_reuse_shim()
     }
-    fn local_address(&self) -> &str {
+    fn local_address(&self) -> String {
         self.local_address_shim()
     }
     fn local_port(&self) -> u16 {
@@ -77,7 +77,7 @@ impl UdpOptionsGetters for UdpOptions {
     fn loopback(&self) -> bool {
         self.loopback_shim()
     }
-    fn remote_address(&self) -> &str {
+    fn remote_address(&self) -> String {
         self.remote_address_shim()
     }
     fn remote_port(&self) -> u16 {

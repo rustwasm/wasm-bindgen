@@ -23,11 +23,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &TcpSocketErrorEventInit, val: bool);
     #[wasm_bindgen(method, getter = "message")]
-    fn message_shim(this: &TcpSocketErrorEventInit) -> &str;
+    fn message_shim(this: &TcpSocketErrorEventInit) -> String;
     #[wasm_bindgen(method, setter = "message")]
     fn set_message_shim(this: &TcpSocketErrorEventInit, val: &str);
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &TcpSocketErrorEventInit) -> &str;
+    fn name_shim(this: &TcpSocketErrorEventInit) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &TcpSocketErrorEventInit, val: &str);
 }
@@ -50,11 +50,11 @@ pub trait TcpSocketErrorEventInitGetters {
     #[doc = "Get the `message` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpSocketErrorEventInit`*"]
-    fn message(&self) -> &str;
+    fn message(&self) -> String;
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpSocketErrorEventInit`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
 }
 impl TcpSocketErrorEventInitGetters for TcpSocketErrorEventInit {
     fn bubbles(&self) -> bool {
@@ -66,10 +66,10 @@ impl TcpSocketErrorEventInitGetters for TcpSocketErrorEventInit {
     fn composed(&self) -> bool {
         self.composed_shim()
     }
-    fn message(&self) -> &str {
+    fn message(&self) -> String {
         self.message_shim()
     }
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
 }

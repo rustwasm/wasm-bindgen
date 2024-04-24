@@ -15,7 +15,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "bytes")]
     fn set_bytes_shim(this: &NativeOsFileReadOptions, val: Option<f64>);
     #[wasm_bindgen(method, getter = "encoding")]
-    fn encoding_shim(this: &NativeOsFileReadOptions) -> Option<&str>;
+    fn encoding_shim(this: &NativeOsFileReadOptions) -> Option<String>;
     #[wasm_bindgen(method, setter = "encoding")]
     fn set_encoding_shim(this: &NativeOsFileReadOptions, val: Option<&str>);
 }
@@ -30,13 +30,13 @@ pub trait NativeOsFileReadOptionsGetters {
     #[doc = "Get the `encoding` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NativeOsFileReadOptions`*"]
-    fn encoding(&self) -> Option<&str>;
+    fn encoding(&self) -> Option<String>;
 }
 impl NativeOsFileReadOptionsGetters for NativeOsFileReadOptions {
     fn bytes(&self) -> Option<f64> {
         self.bytes_shim()
     }
-    fn encoding(&self) -> Option<&str> {
+    fn encoding(&self) -> Option<String> {
         self.encoding_shim()
     }
 }

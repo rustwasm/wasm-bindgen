@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
     pub type ProfileTimelineStackFrame;
     #[wasm_bindgen(method, getter = "asyncCause")]
-    fn async_cause_shim(this: &ProfileTimelineStackFrame) -> &str;
+    fn async_cause_shim(this: &ProfileTimelineStackFrame) -> String;
     #[wasm_bindgen(method, setter = "asyncCause")]
     fn set_async_cause_shim(this: &ProfileTimelineStackFrame, val: &str);
     #[wasm_bindgen(method, getter = "asyncParent")]
-    fn async_parent_shim(this: &ProfileTimelineStackFrame) -> Option<&::js_sys::Object>;
+    fn async_parent_shim(this: &ProfileTimelineStackFrame) -> Option<::js_sys::Object>;
     #[wasm_bindgen(method, setter = "asyncParent")]
     fn set_async_parent_shim(this: &ProfileTimelineStackFrame, val: Option<&::js_sys::Object>);
     #[wasm_bindgen(method, getter = "column")]
@@ -23,7 +23,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "column")]
     fn set_column_shim(this: &ProfileTimelineStackFrame, val: i32);
     #[wasm_bindgen(method, getter = "functionDisplayName")]
-    fn function_display_name_shim(this: &ProfileTimelineStackFrame) -> &str;
+    fn function_display_name_shim(this: &ProfileTimelineStackFrame) -> String;
     #[wasm_bindgen(method, setter = "functionDisplayName")]
     fn set_function_display_name_shim(this: &ProfileTimelineStackFrame, val: &str);
     #[wasm_bindgen(method, getter = "line")]
@@ -31,11 +31,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "line")]
     fn set_line_shim(this: &ProfileTimelineStackFrame, val: i32);
     #[wasm_bindgen(method, getter = "parent")]
-    fn parent_shim(this: &ProfileTimelineStackFrame) -> Option<&::js_sys::Object>;
+    fn parent_shim(this: &ProfileTimelineStackFrame) -> Option<::js_sys::Object>;
     #[wasm_bindgen(method, setter = "parent")]
     fn set_parent_shim(this: &ProfileTimelineStackFrame, val: Option<&::js_sys::Object>);
     #[wasm_bindgen(method, getter = "source")]
-    fn source_shim(this: &ProfileTimelineStackFrame) -> &str;
+    fn source_shim(this: &ProfileTimelineStackFrame) -> String;
     #[wasm_bindgen(method, setter = "source")]
     fn set_source_shim(this: &ProfileTimelineStackFrame, val: &str);
 }
@@ -46,11 +46,11 @@ pub trait ProfileTimelineStackFrameGetters {
     #[doc = "Get the `asyncCause` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
-    fn async_cause(&self) -> &str;
+    fn async_cause(&self) -> String;
     #[doc = "Get the `asyncParent` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
-    fn async_parent(&self) -> Option<&::js_sys::Object>;
+    fn async_parent(&self) -> Option<::js_sys::Object>;
     #[doc = "Get the `column` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
@@ -58,7 +58,7 @@ pub trait ProfileTimelineStackFrameGetters {
     #[doc = "Get the `functionDisplayName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
-    fn function_display_name(&self) -> &str;
+    fn function_display_name(&self) -> String;
     #[doc = "Get the `line` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
@@ -66,32 +66,32 @@ pub trait ProfileTimelineStackFrameGetters {
     #[doc = "Get the `parent` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
-    fn parent(&self) -> Option<&::js_sys::Object>;
+    fn parent(&self) -> Option<::js_sys::Object>;
     #[doc = "Get the `source` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
-    fn source(&self) -> &str;
+    fn source(&self) -> String;
 }
 impl ProfileTimelineStackFrameGetters for ProfileTimelineStackFrame {
-    fn async_cause(&self) -> &str {
+    fn async_cause(&self) -> String {
         self.async_cause_shim()
     }
-    fn async_parent(&self) -> Option<&::js_sys::Object> {
+    fn async_parent(&self) -> Option<::js_sys::Object> {
         self.async_parent_shim()
     }
     fn column(&self) -> i32 {
         self.column_shim()
     }
-    fn function_display_name(&self) -> &str {
+    fn function_display_name(&self) -> String {
         self.function_display_name_shim()
     }
     fn line(&self) -> i32 {
         self.line_shim()
     }
-    fn parent(&self) -> Option<&::js_sys::Object> {
+    fn parent(&self) -> Option<::js_sys::Object> {
         self.parent_shim()
     }
-    fn source(&self) -> &str {
+    fn source(&self) -> String {
         self.source_shim()
     }
 }

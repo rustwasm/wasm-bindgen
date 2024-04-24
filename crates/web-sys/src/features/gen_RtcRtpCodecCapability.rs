@@ -19,11 +19,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "clockRate")]
     fn set_clock_rate_shim(this: &RtcRtpCodecCapability, val: u32);
     #[wasm_bindgen(method, getter = "mimeType")]
-    fn mime_type_shim(this: &RtcRtpCodecCapability) -> &str;
+    fn mime_type_shim(this: &RtcRtpCodecCapability) -> String;
     #[wasm_bindgen(method, setter = "mimeType")]
     fn set_mime_type_shim(this: &RtcRtpCodecCapability, val: &str);
     #[wasm_bindgen(method, getter = "sdpFmtpLine")]
-    fn sdp_fmtp_line_shim(this: &RtcRtpCodecCapability) -> &str;
+    fn sdp_fmtp_line_shim(this: &RtcRtpCodecCapability) -> String;
     #[wasm_bindgen(method, setter = "sdpFmtpLine")]
     fn set_sdp_fmtp_line_shim(this: &RtcRtpCodecCapability, val: &str);
 }
@@ -42,11 +42,11 @@ pub trait RtcRtpCodecCapabilityGetters {
     #[doc = "Get the `mimeType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecCapability`*"]
-    fn mime_type(&self) -> &str;
+    fn mime_type(&self) -> String;
     #[doc = "Get the `sdpFmtpLine` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecCapability`*"]
-    fn sdp_fmtp_line(&self) -> &str;
+    fn sdp_fmtp_line(&self) -> String;
 }
 impl RtcRtpCodecCapabilityGetters for RtcRtpCodecCapability {
     fn channels(&self) -> u16 {
@@ -55,10 +55,10 @@ impl RtcRtpCodecCapabilityGetters for RtcRtpCodecCapability {
     fn clock_rate(&self) -> u32 {
         self.clock_rate_shim()
     }
-    fn mime_type(&self) -> &str {
+    fn mime_type(&self) -> String {
         self.mime_type_shim()
     }
-    fn sdp_fmtp_line(&self) -> &str {
+    fn sdp_fmtp_line(&self) -> String {
         self.sdp_fmtp_line_shim()
     }
 }

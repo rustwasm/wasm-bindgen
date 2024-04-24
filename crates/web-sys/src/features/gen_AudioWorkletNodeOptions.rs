@@ -35,11 +35,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "numberOfOutputs")]
     fn set_number_of_outputs_shim(this: &AudioWorkletNodeOptions, val: u32);
     #[wasm_bindgen(method, getter = "outputChannelCount")]
-    fn output_channel_count_shim(this: &AudioWorkletNodeOptions) -> &::wasm_bindgen::JsValue;
+    fn output_channel_count_shim(this: &AudioWorkletNodeOptions) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "outputChannelCount")]
     fn set_output_channel_count_shim(this: &AudioWorkletNodeOptions, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "processorOptions")]
-    fn processor_options_shim(this: &AudioWorkletNodeOptions) -> Option<&::js_sys::Object>;
+    fn processor_options_shim(this: &AudioWorkletNodeOptions) -> Option<::js_sys::Object>;
     #[wasm_bindgen(method, setter = "processorOptions")]
     fn set_processor_options_shim(this: &AudioWorkletNodeOptions, val: Option<&::js_sys::Object>);
 }
@@ -72,11 +72,11 @@ pub trait AudioWorkletNodeOptionsGetters {
     #[doc = "Get the `outputChannelCount` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioWorkletNodeOptions`*"]
-    fn output_channel_count(&self) -> &::wasm_bindgen::JsValue;
+    fn output_channel_count(&self) -> ::js_sys::Array;
     #[doc = "Get the `processorOptions` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioWorkletNodeOptions`*"]
-    fn processor_options(&self) -> Option<&::js_sys::Object>;
+    fn processor_options(&self) -> Option<::js_sys::Object>;
 }
 impl AudioWorkletNodeOptionsGetters for AudioWorkletNodeOptions {
     fn channel_count(&self) -> u32 {
@@ -96,10 +96,10 @@ impl AudioWorkletNodeOptionsGetters for AudioWorkletNodeOptions {
     fn number_of_outputs(&self) -> u32 {
         self.number_of_outputs_shim()
     }
-    fn output_channel_count(&self) -> &::wasm_bindgen::JsValue {
+    fn output_channel_count(&self) -> ::js_sys::Array {
         self.output_channel_count_shim()
     }
-    fn processor_options(&self) -> Option<&::js_sys::Object> {
+    fn processor_options(&self) -> Option<::js_sys::Object> {
         self.processor_options_shim()
     }
 }

@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcrtpContributingSourceStats`*"]
     pub type RtcrtpContributingSourceStats;
     #[wasm_bindgen(method, getter = "id")]
-    fn id_shim(this: &RtcrtpContributingSourceStats) -> &str;
+    fn id_shim(this: &RtcrtpContributingSourceStats) -> String;
     #[wasm_bindgen(method, setter = "id")]
     fn set_id_shim(this: &RtcrtpContributingSourceStats, val: &str);
     #[wasm_bindgen(method, getter = "timestamp")]
@@ -29,7 +29,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "contributorSsrc")]
     fn set_contributor_ssrc_shim(this: &RtcrtpContributingSourceStats, val: u32);
     #[wasm_bindgen(method, getter = "inboundRtpStreamId")]
-    fn inbound_rtp_stream_id_shim(this: &RtcrtpContributingSourceStats) -> &str;
+    fn inbound_rtp_stream_id_shim(this: &RtcrtpContributingSourceStats) -> String;
     #[wasm_bindgen(method, setter = "inboundRtpStreamId")]
     fn set_inbound_rtp_stream_id_shim(this: &RtcrtpContributingSourceStats, val: &str);
 }
@@ -40,7 +40,7 @@ pub trait RtcrtpContributingSourceStatsGetters {
     #[doc = "Get the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcrtpContributingSourceStats`*"]
-    fn id(&self) -> &str;
+    fn id(&self) -> String;
     #[doc = "Get the `timestamp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcrtpContributingSourceStats`*"]
@@ -57,10 +57,10 @@ pub trait RtcrtpContributingSourceStatsGetters {
     #[doc = "Get the `inboundRtpStreamId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcrtpContributingSourceStats`*"]
-    fn inbound_rtp_stream_id(&self) -> &str;
+    fn inbound_rtp_stream_id(&self) -> String;
 }
 impl RtcrtpContributingSourceStatsGetters for RtcrtpContributingSourceStats {
-    fn id(&self) -> &str {
+    fn id(&self) -> String {
         self.id_shim()
     }
     fn timestamp(&self) -> f64 {
@@ -73,7 +73,7 @@ impl RtcrtpContributingSourceStatsGetters for RtcrtpContributingSourceStats {
     fn contributor_ssrc(&self) -> u32 {
         self.contributor_ssrc_shim()
     }
-    fn inbound_rtp_stream_id(&self) -> &str {
+    fn inbound_rtp_stream_id(&self) -> String {
         self.inbound_rtp_stream_id_shim()
     }
 }

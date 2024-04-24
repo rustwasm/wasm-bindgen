@@ -29,7 +29,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "requireUnreliable")]
     fn set_require_unreliable_shim(this: &WebTransportOptions, val: bool);
     #[wasm_bindgen(method, getter = "serverCertificateHashes")]
-    fn server_certificate_hashes_shim(this: &WebTransportOptions) -> &::wasm_bindgen::JsValue;
+    fn server_certificate_hashes_shim(this: &WebTransportOptions) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "serverCertificateHashes")]
     fn set_server_certificate_hashes_shim(
         this: &WebTransportOptions,
@@ -73,7 +73,7 @@ pub trait WebTransportOptionsGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn server_certificate_hashes(&self) -> &::wasm_bindgen::JsValue;
+    fn server_certificate_hashes(&self) -> ::js_sys::Array;
 }
 #[cfg(web_sys_unstable_apis)]
 impl WebTransportOptionsGetters for WebTransportOptions {
@@ -91,7 +91,7 @@ impl WebTransportOptionsGetters for WebTransportOptions {
         self.require_unreliable_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn server_certificate_hashes(&self) -> &::wasm_bindgen::JsValue {
+    fn server_certificate_hashes(&self) -> ::js_sys::Array {
         self.server_certificate_hashes_shim()
     }
 }

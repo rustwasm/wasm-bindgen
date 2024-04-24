@@ -26,7 +26,7 @@ extern "C" {
     fn set_priority_shim(this: &SchedulerPostTaskOptions, val: TaskPriority);
     #[cfg(feature = "AbortSignal")]
     #[wasm_bindgen(method, getter = "signal")]
-    fn signal_shim(this: &SchedulerPostTaskOptions) -> &AbortSignal;
+    fn signal_shim(this: &SchedulerPostTaskOptions) -> AbortSignal;
     #[cfg(feature = "AbortSignal")]
     #[wasm_bindgen(method, setter = "signal")]
     fn set_signal_shim(this: &SchedulerPostTaskOptions, val: &AbortSignal);
@@ -61,7 +61,7 @@ pub trait SchedulerPostTaskOptionsGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn signal(&self) -> &AbortSignal;
+    fn signal(&self) -> AbortSignal;
 }
 #[cfg(web_sys_unstable_apis)]
 impl SchedulerPostTaskOptionsGetters for SchedulerPostTaskOptions {
@@ -76,7 +76,7 @@ impl SchedulerPostTaskOptionsGetters for SchedulerPostTaskOptions {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "AbortSignal")]
-    fn signal(&self) -> &AbortSignal {
+    fn signal(&self) -> AbortSignal {
         self.signal_shim()
     }
 }

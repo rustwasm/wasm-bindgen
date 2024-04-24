@@ -24,7 +24,7 @@ extern "C" {
     fn set_composed_shim(this: &CaretStateChangedEventInit, val: bool);
     #[cfg(feature = "DomRectReadOnly")]
     #[wasm_bindgen(method, getter = "boundingClientRect")]
-    fn bounding_client_rect_shim(this: &CaretStateChangedEventInit) -> Option<&DomRectReadOnly>;
+    fn bounding_client_rect_shim(this: &CaretStateChangedEventInit) -> Option<DomRectReadOnly>;
     #[cfg(feature = "DomRectReadOnly")]
     #[wasm_bindgen(method, setter = "boundingClientRect")]
     fn set_bounding_client_rect_shim(
@@ -50,7 +50,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "reason")]
     fn set_reason_shim(this: &CaretStateChangedEventInit, val: CaretChangedReason);
     #[wasm_bindgen(method, getter = "selectedTextContent")]
-    fn selected_text_content_shim(this: &CaretStateChangedEventInit) -> &str;
+    fn selected_text_content_shim(this: &CaretStateChangedEventInit) -> String;
     #[wasm_bindgen(method, setter = "selectedTextContent")]
     fn set_selected_text_content_shim(this: &CaretStateChangedEventInit, val: &str);
     #[wasm_bindgen(method, getter = "selectionEditable")]
@@ -82,7 +82,7 @@ pub trait CaretStateChangedEventInitGetters {
     #[doc = "Get the `boundingClientRect` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CaretStateChangedEventInit`, `DomRectReadOnly`*"]
-    fn bounding_client_rect(&self) -> Option<&DomRectReadOnly>;
+    fn bounding_client_rect(&self) -> Option<DomRectReadOnly>;
     #[doc = "Get the `caretVisible` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CaretStateChangedEventInit`*"]
@@ -103,7 +103,7 @@ pub trait CaretStateChangedEventInitGetters {
     #[doc = "Get the `selectedTextContent` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CaretStateChangedEventInit`*"]
-    fn selected_text_content(&self) -> &str;
+    fn selected_text_content(&self) -> String;
     #[doc = "Get the `selectionEditable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CaretStateChangedEventInit`*"]
@@ -124,7 +124,7 @@ impl CaretStateChangedEventInitGetters for CaretStateChangedEventInit {
         self.composed_shim()
     }
     #[cfg(feature = "DomRectReadOnly")]
-    fn bounding_client_rect(&self) -> Option<&DomRectReadOnly> {
+    fn bounding_client_rect(&self) -> Option<DomRectReadOnly> {
         self.bounding_client_rect_shim()
     }
     fn caret_visible(&self) -> bool {
@@ -140,7 +140,7 @@ impl CaretStateChangedEventInitGetters for CaretStateChangedEventInit {
     fn reason(&self) -> CaretChangedReason {
         self.reason_shim()
     }
-    fn selected_text_content(&self) -> &str {
+    fn selected_text_content(&self) -> String {
         self.selected_text_content_shim()
     }
     fn selection_editable(&self) -> bool {

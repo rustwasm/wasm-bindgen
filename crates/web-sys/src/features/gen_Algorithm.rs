@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `Algorithm`*"]
     pub type Algorithm;
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &Algorithm) -> &str;
+    fn name_shim(this: &Algorithm) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &Algorithm, val: &str);
 }
@@ -22,10 +22,10 @@ pub trait AlgorithmGetters {
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Algorithm`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
 }
 impl AlgorithmGetters for Algorithm {
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
 }

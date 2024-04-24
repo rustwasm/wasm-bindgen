@@ -15,7 +15,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "active")]
     fn set_active_shim(this: &SocketElement, val: bool);
     #[wasm_bindgen(method, getter = "host")]
-    fn host_shim(this: &SocketElement) -> &str;
+    fn host_shim(this: &SocketElement) -> String;
     #[wasm_bindgen(method, setter = "host")]
     fn set_host_shim(this: &SocketElement, val: &str);
     #[wasm_bindgen(method, getter = "port")]
@@ -46,7 +46,7 @@ pub trait SocketElementGetters {
     #[doc = "Get the `host` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SocketElement`*"]
-    fn host(&self) -> &str;
+    fn host(&self) -> String;
     #[doc = "Get the `port` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SocketElement`*"]
@@ -68,7 +68,7 @@ impl SocketElementGetters for SocketElement {
     fn active(&self) -> bool {
         self.active_shim()
     }
-    fn host(&self) -> &str {
+    fn host(&self) -> String {
         self.host_shim()
     }
     fn port(&self) -> u32 {

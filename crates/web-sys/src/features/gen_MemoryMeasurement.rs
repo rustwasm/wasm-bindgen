@@ -15,7 +15,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type MemoryMeasurement;
     #[wasm_bindgen(method, getter = "breakdown")]
-    fn breakdown_shim(this: &MemoryMeasurement) -> &::wasm_bindgen::JsValue;
+    fn breakdown_shim(this: &MemoryMeasurement) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "breakdown")]
     fn set_breakdown_shim(this: &MemoryMeasurement, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "bytes")]
@@ -35,7 +35,7 @@ pub trait MemoryMeasurementGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn breakdown(&self) -> &::wasm_bindgen::JsValue;
+    fn breakdown(&self) -> ::js_sys::Array;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `bytes` field of this object."]
     #[doc = ""]
@@ -48,7 +48,7 @@ pub trait MemoryMeasurementGetters {
 #[cfg(web_sys_unstable_apis)]
 impl MemoryMeasurementGetters for MemoryMeasurement {
     #[cfg(web_sys_unstable_apis)]
-    fn breakdown(&self) -> &::wasm_bindgen::JsValue {
+    fn breakdown(&self) -> ::js_sys::Array {
         self.breakdown_shim()
     }
     #[cfg(web_sys_unstable_apis)]

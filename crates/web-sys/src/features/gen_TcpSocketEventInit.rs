@@ -23,7 +23,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &TcpSocketEventInit, val: bool);
     #[wasm_bindgen(method, getter = "data")]
-    fn data_shim(this: &TcpSocketEventInit) -> &::wasm_bindgen::JsValue;
+    fn data_shim(this: &TcpSocketEventInit) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "data")]
     fn set_data_shim(this: &TcpSocketEventInit, val: &::wasm_bindgen::JsValue);
 }
@@ -46,7 +46,7 @@ pub trait TcpSocketEventInitGetters {
     #[doc = "Get the `data` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpSocketEventInit`*"]
-    fn data(&self) -> &::wasm_bindgen::JsValue;
+    fn data(&self) -> ::wasm_bindgen::JsValue;
 }
 impl TcpSocketEventInitGetters for TcpSocketEventInit {
     fn bubbles(&self) -> bool {
@@ -58,7 +58,7 @@ impl TcpSocketEventInitGetters for TcpSocketEventInit {
     fn composed(&self) -> bool {
         self.composed_shim()
     }
-    fn data(&self) -> &::wasm_bindgen::JsValue {
+    fn data(&self) -> ::wasm_bindgen::JsValue {
         self.data_shim()
     }
 }

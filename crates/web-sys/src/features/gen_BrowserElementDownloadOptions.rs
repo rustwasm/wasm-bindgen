@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementDownloadOptions`*"]
     pub type BrowserElementDownloadOptions;
     #[wasm_bindgen(method, getter = "filename")]
-    fn filename_shim(this: &BrowserElementDownloadOptions) -> Option<&str>;
+    fn filename_shim(this: &BrowserElementDownloadOptions) -> Option<String>;
     #[wasm_bindgen(method, setter = "filename")]
     fn set_filename_shim(this: &BrowserElementDownloadOptions, val: Option<&str>);
     #[wasm_bindgen(method, getter = "referrer")]
-    fn referrer_shim(this: &BrowserElementDownloadOptions) -> Option<&str>;
+    fn referrer_shim(this: &BrowserElementDownloadOptions) -> Option<String>;
     #[wasm_bindgen(method, setter = "referrer")]
     fn set_referrer_shim(this: &BrowserElementDownloadOptions, val: Option<&str>);
 }
@@ -26,17 +26,17 @@ pub trait BrowserElementDownloadOptionsGetters {
     #[doc = "Get the `filename` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementDownloadOptions`*"]
-    fn filename(&self) -> Option<&str>;
+    fn filename(&self) -> Option<String>;
     #[doc = "Get the `referrer` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementDownloadOptions`*"]
-    fn referrer(&self) -> Option<&str>;
+    fn referrer(&self) -> Option<String>;
 }
 impl BrowserElementDownloadOptionsGetters for BrowserElementDownloadOptions {
-    fn filename(&self) -> Option<&str> {
+    fn filename(&self) -> Option<String> {
         self.filename_shim()
     }
-    fn referrer(&self) -> Option<&str> {
+    fn referrer(&self) -> Option<String> {
         self.referrer_shim()
     }
 }

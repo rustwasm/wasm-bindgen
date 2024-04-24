@@ -22,7 +22,7 @@ extern "C" {
     fn set_name_shim(this: &FileSystemPermissionDescriptor, val: PermissionName);
     #[cfg(feature = "FileSystemHandle")]
     #[wasm_bindgen(method, getter = "handle")]
-    fn handle_shim(this: &FileSystemPermissionDescriptor) -> &FileSystemHandle;
+    fn handle_shim(this: &FileSystemPermissionDescriptor) -> FileSystemHandle;
     #[cfg(feature = "FileSystemHandle")]
     #[wasm_bindgen(method, setter = "handle")]
     fn set_handle_shim(this: &FileSystemPermissionDescriptor, val: &FileSystemHandle);
@@ -55,7 +55,7 @@ pub trait FileSystemPermissionDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn handle(&self) -> &FileSystemHandle;
+    fn handle(&self) -> FileSystemHandle;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "FileSystemPermissionMode")]
     #[doc = "Get the `mode` field of this object."]
@@ -75,7 +75,7 @@ impl FileSystemPermissionDescriptorGetters for FileSystemPermissionDescriptor {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "FileSystemHandle")]
-    fn handle(&self) -> &FileSystemHandle {
+    fn handle(&self) -> FileSystemHandle {
         self.handle_shim()
     }
     #[cfg(web_sys_unstable_apis)]

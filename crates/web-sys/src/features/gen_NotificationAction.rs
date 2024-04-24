@@ -11,15 +11,15 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `NotificationAction`*"]
     pub type NotificationAction;
     #[wasm_bindgen(method, getter = "action")]
-    fn action_shim(this: &NotificationAction) -> &str;
+    fn action_shim(this: &NotificationAction) -> String;
     #[wasm_bindgen(method, setter = "action")]
     fn set_action_shim(this: &NotificationAction, val: &str);
     #[wasm_bindgen(method, getter = "icon")]
-    fn icon_shim(this: &NotificationAction) -> &str;
+    fn icon_shim(this: &NotificationAction) -> String;
     #[wasm_bindgen(method, setter = "icon")]
     fn set_icon_shim(this: &NotificationAction, val: &str);
     #[wasm_bindgen(method, getter = "title")]
-    fn title_shim(this: &NotificationAction) -> &str;
+    fn title_shim(this: &NotificationAction) -> String;
     #[wasm_bindgen(method, setter = "title")]
     fn set_title_shim(this: &NotificationAction, val: &str);
 }
@@ -30,24 +30,24 @@ pub trait NotificationActionGetters {
     #[doc = "Get the `action` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationAction`*"]
-    fn action(&self) -> &str;
+    fn action(&self) -> String;
     #[doc = "Get the `icon` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationAction`*"]
-    fn icon(&self) -> &str;
+    fn icon(&self) -> String;
     #[doc = "Get the `title` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationAction`*"]
-    fn title(&self) -> &str;
+    fn title(&self) -> String;
 }
 impl NotificationActionGetters for NotificationAction {
-    fn action(&self) -> &str {
+    fn action(&self) -> String {
         self.action_shim()
     }
-    fn icon(&self) -> &str {
+    fn icon(&self) -> String {
         self.icon_shim()
     }
-    fn title(&self) -> &str {
+    fn title(&self) -> String {
         self.title_shim()
     }
 }

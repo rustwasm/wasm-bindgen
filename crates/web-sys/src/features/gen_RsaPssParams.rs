@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RsaPssParams`*"]
     pub type RsaPssParams;
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &RsaPssParams) -> &str;
+    fn name_shim(this: &RsaPssParams) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &RsaPssParams, val: &str);
     #[wasm_bindgen(method, getter = "saltLength")]
@@ -26,14 +26,14 @@ pub trait RsaPssParamsGetters {
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaPssParams`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
     #[doc = "Get the `saltLength` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaPssParams`*"]
     fn salt_length(&self) -> u32;
 }
 impl RsaPssParamsGetters for RsaPssParams {
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
     fn salt_length(&self) -> u32 {

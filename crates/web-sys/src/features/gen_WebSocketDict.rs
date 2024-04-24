@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `WebSocketDict`*"]
     pub type WebSocketDict;
     #[wasm_bindgen(method, getter = "websockets")]
-    fn websockets_shim(this: &WebSocketDict) -> &::wasm_bindgen::JsValue;
+    fn websockets_shim(this: &WebSocketDict) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "websockets")]
     fn set_websockets_shim(this: &WebSocketDict, val: &::wasm_bindgen::JsValue);
 }
@@ -22,10 +22,10 @@ pub trait WebSocketDictGetters {
     #[doc = "Get the `websockets` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebSocketDict`*"]
-    fn websockets(&self) -> &::wasm_bindgen::JsValue;
+    fn websockets(&self) -> ::js_sys::Array;
 }
 impl WebSocketDictGetters for WebSocketDict {
-    fn websockets(&self) -> &::wasm_bindgen::JsValue {
+    fn websockets(&self) -> ::js_sys::Array {
         self.websockets_shim()
     }
 }

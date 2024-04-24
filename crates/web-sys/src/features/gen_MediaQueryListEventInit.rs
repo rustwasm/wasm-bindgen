@@ -27,7 +27,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "matches")]
     fn set_matches_shim(this: &MediaQueryListEventInit, val: bool);
     #[wasm_bindgen(method, getter = "media")]
-    fn media_shim(this: &MediaQueryListEventInit) -> &str;
+    fn media_shim(this: &MediaQueryListEventInit) -> String;
     #[wasm_bindgen(method, setter = "media")]
     fn set_media_shim(this: &MediaQueryListEventInit, val: &str);
 }
@@ -54,7 +54,7 @@ pub trait MediaQueryListEventInitGetters {
     #[doc = "Get the `media` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaQueryListEventInit`*"]
-    fn media(&self) -> &str;
+    fn media(&self) -> String;
 }
 impl MediaQueryListEventInitGetters for MediaQueryListEventInit {
     fn bubbles(&self) -> bool {
@@ -69,7 +69,7 @@ impl MediaQueryListEventInitGetters for MediaQueryListEventInit {
     fn matches(&self) -> bool {
         self.matches_shim()
     }
-    fn media(&self) -> &str {
+    fn media(&self) -> String {
         self.media_shim()
     }
 }

@@ -19,7 +19,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "clockRate")]
     fn set_clock_rate_shim(this: &RtcRtpCodecParameters, val: u32);
     #[wasm_bindgen(method, getter = "mimeType")]
-    fn mime_type_shim(this: &RtcRtpCodecParameters) -> &str;
+    fn mime_type_shim(this: &RtcRtpCodecParameters) -> String;
     #[wasm_bindgen(method, setter = "mimeType")]
     fn set_mime_type_shim(this: &RtcRtpCodecParameters, val: &str);
     #[wasm_bindgen(method, getter = "payloadType")]
@@ -27,7 +27,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "payloadType")]
     fn set_payload_type_shim(this: &RtcRtpCodecParameters, val: u16);
     #[wasm_bindgen(method, getter = "sdpFmtpLine")]
-    fn sdp_fmtp_line_shim(this: &RtcRtpCodecParameters) -> &str;
+    fn sdp_fmtp_line_shim(this: &RtcRtpCodecParameters) -> String;
     #[wasm_bindgen(method, setter = "sdpFmtpLine")]
     fn set_sdp_fmtp_line_shim(this: &RtcRtpCodecParameters, val: &str);
 }
@@ -46,7 +46,7 @@ pub trait RtcRtpCodecParametersGetters {
     #[doc = "Get the `mimeType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecParameters`*"]
-    fn mime_type(&self) -> &str;
+    fn mime_type(&self) -> String;
     #[doc = "Get the `payloadType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecParameters`*"]
@@ -54,7 +54,7 @@ pub trait RtcRtpCodecParametersGetters {
     #[doc = "Get the `sdpFmtpLine` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecParameters`*"]
-    fn sdp_fmtp_line(&self) -> &str;
+    fn sdp_fmtp_line(&self) -> String;
 }
 impl RtcRtpCodecParametersGetters for RtcRtpCodecParameters {
     fn channels(&self) -> u16 {
@@ -63,13 +63,13 @@ impl RtcRtpCodecParametersGetters for RtcRtpCodecParameters {
     fn clock_rate(&self) -> u32 {
         self.clock_rate_shim()
     }
-    fn mime_type(&self) -> &str {
+    fn mime_type(&self) -> String {
         self.mime_type_shim()
     }
     fn payload_type(&self) -> u16 {
         self.payload_type_shim()
     }
-    fn sdp_fmtp_line(&self) -> &str {
+    fn sdp_fmtp_line(&self) -> String {
         self.sdp_fmtp_line_shim()
     }
 }

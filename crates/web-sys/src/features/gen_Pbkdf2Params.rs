@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `Pbkdf2Params`*"]
     pub type Pbkdf2Params;
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &Pbkdf2Params) -> &str;
+    fn name_shim(this: &Pbkdf2Params) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &Pbkdf2Params, val: &str);
     #[wasm_bindgen(method, getter = "hash")]
-    fn hash_shim(this: &Pbkdf2Params) -> &::wasm_bindgen::JsValue;
+    fn hash_shim(this: &Pbkdf2Params) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "hash")]
     fn set_hash_shim(this: &Pbkdf2Params, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "iterations")]
@@ -23,7 +23,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "iterations")]
     fn set_iterations_shim(this: &Pbkdf2Params, val: u32);
     #[wasm_bindgen(method, getter = "salt")]
-    fn salt_shim(this: &Pbkdf2Params) -> &::js_sys::Object;
+    fn salt_shim(this: &Pbkdf2Params) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "salt")]
     fn set_salt_shim(this: &Pbkdf2Params, val: &::js_sys::Object);
 }
@@ -34,11 +34,11 @@ pub trait Pbkdf2ParamsGetters {
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Pbkdf2Params`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
     #[doc = "Get the `hash` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Pbkdf2Params`*"]
-    fn hash(&self) -> &::wasm_bindgen::JsValue;
+    fn hash(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `iterations` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Pbkdf2Params`*"]
@@ -46,19 +46,19 @@ pub trait Pbkdf2ParamsGetters {
     #[doc = "Get the `salt` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Pbkdf2Params`*"]
-    fn salt(&self) -> &::js_sys::Object;
+    fn salt(&self) -> ::js_sys::Object;
 }
 impl Pbkdf2ParamsGetters for Pbkdf2Params {
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
-    fn hash(&self) -> &::wasm_bindgen::JsValue {
+    fn hash(&self) -> ::wasm_bindgen::JsValue {
         self.hash_shim()
     }
     fn iterations(&self) -> u32 {
         self.iterations_shim()
     }
-    fn salt(&self) -> &::js_sys::Object {
+    fn salt(&self) -> ::js_sys::Object {
         self.salt_shim()
     }
 }

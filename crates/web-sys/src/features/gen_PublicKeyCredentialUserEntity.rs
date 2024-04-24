@@ -11,19 +11,19 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
     pub type PublicKeyCredentialUserEntity;
     #[wasm_bindgen(method, getter = "icon")]
-    fn icon_shim(this: &PublicKeyCredentialUserEntity) -> &str;
+    fn icon_shim(this: &PublicKeyCredentialUserEntity) -> String;
     #[wasm_bindgen(method, setter = "icon")]
     fn set_icon_shim(this: &PublicKeyCredentialUserEntity, val: &str);
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &PublicKeyCredentialUserEntity) -> &str;
+    fn name_shim(this: &PublicKeyCredentialUserEntity) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &PublicKeyCredentialUserEntity, val: &str);
     #[wasm_bindgen(method, getter = "displayName")]
-    fn display_name_shim(this: &PublicKeyCredentialUserEntity) -> &str;
+    fn display_name_shim(this: &PublicKeyCredentialUserEntity) -> String;
     #[wasm_bindgen(method, setter = "displayName")]
     fn set_display_name_shim(this: &PublicKeyCredentialUserEntity, val: &str);
     #[wasm_bindgen(method, getter = "id")]
-    fn id_shim(this: &PublicKeyCredentialUserEntity) -> &::js_sys::Object;
+    fn id_shim(this: &PublicKeyCredentialUserEntity) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "id")]
     fn set_id_shim(this: &PublicKeyCredentialUserEntity, val: &::js_sys::Object);
 }
@@ -34,31 +34,31 @@ pub trait PublicKeyCredentialUserEntityGetters {
     #[doc = "Get the `icon` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
-    fn icon(&self) -> &str;
+    fn icon(&self) -> String;
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
     #[doc = "Get the `displayName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
-    fn display_name(&self) -> &str;
+    fn display_name(&self) -> String;
     #[doc = "Get the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
-    fn id(&self) -> &::js_sys::Object;
+    fn id(&self) -> ::js_sys::Object;
 }
 impl PublicKeyCredentialUserEntityGetters for PublicKeyCredentialUserEntity {
-    fn icon(&self) -> &str {
+    fn icon(&self) -> String {
         self.icon_shim()
     }
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
-    fn display_name(&self) -> &str {
+    fn display_name(&self) -> String {
         self.display_name_shim()
     }
-    fn id(&self) -> &::js_sys::Object {
+    fn id(&self) -> ::js_sys::Object {
         self.id_shim()
     }
 }

@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
     pub type RtcIceCandidateStats;
     #[wasm_bindgen(method, getter = "id")]
-    fn id_shim(this: &RtcIceCandidateStats) -> &str;
+    fn id_shim(this: &RtcIceCandidateStats) -> String;
     #[wasm_bindgen(method, setter = "id")]
     fn set_id_shim(this: &RtcIceCandidateStats, val: &str);
     #[wasm_bindgen(method, getter = "timestamp")]
@@ -25,7 +25,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "type")]
     fn set_type__shim(this: &RtcIceCandidateStats, val: RtcStatsType);
     #[wasm_bindgen(method, getter = "candidateId")]
-    fn candidate_id_shim(this: &RtcIceCandidateStats) -> &str;
+    fn candidate_id_shim(this: &RtcIceCandidateStats) -> String;
     #[wasm_bindgen(method, setter = "candidateId")]
     fn set_candidate_id_shim(this: &RtcIceCandidateStats, val: &str);
     #[cfg(feature = "RtcStatsIceCandidateType")]
@@ -35,11 +35,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "candidateType")]
     fn set_candidate_type_shim(this: &RtcIceCandidateStats, val: RtcStatsIceCandidateType);
     #[wasm_bindgen(method, getter = "componentId")]
-    fn component_id_shim(this: &RtcIceCandidateStats) -> &str;
+    fn component_id_shim(this: &RtcIceCandidateStats) -> String;
     #[wasm_bindgen(method, setter = "componentId")]
     fn set_component_id_shim(this: &RtcIceCandidateStats, val: &str);
     #[wasm_bindgen(method, getter = "ipAddress")]
-    fn ip_address_shim(this: &RtcIceCandidateStats) -> &str;
+    fn ip_address_shim(this: &RtcIceCandidateStats) -> String;
     #[wasm_bindgen(method, setter = "ipAddress")]
     fn set_ip_address_shim(this: &RtcIceCandidateStats, val: &str);
     #[wasm_bindgen(method, getter = "portNumber")]
@@ -47,7 +47,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "portNumber")]
     fn set_port_number_shim(this: &RtcIceCandidateStats, val: i32);
     #[wasm_bindgen(method, getter = "transport")]
-    fn transport_shim(this: &RtcIceCandidateStats) -> &str;
+    fn transport_shim(this: &RtcIceCandidateStats) -> String;
     #[wasm_bindgen(method, setter = "transport")]
     fn set_transport_shim(this: &RtcIceCandidateStats, val: &str);
 }
@@ -58,7 +58,7 @@ pub trait RtcIceCandidateStatsGetters {
     #[doc = "Get the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
-    fn id(&self) -> &str;
+    fn id(&self) -> String;
     #[doc = "Get the `timestamp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
@@ -71,7 +71,7 @@ pub trait RtcIceCandidateStatsGetters {
     #[doc = "Get the `candidateId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
-    fn candidate_id(&self) -> &str;
+    fn candidate_id(&self) -> String;
     #[cfg(feature = "RtcStatsIceCandidateType")]
     #[doc = "Get the `candidateType` field of this object."]
     #[doc = ""]
@@ -80,11 +80,11 @@ pub trait RtcIceCandidateStatsGetters {
     #[doc = "Get the `componentId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
-    fn component_id(&self) -> &str;
+    fn component_id(&self) -> String;
     #[doc = "Get the `ipAddress` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
-    fn ip_address(&self) -> &str;
+    fn ip_address(&self) -> String;
     #[doc = "Get the `portNumber` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
@@ -92,10 +92,10 @@ pub trait RtcIceCandidateStatsGetters {
     #[doc = "Get the `transport` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
-    fn transport(&self) -> &str;
+    fn transport(&self) -> String;
 }
 impl RtcIceCandidateStatsGetters for RtcIceCandidateStats {
-    fn id(&self) -> &str {
+    fn id(&self) -> String {
         self.id_shim()
     }
     fn timestamp(&self) -> f64 {
@@ -105,23 +105,23 @@ impl RtcIceCandidateStatsGetters for RtcIceCandidateStats {
     fn type_(&self) -> RtcStatsType {
         self.type__shim()
     }
-    fn candidate_id(&self) -> &str {
+    fn candidate_id(&self) -> String {
         self.candidate_id_shim()
     }
     #[cfg(feature = "RtcStatsIceCandidateType")]
     fn candidate_type(&self) -> RtcStatsIceCandidateType {
         self.candidate_type_shim()
     }
-    fn component_id(&self) -> &str {
+    fn component_id(&self) -> String {
         self.component_id_shim()
     }
-    fn ip_address(&self) -> &str {
+    fn ip_address(&self) -> String {
         self.ip_address_shim()
     }
     fn port_number(&self) -> i32 {
         self.port_number_shim()
     }
-    fn transport(&self) -> &str {
+    fn transport(&self) -> String {
         self.transport_shim()
     }
 }

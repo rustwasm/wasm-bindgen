@@ -24,7 +24,7 @@ extern "C" {
     fn set_composed_shim(this: &PresentationConnectionAvailableEventInit, val: bool);
     #[cfg(feature = "PresentationConnection")]
     #[wasm_bindgen(method, getter = "connection")]
-    fn connection_shim(this: &PresentationConnectionAvailableEventInit) -> &PresentationConnection;
+    fn connection_shim(this: &PresentationConnectionAvailableEventInit) -> PresentationConnection;
     #[cfg(feature = "PresentationConnection")]
     #[wasm_bindgen(method, setter = "connection")]
     fn set_connection_shim(
@@ -52,7 +52,7 @@ pub trait PresentationConnectionAvailableEventInitGetters {
     #[doc = "Get the `connection` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnection`, `PresentationConnectionAvailableEventInit`*"]
-    fn connection(&self) -> &PresentationConnection;
+    fn connection(&self) -> PresentationConnection;
 }
 impl PresentationConnectionAvailableEventInitGetters for PresentationConnectionAvailableEventInit {
     fn bubbles(&self) -> bool {
@@ -65,7 +65,7 @@ impl PresentationConnectionAvailableEventInitGetters for PresentationConnectionA
         self.composed_shim()
     }
     #[cfg(feature = "PresentationConnection")]
-    fn connection(&self) -> &PresentationConnection {
+    fn connection(&self) -> PresentationConnection {
         self.connection_shim()
     }
 }

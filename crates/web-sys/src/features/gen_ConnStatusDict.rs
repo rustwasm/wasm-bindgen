@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ConnStatusDict`*"]
     pub type ConnStatusDict;
     #[wasm_bindgen(method, getter = "status")]
-    fn status_shim(this: &ConnStatusDict) -> &str;
+    fn status_shim(this: &ConnStatusDict) -> String;
     #[wasm_bindgen(method, setter = "status")]
     fn set_status_shim(this: &ConnStatusDict, val: &str);
 }
@@ -22,10 +22,10 @@ pub trait ConnStatusDictGetters {
     #[doc = "Get the `status` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConnStatusDict`*"]
-    fn status(&self) -> &str;
+    fn status(&self) -> String;
 }
 impl ConnStatusDictGetters for ConnStatusDict {
-    fn status(&self) -> &str {
+    fn status(&self) -> String {
         self.status_shim()
     }
 }

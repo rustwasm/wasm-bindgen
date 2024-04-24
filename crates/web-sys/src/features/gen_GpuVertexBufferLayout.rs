@@ -19,7 +19,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "arrayStride")]
     fn set_array_stride_shim(this: &GpuVertexBufferLayout, val: f64);
     #[wasm_bindgen(method, getter = "attributes")]
-    fn attributes_shim(this: &GpuVertexBufferLayout) -> &::wasm_bindgen::JsValue;
+    fn attributes_shim(this: &GpuVertexBufferLayout) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "attributes")]
     fn set_attributes_shim(this: &GpuVertexBufferLayout, val: &::wasm_bindgen::JsValue);
     #[cfg(feature = "GpuVertexStepMode")]
@@ -49,7 +49,7 @@ pub trait GpuVertexBufferLayoutGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn attributes(&self) -> &::wasm_bindgen::JsValue;
+    fn attributes(&self) -> ::js_sys::Array;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuVertexStepMode")]
     #[doc = "Get the `stepMode` field of this object."]
@@ -67,7 +67,7 @@ impl GpuVertexBufferLayoutGetters for GpuVertexBufferLayout {
         self.array_stride_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn attributes(&self) -> &::wasm_bindgen::JsValue {
+    fn attributes(&self) -> ::js_sys::Array {
         self.attributes_shim()
     }
     #[cfg(web_sys_unstable_apis)]

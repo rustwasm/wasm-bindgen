@@ -11,19 +11,19 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `HttpConnectionElement`*"]
     pub type HttpConnectionElement;
     #[wasm_bindgen(method, getter = "active")]
-    fn active_shim(this: &HttpConnectionElement) -> &::wasm_bindgen::JsValue;
+    fn active_shim(this: &HttpConnectionElement) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "active")]
     fn set_active_shim(this: &HttpConnectionElement, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "halfOpens")]
-    fn half_opens_shim(this: &HttpConnectionElement) -> &::wasm_bindgen::JsValue;
+    fn half_opens_shim(this: &HttpConnectionElement) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "halfOpens")]
     fn set_half_opens_shim(this: &HttpConnectionElement, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "host")]
-    fn host_shim(this: &HttpConnectionElement) -> &str;
+    fn host_shim(this: &HttpConnectionElement) -> String;
     #[wasm_bindgen(method, setter = "host")]
     fn set_host_shim(this: &HttpConnectionElement, val: &str);
     #[wasm_bindgen(method, getter = "idle")]
-    fn idle_shim(this: &HttpConnectionElement) -> &::wasm_bindgen::JsValue;
+    fn idle_shim(this: &HttpConnectionElement) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "idle")]
     fn set_idle_shim(this: &HttpConnectionElement, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "port")]
@@ -46,19 +46,19 @@ pub trait HttpConnectionElementGetters {
     #[doc = "Get the `active` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HttpConnectionElement`*"]
-    fn active(&self) -> &::wasm_bindgen::JsValue;
+    fn active(&self) -> ::js_sys::Array;
     #[doc = "Get the `halfOpens` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HttpConnectionElement`*"]
-    fn half_opens(&self) -> &::wasm_bindgen::JsValue;
+    fn half_opens(&self) -> ::js_sys::Array;
     #[doc = "Get the `host` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HttpConnectionElement`*"]
-    fn host(&self) -> &str;
+    fn host(&self) -> String;
     #[doc = "Get the `idle` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HttpConnectionElement`*"]
-    fn idle(&self) -> &::wasm_bindgen::JsValue;
+    fn idle(&self) -> ::js_sys::Array;
     #[doc = "Get the `port` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HttpConnectionElement`*"]
@@ -73,16 +73,16 @@ pub trait HttpConnectionElementGetters {
     fn ssl(&self) -> bool;
 }
 impl HttpConnectionElementGetters for HttpConnectionElement {
-    fn active(&self) -> &::wasm_bindgen::JsValue {
+    fn active(&self) -> ::js_sys::Array {
         self.active_shim()
     }
-    fn half_opens(&self) -> &::wasm_bindgen::JsValue {
+    fn half_opens(&self) -> ::js_sys::Array {
         self.half_opens_shim()
     }
-    fn host(&self) -> &str {
+    fn host(&self) -> String {
         self.host_shim()
     }
-    fn idle(&self) -> &::wasm_bindgen::JsValue {
+    fn idle(&self) -> ::js_sys::Array {
         self.idle_shim()
     }
     fn port(&self) -> u32 {

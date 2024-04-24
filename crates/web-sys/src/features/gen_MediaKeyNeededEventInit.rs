@@ -23,11 +23,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &MediaKeyNeededEventInit, val: bool);
     #[wasm_bindgen(method, getter = "initData")]
-    fn init_data_shim(this: &MediaKeyNeededEventInit) -> Option<&::js_sys::ArrayBuffer>;
+    fn init_data_shim(this: &MediaKeyNeededEventInit) -> Option<::js_sys::ArrayBuffer>;
     #[wasm_bindgen(method, setter = "initData")]
     fn set_init_data_shim(this: &MediaKeyNeededEventInit, val: Option<&::js_sys::ArrayBuffer>);
     #[wasm_bindgen(method, getter = "initDataType")]
-    fn init_data_type_shim(this: &MediaKeyNeededEventInit) -> &str;
+    fn init_data_type_shim(this: &MediaKeyNeededEventInit) -> String;
     #[wasm_bindgen(method, setter = "initDataType")]
     fn set_init_data_type_shim(this: &MediaKeyNeededEventInit, val: &str);
 }
@@ -50,11 +50,11 @@ pub trait MediaKeyNeededEventInitGetters {
     #[doc = "Get the `initData` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeyNeededEventInit`*"]
-    fn init_data(&self) -> Option<&::js_sys::ArrayBuffer>;
+    fn init_data(&self) -> Option<::js_sys::ArrayBuffer>;
     #[doc = "Get the `initDataType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeyNeededEventInit`*"]
-    fn init_data_type(&self) -> &str;
+    fn init_data_type(&self) -> String;
 }
 impl MediaKeyNeededEventInitGetters for MediaKeyNeededEventInit {
     fn bubbles(&self) -> bool {
@@ -66,10 +66,10 @@ impl MediaKeyNeededEventInitGetters for MediaKeyNeededEventInit {
     fn composed(&self) -> bool {
         self.composed_shim()
     }
-    fn init_data(&self) -> Option<&::js_sys::ArrayBuffer> {
+    fn init_data(&self) -> Option<::js_sys::ArrayBuffer> {
         self.init_data_shim()
     }
-    fn init_data_type(&self) -> &str {
+    fn init_data_type(&self) -> String {
         self.init_data_type_shim()
     }
 }

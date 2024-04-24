@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcStats`*"]
     pub type RtcStats;
     #[wasm_bindgen(method, getter = "id")]
-    fn id_shim(this: &RtcStats) -> &str;
+    fn id_shim(this: &RtcStats) -> String;
     #[wasm_bindgen(method, setter = "id")]
     fn set_id_shim(this: &RtcStats, val: &str);
     #[wasm_bindgen(method, getter = "timestamp")]
@@ -32,7 +32,7 @@ pub trait RtcStatsGetters {
     #[doc = "Get the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcStats`*"]
-    fn id(&self) -> &str;
+    fn id(&self) -> String;
     #[doc = "Get the `timestamp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcStats`*"]
@@ -44,7 +44,7 @@ pub trait RtcStatsGetters {
     fn type_(&self) -> RtcStatsType;
 }
 impl RtcStatsGetters for RtcStats {
-    fn id(&self) -> &str {
+    fn id(&self) -> String {
         self.id_shim()
     }
     fn timestamp(&self) -> f64 {

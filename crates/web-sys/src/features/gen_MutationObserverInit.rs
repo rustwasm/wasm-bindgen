@@ -15,7 +15,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "animations")]
     fn set_animations_shim(this: &MutationObserverInit, val: bool);
     #[wasm_bindgen(method, getter = "attributeFilter")]
-    fn attribute_filter_shim(this: &MutationObserverInit) -> &::wasm_bindgen::JsValue;
+    fn attribute_filter_shim(this: &MutationObserverInit) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "attributeFilter")]
     fn set_attribute_filter_shim(this: &MutationObserverInit, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "attributeOldValue")]
@@ -58,7 +58,7 @@ pub trait MutationObserverInitGetters {
     #[doc = "Get the `attributeFilter` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MutationObserverInit`*"]
-    fn attribute_filter(&self) -> &::wasm_bindgen::JsValue;
+    fn attribute_filter(&self) -> ::js_sys::Array;
     #[doc = "Get the `attributeOldValue` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MutationObserverInit`*"]
@@ -92,7 +92,7 @@ impl MutationObserverInitGetters for MutationObserverInit {
     fn animations(&self) -> bool {
         self.animations_shim()
     }
-    fn attribute_filter(&self) -> &::wasm_bindgen::JsValue {
+    fn attribute_filter(&self) -> ::js_sys::Array {
         self.attribute_filter_shim()
     }
     fn attribute_old_value(&self) -> bool {

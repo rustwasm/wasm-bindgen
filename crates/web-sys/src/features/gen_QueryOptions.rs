@@ -15,7 +15,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type QueryOptions;
     #[wasm_bindgen(method, getter = "postscriptNames")]
-    fn postscript_names_shim(this: &QueryOptions) -> &::wasm_bindgen::JsValue;
+    fn postscript_names_shim(this: &QueryOptions) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "postscriptNames")]
     fn set_postscript_names_shim(this: &QueryOptions, val: &::wasm_bindgen::JsValue);
 }
@@ -31,12 +31,12 @@ pub trait QueryOptionsGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn postscript_names(&self) -> &::wasm_bindgen::JsValue;
+    fn postscript_names(&self) -> ::js_sys::Array;
 }
 #[cfg(web_sys_unstable_apis)]
 impl QueryOptionsGetters for QueryOptions {
     #[cfg(web_sys_unstable_apis)]
-    fn postscript_names(&self) -> &::wasm_bindgen::JsValue {
+    fn postscript_names(&self) -> ::js_sys::Array {
         self.postscript_names_shim()
     }
 }

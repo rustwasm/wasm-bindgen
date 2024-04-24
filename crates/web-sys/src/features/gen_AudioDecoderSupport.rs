@@ -16,7 +16,7 @@ extern "C" {
     pub type AudioDecoderSupport;
     #[cfg(feature = "AudioDecoderConfig")]
     #[wasm_bindgen(method, getter = "config")]
-    fn config_shim(this: &AudioDecoderSupport) -> &AudioDecoderConfig;
+    fn config_shim(this: &AudioDecoderSupport) -> AudioDecoderConfig;
     #[cfg(feature = "AudioDecoderConfig")]
     #[wasm_bindgen(method, setter = "config")]
     fn set_config_shim(this: &AudioDecoderSupport, val: &AudioDecoderConfig);
@@ -38,7 +38,7 @@ pub trait AudioDecoderSupportGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn config(&self) -> &AudioDecoderConfig;
+    fn config(&self) -> AudioDecoderConfig;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `supported` field of this object."]
     #[doc = ""]
@@ -52,7 +52,7 @@ pub trait AudioDecoderSupportGetters {
 impl AudioDecoderSupportGetters for AudioDecoderSupport {
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "AudioDecoderConfig")]
-    fn config(&self) -> &AudioDecoderConfig {
+    fn config(&self) -> AudioDecoderConfig {
         self.config_shim()
     }
     #[cfg(web_sys_unstable_apis)]

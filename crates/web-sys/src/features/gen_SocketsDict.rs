@@ -19,7 +19,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "sent")]
     fn set_sent_shim(this: &SocketsDict, val: f64);
     #[wasm_bindgen(method, getter = "sockets")]
-    fn sockets_shim(this: &SocketsDict) -> &::wasm_bindgen::JsValue;
+    fn sockets_shim(this: &SocketsDict) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "sockets")]
     fn set_sockets_shim(this: &SocketsDict, val: &::wasm_bindgen::JsValue);
 }
@@ -38,7 +38,7 @@ pub trait SocketsDictGetters {
     #[doc = "Get the `sockets` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SocketsDict`*"]
-    fn sockets(&self) -> &::wasm_bindgen::JsValue;
+    fn sockets(&self) -> ::js_sys::Array;
 }
 impl SocketsDictGetters for SocketsDict {
     fn received(&self) -> f64 {
@@ -47,7 +47,7 @@ impl SocketsDictGetters for SocketsDict {
     fn sent(&self) -> f64 {
         self.sent_shim()
     }
-    fn sockets(&self) -> &::wasm_bindgen::JsValue {
+    fn sockets(&self) -> ::js_sys::Array {
         self.sockets_shim()
     }
 }

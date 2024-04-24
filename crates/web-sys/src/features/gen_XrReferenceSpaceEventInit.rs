@@ -28,13 +28,13 @@ extern "C" {
     fn set_composed_shim(this: &XrReferenceSpaceEventInit, val: bool);
     #[cfg(feature = "XrReferenceSpace")]
     #[wasm_bindgen(method, getter = "referenceSpace")]
-    fn reference_space_shim(this: &XrReferenceSpaceEventInit) -> &XrReferenceSpace;
+    fn reference_space_shim(this: &XrReferenceSpaceEventInit) -> XrReferenceSpace;
     #[cfg(feature = "XrReferenceSpace")]
     #[wasm_bindgen(method, setter = "referenceSpace")]
     fn set_reference_space_shim(this: &XrReferenceSpaceEventInit, val: &XrReferenceSpace);
     #[cfg(feature = "XrRigidTransform")]
     #[wasm_bindgen(method, getter = "transform")]
-    fn transform_shim(this: &XrReferenceSpaceEventInit) -> Option<&XrRigidTransform>;
+    fn transform_shim(this: &XrReferenceSpaceEventInit) -> Option<XrRigidTransform>;
     #[cfg(feature = "XrRigidTransform")]
     #[wasm_bindgen(method, setter = "transform")]
     fn set_transform_shim(this: &XrReferenceSpaceEventInit, val: Option<&XrRigidTransform>);
@@ -76,7 +76,7 @@ pub trait XrReferenceSpaceEventInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn reference_space(&self) -> &XrReferenceSpace;
+    fn reference_space(&self) -> XrReferenceSpace;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrRigidTransform")]
     #[doc = "Get the `transform` field of this object."]
@@ -85,7 +85,7 @@ pub trait XrReferenceSpaceEventInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn transform(&self) -> Option<&XrRigidTransform>;
+    fn transform(&self) -> Option<XrRigidTransform>;
 }
 #[cfg(web_sys_unstable_apis)]
 impl XrReferenceSpaceEventInitGetters for XrReferenceSpaceEventInit {
@@ -103,12 +103,12 @@ impl XrReferenceSpaceEventInitGetters for XrReferenceSpaceEventInit {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrReferenceSpace")]
-    fn reference_space(&self) -> &XrReferenceSpace {
+    fn reference_space(&self) -> XrReferenceSpace {
         self.reference_space_shim()
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrRigidTransform")]
-    fn transform(&self) -> Option<&XrRigidTransform> {
+    fn transform(&self) -> Option<XrRigidTransform> {
         self.transform_shim()
     }
 }

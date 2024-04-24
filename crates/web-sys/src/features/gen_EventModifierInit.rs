@@ -28,7 +28,7 @@ extern "C" {
     fn set_detail_shim(this: &EventModifierInit, val: i32);
     #[cfg(feature = "Window")]
     #[wasm_bindgen(method, getter = "view")]
-    fn view_shim(this: &EventModifierInit) -> Option<&Window>;
+    fn view_shim(this: &EventModifierInit) -> Option<Window>;
     #[cfg(feature = "Window")]
     #[wasm_bindgen(method, setter = "view")]
     fn set_view_shim(this: &EventModifierInit, val: Option<&Window>);
@@ -109,7 +109,7 @@ pub trait EventModifierInitGetters {
     #[doc = "Get the `view` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventModifierInit`, `Window`*"]
-    fn view(&self) -> Option<&Window>;
+    fn view(&self) -> Option<Window>;
     #[doc = "Get the `altKey` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventModifierInit`*"]
@@ -177,7 +177,7 @@ impl EventModifierInitGetters for EventModifierInit {
         self.detail_shim()
     }
     #[cfg(feature = "Window")]
-    fn view(&self) -> Option<&Window> {
+    fn view(&self) -> Option<Window> {
         self.view_shim()
     }
     fn alt_key(&self) -> bool {

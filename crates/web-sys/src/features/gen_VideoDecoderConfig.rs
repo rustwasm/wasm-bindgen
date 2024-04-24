@@ -15,7 +15,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type VideoDecoderConfig;
     #[wasm_bindgen(method, getter = "codec")]
-    fn codec_shim(this: &VideoDecoderConfig) -> &str;
+    fn codec_shim(this: &VideoDecoderConfig) -> String;
     #[wasm_bindgen(method, setter = "codec")]
     fn set_codec_shim(this: &VideoDecoderConfig, val: &str);
     #[wasm_bindgen(method, getter = "codedHeight")]
@@ -28,12 +28,12 @@ extern "C" {
     fn set_coded_width_shim(this: &VideoDecoderConfig, val: u32);
     #[cfg(feature = "VideoColorSpaceInit")]
     #[wasm_bindgen(method, getter = "colorSpace")]
-    fn color_space_shim(this: &VideoDecoderConfig) -> &VideoColorSpaceInit;
+    fn color_space_shim(this: &VideoDecoderConfig) -> VideoColorSpaceInit;
     #[cfg(feature = "VideoColorSpaceInit")]
     #[wasm_bindgen(method, setter = "colorSpace")]
     fn set_color_space_shim(this: &VideoDecoderConfig, val: &VideoColorSpaceInit);
     #[wasm_bindgen(method, getter = "description")]
-    fn description_shim(this: &VideoDecoderConfig) -> &::js_sys::Object;
+    fn description_shim(this: &VideoDecoderConfig) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "description")]
     fn set_description_shim(this: &VideoDecoderConfig, val: &::js_sys::Object);
     #[wasm_bindgen(method, getter = "displayAspectHeight")]
@@ -67,7 +67,7 @@ pub trait VideoDecoderConfigGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn codec(&self) -> &str;
+    fn codec(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `codedHeight` field of this object."]
     #[doc = ""]
@@ -92,7 +92,7 @@ pub trait VideoDecoderConfigGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn color_space(&self) -> &VideoColorSpaceInit;
+    fn color_space(&self) -> VideoColorSpaceInit;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `description` field of this object."]
     #[doc = ""]
@@ -100,7 +100,7 @@ pub trait VideoDecoderConfigGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn description(&self) -> &::js_sys::Object;
+    fn description(&self) -> ::js_sys::Object;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `displayAspectHeight` field of this object."]
     #[doc = ""]
@@ -138,7 +138,7 @@ pub trait VideoDecoderConfigGetters {
 #[cfg(web_sys_unstable_apis)]
 impl VideoDecoderConfigGetters for VideoDecoderConfig {
     #[cfg(web_sys_unstable_apis)]
-    fn codec(&self) -> &str {
+    fn codec(&self) -> String {
         self.codec_shim()
     }
     #[cfg(web_sys_unstable_apis)]
@@ -151,11 +151,11 @@ impl VideoDecoderConfigGetters for VideoDecoderConfig {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "VideoColorSpaceInit")]
-    fn color_space(&self) -> &VideoColorSpaceInit {
+    fn color_space(&self) -> VideoColorSpaceInit {
         self.color_space_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn description(&self) -> &::js_sys::Object {
+    fn description(&self) -> ::js_sys::Object {
         self.description_shim()
     }
     #[cfg(web_sys_unstable_apis)]

@@ -23,7 +23,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &TrackEventInit, val: bool);
     #[wasm_bindgen(method, getter = "track")]
-    fn track_shim(this: &TrackEventInit) -> Option<&::js_sys::Object>;
+    fn track_shim(this: &TrackEventInit) -> Option<::js_sys::Object>;
     #[wasm_bindgen(method, setter = "track")]
     fn set_track_shim(this: &TrackEventInit, val: Option<&::js_sys::Object>);
 }
@@ -46,7 +46,7 @@ pub trait TrackEventInitGetters {
     #[doc = "Get the `track` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TrackEventInit`*"]
-    fn track(&self) -> Option<&::js_sys::Object>;
+    fn track(&self) -> Option<::js_sys::Object>;
 }
 impl TrackEventInitGetters for TrackEventInit {
     fn bubbles(&self) -> bool {
@@ -58,7 +58,7 @@ impl TrackEventInitGetters for TrackEventInit {
     fn composed(&self) -> bool {
         self.composed_shim()
     }
-    fn track(&self) -> Option<&::js_sys::Object> {
+    fn track(&self) -> Option<::js_sys::Object> {
         self.track_shim()
     }
 }

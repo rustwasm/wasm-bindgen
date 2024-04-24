@@ -11,15 +11,15 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ConsoleInstanceOptions`*"]
     pub type ConsoleInstanceOptions;
     #[wasm_bindgen(method, getter = "consoleID")]
-    fn console_id_shim(this: &ConsoleInstanceOptions) -> &str;
+    fn console_id_shim(this: &ConsoleInstanceOptions) -> String;
     #[wasm_bindgen(method, setter = "consoleID")]
     fn set_console_id_shim(this: &ConsoleInstanceOptions, val: &str);
     #[wasm_bindgen(method, getter = "dump")]
-    fn dump_shim(this: &ConsoleInstanceOptions) -> &::js_sys::Function;
+    fn dump_shim(this: &ConsoleInstanceOptions) -> ::js_sys::Function;
     #[wasm_bindgen(method, setter = "dump")]
     fn set_dump_shim(this: &ConsoleInstanceOptions, val: &::js_sys::Function);
     #[wasm_bindgen(method, getter = "innerID")]
-    fn inner_id_shim(this: &ConsoleInstanceOptions) -> &str;
+    fn inner_id_shim(this: &ConsoleInstanceOptions) -> String;
     #[wasm_bindgen(method, setter = "innerID")]
     fn set_inner_id_shim(this: &ConsoleInstanceOptions, val: &str);
     #[cfg(feature = "ConsoleLogLevel")]
@@ -29,11 +29,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "maxLogLevel")]
     fn set_max_log_level_shim(this: &ConsoleInstanceOptions, val: ConsoleLogLevel);
     #[wasm_bindgen(method, getter = "maxLogLevelPref")]
-    fn max_log_level_pref_shim(this: &ConsoleInstanceOptions) -> &str;
+    fn max_log_level_pref_shim(this: &ConsoleInstanceOptions) -> String;
     #[wasm_bindgen(method, setter = "maxLogLevelPref")]
     fn set_max_log_level_pref_shim(this: &ConsoleInstanceOptions, val: &str);
     #[wasm_bindgen(method, getter = "prefix")]
-    fn prefix_shim(this: &ConsoleInstanceOptions) -> &str;
+    fn prefix_shim(this: &ConsoleInstanceOptions) -> String;
     #[wasm_bindgen(method, setter = "prefix")]
     fn set_prefix_shim(this: &ConsoleInstanceOptions, val: &str);
 }
@@ -44,15 +44,15 @@ pub trait ConsoleInstanceOptionsGetters {
     #[doc = "Get the `consoleID` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleInstanceOptions`*"]
-    fn console_id(&self) -> &str;
+    fn console_id(&self) -> String;
     #[doc = "Get the `dump` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleInstanceOptions`*"]
-    fn dump(&self) -> &::js_sys::Function;
+    fn dump(&self) -> ::js_sys::Function;
     #[doc = "Get the `innerID` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleInstanceOptions`*"]
-    fn inner_id(&self) -> &str;
+    fn inner_id(&self) -> String;
     #[cfg(feature = "ConsoleLogLevel")]
     #[doc = "Get the `maxLogLevel` field of this object."]
     #[doc = ""]
@@ -61,30 +61,30 @@ pub trait ConsoleInstanceOptionsGetters {
     #[doc = "Get the `maxLogLevelPref` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleInstanceOptions`*"]
-    fn max_log_level_pref(&self) -> &str;
+    fn max_log_level_pref(&self) -> String;
     #[doc = "Get the `prefix` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleInstanceOptions`*"]
-    fn prefix(&self) -> &str;
+    fn prefix(&self) -> String;
 }
 impl ConsoleInstanceOptionsGetters for ConsoleInstanceOptions {
-    fn console_id(&self) -> &str {
+    fn console_id(&self) -> String {
         self.console_id_shim()
     }
-    fn dump(&self) -> &::js_sys::Function {
+    fn dump(&self) -> ::js_sys::Function {
         self.dump_shim()
     }
-    fn inner_id(&self) -> &str {
+    fn inner_id(&self) -> String {
         self.inner_id_shim()
     }
     #[cfg(feature = "ConsoleLogLevel")]
     fn max_log_level(&self) -> ConsoleLogLevel {
         self.max_log_level_shim()
     }
-    fn max_log_level_pref(&self) -> &str {
+    fn max_log_level_pref(&self) -> String {
         self.max_log_level_pref_shim()
     }
-    fn prefix(&self) -> &str {
+    fn prefix(&self) -> String {
         self.prefix_shim()
     }
 }

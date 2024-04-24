@@ -15,11 +15,11 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type AllowedBluetoothDevice;
     #[wasm_bindgen(method, getter = "allowedServices")]
-    fn allowed_services_shim(this: &AllowedBluetoothDevice) -> &::wasm_bindgen::JsValue;
+    fn allowed_services_shim(this: &AllowedBluetoothDevice) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "allowedServices")]
     fn set_allowed_services_shim(this: &AllowedBluetoothDevice, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "deviceId")]
-    fn device_id_shim(this: &AllowedBluetoothDevice) -> &str;
+    fn device_id_shim(this: &AllowedBluetoothDevice) -> String;
     #[wasm_bindgen(method, setter = "deviceId")]
     fn set_device_id_shim(this: &AllowedBluetoothDevice, val: &str);
     #[wasm_bindgen(method, getter = "mayUseGATT")]
@@ -39,7 +39,7 @@ pub trait AllowedBluetoothDeviceGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn allowed_services(&self) -> &::wasm_bindgen::JsValue;
+    fn allowed_services(&self) -> ::wasm_bindgen::JsValue;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `deviceId` field of this object."]
     #[doc = ""]
@@ -47,7 +47,7 @@ pub trait AllowedBluetoothDeviceGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn device_id(&self) -> &str;
+    fn device_id(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `mayUseGATT` field of this object."]
     #[doc = ""]
@@ -60,11 +60,11 @@ pub trait AllowedBluetoothDeviceGetters {
 #[cfg(web_sys_unstable_apis)]
 impl AllowedBluetoothDeviceGetters for AllowedBluetoothDevice {
     #[cfg(web_sys_unstable_apis)]
-    fn allowed_services(&self) -> &::wasm_bindgen::JsValue {
+    fn allowed_services(&self) -> ::wasm_bindgen::JsValue {
         self.allowed_services_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn device_id(&self) -> &str {
+    fn device_id(&self) -> String {
         self.device_id_shim()
     }
     #[cfg(web_sys_unstable_apis)]

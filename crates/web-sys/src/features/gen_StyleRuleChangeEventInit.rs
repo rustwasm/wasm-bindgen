@@ -24,13 +24,13 @@ extern "C" {
     fn set_composed_shim(this: &StyleRuleChangeEventInit, val: bool);
     #[cfg(feature = "CssRule")]
     #[wasm_bindgen(method, getter = "rule")]
-    fn rule_shim(this: &StyleRuleChangeEventInit) -> Option<&CssRule>;
+    fn rule_shim(this: &StyleRuleChangeEventInit) -> Option<CssRule>;
     #[cfg(feature = "CssRule")]
     #[wasm_bindgen(method, setter = "rule")]
     fn set_rule_shim(this: &StyleRuleChangeEventInit, val: Option<&CssRule>);
     #[cfg(feature = "CssStyleSheet")]
     #[wasm_bindgen(method, getter = "stylesheet")]
-    fn stylesheet_shim(this: &StyleRuleChangeEventInit) -> Option<&CssStyleSheet>;
+    fn stylesheet_shim(this: &StyleRuleChangeEventInit) -> Option<CssStyleSheet>;
     #[cfg(feature = "CssStyleSheet")]
     #[wasm_bindgen(method, setter = "stylesheet")]
     fn set_stylesheet_shim(this: &StyleRuleChangeEventInit, val: Option<&CssStyleSheet>);
@@ -55,12 +55,12 @@ pub trait StyleRuleChangeEventInitGetters {
     #[doc = "Get the `rule` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssRule`, `StyleRuleChangeEventInit`*"]
-    fn rule(&self) -> Option<&CssRule>;
+    fn rule(&self) -> Option<CssRule>;
     #[cfg(feature = "CssStyleSheet")]
     #[doc = "Get the `stylesheet` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssStyleSheet`, `StyleRuleChangeEventInit`*"]
-    fn stylesheet(&self) -> Option<&CssStyleSheet>;
+    fn stylesheet(&self) -> Option<CssStyleSheet>;
 }
 impl StyleRuleChangeEventInitGetters for StyleRuleChangeEventInit {
     fn bubbles(&self) -> bool {
@@ -73,11 +73,11 @@ impl StyleRuleChangeEventInitGetters for StyleRuleChangeEventInit {
         self.composed_shim()
     }
     #[cfg(feature = "CssRule")]
-    fn rule(&self) -> Option<&CssRule> {
+    fn rule(&self) -> Option<CssRule> {
         self.rule_shim()
     }
     #[cfg(feature = "CssStyleSheet")]
-    fn stylesheet(&self) -> Option<&CssStyleSheet> {
+    fn stylesheet(&self) -> Option<CssStyleSheet> {
         self.stylesheet_shim()
     }
 }

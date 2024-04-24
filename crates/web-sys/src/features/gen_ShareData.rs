@@ -11,19 +11,19 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
     pub type ShareData;
     #[wasm_bindgen(method, getter = "files")]
-    fn files_shim(this: &ShareData) -> &::wasm_bindgen::JsValue;
+    fn files_shim(this: &ShareData) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "files")]
     fn set_files_shim(this: &ShareData, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "text")]
-    fn text_shim(this: &ShareData) -> &str;
+    fn text_shim(this: &ShareData) -> String;
     #[wasm_bindgen(method, setter = "text")]
     fn set_text_shim(this: &ShareData, val: &str);
     #[wasm_bindgen(method, getter = "title")]
-    fn title_shim(this: &ShareData) -> &str;
+    fn title_shim(this: &ShareData) -> String;
     #[wasm_bindgen(method, setter = "title")]
     fn set_title_shim(this: &ShareData, val: &str);
     #[wasm_bindgen(method, getter = "url")]
-    fn url_shim(this: &ShareData) -> &str;
+    fn url_shim(this: &ShareData) -> String;
     #[wasm_bindgen(method, setter = "url")]
     fn set_url_shim(this: &ShareData, val: &str);
 }
@@ -34,31 +34,31 @@ pub trait ShareDataGetters {
     #[doc = "Get the `files` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
-    fn files(&self) -> &::wasm_bindgen::JsValue;
+    fn files(&self) -> ::js_sys::Array;
     #[doc = "Get the `text` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
-    fn text(&self) -> &str;
+    fn text(&self) -> String;
     #[doc = "Get the `title` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
-    fn title(&self) -> &str;
+    fn title(&self) -> String;
     #[doc = "Get the `url` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
-    fn url(&self) -> &str;
+    fn url(&self) -> String;
 }
 impl ShareDataGetters for ShareData {
-    fn files(&self) -> &::wasm_bindgen::JsValue {
+    fn files(&self) -> ::js_sys::Array {
         self.files_shim()
     }
-    fn text(&self) -> &str {
+    fn text(&self) -> String {
         self.text_shim()
     }
-    fn title(&self) -> &str {
+    fn title(&self) -> String {
         self.title_shim()
     }
-    fn url(&self) -> &str {
+    fn url(&self) -> String {
         self.url_shim()
     }
 }

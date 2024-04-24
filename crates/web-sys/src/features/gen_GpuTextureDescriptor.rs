@@ -15,7 +15,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuTextureDescriptor;
     #[wasm_bindgen(method, getter = "label")]
-    fn label_shim(this: &GpuTextureDescriptor) -> &str;
+    fn label_shim(this: &GpuTextureDescriptor) -> String;
     #[wasm_bindgen(method, setter = "label")]
     fn set_label_shim(this: &GpuTextureDescriptor, val: &str);
     #[cfg(feature = "GpuTextureDimension")]
@@ -39,7 +39,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "sampleCount")]
     fn set_sample_count_shim(this: &GpuTextureDescriptor, val: u32);
     #[wasm_bindgen(method, getter = "size")]
-    fn size_shim(this: &GpuTextureDescriptor) -> &::wasm_bindgen::JsValue;
+    fn size_shim(this: &GpuTextureDescriptor) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "size")]
     fn set_size_shim(this: &GpuTextureDescriptor, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "usage")]
@@ -47,7 +47,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "usage")]
     fn set_usage_shim(this: &GpuTextureDescriptor, val: u32);
     #[wasm_bindgen(method, getter = "viewFormats")]
-    fn view_formats_shim(this: &GpuTextureDescriptor) -> &::wasm_bindgen::JsValue;
+    fn view_formats_shim(this: &GpuTextureDescriptor) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "viewFormats")]
     fn set_view_formats_shim(this: &GpuTextureDescriptor, val: &::wasm_bindgen::JsValue);
 }
@@ -63,7 +63,7 @@ pub trait GpuTextureDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn label(&self) -> &str;
+    fn label(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureDimension")]
     #[doc = "Get the `dimension` field of this object."]
@@ -105,7 +105,7 @@ pub trait GpuTextureDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn size(&self) -> &::wasm_bindgen::JsValue;
+    fn size(&self) -> ::wasm_bindgen::JsValue;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `usage` field of this object."]
     #[doc = ""]
@@ -121,12 +121,12 @@ pub trait GpuTextureDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn view_formats(&self) -> &::wasm_bindgen::JsValue;
+    fn view_formats(&self) -> ::js_sys::Array;
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuTextureDescriptorGetters for GpuTextureDescriptor {
     #[cfg(web_sys_unstable_apis)]
-    fn label(&self) -> &str {
+    fn label(&self) -> String {
         self.label_shim()
     }
     #[cfg(web_sys_unstable_apis)]
@@ -148,7 +148,7 @@ impl GpuTextureDescriptorGetters for GpuTextureDescriptor {
         self.sample_count_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn size(&self) -> &::wasm_bindgen::JsValue {
+    fn size(&self) -> ::wasm_bindgen::JsValue {
         self.size_shim()
     }
     #[cfg(web_sys_unstable_apis)]
@@ -156,7 +156,7 @@ impl GpuTextureDescriptorGetters for GpuTextureDescriptor {
         self.usage_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn view_formats(&self) -> &::wasm_bindgen::JsValue {
+    fn view_formats(&self) -> ::js_sys::Array {
         self.view_formats_shim()
     }
 }

@@ -15,7 +15,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type MediaStreamTrackGeneratorInit;
     #[wasm_bindgen(method, getter = "kind")]
-    fn kind_shim(this: &MediaStreamTrackGeneratorInit) -> &str;
+    fn kind_shim(this: &MediaStreamTrackGeneratorInit) -> String;
     #[wasm_bindgen(method, setter = "kind")]
     fn set_kind_shim(this: &MediaStreamTrackGeneratorInit, val: &str);
 }
@@ -31,12 +31,12 @@ pub trait MediaStreamTrackGeneratorInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn kind(&self) -> &str;
+    fn kind(&self) -> String;
 }
 #[cfg(web_sys_unstable_apis)]
 impl MediaStreamTrackGeneratorInitGetters for MediaStreamTrackGeneratorInit {
     #[cfg(web_sys_unstable_apis)]
-    fn kind(&self) -> &str {
+    fn kind(&self) -> String {
         self.kind_shim()
     }
 }

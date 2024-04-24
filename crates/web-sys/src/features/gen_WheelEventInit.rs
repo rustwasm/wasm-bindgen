@@ -28,7 +28,7 @@ extern "C" {
     fn set_detail_shim(this: &WheelEventInit, val: i32);
     #[cfg(feature = "Window")]
     #[wasm_bindgen(method, getter = "view")]
-    fn view_shim(this: &WheelEventInit) -> Option<&Window>;
+    fn view_shim(this: &WheelEventInit) -> Option<Window>;
     #[cfg(feature = "Window")]
     #[wasm_bindgen(method, setter = "view")]
     fn set_view_shim(this: &WheelEventInit, val: Option<&Window>);
@@ -110,7 +110,7 @@ extern "C" {
     fn set_movement_y_shim(this: &WheelEventInit, val: i32);
     #[cfg(feature = "EventTarget")]
     #[wasm_bindgen(method, getter = "relatedTarget")]
-    fn related_target_shim(this: &WheelEventInit) -> Option<&EventTarget>;
+    fn related_target_shim(this: &WheelEventInit) -> Option<EventTarget>;
     #[cfg(feature = "EventTarget")]
     #[wasm_bindgen(method, setter = "relatedTarget")]
     fn set_related_target_shim(this: &WheelEventInit, val: Option<&EventTarget>);
@@ -163,7 +163,7 @@ pub trait WheelEventInitGetters {
     #[doc = "Get the `view` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WheelEventInit`, `Window`*"]
-    fn view(&self) -> Option<&Window>;
+    fn view(&self) -> Option<Window>;
     #[doc = "Get the `altKey` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WheelEventInit`*"]
@@ -244,7 +244,7 @@ pub trait WheelEventInitGetters {
     #[doc = "Get the `relatedTarget` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventTarget`, `WheelEventInit`*"]
-    fn related_target(&self) -> Option<&EventTarget>;
+    fn related_target(&self) -> Option<EventTarget>;
     #[doc = "Get the `screenX` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WheelEventInit`*"]
@@ -284,7 +284,7 @@ impl WheelEventInitGetters for WheelEventInit {
         self.detail_shim()
     }
     #[cfg(feature = "Window")]
-    fn view(&self) -> Option<&Window> {
+    fn view(&self) -> Option<Window> {
         self.view_shim()
     }
     fn alt_key(&self) -> bool {
@@ -345,7 +345,7 @@ impl WheelEventInitGetters for WheelEventInit {
         self.movement_y_shim()
     }
     #[cfg(feature = "EventTarget")]
-    fn related_target(&self) -> Option<&EventTarget> {
+    fn related_target(&self) -> Option<EventTarget> {
         self.related_target_shim()
     }
     fn screen_x(&self) -> i32 {

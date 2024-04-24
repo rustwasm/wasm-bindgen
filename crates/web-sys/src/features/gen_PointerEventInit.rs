@@ -28,7 +28,7 @@ extern "C" {
     fn set_detail_shim(this: &PointerEventInit, val: i32);
     #[cfg(feature = "Window")]
     #[wasm_bindgen(method, getter = "view")]
-    fn view_shim(this: &PointerEventInit) -> Option<&Window>;
+    fn view_shim(this: &PointerEventInit) -> Option<Window>;
     #[cfg(feature = "Window")]
     #[wasm_bindgen(method, setter = "view")]
     fn set_view_shim(this: &PointerEventInit, val: Option<&Window>);
@@ -110,7 +110,7 @@ extern "C" {
     fn set_movement_y_shim(this: &PointerEventInit, val: i32);
     #[cfg(feature = "EventTarget")]
     #[wasm_bindgen(method, getter = "relatedTarget")]
-    fn related_target_shim(this: &PointerEventInit) -> Option<&EventTarget>;
+    fn related_target_shim(this: &PointerEventInit) -> Option<EventTarget>;
     #[cfg(feature = "EventTarget")]
     #[wasm_bindgen(method, setter = "relatedTarget")]
     fn set_related_target_shim(this: &PointerEventInit, val: Option<&EventTarget>);
@@ -123,7 +123,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "screenY")]
     fn set_screen_y_shim(this: &PointerEventInit, val: i32);
     #[wasm_bindgen(method, getter = "coalescedEvents")]
-    fn coalesced_events_shim(this: &PointerEventInit) -> &::wasm_bindgen::JsValue;
+    fn coalesced_events_shim(this: &PointerEventInit) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "coalescedEvents")]
     fn set_coalesced_events_shim(this: &PointerEventInit, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "height")]
@@ -139,7 +139,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "pointerId")]
     fn set_pointer_id_shim(this: &PointerEventInit, val: i32);
     #[wasm_bindgen(method, getter = "pointerType")]
-    fn pointer_type_shim(this: &PointerEventInit) -> &str;
+    fn pointer_type_shim(this: &PointerEventInit) -> String;
     #[wasm_bindgen(method, setter = "pointerType")]
     fn set_pointer_type_shim(this: &PointerEventInit, val: &str);
     #[wasm_bindgen(method, getter = "pressure")]
@@ -191,7 +191,7 @@ pub trait PointerEventInitGetters {
     #[doc = "Get the `view` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`, `Window`*"]
-    fn view(&self) -> Option<&Window>;
+    fn view(&self) -> Option<Window>;
     #[doc = "Get the `altKey` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
@@ -272,7 +272,7 @@ pub trait PointerEventInitGetters {
     #[doc = "Get the `relatedTarget` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventTarget`, `PointerEventInit`*"]
-    fn related_target(&self) -> Option<&EventTarget>;
+    fn related_target(&self) -> Option<EventTarget>;
     #[doc = "Get the `screenX` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
@@ -284,7 +284,7 @@ pub trait PointerEventInitGetters {
     #[doc = "Get the `coalescedEvents` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
-    fn coalesced_events(&self) -> &::wasm_bindgen::JsValue;
+    fn coalesced_events(&self) -> ::js_sys::Array;
     #[doc = "Get the `height` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
@@ -300,7 +300,7 @@ pub trait PointerEventInitGetters {
     #[doc = "Get the `pointerType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
-    fn pointer_type(&self) -> &str;
+    fn pointer_type(&self) -> String;
     #[doc = "Get the `pressure` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
@@ -340,7 +340,7 @@ impl PointerEventInitGetters for PointerEventInit {
         self.detail_shim()
     }
     #[cfg(feature = "Window")]
-    fn view(&self) -> Option<&Window> {
+    fn view(&self) -> Option<Window> {
         self.view_shim()
     }
     fn alt_key(&self) -> bool {
@@ -401,7 +401,7 @@ impl PointerEventInitGetters for PointerEventInit {
         self.movement_y_shim()
     }
     #[cfg(feature = "EventTarget")]
-    fn related_target(&self) -> Option<&EventTarget> {
+    fn related_target(&self) -> Option<EventTarget> {
         self.related_target_shim()
     }
     fn screen_x(&self) -> i32 {
@@ -410,7 +410,7 @@ impl PointerEventInitGetters for PointerEventInit {
     fn screen_y(&self) -> i32 {
         self.screen_y_shim()
     }
-    fn coalesced_events(&self) -> &::wasm_bindgen::JsValue {
+    fn coalesced_events(&self) -> ::js_sys::Array {
         self.coalesced_events_shim()
     }
     fn height(&self) -> i32 {
@@ -422,7 +422,7 @@ impl PointerEventInitGetters for PointerEventInit {
     fn pointer_id(&self) -> i32 {
         self.pointer_id_shim()
     }
-    fn pointer_type(&self) -> &str {
+    fn pointer_type(&self) -> String {
         self.pointer_type_shim()
     }
     fn pressure(&self) -> f32 {

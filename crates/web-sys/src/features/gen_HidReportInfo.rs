@@ -15,7 +15,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type HidReportInfo;
     #[wasm_bindgen(method, getter = "items")]
-    fn items_shim(this: &HidReportInfo) -> &::wasm_bindgen::JsValue;
+    fn items_shim(this: &HidReportInfo) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "items")]
     fn set_items_shim(this: &HidReportInfo, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "reportId")]
@@ -35,7 +35,7 @@ pub trait HidReportInfoGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn items(&self) -> &::wasm_bindgen::JsValue;
+    fn items(&self) -> ::js_sys::Array;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `reportId` field of this object."]
     #[doc = ""]
@@ -48,7 +48,7 @@ pub trait HidReportInfoGetters {
 #[cfg(web_sys_unstable_apis)]
 impl HidReportInfoGetters for HidReportInfo {
     #[cfg(web_sys_unstable_apis)]
-    fn items(&self) -> &::wasm_bindgen::JsValue {
+    fn items(&self) -> ::js_sys::Array {
         self.items_shim()
     }
     #[cfg(web_sys_unstable_apis)]

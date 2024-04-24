@@ -15,11 +15,11 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type WebTransportHash;
     #[wasm_bindgen(method, getter = "algorithm")]
-    fn algorithm_shim(this: &WebTransportHash) -> &str;
+    fn algorithm_shim(this: &WebTransportHash) -> String;
     #[wasm_bindgen(method, setter = "algorithm")]
     fn set_algorithm_shim(this: &WebTransportHash, val: &str);
     #[wasm_bindgen(method, getter = "value")]
-    fn value_shim(this: &WebTransportHash) -> &::js_sys::Object;
+    fn value_shim(this: &WebTransportHash) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "value")]
     fn set_value_shim(this: &WebTransportHash, val: &::js_sys::Object);
 }
@@ -35,7 +35,7 @@ pub trait WebTransportHashGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn algorithm(&self) -> &str;
+    fn algorithm(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `value` field of this object."]
     #[doc = ""]
@@ -43,16 +43,16 @@ pub trait WebTransportHashGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn value(&self) -> &::js_sys::Object;
+    fn value(&self) -> ::js_sys::Object;
 }
 #[cfg(web_sys_unstable_apis)]
 impl WebTransportHashGetters for WebTransportHash {
     #[cfg(web_sys_unstable_apis)]
-    fn algorithm(&self) -> &str {
+    fn algorithm(&self) -> String {
         self.algorithm_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn value(&self) -> &::js_sys::Object {
+    fn value(&self) -> ::js_sys::Object {
         self.value_shim()
     }
 }

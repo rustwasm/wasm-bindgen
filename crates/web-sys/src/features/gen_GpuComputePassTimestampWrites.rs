@@ -24,7 +24,7 @@ extern "C" {
     fn set_end_of_pass_write_index_shim(this: &GpuComputePassTimestampWrites, val: u32);
     #[cfg(feature = "GpuQuerySet")]
     #[wasm_bindgen(method, getter = "querySet")]
-    fn query_set_shim(this: &GpuComputePassTimestampWrites) -> &GpuQuerySet;
+    fn query_set_shim(this: &GpuComputePassTimestampWrites) -> GpuQuerySet;
     #[cfg(feature = "GpuQuerySet")]
     #[wasm_bindgen(method, setter = "querySet")]
     fn set_query_set_shim(this: &GpuComputePassTimestampWrites, val: &GpuQuerySet);
@@ -58,7 +58,7 @@ pub trait GpuComputePassTimestampWritesGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn query_set(&self) -> &GpuQuerySet;
+    fn query_set(&self) -> GpuQuerySet;
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuComputePassTimestampWritesGetters for GpuComputePassTimestampWrites {
@@ -72,7 +72,7 @@ impl GpuComputePassTimestampWritesGetters for GpuComputePassTimestampWrites {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuQuerySet")]
-    fn query_set(&self) -> &GpuQuerySet {
+    fn query_set(&self) -> GpuQuerySet {
         self.query_set_shim()
     }
 }

@@ -20,7 +20,7 @@ extern "C" {
     fn set_complete_shim(this: &ImageDecodeResult, val: bool);
     #[cfg(feature = "VideoFrame")]
     #[wasm_bindgen(method, getter = "image")]
-    fn image_shim(this: &ImageDecodeResult) -> &VideoFrame;
+    fn image_shim(this: &ImageDecodeResult) -> VideoFrame;
     #[cfg(feature = "VideoFrame")]
     #[wasm_bindgen(method, setter = "image")]
     fn set_image_shim(this: &ImageDecodeResult, val: &VideoFrame);
@@ -46,7 +46,7 @@ pub trait ImageDecodeResultGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn image(&self) -> &VideoFrame;
+    fn image(&self) -> VideoFrame;
 }
 #[cfg(web_sys_unstable_apis)]
 impl ImageDecodeResultGetters for ImageDecodeResult {
@@ -56,7 +56,7 @@ impl ImageDecodeResultGetters for ImageDecodeResult {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "VideoFrame")]
-    fn image(&self) -> &VideoFrame {
+    fn image(&self) -> VideoFrame {
         self.image_shim()
     }
 }

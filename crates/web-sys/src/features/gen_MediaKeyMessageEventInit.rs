@@ -23,7 +23,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &MediaKeyMessageEventInit, val: bool);
     #[wasm_bindgen(method, getter = "message")]
-    fn message_shim(this: &MediaKeyMessageEventInit) -> &::js_sys::ArrayBuffer;
+    fn message_shim(this: &MediaKeyMessageEventInit) -> ::js_sys::ArrayBuffer;
     #[wasm_bindgen(method, setter = "message")]
     fn set_message_shim(this: &MediaKeyMessageEventInit, val: &::js_sys::ArrayBuffer);
     #[cfg(feature = "MediaKeyMessageType")]
@@ -52,7 +52,7 @@ pub trait MediaKeyMessageEventInitGetters {
     #[doc = "Get the `message` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeyMessageEventInit`*"]
-    fn message(&self) -> &::js_sys::ArrayBuffer;
+    fn message(&self) -> ::js_sys::ArrayBuffer;
     #[cfg(feature = "MediaKeyMessageType")]
     #[doc = "Get the `messageType` field of this object."]
     #[doc = ""]
@@ -69,7 +69,7 @@ impl MediaKeyMessageEventInitGetters for MediaKeyMessageEventInit {
     fn composed(&self) -> bool {
         self.composed_shim()
     }
-    fn message(&self) -> &::js_sys::ArrayBuffer {
+    fn message(&self) -> ::js_sys::ArrayBuffer {
         self.message_shim()
     }
     #[cfg(feature = "MediaKeyMessageType")]

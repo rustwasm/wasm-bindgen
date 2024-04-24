@@ -28,13 +28,13 @@ extern "C" {
     fn set_composed_shim(this: &XrInputSourceEventInit, val: bool);
     #[cfg(feature = "XrFrame")]
     #[wasm_bindgen(method, getter = "frame")]
-    fn frame_shim(this: &XrInputSourceEventInit) -> &XrFrame;
+    fn frame_shim(this: &XrInputSourceEventInit) -> XrFrame;
     #[cfg(feature = "XrFrame")]
     #[wasm_bindgen(method, setter = "frame")]
     fn set_frame_shim(this: &XrInputSourceEventInit, val: &XrFrame);
     #[cfg(feature = "XrInputSource")]
     #[wasm_bindgen(method, getter = "inputSource")]
-    fn input_source_shim(this: &XrInputSourceEventInit) -> &XrInputSource;
+    fn input_source_shim(this: &XrInputSourceEventInit) -> XrInputSource;
     #[cfg(feature = "XrInputSource")]
     #[wasm_bindgen(method, setter = "inputSource")]
     fn set_input_source_shim(this: &XrInputSourceEventInit, val: &XrInputSource);
@@ -76,7 +76,7 @@ pub trait XrInputSourceEventInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn frame(&self) -> &XrFrame;
+    fn frame(&self) -> XrFrame;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrInputSource")]
     #[doc = "Get the `inputSource` field of this object."]
@@ -85,7 +85,7 @@ pub trait XrInputSourceEventInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn input_source(&self) -> &XrInputSource;
+    fn input_source(&self) -> XrInputSource;
 }
 #[cfg(web_sys_unstable_apis)]
 impl XrInputSourceEventInitGetters for XrInputSourceEventInit {
@@ -103,12 +103,12 @@ impl XrInputSourceEventInitGetters for XrInputSourceEventInit {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrFrame")]
-    fn frame(&self) -> &XrFrame {
+    fn frame(&self) -> XrFrame {
         self.frame_shim()
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrInputSource")]
-    fn input_source(&self) -> &XrInputSource {
+    fn input_source(&self) -> XrInputSource {
         self.input_source_shim()
     }
 }

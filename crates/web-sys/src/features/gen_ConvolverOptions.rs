@@ -28,7 +28,7 @@ extern "C" {
     fn set_channel_interpretation_shim(this: &ConvolverOptions, val: ChannelInterpretation);
     #[cfg(feature = "AudioBuffer")]
     #[wasm_bindgen(method, getter = "buffer")]
-    fn buffer_shim(this: &ConvolverOptions) -> Option<&AudioBuffer>;
+    fn buffer_shim(this: &ConvolverOptions) -> Option<AudioBuffer>;
     #[cfg(feature = "AudioBuffer")]
     #[wasm_bindgen(method, setter = "buffer")]
     fn set_buffer_shim(this: &ConvolverOptions, val: Option<&AudioBuffer>);
@@ -59,7 +59,7 @@ pub trait ConvolverOptionsGetters {
     #[doc = "Get the `buffer` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`, `ConvolverOptions`*"]
-    fn buffer(&self) -> Option<&AudioBuffer>;
+    fn buffer(&self) -> Option<AudioBuffer>;
     #[doc = "Get the `disableNormalization` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConvolverOptions`*"]
@@ -78,7 +78,7 @@ impl ConvolverOptionsGetters for ConvolverOptions {
         self.channel_interpretation_shim()
     }
     #[cfg(feature = "AudioBuffer")]
-    fn buffer(&self) -> Option<&AudioBuffer> {
+    fn buffer(&self) -> Option<AudioBuffer> {
         self.buffer_shim()
     }
     fn disable_normalization(&self) -> bool {

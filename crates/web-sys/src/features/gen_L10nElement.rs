@@ -11,27 +11,27 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
     pub type L10nElement;
     #[wasm_bindgen(method, getter = "l10nArgs")]
-    fn l10n_args_shim(this: &L10nElement) -> Option<&::js_sys::Object>;
+    fn l10n_args_shim(this: &L10nElement) -> Option<::js_sys::Object>;
     #[wasm_bindgen(method, setter = "l10nArgs")]
     fn set_l10n_args_shim(this: &L10nElement, val: Option<&::js_sys::Object>);
     #[wasm_bindgen(method, getter = "l10nAttrs")]
-    fn l10n_attrs_shim(this: &L10nElement) -> Option<&str>;
+    fn l10n_attrs_shim(this: &L10nElement) -> Option<String>;
     #[wasm_bindgen(method, setter = "l10nAttrs")]
     fn set_l10n_attrs_shim(this: &L10nElement, val: Option<&str>);
     #[wasm_bindgen(method, getter = "l10nId")]
-    fn l10n_id_shim(this: &L10nElement) -> &str;
+    fn l10n_id_shim(this: &L10nElement) -> String;
     #[wasm_bindgen(method, setter = "l10nId")]
     fn set_l10n_id_shim(this: &L10nElement, val: &str);
     #[wasm_bindgen(method, getter = "localName")]
-    fn local_name_shim(this: &L10nElement) -> &str;
+    fn local_name_shim(this: &L10nElement) -> String;
     #[wasm_bindgen(method, setter = "localName")]
     fn set_local_name_shim(this: &L10nElement, val: &str);
     #[wasm_bindgen(method, getter = "namespaceURI")]
-    fn namespace_uri_shim(this: &L10nElement) -> &str;
+    fn namespace_uri_shim(this: &L10nElement) -> String;
     #[wasm_bindgen(method, setter = "namespaceURI")]
     fn set_namespace_uri_shim(this: &L10nElement, val: &str);
     #[wasm_bindgen(method, getter = "type")]
-    fn type__shim(this: &L10nElement) -> Option<&str>;
+    fn type__shim(this: &L10nElement) -> Option<String>;
     #[wasm_bindgen(method, setter = "type")]
     fn set_type__shim(this: &L10nElement, val: Option<&str>);
 }
@@ -42,45 +42,45 @@ pub trait L10nElementGetters {
     #[doc = "Get the `l10nArgs` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
-    fn l10n_args(&self) -> Option<&::js_sys::Object>;
+    fn l10n_args(&self) -> Option<::js_sys::Object>;
     #[doc = "Get the `l10nAttrs` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
-    fn l10n_attrs(&self) -> Option<&str>;
+    fn l10n_attrs(&self) -> Option<String>;
     #[doc = "Get the `l10nId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
-    fn l10n_id(&self) -> &str;
+    fn l10n_id(&self) -> String;
     #[doc = "Get the `localName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
-    fn local_name(&self) -> &str;
+    fn local_name(&self) -> String;
     #[doc = "Get the `namespaceURI` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
-    fn namespace_uri(&self) -> &str;
+    fn namespace_uri(&self) -> String;
     #[doc = "Get the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
-    fn type_(&self) -> Option<&str>;
+    fn type_(&self) -> Option<String>;
 }
 impl L10nElementGetters for L10nElement {
-    fn l10n_args(&self) -> Option<&::js_sys::Object> {
+    fn l10n_args(&self) -> Option<::js_sys::Object> {
         self.l10n_args_shim()
     }
-    fn l10n_attrs(&self) -> Option<&str> {
+    fn l10n_attrs(&self) -> Option<String> {
         self.l10n_attrs_shim()
     }
-    fn l10n_id(&self) -> &str {
+    fn l10n_id(&self) -> String {
         self.l10n_id_shim()
     }
-    fn local_name(&self) -> &str {
+    fn local_name(&self) -> String {
         self.local_name_shim()
     }
-    fn namespace_uri(&self) -> &str {
+    fn namespace_uri(&self) -> String {
         self.namespace_uri_shim()
     }
-    fn type_(&self) -> Option<&str> {
+    fn type_(&self) -> Option<String> {
         self.type__shim()
     }
 }

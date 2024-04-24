@@ -11,12 +11,12 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     pub type CollectedClientData;
     #[wasm_bindgen(method, getter = "challenge")]
-    fn challenge_shim(this: &CollectedClientData) -> &str;
+    fn challenge_shim(this: &CollectedClientData) -> String;
     #[wasm_bindgen(method, setter = "challenge")]
     fn set_challenge_shim(this: &CollectedClientData, val: &str);
     #[cfg(feature = "AuthenticationExtensionsClientInputs")]
     #[wasm_bindgen(method, getter = "clientExtensions")]
-    fn client_extensions_shim(this: &CollectedClientData) -> &AuthenticationExtensionsClientInputs;
+    fn client_extensions_shim(this: &CollectedClientData) -> AuthenticationExtensionsClientInputs;
     #[cfg(feature = "AuthenticationExtensionsClientInputs")]
     #[wasm_bindgen(method, setter = "clientExtensions")]
     fn set_client_extensions_shim(
@@ -24,19 +24,19 @@ extern "C" {
         val: &AuthenticationExtensionsClientInputs,
     );
     #[wasm_bindgen(method, getter = "hashAlgorithm")]
-    fn hash_algorithm_shim(this: &CollectedClientData) -> &str;
+    fn hash_algorithm_shim(this: &CollectedClientData) -> String;
     #[wasm_bindgen(method, setter = "hashAlgorithm")]
     fn set_hash_algorithm_shim(this: &CollectedClientData, val: &str);
     #[wasm_bindgen(method, getter = "origin")]
-    fn origin_shim(this: &CollectedClientData) -> &str;
+    fn origin_shim(this: &CollectedClientData) -> String;
     #[wasm_bindgen(method, setter = "origin")]
     fn set_origin_shim(this: &CollectedClientData, val: &str);
     #[wasm_bindgen(method, getter = "tokenBindingId")]
-    fn token_binding_id_shim(this: &CollectedClientData) -> &str;
+    fn token_binding_id_shim(this: &CollectedClientData) -> String;
     #[wasm_bindgen(method, setter = "tokenBindingId")]
     fn set_token_binding_id_shim(this: &CollectedClientData, val: &str);
     #[wasm_bindgen(method, getter = "type")]
-    fn type__shim(this: &CollectedClientData) -> &str;
+    fn type__shim(this: &CollectedClientData) -> String;
     #[wasm_bindgen(method, setter = "type")]
     fn set_type__shim(this: &CollectedClientData, val: &str);
 }
@@ -47,47 +47,47 @@ pub trait CollectedClientDataGetters {
     #[doc = "Get the `challenge` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
-    fn challenge(&self) -> &str;
+    fn challenge(&self) -> String;
     #[cfg(feature = "AuthenticationExtensionsClientInputs")]
     #[doc = "Get the `clientExtensions` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientInputs`, `CollectedClientData`*"]
-    fn client_extensions(&self) -> &AuthenticationExtensionsClientInputs;
+    fn client_extensions(&self) -> AuthenticationExtensionsClientInputs;
     #[doc = "Get the `hashAlgorithm` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
-    fn hash_algorithm(&self) -> &str;
+    fn hash_algorithm(&self) -> String;
     #[doc = "Get the `origin` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
-    fn origin(&self) -> &str;
+    fn origin(&self) -> String;
     #[doc = "Get the `tokenBindingId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
-    fn token_binding_id(&self) -> &str;
+    fn token_binding_id(&self) -> String;
     #[doc = "Get the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
-    fn type_(&self) -> &str;
+    fn type_(&self) -> String;
 }
 impl CollectedClientDataGetters for CollectedClientData {
-    fn challenge(&self) -> &str {
+    fn challenge(&self) -> String {
         self.challenge_shim()
     }
     #[cfg(feature = "AuthenticationExtensionsClientInputs")]
-    fn client_extensions(&self) -> &AuthenticationExtensionsClientInputs {
+    fn client_extensions(&self) -> AuthenticationExtensionsClientInputs {
         self.client_extensions_shim()
     }
-    fn hash_algorithm(&self) -> &str {
+    fn hash_algorithm(&self) -> String {
         self.hash_algorithm_shim()
     }
-    fn origin(&self) -> &str {
+    fn origin(&self) -> String {
         self.origin_shim()
     }
-    fn token_binding_id(&self) -> &str {
+    fn token_binding_id(&self) -> String {
         self.token_binding_id_shim()
     }
-    fn type_(&self) -> &str {
+    fn type_(&self) -> String {
         self.type__shim()
     }
 }

@@ -24,7 +24,7 @@ extern "C" {
     fn set_composed_shim(this: &MidiConnectionEventInit, val: bool);
     #[cfg(feature = "MidiPort")]
     #[wasm_bindgen(method, getter = "port")]
-    fn port_shim(this: &MidiConnectionEventInit) -> Option<&MidiPort>;
+    fn port_shim(this: &MidiConnectionEventInit) -> Option<MidiPort>;
     #[cfg(feature = "MidiPort")]
     #[wasm_bindgen(method, setter = "port")]
     fn set_port_shim(this: &MidiConnectionEventInit, val: Option<&MidiPort>);
@@ -49,7 +49,7 @@ pub trait MidiConnectionEventInitGetters {
     #[doc = "Get the `port` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiConnectionEventInit`, `MidiPort`*"]
-    fn port(&self) -> Option<&MidiPort>;
+    fn port(&self) -> Option<MidiPort>;
 }
 impl MidiConnectionEventInitGetters for MidiConnectionEventInit {
     fn bubbles(&self) -> bool {
@@ -62,7 +62,7 @@ impl MidiConnectionEventInitGetters for MidiConnectionEventInit {
         self.composed_shim()
     }
     #[cfg(feature = "MidiPort")]
-    fn port(&self) -> Option<&MidiPort> {
+    fn port(&self) -> Option<MidiPort> {
         self.port_shim()
     }
 }

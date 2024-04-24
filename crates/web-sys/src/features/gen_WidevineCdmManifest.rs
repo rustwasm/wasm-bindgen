@@ -11,31 +11,31 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
     pub type WidevineCdmManifest;
     #[wasm_bindgen(method, getter = "description")]
-    fn description_shim(this: &WidevineCdmManifest) -> &str;
+    fn description_shim(this: &WidevineCdmManifest) -> String;
     #[wasm_bindgen(method, setter = "description")]
     fn set_description_shim(this: &WidevineCdmManifest, val: &str);
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &WidevineCdmManifest) -> &str;
+    fn name_shim(this: &WidevineCdmManifest) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &WidevineCdmManifest, val: &str);
     #[wasm_bindgen(method, getter = "version")]
-    fn version_shim(this: &WidevineCdmManifest) -> &str;
+    fn version_shim(this: &WidevineCdmManifest) -> String;
     #[wasm_bindgen(method, setter = "version")]
     fn set_version_shim(this: &WidevineCdmManifest, val: &str);
     #[wasm_bindgen(method, getter = "x-cdm-codecs")]
-    fn x_cdm_codecs_shim(this: &WidevineCdmManifest) -> &str;
+    fn x_cdm_codecs_shim(this: &WidevineCdmManifest) -> String;
     #[wasm_bindgen(method, setter = "x-cdm-codecs")]
     fn set_x_cdm_codecs_shim(this: &WidevineCdmManifest, val: &str);
     #[wasm_bindgen(method, getter = "x-cdm-host-versions")]
-    fn x_cdm_host_versions_shim(this: &WidevineCdmManifest) -> &str;
+    fn x_cdm_host_versions_shim(this: &WidevineCdmManifest) -> String;
     #[wasm_bindgen(method, setter = "x-cdm-host-versions")]
     fn set_x_cdm_host_versions_shim(this: &WidevineCdmManifest, val: &str);
     #[wasm_bindgen(method, getter = "x-cdm-interface-versions")]
-    fn x_cdm_interface_versions_shim(this: &WidevineCdmManifest) -> &str;
+    fn x_cdm_interface_versions_shim(this: &WidevineCdmManifest) -> String;
     #[wasm_bindgen(method, setter = "x-cdm-interface-versions")]
     fn set_x_cdm_interface_versions_shim(this: &WidevineCdmManifest, val: &str);
     #[wasm_bindgen(method, getter = "x-cdm-module-versions")]
-    fn x_cdm_module_versions_shim(this: &WidevineCdmManifest) -> &str;
+    fn x_cdm_module_versions_shim(this: &WidevineCdmManifest) -> String;
     #[wasm_bindgen(method, setter = "x-cdm-module-versions")]
     fn set_x_cdm_module_versions_shim(this: &WidevineCdmManifest, val: &str);
 }
@@ -46,52 +46,52 @@ pub trait WidevineCdmManifestGetters {
     #[doc = "Get the `description` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
-    fn description(&self) -> &str;
+    fn description(&self) -> String;
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
     #[doc = "Get the `version` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
-    fn version(&self) -> &str;
+    fn version(&self) -> String;
     #[doc = "Get the `x-cdm-codecs` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
-    fn x_cdm_codecs(&self) -> &str;
+    fn x_cdm_codecs(&self) -> String;
     #[doc = "Get the `x-cdm-host-versions` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
-    fn x_cdm_host_versions(&self) -> &str;
+    fn x_cdm_host_versions(&self) -> String;
     #[doc = "Get the `x-cdm-interface-versions` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
-    fn x_cdm_interface_versions(&self) -> &str;
+    fn x_cdm_interface_versions(&self) -> String;
     #[doc = "Get the `x-cdm-module-versions` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WidevineCdmManifest`*"]
-    fn x_cdm_module_versions(&self) -> &str;
+    fn x_cdm_module_versions(&self) -> String;
 }
 impl WidevineCdmManifestGetters for WidevineCdmManifest {
-    fn description(&self) -> &str {
+    fn description(&self) -> String {
         self.description_shim()
     }
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
-    fn version(&self) -> &str {
+    fn version(&self) -> String {
         self.version_shim()
     }
-    fn x_cdm_codecs(&self) -> &str {
+    fn x_cdm_codecs(&self) -> String {
         self.x_cdm_codecs_shim()
     }
-    fn x_cdm_host_versions(&self) -> &str {
+    fn x_cdm_host_versions(&self) -> String {
         self.x_cdm_host_versions_shim()
     }
-    fn x_cdm_interface_versions(&self) -> &str {
+    fn x_cdm_interface_versions(&self) -> String {
         self.x_cdm_interface_versions_shim()
     }
-    fn x_cdm_module_versions(&self) -> &str {
+    fn x_cdm_module_versions(&self) -> String {
         self.x_cdm_module_versions_shim()
     }
 }

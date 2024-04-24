@@ -11,12 +11,12 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionJson`*"]
     pub type PushSubscriptionJson;
     #[wasm_bindgen(method, getter = "endpoint")]
-    fn endpoint_shim(this: &PushSubscriptionJson) -> &str;
+    fn endpoint_shim(this: &PushSubscriptionJson) -> String;
     #[wasm_bindgen(method, setter = "endpoint")]
     fn set_endpoint_shim(this: &PushSubscriptionJson, val: &str);
     #[cfg(feature = "PushSubscriptionKeys")]
     #[wasm_bindgen(method, getter = "keys")]
-    fn keys_shim(this: &PushSubscriptionJson) -> &PushSubscriptionKeys;
+    fn keys_shim(this: &PushSubscriptionJson) -> PushSubscriptionKeys;
     #[cfg(feature = "PushSubscriptionKeys")]
     #[wasm_bindgen(method, setter = "keys")]
     fn set_keys_shim(this: &PushSubscriptionJson, val: &PushSubscriptionKeys);
@@ -28,19 +28,19 @@ pub trait PushSubscriptionJsonGetters {
     #[doc = "Get the `endpoint` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionJson`*"]
-    fn endpoint(&self) -> &str;
+    fn endpoint(&self) -> String;
     #[cfg(feature = "PushSubscriptionKeys")]
     #[doc = "Get the `keys` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionJson`, `PushSubscriptionKeys`*"]
-    fn keys(&self) -> &PushSubscriptionKeys;
+    fn keys(&self) -> PushSubscriptionKeys;
 }
 impl PushSubscriptionJsonGetters for PushSubscriptionJson {
-    fn endpoint(&self) -> &str {
+    fn endpoint(&self) -> String {
         self.endpoint_shim()
     }
     #[cfg(feature = "PushSubscriptionKeys")]
-    fn keys(&self) -> &PushSubscriptionKeys {
+    fn keys(&self) -> PushSubscriptionKeys {
         self.keys_shim()
     }
 }

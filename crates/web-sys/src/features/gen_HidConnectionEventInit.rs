@@ -28,7 +28,7 @@ extern "C" {
     fn set_composed_shim(this: &HidConnectionEventInit, val: bool);
     #[cfg(feature = "HidDevice")]
     #[wasm_bindgen(method, getter = "device")]
-    fn device_shim(this: &HidConnectionEventInit) -> &HidDevice;
+    fn device_shim(this: &HidConnectionEventInit) -> HidDevice;
     #[cfg(feature = "HidDevice")]
     #[wasm_bindgen(method, setter = "device")]
     fn set_device_shim(this: &HidConnectionEventInit, val: &HidDevice);
@@ -70,7 +70,7 @@ pub trait HidConnectionEventInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn device(&self) -> &HidDevice;
+    fn device(&self) -> HidDevice;
 }
 #[cfg(web_sys_unstable_apis)]
 impl HidConnectionEventInitGetters for HidConnectionEventInit {
@@ -88,7 +88,7 @@ impl HidConnectionEventInitGetters for HidConnectionEventInit {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "HidDevice")]
-    fn device(&self) -> &HidDevice {
+    fn device(&self) -> HidDevice {
         self.device_shim()
     }
 }

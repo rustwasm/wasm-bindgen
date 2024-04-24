@@ -15,11 +15,11 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type BluetoothDataFilterInit;
     #[wasm_bindgen(method, getter = "dataPrefix")]
-    fn data_prefix_shim(this: &BluetoothDataFilterInit) -> &::js_sys::Object;
+    fn data_prefix_shim(this: &BluetoothDataFilterInit) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "dataPrefix")]
     fn set_data_prefix_shim(this: &BluetoothDataFilterInit, val: &::js_sys::Object);
     #[wasm_bindgen(method, getter = "mask")]
-    fn mask_shim(this: &BluetoothDataFilterInit) -> &::js_sys::Object;
+    fn mask_shim(this: &BluetoothDataFilterInit) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "mask")]
     fn set_mask_shim(this: &BluetoothDataFilterInit, val: &::js_sys::Object);
 }
@@ -35,7 +35,7 @@ pub trait BluetoothDataFilterInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn data_prefix(&self) -> &::js_sys::Object;
+    fn data_prefix(&self) -> ::js_sys::Object;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `mask` field of this object."]
     #[doc = ""]
@@ -43,16 +43,16 @@ pub trait BluetoothDataFilterInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn mask(&self) -> &::js_sys::Object;
+    fn mask(&self) -> ::js_sys::Object;
 }
 #[cfg(web_sys_unstable_apis)]
 impl BluetoothDataFilterInitGetters for BluetoothDataFilterInit {
     #[cfg(web_sys_unstable_apis)]
-    fn data_prefix(&self) -> &::js_sys::Object {
+    fn data_prefix(&self) -> ::js_sys::Object {
         self.data_prefix_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn mask(&self) -> &::js_sys::Object {
+    fn mask(&self) -> ::js_sys::Object {
         self.mask_shim()
     }
 }

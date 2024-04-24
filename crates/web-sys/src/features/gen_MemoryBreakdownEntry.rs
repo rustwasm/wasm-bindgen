@@ -15,7 +15,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type MemoryBreakdownEntry;
     #[wasm_bindgen(method, getter = "attribution")]
-    fn attribution_shim(this: &MemoryBreakdownEntry) -> &::wasm_bindgen::JsValue;
+    fn attribution_shim(this: &MemoryBreakdownEntry) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "attribution")]
     fn set_attribution_shim(this: &MemoryBreakdownEntry, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "bytes")]
@@ -23,7 +23,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "bytes")]
     fn set_bytes_shim(this: &MemoryBreakdownEntry, val: f64);
     #[wasm_bindgen(method, getter = "types")]
-    fn types_shim(this: &MemoryBreakdownEntry) -> &::wasm_bindgen::JsValue;
+    fn types_shim(this: &MemoryBreakdownEntry) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "types")]
     fn set_types_shim(this: &MemoryBreakdownEntry, val: &::wasm_bindgen::JsValue);
 }
@@ -39,7 +39,7 @@ pub trait MemoryBreakdownEntryGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn attribution(&self) -> &::wasm_bindgen::JsValue;
+    fn attribution(&self) -> ::js_sys::Array;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `bytes` field of this object."]
     #[doc = ""]
@@ -55,12 +55,12 @@ pub trait MemoryBreakdownEntryGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn types(&self) -> &::wasm_bindgen::JsValue;
+    fn types(&self) -> ::js_sys::Array;
 }
 #[cfg(web_sys_unstable_apis)]
 impl MemoryBreakdownEntryGetters for MemoryBreakdownEntry {
     #[cfg(web_sys_unstable_apis)]
-    fn attribution(&self) -> &::wasm_bindgen::JsValue {
+    fn attribution(&self) -> ::js_sys::Array {
         self.attribution_shim()
     }
     #[cfg(web_sys_unstable_apis)]
@@ -68,7 +68,7 @@ impl MemoryBreakdownEntryGetters for MemoryBreakdownEntry {
         self.bytes_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn types(&self) -> &::wasm_bindgen::JsValue {
+    fn types(&self) -> ::js_sys::Array {
         self.types_shim()
     }
 }

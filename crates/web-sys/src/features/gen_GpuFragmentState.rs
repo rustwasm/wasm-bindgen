@@ -15,17 +15,17 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuFragmentState;
     #[wasm_bindgen(method, getter = "entryPoint")]
-    fn entry_point_shim(this: &GpuFragmentState) -> &str;
+    fn entry_point_shim(this: &GpuFragmentState) -> String;
     #[wasm_bindgen(method, setter = "entryPoint")]
     fn set_entry_point_shim(this: &GpuFragmentState, val: &str);
     #[cfg(feature = "GpuShaderModule")]
     #[wasm_bindgen(method, getter = "module")]
-    fn module_shim(this: &GpuFragmentState) -> &GpuShaderModule;
+    fn module_shim(this: &GpuFragmentState) -> GpuShaderModule;
     #[cfg(feature = "GpuShaderModule")]
     #[wasm_bindgen(method, setter = "module")]
     fn set_module_shim(this: &GpuFragmentState, val: &GpuShaderModule);
     #[wasm_bindgen(method, getter = "targets")]
-    fn targets_shim(this: &GpuFragmentState) -> &::wasm_bindgen::JsValue;
+    fn targets_shim(this: &GpuFragmentState) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "targets")]
     fn set_targets_shim(this: &GpuFragmentState, val: &::wasm_bindgen::JsValue);
 }
@@ -41,7 +41,7 @@ pub trait GpuFragmentStateGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn entry_point(&self) -> &str;
+    fn entry_point(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuShaderModule")]
     #[doc = "Get the `module` field of this object."]
@@ -50,7 +50,7 @@ pub trait GpuFragmentStateGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn module(&self) -> &GpuShaderModule;
+    fn module(&self) -> GpuShaderModule;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `targets` field of this object."]
     #[doc = ""]
@@ -58,21 +58,21 @@ pub trait GpuFragmentStateGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn targets(&self) -> &::wasm_bindgen::JsValue;
+    fn targets(&self) -> ::js_sys::Array;
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuFragmentStateGetters for GpuFragmentState {
     #[cfg(web_sys_unstable_apis)]
-    fn entry_point(&self) -> &str {
+    fn entry_point(&self) -> String {
         self.entry_point_shim()
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuShaderModule")]
-    fn module(&self) -> &GpuShaderModule {
+    fn module(&self) -> GpuShaderModule {
         self.module_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn targets(&self) -> &::wasm_bindgen::JsValue {
+    fn targets(&self) -> ::js_sys::Array {
         self.targets_shim()
     }
 }

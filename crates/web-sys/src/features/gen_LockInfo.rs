@@ -15,7 +15,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type LockInfo;
     #[wasm_bindgen(method, getter = "clientId")]
-    fn client_id_shim(this: &LockInfo) -> &str;
+    fn client_id_shim(this: &LockInfo) -> String;
     #[wasm_bindgen(method, setter = "clientId")]
     fn set_client_id_shim(this: &LockInfo, val: &str);
     #[cfg(feature = "LockMode")]
@@ -25,7 +25,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "mode")]
     fn set_mode_shim(this: &LockInfo, val: LockMode);
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &LockInfo) -> &str;
+    fn name_shim(this: &LockInfo) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &LockInfo, val: &str);
 }
@@ -41,7 +41,7 @@ pub trait LockInfoGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn client_id(&self) -> &str;
+    fn client_id(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "LockMode")]
     #[doc = "Get the `mode` field of this object."]
@@ -58,12 +58,12 @@ pub trait LockInfoGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
 }
 #[cfg(web_sys_unstable_apis)]
 impl LockInfoGetters for LockInfo {
     #[cfg(web_sys_unstable_apis)]
-    fn client_id(&self) -> &str {
+    fn client_id(&self) -> String {
         self.client_id_shim()
     }
     #[cfg(web_sys_unstable_apis)]
@@ -72,7 +72,7 @@ impl LockInfoGetters for LockInfo {
         self.mode_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
 }

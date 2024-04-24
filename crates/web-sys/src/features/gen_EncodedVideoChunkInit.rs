@@ -15,7 +15,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type EncodedVideoChunkInit;
     #[wasm_bindgen(method, getter = "data")]
-    fn data_shim(this: &EncodedVideoChunkInit) -> &::js_sys::Object;
+    fn data_shim(this: &EncodedVideoChunkInit) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "data")]
     fn set_data_shim(this: &EncodedVideoChunkInit, val: &::js_sys::Object);
     #[wasm_bindgen(method, getter = "duration")]
@@ -45,7 +45,7 @@ pub trait EncodedVideoChunkInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn data(&self) -> &::js_sys::Object;
+    fn data(&self) -> ::js_sys::Object;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `duration` field of this object."]
     #[doc = ""]
@@ -75,7 +75,7 @@ pub trait EncodedVideoChunkInitGetters {
 #[cfg(web_sys_unstable_apis)]
 impl EncodedVideoChunkInitGetters for EncodedVideoChunkInit {
     #[cfg(web_sys_unstable_apis)]
-    fn data(&self) -> &::js_sys::Object {
+    fn data(&self) -> ::js_sys::Object {
         self.data_shim()
     }
     #[cfg(web_sys_unstable_apis)]

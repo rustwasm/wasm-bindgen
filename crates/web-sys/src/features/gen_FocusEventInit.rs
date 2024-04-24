@@ -28,13 +28,13 @@ extern "C" {
     fn set_detail_shim(this: &FocusEventInit, val: i32);
     #[cfg(feature = "Window")]
     #[wasm_bindgen(method, getter = "view")]
-    fn view_shim(this: &FocusEventInit) -> Option<&Window>;
+    fn view_shim(this: &FocusEventInit) -> Option<Window>;
     #[cfg(feature = "Window")]
     #[wasm_bindgen(method, setter = "view")]
     fn set_view_shim(this: &FocusEventInit, val: Option<&Window>);
     #[cfg(feature = "EventTarget")]
     #[wasm_bindgen(method, getter = "relatedTarget")]
-    fn related_target_shim(this: &FocusEventInit) -> Option<&EventTarget>;
+    fn related_target_shim(this: &FocusEventInit) -> Option<EventTarget>;
     #[cfg(feature = "EventTarget")]
     #[wasm_bindgen(method, setter = "relatedTarget")]
     fn set_related_target_shim(this: &FocusEventInit, val: Option<&EventTarget>);
@@ -63,12 +63,12 @@ pub trait FocusEventInitGetters {
     #[doc = "Get the `view` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FocusEventInit`, `Window`*"]
-    fn view(&self) -> Option<&Window>;
+    fn view(&self) -> Option<Window>;
     #[cfg(feature = "EventTarget")]
     #[doc = "Get the `relatedTarget` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventTarget`, `FocusEventInit`*"]
-    fn related_target(&self) -> Option<&EventTarget>;
+    fn related_target(&self) -> Option<EventTarget>;
 }
 impl FocusEventInitGetters for FocusEventInit {
     fn bubbles(&self) -> bool {
@@ -84,11 +84,11 @@ impl FocusEventInitGetters for FocusEventInit {
         self.detail_shim()
     }
     #[cfg(feature = "Window")]
-    fn view(&self) -> Option<&Window> {
+    fn view(&self) -> Option<Window> {
         self.view_shim()
     }
     #[cfg(feature = "EventTarget")]
-    fn related_target(&self) -> Option<&EventTarget> {
+    fn related_target(&self) -> Option<EventTarget> {
         self.related_target_shim()
     }
 }

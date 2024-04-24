@@ -23,16 +23,16 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &PopupBlockedEventInit, val: bool);
     #[wasm_bindgen(method, getter = "popupWindowFeatures")]
-    fn popup_window_features_shim(this: &PopupBlockedEventInit) -> &str;
+    fn popup_window_features_shim(this: &PopupBlockedEventInit) -> String;
     #[wasm_bindgen(method, setter = "popupWindowFeatures")]
     fn set_popup_window_features_shim(this: &PopupBlockedEventInit, val: &str);
     #[wasm_bindgen(method, getter = "popupWindowName")]
-    fn popup_window_name_shim(this: &PopupBlockedEventInit) -> &str;
+    fn popup_window_name_shim(this: &PopupBlockedEventInit) -> String;
     #[wasm_bindgen(method, setter = "popupWindowName")]
     fn set_popup_window_name_shim(this: &PopupBlockedEventInit, val: &str);
     #[cfg(feature = "Window")]
     #[wasm_bindgen(method, getter = "requestingWindow")]
-    fn requesting_window_shim(this: &PopupBlockedEventInit) -> Option<&Window>;
+    fn requesting_window_shim(this: &PopupBlockedEventInit) -> Option<Window>;
     #[cfg(feature = "Window")]
     #[wasm_bindgen(method, setter = "requestingWindow")]
     fn set_requesting_window_shim(this: &PopupBlockedEventInit, val: Option<&Window>);
@@ -56,16 +56,16 @@ pub trait PopupBlockedEventInitGetters {
     #[doc = "Get the `popupWindowFeatures` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEventInit`*"]
-    fn popup_window_features(&self) -> &str;
+    fn popup_window_features(&self) -> String;
     #[doc = "Get the `popupWindowName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEventInit`*"]
-    fn popup_window_name(&self) -> &str;
+    fn popup_window_name(&self) -> String;
     #[cfg(feature = "Window")]
     #[doc = "Get the `requestingWindow` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEventInit`, `Window`*"]
-    fn requesting_window(&self) -> Option<&Window>;
+    fn requesting_window(&self) -> Option<Window>;
 }
 impl PopupBlockedEventInitGetters for PopupBlockedEventInit {
     fn bubbles(&self) -> bool {
@@ -77,14 +77,14 @@ impl PopupBlockedEventInitGetters for PopupBlockedEventInit {
     fn composed(&self) -> bool {
         self.composed_shim()
     }
-    fn popup_window_features(&self) -> &str {
+    fn popup_window_features(&self) -> String {
         self.popup_window_features_shim()
     }
-    fn popup_window_name(&self) -> &str {
+    fn popup_window_name(&self) -> String {
         self.popup_window_name_shim()
     }
     #[cfg(feature = "Window")]
-    fn requesting_window(&self) -> Option<&Window> {
+    fn requesting_window(&self) -> Option<Window> {
         self.requesting_window_shim()
     }
 }

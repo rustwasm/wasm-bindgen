@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `HttpConnInfo`*"]
     pub type HttpConnInfo;
     #[wasm_bindgen(method, getter = "protocolVersion")]
-    fn protocol_version_shim(this: &HttpConnInfo) -> &str;
+    fn protocol_version_shim(this: &HttpConnInfo) -> String;
     #[wasm_bindgen(method, setter = "protocolVersion")]
     fn set_protocol_version_shim(this: &HttpConnInfo, val: &str);
     #[wasm_bindgen(method, getter = "rtt")]
@@ -30,7 +30,7 @@ pub trait HttpConnInfoGetters {
     #[doc = "Get the `protocolVersion` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HttpConnInfo`*"]
-    fn protocol_version(&self) -> &str;
+    fn protocol_version(&self) -> String;
     #[doc = "Get the `rtt` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HttpConnInfo`*"]
@@ -41,7 +41,7 @@ pub trait HttpConnInfoGetters {
     fn ttl(&self) -> u32;
 }
 impl HttpConnInfoGetters for HttpConnInfo {
-    fn protocol_version(&self) -> &str {
+    fn protocol_version(&self) -> String {
         self.protocol_version_shim()
     }
     fn rtt(&self) -> u32 {

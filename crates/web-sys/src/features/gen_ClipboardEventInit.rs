@@ -24,7 +24,7 @@ extern "C" {
     fn set_composed_shim(this: &ClipboardEventInit, val: bool);
     #[cfg(feature = "DataTransfer")]
     #[wasm_bindgen(method, getter = "clipboardData")]
-    fn clipboard_data_shim(this: &ClipboardEventInit) -> Option<&DataTransfer>;
+    fn clipboard_data_shim(this: &ClipboardEventInit) -> Option<DataTransfer>;
     #[cfg(feature = "DataTransfer")]
     #[wasm_bindgen(method, setter = "clipboardData")]
     fn set_clipboard_data_shim(this: &ClipboardEventInit, val: Option<&DataTransfer>);
@@ -49,7 +49,7 @@ pub trait ClipboardEventInitGetters {
     #[doc = "Get the `clipboardData` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ClipboardEventInit`, `DataTransfer`*"]
-    fn clipboard_data(&self) -> Option<&DataTransfer>;
+    fn clipboard_data(&self) -> Option<DataTransfer>;
 }
 impl ClipboardEventInitGetters for ClipboardEventInit {
     fn bubbles(&self) -> bool {
@@ -62,7 +62,7 @@ impl ClipboardEventInitGetters for ClipboardEventInit {
         self.composed_shim()
     }
     #[cfg(feature = "DataTransfer")]
-    fn clipboard_data(&self) -> Option<&DataTransfer> {
+    fn clipboard_data(&self) -> Option<DataTransfer> {
         self.clipboard_data_shim()
     }
 }

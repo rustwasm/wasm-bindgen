@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcRtcpParameters`*"]
     pub type RtcRtcpParameters;
     #[wasm_bindgen(method, getter = "cname")]
-    fn cname_shim(this: &RtcRtcpParameters) -> &str;
+    fn cname_shim(this: &RtcRtcpParameters) -> String;
     #[wasm_bindgen(method, setter = "cname")]
     fn set_cname_shim(this: &RtcRtcpParameters, val: &str);
     #[wasm_bindgen(method, getter = "reducedSize")]
@@ -26,14 +26,14 @@ pub trait RtcRtcpParametersGetters {
     #[doc = "Get the `cname` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtcpParameters`*"]
-    fn cname(&self) -> &str;
+    fn cname(&self) -> String;
     #[doc = "Get the `reducedSize` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtcpParameters`*"]
     fn reduced_size(&self) -> bool;
 }
 impl RtcRtcpParametersGetters for RtcRtcpParameters {
-    fn cname(&self) -> &str {
+    fn cname(&self) -> String {
         self.cname_shim()
     }
     fn reduced_size(&self) -> bool {

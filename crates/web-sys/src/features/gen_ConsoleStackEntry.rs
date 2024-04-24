@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
     pub type ConsoleStackEntry;
     #[wasm_bindgen(method, getter = "asyncCause")]
-    fn async_cause_shim(this: &ConsoleStackEntry) -> Option<&str>;
+    fn async_cause_shim(this: &ConsoleStackEntry) -> Option<String>;
     #[wasm_bindgen(method, setter = "asyncCause")]
     fn set_async_cause_shim(this: &ConsoleStackEntry, val: Option<&str>);
     #[wasm_bindgen(method, getter = "columnNumber")]
@@ -19,11 +19,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "columnNumber")]
     fn set_column_number_shim(this: &ConsoleStackEntry, val: u32);
     #[wasm_bindgen(method, getter = "filename")]
-    fn filename_shim(this: &ConsoleStackEntry) -> &str;
+    fn filename_shim(this: &ConsoleStackEntry) -> String;
     #[wasm_bindgen(method, setter = "filename")]
     fn set_filename_shim(this: &ConsoleStackEntry, val: &str);
     #[wasm_bindgen(method, getter = "functionName")]
-    fn function_name_shim(this: &ConsoleStackEntry) -> &str;
+    fn function_name_shim(this: &ConsoleStackEntry) -> String;
     #[wasm_bindgen(method, setter = "functionName")]
     fn set_function_name_shim(this: &ConsoleStackEntry, val: &str);
     #[wasm_bindgen(method, getter = "lineNumber")]
@@ -38,7 +38,7 @@ pub trait ConsoleStackEntryGetters {
     #[doc = "Get the `asyncCause` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
-    fn async_cause(&self) -> Option<&str>;
+    fn async_cause(&self) -> Option<String>;
     #[doc = "Get the `columnNumber` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
@@ -46,27 +46,27 @@ pub trait ConsoleStackEntryGetters {
     #[doc = "Get the `filename` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
-    fn filename(&self) -> &str;
+    fn filename(&self) -> String;
     #[doc = "Get the `functionName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
-    fn function_name(&self) -> &str;
+    fn function_name(&self) -> String;
     #[doc = "Get the `lineNumber` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
     fn line_number(&self) -> u32;
 }
 impl ConsoleStackEntryGetters for ConsoleStackEntry {
-    fn async_cause(&self) -> Option<&str> {
+    fn async_cause(&self) -> Option<String> {
         self.async_cause_shim()
     }
     fn column_number(&self) -> u32 {
         self.column_number_shim()
     }
-    fn filename(&self) -> &str {
+    fn filename(&self) -> String {
         self.filename_shim()
     }
-    fn function_name(&self) -> &str {
+    fn function_name(&self) -> String {
         self.function_name_shim()
     }
     fn line_number(&self) -> u32 {

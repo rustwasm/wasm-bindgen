@@ -19,7 +19,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "closeCode")]
     fn set_close_code_shim(this: &WebTransportCloseInfo, val: u32);
     #[wasm_bindgen(method, getter = "reason")]
-    fn reason_shim(this: &WebTransportCloseInfo) -> &str;
+    fn reason_shim(this: &WebTransportCloseInfo) -> String;
     #[wasm_bindgen(method, setter = "reason")]
     fn set_reason_shim(this: &WebTransportCloseInfo, val: &str);
 }
@@ -43,7 +43,7 @@ pub trait WebTransportCloseInfoGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn reason(&self) -> &str;
+    fn reason(&self) -> String;
 }
 #[cfg(web_sys_unstable_apis)]
 impl WebTransportCloseInfoGetters for WebTransportCloseInfo {
@@ -52,7 +52,7 @@ impl WebTransportCloseInfoGetters for WebTransportCloseInfo {
         self.close_code_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn reason(&self) -> &str {
+    fn reason(&self) -> String {
         self.reason_shim()
     }
 }

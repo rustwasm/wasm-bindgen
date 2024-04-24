@@ -15,11 +15,11 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuPipelineLayoutDescriptor;
     #[wasm_bindgen(method, getter = "label")]
-    fn label_shim(this: &GpuPipelineLayoutDescriptor) -> &str;
+    fn label_shim(this: &GpuPipelineLayoutDescriptor) -> String;
     #[wasm_bindgen(method, setter = "label")]
     fn set_label_shim(this: &GpuPipelineLayoutDescriptor, val: &str);
     #[wasm_bindgen(method, getter = "bindGroupLayouts")]
-    fn bind_group_layouts_shim(this: &GpuPipelineLayoutDescriptor) -> &::wasm_bindgen::JsValue;
+    fn bind_group_layouts_shim(this: &GpuPipelineLayoutDescriptor) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "bindGroupLayouts")]
     fn set_bind_group_layouts_shim(
         this: &GpuPipelineLayoutDescriptor,
@@ -38,7 +38,7 @@ pub trait GpuPipelineLayoutDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn label(&self) -> &str;
+    fn label(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `bindGroupLayouts` field of this object."]
     #[doc = ""]
@@ -46,16 +46,16 @@ pub trait GpuPipelineLayoutDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn bind_group_layouts(&self) -> &::wasm_bindgen::JsValue;
+    fn bind_group_layouts(&self) -> ::js_sys::Array;
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuPipelineLayoutDescriptorGetters for GpuPipelineLayoutDescriptor {
     #[cfg(web_sys_unstable_apis)]
-    fn label(&self) -> &str {
+    fn label(&self) -> String {
         self.label_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn bind_group_layouts(&self) -> &::wasm_bindgen::JsValue {
+    fn bind_group_layouts(&self) -> ::js_sys::Array {
         self.bind_group_layouts_shim()
     }
 }

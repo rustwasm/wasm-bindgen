@@ -23,23 +23,23 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &ExtendableMessageEventInit, val: bool);
     #[wasm_bindgen(method, getter = "data")]
-    fn data_shim(this: &ExtendableMessageEventInit) -> &::wasm_bindgen::JsValue;
+    fn data_shim(this: &ExtendableMessageEventInit) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "data")]
     fn set_data_shim(this: &ExtendableMessageEventInit, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "lastEventId")]
-    fn last_event_id_shim(this: &ExtendableMessageEventInit) -> &str;
+    fn last_event_id_shim(this: &ExtendableMessageEventInit) -> String;
     #[wasm_bindgen(method, setter = "lastEventId")]
     fn set_last_event_id_shim(this: &ExtendableMessageEventInit, val: &str);
     #[wasm_bindgen(method, getter = "origin")]
-    fn origin_shim(this: &ExtendableMessageEventInit) -> &str;
+    fn origin_shim(this: &ExtendableMessageEventInit) -> String;
     #[wasm_bindgen(method, setter = "origin")]
     fn set_origin_shim(this: &ExtendableMessageEventInit, val: &str);
     #[wasm_bindgen(method, getter = "ports")]
-    fn ports_shim(this: &ExtendableMessageEventInit) -> &::wasm_bindgen::JsValue;
+    fn ports_shim(this: &ExtendableMessageEventInit) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "ports")]
     fn set_ports_shim(this: &ExtendableMessageEventInit, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "source")]
-    fn source_shim(this: &ExtendableMessageEventInit) -> Option<&::js_sys::Object>;
+    fn source_shim(this: &ExtendableMessageEventInit) -> Option<::js_sys::Object>;
     #[wasm_bindgen(method, setter = "source")]
     fn set_source_shim(this: &ExtendableMessageEventInit, val: Option<&::js_sys::Object>);
 }
@@ -62,23 +62,23 @@ pub trait ExtendableMessageEventInitGetters {
     #[doc = "Get the `data` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ExtendableMessageEventInit`*"]
-    fn data(&self) -> &::wasm_bindgen::JsValue;
+    fn data(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `lastEventId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ExtendableMessageEventInit`*"]
-    fn last_event_id(&self) -> &str;
+    fn last_event_id(&self) -> String;
     #[doc = "Get the `origin` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ExtendableMessageEventInit`*"]
-    fn origin(&self) -> &str;
+    fn origin(&self) -> String;
     #[doc = "Get the `ports` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ExtendableMessageEventInit`*"]
-    fn ports(&self) -> &::wasm_bindgen::JsValue;
+    fn ports(&self) -> ::js_sys::Array;
     #[doc = "Get the `source` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ExtendableMessageEventInit`*"]
-    fn source(&self) -> Option<&::js_sys::Object>;
+    fn source(&self) -> Option<::js_sys::Object>;
 }
 impl ExtendableMessageEventInitGetters for ExtendableMessageEventInit {
     fn bubbles(&self) -> bool {
@@ -90,19 +90,19 @@ impl ExtendableMessageEventInitGetters for ExtendableMessageEventInit {
     fn composed(&self) -> bool {
         self.composed_shim()
     }
-    fn data(&self) -> &::wasm_bindgen::JsValue {
+    fn data(&self) -> ::wasm_bindgen::JsValue {
         self.data_shim()
     }
-    fn last_event_id(&self) -> &str {
+    fn last_event_id(&self) -> String {
         self.last_event_id_shim()
     }
-    fn origin(&self) -> &str {
+    fn origin(&self) -> String {
         self.origin_shim()
     }
-    fn ports(&self) -> &::wasm_bindgen::JsValue {
+    fn ports(&self) -> ::js_sys::Array {
         self.ports_shim()
     }
-    fn source(&self) -> Option<&::js_sys::Object> {
+    fn source(&self) -> Option<::js_sys::Object> {
         self.source_shim()
     }
 }

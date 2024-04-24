@@ -15,7 +15,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuObjectDescriptorBase;
     #[wasm_bindgen(method, getter = "label")]
-    fn label_shim(this: &GpuObjectDescriptorBase) -> &str;
+    fn label_shim(this: &GpuObjectDescriptorBase) -> String;
     #[wasm_bindgen(method, setter = "label")]
     fn set_label_shim(this: &GpuObjectDescriptorBase, val: &str);
 }
@@ -31,12 +31,12 @@ pub trait GpuObjectDescriptorBaseGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn label(&self) -> &str;
+    fn label(&self) -> String;
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuObjectDescriptorBaseGetters for GpuObjectDescriptorBase {
     #[cfg(web_sys_unstable_apis)]
-    fn label(&self) -> &str {
+    fn label(&self) -> String {
         self.label_shim()
     }
 }

@@ -24,7 +24,7 @@ extern "C" {
     fn set_composed_shim(this: &SubmitEventInit, val: bool);
     #[cfg(feature = "HtmlElement")]
     #[wasm_bindgen(method, getter = "submitter")]
-    fn submitter_shim(this: &SubmitEventInit) -> Option<&HtmlElement>;
+    fn submitter_shim(this: &SubmitEventInit) -> Option<HtmlElement>;
     #[cfg(feature = "HtmlElement")]
     #[wasm_bindgen(method, setter = "submitter")]
     fn set_submitter_shim(this: &SubmitEventInit, val: Option<&HtmlElement>);
@@ -49,7 +49,7 @@ pub trait SubmitEventInitGetters {
     #[doc = "Get the `submitter` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlElement`, `SubmitEventInit`*"]
-    fn submitter(&self) -> Option<&HtmlElement>;
+    fn submitter(&self) -> Option<HtmlElement>;
 }
 impl SubmitEventInitGetters for SubmitEventInit {
     fn bubbles(&self) -> bool {
@@ -62,7 +62,7 @@ impl SubmitEventInitGetters for SubmitEventInit {
         self.composed_shim()
     }
     #[cfg(feature = "HtmlElement")]
-    fn submitter(&self) -> Option<&HtmlElement> {
+    fn submitter(&self) -> Option<HtmlElement> {
         self.submitter_shim()
     }
 }

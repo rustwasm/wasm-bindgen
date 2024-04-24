@@ -27,11 +27,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "colno")]
     fn set_colno_shim(this: &ErrorEventInit, val: u32);
     #[wasm_bindgen(method, getter = "error")]
-    fn error_shim(this: &ErrorEventInit) -> &::wasm_bindgen::JsValue;
+    fn error_shim(this: &ErrorEventInit) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "error")]
     fn set_error_shim(this: &ErrorEventInit, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "filename")]
-    fn filename_shim(this: &ErrorEventInit) -> &str;
+    fn filename_shim(this: &ErrorEventInit) -> String;
     #[wasm_bindgen(method, setter = "filename")]
     fn set_filename_shim(this: &ErrorEventInit, val: &str);
     #[wasm_bindgen(method, getter = "lineno")]
@@ -39,7 +39,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "lineno")]
     fn set_lineno_shim(this: &ErrorEventInit, val: u32);
     #[wasm_bindgen(method, getter = "message")]
-    fn message_shim(this: &ErrorEventInit) -> &str;
+    fn message_shim(this: &ErrorEventInit) -> String;
     #[wasm_bindgen(method, setter = "message")]
     fn set_message_shim(this: &ErrorEventInit, val: &str);
 }
@@ -66,11 +66,11 @@ pub trait ErrorEventInitGetters {
     #[doc = "Get the `error` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ErrorEventInit`*"]
-    fn error(&self) -> &::wasm_bindgen::JsValue;
+    fn error(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `filename` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ErrorEventInit`*"]
-    fn filename(&self) -> &str;
+    fn filename(&self) -> String;
     #[doc = "Get the `lineno` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ErrorEventInit`*"]
@@ -78,7 +78,7 @@ pub trait ErrorEventInitGetters {
     #[doc = "Get the `message` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ErrorEventInit`*"]
-    fn message(&self) -> &str;
+    fn message(&self) -> String;
 }
 impl ErrorEventInitGetters for ErrorEventInit {
     fn bubbles(&self) -> bool {
@@ -93,16 +93,16 @@ impl ErrorEventInitGetters for ErrorEventInit {
     fn colno(&self) -> u32 {
         self.colno_shim()
     }
-    fn error(&self) -> &::wasm_bindgen::JsValue {
+    fn error(&self) -> ::wasm_bindgen::JsValue {
         self.error_shim()
     }
-    fn filename(&self) -> &str {
+    fn filename(&self) -> String {
         self.filename_shim()
     }
     fn lineno(&self) -> u32 {
         self.lineno_shim()
     }
-    fn message(&self) -> &str {
+    fn message(&self) -> String {
         self.message_shim()
     }
 }

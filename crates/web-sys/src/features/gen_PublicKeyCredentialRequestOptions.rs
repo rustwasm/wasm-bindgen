@@ -11,22 +11,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRequestOptions`*"]
     pub type PublicKeyCredentialRequestOptions;
     #[wasm_bindgen(method, getter = "allowCredentials")]
-    fn allow_credentials_shim(this: &PublicKeyCredentialRequestOptions)
-        -> &::wasm_bindgen::JsValue;
+    fn allow_credentials_shim(this: &PublicKeyCredentialRequestOptions) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "allowCredentials")]
     fn set_allow_credentials_shim(
         this: &PublicKeyCredentialRequestOptions,
         val: &::wasm_bindgen::JsValue,
     );
     #[wasm_bindgen(method, getter = "challenge")]
-    fn challenge_shim(this: &PublicKeyCredentialRequestOptions) -> &::js_sys::Object;
+    fn challenge_shim(this: &PublicKeyCredentialRequestOptions) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "challenge")]
     fn set_challenge_shim(this: &PublicKeyCredentialRequestOptions, val: &::js_sys::Object);
     #[cfg(feature = "AuthenticationExtensionsClientInputs")]
     #[wasm_bindgen(method, getter = "extensions")]
     fn extensions_shim(
         this: &PublicKeyCredentialRequestOptions,
-    ) -> &AuthenticationExtensionsClientInputs;
+    ) -> AuthenticationExtensionsClientInputs;
     #[cfg(feature = "AuthenticationExtensionsClientInputs")]
     #[wasm_bindgen(method, setter = "extensions")]
     fn set_extensions_shim(
@@ -34,7 +33,7 @@ extern "C" {
         val: &AuthenticationExtensionsClientInputs,
     );
     #[wasm_bindgen(method, getter = "rpId")]
-    fn rp_id_shim(this: &PublicKeyCredentialRequestOptions) -> &str;
+    fn rp_id_shim(this: &PublicKeyCredentialRequestOptions) -> String;
     #[wasm_bindgen(method, setter = "rpId")]
     fn set_rp_id_shim(this: &PublicKeyCredentialRequestOptions, val: &str);
     #[wasm_bindgen(method, getter = "timeout")]
@@ -60,20 +59,20 @@ pub trait PublicKeyCredentialRequestOptionsGetters {
     #[doc = "Get the `allowCredentials` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRequestOptions`*"]
-    fn allow_credentials(&self) -> &::wasm_bindgen::JsValue;
+    fn allow_credentials(&self) -> ::js_sys::Array;
     #[doc = "Get the `challenge` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRequestOptions`*"]
-    fn challenge(&self) -> &::js_sys::Object;
+    fn challenge(&self) -> ::js_sys::Object;
     #[cfg(feature = "AuthenticationExtensionsClientInputs")]
     #[doc = "Get the `extensions` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientInputs`, `PublicKeyCredentialRequestOptions`*"]
-    fn extensions(&self) -> &AuthenticationExtensionsClientInputs;
+    fn extensions(&self) -> AuthenticationExtensionsClientInputs;
     #[doc = "Get the `rpId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRequestOptions`*"]
-    fn rp_id(&self) -> &str;
+    fn rp_id(&self) -> String;
     #[doc = "Get the `timeout` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRequestOptions`*"]
@@ -85,17 +84,17 @@ pub trait PublicKeyCredentialRequestOptionsGetters {
     fn user_verification(&self) -> UserVerificationRequirement;
 }
 impl PublicKeyCredentialRequestOptionsGetters for PublicKeyCredentialRequestOptions {
-    fn allow_credentials(&self) -> &::wasm_bindgen::JsValue {
+    fn allow_credentials(&self) -> ::js_sys::Array {
         self.allow_credentials_shim()
     }
-    fn challenge(&self) -> &::js_sys::Object {
+    fn challenge(&self) -> ::js_sys::Object {
         self.challenge_shim()
     }
     #[cfg(feature = "AuthenticationExtensionsClientInputs")]
-    fn extensions(&self) -> &AuthenticationExtensionsClientInputs {
+    fn extensions(&self) -> AuthenticationExtensionsClientInputs {
         self.extensions_shim()
     }
-    fn rp_id(&self) -> &str {
+    fn rp_id(&self) -> String {
         self.rp_id_shim()
     }
     fn timeout(&self) -> u32 {

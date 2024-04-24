@@ -23,11 +23,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &PromiseRejectionEventInit, val: bool);
     #[wasm_bindgen(method, getter = "promise")]
-    fn promise_shim(this: &PromiseRejectionEventInit) -> &::js_sys::Promise;
+    fn promise_shim(this: &PromiseRejectionEventInit) -> ::js_sys::Promise;
     #[wasm_bindgen(method, setter = "promise")]
     fn set_promise_shim(this: &PromiseRejectionEventInit, val: &::js_sys::Promise);
     #[wasm_bindgen(method, getter = "reason")]
-    fn reason_shim(this: &PromiseRejectionEventInit) -> &::wasm_bindgen::JsValue;
+    fn reason_shim(this: &PromiseRejectionEventInit) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "reason")]
     fn set_reason_shim(this: &PromiseRejectionEventInit, val: &::wasm_bindgen::JsValue);
 }
@@ -50,11 +50,11 @@ pub trait PromiseRejectionEventInitGetters {
     #[doc = "Get the `promise` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PromiseRejectionEventInit`*"]
-    fn promise(&self) -> &::js_sys::Promise;
+    fn promise(&self) -> ::js_sys::Promise;
     #[doc = "Get the `reason` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PromiseRejectionEventInit`*"]
-    fn reason(&self) -> &::wasm_bindgen::JsValue;
+    fn reason(&self) -> ::wasm_bindgen::JsValue;
 }
 impl PromiseRejectionEventInitGetters for PromiseRejectionEventInit {
     fn bubbles(&self) -> bool {
@@ -66,10 +66,10 @@ impl PromiseRejectionEventInitGetters for PromiseRejectionEventInit {
     fn composed(&self) -> bool {
         self.composed_shim()
     }
-    fn promise(&self) -> &::js_sys::Promise {
+    fn promise(&self) -> ::js_sys::Promise {
         self.promise_shim()
     }
-    fn reason(&self) -> &::wasm_bindgen::JsValue {
+    fn reason(&self) -> ::wasm_bindgen::JsValue {
         self.reason_shim()
     }
 }

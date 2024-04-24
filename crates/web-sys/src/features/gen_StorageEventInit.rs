@@ -23,25 +23,25 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &StorageEventInit, val: bool);
     #[wasm_bindgen(method, getter = "key")]
-    fn key_shim(this: &StorageEventInit) -> Option<&str>;
+    fn key_shim(this: &StorageEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "key")]
     fn set_key_shim(this: &StorageEventInit, val: Option<&str>);
     #[wasm_bindgen(method, getter = "newValue")]
-    fn new_value_shim(this: &StorageEventInit) -> Option<&str>;
+    fn new_value_shim(this: &StorageEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "newValue")]
     fn set_new_value_shim(this: &StorageEventInit, val: Option<&str>);
     #[wasm_bindgen(method, getter = "oldValue")]
-    fn old_value_shim(this: &StorageEventInit) -> Option<&str>;
+    fn old_value_shim(this: &StorageEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "oldValue")]
     fn set_old_value_shim(this: &StorageEventInit, val: Option<&str>);
     #[cfg(feature = "Storage")]
     #[wasm_bindgen(method, getter = "storageArea")]
-    fn storage_area_shim(this: &StorageEventInit) -> Option<&Storage>;
+    fn storage_area_shim(this: &StorageEventInit) -> Option<Storage>;
     #[cfg(feature = "Storage")]
     #[wasm_bindgen(method, setter = "storageArea")]
     fn set_storage_area_shim(this: &StorageEventInit, val: Option<&Storage>);
     #[wasm_bindgen(method, getter = "url")]
-    fn url_shim(this: &StorageEventInit) -> &str;
+    fn url_shim(this: &StorageEventInit) -> String;
     #[wasm_bindgen(method, setter = "url")]
     fn set_url_shim(this: &StorageEventInit, val: &str);
 }
@@ -64,24 +64,24 @@ pub trait StorageEventInitGetters {
     #[doc = "Get the `key` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageEventInit`*"]
-    fn key(&self) -> Option<&str>;
+    fn key(&self) -> Option<String>;
     #[doc = "Get the `newValue` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageEventInit`*"]
-    fn new_value(&self) -> Option<&str>;
+    fn new_value(&self) -> Option<String>;
     #[doc = "Get the `oldValue` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageEventInit`*"]
-    fn old_value(&self) -> Option<&str>;
+    fn old_value(&self) -> Option<String>;
     #[cfg(feature = "Storage")]
     #[doc = "Get the `storageArea` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Storage`, `StorageEventInit`*"]
-    fn storage_area(&self) -> Option<&Storage>;
+    fn storage_area(&self) -> Option<Storage>;
     #[doc = "Get the `url` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageEventInit`*"]
-    fn url(&self) -> &str;
+    fn url(&self) -> String;
 }
 impl StorageEventInitGetters for StorageEventInit {
     fn bubbles(&self) -> bool {
@@ -93,20 +93,20 @@ impl StorageEventInitGetters for StorageEventInit {
     fn composed(&self) -> bool {
         self.composed_shim()
     }
-    fn key(&self) -> Option<&str> {
+    fn key(&self) -> Option<String> {
         self.key_shim()
     }
-    fn new_value(&self) -> Option<&str> {
+    fn new_value(&self) -> Option<String> {
         self.new_value_shim()
     }
-    fn old_value(&self) -> Option<&str> {
+    fn old_value(&self) -> Option<String> {
         self.old_value_shim()
     }
     #[cfg(feature = "Storage")]
-    fn storage_area(&self) -> Option<&Storage> {
+    fn storage_area(&self) -> Option<Storage> {
         self.storage_area_shim()
     }
-    fn url(&self) -> &str {
+    fn url(&self) -> String {
         self.url_shim()
     }
 }

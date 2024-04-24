@@ -32,15 +32,14 @@ extern "C" {
     fn set_appearance_shim(this: &BluetoothAdvertisingEventInit, val: u16);
     #[cfg(feature = "BluetoothDevice")]
     #[wasm_bindgen(method, getter = "device")]
-    fn device_shim(this: &BluetoothAdvertisingEventInit) -> &BluetoothDevice;
+    fn device_shim(this: &BluetoothAdvertisingEventInit) -> BluetoothDevice;
     #[cfg(feature = "BluetoothDevice")]
     #[wasm_bindgen(method, setter = "device")]
     fn set_device_shim(this: &BluetoothAdvertisingEventInit, val: &BluetoothDevice);
     #[cfg(feature = "BluetoothManufacturerDataMap")]
     #[wasm_bindgen(method, getter = "manufacturerData")]
-    fn manufacturer_data_shim(
-        this: &BluetoothAdvertisingEventInit,
-    ) -> &BluetoothManufacturerDataMap;
+    fn manufacturer_data_shim(this: &BluetoothAdvertisingEventInit)
+        -> BluetoothManufacturerDataMap;
     #[cfg(feature = "BluetoothManufacturerDataMap")]
     #[wasm_bindgen(method, setter = "manufacturerData")]
     fn set_manufacturer_data_shim(
@@ -48,7 +47,7 @@ extern "C" {
         val: &BluetoothManufacturerDataMap,
     );
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &BluetoothAdvertisingEventInit) -> &str;
+    fn name_shim(this: &BluetoothAdvertisingEventInit) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &BluetoothAdvertisingEventInit, val: &str);
     #[wasm_bindgen(method, getter = "rssi")]
@@ -57,7 +56,7 @@ extern "C" {
     fn set_rssi_shim(this: &BluetoothAdvertisingEventInit, val: i8);
     #[cfg(feature = "BluetoothServiceDataMap")]
     #[wasm_bindgen(method, getter = "serviceData")]
-    fn service_data_shim(this: &BluetoothAdvertisingEventInit) -> &BluetoothServiceDataMap;
+    fn service_data_shim(this: &BluetoothAdvertisingEventInit) -> BluetoothServiceDataMap;
     #[cfg(feature = "BluetoothServiceDataMap")]
     #[wasm_bindgen(method, setter = "serviceData")]
     fn set_service_data_shim(this: &BluetoothAdvertisingEventInit, val: &BluetoothServiceDataMap);
@@ -66,7 +65,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "txPower")]
     fn set_tx_power_shim(this: &BluetoothAdvertisingEventInit, val: i8);
     #[wasm_bindgen(method, getter = "uuids")]
-    fn uuids_shim(this: &BluetoothAdvertisingEventInit) -> &::wasm_bindgen::JsValue;
+    fn uuids_shim(this: &BluetoothAdvertisingEventInit) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "uuids")]
     fn set_uuids_shim(this: &BluetoothAdvertisingEventInit, val: &::wasm_bindgen::JsValue);
 }
@@ -115,7 +114,7 @@ pub trait BluetoothAdvertisingEventInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn device(&self) -> &BluetoothDevice;
+    fn device(&self) -> BluetoothDevice;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "BluetoothManufacturerDataMap")]
     #[doc = "Get the `manufacturerData` field of this object."]
@@ -124,7 +123,7 @@ pub trait BluetoothAdvertisingEventInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn manufacturer_data(&self) -> &BluetoothManufacturerDataMap;
+    fn manufacturer_data(&self) -> BluetoothManufacturerDataMap;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
@@ -132,7 +131,7 @@ pub trait BluetoothAdvertisingEventInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `rssi` field of this object."]
     #[doc = ""]
@@ -149,7 +148,7 @@ pub trait BluetoothAdvertisingEventInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn service_data(&self) -> &BluetoothServiceDataMap;
+    fn service_data(&self) -> BluetoothServiceDataMap;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `txPower` field of this object."]
     #[doc = ""]
@@ -165,7 +164,7 @@ pub trait BluetoothAdvertisingEventInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn uuids(&self) -> &::wasm_bindgen::JsValue;
+    fn uuids(&self) -> ::js_sys::Array;
 }
 #[cfg(web_sys_unstable_apis)]
 impl BluetoothAdvertisingEventInitGetters for BluetoothAdvertisingEventInit {
@@ -187,16 +186,16 @@ impl BluetoothAdvertisingEventInitGetters for BluetoothAdvertisingEventInit {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "BluetoothDevice")]
-    fn device(&self) -> &BluetoothDevice {
+    fn device(&self) -> BluetoothDevice {
         self.device_shim()
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "BluetoothManufacturerDataMap")]
-    fn manufacturer_data(&self) -> &BluetoothManufacturerDataMap {
+    fn manufacturer_data(&self) -> BluetoothManufacturerDataMap {
         self.manufacturer_data_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
     #[cfg(web_sys_unstable_apis)]
@@ -205,7 +204,7 @@ impl BluetoothAdvertisingEventInitGetters for BluetoothAdvertisingEventInit {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "BluetoothServiceDataMap")]
-    fn service_data(&self) -> &BluetoothServiceDataMap {
+    fn service_data(&self) -> BluetoothServiceDataMap {
         self.service_data_shim()
     }
     #[cfg(web_sys_unstable_apis)]
@@ -213,7 +212,7 @@ impl BluetoothAdvertisingEventInitGetters for BluetoothAdvertisingEventInit {
         self.tx_power_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn uuids(&self) -> &::wasm_bindgen::JsValue {
+    fn uuids(&self) -> ::js_sys::Array {
         self.uuids_shim()
     }
 }

@@ -11,15 +11,15 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RsaOtherPrimesInfo`*"]
     pub type RsaOtherPrimesInfo;
     #[wasm_bindgen(method, getter = "d")]
-    fn d_shim(this: &RsaOtherPrimesInfo) -> &str;
+    fn d_shim(this: &RsaOtherPrimesInfo) -> String;
     #[wasm_bindgen(method, setter = "d")]
     fn set_d_shim(this: &RsaOtherPrimesInfo, val: &str);
     #[wasm_bindgen(method, getter = "r")]
-    fn r_shim(this: &RsaOtherPrimesInfo) -> &str;
+    fn r_shim(this: &RsaOtherPrimesInfo) -> String;
     #[wasm_bindgen(method, setter = "r")]
     fn set_r_shim(this: &RsaOtherPrimesInfo, val: &str);
     #[wasm_bindgen(method, getter = "t")]
-    fn t_shim(this: &RsaOtherPrimesInfo) -> &str;
+    fn t_shim(this: &RsaOtherPrimesInfo) -> String;
     #[wasm_bindgen(method, setter = "t")]
     fn set_t_shim(this: &RsaOtherPrimesInfo, val: &str);
 }
@@ -30,24 +30,24 @@ pub trait RsaOtherPrimesInfoGetters {
     #[doc = "Get the `d` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOtherPrimesInfo`*"]
-    fn d(&self) -> &str;
+    fn d(&self) -> String;
     #[doc = "Get the `r` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOtherPrimesInfo`*"]
-    fn r(&self) -> &str;
+    fn r(&self) -> String;
     #[doc = "Get the `t` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOtherPrimesInfo`*"]
-    fn t(&self) -> &str;
+    fn t(&self) -> String;
 }
 impl RsaOtherPrimesInfoGetters for RsaOtherPrimesInfo {
-    fn d(&self) -> &str {
+    fn d(&self) -> String {
         self.d_shim()
     }
-    fn r(&self) -> &str {
+    fn r(&self) -> String {
         self.r_shim()
     }
-    fn t(&self) -> &str {
+    fn t(&self) -> String {
         self.t_shim()
     }
 }

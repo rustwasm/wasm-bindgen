@@ -24,7 +24,7 @@ extern "C" {
     fn set_prevent_close_shim(this: &StreamPipeOptions, val: bool);
     #[cfg(feature = "AbortSignal")]
     #[wasm_bindgen(method, getter = "signal")]
-    fn signal_shim(this: &StreamPipeOptions) -> &AbortSignal;
+    fn signal_shim(this: &StreamPipeOptions) -> AbortSignal;
     #[cfg(feature = "AbortSignal")]
     #[wasm_bindgen(method, setter = "signal")]
     fn set_signal_shim(this: &StreamPipeOptions, val: &AbortSignal);
@@ -49,7 +49,7 @@ pub trait StreamPipeOptionsGetters {
     #[doc = "Get the `signal` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AbortSignal`, `StreamPipeOptions`*"]
-    fn signal(&self) -> &AbortSignal;
+    fn signal(&self) -> AbortSignal;
 }
 impl StreamPipeOptionsGetters for StreamPipeOptions {
     fn prevent_abort(&self) -> bool {
@@ -62,7 +62,7 @@ impl StreamPipeOptionsGetters for StreamPipeOptions {
         self.prevent_close_shim()
     }
     #[cfg(feature = "AbortSignal")]
-    fn signal(&self) -> &AbortSignal {
+    fn signal(&self) -> AbortSignal {
         self.signal_shim()
     }
 }

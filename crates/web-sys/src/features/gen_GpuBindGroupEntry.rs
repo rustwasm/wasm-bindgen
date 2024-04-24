@@ -19,7 +19,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "binding")]
     fn set_binding_shim(this: &GpuBindGroupEntry, val: u32);
     #[wasm_bindgen(method, getter = "resource")]
-    fn resource_shim(this: &GpuBindGroupEntry) -> &::wasm_bindgen::JsValue;
+    fn resource_shim(this: &GpuBindGroupEntry) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "resource")]
     fn set_resource_shim(this: &GpuBindGroupEntry, val: &::wasm_bindgen::JsValue);
 }
@@ -43,7 +43,7 @@ pub trait GpuBindGroupEntryGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn resource(&self) -> &::wasm_bindgen::JsValue;
+    fn resource(&self) -> ::wasm_bindgen::JsValue;
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuBindGroupEntryGetters for GpuBindGroupEntry {
@@ -52,7 +52,7 @@ impl GpuBindGroupEntryGetters for GpuBindGroupEntry {
         self.binding_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn resource(&self) -> &::wasm_bindgen::JsValue {
+    fn resource(&self) -> ::wasm_bindgen::JsValue {
         self.resource_shim()
     }
 }

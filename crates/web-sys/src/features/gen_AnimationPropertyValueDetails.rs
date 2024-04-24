@@ -17,7 +17,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composite")]
     fn set_composite_shim(this: &AnimationPropertyValueDetails, val: CompositeOperation);
     #[wasm_bindgen(method, getter = "easing")]
-    fn easing_shim(this: &AnimationPropertyValueDetails) -> &str;
+    fn easing_shim(this: &AnimationPropertyValueDetails) -> String;
     #[wasm_bindgen(method, setter = "easing")]
     fn set_easing_shim(this: &AnimationPropertyValueDetails, val: &str);
     #[wasm_bindgen(method, getter = "offset")]
@@ -25,7 +25,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "offset")]
     fn set_offset_shim(this: &AnimationPropertyValueDetails, val: f64);
     #[wasm_bindgen(method, getter = "value")]
-    fn value_shim(this: &AnimationPropertyValueDetails) -> &str;
+    fn value_shim(this: &AnimationPropertyValueDetails) -> String;
     #[wasm_bindgen(method, setter = "value")]
     fn set_value_shim(this: &AnimationPropertyValueDetails, val: &str);
 }
@@ -41,7 +41,7 @@ pub trait AnimationPropertyValueDetailsGetters {
     #[doc = "Get the `easing` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
-    fn easing(&self) -> &str;
+    fn easing(&self) -> String;
     #[doc = "Get the `offset` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
@@ -49,20 +49,20 @@ pub trait AnimationPropertyValueDetailsGetters {
     #[doc = "Get the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
-    fn value(&self) -> &str;
+    fn value(&self) -> String;
 }
 impl AnimationPropertyValueDetailsGetters for AnimationPropertyValueDetails {
     #[cfg(feature = "CompositeOperation")]
     fn composite(&self) -> CompositeOperation {
         self.composite_shim()
     }
-    fn easing(&self) -> &str {
+    fn easing(&self) -> String {
         self.easing_shim()
     }
     fn offset(&self) -> f64 {
         self.offset_shim()
     }
-    fn value(&self) -> &str {
+    fn value(&self) -> String {
         self.value_shim()
     }
 }

@@ -16,7 +16,7 @@ extern "C" {
     pub type EncodedAudioChunkMetadata;
     #[cfg(feature = "AudioDecoderConfig")]
     #[wasm_bindgen(method, getter = "decoderConfig")]
-    fn decoder_config_shim(this: &EncodedAudioChunkMetadata) -> &AudioDecoderConfig;
+    fn decoder_config_shim(this: &EncodedAudioChunkMetadata) -> AudioDecoderConfig;
     #[cfg(feature = "AudioDecoderConfig")]
     #[wasm_bindgen(method, setter = "decoderConfig")]
     fn set_decoder_config_shim(this: &EncodedAudioChunkMetadata, val: &AudioDecoderConfig);
@@ -34,13 +34,13 @@ pub trait EncodedAudioChunkMetadataGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn decoder_config(&self) -> &AudioDecoderConfig;
+    fn decoder_config(&self) -> AudioDecoderConfig;
 }
 #[cfg(web_sys_unstable_apis)]
 impl EncodedAudioChunkMetadataGetters for EncodedAudioChunkMetadata {
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "AudioDecoderConfig")]
-    fn decoder_config(&self) -> &AudioDecoderConfig {
+    fn decoder_config(&self) -> AudioDecoderConfig {
         self.decoder_config_shim()
     }
 }

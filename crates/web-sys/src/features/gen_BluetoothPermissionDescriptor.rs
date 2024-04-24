@@ -25,15 +25,15 @@ extern "C" {
     #[wasm_bindgen(method, setter = "acceptAllDevices")]
     fn set_accept_all_devices_shim(this: &BluetoothPermissionDescriptor, val: bool);
     #[wasm_bindgen(method, getter = "deviceId")]
-    fn device_id_shim(this: &BluetoothPermissionDescriptor) -> &str;
+    fn device_id_shim(this: &BluetoothPermissionDescriptor) -> String;
     #[wasm_bindgen(method, setter = "deviceId")]
     fn set_device_id_shim(this: &BluetoothPermissionDescriptor, val: &str);
     #[wasm_bindgen(method, getter = "filters")]
-    fn filters_shim(this: &BluetoothPermissionDescriptor) -> &::wasm_bindgen::JsValue;
+    fn filters_shim(this: &BluetoothPermissionDescriptor) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "filters")]
     fn set_filters_shim(this: &BluetoothPermissionDescriptor, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "optionalServices")]
-    fn optional_services_shim(this: &BluetoothPermissionDescriptor) -> &::wasm_bindgen::JsValue;
+    fn optional_services_shim(this: &BluetoothPermissionDescriptor) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "optionalServices")]
     fn set_optional_services_shim(
         this: &BluetoothPermissionDescriptor,
@@ -69,7 +69,7 @@ pub trait BluetoothPermissionDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn device_id(&self) -> &str;
+    fn device_id(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `filters` field of this object."]
     #[doc = ""]
@@ -77,7 +77,7 @@ pub trait BluetoothPermissionDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn filters(&self) -> &::wasm_bindgen::JsValue;
+    fn filters(&self) -> ::js_sys::Array;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `optionalServices` field of this object."]
     #[doc = ""]
@@ -85,7 +85,7 @@ pub trait BluetoothPermissionDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn optional_services(&self) -> &::wasm_bindgen::JsValue;
+    fn optional_services(&self) -> ::js_sys::Array;
 }
 #[cfg(web_sys_unstable_apis)]
 impl BluetoothPermissionDescriptorGetters for BluetoothPermissionDescriptor {
@@ -99,15 +99,15 @@ impl BluetoothPermissionDescriptorGetters for BluetoothPermissionDescriptor {
         self.accept_all_devices_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn device_id(&self) -> &str {
+    fn device_id(&self) -> String {
         self.device_id_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn filters(&self) -> &::wasm_bindgen::JsValue {
+    fn filters(&self) -> ::js_sys::Array {
         self.filters_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn optional_services(&self) -> &::wasm_bindgen::JsValue {
+    fn optional_services(&self) -> ::js_sys::Array {
         self.optional_services_shim()
     }
 }

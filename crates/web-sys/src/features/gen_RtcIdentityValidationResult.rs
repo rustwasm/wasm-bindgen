@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityValidationResult`*"]
     pub type RtcIdentityValidationResult;
     #[wasm_bindgen(method, getter = "contents")]
-    fn contents_shim(this: &RtcIdentityValidationResult) -> &str;
+    fn contents_shim(this: &RtcIdentityValidationResult) -> String;
     #[wasm_bindgen(method, setter = "contents")]
     fn set_contents_shim(this: &RtcIdentityValidationResult, val: &str);
     #[wasm_bindgen(method, getter = "identity")]
-    fn identity_shim(this: &RtcIdentityValidationResult) -> &str;
+    fn identity_shim(this: &RtcIdentityValidationResult) -> String;
     #[wasm_bindgen(method, setter = "identity")]
     fn set_identity_shim(this: &RtcIdentityValidationResult, val: &str);
 }
@@ -26,17 +26,17 @@ pub trait RtcIdentityValidationResultGetters {
     #[doc = "Get the `contents` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityValidationResult`*"]
-    fn contents(&self) -> &str;
+    fn contents(&self) -> String;
     #[doc = "Get the `identity` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityValidationResult`*"]
-    fn identity(&self) -> &str;
+    fn identity(&self) -> String;
 }
 impl RtcIdentityValidationResultGetters for RtcIdentityValidationResult {
-    fn contents(&self) -> &str {
+    fn contents(&self) -> String {
         self.contents_shim()
     }
-    fn identity(&self) -> &str {
+    fn identity(&self) -> String {
         self.identity_shim()
     }
 }

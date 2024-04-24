@@ -12,16 +12,16 @@ extern "C" {
     pub type IntersectionObserverInit;
     #[cfg(feature = "Element")]
     #[wasm_bindgen(method, getter = "root")]
-    fn root_shim(this: &IntersectionObserverInit) -> Option<&Element>;
+    fn root_shim(this: &IntersectionObserverInit) -> Option<Element>;
     #[cfg(feature = "Element")]
     #[wasm_bindgen(method, setter = "root")]
     fn set_root_shim(this: &IntersectionObserverInit, val: Option<&Element>);
     #[wasm_bindgen(method, getter = "rootMargin")]
-    fn root_margin_shim(this: &IntersectionObserverInit) -> &str;
+    fn root_margin_shim(this: &IntersectionObserverInit) -> String;
     #[wasm_bindgen(method, setter = "rootMargin")]
     fn set_root_margin_shim(this: &IntersectionObserverInit, val: &str);
     #[wasm_bindgen(method, getter = "threshold")]
-    fn threshold_shim(this: &IntersectionObserverInit) -> &::wasm_bindgen::JsValue;
+    fn threshold_shim(this: &IntersectionObserverInit) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "threshold")]
     fn set_threshold_shim(this: &IntersectionObserverInit, val: &::wasm_bindgen::JsValue);
 }
@@ -33,25 +33,25 @@ pub trait IntersectionObserverInitGetters {
     #[doc = "Get the `root` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`, `IntersectionObserverInit`*"]
-    fn root(&self) -> Option<&Element>;
+    fn root(&self) -> Option<Element>;
     #[doc = "Get the `rootMargin` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IntersectionObserverInit`*"]
-    fn root_margin(&self) -> &str;
+    fn root_margin(&self) -> String;
     #[doc = "Get the `threshold` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IntersectionObserverInit`*"]
-    fn threshold(&self) -> &::wasm_bindgen::JsValue;
+    fn threshold(&self) -> ::wasm_bindgen::JsValue;
 }
 impl IntersectionObserverInitGetters for IntersectionObserverInit {
     #[cfg(feature = "Element")]
-    fn root(&self) -> Option<&Element> {
+    fn root(&self) -> Option<Element> {
         self.root_shim()
     }
-    fn root_margin(&self) -> &str {
+    fn root_margin(&self) -> String {
         self.root_margin_shim()
     }
-    fn threshold(&self) -> &::wasm_bindgen::JsValue {
+    fn threshold(&self) -> ::wasm_bindgen::JsValue {
         self.threshold_shim()
     }
 }

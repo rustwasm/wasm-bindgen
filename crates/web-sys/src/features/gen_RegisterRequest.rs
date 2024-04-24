@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RegisterRequest`*"]
     pub type RegisterRequest;
     #[wasm_bindgen(method, getter = "challenge")]
-    fn challenge_shim(this: &RegisterRequest) -> &str;
+    fn challenge_shim(this: &RegisterRequest) -> String;
     #[wasm_bindgen(method, setter = "challenge")]
     fn set_challenge_shim(this: &RegisterRequest, val: &str);
     #[wasm_bindgen(method, getter = "version")]
-    fn version_shim(this: &RegisterRequest) -> &str;
+    fn version_shim(this: &RegisterRequest) -> String;
     #[wasm_bindgen(method, setter = "version")]
     fn set_version_shim(this: &RegisterRequest, val: &str);
 }
@@ -26,17 +26,17 @@ pub trait RegisterRequestGetters {
     #[doc = "Get the `challenge` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterRequest`*"]
-    fn challenge(&self) -> &str;
+    fn challenge(&self) -> String;
     #[doc = "Get the `version` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterRequest`*"]
-    fn version(&self) -> &str;
+    fn version(&self) -> String;
 }
 impl RegisterRequestGetters for RegisterRequest {
-    fn challenge(&self) -> &str {
+    fn challenge(&self) -> String {
         self.challenge_shim()
     }
-    fn version(&self) -> &str {
+    fn version(&self) -> String {
         self.version_shim()
     }
 }

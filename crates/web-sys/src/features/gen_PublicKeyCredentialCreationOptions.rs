@@ -25,7 +25,7 @@ extern "C" {
     #[wasm_bindgen(method, getter = "authenticatorSelection")]
     fn authenticator_selection_shim(
         this: &PublicKeyCredentialCreationOptions,
-    ) -> &AuthenticatorSelectionCriteria;
+    ) -> AuthenticatorSelectionCriteria;
     #[cfg(feature = "AuthenticatorSelectionCriteria")]
     #[wasm_bindgen(method, setter = "authenticatorSelection")]
     fn set_authenticator_selection_shim(
@@ -33,13 +33,11 @@ extern "C" {
         val: &AuthenticatorSelectionCriteria,
     );
     #[wasm_bindgen(method, getter = "challenge")]
-    fn challenge_shim(this: &PublicKeyCredentialCreationOptions) -> &::js_sys::Object;
+    fn challenge_shim(this: &PublicKeyCredentialCreationOptions) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "challenge")]
     fn set_challenge_shim(this: &PublicKeyCredentialCreationOptions, val: &::js_sys::Object);
     #[wasm_bindgen(method, getter = "excludeCredentials")]
-    fn exclude_credentials_shim(
-        this: &PublicKeyCredentialCreationOptions,
-    ) -> &::wasm_bindgen::JsValue;
+    fn exclude_credentials_shim(this: &PublicKeyCredentialCreationOptions) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "excludeCredentials")]
     fn set_exclude_credentials_shim(
         this: &PublicKeyCredentialCreationOptions,
@@ -49,7 +47,7 @@ extern "C" {
     #[wasm_bindgen(method, getter = "extensions")]
     fn extensions_shim(
         this: &PublicKeyCredentialCreationOptions,
-    ) -> &AuthenticationExtensionsClientInputs;
+    ) -> AuthenticationExtensionsClientInputs;
     #[cfg(feature = "AuthenticationExtensionsClientInputs")]
     #[wasm_bindgen(method, setter = "extensions")]
     fn set_extensions_shim(
@@ -57,9 +55,7 @@ extern "C" {
         val: &AuthenticationExtensionsClientInputs,
     );
     #[wasm_bindgen(method, getter = "pubKeyCredParams")]
-    fn pub_key_cred_params_shim(
-        this: &PublicKeyCredentialCreationOptions,
-    ) -> &::wasm_bindgen::JsValue;
+    fn pub_key_cred_params_shim(this: &PublicKeyCredentialCreationOptions) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "pubKeyCredParams")]
     fn set_pub_key_cred_params_shim(
         this: &PublicKeyCredentialCreationOptions,
@@ -67,7 +63,7 @@ extern "C" {
     );
     #[cfg(feature = "PublicKeyCredentialRpEntity")]
     #[wasm_bindgen(method, getter = "rp")]
-    fn rp_shim(this: &PublicKeyCredentialCreationOptions) -> &PublicKeyCredentialRpEntity;
+    fn rp_shim(this: &PublicKeyCredentialCreationOptions) -> PublicKeyCredentialRpEntity;
     #[cfg(feature = "PublicKeyCredentialRpEntity")]
     #[wasm_bindgen(method, setter = "rp")]
     fn set_rp_shim(this: &PublicKeyCredentialCreationOptions, val: &PublicKeyCredentialRpEntity);
@@ -77,7 +73,7 @@ extern "C" {
     fn set_timeout_shim(this: &PublicKeyCredentialCreationOptions, val: u32);
     #[cfg(feature = "PublicKeyCredentialUserEntity")]
     #[wasm_bindgen(method, getter = "user")]
-    fn user_shim(this: &PublicKeyCredentialCreationOptions) -> &PublicKeyCredentialUserEntity;
+    fn user_shim(this: &PublicKeyCredentialCreationOptions) -> PublicKeyCredentialUserEntity;
     #[cfg(feature = "PublicKeyCredentialUserEntity")]
     #[wasm_bindgen(method, setter = "user")]
     fn set_user_shim(
@@ -98,29 +94,29 @@ pub trait PublicKeyCredentialCreationOptionsGetters {
     #[doc = "Get the `authenticatorSelection` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticatorSelectionCriteria`, `PublicKeyCredentialCreationOptions`*"]
-    fn authenticator_selection(&self) -> &AuthenticatorSelectionCriteria;
+    fn authenticator_selection(&self) -> AuthenticatorSelectionCriteria;
     #[doc = "Get the `challenge` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialCreationOptions`*"]
-    fn challenge(&self) -> &::js_sys::Object;
+    fn challenge(&self) -> ::js_sys::Object;
     #[doc = "Get the `excludeCredentials` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialCreationOptions`*"]
-    fn exclude_credentials(&self) -> &::wasm_bindgen::JsValue;
+    fn exclude_credentials(&self) -> ::js_sys::Array;
     #[cfg(feature = "AuthenticationExtensionsClientInputs")]
     #[doc = "Get the `extensions` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientInputs`, `PublicKeyCredentialCreationOptions`*"]
-    fn extensions(&self) -> &AuthenticationExtensionsClientInputs;
+    fn extensions(&self) -> AuthenticationExtensionsClientInputs;
     #[doc = "Get the `pubKeyCredParams` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialCreationOptions`*"]
-    fn pub_key_cred_params(&self) -> &::wasm_bindgen::JsValue;
+    fn pub_key_cred_params(&self) -> ::js_sys::Array;
     #[cfg(feature = "PublicKeyCredentialRpEntity")]
     #[doc = "Get the `rp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialCreationOptions`, `PublicKeyCredentialRpEntity`*"]
-    fn rp(&self) -> &PublicKeyCredentialRpEntity;
+    fn rp(&self) -> PublicKeyCredentialRpEntity;
     #[doc = "Get the `timeout` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialCreationOptions`*"]
@@ -129,7 +125,7 @@ pub trait PublicKeyCredentialCreationOptionsGetters {
     #[doc = "Get the `user` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialCreationOptions`, `PublicKeyCredentialUserEntity`*"]
-    fn user(&self) -> &PublicKeyCredentialUserEntity;
+    fn user(&self) -> PublicKeyCredentialUserEntity;
 }
 impl PublicKeyCredentialCreationOptionsGetters for PublicKeyCredentialCreationOptions {
     #[cfg(feature = "AttestationConveyancePreference")]
@@ -137,31 +133,31 @@ impl PublicKeyCredentialCreationOptionsGetters for PublicKeyCredentialCreationOp
         self.attestation_shim()
     }
     #[cfg(feature = "AuthenticatorSelectionCriteria")]
-    fn authenticator_selection(&self) -> &AuthenticatorSelectionCriteria {
+    fn authenticator_selection(&self) -> AuthenticatorSelectionCriteria {
         self.authenticator_selection_shim()
     }
-    fn challenge(&self) -> &::js_sys::Object {
+    fn challenge(&self) -> ::js_sys::Object {
         self.challenge_shim()
     }
-    fn exclude_credentials(&self) -> &::wasm_bindgen::JsValue {
+    fn exclude_credentials(&self) -> ::js_sys::Array {
         self.exclude_credentials_shim()
     }
     #[cfg(feature = "AuthenticationExtensionsClientInputs")]
-    fn extensions(&self) -> &AuthenticationExtensionsClientInputs {
+    fn extensions(&self) -> AuthenticationExtensionsClientInputs {
         self.extensions_shim()
     }
-    fn pub_key_cred_params(&self) -> &::wasm_bindgen::JsValue {
+    fn pub_key_cred_params(&self) -> ::js_sys::Array {
         self.pub_key_cred_params_shim()
     }
     #[cfg(feature = "PublicKeyCredentialRpEntity")]
-    fn rp(&self) -> &PublicKeyCredentialRpEntity {
+    fn rp(&self) -> PublicKeyCredentialRpEntity {
         self.rp_shim()
     }
     fn timeout(&self) -> u32 {
         self.timeout_shim()
     }
     #[cfg(feature = "PublicKeyCredentialUserEntity")]
-    fn user(&self) -> &PublicKeyCredentialUserEntity {
+    fn user(&self) -> PublicKeyCredentialUserEntity {
         self.user_shim()
     }
 }

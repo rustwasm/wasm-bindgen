@@ -23,7 +23,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &SecurityPolicyViolationEventInit, val: bool);
     #[wasm_bindgen(method, getter = "blockedURI")]
-    fn blocked_uri_shim(this: &SecurityPolicyViolationEventInit) -> &str;
+    fn blocked_uri_shim(this: &SecurityPolicyViolationEventInit) -> String;
     #[wasm_bindgen(method, setter = "blockedURI")]
     fn set_blocked_uri_shim(this: &SecurityPolicyViolationEventInit, val: &str);
     #[wasm_bindgen(method, getter = "columnNumber")]
@@ -42,11 +42,11 @@ extern "C" {
         val: SecurityPolicyViolationEventDisposition,
     );
     #[wasm_bindgen(method, getter = "documentURI")]
-    fn document_uri_shim(this: &SecurityPolicyViolationEventInit) -> &str;
+    fn document_uri_shim(this: &SecurityPolicyViolationEventInit) -> String;
     #[wasm_bindgen(method, setter = "documentURI")]
     fn set_document_uri_shim(this: &SecurityPolicyViolationEventInit, val: &str);
     #[wasm_bindgen(method, getter = "effectiveDirective")]
-    fn effective_directive_shim(this: &SecurityPolicyViolationEventInit) -> &str;
+    fn effective_directive_shim(this: &SecurityPolicyViolationEventInit) -> String;
     #[wasm_bindgen(method, setter = "effectiveDirective")]
     fn set_effective_directive_shim(this: &SecurityPolicyViolationEventInit, val: &str);
     #[wasm_bindgen(method, getter = "lineNumber")]
@@ -54,19 +54,19 @@ extern "C" {
     #[wasm_bindgen(method, setter = "lineNumber")]
     fn set_line_number_shim(this: &SecurityPolicyViolationEventInit, val: i32);
     #[wasm_bindgen(method, getter = "originalPolicy")]
-    fn original_policy_shim(this: &SecurityPolicyViolationEventInit) -> &str;
+    fn original_policy_shim(this: &SecurityPolicyViolationEventInit) -> String;
     #[wasm_bindgen(method, setter = "originalPolicy")]
     fn set_original_policy_shim(this: &SecurityPolicyViolationEventInit, val: &str);
     #[wasm_bindgen(method, getter = "referrer")]
-    fn referrer_shim(this: &SecurityPolicyViolationEventInit) -> &str;
+    fn referrer_shim(this: &SecurityPolicyViolationEventInit) -> String;
     #[wasm_bindgen(method, setter = "referrer")]
     fn set_referrer_shim(this: &SecurityPolicyViolationEventInit, val: &str);
     #[wasm_bindgen(method, getter = "sample")]
-    fn sample_shim(this: &SecurityPolicyViolationEventInit) -> &str;
+    fn sample_shim(this: &SecurityPolicyViolationEventInit) -> String;
     #[wasm_bindgen(method, setter = "sample")]
     fn set_sample_shim(this: &SecurityPolicyViolationEventInit, val: &str);
     #[wasm_bindgen(method, getter = "sourceFile")]
-    fn source_file_shim(this: &SecurityPolicyViolationEventInit) -> &str;
+    fn source_file_shim(this: &SecurityPolicyViolationEventInit) -> String;
     #[wasm_bindgen(method, setter = "sourceFile")]
     fn set_source_file_shim(this: &SecurityPolicyViolationEventInit, val: &str);
     #[wasm_bindgen(method, getter = "statusCode")]
@@ -74,7 +74,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "statusCode")]
     fn set_status_code_shim(this: &SecurityPolicyViolationEventInit, val: u16);
     #[wasm_bindgen(method, getter = "violatedDirective")]
-    fn violated_directive_shim(this: &SecurityPolicyViolationEventInit) -> &str;
+    fn violated_directive_shim(this: &SecurityPolicyViolationEventInit) -> String;
     #[wasm_bindgen(method, setter = "violatedDirective")]
     fn set_violated_directive_shim(this: &SecurityPolicyViolationEventInit, val: &str);
 }
@@ -97,7 +97,7 @@ pub trait SecurityPolicyViolationEventInitGetters {
     #[doc = "Get the `blockedURI` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
-    fn blocked_uri(&self) -> &str;
+    fn blocked_uri(&self) -> String;
     #[doc = "Get the `columnNumber` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
@@ -110,11 +110,11 @@ pub trait SecurityPolicyViolationEventInitGetters {
     #[doc = "Get the `documentURI` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
-    fn document_uri(&self) -> &str;
+    fn document_uri(&self) -> String;
     #[doc = "Get the `effectiveDirective` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
-    fn effective_directive(&self) -> &str;
+    fn effective_directive(&self) -> String;
     #[doc = "Get the `lineNumber` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
@@ -122,19 +122,19 @@ pub trait SecurityPolicyViolationEventInitGetters {
     #[doc = "Get the `originalPolicy` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
-    fn original_policy(&self) -> &str;
+    fn original_policy(&self) -> String;
     #[doc = "Get the `referrer` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
-    fn referrer(&self) -> &str;
+    fn referrer(&self) -> String;
     #[doc = "Get the `sample` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
-    fn sample(&self) -> &str;
+    fn sample(&self) -> String;
     #[doc = "Get the `sourceFile` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
-    fn source_file(&self) -> &str;
+    fn source_file(&self) -> String;
     #[doc = "Get the `statusCode` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
@@ -142,7 +142,7 @@ pub trait SecurityPolicyViolationEventInitGetters {
     #[doc = "Get the `violatedDirective` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
-    fn violated_directive(&self) -> &str;
+    fn violated_directive(&self) -> String;
 }
 impl SecurityPolicyViolationEventInitGetters for SecurityPolicyViolationEventInit {
     fn bubbles(&self) -> bool {
@@ -154,7 +154,7 @@ impl SecurityPolicyViolationEventInitGetters for SecurityPolicyViolationEventIni
     fn composed(&self) -> bool {
         self.composed_shim()
     }
-    fn blocked_uri(&self) -> &str {
+    fn blocked_uri(&self) -> String {
         self.blocked_uri_shim()
     }
     fn column_number(&self) -> i32 {
@@ -164,31 +164,31 @@ impl SecurityPolicyViolationEventInitGetters for SecurityPolicyViolationEventIni
     fn disposition(&self) -> SecurityPolicyViolationEventDisposition {
         self.disposition_shim()
     }
-    fn document_uri(&self) -> &str {
+    fn document_uri(&self) -> String {
         self.document_uri_shim()
     }
-    fn effective_directive(&self) -> &str {
+    fn effective_directive(&self) -> String {
         self.effective_directive_shim()
     }
     fn line_number(&self) -> i32 {
         self.line_number_shim()
     }
-    fn original_policy(&self) -> &str {
+    fn original_policy(&self) -> String {
         self.original_policy_shim()
     }
-    fn referrer(&self) -> &str {
+    fn referrer(&self) -> String {
         self.referrer_shim()
     }
-    fn sample(&self) -> &str {
+    fn sample(&self) -> String {
         self.sample_shim()
     }
-    fn source_file(&self) -> &str {
+    fn source_file(&self) -> String {
         self.source_file_shim()
     }
     fn status_code(&self) -> u16 {
         self.status_code_shim()
     }
-    fn violated_directive(&self) -> &str {
+    fn violated_directive(&self) -> String {
         self.violated_directive_shim()
     }
 }

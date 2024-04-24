@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionKeys`*"]
     pub type PushSubscriptionKeys;
     #[wasm_bindgen(method, getter = "auth")]
-    fn auth_shim(this: &PushSubscriptionKeys) -> &str;
+    fn auth_shim(this: &PushSubscriptionKeys) -> String;
     #[wasm_bindgen(method, setter = "auth")]
     fn set_auth_shim(this: &PushSubscriptionKeys, val: &str);
     #[wasm_bindgen(method, getter = "p256dh")]
-    fn p256dh_shim(this: &PushSubscriptionKeys) -> &str;
+    fn p256dh_shim(this: &PushSubscriptionKeys) -> String;
     #[wasm_bindgen(method, setter = "p256dh")]
     fn set_p256dh_shim(this: &PushSubscriptionKeys, val: &str);
 }
@@ -26,17 +26,17 @@ pub trait PushSubscriptionKeysGetters {
     #[doc = "Get the `auth` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionKeys`*"]
-    fn auth(&self) -> &str;
+    fn auth(&self) -> String;
     #[doc = "Get the `p256dh` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionKeys`*"]
-    fn p256dh(&self) -> &str;
+    fn p256dh(&self) -> String;
 }
 impl PushSubscriptionKeysGetters for PushSubscriptionKeys {
-    fn auth(&self) -> &str {
+    fn auth(&self) -> String {
         self.auth_shim()
     }
-    fn p256dh(&self) -> &str {
+    fn p256dh(&self) -> String {
         self.p256dh_shim()
     }
 }

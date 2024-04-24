@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RequestMediaKeySystemAccessNotification`*"]
     pub type RequestMediaKeySystemAccessNotification;
     #[wasm_bindgen(method, getter = "keySystem")]
-    fn key_system_shim(this: &RequestMediaKeySystemAccessNotification) -> &str;
+    fn key_system_shim(this: &RequestMediaKeySystemAccessNotification) -> String;
     #[wasm_bindgen(method, setter = "keySystem")]
     fn set_key_system_shim(this: &RequestMediaKeySystemAccessNotification, val: &str);
     #[cfg(feature = "MediaKeySystemStatus")]
@@ -28,7 +28,7 @@ pub trait RequestMediaKeySystemAccessNotificationGetters {
     #[doc = "Get the `keySystem` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RequestMediaKeySystemAccessNotification`*"]
-    fn key_system(&self) -> &str;
+    fn key_system(&self) -> String;
     #[cfg(feature = "MediaKeySystemStatus")]
     #[doc = "Get the `status` field of this object."]
     #[doc = ""]
@@ -36,7 +36,7 @@ pub trait RequestMediaKeySystemAccessNotificationGetters {
     fn status(&self) -> MediaKeySystemStatus;
 }
 impl RequestMediaKeySystemAccessNotificationGetters for RequestMediaKeySystemAccessNotification {
-    fn key_system(&self) -> &str {
+    fn key_system(&self) -> String {
         self.key_system_shim()
     }
     #[cfg(feature = "MediaKeySystemStatus")]

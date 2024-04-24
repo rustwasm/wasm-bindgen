@@ -25,12 +25,12 @@ extern "C" {
     #[wasm_bindgen(method, setter = "mipLevel")]
     fn set_mip_level_shim(this: &GpuImageCopyTexture, val: u32);
     #[wasm_bindgen(method, getter = "origin")]
-    fn origin_shim(this: &GpuImageCopyTexture) -> &::wasm_bindgen::JsValue;
+    fn origin_shim(this: &GpuImageCopyTexture) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "origin")]
     fn set_origin_shim(this: &GpuImageCopyTexture, val: &::wasm_bindgen::JsValue);
     #[cfg(feature = "GpuTexture")]
     #[wasm_bindgen(method, getter = "texture")]
-    fn texture_shim(this: &GpuImageCopyTexture) -> &GpuTexture;
+    fn texture_shim(this: &GpuImageCopyTexture) -> GpuTexture;
     #[cfg(feature = "GpuTexture")]
     #[wasm_bindgen(method, setter = "texture")]
     fn set_texture_shim(this: &GpuImageCopyTexture, val: &GpuTexture);
@@ -64,7 +64,7 @@ pub trait GpuImageCopyTextureGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn origin(&self) -> &::wasm_bindgen::JsValue;
+    fn origin(&self) -> ::wasm_bindgen::JsValue;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTexture")]
     #[doc = "Get the `texture` field of this object."]
@@ -73,7 +73,7 @@ pub trait GpuImageCopyTextureGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn texture(&self) -> &GpuTexture;
+    fn texture(&self) -> GpuTexture;
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuImageCopyTextureGetters for GpuImageCopyTexture {
@@ -87,12 +87,12 @@ impl GpuImageCopyTextureGetters for GpuImageCopyTexture {
         self.mip_level_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn origin(&self) -> &::wasm_bindgen::JsValue {
+    fn origin(&self) -> ::wasm_bindgen::JsValue {
         self.origin_shim()
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTexture")]
-    fn texture(&self) -> &GpuTexture {
+    fn texture(&self) -> GpuTexture {
         self.texture_shim()
     }
 }

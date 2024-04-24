@@ -12,17 +12,17 @@ extern "C" {
     pub type HitRegionOptions;
     #[cfg(feature = "Element")]
     #[wasm_bindgen(method, getter = "control")]
-    fn control_shim(this: &HitRegionOptions) -> Option<&Element>;
+    fn control_shim(this: &HitRegionOptions) -> Option<Element>;
     #[cfg(feature = "Element")]
     #[wasm_bindgen(method, setter = "control")]
     fn set_control_shim(this: &HitRegionOptions, val: Option<&Element>);
     #[wasm_bindgen(method, getter = "id")]
-    fn id_shim(this: &HitRegionOptions) -> &str;
+    fn id_shim(this: &HitRegionOptions) -> String;
     #[wasm_bindgen(method, setter = "id")]
     fn set_id_shim(this: &HitRegionOptions, val: &str);
     #[cfg(feature = "Path2d")]
     #[wasm_bindgen(method, getter = "path")]
-    fn path_shim(this: &HitRegionOptions) -> Option<&Path2d>;
+    fn path_shim(this: &HitRegionOptions) -> Option<Path2d>;
     #[cfg(feature = "Path2d")]
     #[wasm_bindgen(method, setter = "path")]
     fn set_path_shim(this: &HitRegionOptions, val: Option<&Path2d>);
@@ -35,27 +35,27 @@ pub trait HitRegionOptionsGetters {
     #[doc = "Get the `control` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`, `HitRegionOptions`*"]
-    fn control(&self) -> Option<&Element>;
+    fn control(&self) -> Option<Element>;
     #[doc = "Get the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HitRegionOptions`*"]
-    fn id(&self) -> &str;
+    fn id(&self) -> String;
     #[cfg(feature = "Path2d")]
     #[doc = "Get the `path` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HitRegionOptions`, `Path2d`*"]
-    fn path(&self) -> Option<&Path2d>;
+    fn path(&self) -> Option<Path2d>;
 }
 impl HitRegionOptionsGetters for HitRegionOptions {
     #[cfg(feature = "Element")]
-    fn control(&self) -> Option<&Element> {
+    fn control(&self) -> Option<Element> {
         self.control_shim()
     }
-    fn id(&self) -> &str {
+    fn id(&self) -> String {
         self.id_shim()
     }
     #[cfg(feature = "Path2d")]
-    fn path(&self) -> Option<&Path2d> {
+    fn path(&self) -> Option<Path2d> {
         self.path_shim()
     }
 }

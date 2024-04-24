@@ -24,7 +24,7 @@ extern "C" {
     fn set_composed_shim(this: &MediaStreamTrackEventInit, val: bool);
     #[cfg(feature = "MediaStreamTrack")]
     #[wasm_bindgen(method, getter = "track")]
-    fn track_shim(this: &MediaStreamTrackEventInit) -> &MediaStreamTrack;
+    fn track_shim(this: &MediaStreamTrackEventInit) -> MediaStreamTrack;
     #[cfg(feature = "MediaStreamTrack")]
     #[wasm_bindgen(method, setter = "track")]
     fn set_track_shim(this: &MediaStreamTrackEventInit, val: &MediaStreamTrack);
@@ -49,7 +49,7 @@ pub trait MediaStreamTrackEventInitGetters {
     #[doc = "Get the `track` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `MediaStreamTrackEventInit`*"]
-    fn track(&self) -> &MediaStreamTrack;
+    fn track(&self) -> MediaStreamTrack;
 }
 impl MediaStreamTrackEventInitGetters for MediaStreamTrackEventInit {
     fn bubbles(&self) -> bool {
@@ -62,7 +62,7 @@ impl MediaStreamTrackEventInitGetters for MediaStreamTrackEventInit {
         self.composed_shim()
     }
     #[cfg(feature = "MediaStreamTrack")]
-    fn track(&self) -> &MediaStreamTrack {
+    fn track(&self) -> MediaStreamTrack {
         self.track_shim()
     }
 }

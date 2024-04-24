@@ -23,7 +23,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &AnimationEventInit, val: bool);
     #[wasm_bindgen(method, getter = "animationName")]
-    fn animation_name_shim(this: &AnimationEventInit) -> &str;
+    fn animation_name_shim(this: &AnimationEventInit) -> String;
     #[wasm_bindgen(method, setter = "animationName")]
     fn set_animation_name_shim(this: &AnimationEventInit, val: &str);
     #[wasm_bindgen(method, getter = "elapsedTime")]
@@ -31,7 +31,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "elapsedTime")]
     fn set_elapsed_time_shim(this: &AnimationEventInit, val: f32);
     #[wasm_bindgen(method, getter = "pseudoElement")]
-    fn pseudo_element_shim(this: &AnimationEventInit) -> &str;
+    fn pseudo_element_shim(this: &AnimationEventInit) -> String;
     #[wasm_bindgen(method, setter = "pseudoElement")]
     fn set_pseudo_element_shim(this: &AnimationEventInit, val: &str);
 }
@@ -54,7 +54,7 @@ pub trait AnimationEventInitGetters {
     #[doc = "Get the `animationName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationEventInit`*"]
-    fn animation_name(&self) -> &str;
+    fn animation_name(&self) -> String;
     #[doc = "Get the `elapsedTime` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationEventInit`*"]
@@ -62,7 +62,7 @@ pub trait AnimationEventInitGetters {
     #[doc = "Get the `pseudoElement` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationEventInit`*"]
-    fn pseudo_element(&self) -> &str;
+    fn pseudo_element(&self) -> String;
 }
 impl AnimationEventInitGetters for AnimationEventInit {
     fn bubbles(&self) -> bool {
@@ -74,13 +74,13 @@ impl AnimationEventInitGetters for AnimationEventInit {
     fn composed(&self) -> bool {
         self.composed_shim()
     }
-    fn animation_name(&self) -> &str {
+    fn animation_name(&self) -> String {
         self.animation_name_shim()
     }
     fn elapsed_time(&self) -> f32 {
         self.elapsed_time_shim()
     }
-    fn pseudo_element(&self) -> &str {
+    fn pseudo_element(&self) -> String {
         self.pseudo_element_shim()
     }
 }

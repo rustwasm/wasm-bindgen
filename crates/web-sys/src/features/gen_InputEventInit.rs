@@ -28,22 +28,22 @@ extern "C" {
     fn set_detail_shim(this: &InputEventInit, val: i32);
     #[cfg(feature = "Window")]
     #[wasm_bindgen(method, getter = "view")]
-    fn view_shim(this: &InputEventInit) -> Option<&Window>;
+    fn view_shim(this: &InputEventInit) -> Option<Window>;
     #[cfg(feature = "Window")]
     #[wasm_bindgen(method, setter = "view")]
     fn set_view_shim(this: &InputEventInit, val: Option<&Window>);
     #[wasm_bindgen(method, getter = "data")]
-    fn data_shim(this: &InputEventInit) -> Option<&str>;
+    fn data_shim(this: &InputEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "data")]
     fn set_data_shim(this: &InputEventInit, val: Option<&str>);
     #[cfg(feature = "DataTransfer")]
     #[wasm_bindgen(method, getter = "dataTransfer")]
-    fn data_transfer_shim(this: &InputEventInit) -> Option<&DataTransfer>;
+    fn data_transfer_shim(this: &InputEventInit) -> Option<DataTransfer>;
     #[cfg(feature = "DataTransfer")]
     #[wasm_bindgen(method, setter = "dataTransfer")]
     fn set_data_transfer_shim(this: &InputEventInit, val: Option<&DataTransfer>);
     #[wasm_bindgen(method, getter = "inputType")]
-    fn input_type_shim(this: &InputEventInit) -> &str;
+    fn input_type_shim(this: &InputEventInit) -> String;
     #[wasm_bindgen(method, setter = "inputType")]
     fn set_input_type_shim(this: &InputEventInit, val: &str);
     #[wasm_bindgen(method, getter = "isComposing")]
@@ -51,7 +51,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "isComposing")]
     fn set_is_composing_shim(this: &InputEventInit, val: bool);
     #[wasm_bindgen(method, getter = "targetRanges")]
-    fn target_ranges_shim(this: &InputEventInit) -> &::wasm_bindgen::JsValue;
+    fn target_ranges_shim(this: &InputEventInit) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "targetRanges")]
     fn set_target_ranges_shim(this: &InputEventInit, val: &::wasm_bindgen::JsValue);
 }
@@ -79,20 +79,20 @@ pub trait InputEventInitGetters {
     #[doc = "Get the `view` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `InputEventInit`, `Window`*"]
-    fn view(&self) -> Option<&Window>;
+    fn view(&self) -> Option<Window>;
     #[doc = "Get the `data` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `InputEventInit`*"]
-    fn data(&self) -> Option<&str>;
+    fn data(&self) -> Option<String>;
     #[cfg(feature = "DataTransfer")]
     #[doc = "Get the `dataTransfer` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DataTransfer`, `InputEventInit`*"]
-    fn data_transfer(&self) -> Option<&DataTransfer>;
+    fn data_transfer(&self) -> Option<DataTransfer>;
     #[doc = "Get the `inputType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `InputEventInit`*"]
-    fn input_type(&self) -> &str;
+    fn input_type(&self) -> String;
     #[doc = "Get the `isComposing` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `InputEventInit`*"]
@@ -100,7 +100,7 @@ pub trait InputEventInitGetters {
     #[doc = "Get the `targetRanges` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `InputEventInit`*"]
-    fn target_ranges(&self) -> &::wasm_bindgen::JsValue;
+    fn target_ranges(&self) -> ::js_sys::Array;
 }
 impl InputEventInitGetters for InputEventInit {
     fn bubbles(&self) -> bool {
@@ -116,23 +116,23 @@ impl InputEventInitGetters for InputEventInit {
         self.detail_shim()
     }
     #[cfg(feature = "Window")]
-    fn view(&self) -> Option<&Window> {
+    fn view(&self) -> Option<Window> {
         self.view_shim()
     }
-    fn data(&self) -> Option<&str> {
+    fn data(&self) -> Option<String> {
         self.data_shim()
     }
     #[cfg(feature = "DataTransfer")]
-    fn data_transfer(&self) -> Option<&DataTransfer> {
+    fn data_transfer(&self) -> Option<DataTransfer> {
         self.data_transfer_shim()
     }
-    fn input_type(&self) -> &str {
+    fn input_type(&self) -> String {
         self.input_type_shim()
     }
     fn is_composing(&self) -> bool {
         self.is_composing_shim()
     }
-    fn target_ranges(&self) -> &::wasm_bindgen::JsValue {
+    fn target_ranges(&self) -> ::js_sys::Array {
         self.target_ranges_shim()
     }
 }

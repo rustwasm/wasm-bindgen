@@ -24,7 +24,7 @@ extern "C" {
     fn set_coded_width_shim(this: &VideoFrameBufferInit, val: u32);
     #[cfg(feature = "VideoColorSpaceInit")]
     #[wasm_bindgen(method, getter = "colorSpace")]
-    fn color_space_shim(this: &VideoFrameBufferInit) -> &VideoColorSpaceInit;
+    fn color_space_shim(this: &VideoFrameBufferInit) -> VideoColorSpaceInit;
     #[cfg(feature = "VideoColorSpaceInit")]
     #[wasm_bindgen(method, setter = "colorSpace")]
     fn set_color_space_shim(this: &VideoFrameBufferInit, val: &VideoColorSpaceInit);
@@ -47,7 +47,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "format")]
     fn set_format_shim(this: &VideoFrameBufferInit, val: VideoPixelFormat);
     #[wasm_bindgen(method, getter = "layout")]
-    fn layout_shim(this: &VideoFrameBufferInit) -> &::wasm_bindgen::JsValue;
+    fn layout_shim(this: &VideoFrameBufferInit) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "layout")]
     fn set_layout_shim(this: &VideoFrameBufferInit, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "timestamp")]
@@ -56,7 +56,7 @@ extern "C" {
     fn set_timestamp_shim(this: &VideoFrameBufferInit, val: f64);
     #[cfg(feature = "DomRectInit")]
     #[wasm_bindgen(method, getter = "visibleRect")]
-    fn visible_rect_shim(this: &VideoFrameBufferInit) -> &DomRectInit;
+    fn visible_rect_shim(this: &VideoFrameBufferInit) -> DomRectInit;
     #[cfg(feature = "DomRectInit")]
     #[wasm_bindgen(method, setter = "visibleRect")]
     fn set_visible_rect_shim(this: &VideoFrameBufferInit, val: &DomRectInit);
@@ -90,7 +90,7 @@ pub trait VideoFrameBufferInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn color_space(&self) -> &VideoColorSpaceInit;
+    fn color_space(&self) -> VideoColorSpaceInit;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `displayHeight` field of this object."]
     #[doc = ""]
@@ -131,7 +131,7 @@ pub trait VideoFrameBufferInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn layout(&self) -> &::wasm_bindgen::JsValue;
+    fn layout(&self) -> ::js_sys::Array;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `timestamp` field of this object."]
     #[doc = ""]
@@ -148,7 +148,7 @@ pub trait VideoFrameBufferInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn visible_rect(&self) -> &DomRectInit;
+    fn visible_rect(&self) -> DomRectInit;
 }
 #[cfg(web_sys_unstable_apis)]
 impl VideoFrameBufferInitGetters for VideoFrameBufferInit {
@@ -162,7 +162,7 @@ impl VideoFrameBufferInitGetters for VideoFrameBufferInit {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "VideoColorSpaceInit")]
-    fn color_space(&self) -> &VideoColorSpaceInit {
+    fn color_space(&self) -> VideoColorSpaceInit {
         self.color_space_shim()
     }
     #[cfg(web_sys_unstable_apis)]
@@ -183,7 +183,7 @@ impl VideoFrameBufferInitGetters for VideoFrameBufferInit {
         self.format_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn layout(&self) -> &::wasm_bindgen::JsValue {
+    fn layout(&self) -> ::js_sys::Array {
         self.layout_shim()
     }
     #[cfg(web_sys_unstable_apis)]
@@ -192,7 +192,7 @@ impl VideoFrameBufferInitGetters for VideoFrameBufferInit {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "DomRectInit")]
-    fn visible_rect(&self) -> &DomRectInit {
+    fn visible_rect(&self) -> DomRectInit {
         self.visible_rect_shim()
     }
 }

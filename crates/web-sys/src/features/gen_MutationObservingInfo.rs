@@ -15,7 +15,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "animations")]
     fn set_animations_shim(this: &MutationObservingInfo, val: bool);
     #[wasm_bindgen(method, getter = "attributeFilter")]
-    fn attribute_filter_shim(this: &MutationObservingInfo) -> &::wasm_bindgen::JsValue;
+    fn attribute_filter_shim(this: &MutationObservingInfo) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "attributeFilter")]
     fn set_attribute_filter_shim(this: &MutationObservingInfo, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "attributeOldValue")]
@@ -48,7 +48,7 @@ extern "C" {
     fn set_subtree_shim(this: &MutationObservingInfo, val: bool);
     #[cfg(feature = "Node")]
     #[wasm_bindgen(method, getter = "observedNode")]
-    fn observed_node_shim(this: &MutationObservingInfo) -> Option<&Node>;
+    fn observed_node_shim(this: &MutationObservingInfo) -> Option<Node>;
     #[cfg(feature = "Node")]
     #[wasm_bindgen(method, setter = "observedNode")]
     fn set_observed_node_shim(this: &MutationObservingInfo, val: Option<&Node>);
@@ -64,7 +64,7 @@ pub trait MutationObservingInfoGetters {
     #[doc = "Get the `attributeFilter` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MutationObservingInfo`*"]
-    fn attribute_filter(&self) -> &::wasm_bindgen::JsValue;
+    fn attribute_filter(&self) -> ::js_sys::Array;
     #[doc = "Get the `attributeOldValue` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MutationObservingInfo`*"]
@@ -97,13 +97,13 @@ pub trait MutationObservingInfoGetters {
     #[doc = "Get the `observedNode` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MutationObservingInfo`, `Node`*"]
-    fn observed_node(&self) -> Option<&Node>;
+    fn observed_node(&self) -> Option<Node>;
 }
 impl MutationObservingInfoGetters for MutationObservingInfo {
     fn animations(&self) -> bool {
         self.animations_shim()
     }
-    fn attribute_filter(&self) -> &::wasm_bindgen::JsValue {
+    fn attribute_filter(&self) -> ::js_sys::Array {
         self.attribute_filter_shim()
     }
     fn attribute_old_value(&self) -> bool {
@@ -128,7 +128,7 @@ impl MutationObservingInfoGetters for MutationObservingInfo {
         self.subtree_shim()
     }
     #[cfg(feature = "Node")]
-    fn observed_node(&self) -> Option<&Node> {
+    fn observed_node(&self) -> Option<Node> {
         self.observed_node_shim()
     }
 }

@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamConstraints`*"]
     pub type MediaStreamConstraints;
     #[wasm_bindgen(method, getter = "audio")]
-    fn audio_shim(this: &MediaStreamConstraints) -> &::wasm_bindgen::JsValue;
+    fn audio_shim(this: &MediaStreamConstraints) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "audio")]
     fn set_audio_shim(this: &MediaStreamConstraints, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "fake")]
@@ -19,7 +19,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "fake")]
     fn set_fake_shim(this: &MediaStreamConstraints, val: bool);
     #[wasm_bindgen(method, getter = "peerIdentity")]
-    fn peer_identity_shim(this: &MediaStreamConstraints) -> Option<&str>;
+    fn peer_identity_shim(this: &MediaStreamConstraints) -> Option<String>;
     #[wasm_bindgen(method, setter = "peerIdentity")]
     fn set_peer_identity_shim(this: &MediaStreamConstraints, val: Option<&str>);
     #[wasm_bindgen(method, getter = "picture")]
@@ -27,7 +27,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "picture")]
     fn set_picture_shim(this: &MediaStreamConstraints, val: bool);
     #[wasm_bindgen(method, getter = "video")]
-    fn video_shim(this: &MediaStreamConstraints) -> &::wasm_bindgen::JsValue;
+    fn video_shim(this: &MediaStreamConstraints) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "video")]
     fn set_video_shim(this: &MediaStreamConstraints, val: &::wasm_bindgen::JsValue);
 }
@@ -38,7 +38,7 @@ pub trait MediaStreamConstraintsGetters {
     #[doc = "Get the `audio` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamConstraints`*"]
-    fn audio(&self) -> &::wasm_bindgen::JsValue;
+    fn audio(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `fake` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamConstraints`*"]
@@ -46,7 +46,7 @@ pub trait MediaStreamConstraintsGetters {
     #[doc = "Get the `peerIdentity` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamConstraints`*"]
-    fn peer_identity(&self) -> Option<&str>;
+    fn peer_identity(&self) -> Option<String>;
     #[doc = "Get the `picture` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamConstraints`*"]
@@ -54,22 +54,22 @@ pub trait MediaStreamConstraintsGetters {
     #[doc = "Get the `video` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamConstraints`*"]
-    fn video(&self) -> &::wasm_bindgen::JsValue;
+    fn video(&self) -> ::wasm_bindgen::JsValue;
 }
 impl MediaStreamConstraintsGetters for MediaStreamConstraints {
-    fn audio(&self) -> &::wasm_bindgen::JsValue {
+    fn audio(&self) -> ::wasm_bindgen::JsValue {
         self.audio_shim()
     }
     fn fake(&self) -> bool {
         self.fake_shim()
     }
-    fn peer_identity(&self) -> Option<&str> {
+    fn peer_identity(&self) -> Option<String> {
         self.peer_identity_shim()
     }
     fn picture(&self) -> bool {
         self.picture_shim()
     }
-    fn video(&self) -> &::wasm_bindgen::JsValue {
+    fn video(&self) -> ::wasm_bindgen::JsValue {
         self.video_shim()
     }
 }

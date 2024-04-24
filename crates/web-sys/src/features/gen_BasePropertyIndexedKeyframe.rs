@@ -11,15 +11,15 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `BasePropertyIndexedKeyframe`*"]
     pub type BasePropertyIndexedKeyframe;
     #[wasm_bindgen(method, getter = "composite")]
-    fn composite_shim(this: &BasePropertyIndexedKeyframe) -> &::wasm_bindgen::JsValue;
+    fn composite_shim(this: &BasePropertyIndexedKeyframe) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "composite")]
     fn set_composite_shim(this: &BasePropertyIndexedKeyframe, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "easing")]
-    fn easing_shim(this: &BasePropertyIndexedKeyframe) -> &::wasm_bindgen::JsValue;
+    fn easing_shim(this: &BasePropertyIndexedKeyframe) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "easing")]
     fn set_easing_shim(this: &BasePropertyIndexedKeyframe, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "offset")]
-    fn offset_shim(this: &BasePropertyIndexedKeyframe) -> &::wasm_bindgen::JsValue;
+    fn offset_shim(this: &BasePropertyIndexedKeyframe) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "offset")]
     fn set_offset_shim(this: &BasePropertyIndexedKeyframe, val: &::wasm_bindgen::JsValue);
 }
@@ -30,24 +30,24 @@ pub trait BasePropertyIndexedKeyframeGetters {
     #[doc = "Get the `composite` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasePropertyIndexedKeyframe`*"]
-    fn composite(&self) -> &::wasm_bindgen::JsValue;
+    fn composite(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `easing` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasePropertyIndexedKeyframe`*"]
-    fn easing(&self) -> &::wasm_bindgen::JsValue;
+    fn easing(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `offset` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasePropertyIndexedKeyframe`*"]
-    fn offset(&self) -> &::wasm_bindgen::JsValue;
+    fn offset(&self) -> ::wasm_bindgen::JsValue;
 }
 impl BasePropertyIndexedKeyframeGetters for BasePropertyIndexedKeyframe {
-    fn composite(&self) -> &::wasm_bindgen::JsValue {
+    fn composite(&self) -> ::wasm_bindgen::JsValue {
         self.composite_shim()
     }
-    fn easing(&self) -> &::wasm_bindgen::JsValue {
+    fn easing(&self) -> ::wasm_bindgen::JsValue {
         self.easing_shim()
     }
-    fn offset(&self) -> &::wasm_bindgen::JsValue {
+    fn offset(&self) -> ::wasm_bindgen::JsValue {
         self.offset_shim()
     }
 }

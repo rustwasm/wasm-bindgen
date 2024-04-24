@@ -15,19 +15,19 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type MediaMetadataInit;
     #[wasm_bindgen(method, getter = "album")]
-    fn album_shim(this: &MediaMetadataInit) -> &str;
+    fn album_shim(this: &MediaMetadataInit) -> String;
     #[wasm_bindgen(method, setter = "album")]
     fn set_album_shim(this: &MediaMetadataInit, val: &str);
     #[wasm_bindgen(method, getter = "artist")]
-    fn artist_shim(this: &MediaMetadataInit) -> &str;
+    fn artist_shim(this: &MediaMetadataInit) -> String;
     #[wasm_bindgen(method, setter = "artist")]
     fn set_artist_shim(this: &MediaMetadataInit, val: &str);
     #[wasm_bindgen(method, getter = "artwork")]
-    fn artwork_shim(this: &MediaMetadataInit) -> &::wasm_bindgen::JsValue;
+    fn artwork_shim(this: &MediaMetadataInit) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "artwork")]
     fn set_artwork_shim(this: &MediaMetadataInit, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "title")]
-    fn title_shim(this: &MediaMetadataInit) -> &str;
+    fn title_shim(this: &MediaMetadataInit) -> String;
     #[wasm_bindgen(method, setter = "title")]
     fn set_title_shim(this: &MediaMetadataInit, val: &str);
 }
@@ -43,7 +43,7 @@ pub trait MediaMetadataInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn album(&self) -> &str;
+    fn album(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `artist` field of this object."]
     #[doc = ""]
@@ -51,7 +51,7 @@ pub trait MediaMetadataInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn artist(&self) -> &str;
+    fn artist(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `artwork` field of this object."]
     #[doc = ""]
@@ -59,7 +59,7 @@ pub trait MediaMetadataInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn artwork(&self) -> &::wasm_bindgen::JsValue;
+    fn artwork(&self) -> ::js_sys::Array;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `title` field of this object."]
     #[doc = ""]
@@ -67,24 +67,24 @@ pub trait MediaMetadataInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn title(&self) -> &str;
+    fn title(&self) -> String;
 }
 #[cfg(web_sys_unstable_apis)]
 impl MediaMetadataInitGetters for MediaMetadataInit {
     #[cfg(web_sys_unstable_apis)]
-    fn album(&self) -> &str {
+    fn album(&self) -> String {
         self.album_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn artist(&self) -> &str {
+    fn artist(&self) -> String {
         self.artist_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn artwork(&self) -> &::wasm_bindgen::JsValue {
+    fn artwork(&self) -> ::js_sys::Array {
         self.artwork_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn title(&self) -> &str {
+    fn title(&self) -> String {
         self.title_shim()
     }
 }

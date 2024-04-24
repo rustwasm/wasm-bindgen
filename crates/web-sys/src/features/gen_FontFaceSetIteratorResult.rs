@@ -15,7 +15,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "done")]
     fn set_done_shim(this: &FontFaceSetIteratorResult, val: bool);
     #[wasm_bindgen(method, getter = "value")]
-    fn value_shim(this: &FontFaceSetIteratorResult) -> &::wasm_bindgen::JsValue;
+    fn value_shim(this: &FontFaceSetIteratorResult) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "value")]
     fn set_value_shim(this: &FontFaceSetIteratorResult, val: &::wasm_bindgen::JsValue);
 }
@@ -30,13 +30,13 @@ pub trait FontFaceSetIteratorResultGetters {
     #[doc = "Get the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSetIteratorResult`*"]
-    fn value(&self) -> &::wasm_bindgen::JsValue;
+    fn value(&self) -> ::wasm_bindgen::JsValue;
 }
 impl FontFaceSetIteratorResultGetters for FontFaceSetIteratorResult {
     fn done(&self) -> bool {
         self.done_shim()
     }
-    fn value(&self) -> &::wasm_bindgen::JsValue {
+    fn value(&self) -> ::wasm_bindgen::JsValue {
         self.value_shim()
     }
 }

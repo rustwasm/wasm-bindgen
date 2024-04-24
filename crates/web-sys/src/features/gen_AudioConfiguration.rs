@@ -15,11 +15,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "bitrate")]
     fn set_bitrate_shim(this: &AudioConfiguration, val: f64);
     #[wasm_bindgen(method, getter = "channels")]
-    fn channels_shim(this: &AudioConfiguration) -> &str;
+    fn channels_shim(this: &AudioConfiguration) -> String;
     #[wasm_bindgen(method, setter = "channels")]
     fn set_channels_shim(this: &AudioConfiguration, val: &str);
     #[wasm_bindgen(method, getter = "contentType")]
-    fn content_type_shim(this: &AudioConfiguration) -> &str;
+    fn content_type_shim(this: &AudioConfiguration) -> String;
     #[wasm_bindgen(method, setter = "contentType")]
     fn set_content_type_shim(this: &AudioConfiguration, val: &str);
     #[wasm_bindgen(method, getter = "samplerate")]
@@ -38,11 +38,11 @@ pub trait AudioConfigurationGetters {
     #[doc = "Get the `channels` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`*"]
-    fn channels(&self) -> &str;
+    fn channels(&self) -> String;
     #[doc = "Get the `contentType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`*"]
-    fn content_type(&self) -> &str;
+    fn content_type(&self) -> String;
     #[doc = "Get the `samplerate` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`*"]
@@ -52,10 +52,10 @@ impl AudioConfigurationGetters for AudioConfiguration {
     fn bitrate(&self) -> f64 {
         self.bitrate_shim()
     }
-    fn channels(&self) -> &str {
+    fn channels(&self) -> String {
         self.channels_shim()
     }
-    fn content_type(&self) -> &str {
+    fn content_type(&self) -> String {
         self.content_type_shim()
     }
     fn samplerate(&self) -> u32 {

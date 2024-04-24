@@ -38,7 +38,7 @@ extern "C" {
     fn set_timestamp_shim(this: &VideoFrameInit, val: f64);
     #[cfg(feature = "DomRectInit")]
     #[wasm_bindgen(method, getter = "visibleRect")]
-    fn visible_rect_shim(this: &VideoFrameInit) -> &DomRectInit;
+    fn visible_rect_shim(this: &VideoFrameInit) -> DomRectInit;
     #[cfg(feature = "DomRectInit")]
     #[wasm_bindgen(method, setter = "visibleRect")]
     fn set_visible_rect_shim(this: &VideoFrameInit, val: &DomRectInit);
@@ -97,7 +97,7 @@ pub trait VideoFrameInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn visible_rect(&self) -> &DomRectInit;
+    fn visible_rect(&self) -> DomRectInit;
 }
 #[cfg(web_sys_unstable_apis)]
 impl VideoFrameInitGetters for VideoFrameInit {
@@ -124,7 +124,7 @@ impl VideoFrameInitGetters for VideoFrameInit {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "DomRectInit")]
-    fn visible_rect(&self) -> &DomRectInit {
+    fn visible_rect(&self) -> DomRectInit {
         self.visible_rect_shim()
     }
 }

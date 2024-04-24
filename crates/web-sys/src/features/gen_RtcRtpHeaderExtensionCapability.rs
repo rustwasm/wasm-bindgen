@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpHeaderExtensionCapability`*"]
     pub type RtcRtpHeaderExtensionCapability;
     #[wasm_bindgen(method, getter = "uri")]
-    fn uri_shim(this: &RtcRtpHeaderExtensionCapability) -> &str;
+    fn uri_shim(this: &RtcRtpHeaderExtensionCapability) -> String;
     #[wasm_bindgen(method, setter = "uri")]
     fn set_uri_shim(this: &RtcRtpHeaderExtensionCapability, val: &str);
 }
@@ -22,10 +22,10 @@ pub trait RtcRtpHeaderExtensionCapabilityGetters {
     #[doc = "Get the `uri` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpHeaderExtensionCapability`*"]
-    fn uri(&self) -> &str;
+    fn uri(&self) -> String;
 }
 impl RtcRtpHeaderExtensionCapabilityGetters for RtcRtpHeaderExtensionCapability {
-    fn uri(&self) -> &str {
+    fn uri(&self) -> String {
         self.uri_shim()
     }
 }

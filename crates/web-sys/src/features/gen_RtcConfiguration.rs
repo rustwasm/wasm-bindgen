@@ -17,11 +17,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "bundlePolicy")]
     fn set_bundle_policy_shim(this: &RtcConfiguration, val: RtcBundlePolicy);
     #[wasm_bindgen(method, getter = "certificates")]
-    fn certificates_shim(this: &RtcConfiguration) -> &::wasm_bindgen::JsValue;
+    fn certificates_shim(this: &RtcConfiguration) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "certificates")]
     fn set_certificates_shim(this: &RtcConfiguration, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "iceServers")]
-    fn ice_servers_shim(this: &RtcConfiguration) -> &::wasm_bindgen::JsValue;
+    fn ice_servers_shim(this: &RtcConfiguration) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "iceServers")]
     fn set_ice_servers_shim(this: &RtcConfiguration, val: &::wasm_bindgen::JsValue);
     #[cfg(feature = "RtcIceTransportPolicy")]
@@ -31,7 +31,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "iceTransportPolicy")]
     fn set_ice_transport_policy_shim(this: &RtcConfiguration, val: RtcIceTransportPolicy);
     #[wasm_bindgen(method, getter = "peerIdentity")]
-    fn peer_identity_shim(this: &RtcConfiguration) -> Option<&str>;
+    fn peer_identity_shim(this: &RtcConfiguration) -> Option<String>;
     #[wasm_bindgen(method, setter = "peerIdentity")]
     fn set_peer_identity_shim(this: &RtcConfiguration, val: Option<&str>);
 }
@@ -47,11 +47,11 @@ pub trait RtcConfigurationGetters {
     #[doc = "Get the `certificates` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcConfiguration`*"]
-    fn certificates(&self) -> &::wasm_bindgen::JsValue;
+    fn certificates(&self) -> ::js_sys::Array;
     #[doc = "Get the `iceServers` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcConfiguration`*"]
-    fn ice_servers(&self) -> &::wasm_bindgen::JsValue;
+    fn ice_servers(&self) -> ::js_sys::Array;
     #[cfg(feature = "RtcIceTransportPolicy")]
     #[doc = "Get the `iceTransportPolicy` field of this object."]
     #[doc = ""]
@@ -60,24 +60,24 @@ pub trait RtcConfigurationGetters {
     #[doc = "Get the `peerIdentity` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcConfiguration`*"]
-    fn peer_identity(&self) -> Option<&str>;
+    fn peer_identity(&self) -> Option<String>;
 }
 impl RtcConfigurationGetters for RtcConfiguration {
     #[cfg(feature = "RtcBundlePolicy")]
     fn bundle_policy(&self) -> RtcBundlePolicy {
         self.bundle_policy_shim()
     }
-    fn certificates(&self) -> &::wasm_bindgen::JsValue {
+    fn certificates(&self) -> ::js_sys::Array {
         self.certificates_shim()
     }
-    fn ice_servers(&self) -> &::wasm_bindgen::JsValue {
+    fn ice_servers(&self) -> ::js_sys::Array {
         self.ice_servers_shim()
     }
     #[cfg(feature = "RtcIceTransportPolicy")]
     fn ice_transport_policy(&self) -> RtcIceTransportPolicy {
         self.ice_transport_policy_shim()
     }
-    fn peer_identity(&self) -> Option<&str> {
+    fn peer_identity(&self) -> Option<String> {
         self.peer_identity_shim()
     }
 }

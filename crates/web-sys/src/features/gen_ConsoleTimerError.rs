@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerError`*"]
     pub type ConsoleTimerError;
     #[wasm_bindgen(method, getter = "error")]
-    fn error_shim(this: &ConsoleTimerError) -> &str;
+    fn error_shim(this: &ConsoleTimerError) -> String;
     #[wasm_bindgen(method, setter = "error")]
     fn set_error_shim(this: &ConsoleTimerError, val: &str);
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &ConsoleTimerError) -> &str;
+    fn name_shim(this: &ConsoleTimerError) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &ConsoleTimerError, val: &str);
 }
@@ -26,17 +26,17 @@ pub trait ConsoleTimerErrorGetters {
     #[doc = "Get the `error` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerError`*"]
-    fn error(&self) -> &str;
+    fn error(&self) -> String;
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerError`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
 }
 impl ConsoleTimerErrorGetters for ConsoleTimerError {
-    fn error(&self) -> &str {
+    fn error(&self) -> String {
         self.error_shim()
     }
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
 }

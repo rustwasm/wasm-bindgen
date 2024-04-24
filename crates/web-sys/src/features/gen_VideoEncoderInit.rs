@@ -15,11 +15,11 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type VideoEncoderInit;
     #[wasm_bindgen(method, getter = "error")]
-    fn error_shim(this: &VideoEncoderInit) -> &::js_sys::Function;
+    fn error_shim(this: &VideoEncoderInit) -> ::js_sys::Function;
     #[wasm_bindgen(method, setter = "error")]
     fn set_error_shim(this: &VideoEncoderInit, val: &::js_sys::Function);
     #[wasm_bindgen(method, getter = "output")]
-    fn output_shim(this: &VideoEncoderInit) -> &::js_sys::Function;
+    fn output_shim(this: &VideoEncoderInit) -> ::js_sys::Function;
     #[wasm_bindgen(method, setter = "output")]
     fn set_output_shim(this: &VideoEncoderInit, val: &::js_sys::Function);
 }
@@ -35,7 +35,7 @@ pub trait VideoEncoderInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn error(&self) -> &::js_sys::Function;
+    fn error(&self) -> ::js_sys::Function;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `output` field of this object."]
     #[doc = ""]
@@ -43,16 +43,16 @@ pub trait VideoEncoderInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn output(&self) -> &::js_sys::Function;
+    fn output(&self) -> ::js_sys::Function;
 }
 #[cfg(web_sys_unstable_apis)]
 impl VideoEncoderInitGetters for VideoEncoderInit {
     #[cfg(web_sys_unstable_apis)]
-    fn error(&self) -> &::js_sys::Function {
+    fn error(&self) -> ::js_sys::Function {
         self.error_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn output(&self) -> &::js_sys::Function {
+    fn output(&self) -> ::js_sys::Function {
         self.output_shim()
     }
 }

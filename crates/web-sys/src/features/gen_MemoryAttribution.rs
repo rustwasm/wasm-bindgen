@@ -16,16 +16,16 @@ extern "C" {
     pub type MemoryAttribution;
     #[cfg(feature = "MemoryAttributionContainer")]
     #[wasm_bindgen(method, getter = "container")]
-    fn container_shim(this: &MemoryAttribution) -> &MemoryAttributionContainer;
+    fn container_shim(this: &MemoryAttribution) -> MemoryAttributionContainer;
     #[cfg(feature = "MemoryAttributionContainer")]
     #[wasm_bindgen(method, setter = "container")]
     fn set_container_shim(this: &MemoryAttribution, val: &MemoryAttributionContainer);
     #[wasm_bindgen(method, getter = "scope")]
-    fn scope_shim(this: &MemoryAttribution) -> &str;
+    fn scope_shim(this: &MemoryAttribution) -> String;
     #[wasm_bindgen(method, setter = "scope")]
     fn set_scope_shim(this: &MemoryAttribution, val: &str);
     #[wasm_bindgen(method, getter = "url")]
-    fn url_shim(this: &MemoryAttribution) -> &str;
+    fn url_shim(this: &MemoryAttribution) -> String;
     #[wasm_bindgen(method, setter = "url")]
     fn set_url_shim(this: &MemoryAttribution, val: &str);
 }
@@ -42,7 +42,7 @@ pub trait MemoryAttributionGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn container(&self) -> &MemoryAttributionContainer;
+    fn container(&self) -> MemoryAttributionContainer;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `scope` field of this object."]
     #[doc = ""]
@@ -50,7 +50,7 @@ pub trait MemoryAttributionGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn scope(&self) -> &str;
+    fn scope(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `url` field of this object."]
     #[doc = ""]
@@ -58,21 +58,21 @@ pub trait MemoryAttributionGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn url(&self) -> &str;
+    fn url(&self) -> String;
 }
 #[cfg(web_sys_unstable_apis)]
 impl MemoryAttributionGetters for MemoryAttribution {
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "MemoryAttributionContainer")]
-    fn container(&self) -> &MemoryAttributionContainer {
+    fn container(&self) -> MemoryAttributionContainer {
         self.container_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn scope(&self) -> &str {
+    fn scope(&self) -> String {
         self.scope_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn url(&self) -> &str {
+    fn url(&self) -> String {
         self.url_shim()
     }
 }

@@ -17,7 +17,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "credentials")]
     fn set_credentials_shim(this: &WorkerOptions, val: RequestCredentials);
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &WorkerOptions) -> &str;
+    fn name_shim(this: &WorkerOptions) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &WorkerOptions, val: &str);
     #[cfg(feature = "WorkerType")]
@@ -39,7 +39,7 @@ pub trait WorkerOptionsGetters {
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerOptions`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
     #[cfg(feature = "WorkerType")]
     #[doc = "Get the `type` field of this object."]
     #[doc = ""]
@@ -51,7 +51,7 @@ impl WorkerOptionsGetters for WorkerOptions {
     fn credentials(&self) -> RequestCredentials {
         self.credentials_shim()
     }
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
     #[cfg(feature = "WorkerType")]

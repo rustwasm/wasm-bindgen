@@ -15,11 +15,11 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuBindGroupLayoutDescriptor;
     #[wasm_bindgen(method, getter = "label")]
-    fn label_shim(this: &GpuBindGroupLayoutDescriptor) -> &str;
+    fn label_shim(this: &GpuBindGroupLayoutDescriptor) -> String;
     #[wasm_bindgen(method, setter = "label")]
     fn set_label_shim(this: &GpuBindGroupLayoutDescriptor, val: &str);
     #[wasm_bindgen(method, getter = "entries")]
-    fn entries_shim(this: &GpuBindGroupLayoutDescriptor) -> &::wasm_bindgen::JsValue;
+    fn entries_shim(this: &GpuBindGroupLayoutDescriptor) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "entries")]
     fn set_entries_shim(this: &GpuBindGroupLayoutDescriptor, val: &::wasm_bindgen::JsValue);
 }
@@ -35,7 +35,7 @@ pub trait GpuBindGroupLayoutDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn label(&self) -> &str;
+    fn label(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `entries` field of this object."]
     #[doc = ""]
@@ -43,16 +43,16 @@ pub trait GpuBindGroupLayoutDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn entries(&self) -> &::wasm_bindgen::JsValue;
+    fn entries(&self) -> ::js_sys::Array;
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuBindGroupLayoutDescriptorGetters for GpuBindGroupLayoutDescriptor {
     #[cfg(web_sys_unstable_apis)]
-    fn label(&self) -> &str {
+    fn label(&self) -> String {
         self.label_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn entries(&self) -> &::wasm_bindgen::JsValue {
+    fn entries(&self) -> ::js_sys::Array {
         self.entries_shim()
     }
 }

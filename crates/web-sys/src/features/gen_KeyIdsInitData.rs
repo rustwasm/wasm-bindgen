@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `KeyIdsInitData`*"]
     pub type KeyIdsInitData;
     #[wasm_bindgen(method, getter = "kids")]
-    fn kids_shim(this: &KeyIdsInitData) -> &::wasm_bindgen::JsValue;
+    fn kids_shim(this: &KeyIdsInitData) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "kids")]
     fn set_kids_shim(this: &KeyIdsInitData, val: &::wasm_bindgen::JsValue);
 }
@@ -22,10 +22,10 @@ pub trait KeyIdsInitDataGetters {
     #[doc = "Get the `kids` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyIdsInitData`*"]
-    fn kids(&self) -> &::wasm_bindgen::JsValue;
+    fn kids(&self) -> ::js_sys::Array;
 }
 impl KeyIdsInitDataGetters for KeyIdsInitData {
-    fn kids(&self) -> &::wasm_bindgen::JsValue {
+    fn kids(&self) -> ::js_sys::Array {
         self.kids_shim()
     }
 }

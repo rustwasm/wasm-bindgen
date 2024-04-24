@@ -27,7 +27,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "duration")]
     fn set_duration_shim(this: &PerformanceEntryEventInit, val: f64);
     #[wasm_bindgen(method, getter = "entryType")]
-    fn entry_type_shim(this: &PerformanceEntryEventInit) -> &str;
+    fn entry_type_shim(this: &PerformanceEntryEventInit) -> String;
     #[wasm_bindgen(method, setter = "entryType")]
     fn set_entry_type_shim(this: &PerformanceEntryEventInit, val: &str);
     #[wasm_bindgen(method, getter = "epoch")]
@@ -35,11 +35,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "epoch")]
     fn set_epoch_shim(this: &PerformanceEntryEventInit, val: f64);
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &PerformanceEntryEventInit) -> &str;
+    fn name_shim(this: &PerformanceEntryEventInit) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &PerformanceEntryEventInit, val: &str);
     #[wasm_bindgen(method, getter = "origin")]
-    fn origin_shim(this: &PerformanceEntryEventInit) -> &str;
+    fn origin_shim(this: &PerformanceEntryEventInit) -> String;
     #[wasm_bindgen(method, setter = "origin")]
     fn set_origin_shim(this: &PerformanceEntryEventInit, val: &str);
     #[wasm_bindgen(method, getter = "startTime")]
@@ -70,7 +70,7 @@ pub trait PerformanceEntryEventInitGetters {
     #[doc = "Get the `entryType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
-    fn entry_type(&self) -> &str;
+    fn entry_type(&self) -> String;
     #[doc = "Get the `epoch` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
@@ -78,11 +78,11 @@ pub trait PerformanceEntryEventInitGetters {
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
     #[doc = "Get the `origin` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
-    fn origin(&self) -> &str;
+    fn origin(&self) -> String;
     #[doc = "Get the `startTime` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
@@ -101,16 +101,16 @@ impl PerformanceEntryEventInitGetters for PerformanceEntryEventInit {
     fn duration(&self) -> f64 {
         self.duration_shim()
     }
-    fn entry_type(&self) -> &str {
+    fn entry_type(&self) -> String {
         self.entry_type_shim()
     }
     fn epoch(&self) -> f64 {
         self.epoch_shim()
     }
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
-    fn origin(&self) -> &str {
+    fn origin(&self) -> String {
         self.origin_shim()
     }
     fn start_time(&self) -> f64 {

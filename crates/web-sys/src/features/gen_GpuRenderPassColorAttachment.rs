@@ -15,7 +15,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuRenderPassColorAttachment;
     #[wasm_bindgen(method, getter = "clearValue")]
-    fn clear_value_shim(this: &GpuRenderPassColorAttachment) -> &::wasm_bindgen::JsValue;
+    fn clear_value_shim(this: &GpuRenderPassColorAttachment) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "clearValue")]
     fn set_clear_value_shim(this: &GpuRenderPassColorAttachment, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "depthSlice")]
@@ -30,7 +30,7 @@ extern "C" {
     fn set_load_op_shim(this: &GpuRenderPassColorAttachment, val: GpuLoadOp);
     #[cfg(feature = "GpuTextureView")]
     #[wasm_bindgen(method, getter = "resolveTarget")]
-    fn resolve_target_shim(this: &GpuRenderPassColorAttachment) -> &GpuTextureView;
+    fn resolve_target_shim(this: &GpuRenderPassColorAttachment) -> GpuTextureView;
     #[cfg(feature = "GpuTextureView")]
     #[wasm_bindgen(method, setter = "resolveTarget")]
     fn set_resolve_target_shim(this: &GpuRenderPassColorAttachment, val: &GpuTextureView);
@@ -42,7 +42,7 @@ extern "C" {
     fn set_store_op_shim(this: &GpuRenderPassColorAttachment, val: GpuStoreOp);
     #[cfg(feature = "GpuTextureView")]
     #[wasm_bindgen(method, getter = "view")]
-    fn view_shim(this: &GpuRenderPassColorAttachment) -> &GpuTextureView;
+    fn view_shim(this: &GpuRenderPassColorAttachment) -> GpuTextureView;
     #[cfg(feature = "GpuTextureView")]
     #[wasm_bindgen(method, setter = "view")]
     fn set_view_shim(this: &GpuRenderPassColorAttachment, val: &GpuTextureView);
@@ -59,7 +59,7 @@ pub trait GpuRenderPassColorAttachmentGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn clear_value(&self) -> &::wasm_bindgen::JsValue;
+    fn clear_value(&self) -> ::wasm_bindgen::JsValue;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `depthSlice` field of this object."]
     #[doc = ""]
@@ -85,7 +85,7 @@ pub trait GpuRenderPassColorAttachmentGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn resolve_target(&self) -> &GpuTextureView;
+    fn resolve_target(&self) -> GpuTextureView;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuStoreOp")]
     #[doc = "Get the `storeOp` field of this object."]
@@ -103,12 +103,12 @@ pub trait GpuRenderPassColorAttachmentGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn view(&self) -> &GpuTextureView;
+    fn view(&self) -> GpuTextureView;
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuRenderPassColorAttachmentGetters for GpuRenderPassColorAttachment {
     #[cfg(web_sys_unstable_apis)]
-    fn clear_value(&self) -> &::wasm_bindgen::JsValue {
+    fn clear_value(&self) -> ::wasm_bindgen::JsValue {
         self.clear_value_shim()
     }
     #[cfg(web_sys_unstable_apis)]
@@ -122,7 +122,7 @@ impl GpuRenderPassColorAttachmentGetters for GpuRenderPassColorAttachment {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureView")]
-    fn resolve_target(&self) -> &GpuTextureView {
+    fn resolve_target(&self) -> GpuTextureView {
         self.resolve_target_shim()
     }
     #[cfg(web_sys_unstable_apis)]
@@ -132,7 +132,7 @@ impl GpuRenderPassColorAttachmentGetters for GpuRenderPassColorAttachment {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureView")]
-    fn view(&self) -> &GpuTextureView {
+    fn view(&self) -> GpuTextureView {
         self.view_shim()
     }
 }

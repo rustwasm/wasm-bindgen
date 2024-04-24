@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ElementCreationOptions`*"]
     pub type ElementCreationOptions;
     #[wasm_bindgen(method, getter = "is")]
-    fn is_shim(this: &ElementCreationOptions) -> &str;
+    fn is_shim(this: &ElementCreationOptions) -> String;
     #[wasm_bindgen(method, setter = "is")]
     fn set_is_shim(this: &ElementCreationOptions, val: &str);
     #[wasm_bindgen(method, getter = "pseudo")]
-    fn pseudo_shim(this: &ElementCreationOptions) -> &str;
+    fn pseudo_shim(this: &ElementCreationOptions) -> String;
     #[wasm_bindgen(method, setter = "pseudo")]
     fn set_pseudo_shim(this: &ElementCreationOptions, val: &str);
 }
@@ -26,17 +26,17 @@ pub trait ElementCreationOptionsGetters {
     #[doc = "Get the `is` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ElementCreationOptions`*"]
-    fn is(&self) -> &str;
+    fn is(&self) -> String;
     #[doc = "Get the `pseudo` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ElementCreationOptions`*"]
-    fn pseudo(&self) -> &str;
+    fn pseudo(&self) -> String;
 }
 impl ElementCreationOptionsGetters for ElementCreationOptions {
-    fn is(&self) -> &str {
+    fn is(&self) -> String {
         self.is_shim()
     }
-    fn pseudo(&self) -> &str {
+    fn pseudo(&self) -> String {
         self.pseudo_shim()
     }
 }

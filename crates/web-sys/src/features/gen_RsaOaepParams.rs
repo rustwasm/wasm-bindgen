@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RsaOaepParams`*"]
     pub type RsaOaepParams;
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &RsaOaepParams) -> &str;
+    fn name_shim(this: &RsaOaepParams) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &RsaOaepParams, val: &str);
     #[wasm_bindgen(method, getter = "label")]
-    fn label_shim(this: &RsaOaepParams) -> &::js_sys::Object;
+    fn label_shim(this: &RsaOaepParams) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "label")]
     fn set_label_shim(this: &RsaOaepParams, val: &::js_sys::Object);
 }
@@ -26,17 +26,17 @@ pub trait RsaOaepParamsGetters {
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOaepParams`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
     #[doc = "Get the `label` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOaepParams`*"]
-    fn label(&self) -> &::js_sys::Object;
+    fn label(&self) -> ::js_sys::Object;
 }
 impl RsaOaepParamsGetters for RsaOaepParams {
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
-    fn label(&self) -> &::js_sys::Object {
+    fn label(&self) -> ::js_sys::Object {
         self.label_shim()
     }
 }

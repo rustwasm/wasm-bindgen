@@ -12,7 +12,7 @@ extern "C" {
     pub type MediaElementAudioSourceOptions;
     #[cfg(feature = "HtmlMediaElement")]
     #[wasm_bindgen(method, getter = "mediaElement")]
-    fn media_element_shim(this: &MediaElementAudioSourceOptions) -> &HtmlMediaElement;
+    fn media_element_shim(this: &MediaElementAudioSourceOptions) -> HtmlMediaElement;
     #[cfg(feature = "HtmlMediaElement")]
     #[wasm_bindgen(method, setter = "mediaElement")]
     fn set_media_element_shim(this: &MediaElementAudioSourceOptions, val: &HtmlMediaElement);
@@ -25,11 +25,11 @@ pub trait MediaElementAudioSourceOptionsGetters {
     #[doc = "Get the `mediaElement` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMediaElement`, `MediaElementAudioSourceOptions`*"]
-    fn media_element(&self) -> &HtmlMediaElement;
+    fn media_element(&self) -> HtmlMediaElement;
 }
 impl MediaElementAudioSourceOptionsGetters for MediaElementAudioSourceOptions {
     #[cfg(feature = "HtmlMediaElement")]
-    fn media_element(&self) -> &HtmlMediaElement {
+    fn media_element(&self) -> HtmlMediaElement {
         self.media_element_shim()
     }
 }

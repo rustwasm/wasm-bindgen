@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `CacheQueryOptions`*"]
     pub type CacheQueryOptions;
     #[wasm_bindgen(method, getter = "cacheName")]
-    fn cache_name_shim(this: &CacheQueryOptions) -> &str;
+    fn cache_name_shim(this: &CacheQueryOptions) -> String;
     #[wasm_bindgen(method, setter = "cacheName")]
     fn set_cache_name_shim(this: &CacheQueryOptions, val: &str);
     #[wasm_bindgen(method, getter = "ignoreMethod")]
@@ -34,7 +34,7 @@ pub trait CacheQueryOptionsGetters {
     #[doc = "Get the `cacheName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheQueryOptions`*"]
-    fn cache_name(&self) -> &str;
+    fn cache_name(&self) -> String;
     #[doc = "Get the `ignoreMethod` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheQueryOptions`*"]
@@ -49,7 +49,7 @@ pub trait CacheQueryOptionsGetters {
     fn ignore_vary(&self) -> bool;
 }
 impl CacheQueryOptionsGetters for CacheQueryOptions {
-    fn cache_name(&self) -> &str {
+    fn cache_name(&self) -> String {
         self.cache_name_shim()
     }
     fn ignore_method(&self) -> bool {

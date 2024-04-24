@@ -15,7 +15,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type FilePickerAcceptType;
     #[wasm_bindgen(method, getter = "description")]
-    fn description_shim(this: &FilePickerAcceptType) -> &str;
+    fn description_shim(this: &FilePickerAcceptType) -> String;
     #[wasm_bindgen(method, setter = "description")]
     fn set_description_shim(this: &FilePickerAcceptType, val: &str);
 }
@@ -31,12 +31,12 @@ pub trait FilePickerAcceptTypeGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn description(&self) -> &str;
+    fn description(&self) -> String;
 }
 #[cfg(web_sys_unstable_apis)]
 impl FilePickerAcceptTypeGetters for FilePickerAcceptType {
     #[cfg(web_sys_unstable_apis)]
-    fn description(&self) -> &str {
+    fn description(&self) -> String {
         self.description_shim()
     }
 }

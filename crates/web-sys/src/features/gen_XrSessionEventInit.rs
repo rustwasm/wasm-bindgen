@@ -28,7 +28,7 @@ extern "C" {
     fn set_composed_shim(this: &XrSessionEventInit, val: bool);
     #[cfg(feature = "XrSession")]
     #[wasm_bindgen(method, getter = "session")]
-    fn session_shim(this: &XrSessionEventInit) -> &XrSession;
+    fn session_shim(this: &XrSessionEventInit) -> XrSession;
     #[cfg(feature = "XrSession")]
     #[wasm_bindgen(method, setter = "session")]
     fn set_session_shim(this: &XrSessionEventInit, val: &XrSession);
@@ -70,7 +70,7 @@ pub trait XrSessionEventInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn session(&self) -> &XrSession;
+    fn session(&self) -> XrSession;
 }
 #[cfg(web_sys_unstable_apis)]
 impl XrSessionEventInitGetters for XrSessionEventInit {
@@ -88,7 +88,7 @@ impl XrSessionEventInitGetters for XrSessionEventInit {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrSession")]
-    fn session(&self) -> &XrSession {
+    fn session(&self) -> XrSession {
         self.session_shim()
     }
 }

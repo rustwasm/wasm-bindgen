@@ -23,7 +23,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &PopStateEventInit, val: bool);
     #[wasm_bindgen(method, getter = "state")]
-    fn state_shim(this: &PopStateEventInit) -> &::wasm_bindgen::JsValue;
+    fn state_shim(this: &PopStateEventInit) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "state")]
     fn set_state_shim(this: &PopStateEventInit, val: &::wasm_bindgen::JsValue);
 }
@@ -46,7 +46,7 @@ pub trait PopStateEventInitGetters {
     #[doc = "Get the `state` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopStateEventInit`*"]
-    fn state(&self) -> &::wasm_bindgen::JsValue;
+    fn state(&self) -> ::wasm_bindgen::JsValue;
 }
 impl PopStateEventInitGetters for PopStateEventInit {
     fn bubbles(&self) -> bool {
@@ -58,7 +58,7 @@ impl PopStateEventInitGetters for PopStateEventInit {
     fn composed(&self) -> bool {
         self.composed_shim()
     }
-    fn state(&self) -> &::wasm_bindgen::JsValue {
+    fn state(&self) -> ::wasm_bindgen::JsValue {
         self.state_shim()
     }
 }

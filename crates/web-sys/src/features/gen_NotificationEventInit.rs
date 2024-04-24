@@ -24,7 +24,7 @@ extern "C" {
     fn set_composed_shim(this: &NotificationEventInit, val: bool);
     #[cfg(feature = "Notification")]
     #[wasm_bindgen(method, getter = "notification")]
-    fn notification_shim(this: &NotificationEventInit) -> &Notification;
+    fn notification_shim(this: &NotificationEventInit) -> Notification;
     #[cfg(feature = "Notification")]
     #[wasm_bindgen(method, setter = "notification")]
     fn set_notification_shim(this: &NotificationEventInit, val: &Notification);
@@ -49,7 +49,7 @@ pub trait NotificationEventInitGetters {
     #[doc = "Get the `notification` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`, `NotificationEventInit`*"]
-    fn notification(&self) -> &Notification;
+    fn notification(&self) -> Notification;
 }
 impl NotificationEventInitGetters for NotificationEventInit {
     fn bubbles(&self) -> bool {
@@ -62,7 +62,7 @@ impl NotificationEventInitGetters for NotificationEventInit {
         self.composed_shim()
     }
     #[cfg(feature = "Notification")]
-    fn notification(&self) -> &Notification {
+    fn notification(&self) -> Notification {
         self.notification_shim()
     }
 }

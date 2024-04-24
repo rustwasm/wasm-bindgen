@@ -17,7 +17,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "box")]
     fn set_box__shim(this: &BoxQuadOptions, val: CssBoxType);
     #[wasm_bindgen(method, getter = "relativeTo")]
-    fn relative_to_shim(this: &BoxQuadOptions) -> &::js_sys::Object;
+    fn relative_to_shim(this: &BoxQuadOptions) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "relativeTo")]
     fn set_relative_to_shim(this: &BoxQuadOptions, val: &::js_sys::Object);
 }
@@ -33,14 +33,14 @@ pub trait BoxQuadOptionsGetters {
     #[doc = "Get the `relativeTo` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BoxQuadOptions`*"]
-    fn relative_to(&self) -> &::js_sys::Object;
+    fn relative_to(&self) -> ::js_sys::Object;
 }
 impl BoxQuadOptionsGetters for BoxQuadOptions {
     #[cfg(feature = "CssBoxType")]
     fn box_(&self) -> CssBoxType {
         self.box__shim()
     }
-    fn relative_to(&self) -> &::js_sys::Object {
+    fn relative_to(&self) -> ::js_sys::Object {
         self.relative_to_shim()
     }
 }

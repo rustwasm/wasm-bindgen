@@ -23,7 +23,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &PresentationConnectionCloseEventInit, val: bool);
     #[wasm_bindgen(method, getter = "message")]
-    fn message_shim(this: &PresentationConnectionCloseEventInit) -> &str;
+    fn message_shim(this: &PresentationConnectionCloseEventInit) -> String;
     #[wasm_bindgen(method, setter = "message")]
     fn set_message_shim(this: &PresentationConnectionCloseEventInit, val: &str);
     #[cfg(feature = "PresentationConnectionClosedReason")]
@@ -57,7 +57,7 @@ pub trait PresentationConnectionCloseEventInitGetters {
     #[doc = "Get the `message` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnectionCloseEventInit`*"]
-    fn message(&self) -> &str;
+    fn message(&self) -> String;
     #[cfg(feature = "PresentationConnectionClosedReason")]
     #[doc = "Get the `reason` field of this object."]
     #[doc = ""]
@@ -74,7 +74,7 @@ impl PresentationConnectionCloseEventInitGetters for PresentationConnectionClose
     fn composed(&self) -> bool {
         self.composed_shim()
     }
-    fn message(&self) -> &str {
+    fn message(&self) -> String {
         self.message_shim()
     }
     #[cfg(feature = "PresentationConnectionClosedReason")]

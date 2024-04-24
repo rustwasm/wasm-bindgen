@@ -26,7 +26,7 @@ extern "C" {
     fn set_mode_shim(this: &LockOptions, val: LockMode);
     #[cfg(feature = "AbortSignal")]
     #[wasm_bindgen(method, getter = "signal")]
-    fn signal_shim(this: &LockOptions) -> &AbortSignal;
+    fn signal_shim(this: &LockOptions) -> AbortSignal;
     #[cfg(feature = "AbortSignal")]
     #[wasm_bindgen(method, setter = "signal")]
     fn set_signal_shim(this: &LockOptions, val: &AbortSignal);
@@ -65,7 +65,7 @@ pub trait LockOptionsGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn signal(&self) -> &AbortSignal;
+    fn signal(&self) -> AbortSignal;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `steal` field of this object."]
     #[doc = ""]
@@ -88,7 +88,7 @@ impl LockOptionsGetters for LockOptions {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "AbortSignal")]
-    fn signal(&self) -> &AbortSignal {
+    fn signal(&self) -> AbortSignal {
         self.signal_shim()
     }
     #[cfg(web_sys_unstable_apis)]

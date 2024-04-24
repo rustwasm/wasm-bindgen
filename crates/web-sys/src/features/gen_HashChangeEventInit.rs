@@ -23,11 +23,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &HashChangeEventInit, val: bool);
     #[wasm_bindgen(method, getter = "newURL")]
-    fn new_url_shim(this: &HashChangeEventInit) -> &str;
+    fn new_url_shim(this: &HashChangeEventInit) -> String;
     #[wasm_bindgen(method, setter = "newURL")]
     fn set_new_url_shim(this: &HashChangeEventInit, val: &str);
     #[wasm_bindgen(method, getter = "oldURL")]
-    fn old_url_shim(this: &HashChangeEventInit) -> &str;
+    fn old_url_shim(this: &HashChangeEventInit) -> String;
     #[wasm_bindgen(method, setter = "oldURL")]
     fn set_old_url_shim(this: &HashChangeEventInit, val: &str);
 }
@@ -50,11 +50,11 @@ pub trait HashChangeEventInitGetters {
     #[doc = "Get the `newURL` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HashChangeEventInit`*"]
-    fn new_url(&self) -> &str;
+    fn new_url(&self) -> String;
     #[doc = "Get the `oldURL` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HashChangeEventInit`*"]
-    fn old_url(&self) -> &str;
+    fn old_url(&self) -> String;
 }
 impl HashChangeEventInitGetters for HashChangeEventInit {
     fn bubbles(&self) -> bool {
@@ -66,10 +66,10 @@ impl HashChangeEventInitGetters for HashChangeEventInit {
     fn composed(&self) -> bool {
         self.composed_shim()
     }
-    fn new_url(&self) -> &str {
+    fn new_url(&self) -> String {
         self.new_url_shim()
     }
-    fn old_url(&self) -> &str {
+    fn old_url(&self) -> String {
         self.old_url_shim()
     }
 }

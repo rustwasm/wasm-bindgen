@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
     pub type ProfileTimelineMarker;
     #[wasm_bindgen(method, getter = "causeName")]
-    fn cause_name_shim(this: &ProfileTimelineMarker) -> &str;
+    fn cause_name_shim(this: &ProfileTimelineMarker) -> String;
     #[wasm_bindgen(method, setter = "causeName")]
     fn set_cause_name_shim(this: &ProfileTimelineMarker, val: &str);
     #[wasm_bindgen(method, getter = "end")]
@@ -19,7 +19,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "end")]
     fn set_end_shim(this: &ProfileTimelineMarker, val: f64);
     #[wasm_bindgen(method, getter = "endStack")]
-    fn end_stack_shim(this: &ProfileTimelineMarker) -> Option<&::js_sys::Object>;
+    fn end_stack_shim(this: &ProfileTimelineMarker) -> Option<::js_sys::Object>;
     #[wasm_bindgen(method, setter = "endStack")]
     fn set_end_stack_shim(this: &ProfileTimelineMarker, val: Option<&::js_sys::Object>);
     #[wasm_bindgen(method, getter = "eventPhase")]
@@ -46,7 +46,7 @@ extern "C" {
         val: ProfileTimelineMessagePortOperationType,
     );
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &ProfileTimelineMarker) -> &str;
+    fn name_shim(this: &ProfileTimelineMarker) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &ProfileTimelineMarker, val: &str);
     #[wasm_bindgen(method, getter = "processType")]
@@ -54,11 +54,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "processType")]
     fn set_process_type_shim(this: &ProfileTimelineMarker, val: u16);
     #[wasm_bindgen(method, getter = "rectangles")]
-    fn rectangles_shim(this: &ProfileTimelineMarker) -> &::wasm_bindgen::JsValue;
+    fn rectangles_shim(this: &ProfileTimelineMarker) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "rectangles")]
     fn set_rectangles_shim(this: &ProfileTimelineMarker, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "stack")]
-    fn stack_shim(this: &ProfileTimelineMarker) -> Option<&::js_sys::Object>;
+    fn stack_shim(this: &ProfileTimelineMarker) -> Option<::js_sys::Object>;
     #[wasm_bindgen(method, setter = "stack")]
     fn set_stack_shim(this: &ProfileTimelineMarker, val: Option<&::js_sys::Object>);
     #[wasm_bindgen(method, getter = "start")]
@@ -66,7 +66,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "start")]
     fn set_start_shim(this: &ProfileTimelineMarker, val: f64);
     #[wasm_bindgen(method, getter = "type")]
-    fn type__shim(this: &ProfileTimelineMarker) -> &str;
+    fn type__shim(this: &ProfileTimelineMarker) -> String;
     #[wasm_bindgen(method, setter = "type")]
     fn set_type__shim(this: &ProfileTimelineMarker, val: &str);
     #[wasm_bindgen(method, getter = "unixTime")]
@@ -90,7 +90,7 @@ pub trait ProfileTimelineMarkerGetters {
     #[doc = "Get the `causeName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
-    fn cause_name(&self) -> &str;
+    fn cause_name(&self) -> String;
     #[doc = "Get the `end` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
@@ -98,7 +98,7 @@ pub trait ProfileTimelineMarkerGetters {
     #[doc = "Get the `endStack` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
-    fn end_stack(&self) -> Option<&::js_sys::Object>;
+    fn end_stack(&self) -> Option<::js_sys::Object>;
     #[doc = "Get the `eventPhase` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
@@ -119,7 +119,7 @@ pub trait ProfileTimelineMarkerGetters {
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
     #[doc = "Get the `processType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
@@ -127,11 +127,11 @@ pub trait ProfileTimelineMarkerGetters {
     #[doc = "Get the `rectangles` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
-    fn rectangles(&self) -> &::wasm_bindgen::JsValue;
+    fn rectangles(&self) -> ::js_sys::Array;
     #[doc = "Get the `stack` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
-    fn stack(&self) -> Option<&::js_sys::Object>;
+    fn stack(&self) -> Option<::js_sys::Object>;
     #[doc = "Get the `start` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
@@ -139,7 +139,7 @@ pub trait ProfileTimelineMarkerGetters {
     #[doc = "Get the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
-    fn type_(&self) -> &str;
+    fn type_(&self) -> String;
     #[doc = "Get the `unixTime` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
@@ -151,13 +151,13 @@ pub trait ProfileTimelineMarkerGetters {
     fn worker_operation(&self) -> ProfileTimelineWorkerOperationType;
 }
 impl ProfileTimelineMarkerGetters for ProfileTimelineMarker {
-    fn cause_name(&self) -> &str {
+    fn cause_name(&self) -> String {
         self.cause_name_shim()
     }
     fn end(&self) -> f64 {
         self.end_shim()
     }
-    fn end_stack(&self) -> Option<&::js_sys::Object> {
+    fn end_stack(&self) -> Option<::js_sys::Object> {
         self.end_stack_shim()
     }
     fn event_phase(&self) -> u16 {
@@ -173,22 +173,22 @@ impl ProfileTimelineMarkerGetters for ProfileTimelineMarker {
     fn message_port_operation(&self) -> ProfileTimelineMessagePortOperationType {
         self.message_port_operation_shim()
     }
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
     fn process_type(&self) -> u16 {
         self.process_type_shim()
     }
-    fn rectangles(&self) -> &::wasm_bindgen::JsValue {
+    fn rectangles(&self) -> ::js_sys::Array {
         self.rectangles_shim()
     }
-    fn stack(&self) -> Option<&::js_sys::Object> {
+    fn stack(&self) -> Option<::js_sys::Object> {
         self.stack_shim()
     }
     fn start(&self) -> f64 {
         self.start_shim()
     }
-    fn type_(&self) -> &str {
+    fn type_(&self) -> String {
         self.type__shim()
     }
     fn unix_time(&self) -> f64 {

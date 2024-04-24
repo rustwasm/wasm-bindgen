@@ -15,7 +15,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "lastModified")]
     fn set_last_modified_shim(this: &FilePropertyBag, val: f64);
     #[wasm_bindgen(method, getter = "type")]
-    fn type__shim(this: &FilePropertyBag) -> &str;
+    fn type__shim(this: &FilePropertyBag) -> String;
     #[wasm_bindgen(method, setter = "type")]
     fn set_type__shim(this: &FilePropertyBag, val: &str);
 }
@@ -30,13 +30,13 @@ pub trait FilePropertyBagGetters {
     #[doc = "Get the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FilePropertyBag`*"]
-    fn type_(&self) -> &str;
+    fn type_(&self) -> String;
 }
 impl FilePropertyBagGetters for FilePropertyBag {
     fn last_modified(&self) -> f64 {
         self.last_modified_shim()
     }
-    fn type_(&self) -> &str {
+    fn type_(&self) -> String {
         self.type__shim()
     }
 }

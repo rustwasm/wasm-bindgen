@@ -23,7 +23,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &CustomEventInit, val: bool);
     #[wasm_bindgen(method, getter = "detail")]
-    fn detail_shim(this: &CustomEventInit) -> &::wasm_bindgen::JsValue;
+    fn detail_shim(this: &CustomEventInit) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "detail")]
     fn set_detail_shim(this: &CustomEventInit, val: &::wasm_bindgen::JsValue);
 }
@@ -46,7 +46,7 @@ pub trait CustomEventInitGetters {
     #[doc = "Get the `detail` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CustomEventInit`*"]
-    fn detail(&self) -> &::wasm_bindgen::JsValue;
+    fn detail(&self) -> ::wasm_bindgen::JsValue;
 }
 impl CustomEventInitGetters for CustomEventInit {
     fn bubbles(&self) -> bool {
@@ -58,7 +58,7 @@ impl CustomEventInitGetters for CustomEventInit {
     fn composed(&self) -> bool {
         self.composed_shim()
     }
-    fn detail(&self) -> &::wasm_bindgen::JsValue {
+    fn detail(&self) -> ::wasm_bindgen::JsValue {
         self.detail_shim()
     }
 }

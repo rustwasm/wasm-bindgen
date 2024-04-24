@@ -19,7 +19,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "channelCount")]
     fn set_channel_count_shim(this: &MediaTrackSettings, val: i32);
     #[wasm_bindgen(method, getter = "deviceId")]
-    fn device_id_shim(this: &MediaTrackSettings) -> &str;
+    fn device_id_shim(this: &MediaTrackSettings) -> String;
     #[wasm_bindgen(method, setter = "deviceId")]
     fn set_device_id_shim(this: &MediaTrackSettings, val: &str);
     #[wasm_bindgen(method, getter = "echoCancellation")]
@@ -27,7 +27,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "echoCancellation")]
     fn set_echo_cancellation_shim(this: &MediaTrackSettings, val: bool);
     #[wasm_bindgen(method, getter = "facingMode")]
-    fn facing_mode_shim(this: &MediaTrackSettings) -> &str;
+    fn facing_mode_shim(this: &MediaTrackSettings) -> String;
     #[wasm_bindgen(method, setter = "facingMode")]
     fn set_facing_mode_shim(this: &MediaTrackSettings, val: &str);
     #[wasm_bindgen(method, getter = "frameRate")]
@@ -62,7 +62,7 @@ pub trait MediaTrackSettingsGetters {
     #[doc = "Get the `deviceId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackSettings`*"]
-    fn device_id(&self) -> &str;
+    fn device_id(&self) -> String;
     #[doc = "Get the `echoCancellation` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackSettings`*"]
@@ -70,7 +70,7 @@ pub trait MediaTrackSettingsGetters {
     #[doc = "Get the `facingMode` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackSettings`*"]
-    fn facing_mode(&self) -> &str;
+    fn facing_mode(&self) -> String;
     #[doc = "Get the `frameRate` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackSettings`*"]
@@ -95,13 +95,13 @@ impl MediaTrackSettingsGetters for MediaTrackSettings {
     fn channel_count(&self) -> i32 {
         self.channel_count_shim()
     }
-    fn device_id(&self) -> &str {
+    fn device_id(&self) -> String {
         self.device_id_shim()
     }
     fn echo_cancellation(&self) -> bool {
         self.echo_cancellation_shim()
     }
-    fn facing_mode(&self) -> &str {
+    fn facing_mode(&self) -> String {
         self.facing_mode_shim()
     }
     fn frame_rate(&self) -> f64 {

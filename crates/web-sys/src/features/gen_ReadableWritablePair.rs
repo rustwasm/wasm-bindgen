@@ -12,13 +12,13 @@ extern "C" {
     pub type ReadableWritablePair;
     #[cfg(feature = "ReadableStream")]
     #[wasm_bindgen(method, getter = "readable")]
-    fn readable_shim(this: &ReadableWritablePair) -> &ReadableStream;
+    fn readable_shim(this: &ReadableWritablePair) -> ReadableStream;
     #[cfg(feature = "ReadableStream")]
     #[wasm_bindgen(method, setter = "readable")]
     fn set_readable_shim(this: &ReadableWritablePair, val: &ReadableStream);
     #[cfg(feature = "WritableStream")]
     #[wasm_bindgen(method, getter = "writable")]
-    fn writable_shim(this: &ReadableWritablePair) -> &WritableStream;
+    fn writable_shim(this: &ReadableWritablePair) -> WritableStream;
     #[cfg(feature = "WritableStream")]
     #[wasm_bindgen(method, setter = "writable")]
     fn set_writable_shim(this: &ReadableWritablePair, val: &WritableStream);
@@ -31,20 +31,20 @@ pub trait ReadableWritablePairGetters {
     #[doc = "Get the `readable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStream`, `ReadableWritablePair`*"]
-    fn readable(&self) -> &ReadableStream;
+    fn readable(&self) -> ReadableStream;
     #[cfg(feature = "WritableStream")]
     #[doc = "Get the `writable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableWritablePair`, `WritableStream`*"]
-    fn writable(&self) -> &WritableStream;
+    fn writable(&self) -> WritableStream;
 }
 impl ReadableWritablePairGetters for ReadableWritablePair {
     #[cfg(feature = "ReadableStream")]
-    fn readable(&self) -> &ReadableStream {
+    fn readable(&self) -> ReadableStream {
         self.readable_shim()
     }
     #[cfg(feature = "WritableStream")]
-    fn writable(&self) -> &WritableStream {
+    fn writable(&self) -> WritableStream {
         self.writable_shim()
     }
 }

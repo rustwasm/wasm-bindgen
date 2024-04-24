@@ -15,7 +15,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuCommandEncoderDescriptor;
     #[wasm_bindgen(method, getter = "label")]
-    fn label_shim(this: &GpuCommandEncoderDescriptor) -> &str;
+    fn label_shim(this: &GpuCommandEncoderDescriptor) -> String;
     #[wasm_bindgen(method, setter = "label")]
     fn set_label_shim(this: &GpuCommandEncoderDescriptor, val: &str);
 }
@@ -31,12 +31,12 @@ pub trait GpuCommandEncoderDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn label(&self) -> &str;
+    fn label(&self) -> String;
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuCommandEncoderDescriptorGetters for GpuCommandEncoderDescriptor {
     #[cfg(web_sys_unstable_apis)]
-    fn label(&self) -> &str {
+    fn label(&self) -> String {
         self.label_shim()
     }
 }

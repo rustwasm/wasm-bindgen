@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `EcKeyImportParams`*"]
     pub type EcKeyImportParams;
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &EcKeyImportParams) -> &str;
+    fn name_shim(this: &EcKeyImportParams) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &EcKeyImportParams, val: &str);
     #[wasm_bindgen(method, getter = "namedCurve")]
-    fn named_curve_shim(this: &EcKeyImportParams) -> &str;
+    fn named_curve_shim(this: &EcKeyImportParams) -> String;
     #[wasm_bindgen(method, setter = "namedCurve")]
     fn set_named_curve_shim(this: &EcKeyImportParams, val: &str);
 }
@@ -26,17 +26,17 @@ pub trait EcKeyImportParamsGetters {
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcKeyImportParams`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
     #[doc = "Get the `namedCurve` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcKeyImportParams`*"]
-    fn named_curve(&self) -> &str;
+    fn named_curve(&self) -> String;
 }
 impl EcKeyImportParamsGetters for EcKeyImportParams {
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
-    fn named_curve(&self) -> &str {
+    fn named_curve(&self) -> String {
         self.named_curve_shim()
     }
 }

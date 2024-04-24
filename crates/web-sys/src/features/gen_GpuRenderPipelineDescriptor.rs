@@ -15,40 +15,40 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuRenderPipelineDescriptor;
     #[wasm_bindgen(method, getter = "label")]
-    fn label_shim(this: &GpuRenderPipelineDescriptor) -> &str;
+    fn label_shim(this: &GpuRenderPipelineDescriptor) -> String;
     #[wasm_bindgen(method, setter = "label")]
     fn set_label_shim(this: &GpuRenderPipelineDescriptor, val: &str);
     #[wasm_bindgen(method, getter = "layout")]
-    fn layout_shim(this: &GpuRenderPipelineDescriptor) -> &::wasm_bindgen::JsValue;
+    fn layout_shim(this: &GpuRenderPipelineDescriptor) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "layout")]
     fn set_layout_shim(this: &GpuRenderPipelineDescriptor, val: &::wasm_bindgen::JsValue);
     #[cfg(feature = "GpuDepthStencilState")]
     #[wasm_bindgen(method, getter = "depthStencil")]
-    fn depth_stencil_shim(this: &GpuRenderPipelineDescriptor) -> &GpuDepthStencilState;
+    fn depth_stencil_shim(this: &GpuRenderPipelineDescriptor) -> GpuDepthStencilState;
     #[cfg(feature = "GpuDepthStencilState")]
     #[wasm_bindgen(method, setter = "depthStencil")]
     fn set_depth_stencil_shim(this: &GpuRenderPipelineDescriptor, val: &GpuDepthStencilState);
     #[cfg(feature = "GpuFragmentState")]
     #[wasm_bindgen(method, getter = "fragment")]
-    fn fragment_shim(this: &GpuRenderPipelineDescriptor) -> &GpuFragmentState;
+    fn fragment_shim(this: &GpuRenderPipelineDescriptor) -> GpuFragmentState;
     #[cfg(feature = "GpuFragmentState")]
     #[wasm_bindgen(method, setter = "fragment")]
     fn set_fragment_shim(this: &GpuRenderPipelineDescriptor, val: &GpuFragmentState);
     #[cfg(feature = "GpuMultisampleState")]
     #[wasm_bindgen(method, getter = "multisample")]
-    fn multisample_shim(this: &GpuRenderPipelineDescriptor) -> &GpuMultisampleState;
+    fn multisample_shim(this: &GpuRenderPipelineDescriptor) -> GpuMultisampleState;
     #[cfg(feature = "GpuMultisampleState")]
     #[wasm_bindgen(method, setter = "multisample")]
     fn set_multisample_shim(this: &GpuRenderPipelineDescriptor, val: &GpuMultisampleState);
     #[cfg(feature = "GpuPrimitiveState")]
     #[wasm_bindgen(method, getter = "primitive")]
-    fn primitive_shim(this: &GpuRenderPipelineDescriptor) -> &GpuPrimitiveState;
+    fn primitive_shim(this: &GpuRenderPipelineDescriptor) -> GpuPrimitiveState;
     #[cfg(feature = "GpuPrimitiveState")]
     #[wasm_bindgen(method, setter = "primitive")]
     fn set_primitive_shim(this: &GpuRenderPipelineDescriptor, val: &GpuPrimitiveState);
     #[cfg(feature = "GpuVertexState")]
     #[wasm_bindgen(method, getter = "vertex")]
-    fn vertex_shim(this: &GpuRenderPipelineDescriptor) -> &GpuVertexState;
+    fn vertex_shim(this: &GpuRenderPipelineDescriptor) -> GpuVertexState;
     #[cfg(feature = "GpuVertexState")]
     #[wasm_bindgen(method, setter = "vertex")]
     fn set_vertex_shim(this: &GpuRenderPipelineDescriptor, val: &GpuVertexState);
@@ -65,7 +65,7 @@ pub trait GpuRenderPipelineDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn label(&self) -> &str;
+    fn label(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `layout` field of this object."]
     #[doc = ""]
@@ -73,7 +73,7 @@ pub trait GpuRenderPipelineDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn layout(&self) -> &::wasm_bindgen::JsValue;
+    fn layout(&self) -> ::wasm_bindgen::JsValue;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuDepthStencilState")]
     #[doc = "Get the `depthStencil` field of this object."]
@@ -82,7 +82,7 @@ pub trait GpuRenderPipelineDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn depth_stencil(&self) -> &GpuDepthStencilState;
+    fn depth_stencil(&self) -> GpuDepthStencilState;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuFragmentState")]
     #[doc = "Get the `fragment` field of this object."]
@@ -91,7 +91,7 @@ pub trait GpuRenderPipelineDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn fragment(&self) -> &GpuFragmentState;
+    fn fragment(&self) -> GpuFragmentState;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuMultisampleState")]
     #[doc = "Get the `multisample` field of this object."]
@@ -100,7 +100,7 @@ pub trait GpuRenderPipelineDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn multisample(&self) -> &GpuMultisampleState;
+    fn multisample(&self) -> GpuMultisampleState;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuPrimitiveState")]
     #[doc = "Get the `primitive` field of this object."]
@@ -109,7 +109,7 @@ pub trait GpuRenderPipelineDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn primitive(&self) -> &GpuPrimitiveState;
+    fn primitive(&self) -> GpuPrimitiveState;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuVertexState")]
     #[doc = "Get the `vertex` field of this object."]
@@ -118,41 +118,41 @@ pub trait GpuRenderPipelineDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn vertex(&self) -> &GpuVertexState;
+    fn vertex(&self) -> GpuVertexState;
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuRenderPipelineDescriptorGetters for GpuRenderPipelineDescriptor {
     #[cfg(web_sys_unstable_apis)]
-    fn label(&self) -> &str {
+    fn label(&self) -> String {
         self.label_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn layout(&self) -> &::wasm_bindgen::JsValue {
+    fn layout(&self) -> ::wasm_bindgen::JsValue {
         self.layout_shim()
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuDepthStencilState")]
-    fn depth_stencil(&self) -> &GpuDepthStencilState {
+    fn depth_stencil(&self) -> GpuDepthStencilState {
         self.depth_stencil_shim()
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuFragmentState")]
-    fn fragment(&self) -> &GpuFragmentState {
+    fn fragment(&self) -> GpuFragmentState {
         self.fragment_shim()
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuMultisampleState")]
-    fn multisample(&self) -> &GpuMultisampleState {
+    fn multisample(&self) -> GpuMultisampleState {
         self.multisample_shim()
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuPrimitiveState")]
-    fn primitive(&self) -> &GpuPrimitiveState {
+    fn primitive(&self) -> GpuPrimitiveState {
         self.primitive_shim()
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuVertexState")]
-    fn vertex(&self) -> &GpuVertexState {
+    fn vertex(&self) -> GpuVertexState {
         self.vertex_shim()
     }
 }

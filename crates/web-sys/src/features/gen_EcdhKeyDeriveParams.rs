@@ -11,12 +11,12 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `EcdhKeyDeriveParams`*"]
     pub type EcdhKeyDeriveParams;
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &EcdhKeyDeriveParams) -> &str;
+    fn name_shim(this: &EcdhKeyDeriveParams) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &EcdhKeyDeriveParams, val: &str);
     #[cfg(feature = "CryptoKey")]
     #[wasm_bindgen(method, getter = "public")]
-    fn public_shim(this: &EcdhKeyDeriveParams) -> &CryptoKey;
+    fn public_shim(this: &EcdhKeyDeriveParams) -> CryptoKey;
     #[cfg(feature = "CryptoKey")]
     #[wasm_bindgen(method, setter = "public")]
     fn set_public_shim(this: &EcdhKeyDeriveParams, val: &CryptoKey);
@@ -28,19 +28,19 @@ pub trait EcdhKeyDeriveParamsGetters {
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcdhKeyDeriveParams`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
     #[cfg(feature = "CryptoKey")]
     #[doc = "Get the `public` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `EcdhKeyDeriveParams`*"]
-    fn public(&self) -> &CryptoKey;
+    fn public(&self) -> CryptoKey;
 }
 impl EcdhKeyDeriveParamsGetters for EcdhKeyDeriveParams {
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
     #[cfg(feature = "CryptoKey")]
-    fn public(&self) -> &CryptoKey {
+    fn public(&self) -> CryptoKey {
         self.public_shim()
     }
 }

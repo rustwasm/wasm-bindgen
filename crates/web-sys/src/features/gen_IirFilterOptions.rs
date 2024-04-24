@@ -27,11 +27,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "channelInterpretation")]
     fn set_channel_interpretation_shim(this: &IirFilterOptions, val: ChannelInterpretation);
     #[wasm_bindgen(method, getter = "feedback")]
-    fn feedback_shim(this: &IirFilterOptions) -> &::wasm_bindgen::JsValue;
+    fn feedback_shim(this: &IirFilterOptions) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "feedback")]
     fn set_feedback_shim(this: &IirFilterOptions, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "feedforward")]
-    fn feedforward_shim(this: &IirFilterOptions) -> &::wasm_bindgen::JsValue;
+    fn feedforward_shim(this: &IirFilterOptions) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "feedforward")]
     fn set_feedforward_shim(this: &IirFilterOptions, val: &::wasm_bindgen::JsValue);
 }
@@ -56,11 +56,11 @@ pub trait IirFilterOptionsGetters {
     #[doc = "Get the `feedback` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IirFilterOptions`*"]
-    fn feedback(&self) -> &::wasm_bindgen::JsValue;
+    fn feedback(&self) -> ::js_sys::Array;
     #[doc = "Get the `feedforward` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IirFilterOptions`*"]
-    fn feedforward(&self) -> &::wasm_bindgen::JsValue;
+    fn feedforward(&self) -> ::js_sys::Array;
 }
 impl IirFilterOptionsGetters for IirFilterOptions {
     fn channel_count(&self) -> u32 {
@@ -74,10 +74,10 @@ impl IirFilterOptionsGetters for IirFilterOptions {
     fn channel_interpretation(&self) -> ChannelInterpretation {
         self.channel_interpretation_shim()
     }
-    fn feedback(&self) -> &::wasm_bindgen::JsValue {
+    fn feedback(&self) -> ::js_sys::Array {
         self.feedback_shim()
     }
-    fn feedforward(&self) -> &::wasm_bindgen::JsValue {
+    fn feedforward(&self) -> ::js_sys::Array {
         self.feedforward_shim()
     }
 }

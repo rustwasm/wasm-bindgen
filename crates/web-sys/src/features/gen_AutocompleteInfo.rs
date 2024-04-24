@@ -11,19 +11,19 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AutocompleteInfo`*"]
     pub type AutocompleteInfo;
     #[wasm_bindgen(method, getter = "addressType")]
-    fn address_type_shim(this: &AutocompleteInfo) -> &str;
+    fn address_type_shim(this: &AutocompleteInfo) -> String;
     #[wasm_bindgen(method, setter = "addressType")]
     fn set_address_type_shim(this: &AutocompleteInfo, val: &str);
     #[wasm_bindgen(method, getter = "contactType")]
-    fn contact_type_shim(this: &AutocompleteInfo) -> &str;
+    fn contact_type_shim(this: &AutocompleteInfo) -> String;
     #[wasm_bindgen(method, setter = "contactType")]
     fn set_contact_type_shim(this: &AutocompleteInfo, val: &str);
     #[wasm_bindgen(method, getter = "fieldName")]
-    fn field_name_shim(this: &AutocompleteInfo) -> &str;
+    fn field_name_shim(this: &AutocompleteInfo) -> String;
     #[wasm_bindgen(method, setter = "fieldName")]
     fn set_field_name_shim(this: &AutocompleteInfo, val: &str);
     #[wasm_bindgen(method, getter = "section")]
-    fn section_shim(this: &AutocompleteInfo) -> &str;
+    fn section_shim(this: &AutocompleteInfo) -> String;
     #[wasm_bindgen(method, setter = "section")]
     fn set_section_shim(this: &AutocompleteInfo, val: &str);
 }
@@ -34,31 +34,31 @@ pub trait AutocompleteInfoGetters {
     #[doc = "Get the `addressType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AutocompleteInfo`*"]
-    fn address_type(&self) -> &str;
+    fn address_type(&self) -> String;
     #[doc = "Get the `contactType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AutocompleteInfo`*"]
-    fn contact_type(&self) -> &str;
+    fn contact_type(&self) -> String;
     #[doc = "Get the `fieldName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AutocompleteInfo`*"]
-    fn field_name(&self) -> &str;
+    fn field_name(&self) -> String;
     #[doc = "Get the `section` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AutocompleteInfo`*"]
-    fn section(&self) -> &str;
+    fn section(&self) -> String;
 }
 impl AutocompleteInfoGetters for AutocompleteInfo {
-    fn address_type(&self) -> &str {
+    fn address_type(&self) -> String {
         self.address_type_shim()
     }
-    fn contact_type(&self) -> &str {
+    fn contact_type(&self) -> String {
         self.contact_type_shim()
     }
-    fn field_name(&self) -> &str {
+    fn field_name(&self) -> String {
         self.field_name_shim()
     }
-    fn section(&self) -> &str {
+    fn section(&self) -> String {
         self.section_shim()
     }
 }

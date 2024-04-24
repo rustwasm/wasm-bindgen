@@ -15,7 +15,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "quality")]
     fn set_quality_shim(this: &ImageEncodeOptions, val: f64);
     #[wasm_bindgen(method, getter = "type")]
-    fn type__shim(this: &ImageEncodeOptions) -> &str;
+    fn type__shim(this: &ImageEncodeOptions) -> String;
     #[wasm_bindgen(method, setter = "type")]
     fn set_type__shim(this: &ImageEncodeOptions, val: &str);
 }
@@ -30,13 +30,13 @@ pub trait ImageEncodeOptionsGetters {
     #[doc = "Get the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageEncodeOptions`*"]
-    fn type_(&self) -> &str;
+    fn type_(&self) -> String;
 }
 impl ImageEncodeOptionsGetters for ImageEncodeOptions {
     fn quality(&self) -> f64 {
         self.quality_shim()
     }
-    fn type_(&self) -> &str {
+    fn type_(&self) -> String {
         self.type__shim()
     }
 }

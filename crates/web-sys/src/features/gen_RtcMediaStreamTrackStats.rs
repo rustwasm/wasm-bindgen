@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcMediaStreamTrackStats`*"]
     pub type RtcMediaStreamTrackStats;
     #[wasm_bindgen(method, getter = "id")]
-    fn id_shim(this: &RtcMediaStreamTrackStats) -> &str;
+    fn id_shim(this: &RtcMediaStreamTrackStats) -> String;
     #[wasm_bindgen(method, setter = "id")]
     fn set_id_shim(this: &RtcMediaStreamTrackStats, val: &str);
     #[wasm_bindgen(method, getter = "timestamp")]
@@ -73,11 +73,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "remoteSource")]
     fn set_remote_source_shim(this: &RtcMediaStreamTrackStats, val: bool);
     #[wasm_bindgen(method, getter = "ssrcIds")]
-    fn ssrc_ids_shim(this: &RtcMediaStreamTrackStats) -> &::wasm_bindgen::JsValue;
+    fn ssrc_ids_shim(this: &RtcMediaStreamTrackStats) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "ssrcIds")]
     fn set_ssrc_ids_shim(this: &RtcMediaStreamTrackStats, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "trackIdentifier")]
-    fn track_identifier_shim(this: &RtcMediaStreamTrackStats) -> &str;
+    fn track_identifier_shim(this: &RtcMediaStreamTrackStats) -> String;
     #[wasm_bindgen(method, setter = "trackIdentifier")]
     fn set_track_identifier_shim(this: &RtcMediaStreamTrackStats, val: &str);
 }
@@ -88,7 +88,7 @@ pub trait RtcMediaStreamTrackStatsGetters {
     #[doc = "Get the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcMediaStreamTrackStats`*"]
-    fn id(&self) -> &str;
+    fn id(&self) -> String;
     #[doc = "Get the `timestamp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcMediaStreamTrackStats`*"]
@@ -149,14 +149,14 @@ pub trait RtcMediaStreamTrackStatsGetters {
     #[doc = "Get the `ssrcIds` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcMediaStreamTrackStats`*"]
-    fn ssrc_ids(&self) -> &::wasm_bindgen::JsValue;
+    fn ssrc_ids(&self) -> ::js_sys::Array;
     #[doc = "Get the `trackIdentifier` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcMediaStreamTrackStats`*"]
-    fn track_identifier(&self) -> &str;
+    fn track_identifier(&self) -> String;
 }
 impl RtcMediaStreamTrackStatsGetters for RtcMediaStreamTrackStats {
-    fn id(&self) -> &str {
+    fn id(&self) -> String {
         self.id_shim()
     }
     fn timestamp(&self) -> f64 {
@@ -202,10 +202,10 @@ impl RtcMediaStreamTrackStatsGetters for RtcMediaStreamTrackStats {
     fn remote_source(&self) -> bool {
         self.remote_source_shim()
     }
-    fn ssrc_ids(&self) -> &::wasm_bindgen::JsValue {
+    fn ssrc_ids(&self) -> ::js_sys::Array {
         self.ssrc_ids_shim()
     }
-    fn track_identifier(&self) -> &str {
+    fn track_identifier(&self) -> String {
         self.track_identifier_shim()
     }
 }

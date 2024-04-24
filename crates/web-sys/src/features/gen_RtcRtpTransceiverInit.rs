@@ -17,11 +17,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "direction")]
     fn set_direction_shim(this: &RtcRtpTransceiverInit, val: RtcRtpTransceiverDirection);
     #[wasm_bindgen(method, getter = "sendEncodings")]
-    fn send_encodings_shim(this: &RtcRtpTransceiverInit) -> &::wasm_bindgen::JsValue;
+    fn send_encodings_shim(this: &RtcRtpTransceiverInit) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "sendEncodings")]
     fn set_send_encodings_shim(this: &RtcRtpTransceiverInit, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "streams")]
-    fn streams_shim(this: &RtcRtpTransceiverInit) -> &::wasm_bindgen::JsValue;
+    fn streams_shim(this: &RtcRtpTransceiverInit) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "streams")]
     fn set_streams_shim(this: &RtcRtpTransceiverInit, val: &::wasm_bindgen::JsValue);
 }
@@ -37,21 +37,21 @@ pub trait RtcRtpTransceiverInitGetters {
     #[doc = "Get the `sendEncodings` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpTransceiverInit`*"]
-    fn send_encodings(&self) -> &::wasm_bindgen::JsValue;
+    fn send_encodings(&self) -> ::js_sys::Array;
     #[doc = "Get the `streams` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpTransceiverInit`*"]
-    fn streams(&self) -> &::wasm_bindgen::JsValue;
+    fn streams(&self) -> ::js_sys::Array;
 }
 impl RtcRtpTransceiverInitGetters for RtcRtpTransceiverInit {
     #[cfg(feature = "RtcRtpTransceiverDirection")]
     fn direction(&self) -> RtcRtpTransceiverDirection {
         self.direction_shim()
     }
-    fn send_encodings(&self) -> &::wasm_bindgen::JsValue {
+    fn send_encodings(&self) -> ::js_sys::Array {
         self.send_encodings_shim()
     }
-    fn streams(&self) -> &::wasm_bindgen::JsValue {
+    fn streams(&self) -> ::js_sys::Array {
         self.streams_shim()
     }
 }

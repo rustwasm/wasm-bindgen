@@ -12,13 +12,13 @@ extern "C" {
     pub type MediaDecodingConfiguration;
     #[cfg(feature = "AudioConfiguration")]
     #[wasm_bindgen(method, getter = "audio")]
-    fn audio_shim(this: &MediaDecodingConfiguration) -> &AudioConfiguration;
+    fn audio_shim(this: &MediaDecodingConfiguration) -> AudioConfiguration;
     #[cfg(feature = "AudioConfiguration")]
     #[wasm_bindgen(method, setter = "audio")]
     fn set_audio_shim(this: &MediaDecodingConfiguration, val: &AudioConfiguration);
     #[cfg(feature = "VideoConfiguration")]
     #[wasm_bindgen(method, getter = "video")]
-    fn video_shim(this: &MediaDecodingConfiguration) -> &VideoConfiguration;
+    fn video_shim(this: &MediaDecodingConfiguration) -> VideoConfiguration;
     #[cfg(feature = "VideoConfiguration")]
     #[wasm_bindgen(method, setter = "video")]
     fn set_video_shim(this: &MediaDecodingConfiguration, val: &VideoConfiguration);
@@ -37,12 +37,12 @@ pub trait MediaDecodingConfigurationGetters {
     #[doc = "Get the `audio` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`, `MediaDecodingConfiguration`*"]
-    fn audio(&self) -> &AudioConfiguration;
+    fn audio(&self) -> AudioConfiguration;
     #[cfg(feature = "VideoConfiguration")]
     #[doc = "Get the `video` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaDecodingConfiguration`, `VideoConfiguration`*"]
-    fn video(&self) -> &VideoConfiguration;
+    fn video(&self) -> VideoConfiguration;
     #[cfg(feature = "MediaDecodingType")]
     #[doc = "Get the `type` field of this object."]
     #[doc = ""]
@@ -51,11 +51,11 @@ pub trait MediaDecodingConfigurationGetters {
 }
 impl MediaDecodingConfigurationGetters for MediaDecodingConfiguration {
     #[cfg(feature = "AudioConfiguration")]
-    fn audio(&self) -> &AudioConfiguration {
+    fn audio(&self) -> AudioConfiguration {
         self.audio_shim()
     }
     #[cfg(feature = "VideoConfiguration")]
-    fn video(&self) -> &VideoConfiguration {
+    fn video(&self) -> VideoConfiguration {
         self.video_shim()
     }
     #[cfg(feature = "MediaDecodingType")]

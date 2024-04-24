@@ -27,16 +27,16 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composed")]
     fn set_composed_shim(this: &XrInputSourcesChangeEventInit, val: bool);
     #[wasm_bindgen(method, getter = "added")]
-    fn added_shim(this: &XrInputSourcesChangeEventInit) -> &::wasm_bindgen::JsValue;
+    fn added_shim(this: &XrInputSourcesChangeEventInit) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "added")]
     fn set_added_shim(this: &XrInputSourcesChangeEventInit, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "removed")]
-    fn removed_shim(this: &XrInputSourcesChangeEventInit) -> &::wasm_bindgen::JsValue;
+    fn removed_shim(this: &XrInputSourcesChangeEventInit) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "removed")]
     fn set_removed_shim(this: &XrInputSourcesChangeEventInit, val: &::wasm_bindgen::JsValue);
     #[cfg(feature = "XrSession")]
     #[wasm_bindgen(method, getter = "session")]
-    fn session_shim(this: &XrInputSourcesChangeEventInit) -> &XrSession;
+    fn session_shim(this: &XrInputSourcesChangeEventInit) -> XrSession;
     #[cfg(feature = "XrSession")]
     #[wasm_bindgen(method, setter = "session")]
     fn set_session_shim(this: &XrInputSourcesChangeEventInit, val: &XrSession);
@@ -77,7 +77,7 @@ pub trait XrInputSourcesChangeEventInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn added(&self) -> &::wasm_bindgen::JsValue;
+    fn added(&self) -> ::js_sys::Array;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `removed` field of this object."]
     #[doc = ""]
@@ -85,7 +85,7 @@ pub trait XrInputSourcesChangeEventInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn removed(&self) -> &::wasm_bindgen::JsValue;
+    fn removed(&self) -> ::js_sys::Array;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrSession")]
     #[doc = "Get the `session` field of this object."]
@@ -94,7 +94,7 @@ pub trait XrInputSourcesChangeEventInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn session(&self) -> &XrSession;
+    fn session(&self) -> XrSession;
 }
 #[cfg(web_sys_unstable_apis)]
 impl XrInputSourcesChangeEventInitGetters for XrInputSourcesChangeEventInit {
@@ -111,16 +111,16 @@ impl XrInputSourcesChangeEventInitGetters for XrInputSourcesChangeEventInit {
         self.composed_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn added(&self) -> &::wasm_bindgen::JsValue {
+    fn added(&self) -> ::js_sys::Array {
         self.added_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn removed(&self) -> &::wasm_bindgen::JsValue {
+    fn removed(&self) -> ::js_sys::Array {
         self.removed_shim()
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrSession")]
-    fn session(&self) -> &XrSession {
+    fn session(&self) -> XrSession {
         self.session_shim()
     }
 }

@@ -15,7 +15,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type TaskSignalAnyInit;
     #[wasm_bindgen(method, getter = "priority")]
-    fn priority_shim(this: &TaskSignalAnyInit) -> &::wasm_bindgen::JsValue;
+    fn priority_shim(this: &TaskSignalAnyInit) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "priority")]
     fn set_priority_shim(this: &TaskSignalAnyInit, val: &::wasm_bindgen::JsValue);
 }
@@ -31,12 +31,12 @@ pub trait TaskSignalAnyInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn priority(&self) -> &::wasm_bindgen::JsValue;
+    fn priority(&self) -> ::wasm_bindgen::JsValue;
 }
 #[cfg(web_sys_unstable_apis)]
 impl TaskSignalAnyInitGetters for TaskSignalAnyInit {
     #[cfg(web_sys_unstable_apis)]
-    fn priority(&self) -> &::wasm_bindgen::JsValue {
+    fn priority(&self) -> ::wasm_bindgen::JsValue {
         self.priority_shim()
     }
 }

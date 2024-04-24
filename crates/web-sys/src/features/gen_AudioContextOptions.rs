@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AudioContextOptions`*"]
     pub type AudioContextOptions;
     #[wasm_bindgen(method, getter = "latencyHint")]
-    fn latency_hint_shim(this: &AudioContextOptions) -> &::wasm_bindgen::JsValue;
+    fn latency_hint_shim(this: &AudioContextOptions) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "latencyHint")]
     fn set_latency_hint_shim(this: &AudioContextOptions, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "sampleRate")]
@@ -19,7 +19,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "sampleRate")]
     fn set_sample_rate_shim(this: &AudioContextOptions, val: f32);
     #[wasm_bindgen(method, getter = "sinkId")]
-    fn sink_id_shim(this: &AudioContextOptions) -> &::wasm_bindgen::JsValue;
+    fn sink_id_shim(this: &AudioContextOptions) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "sinkId")]
     fn set_sink_id_shim(this: &AudioContextOptions, val: &::wasm_bindgen::JsValue);
 }
@@ -30,7 +30,7 @@ pub trait AudioContextOptionsGetters {
     #[doc = "Get the `latencyHint` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioContextOptions`*"]
-    fn latency_hint(&self) -> &::wasm_bindgen::JsValue;
+    fn latency_hint(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `sampleRate` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioContextOptions`*"]
@@ -42,17 +42,17 @@ pub trait AudioContextOptionsGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn sink_id(&self) -> &::wasm_bindgen::JsValue;
+    fn sink_id(&self) -> ::wasm_bindgen::JsValue;
 }
 impl AudioContextOptionsGetters for AudioContextOptions {
-    fn latency_hint(&self) -> &::wasm_bindgen::JsValue {
+    fn latency_hint(&self) -> ::wasm_bindgen::JsValue {
         self.latency_hint_shim()
     }
     fn sample_rate(&self) -> f32 {
         self.sample_rate_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn sink_id(&self) -> &::wasm_bindgen::JsValue {
+    fn sink_id(&self) -> ::wasm_bindgen::JsValue {
         self.sink_id_shim()
     }
 }

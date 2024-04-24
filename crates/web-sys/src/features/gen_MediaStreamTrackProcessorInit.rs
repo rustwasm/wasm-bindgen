@@ -20,7 +20,7 @@ extern "C" {
     fn set_max_buffer_size_shim(this: &MediaStreamTrackProcessorInit, val: u16);
     #[cfg(feature = "MediaStreamTrack")]
     #[wasm_bindgen(method, getter = "track")]
-    fn track_shim(this: &MediaStreamTrackProcessorInit) -> &MediaStreamTrack;
+    fn track_shim(this: &MediaStreamTrackProcessorInit) -> MediaStreamTrack;
     #[cfg(feature = "MediaStreamTrack")]
     #[wasm_bindgen(method, setter = "track")]
     fn set_track_shim(this: &MediaStreamTrackProcessorInit, val: &MediaStreamTrack);
@@ -46,7 +46,7 @@ pub trait MediaStreamTrackProcessorInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn track(&self) -> &MediaStreamTrack;
+    fn track(&self) -> MediaStreamTrack;
 }
 #[cfg(web_sys_unstable_apis)]
 impl MediaStreamTrackProcessorInitGetters for MediaStreamTrackProcessorInit {
@@ -56,7 +56,7 @@ impl MediaStreamTrackProcessorInitGetters for MediaStreamTrackProcessorInit {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "MediaStreamTrack")]
-    fn track(&self) -> &MediaStreamTrack {
+    fn track(&self) -> MediaStreamTrack {
         self.track_shim()
     }
 }

@@ -28,7 +28,7 @@ extern "C" {
     fn set_composed_shim(this: &GpuUncapturedErrorEventInit, val: bool);
     #[cfg(feature = "GpuError")]
     #[wasm_bindgen(method, getter = "error")]
-    fn error_shim(this: &GpuUncapturedErrorEventInit) -> &GpuError;
+    fn error_shim(this: &GpuUncapturedErrorEventInit) -> GpuError;
     #[cfg(feature = "GpuError")]
     #[wasm_bindgen(method, setter = "error")]
     fn set_error_shim(this: &GpuUncapturedErrorEventInit, val: &GpuError);
@@ -70,7 +70,7 @@ pub trait GpuUncapturedErrorEventInitGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn error(&self) -> &GpuError;
+    fn error(&self) -> GpuError;
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuUncapturedErrorEventInitGetters for GpuUncapturedErrorEventInit {
@@ -88,7 +88,7 @@ impl GpuUncapturedErrorEventInitGetters for GpuUncapturedErrorEventInit {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuError")]
-    fn error(&self) -> &GpuError {
+    fn error(&self) -> GpuError {
         self.error_shim()
     }
 }

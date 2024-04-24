@@ -36,7 +36,7 @@ extern "C" {
     fn set_frequency_shim(this: &OscillatorOptions, val: f32);
     #[cfg(feature = "PeriodicWave")]
     #[wasm_bindgen(method, getter = "periodicWave")]
-    fn periodic_wave_shim(this: &OscillatorOptions) -> &PeriodicWave;
+    fn periodic_wave_shim(this: &OscillatorOptions) -> PeriodicWave;
     #[cfg(feature = "PeriodicWave")]
     #[wasm_bindgen(method, setter = "periodicWave")]
     fn set_periodic_wave_shim(this: &OscillatorOptions, val: &PeriodicWave);
@@ -77,7 +77,7 @@ pub trait OscillatorOptionsGetters {
     #[doc = "Get the `periodicWave` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OscillatorOptions`, `PeriodicWave`*"]
-    fn periodic_wave(&self) -> &PeriodicWave;
+    fn periodic_wave(&self) -> PeriodicWave;
     #[cfg(feature = "OscillatorType")]
     #[doc = "Get the `type` field of this object."]
     #[doc = ""]
@@ -103,7 +103,7 @@ impl OscillatorOptionsGetters for OscillatorOptions {
         self.frequency_shim()
     }
     #[cfg(feature = "PeriodicWave")]
-    fn periodic_wave(&self) -> &PeriodicWave {
+    fn periodic_wave(&self) -> PeriodicWave {
         self.periodic_wave_shim()
     }
     #[cfg(feature = "OscillatorType")]

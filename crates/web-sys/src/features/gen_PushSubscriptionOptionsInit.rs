@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionOptionsInit`*"]
     pub type PushSubscriptionOptionsInit;
     #[wasm_bindgen(method, getter = "applicationServerKey")]
-    fn application_server_key_shim(this: &PushSubscriptionOptionsInit) -> &::wasm_bindgen::JsValue;
+    fn application_server_key_shim(this: &PushSubscriptionOptionsInit) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "applicationServerKey")]
     fn set_application_server_key_shim(
         this: &PushSubscriptionOptionsInit,
@@ -29,14 +29,14 @@ pub trait PushSubscriptionOptionsInitGetters {
     #[doc = "Get the `applicationServerKey` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionOptionsInit`*"]
-    fn application_server_key(&self) -> Option<&::wasm_bindgen::JsValue>;
+    fn application_server_key(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `userVisibleOnly` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionOptionsInit`*"]
     fn user_visible_only(&self) -> bool;
 }
 impl PushSubscriptionOptionsInitGetters for PushSubscriptionOptionsInit {
-    fn application_server_key(&self) -> Option<&::wasm_bindgen::JsValue> {
+    fn application_server_key(&self) -> ::wasm_bindgen::JsValue {
         self.application_server_key_shim()
     }
     fn user_visible_only(&self) -> bool {

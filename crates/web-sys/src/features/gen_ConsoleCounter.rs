@@ -15,7 +15,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "count")]
     fn set_count_shim(this: &ConsoleCounter, val: u32);
     #[wasm_bindgen(method, getter = "label")]
-    fn label_shim(this: &ConsoleCounter) -> &str;
+    fn label_shim(this: &ConsoleCounter) -> String;
     #[wasm_bindgen(method, setter = "label")]
     fn set_label_shim(this: &ConsoleCounter, val: &str);
 }
@@ -30,13 +30,13 @@ pub trait ConsoleCounterGetters {
     #[doc = "Get the `label` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleCounter`*"]
-    fn label(&self) -> &str;
+    fn label(&self) -> String;
 }
 impl ConsoleCounterGetters for ConsoleCounter {
     fn count(&self) -> u32 {
         self.count_shim()
     }
-    fn label(&self) -> &str {
+    fn label(&self) -> String {
         self.label_shim()
     }
 }

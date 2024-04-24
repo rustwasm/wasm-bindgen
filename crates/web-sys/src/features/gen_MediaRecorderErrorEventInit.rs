@@ -24,7 +24,7 @@ extern "C" {
     fn set_composed_shim(this: &MediaRecorderErrorEventInit, val: bool);
     #[cfg(feature = "DomException")]
     #[wasm_bindgen(method, getter = "error")]
-    fn error_shim(this: &MediaRecorderErrorEventInit) -> &DomException;
+    fn error_shim(this: &MediaRecorderErrorEventInit) -> DomException;
     #[cfg(feature = "DomException")]
     #[wasm_bindgen(method, setter = "error")]
     fn set_error_shim(this: &MediaRecorderErrorEventInit, val: &DomException);
@@ -49,7 +49,7 @@ pub trait MediaRecorderErrorEventInitGetters {
     #[doc = "Get the `error` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomException`, `MediaRecorderErrorEventInit`*"]
-    fn error(&self) -> &DomException;
+    fn error(&self) -> DomException;
 }
 impl MediaRecorderErrorEventInitGetters for MediaRecorderErrorEventInit {
     fn bubbles(&self) -> bool {
@@ -62,7 +62,7 @@ impl MediaRecorderErrorEventInitGetters for MediaRecorderErrorEventInit {
         self.composed_shim()
     }
     #[cfg(feature = "DomException")]
-    fn error(&self) -> &DomException {
+    fn error(&self) -> DomException {
         self.error_shim()
     }
 }

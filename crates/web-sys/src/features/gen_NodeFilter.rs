@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `NodeFilter`*"]
     pub type NodeFilter;
     #[wasm_bindgen(method, getter = "acceptNode")]
-    fn accept_node_shim(this: &NodeFilter) -> &::js_sys::Function;
+    fn accept_node_shim(this: &NodeFilter) -> ::js_sys::Function;
     #[wasm_bindgen(method, setter = "acceptNode")]
     fn set_accept_node_shim(this: &NodeFilter, val: &::js_sys::Function);
 }
@@ -22,10 +22,10 @@ pub trait NodeFilterGetters {
     #[doc = "Get the `acceptNode` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NodeFilter`*"]
-    fn accept_node(&self) -> &::js_sys::Function;
+    fn accept_node(&self) -> ::js_sys::Function;
 }
 impl NodeFilterGetters for NodeFilter {
-    fn accept_node(&self) -> &::js_sys::Function {
+    fn accept_node(&self) -> ::js_sys::Function {
         self.accept_node_shim()
     }
 }

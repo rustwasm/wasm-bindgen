@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `TreeCellInfo`*"]
     pub type TreeCellInfo;
     #[wasm_bindgen(method, getter = "childElt")]
-    fn child_elt_shim(this: &TreeCellInfo) -> &str;
+    fn child_elt_shim(this: &TreeCellInfo) -> String;
     #[wasm_bindgen(method, setter = "childElt")]
     fn set_child_elt_shim(this: &TreeCellInfo, val: &str);
     #[wasm_bindgen(method, getter = "row")]
@@ -26,14 +26,14 @@ pub trait TreeCellInfoGetters {
     #[doc = "Get the `childElt` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TreeCellInfo`*"]
-    fn child_elt(&self) -> &str;
+    fn child_elt(&self) -> String;
     #[doc = "Get the `row` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TreeCellInfo`*"]
     fn row(&self) -> i32;
 }
 impl TreeCellInfoGetters for TreeCellInfo {
-    fn child_elt(&self) -> &str {
+    fn child_elt(&self) -> String {
         self.child_elt_shim()
     }
     fn row(&self) -> i32 {

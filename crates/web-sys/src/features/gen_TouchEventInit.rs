@@ -28,7 +28,7 @@ extern "C" {
     fn set_detail_shim(this: &TouchEventInit, val: i32);
     #[cfg(feature = "Window")]
     #[wasm_bindgen(method, getter = "view")]
-    fn view_shim(this: &TouchEventInit) -> Option<&Window>;
+    fn view_shim(this: &TouchEventInit) -> Option<Window>;
     #[cfg(feature = "Window")]
     #[wasm_bindgen(method, setter = "view")]
     fn set_view_shim(this: &TouchEventInit, val: Option<&Window>);
@@ -85,15 +85,15 @@ extern "C" {
     #[wasm_bindgen(method, setter = "shiftKey")]
     fn set_shift_key_shim(this: &TouchEventInit, val: bool);
     #[wasm_bindgen(method, getter = "changedTouches")]
-    fn changed_touches_shim(this: &TouchEventInit) -> &::wasm_bindgen::JsValue;
+    fn changed_touches_shim(this: &TouchEventInit) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "changedTouches")]
     fn set_changed_touches_shim(this: &TouchEventInit, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "targetTouches")]
-    fn target_touches_shim(this: &TouchEventInit) -> &::wasm_bindgen::JsValue;
+    fn target_touches_shim(this: &TouchEventInit) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "targetTouches")]
     fn set_target_touches_shim(this: &TouchEventInit, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "touches")]
-    fn touches_shim(this: &TouchEventInit) -> &::wasm_bindgen::JsValue;
+    fn touches_shim(this: &TouchEventInit) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "touches")]
     fn set_touches_shim(this: &TouchEventInit, val: &::wasm_bindgen::JsValue);
 }
@@ -121,7 +121,7 @@ pub trait TouchEventInitGetters {
     #[doc = "Get the `view` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TouchEventInit`, `Window`*"]
-    fn view(&self) -> Option<&Window>;
+    fn view(&self) -> Option<Window>;
     #[doc = "Get the `altKey` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TouchEventInit`*"]
@@ -177,15 +177,15 @@ pub trait TouchEventInitGetters {
     #[doc = "Get the `changedTouches` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TouchEventInit`*"]
-    fn changed_touches(&self) -> &::wasm_bindgen::JsValue;
+    fn changed_touches(&self) -> ::js_sys::Array;
     #[doc = "Get the `targetTouches` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TouchEventInit`*"]
-    fn target_touches(&self) -> &::wasm_bindgen::JsValue;
+    fn target_touches(&self) -> ::js_sys::Array;
     #[doc = "Get the `touches` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TouchEventInit`*"]
-    fn touches(&self) -> &::wasm_bindgen::JsValue;
+    fn touches(&self) -> ::js_sys::Array;
 }
 impl TouchEventInitGetters for TouchEventInit {
     fn bubbles(&self) -> bool {
@@ -201,7 +201,7 @@ impl TouchEventInitGetters for TouchEventInit {
         self.detail_shim()
     }
     #[cfg(feature = "Window")]
-    fn view(&self) -> Option<&Window> {
+    fn view(&self) -> Option<Window> {
         self.view_shim()
     }
     fn alt_key(&self) -> bool {
@@ -243,13 +243,13 @@ impl TouchEventInitGetters for TouchEventInit {
     fn shift_key(&self) -> bool {
         self.shift_key_shim()
     }
-    fn changed_touches(&self) -> &::wasm_bindgen::JsValue {
+    fn changed_touches(&self) -> ::js_sys::Array {
         self.changed_touches_shim()
     }
-    fn target_touches(&self) -> &::wasm_bindgen::JsValue {
+    fn target_touches(&self) -> ::js_sys::Array {
         self.target_touches_shim()
     }
-    fn touches(&self) -> &::wasm_bindgen::JsValue {
+    fn touches(&self) -> ::js_sys::Array {
         self.touches_shim()
     }
 }

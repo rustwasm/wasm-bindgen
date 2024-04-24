@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidatePairStats`*"]
     pub type RtcIceCandidatePairStats;
     #[wasm_bindgen(method, getter = "id")]
-    fn id_shim(this: &RtcIceCandidatePairStats) -> &str;
+    fn id_shim(this: &RtcIceCandidatePairStats) -> String;
     #[wasm_bindgen(method, setter = "id")]
     fn set_id_shim(this: &RtcIceCandidatePairStats, val: &str);
     #[wasm_bindgen(method, getter = "timestamp")]
@@ -45,7 +45,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "lastPacketSentTimestamp")]
     fn set_last_packet_sent_timestamp_shim(this: &RtcIceCandidatePairStats, val: f64);
     #[wasm_bindgen(method, getter = "localCandidateId")]
-    fn local_candidate_id_shim(this: &RtcIceCandidatePairStats) -> &str;
+    fn local_candidate_id_shim(this: &RtcIceCandidatePairStats) -> String;
     #[wasm_bindgen(method, setter = "localCandidateId")]
     fn set_local_candidate_id_shim(this: &RtcIceCandidatePairStats, val: &str);
     #[wasm_bindgen(method, getter = "nominated")]
@@ -61,7 +61,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "readable")]
     fn set_readable_shim(this: &RtcIceCandidatePairStats, val: bool);
     #[wasm_bindgen(method, getter = "remoteCandidateId")]
-    fn remote_candidate_id_shim(this: &RtcIceCandidatePairStats) -> &str;
+    fn remote_candidate_id_shim(this: &RtcIceCandidatePairStats) -> String;
     #[wasm_bindgen(method, setter = "remoteCandidateId")]
     fn set_remote_candidate_id_shim(this: &RtcIceCandidatePairStats, val: &str);
     #[wasm_bindgen(method, getter = "selected")]
@@ -75,7 +75,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "state")]
     fn set_state_shim(this: &RtcIceCandidatePairStats, val: RtcStatsIceCandidatePairState);
     #[wasm_bindgen(method, getter = "transportId")]
-    fn transport_id_shim(this: &RtcIceCandidatePairStats) -> &str;
+    fn transport_id_shim(this: &RtcIceCandidatePairStats) -> String;
     #[wasm_bindgen(method, setter = "transportId")]
     fn set_transport_id_shim(this: &RtcIceCandidatePairStats, val: &str);
     #[wasm_bindgen(method, getter = "writable")]
@@ -90,7 +90,7 @@ pub trait RtcIceCandidatePairStatsGetters {
     #[doc = "Get the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidatePairStats`*"]
-    fn id(&self) -> &str;
+    fn id(&self) -> String;
     #[doc = "Get the `timestamp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidatePairStats`*"]
@@ -123,7 +123,7 @@ pub trait RtcIceCandidatePairStatsGetters {
     #[doc = "Get the `localCandidateId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidatePairStats`*"]
-    fn local_candidate_id(&self) -> &str;
+    fn local_candidate_id(&self) -> String;
     #[doc = "Get the `nominated` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidatePairStats`*"]
@@ -139,7 +139,7 @@ pub trait RtcIceCandidatePairStatsGetters {
     #[doc = "Get the `remoteCandidateId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidatePairStats`*"]
-    fn remote_candidate_id(&self) -> &str;
+    fn remote_candidate_id(&self) -> String;
     #[doc = "Get the `selected` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidatePairStats`*"]
@@ -152,14 +152,14 @@ pub trait RtcIceCandidatePairStatsGetters {
     #[doc = "Get the `transportId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidatePairStats`*"]
-    fn transport_id(&self) -> &str;
+    fn transport_id(&self) -> String;
     #[doc = "Get the `writable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidatePairStats`*"]
     fn writable(&self) -> bool;
 }
 impl RtcIceCandidatePairStatsGetters for RtcIceCandidatePairStats {
-    fn id(&self) -> &str {
+    fn id(&self) -> String {
         self.id_shim()
     }
     fn timestamp(&self) -> f64 {
@@ -184,7 +184,7 @@ impl RtcIceCandidatePairStatsGetters for RtcIceCandidatePairStats {
     fn last_packet_sent_timestamp(&self) -> f64 {
         self.last_packet_sent_timestamp_shim()
     }
-    fn local_candidate_id(&self) -> &str {
+    fn local_candidate_id(&self) -> String {
         self.local_candidate_id_shim()
     }
     fn nominated(&self) -> bool {
@@ -196,7 +196,7 @@ impl RtcIceCandidatePairStatsGetters for RtcIceCandidatePairStats {
     fn readable(&self) -> bool {
         self.readable_shim()
     }
-    fn remote_candidate_id(&self) -> &str {
+    fn remote_candidate_id(&self) -> String {
         self.remote_candidate_id_shim()
     }
     fn selected(&self) -> bool {
@@ -206,7 +206,7 @@ impl RtcIceCandidatePairStatsGetters for RtcIceCandidatePairStats {
     fn state(&self) -> RtcStatsIceCandidatePairState {
         self.state_shim()
     }
-    fn transport_id(&self) -> &str {
+    fn transport_id(&self) -> String {
         self.transport_id_shim()
     }
     fn writable(&self) -> bool {

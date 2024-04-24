@@ -28,7 +28,7 @@ extern "C" {
     fn set_detail_shim(this: &UiEventInit, val: i32);
     #[cfg(feature = "Window")]
     #[wasm_bindgen(method, getter = "view")]
-    fn view_shim(this: &UiEventInit) -> Option<&Window>;
+    fn view_shim(this: &UiEventInit) -> Option<Window>;
     #[cfg(feature = "Window")]
     #[wasm_bindgen(method, setter = "view")]
     fn set_view_shim(this: &UiEventInit, val: Option<&Window>);
@@ -57,7 +57,7 @@ pub trait UiEventInitGetters {
     #[doc = "Get the `view` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UiEventInit`, `Window`*"]
-    fn view(&self) -> Option<&Window>;
+    fn view(&self) -> Option<Window>;
 }
 impl UiEventInitGetters for UiEventInit {
     fn bubbles(&self) -> bool {
@@ -73,7 +73,7 @@ impl UiEventInitGetters for UiEventInit {
         self.detail_shim()
     }
     #[cfg(feature = "Window")]
-    fn view(&self) -> Option<&Window> {
+    fn view(&self) -> Option<Window> {
         self.view_shim()
     }
 }

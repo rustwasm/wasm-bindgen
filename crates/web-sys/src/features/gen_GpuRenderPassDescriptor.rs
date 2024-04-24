@@ -15,18 +15,18 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuRenderPassDescriptor;
     #[wasm_bindgen(method, getter = "label")]
-    fn label_shim(this: &GpuRenderPassDescriptor) -> &str;
+    fn label_shim(this: &GpuRenderPassDescriptor) -> String;
     #[wasm_bindgen(method, setter = "label")]
     fn set_label_shim(this: &GpuRenderPassDescriptor, val: &str);
     #[wasm_bindgen(method, getter = "colorAttachments")]
-    fn color_attachments_shim(this: &GpuRenderPassDescriptor) -> &::wasm_bindgen::JsValue;
+    fn color_attachments_shim(this: &GpuRenderPassDescriptor) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "colorAttachments")]
     fn set_color_attachments_shim(this: &GpuRenderPassDescriptor, val: &::wasm_bindgen::JsValue);
     #[cfg(feature = "GpuRenderPassDepthStencilAttachment")]
     #[wasm_bindgen(method, getter = "depthStencilAttachment")]
     fn depth_stencil_attachment_shim(
         this: &GpuRenderPassDescriptor,
-    ) -> &GpuRenderPassDepthStencilAttachment;
+    ) -> GpuRenderPassDepthStencilAttachment;
     #[cfg(feature = "GpuRenderPassDepthStencilAttachment")]
     #[wasm_bindgen(method, setter = "depthStencilAttachment")]
     fn set_depth_stencil_attachment_shim(
@@ -39,13 +39,13 @@ extern "C" {
     fn set_max_draw_count_shim(this: &GpuRenderPassDescriptor, val: f64);
     #[cfg(feature = "GpuQuerySet")]
     #[wasm_bindgen(method, getter = "occlusionQuerySet")]
-    fn occlusion_query_set_shim(this: &GpuRenderPassDescriptor) -> &GpuQuerySet;
+    fn occlusion_query_set_shim(this: &GpuRenderPassDescriptor) -> GpuQuerySet;
     #[cfg(feature = "GpuQuerySet")]
     #[wasm_bindgen(method, setter = "occlusionQuerySet")]
     fn set_occlusion_query_set_shim(this: &GpuRenderPassDescriptor, val: &GpuQuerySet);
     #[cfg(feature = "GpuRenderPassTimestampWrites")]
     #[wasm_bindgen(method, getter = "timestampWrites")]
-    fn timestamp_writes_shim(this: &GpuRenderPassDescriptor) -> &GpuRenderPassTimestampWrites;
+    fn timestamp_writes_shim(this: &GpuRenderPassDescriptor) -> GpuRenderPassTimestampWrites;
     #[cfg(feature = "GpuRenderPassTimestampWrites")]
     #[wasm_bindgen(method, setter = "timestampWrites")]
     fn set_timestamp_writes_shim(
@@ -65,7 +65,7 @@ pub trait GpuRenderPassDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn label(&self) -> &str;
+    fn label(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `colorAttachments` field of this object."]
     #[doc = ""]
@@ -73,7 +73,7 @@ pub trait GpuRenderPassDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn color_attachments(&self) -> &::wasm_bindgen::JsValue;
+    fn color_attachments(&self) -> ::js_sys::Array;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuRenderPassDepthStencilAttachment")]
     #[doc = "Get the `depthStencilAttachment` field of this object."]
@@ -82,7 +82,7 @@ pub trait GpuRenderPassDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn depth_stencil_attachment(&self) -> &GpuRenderPassDepthStencilAttachment;
+    fn depth_stencil_attachment(&self) -> GpuRenderPassDepthStencilAttachment;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `maxDrawCount` field of this object."]
     #[doc = ""]
@@ -99,7 +99,7 @@ pub trait GpuRenderPassDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn occlusion_query_set(&self) -> &GpuQuerySet;
+    fn occlusion_query_set(&self) -> GpuQuerySet;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuRenderPassTimestampWrites")]
     #[doc = "Get the `timestampWrites` field of this object."]
@@ -108,21 +108,21 @@ pub trait GpuRenderPassDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn timestamp_writes(&self) -> &GpuRenderPassTimestampWrites;
+    fn timestamp_writes(&self) -> GpuRenderPassTimestampWrites;
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuRenderPassDescriptorGetters for GpuRenderPassDescriptor {
     #[cfg(web_sys_unstable_apis)]
-    fn label(&self) -> &str {
+    fn label(&self) -> String {
         self.label_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn color_attachments(&self) -> &::wasm_bindgen::JsValue {
+    fn color_attachments(&self) -> ::js_sys::Array {
         self.color_attachments_shim()
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuRenderPassDepthStencilAttachment")]
-    fn depth_stencil_attachment(&self) -> &GpuRenderPassDepthStencilAttachment {
+    fn depth_stencil_attachment(&self) -> GpuRenderPassDepthStencilAttachment {
         self.depth_stencil_attachment_shim()
     }
     #[cfg(web_sys_unstable_apis)]
@@ -131,12 +131,12 @@ impl GpuRenderPassDescriptorGetters for GpuRenderPassDescriptor {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuQuerySet")]
-    fn occlusion_query_set(&self) -> &GpuQuerySet {
+    fn occlusion_query_set(&self) -> GpuQuerySet {
         self.occlusion_query_set_shim()
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuRenderPassTimestampWrites")]
-    fn timestamp_writes(&self) -> &GpuRenderPassTimestampWrites {
+    fn timestamp_writes(&self) -> GpuRenderPassTimestampWrites {
         self.timestamp_writes_shim()
     }
 }

@@ -11,19 +11,19 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
     pub type RegisteredKey;
     #[wasm_bindgen(method, getter = "appId")]
-    fn app_id_shim(this: &RegisteredKey) -> Option<&str>;
+    fn app_id_shim(this: &RegisteredKey) -> Option<String>;
     #[wasm_bindgen(method, setter = "appId")]
     fn set_app_id_shim(this: &RegisteredKey, val: Option<&str>);
     #[wasm_bindgen(method, getter = "keyHandle")]
-    fn key_handle_shim(this: &RegisteredKey) -> &str;
+    fn key_handle_shim(this: &RegisteredKey) -> String;
     #[wasm_bindgen(method, setter = "keyHandle")]
     fn set_key_handle_shim(this: &RegisteredKey, val: &str);
     #[wasm_bindgen(method, getter = "transports")]
-    fn transports_shim(this: &RegisteredKey) -> &::wasm_bindgen::JsValue;
+    fn transports_shim(this: &RegisteredKey) -> Option<::js_sys::Array>;
     #[wasm_bindgen(method, setter = "transports")]
     fn set_transports_shim(this: &RegisteredKey, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "version")]
-    fn version_shim(this: &RegisteredKey) -> &str;
+    fn version_shim(this: &RegisteredKey) -> String;
     #[wasm_bindgen(method, setter = "version")]
     fn set_version_shim(this: &RegisteredKey, val: &str);
 }
@@ -34,31 +34,31 @@ pub trait RegisteredKeyGetters {
     #[doc = "Get the `appId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
-    fn app_id(&self) -> Option<&str>;
+    fn app_id(&self) -> Option<String>;
     #[doc = "Get the `keyHandle` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
-    fn key_handle(&self) -> &str;
+    fn key_handle(&self) -> String;
     #[doc = "Get the `transports` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
-    fn transports(&self) -> Option<&::wasm_bindgen::JsValue>;
+    fn transports(&self) -> Option<::js_sys::Array>;
     #[doc = "Get the `version` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
-    fn version(&self) -> &str;
+    fn version(&self) -> String;
 }
 impl RegisteredKeyGetters for RegisteredKey {
-    fn app_id(&self) -> Option<&str> {
+    fn app_id(&self) -> Option<String> {
         self.app_id_shim()
     }
-    fn key_handle(&self) -> &str {
+    fn key_handle(&self) -> String {
         self.key_handle_shim()
     }
-    fn transports(&self) -> Option<&::wasm_bindgen::JsValue> {
+    fn transports(&self) -> Option<::js_sys::Array> {
         self.transports_shim()
     }
-    fn version(&self) -> &str {
+    fn version(&self) -> String {
         self.version_shim()
     }
 }

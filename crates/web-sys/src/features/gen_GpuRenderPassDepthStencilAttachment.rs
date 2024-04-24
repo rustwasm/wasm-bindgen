@@ -56,7 +56,7 @@ extern "C" {
     fn set_stencil_store_op_shim(this: &GpuRenderPassDepthStencilAttachment, val: GpuStoreOp);
     #[cfg(feature = "GpuTextureView")]
     #[wasm_bindgen(method, getter = "view")]
-    fn view_shim(this: &GpuRenderPassDepthStencilAttachment) -> &GpuTextureView;
+    fn view_shim(this: &GpuRenderPassDepthStencilAttachment) -> GpuTextureView;
     #[cfg(feature = "GpuTextureView")]
     #[wasm_bindgen(method, setter = "view")]
     fn set_view_shim(this: &GpuRenderPassDepthStencilAttachment, val: &GpuTextureView);
@@ -142,7 +142,7 @@ pub trait GpuRenderPassDepthStencilAttachmentGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn view(&self) -> &GpuTextureView;
+    fn view(&self) -> GpuTextureView;
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuRenderPassDepthStencilAttachmentGetters for GpuRenderPassDepthStencilAttachment {
@@ -184,7 +184,7 @@ impl GpuRenderPassDepthStencilAttachmentGetters for GpuRenderPassDepthStencilAtt
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureView")]
-    fn view(&self) -> &GpuTextureView {
+    fn view(&self) -> GpuTextureView {
         self.view_shim()
     }
 }

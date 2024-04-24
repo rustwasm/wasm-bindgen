@@ -19,7 +19,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "bitrate")]
     fn set_bitrate_shim(this: &AudioEncoderConfig, val: f64);
     #[wasm_bindgen(method, getter = "codec")]
-    fn codec_shim(this: &AudioEncoderConfig) -> &str;
+    fn codec_shim(this: &AudioEncoderConfig) -> String;
     #[wasm_bindgen(method, setter = "codec")]
     fn set_codec_shim(this: &AudioEncoderConfig, val: &str);
     #[wasm_bindgen(method, getter = "numberOfChannels")]
@@ -51,7 +51,7 @@ pub trait AudioEncoderConfigGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn codec(&self) -> &str;
+    fn codec(&self) -> String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `numberOfChannels` field of this object."]
     #[doc = ""]
@@ -76,7 +76,7 @@ impl AudioEncoderConfigGetters for AudioEncoderConfig {
         self.bitrate_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn codec(&self) -> &str {
+    fn codec(&self) -> String {
         self.codec_shim()
     }
     #[cfg(web_sys_unstable_apis)]

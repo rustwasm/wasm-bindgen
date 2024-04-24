@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RequestInit`*"]
     pub type RequestInit;
     #[wasm_bindgen(method, getter = "body")]
-    fn body_shim(this: &RequestInit) -> &::wasm_bindgen::JsValue;
+    fn body_shim(this: &RequestInit) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "body")]
     fn set_body_shim(this: &RequestInit, val: &::wasm_bindgen::JsValue);
     #[cfg(feature = "RequestCache")]
@@ -27,15 +27,15 @@ extern "C" {
     #[wasm_bindgen(method, setter = "credentials")]
     fn set_credentials_shim(this: &RequestInit, val: RequestCredentials);
     #[wasm_bindgen(method, getter = "headers")]
-    fn headers_shim(this: &RequestInit) -> &::wasm_bindgen::JsValue;
+    fn headers_shim(this: &RequestInit) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "headers")]
     fn set_headers_shim(this: &RequestInit, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "integrity")]
-    fn integrity_shim(this: &RequestInit) -> &str;
+    fn integrity_shim(this: &RequestInit) -> String;
     #[wasm_bindgen(method, setter = "integrity")]
     fn set_integrity_shim(this: &RequestInit, val: &str);
     #[wasm_bindgen(method, getter = "method")]
-    fn method_shim(this: &RequestInit) -> &str;
+    fn method_shim(this: &RequestInit) -> String;
     #[wasm_bindgen(method, setter = "method")]
     fn set_method_shim(this: &RequestInit, val: &str);
     #[cfg(feature = "RequestMode")]
@@ -46,7 +46,7 @@ extern "C" {
     fn set_mode_shim(this: &RequestInit, val: RequestMode);
     #[cfg(feature = "ObserverCallback")]
     #[wasm_bindgen(method, getter = "observe")]
-    fn observe_shim(this: &RequestInit) -> &ObserverCallback;
+    fn observe_shim(this: &RequestInit) -> ObserverCallback;
     #[cfg(feature = "ObserverCallback")]
     #[wasm_bindgen(method, setter = "observe")]
     fn set_observe_shim(this: &RequestInit, val: &ObserverCallback);
@@ -57,7 +57,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "redirect")]
     fn set_redirect_shim(this: &RequestInit, val: RequestRedirect);
     #[wasm_bindgen(method, getter = "referrer")]
-    fn referrer_shim(this: &RequestInit) -> &str;
+    fn referrer_shim(this: &RequestInit) -> String;
     #[wasm_bindgen(method, setter = "referrer")]
     fn set_referrer_shim(this: &RequestInit, val: &str);
     #[cfg(feature = "ReferrerPolicy")]
@@ -68,7 +68,7 @@ extern "C" {
     fn set_referrer_policy_shim(this: &RequestInit, val: ReferrerPolicy);
     #[cfg(feature = "AbortSignal")]
     #[wasm_bindgen(method, getter = "signal")]
-    fn signal_shim(this: &RequestInit) -> Option<&AbortSignal>;
+    fn signal_shim(this: &RequestInit) -> Option<AbortSignal>;
     #[cfg(feature = "AbortSignal")]
     #[wasm_bindgen(method, setter = "signal")]
     fn set_signal_shim(this: &RequestInit, val: Option<&AbortSignal>);
@@ -80,7 +80,7 @@ pub trait RequestInitGetters {
     #[doc = "Get the `body` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RequestInit`*"]
-    fn body(&self) -> Option<&::wasm_bindgen::JsValue>;
+    fn body(&self) -> ::wasm_bindgen::JsValue;
     #[cfg(feature = "RequestCache")]
     #[doc = "Get the `cache` field of this object."]
     #[doc = ""]
@@ -94,15 +94,15 @@ pub trait RequestInitGetters {
     #[doc = "Get the `headers` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RequestInit`*"]
-    fn headers(&self) -> &::wasm_bindgen::JsValue;
+    fn headers(&self) -> ::wasm_bindgen::JsValue;
     #[doc = "Get the `integrity` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RequestInit`*"]
-    fn integrity(&self) -> &str;
+    fn integrity(&self) -> String;
     #[doc = "Get the `method` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RequestInit`*"]
-    fn method(&self) -> &str;
+    fn method(&self) -> String;
     #[cfg(feature = "RequestMode")]
     #[doc = "Get the `mode` field of this object."]
     #[doc = ""]
@@ -112,7 +112,7 @@ pub trait RequestInitGetters {
     #[doc = "Get the `observe` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ObserverCallback`, `RequestInit`*"]
-    fn observe(&self) -> &ObserverCallback;
+    fn observe(&self) -> ObserverCallback;
     #[cfg(feature = "RequestRedirect")]
     #[doc = "Get the `redirect` field of this object."]
     #[doc = ""]
@@ -121,7 +121,7 @@ pub trait RequestInitGetters {
     #[doc = "Get the `referrer` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RequestInit`*"]
-    fn referrer(&self) -> &str;
+    fn referrer(&self) -> String;
     #[cfg(feature = "ReferrerPolicy")]
     #[doc = "Get the `referrerPolicy` field of this object."]
     #[doc = ""]
@@ -131,10 +131,10 @@ pub trait RequestInitGetters {
     #[doc = "Get the `signal` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AbortSignal`, `RequestInit`*"]
-    fn signal(&self) -> Option<&AbortSignal>;
+    fn signal(&self) -> Option<AbortSignal>;
 }
 impl RequestInitGetters for RequestInit {
-    fn body(&self) -> Option<&::wasm_bindgen::JsValue> {
+    fn body(&self) -> ::wasm_bindgen::JsValue {
         self.body_shim()
     }
     #[cfg(feature = "RequestCache")]
@@ -145,13 +145,13 @@ impl RequestInitGetters for RequestInit {
     fn credentials(&self) -> RequestCredentials {
         self.credentials_shim()
     }
-    fn headers(&self) -> &::wasm_bindgen::JsValue {
+    fn headers(&self) -> ::wasm_bindgen::JsValue {
         self.headers_shim()
     }
-    fn integrity(&self) -> &str {
+    fn integrity(&self) -> String {
         self.integrity_shim()
     }
-    fn method(&self) -> &str {
+    fn method(&self) -> String {
         self.method_shim()
     }
     #[cfg(feature = "RequestMode")]
@@ -159,14 +159,14 @@ impl RequestInitGetters for RequestInit {
         self.mode_shim()
     }
     #[cfg(feature = "ObserverCallback")]
-    fn observe(&self) -> &ObserverCallback {
+    fn observe(&self) -> ObserverCallback {
         self.observe_shim()
     }
     #[cfg(feature = "RequestRedirect")]
     fn redirect(&self) -> RequestRedirect {
         self.redirect_shim()
     }
-    fn referrer(&self) -> &str {
+    fn referrer(&self) -> String {
         self.referrer_shim()
     }
     #[cfg(feature = "ReferrerPolicy")]
@@ -174,7 +174,7 @@ impl RequestInitGetters for RequestInit {
         self.referrer_policy_shim()
     }
     #[cfg(feature = "AbortSignal")]
-    fn signal(&self) -> Option<&AbortSignal> {
+    fn signal(&self) -> Option<AbortSignal> {
         self.signal_shim()
     }
 }

@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `HttpConnDict`*"]
     pub type HttpConnDict;
     #[wasm_bindgen(method, getter = "connections")]
-    fn connections_shim(this: &HttpConnDict) -> &::wasm_bindgen::JsValue;
+    fn connections_shim(this: &HttpConnDict) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "connections")]
     fn set_connections_shim(this: &HttpConnDict, val: &::wasm_bindgen::JsValue);
 }
@@ -22,10 +22,10 @@ pub trait HttpConnDictGetters {
     #[doc = "Get the `connections` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HttpConnDict`*"]
-    fn connections(&self) -> &::wasm_bindgen::JsValue;
+    fn connections(&self) -> ::js_sys::Array;
 }
 impl HttpConnDictGetters for HttpConnDict {
-    fn connections(&self) -> &::wasm_bindgen::JsValue {
+    fn connections(&self) -> ::js_sys::Array {
         self.connections_shim()
     }
 }

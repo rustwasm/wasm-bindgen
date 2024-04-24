@@ -27,11 +27,11 @@ extern "C" {
     #[wasm_bindgen(method, setter = "mode")]
     fn set_mode_shim(this: &XrPermissionDescriptor, val: XrSessionMode);
     #[wasm_bindgen(method, getter = "optionalFeatures")]
-    fn optional_features_shim(this: &XrPermissionDescriptor) -> &::wasm_bindgen::JsValue;
+    fn optional_features_shim(this: &XrPermissionDescriptor) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "optionalFeatures")]
     fn set_optional_features_shim(this: &XrPermissionDescriptor, val: &::wasm_bindgen::JsValue);
     #[wasm_bindgen(method, getter = "requiredFeatures")]
-    fn required_features_shim(this: &XrPermissionDescriptor) -> &::wasm_bindgen::JsValue;
+    fn required_features_shim(this: &XrPermissionDescriptor) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "requiredFeatures")]
     fn set_required_features_shim(this: &XrPermissionDescriptor, val: &::wasm_bindgen::JsValue);
 }
@@ -65,7 +65,7 @@ pub trait XrPermissionDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn optional_features(&self) -> &::wasm_bindgen::JsValue;
+    fn optional_features(&self) -> ::js_sys::Array;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `requiredFeatures` field of this object."]
     #[doc = ""]
@@ -73,7 +73,7 @@ pub trait XrPermissionDescriptorGetters {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    fn required_features(&self) -> &::wasm_bindgen::JsValue;
+    fn required_features(&self) -> ::js_sys::Array;
 }
 #[cfg(web_sys_unstable_apis)]
 impl XrPermissionDescriptorGetters for XrPermissionDescriptor {
@@ -88,11 +88,11 @@ impl XrPermissionDescriptorGetters for XrPermissionDescriptor {
         self.mode_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn optional_features(&self) -> &::wasm_bindgen::JsValue {
+    fn optional_features(&self) -> ::js_sys::Array {
         self.optional_features_shim()
     }
     #[cfg(web_sys_unstable_apis)]
-    fn required_features(&self) -> &::wasm_bindgen::JsValue {
+    fn required_features(&self) -> ::js_sys::Array {
         self.required_features_shim()
     }
 }

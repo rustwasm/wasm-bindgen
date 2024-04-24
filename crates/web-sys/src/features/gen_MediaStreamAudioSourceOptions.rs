@@ -12,7 +12,7 @@ extern "C" {
     pub type MediaStreamAudioSourceOptions;
     #[cfg(feature = "MediaStream")]
     #[wasm_bindgen(method, getter = "mediaStream")]
-    fn media_stream_shim(this: &MediaStreamAudioSourceOptions) -> &MediaStream;
+    fn media_stream_shim(this: &MediaStreamAudioSourceOptions) -> MediaStream;
     #[cfg(feature = "MediaStream")]
     #[wasm_bindgen(method, setter = "mediaStream")]
     fn set_media_stream_shim(this: &MediaStreamAudioSourceOptions, val: &MediaStream);
@@ -25,11 +25,11 @@ pub trait MediaStreamAudioSourceOptionsGetters {
     #[doc = "Get the `mediaStream` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStream`, `MediaStreamAudioSourceOptions`*"]
-    fn media_stream(&self) -> &MediaStream;
+    fn media_stream(&self) -> MediaStream;
 }
 impl MediaStreamAudioSourceOptionsGetters for MediaStreamAudioSourceOptions {
     #[cfg(feature = "MediaStream")]
-    fn media_stream(&self) -> &MediaStream {
+    fn media_stream(&self) -> MediaStream {
         self.media_stream_shim()
     }
 }

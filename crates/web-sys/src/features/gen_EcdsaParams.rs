@@ -11,11 +11,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `EcdsaParams`*"]
     pub type EcdsaParams;
     #[wasm_bindgen(method, getter = "name")]
-    fn name_shim(this: &EcdsaParams) -> &str;
+    fn name_shim(this: &EcdsaParams) -> String;
     #[wasm_bindgen(method, setter = "name")]
     fn set_name_shim(this: &EcdsaParams, val: &str);
     #[wasm_bindgen(method, getter = "hash")]
-    fn hash_shim(this: &EcdsaParams) -> &::wasm_bindgen::JsValue;
+    fn hash_shim(this: &EcdsaParams) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "hash")]
     fn set_hash_shim(this: &EcdsaParams, val: &::wasm_bindgen::JsValue);
 }
@@ -26,17 +26,17 @@ pub trait EcdsaParamsGetters {
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcdsaParams`*"]
-    fn name(&self) -> &str;
+    fn name(&self) -> String;
     #[doc = "Get the `hash` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcdsaParams`*"]
-    fn hash(&self) -> &::wasm_bindgen::JsValue;
+    fn hash(&self) -> ::wasm_bindgen::JsValue;
 }
 impl EcdsaParamsGetters for EcdsaParams {
-    fn name(&self) -> &str {
+    fn name(&self) -> String {
         self.name_shim()
     }
-    fn hash(&self) -> &::wasm_bindgen::JsValue {
+    fn hash(&self) -> ::wasm_bindgen::JsValue {
         self.hash_shim()
     }
 }

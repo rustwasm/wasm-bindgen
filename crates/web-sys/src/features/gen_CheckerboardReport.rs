@@ -11,7 +11,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `CheckerboardReport`*"]
     pub type CheckerboardReport;
     #[wasm_bindgen(method, getter = "log")]
-    fn log_shim(this: &CheckerboardReport) -> &str;
+    fn log_shim(this: &CheckerboardReport) -> String;
     #[wasm_bindgen(method, setter = "log")]
     fn set_log_shim(this: &CheckerboardReport, val: &str);
     #[cfg(feature = "CheckerboardReason")]
@@ -36,7 +36,7 @@ pub trait CheckerboardReportGetters {
     #[doc = "Get the `log` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CheckerboardReport`*"]
-    fn log(&self) -> &str;
+    fn log(&self) -> String;
     #[cfg(feature = "CheckerboardReason")]
     #[doc = "Get the `reason` field of this object."]
     #[doc = ""]
@@ -52,7 +52,7 @@ pub trait CheckerboardReportGetters {
     fn timestamp(&self) -> f64;
 }
 impl CheckerboardReportGetters for CheckerboardReport {
-    fn log(&self) -> &str {
+    fn log(&self) -> String {
         self.log_shim()
     }
     #[cfg(feature = "CheckerboardReason")]

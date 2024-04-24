@@ -24,7 +24,7 @@ extern "C" {
     fn set_composed_shim(this: &RtcDataChannelEventInit, val: bool);
     #[cfg(feature = "RtcDataChannel")]
     #[wasm_bindgen(method, getter = "channel")]
-    fn channel_shim(this: &RtcDataChannelEventInit) -> &RtcDataChannel;
+    fn channel_shim(this: &RtcDataChannelEventInit) -> RtcDataChannel;
     #[cfg(feature = "RtcDataChannel")]
     #[wasm_bindgen(method, setter = "channel")]
     fn set_channel_shim(this: &RtcDataChannelEventInit, val: &RtcDataChannel);
@@ -49,7 +49,7 @@ pub trait RtcDataChannelEventInitGetters {
     #[doc = "Get the `channel` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcDataChannel`, `RtcDataChannelEventInit`*"]
-    fn channel(&self) -> &RtcDataChannel;
+    fn channel(&self) -> RtcDataChannel;
 }
 impl RtcDataChannelEventInitGetters for RtcDataChannelEventInit {
     fn bubbles(&self) -> bool {
@@ -62,7 +62,7 @@ impl RtcDataChannelEventInitGetters for RtcDataChannelEventInit {
         self.composed_shim()
     }
     #[cfg(feature = "RtcDataChannel")]
-    fn channel(&self) -> &RtcDataChannel {
+    fn channel(&self) -> RtcDataChannel {
         self.channel_shim()
     }
 }

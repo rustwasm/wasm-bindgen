@@ -12,7 +12,7 @@ extern "C" {
     pub type CredentialCreationOptions;
     #[cfg(feature = "PublicKeyCredentialCreationOptions")]
     #[wasm_bindgen(method, getter = "publicKey")]
-    fn public_key_shim(this: &CredentialCreationOptions) -> &PublicKeyCredentialCreationOptions;
+    fn public_key_shim(this: &CredentialCreationOptions) -> PublicKeyCredentialCreationOptions;
     #[cfg(feature = "PublicKeyCredentialCreationOptions")]
     #[wasm_bindgen(method, setter = "publicKey")]
     fn set_public_key_shim(
@@ -21,7 +21,7 @@ extern "C" {
     );
     #[cfg(feature = "AbortSignal")]
     #[wasm_bindgen(method, getter = "signal")]
-    fn signal_shim(this: &CredentialCreationOptions) -> &AbortSignal;
+    fn signal_shim(this: &CredentialCreationOptions) -> AbortSignal;
     #[cfg(feature = "AbortSignal")]
     #[wasm_bindgen(method, setter = "signal")]
     fn set_signal_shim(this: &CredentialCreationOptions, val: &AbortSignal);
@@ -34,20 +34,20 @@ pub trait CredentialCreationOptionsGetters {
     #[doc = "Get the `publicKey` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CredentialCreationOptions`, `PublicKeyCredentialCreationOptions`*"]
-    fn public_key(&self) -> &PublicKeyCredentialCreationOptions;
+    fn public_key(&self) -> PublicKeyCredentialCreationOptions;
     #[cfg(feature = "AbortSignal")]
     #[doc = "Get the `signal` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AbortSignal`, `CredentialCreationOptions`*"]
-    fn signal(&self) -> &AbortSignal;
+    fn signal(&self) -> AbortSignal;
 }
 impl CredentialCreationOptionsGetters for CredentialCreationOptions {
     #[cfg(feature = "PublicKeyCredentialCreationOptions")]
-    fn public_key(&self) -> &PublicKeyCredentialCreationOptions {
+    fn public_key(&self) -> PublicKeyCredentialCreationOptions {
         self.public_key_shim()
     }
     #[cfg(feature = "AbortSignal")]
-    fn signal(&self) -> &AbortSignal {
+    fn signal(&self) -> AbortSignal {
         self.signal_shim()
     }
 }

@@ -17,7 +17,7 @@ extern "C" {
     #[wasm_bindgen(method, setter = "composite")]
     fn set_composite_shim(this: &BaseKeyframe, val: Option<CompositeOperation>);
     #[wasm_bindgen(method, getter = "easing")]
-    fn easing_shim(this: &BaseKeyframe) -> &str;
+    fn easing_shim(this: &BaseKeyframe) -> String;
     #[wasm_bindgen(method, setter = "easing")]
     fn set_easing_shim(this: &BaseKeyframe, val: &str);
     #[wasm_bindgen(method, getter = "offset")]
@@ -41,7 +41,7 @@ pub trait BaseKeyframeGetters {
     #[doc = "Get the `easing` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseKeyframe`*"]
-    fn easing(&self) -> &str;
+    fn easing(&self) -> String;
     #[doc = "Get the `offset` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BaseKeyframe`*"]
@@ -56,7 +56,7 @@ impl BaseKeyframeGetters for BaseKeyframe {
     fn composite(&self) -> Option<CompositeOperation> {
         self.composite_shim()
     }
-    fn easing(&self) -> &str {
+    fn easing(&self) -> String {
         self.easing_shim()
     }
     fn offset(&self) -> Option<f64> {
