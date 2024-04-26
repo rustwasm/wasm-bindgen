@@ -37,5 +37,5 @@ interface EventTarget {
                            EventListener listener,
                            optional (EventListenerOptions or boolean) options);
   [Throws, NeedsCallerType]
-  boolean dispatchEvent(Event event);
+  boolean dispatchEvent((Event or CustomEvent) event);
 };

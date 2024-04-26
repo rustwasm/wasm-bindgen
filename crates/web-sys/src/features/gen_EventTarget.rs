@@ -155,7 +155,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Event`, `EventTarget`*"]
-    pub fn dispatch_event(this: &EventTarget, event: &Event) -> Result<bool, JsValue>;
+    pub fn dispatch_event_with_event(this: &EventTarget, event: &Event) -> Result<bool, JsValue>;
     #[cfg(feature = "CustomEvent")]
     # [wasm_bindgen (catch , method , structural , js_class = "EventTarget" , js_name = dispatchEvent)]
     #[doc = "The `dispatchEvent()` method."]
@@ -163,7 +163,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/dispatchEvent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CustomEvent`, `EventTarget`*"]
-    pub fn dispatch_custom_event(this: &EventTarget, event: &CustomEvent) -> Result<bool, JsValue>;
+    pub fn dispatch_event_with_custom_event(
+        this: &EventTarget,
+        event: &CustomEvent,
+    ) -> Result<bool, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "EventTarget" , js_name = removeEventListener)]
     #[doc = "The `removeEventListener()` method."]
     #[doc = ""]
