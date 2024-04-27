@@ -117,7 +117,7 @@ pub fn execute(
 #[cfg(unix)]
 pub fn exec(cmd: &mut Command) -> Result<(), Error> {
     use std::os::unix::prelude::*;
-    Err(Error::from(cmd.exec()).context("failed to execute `node`"))
+    Err(Error::from(cmd.exec()).context(format!("failed to execute `{}`", cmd.get_program().to_string_lossy())))
 }
 
 #[cfg(windows)]
