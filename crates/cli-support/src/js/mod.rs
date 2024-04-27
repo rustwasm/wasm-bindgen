@@ -345,7 +345,8 @@ impl<'a> Context<'a> {
             }}
 
             const wasmInstance = (await WebAssembly.instantiate(wasmCode, imports)).instance;
-            const wasm = wasmInstance.exports;",
+            const wasm = wasmInstance.exports;
+            export const __wasm = wasm;",
             module_name = module_name
         )
     }
