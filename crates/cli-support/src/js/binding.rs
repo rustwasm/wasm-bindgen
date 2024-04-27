@@ -1039,7 +1039,12 @@ fn instruction(
             let val = js.pop();
             match constructor {
                 Some(name) if name == class => {
-                    js.prelude(&format!("this.__wbg_ptr = {} >>> 0;", val));
+                    js.prelude(&format!(
+                        "
+                        this.__wbg_ptr = {val} >>> 0;
+                        {name}Finalization.register(this, this.__wbg_ptr, this);
+                        "
+                    ));
                     js.push(String::from("this"));
                 }
                 Some(_) | None => {
