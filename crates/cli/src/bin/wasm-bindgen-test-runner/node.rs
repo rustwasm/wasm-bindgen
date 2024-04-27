@@ -30,7 +30,7 @@ wrap("info");
 wrap("warn");
 wrap("error");
 
-cx = new wasm.WasmBindgenTestContext();
+const cx = new wasm.WasmBindgenTestContext();
 handlers.on_console_debug = wasm.__wbgtest_console_debug;
 handlers.on_console_log = wasm.__wbgtest_console_log;
 handlers.on_console_info = wasm.__wbgtest_console_info;
