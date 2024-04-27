@@ -29,6 +29,7 @@ pub mod enums;
 #[path = "final.rs"]
 pub mod final_;
 pub mod futures;
+pub mod gc;
 pub mod getters_and_setters;
 pub mod import_class;
 pub mod imports;
@@ -43,7 +44,6 @@ pub mod no_shims;
 pub mod node;
 pub mod option;
 pub mod optional_primitives;
-pub mod owned;
 pub mod result;
 pub mod result_jserror;
 pub mod rethrow;
