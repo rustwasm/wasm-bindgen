@@ -1,4 +1,6 @@
+use js_sys::Promise;
 use wasm_bindgen::prelude::*;
+use wasm_bindgen_futures::JsFuture;
 use wasm_bindgen_test::*;
 
 #[wasm_bindgen(module = "tests/wasm/gc.js")]
@@ -8,6 +10,8 @@ extern "C" {
     async fn owned_methods();
     async fn gc_builder();
     async fn gc_constructor();
+    async fn no_gc_fn_argument();
+    async fn no_gc_method_receiver();
 }
 
 #[wasm_bindgen]
@@ -36,6 +40,10 @@ impl OwnedValue {
     pub fn n(self) -> f64 {
         self.n
     }
+
+    pub async fn borrow_and_wait(&self, promise: Promise) {
+        JsFuture::from(promise).await;
+    }
 }
 
 impl Drop for OwnedValue {
@@ -44,9 +52,16 @@ impl Drop for OwnedValue {
     }
 }
 
+#[wasm_bindgen]
+pub async fn borrow_and_wait(_: &OwnedValue, promise: Promise) {
+    JsFuture::from(promise).await;
+}
+
 #[wasm_bindgen_test]
 async fn test_all() {
     owned_methods().await;
     gc_builder().await;
     gc_constructor().await;
+    no_gc_fn_argument().await;
+    no_gc_method_receiver().await;
 }

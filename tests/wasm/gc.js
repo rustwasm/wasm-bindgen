@@ -49,3 +49,43 @@ exports.gc_constructor = async () => {
   await gc();
   assert.strictEqual(dropCount, 100);
 };
+
+// Make sure that exported Rust types don't get GC'd while they're still in use
+// by an async function.
+exports.no_gc_fn_argument = async () => {
+  dropCount = 0;
+  let resolve;
+
+  // It seems like we have to create the `OwnedValue` inside another function in
+  // order for the GC to see it as unused.
+  const createPromise = () => wasm.borrow_and_wait(
+    new wasm.OwnedValue(1),
+    new Promise((x) => resolve = x),
+  );
+  const promise = createPromise();
+
+  await gc();
+  assert.strictEqual(dropCount, 0);
+
+  resolve();
+  await promise;
+  await gc();
+  assert.strictEqual(dropCount, 1);
+};
+
+exports.no_gc_method_receiver = async () => {
+  dropCount = 0;
+  let resolve;
+  const createPromise = () => new wasm.OwnedValue(1).borrow_and_wait(
+    new Promise((x) => resolve = x),
+  );
+  const promise = createPromise();
+
+  await gc();
+  assert.strictEqual(dropCount, 0);
+
+  resolve();
+  await promise;
+  await gc();
+  assert.strictEqual(dropCount, 1);
+};
