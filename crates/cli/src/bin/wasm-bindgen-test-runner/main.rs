@@ -211,6 +211,9 @@ fn main() -> anyhow::Result<()> {
         },
         Some(_) => bail!("invalid __wasm_bingen_test_unstable value"),
         None if std::env::var("WASM_BINDGEN_USE_DENO").is_ok() => TestMode::Deno,
+        None if std::env::var("WASM_BINDGEN_USE_BROWSER").is_ok() => TestMode::Browser {
+            no_modules: std::env::var("WASM_BINDGEN_USE_NO_MODULE").is_ok(),
+        },
         None => TestMode::Node,
     };
 
