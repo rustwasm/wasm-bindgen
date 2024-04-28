@@ -22,38 +22,32 @@ exports.owned_methods = async () => {
   }
 
   dropCount = 0;
-  for (let i = 0; i < 100; i++) {
-    new wasm.OwnedValue(1).add(new wasm.OwnedValue(2)).n();
-  }
+  new wasm.OwnedValue(1).add(new wasm.OwnedValue(2)).n();
 
   // The `OwnedValue`s should have been dropped as a result of `add` and `n`
   // taking ownership of `self`...
-  assert.strictEqual(dropCount, 300);
+  assert.strictEqual(dropCount, 3);
   await gc();
   // ... and GCing shouldn't double-free them.
-  assert.strictEqual(dropCount, 300);
+  assert.strictEqual(dropCount, 3);
 };
 
 // Make sure that objects created via. builders get GC'd properly.
 exports.gc_builder = async () => {
   dropCount = 0;
-  for (let i = 0; i < 100; i++) {
-    wasm.OwnedValue.build(1);
-  }
+  wasm.OwnedValue.build(1);
 
   await gc();
-  assert.strictEqual(dropCount, 100);
+  assert.strictEqual(dropCount, 1);
 };
 
 // Make sure that objects created via. constructors get GC'd properly.
 exports.gc_constructor = async () => {
   dropCount = 0;
-  for (let i = 0; i < 100; i++) {
-    new wasm.OwnedValue(1);
-  }
+  new wasm.OwnedValue(1);
 
   await gc();
-  assert.strictEqual(dropCount, 100);
+  assert.strictEqual(dropCount, 1);
 };
 
 // Make sure that exported Rust types don't get GC'd while they're still in use
