@@ -36,6 +36,12 @@
 * Fix MSRV compilation.
   [#3927](https://github.com/rustwasm/wasm-bindgen/pull/3927)
 
+* Fixed Rust values getting GC'd while still borrowed.
+  [#3940](https://github.com/rustwasm/wasm-bindgen/pull/3940)
+
+* Fixed Rust values not getting GC'd if they were created via. a constructor.
+  [#3940](https://github.com/rustwasm/wasm-bindgen/pull/3940)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.92](https://github.com/rustwasm/wasm-bindgen/compare/0.2.91...0.2.92)
