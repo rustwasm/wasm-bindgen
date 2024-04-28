@@ -256,7 +256,7 @@ impl ToTokens for ast::Struct {
 
                     let ptr = js as *mut WasmRefCell<#name>;
                     assert_not_null(ptr);
-                    let mut rc = Rc::from_raw(ptr);
+                    let rc = Rc::from_raw(ptr);
                     match Rc::into_inner(rc) {
                         Some(cell) => cell.into_inner(),
                         None => #wasm_bindgen::throw_str(
