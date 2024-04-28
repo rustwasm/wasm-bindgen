@@ -257,7 +257,6 @@ impl ToTokens for ast::Struct {
                     let ptr = js as *mut WasmRefCell<#name>;
                     assert_not_null(ptr);
                     let mut rc = Rc::from_raw(ptr);
-                    rc.borrow_mut(); // make sure no one's borrowing
                     match Rc::into_inner(rc) {
                         Some(cell) => cell.into_inner(),
                         None => #wasm_bindgen::throw_str(
