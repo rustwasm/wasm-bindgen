@@ -305,9 +305,6 @@ impl ToTokens for ast::Struct {
                     if allow_delayed != 0 {
                         // Just drop the implicit `Rc` owned by JS, and then if the value is still
                         // referenced it'll be kept alive by its other `Rc`s.
-                        //
-                        // Note that the `RefFromWasmAbi` impl breaks this rule a bit and doesn't make a
-                        // new `Rc`: see the comment there for why that's ok.
                         let ptr = ptr as *mut #wasm_bindgen::__rt::WasmRefCell<#name>;
                         #wasm_bindgen::__rt::assert_not_null(ptr);
                         drop(Rc::from_raw(ptr));
@@ -321,20 +318,17 @@ impl ToTokens for ast::Struct {
             #[automatically_derived]
             impl #wasm_bindgen::convert::RefFromWasmAbi for #name {
                 type Abi = u32;
-                type Anchor = #wasm_bindgen::__rt::Ref<'static, #name>;
+                type Anchor = #wasm_bindgen::__rt::RcRef<#name>;
 
                 unsafe fn ref_from_abi(js: Self::Abi) -> Self::Anchor {
-                    // Note: it's ok that we don't clone the `Rc` here because it's guaranteed that
-                    // this will only last for as long as the (synchronous) function call it's an
-                    // argument of, so there's no way for the `FinalizationRegistry` callback to get
-                    // run and drop it since we never yield to the event loop. (And that callback is
-                    // the only thing which consumes the `Rc` without checking the `WasmRefCell`
-                    // first, by calling `free_fn` with `allow_delayed` set.)
+                    use #wasm_bindgen::__rt::std::rc::Rc;
 
-                    // TODO: maybe we should just clone the `Rc` universally to be safe?
                     let js = js as *mut #wasm_bindgen::__rt::WasmRefCell<#name>;
                     #wasm_bindgen::__rt::assert_not_null(js);
-                    (*js).borrow()
+
+                    Rc::increment_strong_count(js);
+                    let rc = Rc::from_raw(js);
+                    #wasm_bindgen::__rt::RcRef::new(rc)
                 }
             }
 
@@ -361,14 +355,7 @@ impl ToTokens for ast::Struct {
                 type Anchor = #wasm_bindgen::__rt::RcRef<#name>;
 
                 unsafe fn long_ref_from_abi(js: Self::Abi) -> Self::Anchor {
-                    use #wasm_bindgen::__rt::std::rc::Rc;
-
-                    let js = js as *mut #wasm_bindgen::__rt::WasmRefCell<#name>;
-                    #wasm_bindgen::__rt::assert_not_null(js);
-
-                    Rc::increment_strong_count(js);
-                    let rc = Rc::from_raw(js);
-                    #wasm_bindgen::__rt::RcRef::new(rc)
+                    <Self as #wasm_bindgen::convert::RefFromWasmAbi>::ref_from_abi(js)
                 }
             }
 
