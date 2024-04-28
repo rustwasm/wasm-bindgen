@@ -239,9 +239,9 @@ impl ToTokens for ast::Struct {
                 type Abi = u32;
 
                 fn into_abi(self) -> u32 {
-                    use #wasm_bindgen::__rt::std::boxed::Box;
+                    use #wasm_bindgen::__rt::std::rc::Rc;
                     use #wasm_bindgen::__rt::WasmRefCell;
-                    Box::into_raw(Box::new(WasmRefCell::new(self))) as u32
+                    Rc::into_raw(Rc::new(WasmRefCell::new(self))) as u32
                 }
             }
 
@@ -250,14 +250,20 @@ impl ToTokens for ast::Struct {
                 type Abi = u32;
 
                 unsafe fn from_abi(js: u32) -> Self {
-                    use #wasm_bindgen::__rt::std::boxed::Box;
+                    use #wasm_bindgen::__rt::std::rc::Rc;
+                    use #wasm_bindgen::__rt::std::option::Option::{Some, None};
                     use #wasm_bindgen::__rt::{assert_not_null, WasmRefCell};
 
                     let ptr = js as *mut WasmRefCell<#name>;
                     assert_not_null(ptr);
-                    let js = Box::from_raw(ptr);
-                    (*js).borrow_mut(); // make sure no one's borrowing
-                    js.into_inner()
+                    let mut rc = Rc::from_raw(ptr);
+                    rc.borrow_mut(); // make sure no one's borrowing
+                    match Rc::into_inner(rc) {
+                        Some(cell) => cell.into_inner(),
+                        None => #wasm_bindgen::throw_str(
+                            "attempted to take ownership of Rust value while it was borrowed"
+                        ),
+                    }
                 }
             }
 
@@ -291,8 +297,24 @@ impl ToTokens for ast::Struct {
             const _: () = {
                 #[no_mangle]
                 #[doc(hidden)]
-                pub unsafe extern "C" fn #free_fn(ptr: u32) {
-                    let _ = <#name as #wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr); //implicit `drop()`
+                // `allow_delayed` is whether it's ok to not actually free the `ptr` immediately
+                // if it's still borrowed.
+                pub unsafe extern "C" fn #free_fn(ptr: u32, allow_delayed: u32) {
+                    use #wasm_bindgen::__rt::std::rc::Rc;
+
+                    if allow_delayed != 0 {
+                        // Just drop the implicit `Rc` owned by JS, and then if the value is still
+                        // referenced it'll be kept alive by its other `Rc`s.
+                        //
+                        // Note that the `RefFromWasmAbi` impl breaks this rule a bit and doesn't make a
+                        // new `Rc`: see the comment there for why that's ok.
+                        let ptr = ptr as *mut #wasm_bindgen::__rt::WasmRefCell<#name>;
+                        #wasm_bindgen::__rt::assert_not_null(ptr);
+                        drop(Rc::from_raw(ptr));
+                    } else {
+                        // Claim ownership of the value, which will panic if it's borrowed.
+                        let _ = <#name as #wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr);
+                    }
                 }
             };
 
@@ -302,6 +324,14 @@ impl ToTokens for ast::Struct {
                 type Anchor = #wasm_bindgen::__rt::Ref<'static, #name>;
 
                 unsafe fn ref_from_abi(js: Self::Abi) -> Self::Anchor {
+                    // Note: it's ok that we don't clone the `Rc` here because it's guaranteed that
+                    // this will only last for as long as the (synchronous) function call it's an
+                    // argument of, so there's no way for the `FinalizationRegistry` callback to get
+                    // run and drop it since we never yield to the event loop. (And that callback is
+                    // the only thing which consumes the `Rc` without checking the `WasmRefCell`
+                    // first, by calling `free_fn` with `allow_delayed` set.)
+
+                    // TODO: maybe we should just clone the `Rc` universally to be safe?
                     let js = js as *mut #wasm_bindgen::__rt::WasmRefCell<#name>;
                     #wasm_bindgen::__rt::assert_not_null(js);
                     (*js).borrow()
@@ -311,22 +341,34 @@ impl ToTokens for ast::Struct {
             #[automatically_derived]
             impl #wasm_bindgen::convert::RefMutFromWasmAbi for #name {
                 type Abi = u32;
-                type Anchor = #wasm_bindgen::__rt::RefMut<'static, #name>;
+                type Anchor = #wasm_bindgen::__rt::RcRefMut<#name>;
 
                 unsafe fn ref_mut_from_abi(js: Self::Abi) -> Self::Anchor {
+                    use #wasm_bindgen::__rt::std::rc::Rc;
+
                     let js = js as *mut #wasm_bindgen::__rt::WasmRefCell<#name>;
                     #wasm_bindgen::__rt::assert_not_null(js);
-                    (*js).borrow_mut()
+
+                    Rc::increment_strong_count(js);
+                    let rc = Rc::from_raw(js);
+                    #wasm_bindgen::__rt::RcRefMut::new(rc)
                 }
             }
 
             #[automatically_derived]
             impl #wasm_bindgen::convert::LongRefFromWasmAbi for #name {
                 type Abi = u32;
-                type Anchor = #wasm_bindgen::__rt::Ref<'static, #name>;
+                type Anchor = #wasm_bindgen::__rt::RcRef<#name>;
 
                 unsafe fn long_ref_from_abi(js: Self::Abi) -> Self::Anchor {
-                    <Self as #wasm_bindgen::convert::RefFromWasmAbi>::ref_from_abi(js)
+                    use #wasm_bindgen::__rt::std::rc::Rc;
+
+                    let js = js as *mut #wasm_bindgen::__rt::WasmRefCell<#name>;
+                    #wasm_bindgen::__rt::assert_not_null(js);
+
+                    Rc::increment_strong_count(js);
+                    let rc = Rc::from_raw(js);
+                    #wasm_bindgen::__rt::RcRef::new(rc)
                 }
             }
 
@@ -562,12 +604,24 @@ impl TryToTokens for ast::Export {
             }
             Some(ast::MethodSelf::RefShared) => {
                 let class = self.rust_class.as_ref().unwrap();
+                let (trait_, func, borrow) = if self.function.r#async {
+                    (
+                        quote!(LongRefFromWasmAbi),
+                        quote!(long_ref_from_abi),
+                        quote!(
+                            <<#class as #wasm_bindgen::convert::LongRefFromWasmAbi>
+                                ::Anchor as #wasm_bindgen::__rt::std::borrow::Borrow<#class>>
+                                ::borrow(&me)
+                        ),
+                    )
+                } else {
+                    (quote!(RefFromWasmAbi), quote!(ref_from_abi), quote!(&*me))
+                };
                 arg_conversions.push(quote! {
                     let me = unsafe {
-                        <#class as #wasm_bindgen::convert::RefFromWasmAbi>
-                            ::ref_from_abi(me)
+                        <#class as #wasm_bindgen::convert::#trait_>::#func(me)
                     };
-                    let me = &*me;
+                    let me = #borrow;
                 });
                 quote! { me.#name }
             }

@@ -15,6 +15,12 @@ let dropCount = 0;
 exports.drop_callback = () => dropCount += 1;
 
 exports.owned_methods = async () => {
+  // It's ridiculous, but 'warming up' the GC by running it a few times
+  // first seems to make it significantly more reliably actually GC our stuff.
+  for (let i = 0; i < 20; i++) {
+    await gc();
+  }
+
   dropCount = 0;
   for (let i = 0; i < 100; i++) {
     new wasm.OwnedValue(1).add(new wasm.OwnedValue(2)).n();
@@ -58,10 +64,11 @@ exports.no_gc_fn_argument = async () => {
 
   // It seems like we have to create the `OwnedValue` inside another function in
   // order for the GC to see it as unused.
-  const createPromise = () => wasm.borrow_and_wait(
-    new wasm.OwnedValue(1),
-    new Promise((x) => resolve = x),
-  );
+  const createPromise = () =>
+    wasm.borrow_and_wait(
+      new wasm.OwnedValue(1),
+      new Promise((x) => resolve = x),
+    );
   const promise = createPromise();
 
   await gc();
@@ -76,9 +83,11 @@ exports.no_gc_fn_argument = async () => {
 exports.no_gc_method_receiver = async () => {
   dropCount = 0;
   let resolve;
-  const createPromise = () => new wasm.OwnedValue(1).borrow_and_wait(
-    new Promise((x) => resolve = x),
-  );
+
+  const createPromise = () =>
+    new wasm.OwnedValue(1).borrow_and_wait(
+      new Promise((x) => resolve = x),
+    );
   const promise = createPromise();
 
   await gc();

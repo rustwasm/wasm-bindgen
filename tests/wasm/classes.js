@@ -46,7 +46,7 @@ exports.js_exceptions = () => {
     // TODO: throws because it tries to borrow_mut, but the throw_str from the previous line doesn't clean up the
     // RefMut so the object is left in a broken state.
     // We still try to call free here so the object is removed from the FinalizationRegistry when weak refs are enabled.
-    assert.throws(() => b.free(), /recursive use of an object/);
+    assert.throws(() => b.free(), /attempted to take ownership/);
 
     let c = wasm.ClassesExceptions1.new();
     let d = wasm.ClassesExceptions2.new();

@@ -108,7 +108,7 @@ pub struct Export {
 
 /// The 3 types variations of `self`.
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
-#[derive(Clone)]
+#[derive(Copy, Clone)]
 pub enum MethodSelf {
     /// `self`
     ByValue,

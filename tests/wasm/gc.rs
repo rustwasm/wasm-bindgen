@@ -42,7 +42,7 @@ impl OwnedValue {
     }
 
     pub async fn borrow_and_wait(&self, promise: Promise) {
-        JsFuture::from(promise).await;
+        let _ = JsFuture::from(promise).await;
     }
 }
 
@@ -54,7 +54,7 @@ impl Drop for OwnedValue {
 
 #[wasm_bindgen]
 pub async fn borrow_and_wait(_: &OwnedValue, promise: Promise) {
-    JsFuture::from(promise).await;
+    let _ = JsFuture::from(promise).await;
 }
 
 #[wasm_bindgen_test]
