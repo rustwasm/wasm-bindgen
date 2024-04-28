@@ -1,8 +1,8 @@
 (module
   (type (;0;) (func (result i32)))
-  (type (;1;) (func (param i32)))
-  (func $classconstructor_new (;0;) (type 0) (result i32))
-  (func $__wbg_classconstructor_free (;1;) (type 1) (param i32))
+  (type (;1;) (func (param i32 i32)))
+  (func $__wbg_classconstructor_free (;0;) (type 1) (param i32 i32))
+  (func $classconstructor_new (;1;) (type 0) (result i32))
   (memory (;0;) 17)
   (export "memory" (memory 0))
   (export "__wbg_classconstructor_free" (func $__wbg_classconstructor_free))
