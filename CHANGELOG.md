@@ -17,6 +17,9 @@
 * Added support for returning `Vec`s from async functions.
   [#3630](https://github.com/rustwasm/wasm-bindgen/pull/3630)
 
+* Add bindings for `RTCRtpReceiver.getCapabilities(DOMString)` method.
+  [#3941](https://github.com/rustwasm/wasm-bindgen/pull/3941)
+
 ### Changed
 
 * Stabilize Web Share API.
