@@ -1,4 +1,4 @@
-(module
+(module $reference_test.wasm
   (type (;0;) (func (param i32 i32) (result i32)))
   (func $add_u32 (;0;) (type 0) (param i32 i32) (result i32))
   (func $add_i32 (;1;) (type 0) (param i32 i32) (result i32))

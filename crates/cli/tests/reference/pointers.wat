@@ -1,4 +1,4 @@
-(module
+(module $reference_test.wasm
   (type (;0;) (func (param i32) (result i32)))
   (func $const_pointer (;0;) (type 0) (param i32) (result i32))
   (func $mut_pointer (;1;) (type 0) (param i32) (result i32))
