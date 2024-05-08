@@ -5,9 +5,6 @@
 
 ### Added
 
-* Fixed `clippy::empty_docs` lint.
-  [#3946](https://github.com/rustwasm/wasm-bindgen/pull/3946)
-
 * Added support for arbitrary expressions when using `#[wasm_bindgen(typescript_custom_section)]`.
   [#3901](https://github.com/rustwasm/wasm-bindgen/pull/3901)
 
@@ -38,6 +35,9 @@
 
 * Fix MSRV compilation.
   [#3927](https://github.com/rustwasm/wasm-bindgen/pull/3927)
+
+* Fixed `clippy::empty_docs` lint.
+  [#3946](https://github.com/rustwasm/wasm-bindgen/pull/3946)
 
 --------------------------------------------------------------------------------
 
