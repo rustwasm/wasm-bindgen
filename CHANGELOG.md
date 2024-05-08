@@ -36,6 +36,9 @@
 * Fix MSRV compilation.
   [#3927](https://github.com/rustwasm/wasm-bindgen/pull/3927)
 
+* Fixed `clippy::empty_docs` lint.
+  [#3946](https://github.com/rustwasm/wasm-bindgen/pull/3946)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.92](https://github.com/rustwasm/wasm-bindgen/compare/0.2.91...0.2.92)
