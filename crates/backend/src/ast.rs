@@ -392,6 +392,8 @@ pub struct StructField {
     pub comments: Vec<String>,
     /// Whether to generate a typescript definition for this field
     pub generate_typescript: bool,
+    /// Whether to override the typescript type for this field
+    pub typescript_type: Option<String>,
     /// Whether to generate jsdoc documentation for this field
     pub generate_jsdoc: bool,
     /// The span of the `#[wasm_bindgen(getter_with_clone)]` attribute applied

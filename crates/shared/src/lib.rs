@@ -145,6 +145,7 @@ macro_rules! shared_api {
             comments: Vec<&'a str>,
             generate_typescript: bool,
             generate_jsdoc: bool,
+            typescript_override: Option<&'a str>,
         }
 
         struct LocalModule<'a> {

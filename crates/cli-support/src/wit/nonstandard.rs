@@ -70,6 +70,8 @@ pub struct AuxExport {
     pub debug_name: String,
     /// Comments parsed in Rust and forwarded here to show up in JS bindings.
     pub comments: String,
+    /// Used to replace the TypeScript type of a return value or struct field.
+    pub type_override: Option<String>,
     /// Argument names in Rust forwarded here to configure the names that show
     /// up in TypeScript bindings.
     pub arg_names: Option<Vec<String>>,

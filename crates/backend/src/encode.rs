@@ -364,6 +364,7 @@ fn shared_struct_field<'a>(s: &'a ast::StructField, _intern: &'a Interner) -> St
         comments: s.comments.iter().map(|s| &**s).collect(),
         generate_typescript: s.generate_typescript,
         generate_jsdoc: s.generate_jsdoc,
+        typescript_override: s.typescript_type.as_deref(),
     }
 }
 

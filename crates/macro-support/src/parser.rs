@@ -444,6 +444,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs)> for &'a mut syn::ItemStruct
             let comments = extract_doc_comments(&field.attrs);
             let getter = shared::struct_field_get(&js_name, &js_field_name);
             let setter = shared::struct_field_set(&js_name, &js_field_name);
+            let typescript_type = attrs.typescript_type().map(|s| s.0.to_string());
 
             fields.push(ast::StructField {
                 rust_name: member,
@@ -458,6 +459,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs)> for &'a mut syn::ItemStruct
                 generate_jsdoc: attrs.skip_jsdoc().is_none(),
                 getter_with_clone: attrs.getter_with_clone().or(getter_with_clone).copied(),
                 wasm_bindgen: program.wasm_bindgen.clone(),
+                typescript_type,
             });
             attrs.check_used();
         }

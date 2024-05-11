@@ -2634,13 +2634,20 @@ impl<'a> Context<'a> {
                                 prefix += "get ";
                                 // For getters and setters, we generate a separate TypeScript definition.
                                 if export.generate_typescript {
+                                    // This is only set to `None` when generating a constructor.
+                                    let ts_ret_ty = ts_ret_ty
+                                        .as_deref()
+                                        .expect("missing return type for getter");
+
+                                    let ts_ret_ty = match &export.type_override {
+                                        Some(override_ty) => override_ty.clone(),
+                                        None => ts_ret_ty.to_owned(),
+                                    };
+
                                     exported.push_accessor_ts(
                                         &ts_docs,
                                         name,
-                                        // This is only set to `None` when generating a constructor.
-                                        ts_ret_ty
-                                            .as_deref()
-                                            .expect("missing return type for getter"),
+                                        &ts_ret_ty,
                                         false,
                                         receiver.is_static(),
                                     );
@@ -2653,10 +2660,18 @@ impl<'a> Context<'a> {
                             AuxExportedMethodKind::Setter => {
                                 prefix += "set ";
                                 if export.generate_typescript {
+
+                                    let ts_ret_ty = &ts_arg_tys[0];
+
+                                    let ts_ret_ty = match &export.type_override {
+                                        Some(override_ty) => override_ty.clone(),
+                                        None => ts_ret_ty.to_owned(),
+                                    };
+
                                     let is_optional = exported.push_accessor_ts(
                                         &ts_docs,
                                         name,
-                                        &ts_arg_tys[0],
+                                        &ts_ret_ty,
                                         true,
                                         receiver.is_static(),
                                     );

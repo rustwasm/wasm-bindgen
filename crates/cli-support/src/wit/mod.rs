@@ -524,6 +524,7 @@ impl<'a> Context<'a> {
             AuxExport {
                 debug_name: wasm_name,
                 comments: concatenate_comments(&export.comments),
+                type_override: None,
                 arg_names: Some(export.function.arg_names),
                 asyncness: export.function.asyncness,
                 kind,
@@ -881,6 +882,8 @@ impl<'a> Context<'a> {
                 inner_ret: Some(descriptor.clone()),
             };
             let getter_id = self.export_adapter(getter_id, getter_descriptor)?;
+            let type_override = field.typescript_override.map(|s| s.to_string());
+
             self.aux.export_map.insert(
                 getter_id,
                 AuxExport {
@@ -888,6 +891,7 @@ impl<'a> Context<'a> {
                     arg_names: None,
                     asyncness: false,
                     comments: concatenate_comments(&field.comments),
+                    type_override: type_override.clone(),
                     kind: AuxExportKind::Method {
                         class: struct_.name.to_string(),
                         name: field.name.to_string(),
@@ -920,6 +924,7 @@ impl<'a> Context<'a> {
                     arg_names: None,
                     asyncness: false,
                     comments: concatenate_comments(&field.comments),
+                    type_override,
                     kind: AuxExportKind::Method {
                         class: struct_.name.to_string(),
                         name: field.name.to_string(),
