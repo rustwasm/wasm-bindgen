@@ -2660,7 +2660,6 @@ impl<'a> Context<'a> {
                             AuxExportedMethodKind::Setter => {
                                 prefix += "set ";
                                 if export.generate_typescript {
-
                                     let ts_ret_ty = &ts_arg_tys[0];
 
                                     let ts_ret_ty = match &export.type_override {
