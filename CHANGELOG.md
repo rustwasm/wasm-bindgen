@@ -20,6 +20,9 @@
 * Added bindings for `InputDeviceInfo` and `MediaTrackCapabilities`.
   [#3935](https://github.com/rustwasm/wasm-bindgen/pull/3935)
 
+* Add bindings for `RTCRtpReceiver.getCapabilities(DOMString)` method.
+  [#3941](https://github.com/rustwasm/wasm-bindgen/pull/3941)
+
 ### Changed
 
 * Stabilize Web Share API.
