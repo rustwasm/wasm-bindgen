@@ -867,10 +867,18 @@ impl ToTokens for ast::ImportType {
 
         let no_deref = self.no_deref;
 
+        let doc = if doc_comment.is_empty() {
+            quote! {}
+        } else {
+            quote! {
+                #[doc = #doc_comment]
+            }
+        };
+
         (quote! {
             #[automatically_derived]
             #(#attrs)*
-            #[doc = #doc_comment]
+            #doc
             #[repr(transparent)]
             #vis struct #rust_name {
                 obj: #internal_obj
@@ -1319,7 +1327,12 @@ impl TryToTokens for ast::ImportFunction {
         let abi_arguments = &abi_arguments[..];
         let abi_argument_names = &abi_argument_names[..];
 
-        let doc_comment = &self.doc_comment;
+        let doc = if self.doc_comment.is_empty() {
+            quote! {}
+        } else {
+            let doc_comment = &self.doc_comment;
+            quote! { #[doc = #doc_comment] }
+        };
         let me = if is_method {
             quote! { &self, }
         } else {
@@ -1368,7 +1381,7 @@ impl TryToTokens for ast::ImportFunction {
             #[allow(nonstandard_style)]
             #[allow(clippy::all, clippy::nursery, clippy::pedantic, clippy::restriction)]
             #(#attrs)*
-            #[doc = #doc_comment]
+            #doc
             #vis #maybe_async #maybe_unsafe fn #rust_name(#me #(#arguments),*) #ret {
                 #extern_fn
 
