@@ -17,6 +17,9 @@
 * Added support for returning `Vec`s from async functions.
   [#3630](https://github.com/rustwasm/wasm-bindgen/pull/3630)
 
+* Added bindings for `InputDeviceInfo` and `MediaTrackCapabilities`.
+  [#3935](https://github.com/rustwasm/wasm-bindgen/pull/3935)
+
 ### Changed
 
 * Stabilize Web Share API.
