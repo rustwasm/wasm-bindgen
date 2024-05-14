@@ -27,7 +27,8 @@ js-sys = { path = '../js-sys', version = '0.3.69' }
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
 wasm-bindgen-test = { path = '../test', version = '0.3.42' }
-wasm-bindgen-futures = { path = '../futures', version = '0.4.42' }
+wasm-bindgen-futures = { path = '../futures', version = '0.4.42', features = [ "futures-core-03-stream" ] }
+futures = "0.3"
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(web_sys_unstable_apis)'] }

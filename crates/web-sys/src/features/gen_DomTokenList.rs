@@ -138,6 +138,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomTokenList`*"]
     pub fn contains(this: &DomTokenList, token: &str) -> bool;
+    # [wasm_bindgen (method , structural , js_class = "DOMTokenList" , js_name = entries)]
+    #[doc = "The `entries()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/entries)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomTokenList`*"]
+    pub fn entries(this: &DomTokenList) -> ::js_sys::Iterator;
+    # [wasm_bindgen (catch , method , structural , js_class = "DOMTokenList" , js_name = forEach)]
+    #[doc = "The `forEach()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/forEach)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomTokenList`*"]
+    pub fn for_each(this: &DomTokenList, callback: &::js_sys::Function) -> Result<(), JsValue>;
     # [wasm_bindgen (method , structural , js_class = "DOMTokenList" , js_name = item)]
     #[doc = "The `item()` method."]
     #[doc = ""]
@@ -145,6 +159,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomTokenList`*"]
     pub fn item(this: &DomTokenList, index: u32) -> Option<String>;
+    # [wasm_bindgen (method , structural , js_class = "DOMTokenList" , js_name = keys)]
+    #[doc = "The `keys()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/keys)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomTokenList`*"]
+    pub fn keys(this: &DomTokenList) -> ::js_sys::Iterator;
     # [wasm_bindgen (catch , method , structural , variadic , js_class = "DOMTokenList" , js_name = remove)]
     #[doc = "The `remove()` method."]
     #[doc = ""]
@@ -275,6 +296,13 @@ extern "C" {
         token: &str,
         force: bool,
     ) -> Result<bool, JsValue>;
+    # [wasm_bindgen (method , structural , js_class = "DOMTokenList" , js_name = values)]
+    #[doc = "The `values()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/values)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomTokenList`*"]
+    pub fn values(this: &DomTokenList) -> ::js_sys::Iterator;
     #[wasm_bindgen(method, structural, js_class = "DOMTokenList", indexing_getter)]
     #[doc = "Indexing getter. As in the literal Javascript `this[key]`."]
     #[doc = ""]

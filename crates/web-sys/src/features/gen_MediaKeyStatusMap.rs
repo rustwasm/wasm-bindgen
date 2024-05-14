@@ -19,6 +19,21 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeyStatusMap`*"]
     pub fn size(this: &MediaKeyStatusMap) -> u32;
+    # [wasm_bindgen (method , structural , js_class = "MediaKeyStatusMap" , js_name = entries)]
+    #[doc = "The `entries()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeyStatusMap/entries)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeyStatusMap`*"]
+    pub fn entries(this: &MediaKeyStatusMap) -> ::js_sys::Iterator;
+    # [wasm_bindgen (catch , method , structural , js_class = "MediaKeyStatusMap" , js_name = forEach)]
+    #[doc = "The `forEach()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeyStatusMap/forEach)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeyStatusMap`*"]
+    pub fn for_each(this: &MediaKeyStatusMap, callback: &::js_sys::Function)
+        -> Result<(), JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "MediaKeyStatusMap" , js_name = get)]
     #[doc = "The `get()` method."]
     #[doc = ""]
@@ -53,4 +68,18 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeyStatusMap`*"]
     pub fn has_with_u8_array(this: &MediaKeyStatusMap, key_id: &mut [u8]) -> bool;
+    # [wasm_bindgen (method , structural , js_class = "MediaKeyStatusMap" , js_name = keys)]
+    #[doc = "The `keys()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeyStatusMap/keys)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeyStatusMap`*"]
+    pub fn keys(this: &MediaKeyStatusMap) -> ::js_sys::Iterator;
+    # [wasm_bindgen (method , structural , js_class = "MediaKeyStatusMap" , js_name = values)]
+    #[doc = "The `values()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeyStatusMap/values)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeyStatusMap`*"]
+    pub fn values(this: &MediaKeyStatusMap) -> ::js_sys::Iterator;
 }

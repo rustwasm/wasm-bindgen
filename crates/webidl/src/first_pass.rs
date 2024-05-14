@@ -71,6 +71,7 @@ pub(crate) struct FirstPassRecord<'src> {
     pub(crate) dictionaries: BTreeMap<&'src str, DictionaryData<'src>>,
     pub(crate) callbacks: BTreeSet<&'src str>,
     pub(crate) iterators: BTreeSet<&'src str>,
+    pub(crate) async_iterators: BTreeSet<&'src str>,
     pub(crate) callback_interfaces: BTreeMap<&'src str, CallbackInterfaceData<'src>>,
 }
 
@@ -545,21 +546,11 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)> for weedle::interface::Int
             InterfaceMember::Constructor(constr) => constr.first_pass(record, ctx),
             InterfaceMember::Maplike(ml) => ml.first_pass(record, ctx),
             InterfaceMember::Setlike(sl) => sl.first_pass(record, ctx),
-            // TODO
-            InterfaceMember::Iterable(_iterable) => {
-                log::warn!("Unsupported WebIDL iterable interface member: {:?}", self);
-                Ok(())
-            }
+            InterfaceMember::Iterable(iterable) => iterable.first_pass(record, ctx),
+            InterfaceMember::AsyncIterable(iterable) => iterable.first_pass(record, ctx),
             InterfaceMember::Stringifier(_) => {
                 log::warn!(
                     "Unsupported WebIDL Stringifier interface member: {:?}",
-                    self
-                );
-                Ok(())
-            }
-            InterfaceMember::AsyncIterable(_iterable) => {
-                log::warn!(
-                    "Unsupported WebIDL async iterable interface member: {:?}",
                     self
                 );
                 Ok(())
@@ -1072,6 +1063,167 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)>
                 ctx.1,
             );
         }
+
+        Ok(())
+    }
+}
+impl<'src> FirstPass<'src, (&'src str, ApiStability)>
+    for weedle::interface::IterableInterfaceMember<'src>
+{
+    fn first_pass(
+        &'src self,
+        record: &mut FirstPassRecord<'src>,
+        ctx: (&'src str, ApiStability),
+    ) -> Result<()> {
+        record.iterators.insert("Iterator");
+
+        // [NewObject] Iterator entries();
+        first_pass_operation(
+            record,
+            FirstPassOperationType::Interface,
+            ctx.0,
+            &[OperationId::Operation(Some("entries"))],
+            &[],
+            &ReturnType::Type(Type::Single(SingleType::NonAny(NonAnyType::Identifier(
+                MayBeNull {
+                    type_: Identifier("Iterator"),
+                    q_mark: None,
+                },
+            )))),
+            &NEW_OBJECT_ATTR,
+            false,
+            ctx.1,
+        );
+
+        // [NewObject] Iterator keys();
+        first_pass_operation(
+            record,
+            FirstPassOperationType::Interface,
+            ctx.0,
+            &[OperationId::Operation(Some("keys"))],
+            &[],
+            &ReturnType::Type(Type::Single(SingleType::NonAny(NonAnyType::Identifier(
+                MayBeNull {
+                    type_: Identifier("Iterator"),
+                    q_mark: None,
+                },
+            )))),
+            &NEW_OBJECT_ATTR,
+            false,
+            ctx.1,
+        );
+
+        // [NewObject] Iterator values();
+        first_pass_operation(
+            record,
+            FirstPassOperationType::Interface,
+            ctx.0,
+            &[OperationId::Operation(Some("values"))],
+            &[],
+            &ReturnType::Type(Type::Single(SingleType::NonAny(NonAnyType::Identifier(
+                MayBeNull {
+                    type_: Identifier("Iterator"),
+                    q_mark: None,
+                },
+            )))),
+            &NEW_OBJECT_ATTR,
+            false,
+            ctx.1,
+        );
+
+        let undefined_ret = || ReturnType::Undefined(term!(undefined));
+
+        // callback SetlikeForEachCallback = undefined (V value);
+        // TODO: the signature of the callback is erased, could we keep it?
+        let foreach_callback_arg = Arg {
+            name: "callback",
+            ty: &Type::Single(SingleType::NonAny(NonAnyType::Identifier(MayBeNull {
+                type_: Identifier("IterableForEachCallback"),
+                q_mark: None,
+            }))),
+            optional: false,
+            variadic: false,
+        };
+
+        record.callbacks.insert("IterableForEachCallback");
+
+        // [Throws] undefined forEach(SetlikeForEachCallback cb);
+        first_pass_operation(
+            record,
+            FirstPassOperationType::Interface,
+            ctx.0,
+            &[OperationId::Operation(Some("forEach"))],
+            [foreach_callback_arg],
+            &undefined_ret(),
+            &THROWS_ATTR,
+            false,
+            ctx.1,
+        );
+        Ok(())
+    }
+}
+
+impl<'src> FirstPass<'src, (&'src str, ApiStability)>
+    for weedle::interface::AsyncIterableInterfaceMember<'src>
+{
+    fn first_pass(
+        &'src self,
+        record: &mut FirstPassRecord<'src>,
+        ctx: (&'src str, ApiStability),
+    ) -> Result<()> {
+        record.async_iterators.insert("AsyncIterator");
+
+        // [NewObject] MapLikeIterator entries();
+        first_pass_operation(
+            record,
+            FirstPassOperationType::Interface,
+            ctx.0,
+            &[OperationId::Operation(Some("entries"))],
+            &[],
+            &ReturnType::Type(Type::Single(SingleType::NonAny(NonAnyType::Identifier(
+                MayBeNull {
+                    type_: Identifier("AsyncIterator"),
+                    q_mark: None,
+                },
+            )))),
+            &NEW_OBJECT_ATTR,
+            false,
+            ctx.1,
+        );
+        // [NewObject] MapLikeIterator keys();
+        first_pass_operation(
+            record,
+            FirstPassOperationType::Interface,
+            ctx.0,
+            &[OperationId::Operation(Some("keys"))],
+            &[],
+            &ReturnType::Type(Type::Single(SingleType::NonAny(NonAnyType::Identifier(
+                MayBeNull {
+                    type_: Identifier("AsyncIterator"),
+                    q_mark: None,
+                },
+            )))),
+            &NEW_OBJECT_ATTR,
+            false,
+            ctx.1,
+        );
+        // [NewObject] MapLikeIterator values();
+        first_pass_operation(
+            record,
+            FirstPassOperationType::Interface,
+            ctx.0,
+            &[OperationId::Operation(Some("values"))],
+            &[],
+            &ReturnType::Type(Type::Single(SingleType::NonAny(NonAnyType::Identifier(
+                MayBeNull {
+                    type_: Identifier("AsyncIterator"),
+                    q_mark: None,
+                },
+            )))),
+            &NEW_OBJECT_ATTR,
+            false,
+            ctx.1,
+        );
 
         Ok(())
     }
