@@ -20,6 +20,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `RtcRtpReceiver`*"]
     pub fn track(this: &RtcRtpReceiver) -> MediaStreamTrack;
+    #[cfg(feature = "RtcRtpCapabilities")]
+    # [wasm_bindgen (static_method_of = RtcRtpReceiver , js_class = "RTCRtpReceiver" , js_name = getCapabilities)]
+    #[doc = "The `getCapabilities()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpReceiver/getCapabilities)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCapabilities`, `RtcRtpReceiver`*"]
+    pub fn get_capabilities(kind: &str) -> Option<RtcRtpCapabilities>;
     # [wasm_bindgen (method , structural , js_class = "RTCRtpReceiver" , js_name = getContributingSources)]
     #[doc = "The `getContributingSources()` method."]
     #[doc = ""]

@@ -106,7 +106,7 @@ partial interface Navigator {
   readonly attribute Permissions permissions;
 };
 
-// Things that definitely need to be in the spec and and are not for some
+// Things that definitely need to be in the spec and are not for some
 // reason.  See https://www.w3.org/Bugs/Public/show_bug.cgi?id=22406
 partial interface Navigator {
   [Throws]

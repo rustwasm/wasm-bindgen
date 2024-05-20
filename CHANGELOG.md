@@ -5,6 +5,9 @@
 
 ### Added
 
+* Added support for arbitrary expressions when using `#[wasm_bindgen(typescript_custom_section)]`.
+  [#3901](https://github.com/rustwasm/wasm-bindgen/pull/3901)
+
 * Implement `From<NonNull<T>>` for `JsValue`.
   [#3877](https://github.com/rustwasm/wasm-bindgen/pull/3877)
 
@@ -13,6 +16,12 @@
 
 * Added support for returning `Vec`s from async functions.
   [#3630](https://github.com/rustwasm/wasm-bindgen/pull/3630)
+
+* Added bindings for `InputDeviceInfo` and `MediaTrackCapabilities`.
+  [#3935](https://github.com/rustwasm/wasm-bindgen/pull/3935)
+
+* Add bindings for `RTCRtpReceiver.getCapabilities(DOMString)` method.
+  [#3941](https://github.com/rustwasm/wasm-bindgen/pull/3941)
 
 ### Changed
 
@@ -32,6 +41,12 @@
 
 * Fix `catch` not being thread-safe.
   [#3879](https://github.com/rustwasm/wasm-bindgen/pull/3879)
+
+* Fix MSRV compilation.
+  [#3927](https://github.com/rustwasm/wasm-bindgen/pull/3927)
+
+* Fixed `clippy::empty_docs` lint.
+  [#3946](https://github.com/rustwasm/wasm-bindgen/pull/3946)
 
 --------------------------------------------------------------------------------
 
