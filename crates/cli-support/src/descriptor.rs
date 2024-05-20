@@ -169,8 +169,8 @@ impl Descriptor {
             IMPORT_ENUM => {
                 let name = get_string(data);
                 let invalid = get(data);
-                let hole = get(data);
                 let variant_count = get(data);
+                let hole = variant_count + 1;
                 let variant_values = (0..variant_count).map(|_| get_string(data)).collect();
                 Descriptor::ImportEnum {
                     name,

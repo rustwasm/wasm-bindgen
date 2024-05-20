@@ -1027,7 +1027,7 @@ impl ToTokens for ast::ImportEnum {
         let enum_name = &self.name;
         let name_str = enum_name.to_string();
         let name_len = name_str.len() as u32;
-        let name_chars = name_str.chars().map(|c| c as u32);
+        let name_chars = name_str.chars().map(u32::from);
         let variants = &self.variants;
         let variant_count = self.variant_values.len() as u32;
         let variant_values = &self.variant_values;
@@ -1050,7 +1050,7 @@ impl ToTokens for ast::ImportEnum {
 
         let describe_variants = self.variant_values.iter().map(|variant_value| {
             let length = variant_value.len() as u32;
-            let chars = variant_value.chars().map(|c| c as u32);
+            let chars = variant_value.chars().map(u32::from);
             quote! {
                 inform(#length);
                 #(inform(#chars);)*
@@ -1066,6 +1066,20 @@ impl ToTokens for ast::ImportEnum {
                 #[automatically_derived]
                 #[doc(hidden)]
                 __Invalid
+            }
+
+            #[automatically_derived]
+            impl #enum_name {
+                fn from_str(s: &str) -> Option<#enum_name> {
+                    match s {
+                        #(#variant_values => Some(#variant_paths_ref),)*
+                        _ => None,
+                    }
+                }
+
+                #vis fn from_js_value(obj: &#wasm_bindgen::JsValue) -> Option<#enum_name> {
+                    obj.as_string().and_then(|obj_str| Self::from_str(obj_str.as_str()))
+                }
             }
 
             #[automatically_derived]
@@ -1111,7 +1125,6 @@ impl ToTokens for ast::ImportEnum {
                     inform(#name_len);
                     #(inform(#name_chars);)*
                     inform(#invalid);
-                    inform(#hole);
                     inform(#variant_count);
                     #(#describe_variants)*
                 }
