@@ -668,7 +668,7 @@ fn instruction(
             }
         }
 
-        Instruction::WasmToImportEnum { variant_values } => {
+        Instruction::WasmToStringEnum { variant_values } => {
             let index = js.pop();
 
             // e.g. ["a","b","c"][someIndex]
@@ -685,7 +685,7 @@ fn instruction(
             js.push(enum_val_expr)
         }
 
-        Instruction::OptionWasmToImportEnum {
+        Instruction::OptionWasmToStringEnum {
             variant_values,
             hole,
         } => {
@@ -709,7 +709,7 @@ fn instruction(
             ))
         }
 
-        Instruction::ImportEnumToWasm {
+        Instruction::StringEnumToWasm {
             variant_values,
             invalid,
         } => {
@@ -732,7 +732,7 @@ fn instruction(
             js.push(enum_val_expr)
         }
 
-        Instruction::OptionImportEnumToWasm {
+        Instruction::OptionStringEnumToWasm {
             variant_values,
             invalid,
             hole,
@@ -1467,7 +1467,7 @@ fn adapter2ts(ty: &AdapterType, dst: &mut String) {
         AdapterType::NamedExternref(name) => dst.push_str(name),
         AdapterType::Struct(name) => dst.push_str(name),
         AdapterType::Enum(name) => dst.push_str(name),
-        AdapterType::ImportEnum(name) => dst.push_str(name),
+        AdapterType::StringEnum(name) => dst.push_str(name),
         AdapterType::Function => dst.push_str("any"),
     }
 }

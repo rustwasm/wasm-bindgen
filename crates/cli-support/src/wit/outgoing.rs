@@ -74,12 +74,12 @@ impl InstructionBuilder<'_, '_> {
                 self.output.push(AdapterType::F64);
             }
             Descriptor::Enum { name, .. } => self.outgoing_i32(AdapterType::Enum(name.clone())),
-            Descriptor::ImportEnum {
+            Descriptor::StringEnum {
                 name,
                 variant_values,
                 invalid: _,
                 hole: _,
-            } => self.outgoing_import_enum(name, variant_values),
+            } => self.outgoing_string_enum(name, variant_values),
 
             Descriptor::Char => {
                 self.instruction(
@@ -293,7 +293,7 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::Enum(name.clone()).option()],
                 );
             }
-            Descriptor::ImportEnum {
+            Descriptor::StringEnum {
                 name,
                 invalid: _,
                 hole,
@@ -301,11 +301,11 @@ impl InstructionBuilder<'_, '_> {
             } => {
                 self.instruction(
                     &[AdapterType::I32],
-                    Instruction::OptionWasmToImportEnum {
+                    Instruction::OptionWasmToStringEnum {
                         variant_values: variant_values.to_vec(),
                         hole: *hole,
                     },
-                    &[AdapterType::ImportEnum(String::from(name))],
+                    &[AdapterType::StringEnum(String::from(name))],
                 );
             }
             Descriptor::RustStruct(name) => {
@@ -373,7 +373,7 @@ impl InstructionBuilder<'_, '_> {
             | Descriptor::Boolean
             | Descriptor::Char
             | Descriptor::Enum { .. }
-            | Descriptor::ImportEnum { .. }
+            | Descriptor::StringEnum { .. }
             | Descriptor::RustStruct(_)
             | Descriptor::Ref(_)
             | Descriptor::RefMut(_)
@@ -542,13 +542,13 @@ impl InstructionBuilder<'_, '_> {
         self.instruction(&[AdapterType::I32], instr, &[output]);
     }
 
-    fn outgoing_import_enum(&mut self, name: &str, variant_values: &[String]) {
+    fn outgoing_string_enum(&mut self, name: &str, variant_values: &[String]) {
         self.instruction(
             &[AdapterType::I32],
-            Instruction::WasmToImportEnum {
+            Instruction::WasmToStringEnum {
                 variant_values: variant_values.to_vec(),
             },
-            &[AdapterType::ImportEnum(String::from(name))],
+            &[AdapterType::StringEnum(String::from(name))],
         );
     }
 

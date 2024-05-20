@@ -1075,7 +1075,7 @@ impl ToTokens for ast::ImportType {
     }
 }
 
-impl ToTokens for ast::ImportEnum {
+impl ToTokens for ast::StringEnum {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         let vis = &self.vis;
         let enum_name = &self.name;
@@ -1089,6 +1089,11 @@ impl ToTokens for ast::ImportEnum {
         let invalid = variant_count;
         let hole = variant_count + 1;
         let attrs = &self.rust_attrs;
+
+        let invalid_to_str_msg = format!(
+            "Converting an invalid string enum ({}) back to a string is currently not supported",
+            enum_name
+        );
 
         // A vector of EnumName::VariantName tokens for this enum
         let variant_paths: Vec<TokenStream> = self
@@ -1131,6 +1136,13 @@ impl ToTokens for ast::ImportEnum {
                     }
                 }
 
+                fn to_str(&self) -> &'static str {
+                    match self {
+                        #(#variant_paths_ref => #variant_values,)*
+                        #enum_name::__Invalid => panic!(#invalid_to_str_msg),
+                    }
+                }
+
                 #vis fn from_js_value(obj: &#wasm_bindgen::JsValue) -> Option<#enum_name> {
                     obj.as_string().and_then(|obj_str| Self::from_str(obj_str.as_str()))
                 }
@@ -1154,7 +1166,7 @@ impl ToTokens for ast::ImportEnum {
                     match val {
                         #(#variant_indices => #variant_paths_ref,)*
                         #invalid => #enum_name::__Invalid,
-                        _ => unreachable!("The JS binding should only ever produce a valid value or the specific 'invalid' value")
+                        _ => unreachable!("The JS binding should only ever produce a valid value or the specific 'invalid' value"),
                     }
                 }
             }
@@ -1175,10 +1187,9 @@ impl ToTokens for ast::ImportEnum {
             impl #wasm_bindgen::describe::WasmDescribe for #enum_name {
                 fn describe() {
                     use #wasm_bindgen::describe::*;
-                    inform(IMPORT_ENUM);
+                    inform(STRING_ENUM);
                     inform(#name_len);
                     #(inform(#name_chars);)*
-                    inform(#invalid);
                     inform(#variant_count);
                     #(#describe_variants)*
                 }
@@ -1189,13 +1200,7 @@ impl ToTokens for ast::ImportEnum {
                 #wasm_bindgen::JsValue
             {
                 fn from(val: #enum_name) -> Self {
-                    #wasm_bindgen::JsValue::from_str(
-                        match val {
-                            #(#variant_paths_ref => #variant_values,)*
-                            #enum_name::__Invalid => #wasm_bindgen::throw_str("Converting an invalid import enum back to a string is currently not supported"),
-                            _ => unreachable!("All possible variants should have been checked")
-                        }
-                    )
+                    #wasm_bindgen::JsValue::from_str(val.to_str())
                 }
             }
         })

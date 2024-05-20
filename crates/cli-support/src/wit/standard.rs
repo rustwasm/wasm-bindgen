@@ -86,7 +86,7 @@ pub enum AdapterType {
     Option(Box<AdapterType>),
     Struct(String),
     Enum(String),
-    ImportEnum(String),
+    StringEnum(String),
     NamedExternref(String),
     Function,
     NonNull,
@@ -142,22 +142,22 @@ pub enum Instruction {
     },
 
     /// Pops a wasm `i32` and pushes the enum variant as a string
-    WasmToImportEnum {
+    WasmToStringEnum {
         variant_values: Vec<String>,
     },
 
-    OptionWasmToImportEnum {
+    OptionWasmToStringEnum {
         variant_values: Vec<String>,
         hole: u32,
     },
 
     /// pops a string and pushes the enum variant as an `i32`
-    ImportEnumToWasm {
+    StringEnumToWasm {
         variant_values: Vec<String>,
         invalid: u32,
     },
 
-    OptionImportEnumToWasm {
+    OptionStringEnumToWasm {
         variant_values: Vec<String>,
         invalid: u32,
         hole: u32,
