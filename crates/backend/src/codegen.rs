@@ -1046,6 +1046,14 @@ impl ToTokens for ast::ImportType {
                         &self.obj
                     }
                 }
+
+                #[automatically_derived]
+                impl core::ops::DerefMut for #rust_name {
+                    #[inline]
+                    fn deref_mut(&mut self) -> &mut #internal_obj {
+                        &mut self.obj
+                    }
+                }
             })
             .to_tokens(tokens);
         }

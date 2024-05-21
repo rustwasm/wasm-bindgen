@@ -23,6 +23,9 @@
 * Add bindings for `RTCRtpReceiver.getCapabilities(DOMString)` method.
   [#3941](https://github.com/rustwasm/wasm-bindgen/pull/3941)
 
+* Implement `DerefMut` when using `#[wasm_bindgen(extend = ...)]`.
+  [#3966](https://github.com/rustwasm/wasm-bindgen/pull/3966)
+
 ### Changed
 
 * Stabilize Web Share API.

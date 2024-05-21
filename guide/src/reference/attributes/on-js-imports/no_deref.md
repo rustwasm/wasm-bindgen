@@ -1,7 +1,7 @@
 # `no_deref`
 
-The `no_deref` attribute can be used to say that no `Deref` impl should be
-generated for an imported type. If this attribute is not present, a `Deref` impl
+The `no_deref` attribute can be used to say that no `Deref/Mut` impl should be
+generated for an imported type. If this attribute is not present, a `Deref/Mut` impl
 will be generated with a `Target` of the type's first `extends` attribute, or
 `Target = JsValue` if there are no `extends` attributes.
 
