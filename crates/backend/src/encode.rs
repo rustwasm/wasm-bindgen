@@ -339,8 +339,8 @@ fn shared_import_type<'a>(i: &'a ast::ImportType, intern: &'a Interner) -> Impor
     }
 }
 
-fn shared_import_enum<'a>(_i: &'a ast::ImportEnum, _intern: &'a Interner) -> ImportEnum {
-    ImportEnum {}
+fn shared_import_enum<'a>(_i: &'a ast::StringEnum, _intern: &'a Interner) -> StringEnum {
+    StringEnum {}
 }
 
 fn shared_struct<'a>(s: &'a ast::Struct, intern: &'a Interner) -> Struct<'a> {

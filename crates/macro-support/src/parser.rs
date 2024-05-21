@@ -1229,7 +1229,7 @@ impl<'a> MacroParse<&ClassMarker> for &'a mut syn::ImplItemFn {
     }
 }
 
-fn import_enum(enum_: syn::ItemEnum, program: &mut ast::Program) -> Result<(), Diagnostic> {
+fn string_enum(enum_: syn::ItemEnum, program: &mut ast::Program) -> Result<(), Diagnostic> {
     let mut variants = vec![];
     let mut variant_values = vec![];
 
@@ -1263,7 +1263,7 @@ fn import_enum(enum_: syn::ItemEnum, program: &mut ast::Program) -> Result<(), D
     program.imports.push(ast::Import {
         module: None,
         js_namespace: None,
-        kind: ast::ImportKind::Enum(ast::ImportEnum {
+        kind: ast::ImportKind::Enum(ast::StringEnum {
             vis: enum_.vis,
             name: enum_.ident,
             variants,
@@ -1295,7 +1295,7 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
             }) = get_expr(expr)
             {
                 opts.check_used();
-                return import_enum(self, program);
+                return string_enum(self, program);
             }
         }
         let js_name = opts

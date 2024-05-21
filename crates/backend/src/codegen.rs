@@ -3,7 +3,7 @@ use crate::encode;
 use crate::encode::EncodeChunk;
 use crate::Diagnostic;
 use once_cell::sync::Lazy;
-use proc_macro2::{Ident, Literal, Span, TokenStream};
+use proc_macro2::{Ident, Span, TokenStream};
 use quote::format_ident;
 use quote::quote_spanned;
 use quote::{quote, ToTokens};
@@ -1075,33 +1075,31 @@ impl ToTokens for ast::ImportType {
     }
 }
 
-impl ToTokens for ast::ImportEnum {
+impl ToTokens for ast::StringEnum {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         let vis = &self.vis;
-        let name = &self.name;
-        let expect_string = format!("attempted to convert invalid {} into JSValue", name);
+        let enum_name = &self.name;
+        let name_str = enum_name.to_string();
+        let name_len = name_str.len() as u32;
+        let name_chars = name_str.chars().map(u32::from);
         let variants = &self.variants;
-        let variant_strings = &self.variant_values;
+        let variant_count = self.variant_values.len() as u32;
+        let variant_values = &self.variant_values;
+        let variant_indices = (0..variant_count).collect::<Vec<_>>();
+        let invalid = variant_count;
+        let hole = variant_count + 1;
         let attrs = &self.rust_attrs;
 
-        let mut current_idx: usize = 0;
-        let variant_indexes: Vec<Literal> = variants
-            .iter()
-            .map(|_| {
-                let this_index = current_idx;
-                current_idx += 1;
-                Literal::usize_unsuffixed(this_index)
-            })
-            .collect();
-
-        // Borrow variant_indexes because we need to use it multiple times inside the quote! macro
-        let variant_indexes_ref = &variant_indexes;
+        let invalid_to_str_msg = format!(
+            "Converting an invalid string enum ({}) back to a string is currently not supported",
+            enum_name
+        );
 
         // A vector of EnumName::VariantName tokens for this enum
         let variant_paths: Vec<TokenStream> = self
             .variants
             .iter()
-            .map(|v| quote!(#name::#v).into_token_stream())
+            .map(|v| quote!(#enum_name::#v).into_token_stream())
             .collect();
 
         // Borrow variant_paths because we need to use it multiple times inside the quote! macro
@@ -1109,83 +1107,104 @@ impl ToTokens for ast::ImportEnum {
 
         let wasm_bindgen = &self.wasm_bindgen;
 
+        let describe_variants = self.variant_values.iter().map(|variant_value| {
+            let length = variant_value.len() as u32;
+            let chars = variant_value.chars().map(u32::from);
+            quote! {
+                inform(#length);
+                #(inform(#chars);)*
+            }
+        });
+
         (quote! {
             #(#attrs)*
-            #vis enum #name {
-                #(#variants = #variant_indexes_ref,)*
+            #[non_exhaustive]
+            #[repr(u32)]
+            #vis enum #enum_name {
+                #(#variants = #variant_indices,)*
                 #[automatically_derived]
                 #[doc(hidden)]
-                __Nonexhaustive,
+                __Invalid
             }
 
             #[automatically_derived]
-            impl #name {
-                fn from_str(s: &str) -> Option<#name> {
+            impl #enum_name {
+                fn from_str(s: &str) -> Option<#enum_name> {
                     match s {
-                        #(#variant_strings => Some(#variant_paths_ref),)*
+                        #(#variant_values => Some(#variant_paths_ref),)*
                         _ => None,
                     }
                 }
 
                 fn to_str(&self) -> &'static str {
                     match self {
-                        #(#variant_paths_ref => #variant_strings,)*
-                        #name::__Nonexhaustive => panic!(#expect_string),
+                        #(#variant_paths_ref => #variant_values,)*
+                        #enum_name::__Invalid => panic!(#invalid_to_str_msg),
                     }
                 }
 
-                #vis fn from_js_value(obj: &#wasm_bindgen::JsValue) -> Option<#name> {
+                #vis fn from_js_value(obj: &#wasm_bindgen::JsValue) -> Option<#enum_name> {
                     obj.as_string().and_then(|obj_str| Self::from_str(obj_str.as_str()))
                 }
             }
 
-            // It should really be using &str for all of these, but that requires some major changes to cli-support
             #[automatically_derived]
-            impl #wasm_bindgen::describe::WasmDescribe for #name {
+            impl #wasm_bindgen::convert::IntoWasmAbi for #enum_name {
+                type Abi = u32;
+
+                #[inline]
+                fn into_abi(self) -> u32 {
+                    self as u32
+                }
+            }
+
+            #[automatically_derived]
+            impl #wasm_bindgen::convert::FromWasmAbi for #enum_name {
+                type Abi = u32;
+
+                unsafe fn from_abi(val: u32) -> Self {
+                    match val {
+                        #(#variant_indices => #variant_paths_ref,)*
+                        #invalid => #enum_name::__Invalid,
+                        _ => unreachable!("The JS binding should only ever produce a valid value or the specific 'invalid' value"),
+                    }
+                }
+            }
+
+            #[automatically_derived]
+            impl #wasm_bindgen::convert::OptionFromWasmAbi for #enum_name {
+                #[inline]
+                fn is_none(val: &u32) -> bool { *val == #hole }
+            }
+
+            #[automatically_derived]
+            impl #wasm_bindgen::convert::OptionIntoWasmAbi for #enum_name {
+                #[inline]
+                fn none() -> Self::Abi { #hole }
+            }
+
+            #[automatically_derived]
+            impl #wasm_bindgen::describe::WasmDescribe for #enum_name {
                 fn describe() {
-                    <#wasm_bindgen::JsValue as #wasm_bindgen::describe::WasmDescribe>::describe()
+                    use #wasm_bindgen::describe::*;
+                    inform(STRING_ENUM);
+                    inform(#name_len);
+                    #(inform(#name_chars);)*
+                    inform(#variant_count);
+                    #(#describe_variants)*
                 }
             }
 
             #[automatically_derived]
-            impl #wasm_bindgen::convert::IntoWasmAbi for #name {
-                type Abi = <#wasm_bindgen::JsValue as #wasm_bindgen::convert::IntoWasmAbi>::Abi;
-
-                #[inline]
-                fn into_abi(self) -> Self::Abi {
-                    <#wasm_bindgen::JsValue as #wasm_bindgen::convert::IntoWasmAbi>::into_abi(self.into())
+            impl #wasm_bindgen::__rt::core::convert::From<#enum_name> for
+                #wasm_bindgen::JsValue
+            {
+                fn from(val: #enum_name) -> Self {
+                    #wasm_bindgen::JsValue::from_str(val.to_str())
                 }
             }
-
-            #[automatically_derived]
-            impl #wasm_bindgen::convert::FromWasmAbi for #name {
-                type Abi = <#wasm_bindgen::JsValue as #wasm_bindgen::convert::FromWasmAbi>::Abi;
-
-                unsafe fn from_abi(js: Self::Abi) -> Self {
-                    let s = <#wasm_bindgen::JsValue as #wasm_bindgen::convert::FromWasmAbi>::from_abi(js);
-                    #name::from_js_value(&s).unwrap_or(#name::__Nonexhaustive)
-                }
-            }
-
-            #[automatically_derived]
-            impl #wasm_bindgen::convert::OptionIntoWasmAbi for #name {
-                #[inline]
-                fn none() -> Self::Abi { <::js_sys::Object as #wasm_bindgen::convert::OptionIntoWasmAbi>::none() }
-            }
-
-            #[automatically_derived]
-            impl #wasm_bindgen::convert::OptionFromWasmAbi for #name {
-                #[inline]
-                fn is_none(abi: &Self::Abi) -> bool { <::js_sys::Object as #wasm_bindgen::convert::OptionFromWasmAbi>::is_none(abi) }
-            }
-
-            #[automatically_derived]
-            impl From<#name> for #wasm_bindgen::JsValue {
-                fn from(obj: #name) -> #wasm_bindgen::JsValue {
-                    #wasm_bindgen::JsValue::from(obj.to_str())
-                }
-            }
-        }).to_tokens(tokens);
+        })
+        .to_tokens(tokens);
     }
 }
 

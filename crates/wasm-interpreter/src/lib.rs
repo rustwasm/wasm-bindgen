@@ -68,11 +68,9 @@ impl Interpreter {
     pub fn new(module: &Module) -> Result<Interpreter, anyhow::Error> {
         let mut ret = Interpreter::default();
 
-        // The descriptor functions shouldn't really use all that much memory
-        // (the LLVM call stack, now the wasm stack). To handle that let's give
-        // our selves a little bit of memory and set the stack pointer (global
-        // 0) to the top.
-        ret.mem = vec![0; 0x400];
+        // Give ourselves some memory and set the stack pointer
+        // (the LLVM call stack, now the wasm stack, global 0) to the top.
+        ret.mem = vec![0; 0x8000];
         ret.sp = ret.mem.len() as i32;
 
         // Figure out where the `__wbindgen_describe` imported function is, if
@@ -299,6 +297,10 @@ impl Frame<'_> {
             // theory there doesn't need to be.
             Instr::Load(e) => {
                 let address = stack.pop().unwrap();
+                assert!(
+                    address > 0,
+                    "Read a negative address value from the stack. Did we run out of memory?"
+                );
                 let address = address as u32 + e.arg.offset;
                 assert!(address % 4 == 0);
                 stack.push(self.interp.mem[address as usize / 4])
@@ -306,6 +308,10 @@ impl Frame<'_> {
             Instr::Store(e) => {
                 let value = stack.pop().unwrap();
                 let address = stack.pop().unwrap();
+                assert!(
+                    address > 0,
+                    "Read a negative address value from the stack. Did we run out of memory?"
+                );
                 let address = address as u32 + e.arg.offset;
                 assert!(address % 4 == 0);
                 self.interp.mem[address as usize / 4] = value;

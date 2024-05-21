@@ -668,6 +668,96 @@ fn instruction(
             }
         }
 
+        Instruction::WasmToStringEnum { variant_values } => {
+            let index = js.pop();
+
+            // e.g. ["a","b","c"][someIndex]
+            let mut enum_val_expr = String::new();
+            enum_val_expr.push('[');
+            for variant in variant_values {
+                enum_val_expr.push_str(&format!("\"{variant}\","));
+            }
+            enum_val_expr.push(']');
+            enum_val_expr.push('[');
+            enum_val_expr.push_str(&index);
+            enum_val_expr.push(']');
+
+            js.push(enum_val_expr)
+        }
+
+        Instruction::OptionWasmToStringEnum {
+            variant_values,
+            hole,
+        } => {
+            let index = js.pop();
+
+            let mut enum_val_expr = String::new();
+            enum_val_expr.push('[');
+            for variant in variant_values {
+                enum_val_expr.push_str(&format!("\"{variant}\","));
+            }
+            enum_val_expr.push(']');
+            enum_val_expr.push('[');
+            enum_val_expr.push_str(&index);
+            enum_val_expr.push(']');
+
+            // e.g. someIndex === 4 ? undefined : (["a","b","c"][someIndex])
+            //                    |
+            //      currently, hole = variant_count + 1
+            js.push(format!(
+                "{index} === {hole} ? undefined : ({enum_val_expr})"
+            ))
+        }
+
+        Instruction::StringEnumToWasm {
+            variant_values,
+            invalid,
+        } => {
+            let enum_val = js.pop();
+
+            // e.g. {"a":0,"b":1,"c":2}[someEnumVal] ?? 3
+            //                                          |
+            //                          currently, invalid = variant_count
+            let mut enum_val_expr = String::new();
+            enum_val_expr.push('{');
+            for (i, variant) in variant_values.iter().enumerate() {
+                enum_val_expr.push_str(&format!("\"{variant}\":{i},"));
+            }
+            enum_val_expr.push('}');
+            enum_val_expr.push('[');
+            enum_val_expr.push_str(&enum_val);
+            enum_val_expr.push(']');
+            enum_val_expr.push_str(&format!(" ?? {invalid}"));
+
+            js.push(enum_val_expr)
+        }
+
+        Instruction::OptionStringEnumToWasm {
+            variant_values,
+            invalid,
+            hole,
+        } => {
+            let enum_val = js.pop();
+
+            let mut enum_val_expr = String::new();
+            enum_val_expr.push('{');
+            for (i, variant) in variant_values.iter().enumerate() {
+                enum_val_expr.push_str(&format!("\"{variant}\":{i},"));
+            }
+            enum_val_expr.push('}');
+            enum_val_expr.push('[');
+            enum_val_expr.push_str(&enum_val);
+            enum_val_expr.push(']');
+            enum_val_expr.push_str(&format!(" ?? {invalid}"));
+
+            // e.g. someEnumVal == undefined ? 4 : ({"a":0,"b":1,"c":2}[someEnumVal] ?? 3)
+            //                  |
+            //    double equals here in case it's null
+            js.push(format!(
+                "{enum_val} == undefined ? {hole} : ({enum_val_expr})"
+            ))
+        }
+
         Instruction::MemoryToString(mem) => {
             let len = js.pop();
             let ptr = js.pop();
@@ -1377,6 +1467,7 @@ fn adapter2ts(ty: &AdapterType, dst: &mut String) {
         AdapterType::NamedExternref(name) => dst.push_str(name),
         AdapterType::Struct(name) => dst.push_str(name),
         AdapterType::Enum(name) => dst.push_str(name),
+        AdapterType::StringEnum(name) => dst.push_str(name),
         AdapterType::Function => dst.push_str("any"),
     }
 }
