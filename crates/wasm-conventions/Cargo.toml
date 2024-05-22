@@ -11,5 +11,8 @@ edition = "2018"
 rust-version = "1.57"
 
 [dependencies]
+leb128 = "0.2"
 walrus = "0.20.2"
+# Matching the version `walrus` depends on.
+wasmparser = "0.80"
 anyhow = "1.0"

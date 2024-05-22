@@ -45,8 +45,11 @@
 * Fix MSRV compilation.
   [#3927](https://github.com/rustwasm/wasm-bindgen/pull/3927)
 
-* Fixed `clippy::empty_docs` lint.
+* Fix `clippy::empty_docs` lint.
   [#3946](https://github.com/rustwasm/wasm-bindgen/pull/3946)
+
+* Fix missing target features in module when enabling reference types or multi-value transformation.
+  [#3967](https://github.com/rustwasm/wasm-bindgen/pull/3967)
 
 --------------------------------------------------------------------------------
 

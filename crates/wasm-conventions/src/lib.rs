@@ -6,11 +6,14 @@
 //! * The shadow stack pointer
 //! * The canonical linear memory that contains the shadow stack
 
+use std::io::Cursor;
+
 use anyhow::{anyhow, bail, Result};
 use walrus::{
     ir::Value, ElementId, FunctionBuilder, FunctionId, FunctionKind, GlobalId, GlobalKind,
-    InitExpr, MemoryId, Module, ValType,
+    InitExpr, MemoryId, Module, RawCustomSection, ValType,
 };
+use wasmparser::BinaryReader;
 
 /// Get a Wasm module's canonical linear memory.
 pub fn get_memory(module: &Module) -> Result<MemoryId> {
@@ -147,4 +150,68 @@ pub fn get_or_insert_start_builder(module: &mut Module) -> &mut FunctionBuilder 
         .kind
         .unwrap_local_mut()
         .builder_mut()
+}
+
+pub fn insert_target_feature(module: &mut Module, new_feature: &str) {
+    // Taken from <https://github.com/bytecodealliance/wasm-tools/blob/f1898f46bb9d96f0f09682415cb6ccfd6a4dca79/crates/wasmparser/src/limits.rs#L27>.
+    assert!(new_feature.len() <= 100_000);
+
+    // Try to find an existing section.
+    let section = module
+        .customs
+        .iter_mut()
+        .find(|(_, custom)| custom.name() == "target_features");
+
+    // If one exists, check if the target feature is already present.
+    let section = if let Some((_, section)) = section {
+        let section: &mut RawCustomSection = section.as_any_mut().downcast_mut().unwrap();
+        let mut reader = BinaryReader::new(&section.data);
+        // The first integer contains the target feature count.
+        let count = reader.read_var_u32().unwrap();
+
+        // Try to find if the target feature is already present.
+        for _ in 0..count {
+            // First byte is the prefix.
+            let prefix_index = reader.current_position();
+            let prefix = reader.read_u8().unwrap() as u8;
+            // Read the feature.
+            let length = reader.read_var_u32().unwrap();
+            let feature = reader.read_bytes(length as usize).unwrap();
+
+            // If we found the target feature, we are done here.
+            if feature == new_feature.as_bytes() {
+                // Make sure we set any existing prefix to "enabled".
+                if prefix == b'-' {
+                    section.data[prefix_index] = b'+';
+                }
+
+                return;
+            }
+        }
+
+        section
+    } else {
+        let mut data = Vec::new();
+        leb128::write::unsigned(&mut data, 0).unwrap();
+        let id = module.customs.add(RawCustomSection {
+            name: String::from("target_features"),
+            data,
+        });
+        module.customs.get_mut(id).unwrap()
+    };
+
+    // If we couldn't find the target feature, insert it.
+
+    // The first byte contains an integer describing the target feature count, which we increase by one.
+    let mut data = Cursor::new(&section.data);
+    let count = leb128::read::unsigned(&mut data).unwrap();
+    let mut new_count = Vec::new();
+    leb128::write::unsigned(&mut new_count, count + 1).unwrap();
+    section.data.splice(0..data.position() as usize, new_count);
+    // Then we insert the "enabled" prefix at the end.
+    section.data.push(b'+');
+    // The next byte contains the length of the target feature string.
+    leb128::write::unsigned(&mut section.data, new_feature.len() as u64).unwrap();
+    // Lastly the target feature string is inserted.
+    section.data.extend(new_feature.as_bytes());
 }
