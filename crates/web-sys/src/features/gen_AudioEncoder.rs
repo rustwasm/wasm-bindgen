@@ -52,7 +52,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn new(init: &AudioEncoderInit) -> Result<AudioEncoder, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "AudioEncoder" , js_name = close)]
+    # [wasm_bindgen (catch , method , structural , js_class = "AudioEncoder" , js_name = close)]
     #[doc = "The `close()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioEncoder/close)"]
@@ -61,10 +61,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn close(this: &AudioEncoder);
+    pub fn close(this: &AudioEncoder) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "AudioEncoderConfig")]
-    # [wasm_bindgen (method , structural , js_class = "AudioEncoder" , js_name = configure)]
+    # [wasm_bindgen (catch , method , structural , js_class = "AudioEncoder" , js_name = configure)]
     #[doc = "The `configure()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioEncoder/configure)"]
@@ -73,10 +73,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn configure(this: &AudioEncoder, config: &AudioEncoderConfig);
+    pub fn configure(this: &AudioEncoder, config: &AudioEncoderConfig) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "AudioData")]
-    # [wasm_bindgen (method , structural , js_class = "AudioEncoder" , js_name = encode)]
+    # [wasm_bindgen (catch , method , structural , js_class = "AudioEncoder" , js_name = encode)]
     #[doc = "The `encode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioEncoder/encode)"]
@@ -85,7 +85,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn encode(this: &AudioEncoder, data: &AudioData);
+    pub fn encode(this: &AudioEncoder, data: &AudioData) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (method , structural , js_class = "AudioEncoder" , js_name = flush)]
     #[doc = "The `flush()` method."]
@@ -110,7 +110,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn is_config_supported(config: &AudioEncoderConfig) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "AudioEncoder" , js_name = reset)]
+    # [wasm_bindgen (catch , method , structural , js_class = "AudioEncoder" , js_name = reset)]
     #[doc = "The `reset()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioEncoder/reset)"]
@@ -119,5 +119,5 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn reset(this: &AudioEncoder);
+    pub fn reset(this: &AudioEncoder) -> Result<(), JsValue>;
 }
