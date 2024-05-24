@@ -1,3 +1,1 @@
-mod outputs_invalid_arguments_error_feature;
-mod outputs_the_wasm_bindgen_test_runner_usage_information_feature;
-mod returns_failure_feature;
+mod handles_missing_arguments_feature;
