@@ -1,16 +1,17 @@
 use crate::__steps__::assembly::given_there_is_an_assembly_with_one_failing_test;
 use crate::__steps__::standard_output::then_the_standard_output_should_have;
+use crate::__steps__::success::then_success_should_have_been_returned;
 use crate::__steps__::wasm_bindgen_test_runner::when_wasm_bindgen_test_runner_is_invoked_with_the_option;
 use crate::__steps__::Context;
+use auroka_morpheus_macros_feature::feature;
 
-#[test]
-fn outputs_the_wasm_bindgen_test_runner_help_information_feature() {
-    let mut context = Context::new();
-    given_there_is_an_assembly_with_one_failing_test(&mut context);
-    when_wasm_bindgen_test_runner_is_invoked_with_the_option(&mut context, "-h");
-    then_the_standard_output_should_have(
-        &context,
-        r#"Execute all wasm bindgen unit and integration tests and build examples of a local package
+feature! {
+    given_there_is_an_assembly_with_one_failing_test();
+    when_wasm_bindgen_test_runner_is_invoked_with_the_option("-h");
+
+    "Outputs the wasm-bindgen-test-runner help information" {
+        then_the_standard_output_should_have(
+            r#"Execute all wasm bindgen unit and integration tests and build examples of a local package
 
 Usage:
     wasm-bindgen-test-runner [options] <input> [<testname>] [--include-ignored] [(--skip PATTERN)...] [--nocapture]
@@ -38,5 +39,10 @@ Arguments:
 
 Additional documentation: https://rustwasm.github.io/wasm-bindgen/wasm-bindgen-test/usage.html
 "#,
-    );
+        );
+    }
+
+    "Returns success" {
+        then_success_should_have_been_returned();
+    }
 }

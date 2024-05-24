@@ -1,2 +1,1 @@
-mod outputs_the_wasm_bindgen_test_runner_version_information_feature;
-mod returns_success_feature;
+mod outputs_the_version_information_feature;
