@@ -1,2 +1,1 @@
-mod outputs_nothing_feature;
-mod returns_success_feature;
+mod lists_nothing_feature;
