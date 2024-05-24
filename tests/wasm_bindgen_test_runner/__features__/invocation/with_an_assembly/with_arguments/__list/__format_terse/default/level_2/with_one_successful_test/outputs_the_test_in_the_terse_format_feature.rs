@@ -11,5 +11,5 @@ fn outputs_its_running_1_test_feature() {
         &mut context,
         "--list --format terse",
     );
-    then_the_standard_output_should_have(context, r#"level_1::level_2::pass: test"#);
+    then_the_standard_output_should_have(&context, r#"level_1::level_2::pass: test"#);
 }

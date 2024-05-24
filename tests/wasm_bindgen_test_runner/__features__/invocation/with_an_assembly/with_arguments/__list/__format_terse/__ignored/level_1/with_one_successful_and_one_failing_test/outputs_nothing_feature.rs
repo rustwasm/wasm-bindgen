@@ -11,5 +11,5 @@ fn outputs_nothing_feature() {
         &mut context,
         "--list --format terse --ignored",
     );
-    then_the_standard_output_should_be_empty(context);
+    then_the_standard_output_should_be_empty(&context);
 }

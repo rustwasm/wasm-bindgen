@@ -11,5 +11,5 @@ fn outputs_no_tests_to_run_warning_feature() {
         &mut context,
         "--skip=pattern1 --skip=pattern2",
     );
-    then_the_standard_output_should_have(context, "no tests to run!");
+    then_the_standard_output_should_have(&context, "no tests to run!");
 }

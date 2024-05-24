@@ -12,7 +12,7 @@ fn outputs_the_assembly_test_summary_feature() {
         "pass_1 --nocapture --exact",
     );
     then_the_standard_output_should_have(
-        context,
+        &context,
         "test result: ok. 1 passed; 0 failed; 0 ignored; 1 filtered out",
     );
 }

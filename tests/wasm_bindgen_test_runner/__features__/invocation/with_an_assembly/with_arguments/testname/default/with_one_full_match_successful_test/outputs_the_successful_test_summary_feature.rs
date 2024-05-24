@@ -11,5 +11,5 @@ fn outputs_the_successful_test_summary_feature() {
         &mut context,
         "pass",
     );
-    then_the_standard_output_should_have(context, "pass ... ok");
+    then_the_standard_output_should_have(&context, "pass ... ok");
 }

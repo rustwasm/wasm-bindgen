@@ -11,5 +11,5 @@ fn outputs_its_running_2_test_feature() {
         &mut context,
         "pass",
     );
-    then_the_standard_output_should_have(context, "running 2 tests");
+    then_the_standard_output_should_have(&context, "running 2 tests");
 }

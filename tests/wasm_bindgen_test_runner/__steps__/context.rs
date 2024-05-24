@@ -14,8 +14,8 @@ impl Context {
         }
     }
 
-    pub fn into_output(self) -> Result<Output, std::io::Error> {
-        self.output.unwrap()
+    pub fn output(&self) -> Result<Output, &std::io::Error> {
+        Ok(self.output.as_ref().unwrap().as_ref()?.clone())
     }
 
     pub fn output_set(&mut self, output: Result<Output, std::io::Error>) {

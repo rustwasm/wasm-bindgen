@@ -9,7 +9,7 @@ fn outputs_the_assembly_test_summary_feature() {
     given_there_is_an_assembly_with_one_failing_test(&mut context);
     when_wasm_bindgen_test_runner_is_invoked_with_the_assembly(&mut context);
     then_the_standard_output_should_have(
-        context,
+        &context,
         "test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 filtered out",
     );
 }

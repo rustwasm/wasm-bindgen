@@ -12,7 +12,7 @@ fn outputs_the_assembly_test_summary_feature() {
         "--include-ignored",
     );
     then_the_standard_output_should_have(
-        context,
+        &context,
         "test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 filtered out",
     );
 }

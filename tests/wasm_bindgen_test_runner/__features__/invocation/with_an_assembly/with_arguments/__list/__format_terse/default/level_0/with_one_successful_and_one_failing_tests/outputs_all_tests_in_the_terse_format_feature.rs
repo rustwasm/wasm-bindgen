@@ -12,7 +12,7 @@ fn outputs_all_tests_in_the_terse_format_feature() {
         "--list --format terse",
     );
     then_the_standard_output_should_have(
-        context,
+        &context,
         r#"pass: test
 fail: test"#,
     );

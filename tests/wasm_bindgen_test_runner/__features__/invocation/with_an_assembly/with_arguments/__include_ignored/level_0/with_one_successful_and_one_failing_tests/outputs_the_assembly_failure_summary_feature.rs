@@ -12,7 +12,7 @@ fn outputs_the_assembly_failure_summary_feature() {
         "--include-ignored",
     );
     then_the_standard_output_should_have(
-        context,
+        &context,
         "failures:\n\n    assembly_with_one_successful_and_one_failing_tests::fail\n",
     );
 }

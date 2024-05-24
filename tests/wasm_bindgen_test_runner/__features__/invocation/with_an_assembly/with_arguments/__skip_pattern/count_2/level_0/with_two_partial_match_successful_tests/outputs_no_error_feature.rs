@@ -11,5 +11,5 @@ fn outputs_no_error_feature() {
         &mut context,
         "--skip pass_1 --skip pass_2",
     );
-    then_the_standard_error_should_be_empty(context);
+    then_the_standard_error_should_be_empty(&context);
 }

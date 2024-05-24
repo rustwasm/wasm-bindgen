@@ -11,5 +11,5 @@ fn returns_success_feature() {
         &mut context,
         "--skip pass_1 --skip pass_2",
     );
-    then_success_should_have_been_returned(context);
+    then_success_should_have_been_returned(&context);
 }

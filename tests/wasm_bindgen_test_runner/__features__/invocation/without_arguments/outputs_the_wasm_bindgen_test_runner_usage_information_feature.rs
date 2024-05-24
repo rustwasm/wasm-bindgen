@@ -9,7 +9,7 @@ fn outputs_the_wasm_bindgen_test_runner_usage_information_feature() {
     given_there_is_an_assembly_with_one_failing_test(&mut context);
     when_wasm_bindgen_test_runner_is_invoked_without_arguments(&mut context);
     then_the_standard_error_should_have(
-        context,
+        &context,
         r#"Usage:
     wasm-bindgen-test-runner [options] <input> [<testname>] [--include-ignored] [(--skip PATTERN)...] [--nocapture]
     wasm-bindgen-test-runner [options] <input> <testname> [--nocapture] --exact

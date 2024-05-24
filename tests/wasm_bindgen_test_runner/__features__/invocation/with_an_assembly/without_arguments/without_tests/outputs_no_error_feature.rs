@@ -8,5 +8,5 @@ fn outputs_no_tests_to_run_warning_feature() {
     let mut context = Context::new();
     given_there_is_an_assembly_without_anything(&mut context);
     when_wasm_bindgen_test_runner_is_invoked_with_the_assembly(&mut context);
-    then_the_standard_error_should_be_empty(context);
+    then_the_standard_error_should_be_empty(&context);
 }

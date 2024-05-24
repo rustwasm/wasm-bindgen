@@ -6,5 +6,5 @@ use crate::__steps__::Context;
 fn outputs_test_file_missing_error_feature() {
     let mut context = Context::new();
     when_wasm_bindgen_test_runner_is_invoked_without_arguments(&mut context);
-    then_the_standard_error_should_have(context, "Invalid arguments.");
+    then_the_standard_error_should_have(&context, "Invalid arguments.");
 }

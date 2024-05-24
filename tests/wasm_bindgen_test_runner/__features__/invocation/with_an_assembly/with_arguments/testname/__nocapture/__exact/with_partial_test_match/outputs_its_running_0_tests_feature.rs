@@ -11,5 +11,5 @@ fn outputs_its_running_0_tests_feature() {
         &mut context,
         "pass --nocapture --exact",
     );
-    then_the_standard_output_should_have(context, "running 0 tests");
+    then_the_standard_output_should_have(&context, "running 0 tests");
 }

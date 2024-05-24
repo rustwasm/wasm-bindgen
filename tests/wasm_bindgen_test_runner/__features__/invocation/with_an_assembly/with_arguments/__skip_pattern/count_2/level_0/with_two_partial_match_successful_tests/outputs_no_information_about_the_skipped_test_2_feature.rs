@@ -11,5 +11,5 @@ fn outputs_no_information_about_the_skipped_test_2_feature() {
         &mut context,
         "--skip pass_1 --skip pass_2",
     );
-    then_the_standard_output_should_not_have(context, "pass_2");
+    then_the_standard_output_should_not_have(&context, "pass_2");
 }

@@ -12,7 +12,7 @@ fn outputs_the_ignored_test_successful_execution_summary_feature() {
         "--include-ignored",
     );
     then_the_standard_output_should_have(
-        context,
+        &context,
         "test assembly_with_one_ignored_with_reason_test::ignored ... ok",
     );
 }

@@ -11,5 +11,5 @@ fn outputs_no_information_about_test_1_feature() {
         &mut context,
         "boo --nocapture --exact",
     );
-    then_the_standard_output_should_not_have(context, "pass_1");
+    then_the_standard_output_should_not_have(&context, "pass_1");
 }

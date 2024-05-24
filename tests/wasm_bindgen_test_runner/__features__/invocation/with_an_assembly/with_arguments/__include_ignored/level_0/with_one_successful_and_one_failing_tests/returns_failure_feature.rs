@@ -11,5 +11,5 @@ fn returns_failure_feature() {
         &mut context,
         "--include-ignored",
     );
-    then_failure_should_have_been_returned(context);
+    then_failure_should_have_been_returned(&context);
 }

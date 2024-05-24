@@ -12,7 +12,7 @@ fn outputs_the_failed_test_assertion_error_feature() {
         "--include-ignored",
     );
     then_the_standard_error_should_have(
-        context,
+        &context,
         "assertion `left == right` failed\n  left: 1\n right: 2",
     );
 }

@@ -12,7 +12,7 @@ fn outputs_the_assembly_test_summary_feature() {
         "--skip fail --skip pass_1 --skip pass_2",
     );
     then_the_standard_output_should_have(
-        context,
+        &context,
         "test result: ok. 0 passed; 0 failed; 0 ignored; 2 filtered out",
     );
 }

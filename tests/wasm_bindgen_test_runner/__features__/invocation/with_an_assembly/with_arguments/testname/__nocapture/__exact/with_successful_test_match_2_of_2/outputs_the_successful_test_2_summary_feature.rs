@@ -11,5 +11,5 @@ fn outputs_the_successful_test_2_summary_feature() {
         &mut context,
         "pass_2 --nocapture --exact",
     );
-    then_the_standard_output_should_have(context, "pass_2 ... ok");
+    then_the_standard_output_should_have(&context, "pass_2 ... ok");
 }

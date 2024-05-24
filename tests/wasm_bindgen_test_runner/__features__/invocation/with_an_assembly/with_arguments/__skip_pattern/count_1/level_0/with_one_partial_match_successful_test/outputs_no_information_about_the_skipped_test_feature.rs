@@ -12,7 +12,7 @@ fn outputs_no_information_about_the_skipped_test_feature() {
         "--skip as",
     );
     then_the_standard_output_should_not_have(
-        context,
+        &context,
         "test assembly_with_one_successful_test::pass",
     );
 }

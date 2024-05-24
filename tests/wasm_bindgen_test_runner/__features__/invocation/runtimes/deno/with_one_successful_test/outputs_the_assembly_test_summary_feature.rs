@@ -9,7 +9,7 @@ fn outputs_the_assembly_test_summary_feature() {
     given_there_is_an_assembly_with_one_successful_test(&mut context);
     when_wasm_bindgen_test_runner_is_invoked_with_the_assembly_targeting_deno(&mut context);
     then_the_standard_output_should_have(
-        context,
+        &context,
         "test result: ok. 1 passed; 0 failed; 0 ignored; 0 filtered out",
     );
 }

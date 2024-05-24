@@ -11,5 +11,5 @@ fn outputs_no_error_feature() {
         &mut context,
         "pass_1 --nocapture --exact",
     );
-    then_the_standard_error_should_be_empty(context);
+    then_the_standard_error_should_be_empty(&context);
 }

@@ -11,5 +11,5 @@ fn outputs_its_running_2_test_feature() {
         &mut context,
         "--skip fail --skip pass_1 --skip pass_2",
     );
-    then_the_standard_output_should_have(context, "running 2 tests");
+    then_the_standard_output_should_have(&context, "running 2 tests");
 }

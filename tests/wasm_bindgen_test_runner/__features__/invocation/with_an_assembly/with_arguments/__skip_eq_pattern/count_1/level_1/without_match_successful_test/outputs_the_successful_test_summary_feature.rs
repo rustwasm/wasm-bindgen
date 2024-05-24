@@ -12,7 +12,7 @@ fn outputs_the_successful_test_summary_feature() {
         "--skip=pattern",
     );
     then_the_standard_output_should_have(
-        context,
+        &context,
         "test assembly_with_one_successful_level_1_test::level_1::pass ... ok",
     );
 }
