@@ -1,3 +1,1 @@
-//mod lists_the_tests_in_the_terse_format_feature;
-mod outputs_the_test_in_the_terse_format_feature;
-mod returns_success_feature;
+mod lists_the_test_in_the_terse_format_feature;
