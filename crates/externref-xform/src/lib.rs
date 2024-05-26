@@ -15,7 +15,7 @@
 //! goal at least is to have valid wasm modules coming in that don't use
 //! `externref` and valid wasm modules going out which use `externref` at the fringes.
 
-use anyhow::{anyhow, bail, Error};
+use anyhow::{anyhow, bail, Context as _, Error};
 use std::cmp;
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::mem;
@@ -102,7 +102,8 @@ impl Context {
     /// we're appending entries.
     pub fn prepare(&mut self, module: &mut Module) -> Result<(), Error> {
         // Insert reference types to the target features section.
-        wasm_bindgen_wasm_conventions::insert_target_feature(module, "reference-types");
+        wasm_bindgen_wasm_conventions::insert_target_feature(module, "reference-types")
+            .context("failed to parse `target_features` custom section")?;
 
         // Figure out what the maximum index of functions pointers are. We'll
         // be adding new entries to the function table later (maybe) so

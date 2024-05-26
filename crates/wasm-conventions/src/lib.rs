@@ -8,7 +8,7 @@
 
 use std::io::Cursor;
 
-use anyhow::{anyhow, bail, Result};
+use anyhow::{anyhow, bail, Context, Result};
 use walrus::{
     ir::Value, ElementId, FunctionBuilder, FunctionId, FunctionKind, GlobalId, GlobalKind,
     InitExpr, MemoryId, Module, RawCustomSection, ValType,
@@ -152,9 +152,9 @@ pub fn get_or_insert_start_builder(module: &mut Module) -> &mut FunctionBuilder 
         .builder_mut()
 }
 
-pub fn insert_target_feature(module: &mut Module, new_feature: &str) {
+pub fn insert_target_feature(module: &mut Module, new_feature: &str) -> Result<()> {
     // Taken from <https://github.com/bytecodealliance/wasm-tools/blob/f1898f46bb9d96f0f09682415cb6ccfd6a4dca79/crates/wasmparser/src/limits.rs#L27>.
-    assert!(new_feature.len() <= 100_000);
+    anyhow::ensure!(new_feature.len() <= 100_000, "feature name too long");
 
     // Try to find an existing section.
     let section = module
@@ -164,19 +164,22 @@ pub fn insert_target_feature(module: &mut Module, new_feature: &str) {
 
     // If one exists, check if the target feature is already present.
     let section = if let Some((_, section)) = section {
-        let section: &mut RawCustomSection = section.as_any_mut().downcast_mut().unwrap();
+        let section: &mut RawCustomSection = section
+            .as_any_mut()
+            .downcast_mut()
+            .context("failed to read section")?;
         let mut reader = BinaryReader::new(&section.data);
         // The first integer contains the target feature count.
-        let count = reader.read_var_u32().unwrap();
+        let count = reader.read_var_u32()?;
 
         // Try to find if the target feature is already present.
         for _ in 0..count {
             // First byte is the prefix.
             let prefix_index = reader.current_position();
-            let prefix = reader.read_u8().unwrap() as u8;
+            let prefix = reader.read_u8()? as u8;
             // Read the feature.
-            let length = reader.read_var_u32().unwrap();
-            let feature = reader.read_bytes(length as usize).unwrap();
+            let length = reader.read_var_u32()?;
+            let feature = reader.read_bytes(length as usize)?;
 
             // If we found the target feature, we are done here.
             if feature == new_feature.as_bytes() {
@@ -185,7 +188,7 @@ pub fn insert_target_feature(module: &mut Module, new_feature: &str) {
                     section.data[prefix_index] = b'+';
                 }
 
-                return;
+                return Ok(());
             }
         }
 
@@ -214,4 +217,6 @@ pub fn insert_target_feature(module: &mut Module, new_feature: &str) {
     leb128::write::unsigned(&mut section.data, new_feature.len() as u64).unwrap();
     // Lastly the target feature string is inserted.
     section.data.extend(new_feature.as_bytes());
+
+    Ok(())
 }
