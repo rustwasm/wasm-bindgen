@@ -25,7 +25,7 @@ Options:
     -V, --version      Print the version number of wasm-bindgen-test-runner
 
     <input>            The wasm file to test
-    <testname>         Run only the tests with the given name
+    <testname>         If specified, only executes the tests containing <testname> in their names
 
 Arguments:
     --include-ignored  Include ignored tests in the test run
