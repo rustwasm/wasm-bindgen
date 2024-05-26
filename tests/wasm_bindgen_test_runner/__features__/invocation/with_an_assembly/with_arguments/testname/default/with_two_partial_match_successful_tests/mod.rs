@@ -1,6 +1,1 @@
-mod outputs_its_running_2_tests_feature;
-mod outputs_no_error_feature;
-mod outputs_the_assembly_test_summary_feature;
-mod outputs_the_successful_test_1_summary_feature;
-mod outputs_the_successful_test_2_summary_feature;
-mod returns_success_feature;
+mod executes_tests_feature;
