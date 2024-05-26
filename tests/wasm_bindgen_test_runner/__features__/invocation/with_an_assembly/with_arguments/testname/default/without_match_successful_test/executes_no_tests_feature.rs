@@ -12,22 +12,22 @@ feature! {
     when_wasm_bindgen_test_runner_is_invoked_with_the_assembly_and_the_arguments("cool");
 
     "Outputs its running 1 test" {
-      then_the_standard_output_should_have("running 1 test");
+        then_the_standard_output_should_have("running 1 test");
     }
 
     "Outputs no information about the skipped test" {
-      then_the_standard_output_should_not_have("test assembly_with_one_successful_test::pass");
+        then_the_standard_output_should_not_have("test assembly_with_one_successful_test::pass");
     }
 
     "Outputs no error" {
-      then_the_standard_error_should_be_empty();
+        then_the_standard_error_should_be_empty();
     }
 
     "Outputs the assembly test summary" {
-      then_the_standard_output_should_have("test result: ok. 0 passed; 0 failed; 0 ignored; 1 filtered out");
+        then_the_standard_output_should_have("test result: ok. 0 passed; 0 failed; 0 ignored; 1 filtered out");
     }
 
     "Returns success" {
-      then_success_should_have_been_returned();
+        then_success_should_have_been_returned();
     }
 }

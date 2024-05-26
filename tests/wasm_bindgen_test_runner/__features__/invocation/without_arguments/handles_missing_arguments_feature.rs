@@ -10,7 +10,7 @@ feature! {
     when_wasm_bindgen_test_runner_is_invoked_without_arguments();
 
     "Outputs the wasm-bindgen-test-runner usage information" {
-      then_the_standard_error_should_have(r#"
+        then_the_standard_error_should_have(r#"
 Usage:
     wasm-bindgen-test-runner [options] <input> [<testname>] [--include-ignored] [(--skip PATTERN)...] [--nocapture]
     wasm-bindgen-test-runner [options] <input> <testname> [--nocapture] --exact
@@ -21,10 +21,10 @@ Usage:
     }
 
     "Outputs test file missing error" {
-      then_the_standard_error_should_have("Invalid arguments.");
+        then_the_standard_error_should_have("Invalid arguments.");
     }
 
     "Returns an error code" {
-      then_failure_should_have_been_returned();
+        then_failure_should_have_been_returned();
     }
 }

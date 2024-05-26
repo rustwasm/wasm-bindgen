@@ -11,14 +11,14 @@ feature! {
     when_wasm_bindgen_test_runner_is_invoked_with_the_assembly();
 
     "Outputs no tests to run warning" {
-      then_the_standard_output_should_have("no tests to run!");
+        then_the_standard_output_should_have("no tests to run!");
     }
 
     "Outputs no error" {
-      then_the_standard_error_should_be_empty();
+        then_the_standard_error_should_be_empty();
     }
 
     "Returns an error code" {
-      then_success_should_have_been_returned();
+        then_success_should_have_been_returned();
     }
 }

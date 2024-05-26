@@ -9,7 +9,7 @@ feature! {
     given_there_is_an_assembly_with_one_ignored_test();
     when_wasm_bindgen_test_runner_is_invoked_with_the_assembly_and_the_arguments("--list --format terse");
 
-    "Ouputs the test in the terse format" {
+    "Outputs the test in the terse format" {
         then_the_standard_output_should_have("ignored: test");
     }
 

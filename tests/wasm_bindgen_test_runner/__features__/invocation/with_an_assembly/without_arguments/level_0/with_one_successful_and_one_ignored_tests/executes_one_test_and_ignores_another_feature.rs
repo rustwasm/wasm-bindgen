@@ -11,26 +11,26 @@ feature! {
     when_wasm_bindgen_test_runner_is_invoked_with_the_assembly();
 
     "Outputs its running 2 tests" {
-      then_the_standard_output_should_have("running 2 tests");
+        then_the_standard_output_should_have("running 2 tests");
     }
 
     "Outputs the successful test summary" {
-      then_the_standard_output_should_have("test assembly_with_one_successful_and_one_ignored_tests::pass ... ok");
+        then_the_standard_output_should_have("test assembly_with_one_successful_and_one_ignored_tests::pass ... ok");
     }
 
     "Outputs the ignored test summary" {
-      then_the_standard_output_should_have("test assembly_with_one_successful_and_one_ignored_tests::ignored ... ignored");
+        then_the_standard_output_should_have("test assembly_with_one_successful_and_one_ignored_tests::ignored ... ignored");
     }
 
     "Outputs no error" {
-      then_the_standard_error_should_be_empty();
+        then_the_standard_error_should_be_empty();
     }
 
     "Outputs the assembly test summary" {
-      then_the_standard_output_should_have("test result: ok. 1 passed; 0 failed; 1 ignored; 0 filtered out");
+        then_the_standard_output_should_have("test result: ok. 1 passed; 0 failed; 1 ignored; 0 filtered out");
     }
 
     "Returns success" {
-      then_success_should_have_been_returned();
+        then_success_should_have_been_returned();
     }
 }

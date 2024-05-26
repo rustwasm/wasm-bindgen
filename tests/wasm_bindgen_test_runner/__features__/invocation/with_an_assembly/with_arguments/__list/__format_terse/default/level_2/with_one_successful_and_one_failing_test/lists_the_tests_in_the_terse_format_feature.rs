@@ -9,12 +9,12 @@ feature! {
     given_there_is_an_assembly_with_one_successful_and_one_failing_level_2_tests();
     when_wasm_bindgen_test_runner_is_invoked_with_the_assembly_and_the_arguments("--list --format terse");
 
-   "Ouputs the test in the terse format" {
-      then_the_standard_output_should_have(r#"level_1::level_2::pass: test
+    "Ouputs the test in the terse format" {
+        then_the_standard_output_should_have(r#"level_1::level_2::pass: test
 level_1::level_2::fail: test"#);
-   }
+    }
 
-   "Returns success" {
-      then_success_should_have_been_returned();
-   }
+    "Returns success" {
+        then_success_should_have_been_returned();
+    }
 }

@@ -10,9 +10,7 @@ feature! {
     when_wasm_bindgen_test_runner_is_invoked_with_the_option("--version");
 
     "Outputs the wasm-bindgen-test-runner version information" {
-        then_the_standard_output_should_have(
-            &format!("wasm-bindgen-test-runner {}", env!("CARGO_PKG_VERSION")),
-        );
+        then_the_standard_output_should_have(&format!("wasm-bindgen-test-runner {}", env!("CARGO_PKG_VERSION")));
     }
 
     "Returns success" {

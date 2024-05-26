@@ -9,11 +9,11 @@ feature! {
     given_there_is_an_assembly_with_one_ignored_with_reason_test();
     when_wasm_bindgen_test_runner_is_invoked_with_the_assembly_and_the_arguments("--list --format terse");
 
-    "Ouputs the test in the terse format" {
-       then_the_standard_output_should_have("ignored: test");
+    "Outputs the test in the terse format" {
+        then_the_standard_output_should_have("ignored: test");
     }
 
     "Returns success" {
-       then_success_should_have_been_returned();
+        then_success_should_have_been_returned();
     }
 }

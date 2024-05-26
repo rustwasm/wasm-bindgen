@@ -23,10 +23,10 @@ feature! {
     }
 
     "Outputs no error" {
-       then_the_standard_error_should_be_empty();
+        then_the_standard_error_should_be_empty();
     }
 
     "Returns success" {
-       then_success_should_have_been_returned();
+        then_success_should_have_been_returned();
     }
 }
