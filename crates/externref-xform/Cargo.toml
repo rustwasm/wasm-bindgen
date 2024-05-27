@@ -15,6 +15,7 @@ rust-version = "1.57"
 [dependencies]
 anyhow = "1.0"
 walrus = "0.20.2"
+wasm-bindgen-wasm-conventions = { path = "../wasm-conventions", version = "=0.2.92" }
 
 [dev-dependencies]
 rayon = "1.0"

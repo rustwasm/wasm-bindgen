@@ -92,6 +92,8 @@
 
 #![deny(missing_docs, missing_debug_implementations)]
 
+use anyhow::Context;
+
 /// Run the transformation.
 ///
 /// See the module-level docs for details on the transformation.
@@ -117,6 +119,10 @@ pub fn run(
     shadow_stack_pointer: walrus::GlobalId,
     to_xform: &[(walrus::FunctionId, usize, Vec<walrus::ValType>)],
 ) -> Result<Vec<walrus::FunctionId>, anyhow::Error> {
+    // Insert multi-value to the target features section.
+    wasm_bindgen_wasm_conventions::insert_target_feature(module, "multivalue")
+        .context("failed to parse `target_features` custom section")?;
+
     let mut wrappers = Vec::new();
     for (func, return_pointer_index, results) in to_xform {
         wrappers.push(xform_one(
