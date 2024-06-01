@@ -15,12 +15,6 @@ let dropCount = 0;
 exports.drop_callback = () => dropCount += 1;
 
 exports.owned_methods = async () => {
-  // It's ridiculous, but 'warming up' the GC by running it a few times
-  // first seems to make it significantly more reliably actually GC our stuff.
-  for (let i = 0; i < 20; i++) {
-    await gc();
-  }
-
   dropCount = 0;
   new wasm.OwnedValue(1).add(new wasm.OwnedValue(2)).n();
 
