@@ -251,15 +251,15 @@ impl ToTokens for ast::Struct {
 
                 unsafe fn from_abi(js: u32) -> Self {
                     use #wasm_bindgen::__rt::std::rc::Rc;
-                    use #wasm_bindgen::__rt::std::option::Option::{Some, None};
+                    use #wasm_bindgen::__rt::std::result::Result::{Ok, Err};
                     use #wasm_bindgen::__rt::{assert_not_null, WasmRefCell};
 
                     let ptr = js as *mut WasmRefCell<#name>;
                     assert_not_null(ptr);
                     let rc = Rc::from_raw(ptr);
-                    match Rc::into_inner(rc) {
-                        Some(cell) => cell.into_inner(),
-                        None => #wasm_bindgen::throw_str(
+                    match Rc::try_unwrap(rc) {
+                        Ok(cell) => cell.into_inner(),
+                        Err(_) => #wasm_bindgen::throw_str(
                             "attempted to take ownership of Rust value while it was borrowed"
                         ),
                     }
