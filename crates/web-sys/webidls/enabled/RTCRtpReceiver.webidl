@@ -11,6 +11,7 @@
  JSImplementation="@mozilla.org/dom/rtpreceiver;1"]
 interface RTCRtpReceiver {
   readonly attribute MediaStreamTrack   track;
+  static RTCRtpCapabilities?            getCapabilities(DOMString kind);
   Promise<RTCStatsReport>               getStats();
   [Pref="media.peerconnection.rtpsourcesapi.enabled"]
   sequence<RTCRtpContributingSource>    getContributingSources();

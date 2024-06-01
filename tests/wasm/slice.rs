@@ -233,6 +233,7 @@ impl ReturnVecApplication {
         ReturnVecApplication { thing }
     }
 
+    #[allow(clippy::assigning_clones)] // false positive, should be fixed by https://github.com/rust-lang/rust-clippy/pull/12756
     pub fn tick(&mut self) {
         self.thing = self.thing.clone();
     }

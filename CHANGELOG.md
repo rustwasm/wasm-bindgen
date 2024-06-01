@@ -5,6 +5,10 @@
 
 ### Added
 
+* Allow exporting functions named `default`. Throw error in wasm-bindgen-cli if --target web and
+  an exported symbol is named `default`.
+  [#3930](https://github.com/rustwasm/wasm-bindgen/pull/3930)
+
 * Added support for arbitrary expressions when using `#[wasm_bindgen(typescript_custom_section)]`.
   [#3901](https://github.com/rustwasm/wasm-bindgen/pull/3901)
 
@@ -17,6 +21,12 @@
 * Added support for returning `Vec`s from async functions.
   [#3630](https://github.com/rustwasm/wasm-bindgen/pull/3630)
 
+* Added bindings for `InputDeviceInfo` and `MediaTrackCapabilities`.
+  [#3935](https://github.com/rustwasm/wasm-bindgen/pull/3935)
+
+* Add bindings for `RTCRtpReceiver.getCapabilities(DOMString)` method.
+  [#3941](https://github.com/rustwasm/wasm-bindgen/pull/3941)
+
 ### Changed
 
 * Stabilize Web Share API.
@@ -24,6 +34,9 @@
 
 * Generate JS bindings for WebIDL dictionary setters instead of using `Reflect`. This increases the size of the Web API bindings but should be more performant. Also, importing getters/setters from JS now supports specifying the JS attribute name as a string, e.g. `#[wasm_bindgen(method, setter = "x-cdm-codecs")]`.
   [#3898](https://github.com/rustwasm/wasm-bindgen/pull/3898)
+
+* Greatly improve the performance of sending WebIDL 'string enums' across the JavaScript boundary by converting the enum variant string to/from an int.
+  [#3915](https://github.com/rustwasm/wasm-bindgen/pull/3915)
 
 ### Fixed
 
@@ -35,6 +48,12 @@
 
 * Fix MSRV compilation.
   [#3927](https://github.com/rustwasm/wasm-bindgen/pull/3927)
+
+* Fix `clippy::empty_docs` lint.
+  [#3946](https://github.com/rustwasm/wasm-bindgen/pull/3946)
+
+* Fix missing target features in module when enabling reference types or multi-value transformation.
+  [#3967](https://github.com/rustwasm/wasm-bindgen/pull/3967)
 
 * Fixed Rust values getting GC'd while still borrowed.
   [#3940](https://github.com/rustwasm/wasm-bindgen/pull/3940)

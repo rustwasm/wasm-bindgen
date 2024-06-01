@@ -86,6 +86,7 @@ pub enum AdapterType {
     Option(Box<AdapterType>),
     Struct(String),
     Enum(String),
+    StringEnum(String),
     NamedExternref(String),
     Function,
     NonNull,
@@ -138,6 +139,28 @@ pub enum Instruction {
     WasmToInt {
         input: walrus::ValType,
         output: AdapterType,
+    },
+
+    /// Pops a wasm `i32` and pushes the enum variant as a string
+    WasmToStringEnum {
+        variant_values: Vec<String>,
+    },
+
+    OptionWasmToStringEnum {
+        variant_values: Vec<String>,
+        hole: u32,
+    },
+
+    /// pops a string and pushes the enum variant as an `i32`
+    StringEnumToWasm {
+        variant_values: Vec<String>,
+        invalid: u32,
+    },
+
+    OptionStringEnumToWasm {
+        variant_values: Vec<String>,
+        invalid: u32,
+        hole: u32,
     },
 
     /// Pops a `bool` from the stack and pushes an `i32` equivalent

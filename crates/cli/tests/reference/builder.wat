@@ -1,4 +1,4 @@
-(module
+(module $reference_test.wasm
   (type (;0;) (func (result i32)))
   (type (;1;) (func (param i32 i32)))
   (func $__wbg_classbuilder_free (;0;) (type 1) (param i32 i32))

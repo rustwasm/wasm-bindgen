@@ -163,7 +163,7 @@ pub enum ImportKind {
     /// Importing a type/class
     Type(ImportType),
     /// Importing a JS enum
-    Enum(ImportEnum),
+    Enum(StringEnum),
 }
 
 /// A function being imported from JS
@@ -302,10 +302,10 @@ pub struct ImportType {
     pub wasm_bindgen: Path,
 }
 
-/// The metadata for an Enum being imported
+/// The metadata for a String Enum
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 #[derive(Clone)]
-pub struct ImportEnum {
+pub struct StringEnum {
     /// The Rust enum's visibility
     pub vis: syn::Visibility,
     /// The Rust enum's identifiers
@@ -404,7 +404,7 @@ pub struct StructField {
     pub wasm_bindgen: Path,
 }
 
-/// Information about an Enum being exported
+/// The metadata for an Enum
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 #[derive(Clone)]
 pub struct Enum {

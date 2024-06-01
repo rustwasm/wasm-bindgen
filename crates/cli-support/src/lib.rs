@@ -327,6 +327,13 @@ impl Bindgen {
                 .context("failed getting Wasm module")?,
         };
 
+        // Check that no exported symbol is called "default" if we target web.
+        if matches!(self.mode, OutputMode::Web)
+            && module.exports.iter().any(|export| export.name == "default")
+        {
+            bail!("exported symbol \"default\" not allowed for --target web")
+        }
+
         let thread_count = self
             .threads
             .run(&mut module)

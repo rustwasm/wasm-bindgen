@@ -2797,15 +2797,15 @@ impl<'a> Context<'a> {
             match &js.name {
                 JsImportName::Module { module, name } => {
                     let import = self.module.imports.get_mut(id);
-                    import.module = module.clone();
-                    import.name = name.clone();
+                    import.module.clone_from(module);
+                    import.name.clone_from(name);
                     return Ok(true);
                 }
                 JsImportName::LocalModule { module, name } => {
                     let module = self.config.local_module_name(module);
                     let import = self.module.imports.get_mut(id);
                     import.module = module;
-                    import.name = name.clone();
+                    import.name.clone_from(name);
                     return Ok(true);
                 }
                 JsImportName::InlineJs {
@@ -2818,7 +2818,7 @@ impl<'a> Context<'a> {
                         .inline_js_module_name(unique_crate_identifier, *snippet_idx_in_crate);
                     let import = self.module.imports.get_mut(id);
                     import.module = module;
-                    import.name = name.clone();
+                    import.name.clone_from(name);
                     return Ok(true);
                 }
 
@@ -4133,6 +4133,7 @@ impl ExportedClass {
         }
     }
 
+    #[allow(clippy::assigning_clones)] // Clippy's suggested fix doesn't work at MSRV.
     fn push_accessor_ts(
         &mut self,
         docs: &str,
