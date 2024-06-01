@@ -948,7 +948,7 @@ impl<'a> Context<'a> {
             "
             const {name}Finalization = (typeof FinalizationRegistry === 'undefined')
                 ? {{ register: () => {{}}, unregister: () => {{}} }}
-                : new FinalizationRegistry(ptr => wasm.{}(ptr >>> 0));",
+                : new FinalizationRegistry(ptr => wasm.{}(ptr >>> 0, 1));",
             wasm_bindgen_shared::free_function(name),
         ));
 
@@ -1021,7 +1021,7 @@ impl<'a> Context<'a> {
 
             free() {{
                 const ptr = this.__destroy_into_raw();
-                wasm.{}(ptr);
+                wasm.{}(ptr, 0);
             }}
             ",
             wasm_bindgen_shared::free_function(name),

@@ -1611,6 +1611,98 @@ pub mod __rt {
     }
 
     if_std! {
+        use std::rc::Rc;
+
+        /// A type that encapsulates an `Rc<WasmRefCell<T>>` as well as a `Ref`
+        /// to the contents of that `WasmRefCell`.
+        ///
+        /// The `'static` requirement is an unfortunate consequence of how this
+        /// is implemented.
+        pub struct RcRef<T: ?Sized + 'static> {
+            // The 'static is a lie.
+            //
+            // We could get away without storing this, since we're in the same module as
+            // `WasmRefCell` and can directly manipulate its `borrow`, but I'm considering
+            // turning it into a wrapper around `std`'s `RefCell` to reduce `unsafe` in
+            // which case that would stop working. This also requires less `unsafe` as is.
+            //
+            // It's important that this goes before `Rc` so that it gets dropped first.
+            ref_: Ref<'static, T>,
+            _rc: Rc<WasmRefCell<T>>,
+        }
+
+        impl<T: ?Sized> RcRef<T> {
+            pub fn new(rc: Rc<WasmRefCell<T>>) -> Self {
+                let ref_ = unsafe { (*Rc::as_ptr(&rc)).borrow() };
+                Self { _rc: rc, ref_ }
+            }
+        }
+
+        impl<T: ?Sized> Deref for RcRef<T> {
+            type Target = T;
+
+            #[inline]
+            fn deref(&self) -> &T {
+                &self.ref_
+            }
+        }
+
+        impl<T: ?Sized> Borrow<T> for RcRef<T> {
+            #[inline]
+            fn borrow(&self) -> &T {
+                &self.ref_
+            }
+        }
+
+        /// A type that encapsulates an `Rc<WasmRefCell<T>>` as well as a
+        /// `RefMut` to the contents of that `WasmRefCell`.
+        ///
+        /// The `'static` requirement is an unfortunate consequence of how this
+        /// is implemented.
+        pub struct RcRefMut<T: ?Sized + 'static> {
+            ref_: RefMut<'static, T>,
+            _rc: Rc<WasmRefCell<T>>,
+        }
+
+        impl<T: ?Sized> RcRefMut<T> {
+            pub fn new(rc: Rc<WasmRefCell<T>>) -> Self {
+                let ref_ = unsafe { (*Rc::as_ptr(&rc)).borrow_mut() };
+                Self { _rc: rc, ref_ }
+            }
+        }
+
+        impl<T: ?Sized> Deref for RcRefMut<T> {
+            type Target = T;
+
+            #[inline]
+            fn deref(&self) -> &T {
+                &self.ref_
+            }
+        }
+
+        impl<T: ?Sized> DerefMut for RcRefMut<T> {
+            #[inline]
+            fn deref_mut(&mut self) -> &mut T {
+                &mut self.ref_
+            }
+        }
+
+        impl<T: ?Sized> Borrow<T> for RcRefMut<T> {
+            #[inline]
+            fn borrow(&self) -> &T {
+                &self.ref_
+            }
+        }
+
+        impl<T: ?Sized> BorrowMut<T> for RcRefMut<T> {
+            #[inline]
+            fn borrow_mut(&mut self) -> &mut T {
+                &mut self.ref_
+            }
+        }
+    }
+
+    if_std! {
         use std::alloc::{alloc, dealloc, realloc, Layout};
 
         #[no_mangle]
