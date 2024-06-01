@@ -10113,6 +10113,13 @@ mod gen_VisibilityState;
 #[allow(unused_imports)]
 pub use gen_VisibilityState::*;
 
+#[cfg(feature = "VisualViewport")]
+#[allow(non_snake_case)]
+mod gen_VisualViewport;
+#[cfg(feature = "VisualViewport")]
+#[allow(unused_imports)]
+pub use gen_VisualViewport::*;
+
 #[cfg(feature = "VoidCallback")]
 #[allow(non_snake_case)]
 mod gen_VoidCallback;

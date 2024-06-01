@@ -236,6 +236,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Screen`, `Window`*"]
     pub fn screen(this: &Window) -> Result<Screen, JsValue>;
+    #[cfg(feature = "VisualViewport")]
+    # [wasm_bindgen (structural , method , getter , js_class = "Window" , js_name = visualViewport)]
+    #[doc = "Getter for the `visualViewport` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/visualViewport)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VisualViewport`, `Window`*"]
+    pub fn visual_viewport(this: &Window) -> Option<VisualViewport>;
     # [wasm_bindgen (structural , catch , method , getter , js_class = "Window" , js_name = innerWidth)]
     #[doc = "Getter for the `innerWidth` field of this object."]
     #[doc = ""]
