@@ -177,6 +177,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgElement`*"]
     pub fn set_onauxclick(this: &SvgElement, value: Option<&::js_sys::Function>);
+    # [wasm_bindgen (structural , method , getter , js_class = "SVGElement" , js_name = onbeforetoggle)]
+    #[doc = "Getter for the `onbeforetoggle` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGElement/onbeforetoggle)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgElement`*"]
+    pub fn onbeforetoggle(this: &SvgElement) -> Option<::js_sys::Function>;
+    # [wasm_bindgen (structural , method , setter , js_class = "SVGElement" , js_name = onbeforetoggle)]
+    #[doc = "Setter for the `onbeforetoggle` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGElement/onbeforetoggle)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgElement`*"]
+    pub fn set_onbeforetoggle(this: &SvgElement, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "SVGElement" , js_name = oncanplay)]
     #[doc = "Getter for the `oncanplay` field of this object."]
     #[doc = ""]

@@ -31,6 +31,8 @@ interface mixin GlobalEventHandlers {
            attribute EventHandler onfocus;
            //(Not implemented)attribute EventHandler oncancel;
            attribute EventHandler onauxclick;
+           [Pref="dom.element.popover.enabled"]
+           attribute EventHandler onbeforetoggle;
            attribute EventHandler oncanplay;
            attribute EventHandler oncanplaythrough;
            attribute EventHandler onchange;

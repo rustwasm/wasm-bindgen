@@ -60,6 +60,8 @@ interface HTMLElement : Element {
   //readonly attribute HTMLMenuElement? contextMenu;
   //[SetterThrows]
   //         attribute HTMLMenuElement? contextMenu;
+  [CEReactions, SetterThrows, Pure, Pref="dom.element.popover.enabled"]
+           attribute DOMString? popover;
   [CEReactions, SetterThrows, Pure]
            attribute boolean spellcheck;
 
@@ -70,6 +72,13 @@ interface HTMLElement : Element {
   //readonly attribute boolean? commandHidden;
   //readonly attribute boolean? commandDisabled;
   //readonly attribute boolean? commandChecked;
+
+  [Throws, Pref="dom.element.popover.enabled"]
+  undefined showPopover();
+  [Throws, Pref="dom.element.popover.enabled"]
+  undefined hidePopover();
+  [Throws, Pref="dom.element.popover.enabled"]
+  boolean togglePopover(optional boolean force);
 
   // styling
   [PutForwards=cssText, Constant]

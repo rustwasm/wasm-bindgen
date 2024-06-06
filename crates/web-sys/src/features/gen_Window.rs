@@ -526,6 +526,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
     pub fn set_onauxclick(this: &Window, value: Option<&::js_sys::Function>);
+    # [wasm_bindgen (structural , method , getter , js_class = "Window" , js_name = onbeforetoggle)]
+    #[doc = "Getter for the `onbeforetoggle` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/onbeforetoggle)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    pub fn onbeforetoggle(this: &Window) -> Option<::js_sys::Function>;
+    # [wasm_bindgen (structural , method , setter , js_class = "Window" , js_name = onbeforetoggle)]
+    #[doc = "Setter for the `onbeforetoggle` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/onbeforetoggle)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    pub fn set_onbeforetoggle(this: &Window, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "Window" , js_name = oncanplay)]
     #[doc = "Getter for the `oncanplay` field of this object."]
     #[doc = ""]
