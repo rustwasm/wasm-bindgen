@@ -3001,6 +3001,13 @@ extern "C" {
         input: &str,
         init: &RequestInit,
     ) -> ::js_sys::Promise;
+    # [wasm_bindgen (method , structural , js_class = "Window" , js_name = queueMicrotask)]
+    #[doc = "The `queueMicrotask()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/queueMicrotask)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Window`*"]
+    pub fn queue_microtask(this: &Window, callback: &::js_sys::Function);
     # [wasm_bindgen (catch , method , structural , js_class = "Window" , js_name = setInterval)]
     #[doc = "The `setInterval()` method."]
     #[doc = ""]

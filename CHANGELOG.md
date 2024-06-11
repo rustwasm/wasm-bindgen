@@ -30,6 +30,9 @@
 * Add bindings for `VisualViewport`.
   [#3931](https://github.com/rustwasm/wasm-bindgen/pull/3931)
 
+* Add bindings for `queueMicrotask`.
+  [#3981](https://github.com/rustwasm/wasm-bindgen/pull/3981)
+
 ### Changed
 
 * Stabilize Web Share API.
