@@ -820,6 +820,13 @@ extern "C" {
         input: &str,
         init: &RequestInit,
     ) -> ::js_sys::Promise;
+    # [wasm_bindgen (method , structural , js_class = "WorkerGlobalScope" , js_name = queueMicrotask)]
+    #[doc = "The `queueMicrotask()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/queueMicrotask)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
+    pub fn queue_microtask(this: &WorkerGlobalScope, callback: &::js_sys::Function);
     # [wasm_bindgen (catch , method , structural , js_class = "WorkerGlobalScope" , js_name = setInterval)]
     #[doc = "The `setInterval()` method."]
     #[doc = ""]

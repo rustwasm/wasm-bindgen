@@ -68,3 +68,8 @@ partial interface mixin WindowOrWorkerGlobalScope {
   [Throws, Func="mozilla::dom::DOMPrefs::DOMCachesEnabled", SameObject]
   readonly attribute CacheStorage caches;
 };
+
+// https://html.spec.whatwg.org/#microtask-queuing
+partial interface mixin WindowOrWorkerGlobalScope {
+  undefined queueMicrotask(VoidFunction callback);
+};
