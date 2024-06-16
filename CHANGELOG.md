@@ -67,6 +67,9 @@
 * Fixed Rust values not getting GC'd if they were created via. a constructor.
   [#3940](https://github.com/rustwasm/wasm-bindgen/pull/3940)
 
+* Fix triggering `clippy::mem_forget` lint in exported structs.
+  [#3985](https://github.com/rustwasm/wasm-bindgen/pull/3985)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.92](https://github.com/rustwasm/wasm-bindgen/compare/0.2.91...0.2.92)

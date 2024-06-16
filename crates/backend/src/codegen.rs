@@ -394,6 +394,7 @@ impl ToTokens for ast::Struct {
                         #wasm_bindgen::__rt::std::result::Result::Err(value)
                     } else {
                         // Don't run `JsValue`'s destructor, `unwrap_fn` already did that for us.
+                        #[allow(clippy::mem_forget)]
                         #wasm_bindgen::__rt::std::mem::forget(value);
                         unsafe {
                             #wasm_bindgen::__rt::std::result::Result::Ok(
