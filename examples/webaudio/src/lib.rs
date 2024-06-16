@@ -93,12 +93,7 @@ impl FmOsc {
     /// Sets the gain for this oscillator, between 0.0 and 1.0.
     #[wasm_bindgen]
     pub fn set_gain(&self, mut gain: f32) {
-        if gain > 1.0 {
-            gain = 1.0;
-        }
-        if gain < 0.0 {
-            gain = 0.0;
-        }
+        gain = gain.clamp(0.0, 1.0);
         self.gain.gain().set_value(gain);
     }
 

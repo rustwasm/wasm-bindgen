@@ -43,12 +43,12 @@ pub fn optional_i32_neg_one() -> Option<i32> {
 
 #[wasm_bindgen]
 pub fn optional_i32_min() -> Option<i32> {
-    Some(i32::min_value())
+    Some(i32::MIN)
 }
 
 #[wasm_bindgen]
 pub fn optional_i32_max() -> Option<i32> {
-    Some(i32::max_value())
+    Some(i32::MAX)
 }
 
 #[wasm_bindgen]
@@ -73,12 +73,12 @@ pub fn optional_u32_one() -> Option<u32> {
 
 #[wasm_bindgen]
 pub fn optional_u32_min() -> Option<u32> {
-    Some(u32::min_value())
+    Some(u32::MIN)
 }
 
 #[wasm_bindgen]
 pub fn optional_u32_max() -> Option<u32> {
-    Some(u32::max_value())
+    Some(u32::MAX)
 }
 
 #[wasm_bindgen]
@@ -108,12 +108,12 @@ pub fn optional_isize_neg_one() -> Option<isize> {
 
 #[wasm_bindgen]
 pub fn optional_isize_min() -> Option<isize> {
-    Some(isize::min_value())
+    Some(isize::MIN)
 }
 
 #[wasm_bindgen]
 pub fn optional_isize_max() -> Option<isize> {
-    Some(isize::max_value())
+    Some(isize::MAX)
 }
 
 #[wasm_bindgen]
@@ -138,12 +138,12 @@ pub fn optional_usize_one() -> Option<usize> {
 
 #[wasm_bindgen]
 pub fn optional_usize_min() -> Option<usize> {
-    Some(usize::min_value())
+    Some(usize::MIN)
 }
 
 #[wasm_bindgen]
 pub fn optional_usize_max() -> Option<usize> {
-    Some(usize::max_value())
+    Some(usize::MAX)
 }
 
 #[wasm_bindgen]
@@ -223,12 +223,12 @@ pub fn optional_i8_neg_one() -> Option<i8> {
 
 #[wasm_bindgen]
 pub fn optional_i8_min() -> Option<i8> {
-    Some(i8::min_value())
+    Some(i8::MIN)
 }
 
 #[wasm_bindgen]
 pub fn optional_i8_max() -> Option<i8> {
-    Some(i8::max_value())
+    Some(i8::MAX)
 }
 
 #[wasm_bindgen]
@@ -253,12 +253,12 @@ pub fn optional_u8_one() -> Option<u8> {
 
 #[wasm_bindgen]
 pub fn optional_u8_min() -> Option<u8> {
-    Some(u8::min_value())
+    Some(u8::MIN)
 }
 
 #[wasm_bindgen]
 pub fn optional_u8_max() -> Option<u8> {
-    Some(u8::max_value())
+    Some(u8::MAX)
 }
 
 #[wasm_bindgen]
@@ -288,12 +288,12 @@ pub fn optional_i16_neg_one() -> Option<i16> {
 
 #[wasm_bindgen]
 pub fn optional_i16_min() -> Option<i16> {
-    Some(i16::min_value())
+    Some(i16::MIN)
 }
 
 #[wasm_bindgen]
 pub fn optional_i16_max() -> Option<i16> {
-    Some(i16::max_value())
+    Some(i16::MAX)
 }
 
 #[wasm_bindgen]
@@ -318,12 +318,12 @@ pub fn optional_u16_one() -> Option<u16> {
 
 #[wasm_bindgen]
 pub fn optional_u16_min() -> Option<u16> {
-    Some(u16::min_value())
+    Some(u16::MIN)
 }
 
 #[wasm_bindgen]
 pub fn optional_u16_max() -> Option<u16> {
-    Some(u16::max_value())
+    Some(u16::MAX)
 }
 
 #[wasm_bindgen]
@@ -353,12 +353,12 @@ pub fn optional_i64_neg_one() -> Option<i64> {
 
 #[wasm_bindgen]
 pub fn optional_i64_min() -> Option<i64> {
-    Some(i64::min_value())
+    Some(i64::MIN)
 }
 
 #[wasm_bindgen]
 pub fn optional_i64_max() -> Option<i64> {
-    Some(i64::max_value())
+    Some(i64::MAX)
 }
 
 #[wasm_bindgen]
@@ -383,12 +383,12 @@ pub fn optional_u64_one() -> Option<u64> {
 
 #[wasm_bindgen]
 pub fn optional_u64_min() -> Option<u64> {
-    Some(u64::min_value())
+    Some(u64::MIN)
 }
 
 #[wasm_bindgen]
 pub fn optional_u64_max() -> Option<u64> {
-    Some(u64::max_value())
+    Some(u64::MAX)
 }
 
 #[wasm_bindgen]

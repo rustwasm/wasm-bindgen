@@ -437,7 +437,7 @@ impl Encode for u32 {
 
 impl Encode for usize {
     fn encode(&self, dst: &mut Encoder) {
-        assert!(*self <= u32::max_value() as usize);
+        assert!(*self <= u32::MAX as usize);
         (*self as u32).encode(dst);
     }
 }

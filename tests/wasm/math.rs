@@ -94,24 +94,24 @@ macro_rules! t_roundtrip {
 
 #[wasm_bindgen_test]
 fn limits_correct() {
-    t_roundtrip!(roundtrip_i8(i8::min_value()));
+    t_roundtrip!(roundtrip_i8(i8::MIN));
     t_roundtrip!(roundtrip_i8(0));
-    t_roundtrip!(roundtrip_i8(i8::max_value()));
-    t_roundtrip!(roundtrip_i16(i16::min_value()));
+    t_roundtrip!(roundtrip_i8(i8::MAX));
+    t_roundtrip!(roundtrip_i16(i16::MIN));
     t_roundtrip!(roundtrip_i16(0));
-    t_roundtrip!(roundtrip_i16(i16::max_value()));
-    t_roundtrip!(roundtrip_i32(i32::min_value()));
+    t_roundtrip!(roundtrip_i16(i16::MAX));
+    t_roundtrip!(roundtrip_i32(i32::MIN));
     t_roundtrip!(roundtrip_i32(0));
-    t_roundtrip!(roundtrip_i32(i32::max_value()));
-    t_roundtrip!(roundtrip_u8(u8::min_value()));
+    t_roundtrip!(roundtrip_i32(i32::MAX));
+    t_roundtrip!(roundtrip_u8(u8::MIN));
     t_roundtrip!(roundtrip_u8(0));
-    t_roundtrip!(roundtrip_u8(u8::max_value()));
-    t_roundtrip!(roundtrip_u16(u16::min_value()));
+    t_roundtrip!(roundtrip_u8(u8::MAX));
+    t_roundtrip!(roundtrip_u16(u16::MIN));
     t_roundtrip!(roundtrip_u16(0));
-    t_roundtrip!(roundtrip_u16(u16::max_value()));
-    t_roundtrip!(roundtrip_u32(u32::min_value()));
+    t_roundtrip!(roundtrip_u16(u16::MAX));
+    t_roundtrip!(roundtrip_u32(u32::MIN));
     t_roundtrip!(roundtrip_u32(0));
-    t_roundtrip!(roundtrip_u32(u32::max_value()));
+    t_roundtrip!(roundtrip_u32(u32::MAX));
 
     test_js_roundtrip();
 
