@@ -17,7 +17,6 @@ use core::ops::{
     Add, BitAnd, BitOr, BitXor, Deref, DerefMut, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub,
 };
 use core::ptr::NonNull;
-use core::u32;
 
 use crate::convert::{FromWasmAbi, TryFromJsValue, WasmRet, WasmSlice};
 
@@ -1503,7 +1502,7 @@ pub mod __rt {
 
         pub fn borrow(&self) -> Ref<T> {
             unsafe {
-                if self.borrow.get() == usize::max_value() {
+                if self.borrow.get() == usize::MAX {
                     borrow_fail();
                 }
                 self.borrow.set(self.borrow.get() + 1);
@@ -1519,7 +1518,7 @@ pub mod __rt {
                 if self.borrow.get() != 0 {
                     borrow_fail();
                 }
-                self.borrow.set(usize::max_value());
+                self.borrow.set(usize::MAX);
                 RefMut {
                     value: &mut *self.value.get(),
                     borrow: &self.borrow,

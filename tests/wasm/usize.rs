@@ -25,22 +25,22 @@ pub fn isize_neg_one() -> isize {
 
 #[wasm_bindgen]
 pub fn isize_i32_min() -> isize {
-    i32::min_value() as isize
+    i32::MIN as isize
 }
 
 #[wasm_bindgen]
 pub fn usize_u32_max() -> usize {
-    u32::max_value() as usize
+    u32::MAX as usize
 }
 
 #[wasm_bindgen]
 pub fn isize_min() -> isize {
-    isize::min_value()
+    isize::MIN
 }
 
 #[wasm_bindgen]
 pub fn usize_max() -> usize {
-    usize::max_value()
+    usize::MAX
 }
 
 #[wasm_bindgen]

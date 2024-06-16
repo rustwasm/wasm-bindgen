@@ -25,22 +25,22 @@ pub fn neg_one() -> i64 {
 
 #[wasm_bindgen]
 pub fn i32_min() -> i64 {
-    i32::min_value() as i64
+    i32::MIN as i64
 }
 
 #[wasm_bindgen]
 pub fn u32_max() -> u64 {
-    u32::max_value() as u64
+    u32::MAX as u64
 }
 
 #[wasm_bindgen]
 pub fn i64_min() -> i64 {
-    i64::min_value()
+    i64::MIN
 }
 
 #[wasm_bindgen]
 pub fn u64_max() -> u64 {
-    u64::max_value()
+    u64::MAX
 }
 
 #[wasm_bindgen]
@@ -65,12 +65,12 @@ pub fn u64_jsvalue_identity(a: u64) -> JsValue {
 
 #[wasm_bindgen]
 pub fn i128_min_jsvalue() -> JsValue {
-    JsValue::from(i128::min_value())
+    JsValue::from(i128::MIN)
 }
 
 #[wasm_bindgen]
 pub fn u128_max_jsvalue() -> JsValue {
-    JsValue::from(u128::max_value())
+    JsValue::from(u128::MAX)
 }
 
 #[wasm_bindgen]

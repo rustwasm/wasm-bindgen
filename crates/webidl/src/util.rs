@@ -103,13 +103,11 @@ pub(crate) fn array(base_ty: &str, pos: TypePosition, immutable: bool) -> syn::T
 
 /// Map a webidl const value to the correct wasm-bindgen const value
 pub fn webidl_const_v_to_backend_const_v(v: &ConstValueLit) -> ConstValue {
-    use std::f64::{INFINITY, NAN, NEG_INFINITY};
-
     match *v {
         ConstValueLit::Boolean(b) => ConstValue::Boolean(b.0),
-        ConstValueLit::Float(FloatLit::NegInfinity(_)) => ConstValue::Float(NEG_INFINITY),
-        ConstValueLit::Float(FloatLit::Infinity(_)) => ConstValue::Float(INFINITY),
-        ConstValueLit::Float(FloatLit::NaN(_)) => ConstValue::Float(NAN),
+        ConstValueLit::Float(FloatLit::NegInfinity(_)) => ConstValue::Float(f64::NEG_INFINITY),
+        ConstValueLit::Float(FloatLit::Infinity(_)) => ConstValue::Float(f64::INFINITY),
+        ConstValueLit::Float(FloatLit::NaN(_)) => ConstValue::Float(f64::NAN),
         ConstValueLit::Float(FloatLit::Value(s)) => ConstValue::Float(s.0.parse().unwrap()),
         ConstValueLit::Integer(lit) => {
             let mklit = |orig_text: &str, base: u32, offset: usize| {
@@ -125,7 +123,7 @@ pub fn webidl_const_v_to_backend_const_v(v: &ConstValueLit) -> ConstValue {
                 let n = u64::from_str_radix(text, base)
                     .unwrap_or_else(|_| panic!("literal too big: {}", orig_text));
                 if negative {
-                    let n = if n > (i64::min_value() as u64).wrapping_neg() {
+                    let n = if n > (i64::MIN as u64).wrapping_neg() {
                         panic!("literal too big: {}", orig_text)
                     } else {
                         n.wrapping_neg() as i64
