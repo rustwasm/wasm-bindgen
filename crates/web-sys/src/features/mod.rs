@@ -5906,6 +5906,20 @@ mod gen_NavigatorAutomationInformation;
 #[allow(unused_imports)]
 pub use gen_NavigatorAutomationInformation::*;
 
+#[cfg(feature = "NavigatorUaBrandVersion")]
+#[allow(non_snake_case)]
+mod gen_NavigatorUaBrandVersion;
+#[cfg(feature = "NavigatorUaBrandVersion")]
+#[allow(unused_imports)]
+pub use gen_NavigatorUaBrandVersion::*;
+
+#[cfg(feature = "NavigatorUaData")]
+#[allow(non_snake_case)]
+mod gen_NavigatorUaData;
+#[cfg(feature = "NavigatorUaData")]
+#[allow(unused_imports)]
+pub use gen_NavigatorUaData::*;
+
 #[cfg(feature = "NetworkCommandOptions")]
 #[allow(non_snake_case)]
 mod gen_NetworkCommandOptions;
@@ -9643,6 +9657,20 @@ mod gen_ULongRange;
 #[cfg(feature = "ULongRange")]
 #[allow(unused_imports)]
 pub use gen_ULongRange::*;
+
+#[cfg(feature = "UaDataValues")]
+#[allow(non_snake_case)]
+mod gen_UaDataValues;
+#[cfg(feature = "UaDataValues")]
+#[allow(unused_imports)]
+pub use gen_UaDataValues::*;
+
+#[cfg(feature = "UaLowEntropyJson")]
+#[allow(non_snake_case)]
+mod gen_UaLowEntropyJson;
+#[cfg(feature = "UaLowEntropyJson")]
+#[allow(unused_imports)]
+pub use gen_UaLowEntropyJson::*;
 
 #[cfg(feature = "UdpMessageEventInit")]
 #[allow(non_snake_case)]
