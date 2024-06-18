@@ -1132,13 +1132,6 @@ mod gen_ClipboardItemOptions;
 #[allow(unused_imports)]
 pub use gen_ClipboardItemOptions::*;
 
-#[cfg(feature = "ClipboardPermissionDescriptor")]
-#[allow(non_snake_case)]
-mod gen_ClipboardPermissionDescriptor;
-#[cfg(feature = "ClipboardPermissionDescriptor")]
-#[allow(unused_imports)]
-pub use gen_ClipboardPermissionDescriptor::*;
-
 #[cfg(feature = "CloseEvent")]
 #[allow(non_snake_case)]
 mod gen_CloseEvent;
