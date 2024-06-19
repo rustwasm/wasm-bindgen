@@ -14,10 +14,28 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuBindGroupEntry;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `binding` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupEntry`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "binding")]
+    pub fn get_binding(this: &GpuBindGroupEntry) -> u32;
     #[wasm_bindgen(method, setter = "binding")]
-    fn binding_shim(this: &GpuBindGroupEntry, val: u32);
+    fn set_binding(this: &GpuBindGroupEntry, val: u32);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `resource` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroupEntry`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "resource")]
+    pub fn get_resource(this: &GpuBindGroupEntry) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "resource")]
-    fn resource_shim(this: &GpuBindGroupEntry, val: &::wasm_bindgen::JsValue);
+    fn set_resource(this: &GpuBindGroupEntry, val: &::wasm_bindgen::JsValue);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuBindGroupEntry {
@@ -42,7 +60,7 @@ impl GpuBindGroupEntry {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn binding(&mut self, val: u32) -> &mut Self {
-        self.binding_shim(val);
+        self.set_binding(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -53,7 +71,7 @@ impl GpuBindGroupEntry {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn resource(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.resource_shim(val);
+        self.set_resource(val);
         self
     }
 }

@@ -10,8 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Algorithm`*"]
     pub type Algorithm;
+    #[doc = "Get the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Algorithm`*"]
+    #[wasm_bindgen(method, getter = "name")]
+    pub fn get_name(this: &Algorithm) -> String;
     #[wasm_bindgen(method, setter = "name")]
-    fn name_shim(this: &Algorithm, val: &str);
+    fn set_name(this: &Algorithm, val: &str);
 }
 impl Algorithm {
     #[doc = "Construct a new `Algorithm`."]
@@ -27,7 +32,7 @@ impl Algorithm {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Algorithm`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        self.name_shim(val);
+        self.set_name(val);
         self
     }
 }

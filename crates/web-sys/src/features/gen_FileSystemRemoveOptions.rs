@@ -10,8 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemRemoveOptions`*"]
     pub type FileSystemRemoveOptions;
+    #[doc = "Get the `recursive` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemRemoveOptions`*"]
+    #[wasm_bindgen(method, getter = "recursive")]
+    pub fn get_recursive(this: &FileSystemRemoveOptions) -> Option<bool>;
     #[wasm_bindgen(method, setter = "recursive")]
-    fn recursive_shim(this: &FileSystemRemoveOptions, val: bool);
+    fn set_recursive(this: &FileSystemRemoveOptions, val: bool);
 }
 impl FileSystemRemoveOptions {
     #[doc = "Construct a new `FileSystemRemoveOptions`."]
@@ -26,7 +31,7 @@ impl FileSystemRemoveOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemRemoveOptions`*"]
     pub fn recursive(&mut self, val: bool) -> &mut Self {
-        self.recursive_shim(val);
+        self.set_recursive(val);
         self
     }
 }

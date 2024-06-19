@@ -10,11 +10,22 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialParameters`*"]
     pub type PublicKeyCredentialParameters;
+    #[doc = "Get the `alg` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialParameters`*"]
+    #[wasm_bindgen(method, getter = "alg")]
+    pub fn get_alg(this: &PublicKeyCredentialParameters) -> i32;
     #[wasm_bindgen(method, setter = "alg")]
-    fn alg_shim(this: &PublicKeyCredentialParameters, val: i32);
+    fn set_alg(this: &PublicKeyCredentialParameters, val: i32);
+    #[cfg(feature = "PublicKeyCredentialType")]
+    #[doc = "Get the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialParameters`, `PublicKeyCredentialType`*"]
+    #[wasm_bindgen(method, getter = "type")]
+    pub fn get_type(this: &PublicKeyCredentialParameters) -> PublicKeyCredentialType;
     #[cfg(feature = "PublicKeyCredentialType")]
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &PublicKeyCredentialParameters, val: PublicKeyCredentialType);
+    fn set_type(this: &PublicKeyCredentialParameters, val: PublicKeyCredentialType);
 }
 impl PublicKeyCredentialParameters {
     #[cfg(feature = "PublicKeyCredentialType")]
@@ -32,7 +43,7 @@ impl PublicKeyCredentialParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialParameters`*"]
     pub fn alg(&mut self, val: i32) -> &mut Self {
-        self.alg_shim(val);
+        self.set_alg(val);
         self
     }
     #[cfg(feature = "PublicKeyCredentialType")]
@@ -40,7 +51,7 @@ impl PublicKeyCredentialParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialParameters`, `PublicKeyCredentialType`*"]
     pub fn type_(&mut self, val: PublicKeyCredentialType) -> &mut Self {
-        self.type__shim(val);
+        self.set_type(val);
         self
     }
 }

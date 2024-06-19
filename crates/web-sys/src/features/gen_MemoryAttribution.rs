@@ -14,13 +14,41 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type MemoryAttribution;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "MemoryAttributionContainer")]
+    #[doc = "Get the `container` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MemoryAttribution`, `MemoryAttributionContainer`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "container")]
+    pub fn get_container(this: &MemoryAttribution) -> Option<MemoryAttributionContainer>;
     #[cfg(feature = "MemoryAttributionContainer")]
     #[wasm_bindgen(method, setter = "container")]
-    fn container_shim(this: &MemoryAttribution, val: &MemoryAttributionContainer);
+    fn set_container(this: &MemoryAttribution, val: &MemoryAttributionContainer);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `scope` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MemoryAttribution`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "scope")]
+    pub fn get_scope(this: &MemoryAttribution) -> Option<String>;
     #[wasm_bindgen(method, setter = "scope")]
-    fn scope_shim(this: &MemoryAttribution, val: &str);
+    fn set_scope(this: &MemoryAttribution, val: &str);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `url` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MemoryAttribution`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "url")]
+    pub fn get_url(this: &MemoryAttribution) -> Option<String>;
     #[wasm_bindgen(method, setter = "url")]
-    fn url_shim(this: &MemoryAttribution, val: &str);
+    fn set_url(this: &MemoryAttribution, val: &str);
 }
 #[cfg(web_sys_unstable_apis)]
 impl MemoryAttribution {
@@ -44,7 +72,7 @@ impl MemoryAttribution {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn container(&mut self, val: &MemoryAttributionContainer) -> &mut Self {
-        self.container_shim(val);
+        self.set_container(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -55,7 +83,7 @@ impl MemoryAttribution {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn scope(&mut self, val: &str) -> &mut Self {
-        self.scope_shim(val);
+        self.set_scope(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -66,7 +94,7 @@ impl MemoryAttribution {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn url(&mut self, val: &str) -> &mut Self {
-        self.url_shim(val);
+        self.set_url(val);
         self
     }
 }

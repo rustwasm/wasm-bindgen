@@ -14,12 +14,39 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type AllowedUsbDevice;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `productId` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AllowedUsbDevice`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "productId")]
+    pub fn get_product_id(this: &AllowedUsbDevice) -> u8;
     #[wasm_bindgen(method, setter = "productId")]
-    fn product_id_shim(this: &AllowedUsbDevice, val: u8);
+    fn set_product_id(this: &AllowedUsbDevice, val: u8);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `serialNumber` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AllowedUsbDevice`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "serialNumber")]
+    pub fn get_serial_number(this: &AllowedUsbDevice) -> Option<String>;
     #[wasm_bindgen(method, setter = "serialNumber")]
-    fn serial_number_shim(this: &AllowedUsbDevice, val: &str);
+    fn set_serial_number(this: &AllowedUsbDevice, val: &str);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `vendorId` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AllowedUsbDevice`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "vendorId")]
+    pub fn get_vendor_id(this: &AllowedUsbDevice) -> u8;
     #[wasm_bindgen(method, setter = "vendorId")]
-    fn vendor_id_shim(this: &AllowedUsbDevice, val: u8);
+    fn set_vendor_id(this: &AllowedUsbDevice, val: u8);
 }
 #[cfg(web_sys_unstable_apis)]
 impl AllowedUsbDevice {
@@ -44,7 +71,7 @@ impl AllowedUsbDevice {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn product_id(&mut self, val: u8) -> &mut Self {
-        self.product_id_shim(val);
+        self.set_product_id(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -55,7 +82,7 @@ impl AllowedUsbDevice {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn serial_number(&mut self, val: &str) -> &mut Self {
-        self.serial_number_shim(val);
+        self.set_serial_number(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -66,7 +93,7 @@ impl AllowedUsbDevice {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn vendor_id(&mut self, val: u8) -> &mut Self {
-        self.vendor_id_shim(val);
+        self.set_vendor_id(val);
         self
     }
 }

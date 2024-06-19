@@ -10,14 +10,34 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheQueryOptions`*"]
     pub type CacheQueryOptions;
+    #[doc = "Get the `cacheName` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CacheQueryOptions`*"]
+    #[wasm_bindgen(method, getter = "cacheName")]
+    pub fn get_cache_name(this: &CacheQueryOptions) -> Option<String>;
     #[wasm_bindgen(method, setter = "cacheName")]
-    fn cache_name_shim(this: &CacheQueryOptions, val: &str);
+    fn set_cache_name(this: &CacheQueryOptions, val: &str);
+    #[doc = "Get the `ignoreMethod` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CacheQueryOptions`*"]
+    #[wasm_bindgen(method, getter = "ignoreMethod")]
+    pub fn get_ignore_method(this: &CacheQueryOptions) -> Option<bool>;
     #[wasm_bindgen(method, setter = "ignoreMethod")]
-    fn ignore_method_shim(this: &CacheQueryOptions, val: bool);
+    fn set_ignore_method(this: &CacheQueryOptions, val: bool);
+    #[doc = "Get the `ignoreSearch` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CacheQueryOptions`*"]
+    #[wasm_bindgen(method, getter = "ignoreSearch")]
+    pub fn get_ignore_search(this: &CacheQueryOptions) -> Option<bool>;
     #[wasm_bindgen(method, setter = "ignoreSearch")]
-    fn ignore_search_shim(this: &CacheQueryOptions, val: bool);
+    fn set_ignore_search(this: &CacheQueryOptions, val: bool);
+    #[doc = "Get the `ignoreVary` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CacheQueryOptions`*"]
+    #[wasm_bindgen(method, getter = "ignoreVary")]
+    pub fn get_ignore_vary(this: &CacheQueryOptions) -> Option<bool>;
     #[wasm_bindgen(method, setter = "ignoreVary")]
-    fn ignore_vary_shim(this: &CacheQueryOptions, val: bool);
+    fn set_ignore_vary(this: &CacheQueryOptions, val: bool);
 }
 impl CacheQueryOptions {
     #[doc = "Construct a new `CacheQueryOptions`."]
@@ -32,28 +52,28 @@ impl CacheQueryOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheQueryOptions`*"]
     pub fn cache_name(&mut self, val: &str) -> &mut Self {
-        self.cache_name_shim(val);
+        self.set_cache_name(val);
         self
     }
     #[doc = "Change the `ignoreMethod` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheQueryOptions`*"]
     pub fn ignore_method(&mut self, val: bool) -> &mut Self {
-        self.ignore_method_shim(val);
+        self.set_ignore_method(val);
         self
     }
     #[doc = "Change the `ignoreSearch` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheQueryOptions`*"]
     pub fn ignore_search(&mut self, val: bool) -> &mut Self {
-        self.ignore_search_shim(val);
+        self.set_ignore_search(val);
         self
     }
     #[doc = "Change the `ignoreVary` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheQueryOptions`*"]
     pub fn ignore_vary(&mut self, val: bool) -> &mut Self {
-        self.ignore_vary_shim(val);
+        self.set_ignore_vary(val);
         self
     }
 }

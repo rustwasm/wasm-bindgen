@@ -10,13 +10,29 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HmacKeyAlgorithm`*"]
     pub type HmacKeyAlgorithm;
+    #[doc = "Get the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HmacKeyAlgorithm`*"]
+    #[wasm_bindgen(method, getter = "name")]
+    pub fn get_name(this: &HmacKeyAlgorithm) -> String;
     #[wasm_bindgen(method, setter = "name")]
-    fn name_shim(this: &HmacKeyAlgorithm, val: &str);
+    fn set_name(this: &HmacKeyAlgorithm, val: &str);
+    #[cfg(feature = "KeyAlgorithm")]
+    #[doc = "Get the `hash` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HmacKeyAlgorithm`, `KeyAlgorithm`*"]
+    #[wasm_bindgen(method, getter = "hash")]
+    pub fn get_hash(this: &HmacKeyAlgorithm) -> KeyAlgorithm;
     #[cfg(feature = "KeyAlgorithm")]
     #[wasm_bindgen(method, setter = "hash")]
-    fn hash_shim(this: &HmacKeyAlgorithm, val: &KeyAlgorithm);
+    fn set_hash(this: &HmacKeyAlgorithm, val: &KeyAlgorithm);
+    #[doc = "Get the `length` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HmacKeyAlgorithm`*"]
+    #[wasm_bindgen(method, getter = "length")]
+    pub fn get_length(this: &HmacKeyAlgorithm) -> u32;
     #[wasm_bindgen(method, setter = "length")]
-    fn length_shim(this: &HmacKeyAlgorithm, val: u32);
+    fn set_length(this: &HmacKeyAlgorithm, val: u32);
 }
 impl HmacKeyAlgorithm {
     #[cfg(feature = "KeyAlgorithm")]
@@ -35,7 +51,7 @@ impl HmacKeyAlgorithm {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HmacKeyAlgorithm`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        self.name_shim(val);
+        self.set_name(val);
         self
     }
     #[cfg(feature = "KeyAlgorithm")]
@@ -43,14 +59,14 @@ impl HmacKeyAlgorithm {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HmacKeyAlgorithm`, `KeyAlgorithm`*"]
     pub fn hash(&mut self, val: &KeyAlgorithm) -> &mut Self {
-        self.hash_shim(val);
+        self.set_hash(val);
         self
     }
     #[doc = "Change the `length` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HmacKeyAlgorithm`*"]
     pub fn length(&mut self, val: u32) -> &mut Self {
-        self.length_shim(val);
+        self.set_length(val);
         self
     }
 }

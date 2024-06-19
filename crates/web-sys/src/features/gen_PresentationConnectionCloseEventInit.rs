@@ -10,17 +10,45 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnectionCloseEventInit`*"]
     pub type PresentationConnectionCloseEventInit;
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PresentationConnectionCloseEventInit`*"]
+    #[wasm_bindgen(method, getter = "bubbles")]
+    pub fn get_bubbles(this: &PresentationConnectionCloseEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &PresentationConnectionCloseEventInit, val: bool);
+    fn set_bubbles(this: &PresentationConnectionCloseEventInit, val: bool);
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PresentationConnectionCloseEventInit`*"]
+    #[wasm_bindgen(method, getter = "cancelable")]
+    pub fn get_cancelable(this: &PresentationConnectionCloseEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &PresentationConnectionCloseEventInit, val: bool);
+    fn set_cancelable(this: &PresentationConnectionCloseEventInit, val: bool);
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PresentationConnectionCloseEventInit`*"]
+    #[wasm_bindgen(method, getter = "composed")]
+    pub fn get_composed(this: &PresentationConnectionCloseEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &PresentationConnectionCloseEventInit, val: bool);
+    fn set_composed(this: &PresentationConnectionCloseEventInit, val: bool);
+    #[doc = "Get the `message` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PresentationConnectionCloseEventInit`*"]
+    #[wasm_bindgen(method, getter = "message")]
+    pub fn get_message(this: &PresentationConnectionCloseEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "message")]
-    fn message_shim(this: &PresentationConnectionCloseEventInit, val: &str);
+    fn set_message(this: &PresentationConnectionCloseEventInit, val: &str);
+    #[cfg(feature = "PresentationConnectionClosedReason")]
+    #[doc = "Get the `reason` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PresentationConnectionCloseEventInit`, `PresentationConnectionClosedReason`*"]
+    #[wasm_bindgen(method, getter = "reason")]
+    pub fn get_reason(
+        this: &PresentationConnectionCloseEventInit,
+    ) -> PresentationConnectionClosedReason;
     #[cfg(feature = "PresentationConnectionClosedReason")]
     #[wasm_bindgen(method, setter = "reason")]
-    fn reason_shim(
+    fn set_reason(
         this: &PresentationConnectionCloseEventInit,
         val: PresentationConnectionClosedReason,
     );
@@ -40,28 +68,28 @@ impl PresentationConnectionCloseEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnectionCloseEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnectionCloseEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnectionCloseEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed(val);
         self
     }
     #[doc = "Change the `message` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnectionCloseEventInit`*"]
     pub fn message(&mut self, val: &str) -> &mut Self {
-        self.message_shim(val);
+        self.set_message(val);
         self
     }
     #[cfg(feature = "PresentationConnectionClosedReason")]
@@ -69,7 +97,7 @@ impl PresentationConnectionCloseEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnectionCloseEventInit`, `PresentationConnectionClosedReason`*"]
     pub fn reason(&mut self, val: PresentationConnectionClosedReason) -> &mut Self {
-        self.reason_shim(val);
+        self.set_reason(val);
         self
     }
 }

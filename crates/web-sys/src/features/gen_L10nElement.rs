@@ -10,18 +10,48 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
     pub type L10nElement;
+    #[doc = "Get the `l10nArgs` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
+    #[wasm_bindgen(method, getter = "l10nArgs")]
+    pub fn get_l10n_args(this: &L10nElement) -> Option<::js_sys::Object>;
     #[wasm_bindgen(method, setter = "l10nArgs")]
-    fn l10n_args_shim(this: &L10nElement, val: Option<&::js_sys::Object>);
+    fn set_l10n_args(this: &L10nElement, val: Option<&::js_sys::Object>);
+    #[doc = "Get the `l10nAttrs` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
+    #[wasm_bindgen(method, getter = "l10nAttrs")]
+    pub fn get_l10n_attrs(this: &L10nElement) -> Option<String>;
     #[wasm_bindgen(method, setter = "l10nAttrs")]
-    fn l10n_attrs_shim(this: &L10nElement, val: Option<&str>);
+    fn set_l10n_attrs(this: &L10nElement, val: Option<&str>);
+    #[doc = "Get the `l10nId` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
+    #[wasm_bindgen(method, getter = "l10nId")]
+    pub fn get_l10n_id(this: &L10nElement) -> String;
     #[wasm_bindgen(method, setter = "l10nId")]
-    fn l10n_id_shim(this: &L10nElement, val: &str);
+    fn set_l10n_id(this: &L10nElement, val: &str);
+    #[doc = "Get the `localName` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
+    #[wasm_bindgen(method, getter = "localName")]
+    pub fn get_local_name(this: &L10nElement) -> String;
     #[wasm_bindgen(method, setter = "localName")]
-    fn local_name_shim(this: &L10nElement, val: &str);
+    fn set_local_name(this: &L10nElement, val: &str);
+    #[doc = "Get the `namespaceURI` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
+    #[wasm_bindgen(method, getter = "namespaceURI")]
+    pub fn get_namespace_uri(this: &L10nElement) -> String;
     #[wasm_bindgen(method, setter = "namespaceURI")]
-    fn namespace_uri_shim(this: &L10nElement, val: &str);
+    fn set_namespace_uri(this: &L10nElement, val: &str);
+    #[doc = "Get the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
+    #[wasm_bindgen(method, getter = "type")]
+    pub fn get_type(this: &L10nElement) -> Option<String>;
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &L10nElement, val: Option<&str>);
+    fn set_type(this: &L10nElement, val: Option<&str>);
 }
 impl L10nElement {
     #[doc = "Construct a new `L10nElement`."]
@@ -39,42 +69,42 @@ impl L10nElement {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
     pub fn l10n_args(&mut self, val: Option<&::js_sys::Object>) -> &mut Self {
-        self.l10n_args_shim(val);
+        self.set_l10n_args(val);
         self
     }
     #[doc = "Change the `l10nAttrs` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
     pub fn l10n_attrs(&mut self, val: Option<&str>) -> &mut Self {
-        self.l10n_attrs_shim(val);
+        self.set_l10n_attrs(val);
         self
     }
     #[doc = "Change the `l10nId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
     pub fn l10n_id(&mut self, val: &str) -> &mut Self {
-        self.l10n_id_shim(val);
+        self.set_l10n_id(val);
         self
     }
     #[doc = "Change the `localName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
     pub fn local_name(&mut self, val: &str) -> &mut Self {
-        self.local_name_shim(val);
+        self.set_local_name(val);
         self
     }
     #[doc = "Change the `namespaceURI` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
     pub fn namespace_uri(&mut self, val: &str) -> &mut Self {
-        self.namespace_uri_shim(val);
+        self.set_namespace_uri(val);
         self
     }
     #[doc = "Change the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
     pub fn type_(&mut self, val: Option<&str>) -> &mut Self {
-        self.type__shim(val);
+        self.set_type(val);
         self
     }
 }

@@ -14,18 +14,72 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type XrWebGlLayerInit;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `alpha` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XrWebGlLayerInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "alpha")]
+    pub fn get_alpha(this: &XrWebGlLayerInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "alpha")]
-    fn alpha_shim(this: &XrWebGlLayerInit, val: bool);
+    fn set_alpha(this: &XrWebGlLayerInit, val: bool);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `antialias` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XrWebGlLayerInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "antialias")]
+    pub fn get_antialias(this: &XrWebGlLayerInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "antialias")]
-    fn antialias_shim(this: &XrWebGlLayerInit, val: bool);
+    fn set_antialias(this: &XrWebGlLayerInit, val: bool);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `depth` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XrWebGlLayerInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "depth")]
+    pub fn get_depth(this: &XrWebGlLayerInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "depth")]
-    fn depth_shim(this: &XrWebGlLayerInit, val: bool);
+    fn set_depth(this: &XrWebGlLayerInit, val: bool);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `framebufferScaleFactor` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XrWebGlLayerInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "framebufferScaleFactor")]
+    pub fn get_framebuffer_scale_factor(this: &XrWebGlLayerInit) -> Option<f64>;
     #[wasm_bindgen(method, setter = "framebufferScaleFactor")]
-    fn framebuffer_scale_factor_shim(this: &XrWebGlLayerInit, val: f64);
+    fn set_framebuffer_scale_factor(this: &XrWebGlLayerInit, val: f64);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `ignoreDepthValues` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XrWebGlLayerInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "ignoreDepthValues")]
+    pub fn get_ignore_depth_values(this: &XrWebGlLayerInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "ignoreDepthValues")]
-    fn ignore_depth_values_shim(this: &XrWebGlLayerInit, val: bool);
+    fn set_ignore_depth_values(this: &XrWebGlLayerInit, val: bool);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `stencil` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XrWebGlLayerInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "stencil")]
+    pub fn get_stencil(this: &XrWebGlLayerInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "stencil")]
-    fn stencil_shim(this: &XrWebGlLayerInit, val: bool);
+    fn set_stencil(this: &XrWebGlLayerInit, val: bool);
 }
 #[cfg(web_sys_unstable_apis)]
 impl XrWebGlLayerInit {
@@ -48,7 +102,7 @@ impl XrWebGlLayerInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn alpha(&mut self, val: bool) -> &mut Self {
-        self.alpha_shim(val);
+        self.set_alpha(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -59,7 +113,7 @@ impl XrWebGlLayerInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn antialias(&mut self, val: bool) -> &mut Self {
-        self.antialias_shim(val);
+        self.set_antialias(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -70,7 +124,7 @@ impl XrWebGlLayerInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn depth(&mut self, val: bool) -> &mut Self {
-        self.depth_shim(val);
+        self.set_depth(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -81,7 +135,7 @@ impl XrWebGlLayerInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn framebuffer_scale_factor(&mut self, val: f64) -> &mut Self {
-        self.framebuffer_scale_factor_shim(val);
+        self.set_framebuffer_scale_factor(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -92,7 +146,7 @@ impl XrWebGlLayerInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn ignore_depth_values(&mut self, val: bool) -> &mut Self {
-        self.ignore_depth_values_shim(val);
+        self.set_ignore_depth_values(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -103,7 +157,7 @@ impl XrWebGlLayerInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn stencil(&mut self, val: bool) -> &mut Self {
-        self.stencil_shim(val);
+        self.set_stencil(val);
         self
     }
 }

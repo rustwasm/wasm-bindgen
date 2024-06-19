@@ -10,15 +10,36 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ScrollViewChangeEventInit`*"]
     pub type ScrollViewChangeEventInit;
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollViewChangeEventInit`*"]
+    #[wasm_bindgen(method, getter = "bubbles")]
+    pub fn get_bubbles(this: &ScrollViewChangeEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &ScrollViewChangeEventInit, val: bool);
+    fn set_bubbles(this: &ScrollViewChangeEventInit, val: bool);
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollViewChangeEventInit`*"]
+    #[wasm_bindgen(method, getter = "cancelable")]
+    pub fn get_cancelable(this: &ScrollViewChangeEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &ScrollViewChangeEventInit, val: bool);
+    fn set_cancelable(this: &ScrollViewChangeEventInit, val: bool);
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollViewChangeEventInit`*"]
+    #[wasm_bindgen(method, getter = "composed")]
+    pub fn get_composed(this: &ScrollViewChangeEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &ScrollViewChangeEventInit, val: bool);
+    fn set_composed(this: &ScrollViewChangeEventInit, val: bool);
+    #[cfg(feature = "ScrollState")]
+    #[doc = "Get the `state` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollState`, `ScrollViewChangeEventInit`*"]
+    #[wasm_bindgen(method, getter = "state")]
+    pub fn get_state(this: &ScrollViewChangeEventInit) -> Option<ScrollState>;
     #[cfg(feature = "ScrollState")]
     #[wasm_bindgen(method, setter = "state")]
-    fn state_shim(this: &ScrollViewChangeEventInit, val: ScrollState);
+    fn set_state(this: &ScrollViewChangeEventInit, val: ScrollState);
 }
 impl ScrollViewChangeEventInit {
     #[doc = "Construct a new `ScrollViewChangeEventInit`."]
@@ -33,21 +54,21 @@ impl ScrollViewChangeEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ScrollViewChangeEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ScrollViewChangeEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ScrollViewChangeEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed(val);
         self
     }
     #[cfg(feature = "ScrollState")]
@@ -55,7 +76,7 @@ impl ScrollViewChangeEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ScrollState`, `ScrollViewChangeEventInit`*"]
     pub fn state(&mut self, val: ScrollState) -> &mut Self {
-        self.state_shim(val);
+        self.set_state(val);
         self
     }
 }

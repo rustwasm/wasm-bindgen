@@ -10,12 +10,27 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsLookupDict`*"]
     pub type DnsLookupDict;
+    #[doc = "Get the `address` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DnsLookupDict`*"]
+    #[wasm_bindgen(method, getter = "address")]
+    pub fn get_address(this: &DnsLookupDict) -> Option<::js_sys::Array>;
     #[wasm_bindgen(method, setter = "address")]
-    fn address_shim(this: &DnsLookupDict, val: &::wasm_bindgen::JsValue);
+    fn set_address(this: &DnsLookupDict, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `answer` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DnsLookupDict`*"]
+    #[wasm_bindgen(method, getter = "answer")]
+    pub fn get_answer(this: &DnsLookupDict) -> Option<bool>;
     #[wasm_bindgen(method, setter = "answer")]
-    fn answer_shim(this: &DnsLookupDict, val: bool);
+    fn set_answer(this: &DnsLookupDict, val: bool);
+    #[doc = "Get the `error` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DnsLookupDict`*"]
+    #[wasm_bindgen(method, getter = "error")]
+    pub fn get_error(this: &DnsLookupDict) -> Option<String>;
     #[wasm_bindgen(method, setter = "error")]
-    fn error_shim(this: &DnsLookupDict, val: &str);
+    fn set_error(this: &DnsLookupDict, val: &str);
 }
 impl DnsLookupDict {
     #[doc = "Construct a new `DnsLookupDict`."]
@@ -30,21 +45,21 @@ impl DnsLookupDict {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsLookupDict`*"]
     pub fn address(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.address_shim(val);
+        self.set_address(val);
         self
     }
     #[doc = "Change the `answer` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsLookupDict`*"]
     pub fn answer(&mut self, val: bool) -> &mut Self {
-        self.answer_shim(val);
+        self.set_answer(val);
         self
     }
     #[doc = "Change the `error` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsLookupDict`*"]
     pub fn error(&mut self, val: &str) -> &mut Self {
-        self.error_shim(val);
+        self.set_error(val);
         self
     }
 }

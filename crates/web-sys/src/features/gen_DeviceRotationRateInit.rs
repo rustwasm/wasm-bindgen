@@ -10,12 +10,27 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceRotationRateInit`*"]
     pub type DeviceRotationRateInit;
+    #[doc = "Get the `alpha` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DeviceRotationRateInit`*"]
+    #[wasm_bindgen(method, getter = "alpha")]
+    pub fn get_alpha(this: &DeviceRotationRateInit) -> Option<f64>;
     #[wasm_bindgen(method, setter = "alpha")]
-    fn alpha_shim(this: &DeviceRotationRateInit, val: Option<f64>);
+    fn set_alpha(this: &DeviceRotationRateInit, val: Option<f64>);
+    #[doc = "Get the `beta` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DeviceRotationRateInit`*"]
+    #[wasm_bindgen(method, getter = "beta")]
+    pub fn get_beta(this: &DeviceRotationRateInit) -> Option<f64>;
     #[wasm_bindgen(method, setter = "beta")]
-    fn beta_shim(this: &DeviceRotationRateInit, val: Option<f64>);
+    fn set_beta(this: &DeviceRotationRateInit, val: Option<f64>);
+    #[doc = "Get the `gamma` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DeviceRotationRateInit`*"]
+    #[wasm_bindgen(method, getter = "gamma")]
+    pub fn get_gamma(this: &DeviceRotationRateInit) -> Option<f64>;
     #[wasm_bindgen(method, setter = "gamma")]
-    fn gamma_shim(this: &DeviceRotationRateInit, val: Option<f64>);
+    fn set_gamma(this: &DeviceRotationRateInit, val: Option<f64>);
 }
 impl DeviceRotationRateInit {
     #[doc = "Construct a new `DeviceRotationRateInit`."]
@@ -30,21 +45,21 @@ impl DeviceRotationRateInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceRotationRateInit`*"]
     pub fn alpha(&mut self, val: Option<f64>) -> &mut Self {
-        self.alpha_shim(val);
+        self.set_alpha(val);
         self
     }
     #[doc = "Change the `beta` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceRotationRateInit`*"]
     pub fn beta(&mut self, val: Option<f64>) -> &mut Self {
-        self.beta_shim(val);
+        self.set_beta(val);
         self
     }
     #[doc = "Change the `gamma` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceRotationRateInit`*"]
     pub fn gamma(&mut self, val: Option<f64>) -> &mut Self {
-        self.gamma_shim(val);
+        self.set_gamma(val);
         self
     }
 }

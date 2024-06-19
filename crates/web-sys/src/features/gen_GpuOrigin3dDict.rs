@@ -14,12 +14,39 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuOrigin3dDict;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `x` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuOrigin3dDict`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "x")]
+    pub fn get_x(this: &GpuOrigin3dDict) -> Option<u32>;
     #[wasm_bindgen(method, setter = "x")]
-    fn x_shim(this: &GpuOrigin3dDict, val: u32);
+    fn set_x(this: &GpuOrigin3dDict, val: u32);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `y` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuOrigin3dDict`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "y")]
+    pub fn get_y(this: &GpuOrigin3dDict) -> Option<u32>;
     #[wasm_bindgen(method, setter = "y")]
-    fn y_shim(this: &GpuOrigin3dDict, val: u32);
+    fn set_y(this: &GpuOrigin3dDict, val: u32);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `z` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuOrigin3dDict`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "z")]
+    pub fn get_z(this: &GpuOrigin3dDict) -> Option<u32>;
     #[wasm_bindgen(method, setter = "z")]
-    fn z_shim(this: &GpuOrigin3dDict, val: u32);
+    fn set_z(this: &GpuOrigin3dDict, val: u32);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuOrigin3dDict {
@@ -42,7 +69,7 @@ impl GpuOrigin3dDict {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn x(&mut self, val: u32) -> &mut Self {
-        self.x_shim(val);
+        self.set_x(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -53,7 +80,7 @@ impl GpuOrigin3dDict {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn y(&mut self, val: u32) -> &mut Self {
-        self.y_shim(val);
+        self.set_y(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -64,7 +91,7 @@ impl GpuOrigin3dDict {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn z(&mut self, val: u32) -> &mut Self {
-        self.z_shim(val);
+        self.set_z(val);
         self
     }
 }

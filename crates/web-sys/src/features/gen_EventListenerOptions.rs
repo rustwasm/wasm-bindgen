@@ -10,8 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventListenerOptions`*"]
     pub type EventListenerOptions;
+    #[doc = "Get the `capture` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `EventListenerOptions`*"]
+    #[wasm_bindgen(method, getter = "capture")]
+    pub fn get_capture(this: &EventListenerOptions) -> Option<bool>;
     #[wasm_bindgen(method, setter = "capture")]
-    fn capture_shim(this: &EventListenerOptions, val: bool);
+    fn set_capture(this: &EventListenerOptions, val: bool);
 }
 impl EventListenerOptions {
     #[doc = "Construct a new `EventListenerOptions`."]
@@ -26,7 +31,7 @@ impl EventListenerOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EventListenerOptions`*"]
     pub fn capture(&mut self, val: bool) -> &mut Self {
-        self.capture_shim(val);
+        self.set_capture(val);
         self
     }
 }

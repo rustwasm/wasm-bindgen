@@ -10,18 +10,48 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CloseEventInit`*"]
     pub type CloseEventInit;
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CloseEventInit`*"]
+    #[wasm_bindgen(method, getter = "bubbles")]
+    pub fn get_bubbles(this: &CloseEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &CloseEventInit, val: bool);
+    fn set_bubbles(this: &CloseEventInit, val: bool);
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CloseEventInit`*"]
+    #[wasm_bindgen(method, getter = "cancelable")]
+    pub fn get_cancelable(this: &CloseEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &CloseEventInit, val: bool);
+    fn set_cancelable(this: &CloseEventInit, val: bool);
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CloseEventInit`*"]
+    #[wasm_bindgen(method, getter = "composed")]
+    pub fn get_composed(this: &CloseEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &CloseEventInit, val: bool);
+    fn set_composed(this: &CloseEventInit, val: bool);
+    #[doc = "Get the `code` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CloseEventInit`*"]
+    #[wasm_bindgen(method, getter = "code")]
+    pub fn get_code(this: &CloseEventInit) -> Option<u16>;
     #[wasm_bindgen(method, setter = "code")]
-    fn code_shim(this: &CloseEventInit, val: u16);
+    fn set_code(this: &CloseEventInit, val: u16);
+    #[doc = "Get the `reason` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CloseEventInit`*"]
+    #[wasm_bindgen(method, getter = "reason")]
+    pub fn get_reason(this: &CloseEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "reason")]
-    fn reason_shim(this: &CloseEventInit, val: &str);
+    fn set_reason(this: &CloseEventInit, val: &str);
+    #[doc = "Get the `wasClean` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CloseEventInit`*"]
+    #[wasm_bindgen(method, getter = "wasClean")]
+    pub fn get_was_clean(this: &CloseEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "wasClean")]
-    fn was_clean_shim(this: &CloseEventInit, val: bool);
+    fn set_was_clean(this: &CloseEventInit, val: bool);
 }
 impl CloseEventInit {
     #[doc = "Construct a new `CloseEventInit`."]
@@ -36,42 +66,42 @@ impl CloseEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CloseEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CloseEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CloseEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed(val);
         self
     }
     #[doc = "Change the `code` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CloseEventInit`*"]
     pub fn code(&mut self, val: u16) -> &mut Self {
-        self.code_shim(val);
+        self.set_code(val);
         self
     }
     #[doc = "Change the `reason` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CloseEventInit`*"]
     pub fn reason(&mut self, val: &str) -> &mut Self {
-        self.reason_shim(val);
+        self.set_reason(val);
         self
     }
     #[doc = "Change the `wasClean` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CloseEventInit`*"]
     pub fn was_clean(&mut self, val: bool) -> &mut Self {
-        self.was_clean_shim(val);
+        self.set_was_clean(val);
         self
     }
 }

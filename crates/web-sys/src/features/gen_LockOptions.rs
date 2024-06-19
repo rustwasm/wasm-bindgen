@@ -14,16 +14,54 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type LockOptions;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `ifAvailable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `LockOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "ifAvailable")]
+    pub fn get_if_available(this: &LockOptions) -> Option<bool>;
     #[wasm_bindgen(method, setter = "ifAvailable")]
-    fn if_available_shim(this: &LockOptions, val: bool);
+    fn set_if_available(this: &LockOptions, val: bool);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "LockMode")]
+    #[doc = "Get the `mode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `LockMode`, `LockOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "mode")]
+    pub fn get_mode(this: &LockOptions) -> Option<LockMode>;
     #[cfg(feature = "LockMode")]
     #[wasm_bindgen(method, setter = "mode")]
-    fn mode_shim(this: &LockOptions, val: LockMode);
+    fn set_mode(this: &LockOptions, val: LockMode);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "AbortSignal")]
+    #[doc = "Get the `signal` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AbortSignal`, `LockOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "signal")]
+    pub fn get_signal(this: &LockOptions) -> Option<AbortSignal>;
     #[cfg(feature = "AbortSignal")]
     #[wasm_bindgen(method, setter = "signal")]
-    fn signal_shim(this: &LockOptions, val: &AbortSignal);
+    fn set_signal(this: &LockOptions, val: &AbortSignal);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `steal` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `LockOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "steal")]
+    pub fn get_steal(this: &LockOptions) -> Option<bool>;
     #[wasm_bindgen(method, setter = "steal")]
-    fn steal_shim(this: &LockOptions, val: bool);
+    fn set_steal(this: &LockOptions, val: bool);
 }
 #[cfg(web_sys_unstable_apis)]
 impl LockOptions {
@@ -46,7 +84,7 @@ impl LockOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn if_available(&mut self, val: bool) -> &mut Self {
-        self.if_available_shim(val);
+        self.set_if_available(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -58,7 +96,7 @@ impl LockOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn mode(&mut self, val: LockMode) -> &mut Self {
-        self.mode_shim(val);
+        self.set_mode(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -70,7 +108,7 @@ impl LockOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn signal(&mut self, val: &AbortSignal) -> &mut Self {
-        self.signal_shim(val);
+        self.set_signal(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -81,7 +119,7 @@ impl LockOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn steal(&mut self, val: bool) -> &mut Self {
-        self.steal_shim(val);
+        self.set_steal(val);
         self
     }
 }

@@ -10,15 +10,36 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationEventInit`*"]
     pub type NotificationEventInit;
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `NotificationEventInit`*"]
+    #[wasm_bindgen(method, getter = "bubbles")]
+    pub fn get_bubbles(this: &NotificationEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &NotificationEventInit, val: bool);
+    fn set_bubbles(this: &NotificationEventInit, val: bool);
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `NotificationEventInit`*"]
+    #[wasm_bindgen(method, getter = "cancelable")]
+    pub fn get_cancelable(this: &NotificationEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &NotificationEventInit, val: bool);
+    fn set_cancelable(this: &NotificationEventInit, val: bool);
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `NotificationEventInit`*"]
+    #[wasm_bindgen(method, getter = "composed")]
+    pub fn get_composed(this: &NotificationEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &NotificationEventInit, val: bool);
+    fn set_composed(this: &NotificationEventInit, val: bool);
+    #[cfg(feature = "Notification")]
+    #[doc = "Get the `notification` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Notification`, `NotificationEventInit`*"]
+    #[wasm_bindgen(method, getter = "notification")]
+    pub fn get_notification(this: &NotificationEventInit) -> Notification;
     #[cfg(feature = "Notification")]
     #[wasm_bindgen(method, setter = "notification")]
-    fn notification_shim(this: &NotificationEventInit, val: &Notification);
+    fn set_notification(this: &NotificationEventInit, val: &Notification);
 }
 impl NotificationEventInit {
     #[cfg(feature = "Notification")]
@@ -35,21 +56,21 @@ impl NotificationEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed(val);
         self
     }
     #[cfg(feature = "Notification")]
@@ -57,7 +78,7 @@ impl NotificationEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`, `NotificationEventInit`*"]
     pub fn notification(&mut self, val: &Notification) -> &mut Self {
-        self.notification_shim(val);
+        self.set_notification(val);
         self
     }
 }

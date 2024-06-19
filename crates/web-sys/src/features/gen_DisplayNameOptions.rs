@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameOptions`*"]
     pub type DisplayNameOptions;
+    #[doc = "Get the `keys` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DisplayNameOptions`*"]
+    #[wasm_bindgen(method, getter = "keys")]
+    pub fn get_keys(this: &DisplayNameOptions) -> Option<::js_sys::Array>;
     #[wasm_bindgen(method, setter = "keys")]
-    fn keys_shim(this: &DisplayNameOptions, val: &::wasm_bindgen::JsValue);
+    fn set_keys(this: &DisplayNameOptions, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `style` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DisplayNameOptions`*"]
+    #[wasm_bindgen(method, getter = "style")]
+    pub fn get_style(this: &DisplayNameOptions) -> Option<String>;
     #[wasm_bindgen(method, setter = "style")]
-    fn style_shim(this: &DisplayNameOptions, val: &str);
+    fn set_style(this: &DisplayNameOptions, val: &str);
 }
 impl DisplayNameOptions {
     #[doc = "Construct a new `DisplayNameOptions`."]
@@ -28,14 +38,14 @@ impl DisplayNameOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameOptions`*"]
     pub fn keys(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.keys_shim(val);
+        self.set_keys(val);
         self
     }
     #[doc = "Change the `style` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameOptions`*"]
     pub fn style(&mut self, val: &str) -> &mut Self {
-        self.style_shim(val);
+        self.set_style(val);
         self
     }
 }

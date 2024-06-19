@@ -10,8 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemGetDirectoryOptions`*"]
     pub type FileSystemGetDirectoryOptions;
+    #[doc = "Get the `create` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemGetDirectoryOptions`*"]
+    #[wasm_bindgen(method, getter = "create")]
+    pub fn get_create(this: &FileSystemGetDirectoryOptions) -> Option<bool>;
     #[wasm_bindgen(method, setter = "create")]
-    fn create_shim(this: &FileSystemGetDirectoryOptions, val: bool);
+    fn set_create(this: &FileSystemGetDirectoryOptions, val: bool);
 }
 impl FileSystemGetDirectoryOptions {
     #[doc = "Construct a new `FileSystemGetDirectoryOptions`."]
@@ -26,7 +31,7 @@ impl FileSystemGetDirectoryOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemGetDirectoryOptions`*"]
     pub fn create(&mut self, val: bool) -> &mut Self {
-        self.create_shim(val);
+        self.set_create(val);
         self
     }
 }

@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HmacImportParams`*"]
     pub type HmacImportParams;
+    #[doc = "Get the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HmacImportParams`*"]
+    #[wasm_bindgen(method, getter = "name")]
+    pub fn get_name(this: &HmacImportParams) -> String;
     #[wasm_bindgen(method, setter = "name")]
-    fn name_shim(this: &HmacImportParams, val: &str);
+    fn set_name(this: &HmacImportParams, val: &str);
+    #[doc = "Get the `hash` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HmacImportParams`*"]
+    #[wasm_bindgen(method, getter = "hash")]
+    pub fn get_hash(this: &HmacImportParams) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "hash")]
-    fn hash_shim(this: &HmacImportParams, val: &::wasm_bindgen::JsValue);
+    fn set_hash(this: &HmacImportParams, val: &::wasm_bindgen::JsValue);
 }
 impl HmacImportParams {
     #[doc = "Construct a new `HmacImportParams`."]
@@ -30,14 +40,14 @@ impl HmacImportParams {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HmacImportParams`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        self.name_shim(val);
+        self.set_name(val);
         self
     }
     #[doc = "Change the `hash` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HmacImportParams`*"]
     pub fn hash(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.hash_shim(val);
+        self.set_hash(val);
         self
     }
 }

@@ -14,10 +14,28 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuExternalTextureDescriptor;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `label` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuExternalTextureDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "label")]
+    pub fn get_label(this: &GpuExternalTextureDescriptor) -> Option<String>;
     #[wasm_bindgen(method, setter = "label")]
-    fn label_shim(this: &GpuExternalTextureDescriptor, val: &str);
+    fn set_label(this: &GpuExternalTextureDescriptor, val: &str);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `source` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuExternalTextureDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "source")]
+    pub fn get_source(this: &GpuExternalTextureDescriptor) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "source")]
-    fn source_shim(this: &GpuExternalTextureDescriptor, val: &::js_sys::Object);
+    fn set_source(this: &GpuExternalTextureDescriptor, val: &::js_sys::Object);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuExternalTextureDescriptor {
@@ -41,7 +59,7 @@ impl GpuExternalTextureDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn label(&mut self, val: &str) -> &mut Self {
-        self.label_shim(val);
+        self.set_label(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -52,7 +70,7 @@ impl GpuExternalTextureDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn source(&mut self, val: &::js_sys::Object) -> &mut Self {
-        self.source_shim(val);
+        self.set_source(val);
         self
     }
 }

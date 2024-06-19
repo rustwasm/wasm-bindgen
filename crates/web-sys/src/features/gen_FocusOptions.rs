@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FocusOptions`*"]
     pub type FocusOptions;
+    #[doc = "Get the `focusVisible` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FocusOptions`*"]
+    #[wasm_bindgen(method, getter = "focusVisible")]
+    pub fn get_focus_visible(this: &FocusOptions) -> Option<bool>;
     #[wasm_bindgen(method, setter = "focusVisible")]
-    fn focus_visible_shim(this: &FocusOptions, val: bool);
+    fn set_focus_visible(this: &FocusOptions, val: bool);
+    #[doc = "Get the `preventScroll` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FocusOptions`*"]
+    #[wasm_bindgen(method, getter = "preventScroll")]
+    pub fn get_prevent_scroll(this: &FocusOptions) -> Option<bool>;
     #[wasm_bindgen(method, setter = "preventScroll")]
-    fn prevent_scroll_shim(this: &FocusOptions, val: bool);
+    fn set_prevent_scroll(this: &FocusOptions, val: bool);
 }
 impl FocusOptions {
     #[doc = "Construct a new `FocusOptions`."]
@@ -28,14 +38,14 @@ impl FocusOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FocusOptions`*"]
     pub fn focus_visible(&mut self, val: bool) -> &mut Self {
-        self.focus_visible_shim(val);
+        self.set_focus_visible(val);
         self
     }
     #[doc = "Change the `preventScroll` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FocusOptions`*"]
     pub fn prevent_scroll(&mut self, val: bool) -> &mut Self {
-        self.prevent_scroll_shim(val);
+        self.set_prevent_scroll(val);
         self
     }
 }

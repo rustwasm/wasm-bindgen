@@ -14,11 +14,32 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuComputePassDescriptor;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `label` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuComputePassDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "label")]
+    pub fn get_label(this: &GpuComputePassDescriptor) -> Option<String>;
     #[wasm_bindgen(method, setter = "label")]
-    fn label_shim(this: &GpuComputePassDescriptor, val: &str);
+    fn set_label(this: &GpuComputePassDescriptor, val: &str);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuComputePassTimestampWrites")]
+    #[doc = "Get the `timestampWrites` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuComputePassDescriptor`, `GpuComputePassTimestampWrites`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "timestampWrites")]
+    pub fn get_timestamp_writes(
+        this: &GpuComputePassDescriptor,
+    ) -> Option<GpuComputePassTimestampWrites>;
     #[cfg(feature = "GpuComputePassTimestampWrites")]
     #[wasm_bindgen(method, setter = "timestampWrites")]
-    fn timestamp_writes_shim(this: &GpuComputePassDescriptor, val: &GpuComputePassTimestampWrites);
+    fn set_timestamp_writes(this: &GpuComputePassDescriptor, val: &GpuComputePassTimestampWrites);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuComputePassDescriptor {
@@ -41,7 +62,7 @@ impl GpuComputePassDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn label(&mut self, val: &str) -> &mut Self {
-        self.label_shim(val);
+        self.set_label(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -53,7 +74,7 @@ impl GpuComputePassDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn timestamp_writes(&mut self, val: &GpuComputePassTimestampWrites) -> &mut Self {
-        self.timestamp_writes_shim(val);
+        self.set_timestamp_writes(val);
         self
     }
 }

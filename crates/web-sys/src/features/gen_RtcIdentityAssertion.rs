@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityAssertion`*"]
     pub type RtcIdentityAssertion;
+    #[doc = "Get the `idp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityAssertion`*"]
+    #[wasm_bindgen(method, getter = "idp")]
+    pub fn get_idp(this: &RtcIdentityAssertion) -> Option<String>;
     #[wasm_bindgen(method, setter = "idp")]
-    fn idp_shim(this: &RtcIdentityAssertion, val: &str);
+    fn set_idp(this: &RtcIdentityAssertion, val: &str);
+    #[doc = "Get the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityAssertion`*"]
+    #[wasm_bindgen(method, getter = "name")]
+    pub fn get_name(this: &RtcIdentityAssertion) -> Option<String>;
     #[wasm_bindgen(method, setter = "name")]
-    fn name_shim(this: &RtcIdentityAssertion, val: &str);
+    fn set_name(this: &RtcIdentityAssertion, val: &str);
 }
 impl RtcIdentityAssertion {
     #[doc = "Construct a new `RtcIdentityAssertion`."]
@@ -28,14 +38,14 @@ impl RtcIdentityAssertion {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityAssertion`*"]
     pub fn idp(&mut self, val: &str) -> &mut Self {
-        self.idp_shim(val);
+        self.set_idp(val);
         self
     }
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityAssertion`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        self.name_shim(val);
+        self.set_name(val);
         self
     }
 }

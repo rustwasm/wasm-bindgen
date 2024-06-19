@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbFileMetadataParameters`*"]
     pub type IdbFileMetadataParameters;
+    #[doc = "Get the `lastModified` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbFileMetadataParameters`*"]
+    #[wasm_bindgen(method, getter = "lastModified")]
+    pub fn get_last_modified(this: &IdbFileMetadataParameters) -> Option<bool>;
     #[wasm_bindgen(method, setter = "lastModified")]
-    fn last_modified_shim(this: &IdbFileMetadataParameters, val: bool);
+    fn set_last_modified(this: &IdbFileMetadataParameters, val: bool);
+    #[doc = "Get the `size` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbFileMetadataParameters`*"]
+    #[wasm_bindgen(method, getter = "size")]
+    pub fn get_size(this: &IdbFileMetadataParameters) -> Option<bool>;
     #[wasm_bindgen(method, setter = "size")]
-    fn size_shim(this: &IdbFileMetadataParameters, val: bool);
+    fn set_size(this: &IdbFileMetadataParameters, val: bool);
 }
 impl IdbFileMetadataParameters {
     #[doc = "Construct a new `IdbFileMetadataParameters`."]
@@ -28,14 +38,14 @@ impl IdbFileMetadataParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbFileMetadataParameters`*"]
     pub fn last_modified(&mut self, val: bool) -> &mut Self {
-        self.last_modified_shim(val);
+        self.set_last_modified(val);
         self
     }
     #[doc = "Change the `size` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbFileMetadataParameters`*"]
     pub fn size(&mut self, val: bool) -> &mut Self {
-        self.size_shim(val);
+        self.set_size(val);
         self
     }
 }

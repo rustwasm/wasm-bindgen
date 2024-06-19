@@ -14,15 +14,52 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuUncapturedErrorEventInit;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuUncapturedErrorEventInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "bubbles")]
+    pub fn get_bubbles(this: &GpuUncapturedErrorEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &GpuUncapturedErrorEventInit, val: bool);
+    fn set_bubbles(this: &GpuUncapturedErrorEventInit, val: bool);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuUncapturedErrorEventInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "cancelable")]
+    pub fn get_cancelable(this: &GpuUncapturedErrorEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &GpuUncapturedErrorEventInit, val: bool);
+    fn set_cancelable(this: &GpuUncapturedErrorEventInit, val: bool);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuUncapturedErrorEventInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "composed")]
+    pub fn get_composed(this: &GpuUncapturedErrorEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &GpuUncapturedErrorEventInit, val: bool);
+    fn set_composed(this: &GpuUncapturedErrorEventInit, val: bool);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuError")]
+    #[doc = "Get the `error` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuError`, `GpuUncapturedErrorEventInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "error")]
+    pub fn get_error(this: &GpuUncapturedErrorEventInit) -> GpuError;
     #[cfg(feature = "GpuError")]
     #[wasm_bindgen(method, setter = "error")]
-    fn error_shim(this: &GpuUncapturedErrorEventInit, val: &GpuError);
+    fn set_error(this: &GpuUncapturedErrorEventInit, val: &GpuError);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuUncapturedErrorEventInit {
@@ -47,7 +84,7 @@ impl GpuUncapturedErrorEventInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -58,7 +95,7 @@ impl GpuUncapturedErrorEventInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -69,7 +106,7 @@ impl GpuUncapturedErrorEventInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -81,7 +118,7 @@ impl GpuUncapturedErrorEventInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn error(&mut self, val: &GpuError) -> &mut Self {
-        self.error_shim(val);
+        self.set_error(val);
         self
     }
 }

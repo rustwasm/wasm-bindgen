@@ -14,8 +14,17 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type UsbDeviceRequestOptions;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `filters` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UsbDeviceRequestOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "filters")]
+    pub fn get_filters(this: &UsbDeviceRequestOptions) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "filters")]
-    fn filters_shim(this: &UsbDeviceRequestOptions, val: &::wasm_bindgen::JsValue);
+    fn set_filters(this: &UsbDeviceRequestOptions, val: &::wasm_bindgen::JsValue);
 }
 #[cfg(web_sys_unstable_apis)]
 impl UsbDeviceRequestOptions {
@@ -39,7 +48,7 @@ impl UsbDeviceRequestOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn filters(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.filters_shim(val);
+        self.set_filters(val);
         self
     }
 }

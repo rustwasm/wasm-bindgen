@@ -14,8 +14,17 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type QueryOptions;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `postscriptNames` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `QueryOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "postscriptNames")]
+    pub fn get_postscript_names(this: &QueryOptions) -> Option<::js_sys::Array>;
     #[wasm_bindgen(method, setter = "postscriptNames")]
-    fn postscript_names_shim(this: &QueryOptions, val: &::wasm_bindgen::JsValue);
+    fn set_postscript_names(this: &QueryOptions, val: &::wasm_bindgen::JsValue);
 }
 #[cfg(web_sys_unstable_apis)]
 impl QueryOptions {
@@ -38,7 +47,7 @@ impl QueryOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn postscript_names(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.postscript_names_shim(val);
+        self.set_postscript_names(val);
         self
     }
 }

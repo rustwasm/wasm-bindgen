@@ -14,11 +14,30 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuProgrammableStage;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `entryPoint` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuProgrammableStage`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "entryPoint")]
+    pub fn get_entry_point(this: &GpuProgrammableStage) -> Option<String>;
     #[wasm_bindgen(method, setter = "entryPoint")]
-    fn entry_point_shim(this: &GpuProgrammableStage, val: &str);
+    fn set_entry_point(this: &GpuProgrammableStage, val: &str);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuShaderModule")]
+    #[doc = "Get the `module` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuProgrammableStage`, `GpuShaderModule`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "module")]
+    pub fn get_module(this: &GpuProgrammableStage) -> GpuShaderModule;
     #[cfg(feature = "GpuShaderModule")]
     #[wasm_bindgen(method, setter = "module")]
-    fn module_shim(this: &GpuProgrammableStage, val: &GpuShaderModule);
+    fn set_module(this: &GpuProgrammableStage, val: &GpuShaderModule);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuProgrammableStage {
@@ -43,7 +62,7 @@ impl GpuProgrammableStage {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn entry_point(&mut self, val: &str) -> &mut Self {
-        self.entry_point_shim(val);
+        self.set_entry_point(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -55,7 +74,7 @@ impl GpuProgrammableStage {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn module(&mut self, val: &GpuShaderModule) -> &mut Self {
-        self.module_shim(val);
+        self.set_module(val);
         self
     }
 }

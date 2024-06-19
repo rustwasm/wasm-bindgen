@@ -10,8 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConstantSourceOptions`*"]
     pub type ConstantSourceOptions;
+    #[doc = "Get the `offset` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConstantSourceOptions`*"]
+    #[wasm_bindgen(method, getter = "offset")]
+    pub fn get_offset(this: &ConstantSourceOptions) -> Option<f32>;
     #[wasm_bindgen(method, setter = "offset")]
-    fn offset_shim(this: &ConstantSourceOptions, val: f32);
+    fn set_offset(this: &ConstantSourceOptions, val: f32);
 }
 impl ConstantSourceOptions {
     #[doc = "Construct a new `ConstantSourceOptions`."]
@@ -26,7 +31,7 @@ impl ConstantSourceOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConstantSourceOptions`*"]
     pub fn offset(&mut self, val: f32) -> &mut Self {
-        self.offset_shim(val);
+        self.set_offset(val);
         self
     }
 }

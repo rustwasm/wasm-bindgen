@@ -10,14 +10,34 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesGcmParams`*"]
     pub type AesGcmParams;
+    #[doc = "Get the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AesGcmParams`*"]
+    #[wasm_bindgen(method, getter = "name")]
+    pub fn get_name(this: &AesGcmParams) -> String;
     #[wasm_bindgen(method, setter = "name")]
-    fn name_shim(this: &AesGcmParams, val: &str);
+    fn set_name(this: &AesGcmParams, val: &str);
+    #[doc = "Get the `additionalData` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AesGcmParams`*"]
+    #[wasm_bindgen(method, getter = "additionalData")]
+    pub fn get_additional_data(this: &AesGcmParams) -> Option<::js_sys::Object>;
     #[wasm_bindgen(method, setter = "additionalData")]
-    fn additional_data_shim(this: &AesGcmParams, val: &::js_sys::Object);
+    fn set_additional_data(this: &AesGcmParams, val: &::js_sys::Object);
+    #[doc = "Get the `iv` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AesGcmParams`*"]
+    #[wasm_bindgen(method, getter = "iv")]
+    pub fn get_iv(this: &AesGcmParams) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "iv")]
-    fn iv_shim(this: &AesGcmParams, val: &::js_sys::Object);
+    fn set_iv(this: &AesGcmParams, val: &::js_sys::Object);
+    #[doc = "Get the `tagLength` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AesGcmParams`*"]
+    #[wasm_bindgen(method, getter = "tagLength")]
+    pub fn get_tag_length(this: &AesGcmParams) -> Option<u8>;
     #[wasm_bindgen(method, setter = "tagLength")]
-    fn tag_length_shim(this: &AesGcmParams, val: u8);
+    fn set_tag_length(this: &AesGcmParams, val: u8);
 }
 impl AesGcmParams {
     #[doc = "Construct a new `AesGcmParams`."]
@@ -34,28 +54,28 @@ impl AesGcmParams {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesGcmParams`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        self.name_shim(val);
+        self.set_name(val);
         self
     }
     #[doc = "Change the `additionalData` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesGcmParams`*"]
     pub fn additional_data(&mut self, val: &::js_sys::Object) -> &mut Self {
-        self.additional_data_shim(val);
+        self.set_additional_data(val);
         self
     }
     #[doc = "Change the `iv` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesGcmParams`*"]
     pub fn iv(&mut self, val: &::js_sys::Object) -> &mut Self {
-        self.iv_shim(val);
+        self.set_iv(val);
         self
     }
     #[doc = "Change the `tagLength` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesGcmParams`*"]
     pub fn tag_length(&mut self, val: u8) -> &mut Self {
-        self.tag_length_shim(val);
+        self.set_tag_length(val);
         self
     }
 }

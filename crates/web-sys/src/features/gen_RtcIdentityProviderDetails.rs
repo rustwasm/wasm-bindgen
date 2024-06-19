@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
     pub type RtcIdentityProviderDetails;
+    #[doc = "Get the `domain` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
+    #[wasm_bindgen(method, getter = "domain")]
+    pub fn get_domain(this: &RtcIdentityProviderDetails) -> String;
     #[wasm_bindgen(method, setter = "domain")]
-    fn domain_shim(this: &RtcIdentityProviderDetails, val: &str);
+    fn set_domain(this: &RtcIdentityProviderDetails, val: &str);
+    #[doc = "Get the `protocol` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
+    #[wasm_bindgen(method, getter = "protocol")]
+    pub fn get_protocol(this: &RtcIdentityProviderDetails) -> Option<String>;
     #[wasm_bindgen(method, setter = "protocol")]
-    fn protocol_shim(this: &RtcIdentityProviderDetails, val: &str);
+    fn set_protocol(this: &RtcIdentityProviderDetails, val: &str);
 }
 impl RtcIdentityProviderDetails {
     #[doc = "Construct a new `RtcIdentityProviderDetails`."]
@@ -29,14 +39,14 @@ impl RtcIdentityProviderDetails {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
     pub fn domain(&mut self, val: &str) -> &mut Self {
-        self.domain_shim(val);
+        self.set_domain(val);
         self
     }
     #[doc = "Change the `protocol` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
     pub fn protocol(&mut self, val: &str) -> &mut Self {
-        self.protocol_shim(val);
+        self.set_protocol(val);
         self
     }
 }

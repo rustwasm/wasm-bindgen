@@ -14,24 +14,85 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuRenderPassDescriptor;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `label` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "label")]
+    pub fn get_label(this: &GpuRenderPassDescriptor) -> Option<String>;
     #[wasm_bindgen(method, setter = "label")]
-    fn label_shim(this: &GpuRenderPassDescriptor, val: &str);
+    fn set_label(this: &GpuRenderPassDescriptor, val: &str);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `colorAttachments` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "colorAttachments")]
+    pub fn get_color_attachments(this: &GpuRenderPassDescriptor) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "colorAttachments")]
-    fn color_attachments_shim(this: &GpuRenderPassDescriptor, val: &::wasm_bindgen::JsValue);
+    fn set_color_attachments(this: &GpuRenderPassDescriptor, val: &::wasm_bindgen::JsValue);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuRenderPassDepthStencilAttachment")]
+    #[doc = "Get the `depthStencilAttachment` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassDepthStencilAttachment`, `GpuRenderPassDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "depthStencilAttachment")]
+    pub fn get_depth_stencil_attachment(
+        this: &GpuRenderPassDescriptor,
+    ) -> Option<GpuRenderPassDepthStencilAttachment>;
     #[cfg(feature = "GpuRenderPassDepthStencilAttachment")]
     #[wasm_bindgen(method, setter = "depthStencilAttachment")]
-    fn depth_stencil_attachment_shim(
+    fn set_depth_stencil_attachment(
         this: &GpuRenderPassDescriptor,
         val: &GpuRenderPassDepthStencilAttachment,
     );
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `maxDrawCount` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "maxDrawCount")]
+    pub fn get_max_draw_count(this: &GpuRenderPassDescriptor) -> Option<f64>;
     #[wasm_bindgen(method, setter = "maxDrawCount")]
-    fn max_draw_count_shim(this: &GpuRenderPassDescriptor, val: f64);
+    fn set_max_draw_count(this: &GpuRenderPassDescriptor, val: f64);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuQuerySet")]
+    #[doc = "Get the `occlusionQuerySet` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuQuerySet`, `GpuRenderPassDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "occlusionQuerySet")]
+    pub fn get_occlusion_query_set(this: &GpuRenderPassDescriptor) -> Option<GpuQuerySet>;
     #[cfg(feature = "GpuQuerySet")]
     #[wasm_bindgen(method, setter = "occlusionQuerySet")]
-    fn occlusion_query_set_shim(this: &GpuRenderPassDescriptor, val: &GpuQuerySet);
+    fn set_occlusion_query_set(this: &GpuRenderPassDescriptor, val: &GpuQuerySet);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuRenderPassTimestampWrites")]
+    #[doc = "Get the `timestampWrites` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassDescriptor`, `GpuRenderPassTimestampWrites`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "timestampWrites")]
+    pub fn get_timestamp_writes(
+        this: &GpuRenderPassDescriptor,
+    ) -> Option<GpuRenderPassTimestampWrites>;
     #[cfg(feature = "GpuRenderPassTimestampWrites")]
     #[wasm_bindgen(method, setter = "timestampWrites")]
-    fn timestamp_writes_shim(this: &GpuRenderPassDescriptor, val: &GpuRenderPassTimestampWrites);
+    fn set_timestamp_writes(this: &GpuRenderPassDescriptor, val: &GpuRenderPassTimestampWrites);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuRenderPassDescriptor {
@@ -55,7 +116,7 @@ impl GpuRenderPassDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn label(&mut self, val: &str) -> &mut Self {
-        self.label_shim(val);
+        self.set_label(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -66,7 +127,7 @@ impl GpuRenderPassDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn color_attachments(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.color_attachments_shim(val);
+        self.set_color_attachments(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -81,7 +142,7 @@ impl GpuRenderPassDescriptor {
         &mut self,
         val: &GpuRenderPassDepthStencilAttachment,
     ) -> &mut Self {
-        self.depth_stencil_attachment_shim(val);
+        self.set_depth_stencil_attachment(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -92,7 +153,7 @@ impl GpuRenderPassDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn max_draw_count(&mut self, val: f64) -> &mut Self {
-        self.max_draw_count_shim(val);
+        self.set_max_draw_count(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -104,7 +165,7 @@ impl GpuRenderPassDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn occlusion_query_set(&mut self, val: &GpuQuerySet) -> &mut Self {
-        self.occlusion_query_set_shim(val);
+        self.set_occlusion_query_set(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -116,7 +177,7 @@ impl GpuRenderPassDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn timestamp_writes(&mut self, val: &GpuRenderPassTimestampWrites) -> &mut Self {
-        self.timestamp_writes_shim(val);
+        self.set_timestamp_writes(val);
         self
     }
 }

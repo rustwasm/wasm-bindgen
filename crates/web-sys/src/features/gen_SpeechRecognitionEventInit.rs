@@ -10,22 +10,59 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEventInit`*"]
     pub type SpeechRecognitionEventInit;
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEventInit`*"]
+    #[wasm_bindgen(method, getter = "bubbles")]
+    pub fn get_bubbles(this: &SpeechRecognitionEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &SpeechRecognitionEventInit, val: bool);
+    fn set_bubbles(this: &SpeechRecognitionEventInit, val: bool);
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEventInit`*"]
+    #[wasm_bindgen(method, getter = "cancelable")]
+    pub fn get_cancelable(this: &SpeechRecognitionEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &SpeechRecognitionEventInit, val: bool);
+    fn set_cancelable(this: &SpeechRecognitionEventInit, val: bool);
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEventInit`*"]
+    #[wasm_bindgen(method, getter = "composed")]
+    pub fn get_composed(this: &SpeechRecognitionEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &SpeechRecognitionEventInit, val: bool);
+    fn set_composed(this: &SpeechRecognitionEventInit, val: bool);
+    #[cfg(feature = "Document")]
+    #[doc = "Get the `emma` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Document`, `SpeechRecognitionEventInit`*"]
+    #[wasm_bindgen(method, getter = "emma")]
+    pub fn get_emma(this: &SpeechRecognitionEventInit) -> Option<Document>;
     #[cfg(feature = "Document")]
     #[wasm_bindgen(method, setter = "emma")]
-    fn emma_shim(this: &SpeechRecognitionEventInit, val: Option<&Document>);
+    fn set_emma(this: &SpeechRecognitionEventInit, val: Option<&Document>);
+    #[doc = "Get the `interpretation` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEventInit`*"]
+    #[wasm_bindgen(method, getter = "interpretation")]
+    pub fn get_interpretation(this: &SpeechRecognitionEventInit) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "interpretation")]
-    fn interpretation_shim(this: &SpeechRecognitionEventInit, val: &::wasm_bindgen::JsValue);
+    fn set_interpretation(this: &SpeechRecognitionEventInit, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `resultIndex` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEventInit`*"]
+    #[wasm_bindgen(method, getter = "resultIndex")]
+    pub fn get_result_index(this: &SpeechRecognitionEventInit) -> Option<u32>;
     #[wasm_bindgen(method, setter = "resultIndex")]
-    fn result_index_shim(this: &SpeechRecognitionEventInit, val: u32);
+    fn set_result_index(this: &SpeechRecognitionEventInit, val: u32);
+    #[cfg(feature = "SpeechRecognitionResultList")]
+    #[doc = "Get the `results` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEventInit`, `SpeechRecognitionResultList`*"]
+    #[wasm_bindgen(method, getter = "results")]
+    pub fn get_results(this: &SpeechRecognitionEventInit) -> Option<SpeechRecognitionResultList>;
     #[cfg(feature = "SpeechRecognitionResultList")]
     #[wasm_bindgen(method, setter = "results")]
-    fn results_shim(this: &SpeechRecognitionEventInit, val: Option<&SpeechRecognitionResultList>);
+    fn set_results(this: &SpeechRecognitionEventInit, val: Option<&SpeechRecognitionResultList>);
 }
 impl SpeechRecognitionEventInit {
     #[doc = "Construct a new `SpeechRecognitionEventInit`."]
@@ -40,21 +77,21 @@ impl SpeechRecognitionEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed(val);
         self
     }
     #[cfg(feature = "Document")]
@@ -62,21 +99,21 @@ impl SpeechRecognitionEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`, `SpeechRecognitionEventInit`*"]
     pub fn emma(&mut self, val: Option<&Document>) -> &mut Self {
-        self.emma_shim(val);
+        self.set_emma(val);
         self
     }
     #[doc = "Change the `interpretation` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEventInit`*"]
     pub fn interpretation(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.interpretation_shim(val);
+        self.set_interpretation(val);
         self
     }
     #[doc = "Change the `resultIndex` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEventInit`*"]
     pub fn result_index(&mut self, val: u32) -> &mut Self {
-        self.result_index_shim(val);
+        self.set_result_index(val);
         self
     }
     #[cfg(feature = "SpeechRecognitionResultList")]
@@ -84,7 +121,7 @@ impl SpeechRecognitionEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionEventInit`, `SpeechRecognitionResultList`*"]
     pub fn results(&mut self, val: Option<&SpeechRecognitionResultList>) -> &mut Self {
-        self.results_shim(val);
+        self.set_results(val);
         self
     }
 }

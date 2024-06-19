@@ -10,44 +10,133 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
     pub type PannerOptions;
+    #[doc = "Get the `channelCount` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
+    #[wasm_bindgen(method, getter = "channelCount")]
+    pub fn get_channel_count(this: &PannerOptions) -> Option<u32>;
     #[wasm_bindgen(method, setter = "channelCount")]
-    fn channel_count_shim(this: &PannerOptions, val: u32);
+    fn set_channel_count(this: &PannerOptions, val: u32);
+    #[cfg(feature = "ChannelCountMode")]
+    #[doc = "Get the `channelCountMode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelCountMode`, `PannerOptions`*"]
+    #[wasm_bindgen(method, getter = "channelCountMode")]
+    pub fn get_channel_count_mode(this: &PannerOptions) -> Option<ChannelCountMode>;
     #[cfg(feature = "ChannelCountMode")]
     #[wasm_bindgen(method, setter = "channelCountMode")]
-    fn channel_count_mode_shim(this: &PannerOptions, val: ChannelCountMode);
+    fn set_channel_count_mode(this: &PannerOptions, val: ChannelCountMode);
+    #[cfg(feature = "ChannelInterpretation")]
+    #[doc = "Get the `channelInterpretation` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelInterpretation`, `PannerOptions`*"]
+    #[wasm_bindgen(method, getter = "channelInterpretation")]
+    pub fn get_channel_interpretation(this: &PannerOptions) -> Option<ChannelInterpretation>;
     #[cfg(feature = "ChannelInterpretation")]
     #[wasm_bindgen(method, setter = "channelInterpretation")]
-    fn channel_interpretation_shim(this: &PannerOptions, val: ChannelInterpretation);
+    fn set_channel_interpretation(this: &PannerOptions, val: ChannelInterpretation);
+    #[doc = "Get the `coneInnerAngle` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
+    #[wasm_bindgen(method, getter = "coneInnerAngle")]
+    pub fn get_cone_inner_angle(this: &PannerOptions) -> Option<f64>;
     #[wasm_bindgen(method, setter = "coneInnerAngle")]
-    fn cone_inner_angle_shim(this: &PannerOptions, val: f64);
+    fn set_cone_inner_angle(this: &PannerOptions, val: f64);
+    #[doc = "Get the `coneOuterAngle` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
+    #[wasm_bindgen(method, getter = "coneOuterAngle")]
+    pub fn get_cone_outer_angle(this: &PannerOptions) -> Option<f64>;
     #[wasm_bindgen(method, setter = "coneOuterAngle")]
-    fn cone_outer_angle_shim(this: &PannerOptions, val: f64);
+    fn set_cone_outer_angle(this: &PannerOptions, val: f64);
+    #[doc = "Get the `coneOuterGain` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
+    #[wasm_bindgen(method, getter = "coneOuterGain")]
+    pub fn get_cone_outer_gain(this: &PannerOptions) -> Option<f64>;
     #[wasm_bindgen(method, setter = "coneOuterGain")]
-    fn cone_outer_gain_shim(this: &PannerOptions, val: f64);
+    fn set_cone_outer_gain(this: &PannerOptions, val: f64);
+    #[cfg(feature = "DistanceModelType")]
+    #[doc = "Get the `distanceModel` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DistanceModelType`, `PannerOptions`*"]
+    #[wasm_bindgen(method, getter = "distanceModel")]
+    pub fn get_distance_model(this: &PannerOptions) -> Option<DistanceModelType>;
     #[cfg(feature = "DistanceModelType")]
     #[wasm_bindgen(method, setter = "distanceModel")]
-    fn distance_model_shim(this: &PannerOptions, val: DistanceModelType);
+    fn set_distance_model(this: &PannerOptions, val: DistanceModelType);
+    #[doc = "Get the `maxDistance` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
+    #[wasm_bindgen(method, getter = "maxDistance")]
+    pub fn get_max_distance(this: &PannerOptions) -> Option<f64>;
     #[wasm_bindgen(method, setter = "maxDistance")]
-    fn max_distance_shim(this: &PannerOptions, val: f64);
+    fn set_max_distance(this: &PannerOptions, val: f64);
+    #[doc = "Get the `orientationX` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
+    #[wasm_bindgen(method, getter = "orientationX")]
+    pub fn get_orientation_x(this: &PannerOptions) -> Option<f32>;
     #[wasm_bindgen(method, setter = "orientationX")]
-    fn orientation_x_shim(this: &PannerOptions, val: f32);
+    fn set_orientation_x(this: &PannerOptions, val: f32);
+    #[doc = "Get the `orientationY` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
+    #[wasm_bindgen(method, getter = "orientationY")]
+    pub fn get_orientation_y(this: &PannerOptions) -> Option<f32>;
     #[wasm_bindgen(method, setter = "orientationY")]
-    fn orientation_y_shim(this: &PannerOptions, val: f32);
+    fn set_orientation_y(this: &PannerOptions, val: f32);
+    #[doc = "Get the `orientationZ` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
+    #[wasm_bindgen(method, getter = "orientationZ")]
+    pub fn get_orientation_z(this: &PannerOptions) -> Option<f32>;
     #[wasm_bindgen(method, setter = "orientationZ")]
-    fn orientation_z_shim(this: &PannerOptions, val: f32);
+    fn set_orientation_z(this: &PannerOptions, val: f32);
+    #[cfg(feature = "PanningModelType")]
+    #[doc = "Get the `panningModel` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PannerOptions`, `PanningModelType`*"]
+    #[wasm_bindgen(method, getter = "panningModel")]
+    pub fn get_panning_model(this: &PannerOptions) -> Option<PanningModelType>;
     #[cfg(feature = "PanningModelType")]
     #[wasm_bindgen(method, setter = "panningModel")]
-    fn panning_model_shim(this: &PannerOptions, val: PanningModelType);
+    fn set_panning_model(this: &PannerOptions, val: PanningModelType);
+    #[doc = "Get the `positionX` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
+    #[wasm_bindgen(method, getter = "positionX")]
+    pub fn get_position_x(this: &PannerOptions) -> Option<f32>;
     #[wasm_bindgen(method, setter = "positionX")]
-    fn position_x_shim(this: &PannerOptions, val: f32);
+    fn set_position_x(this: &PannerOptions, val: f32);
+    #[doc = "Get the `positionY` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
+    #[wasm_bindgen(method, getter = "positionY")]
+    pub fn get_position_y(this: &PannerOptions) -> Option<f32>;
     #[wasm_bindgen(method, setter = "positionY")]
-    fn position_y_shim(this: &PannerOptions, val: f32);
+    fn set_position_y(this: &PannerOptions, val: f32);
+    #[doc = "Get the `positionZ` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
+    #[wasm_bindgen(method, getter = "positionZ")]
+    pub fn get_position_z(this: &PannerOptions) -> Option<f32>;
     #[wasm_bindgen(method, setter = "positionZ")]
-    fn position_z_shim(this: &PannerOptions, val: f32);
+    fn set_position_z(this: &PannerOptions, val: f32);
+    #[doc = "Get the `refDistance` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
+    #[wasm_bindgen(method, getter = "refDistance")]
+    pub fn get_ref_distance(this: &PannerOptions) -> Option<f64>;
     #[wasm_bindgen(method, setter = "refDistance")]
-    fn ref_distance_shim(this: &PannerOptions, val: f64);
+    fn set_ref_distance(this: &PannerOptions, val: f64);
+    #[doc = "Get the `rolloffFactor` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
+    #[wasm_bindgen(method, getter = "rolloffFactor")]
+    pub fn get_rolloff_factor(this: &PannerOptions) -> Option<f64>;
     #[wasm_bindgen(method, setter = "rolloffFactor")]
-    fn rolloff_factor_shim(this: &PannerOptions, val: f64);
+    fn set_rolloff_factor(this: &PannerOptions, val: f64);
 }
 impl PannerOptions {
     #[doc = "Construct a new `PannerOptions`."]
@@ -62,7 +151,7 @@ impl PannerOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
     pub fn channel_count(&mut self, val: u32) -> &mut Self {
-        self.channel_count_shim(val);
+        self.set_channel_count(val);
         self
     }
     #[cfg(feature = "ChannelCountMode")]
@@ -70,7 +159,7 @@ impl PannerOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ChannelCountMode`, `PannerOptions`*"]
     pub fn channel_count_mode(&mut self, val: ChannelCountMode) -> &mut Self {
-        self.channel_count_mode_shim(val);
+        self.set_channel_count_mode(val);
         self
     }
     #[cfg(feature = "ChannelInterpretation")]
@@ -78,28 +167,28 @@ impl PannerOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ChannelInterpretation`, `PannerOptions`*"]
     pub fn channel_interpretation(&mut self, val: ChannelInterpretation) -> &mut Self {
-        self.channel_interpretation_shim(val);
+        self.set_channel_interpretation(val);
         self
     }
     #[doc = "Change the `coneInnerAngle` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
     pub fn cone_inner_angle(&mut self, val: f64) -> &mut Self {
-        self.cone_inner_angle_shim(val);
+        self.set_cone_inner_angle(val);
         self
     }
     #[doc = "Change the `coneOuterAngle` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
     pub fn cone_outer_angle(&mut self, val: f64) -> &mut Self {
-        self.cone_outer_angle_shim(val);
+        self.set_cone_outer_angle(val);
         self
     }
     #[doc = "Change the `coneOuterGain` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
     pub fn cone_outer_gain(&mut self, val: f64) -> &mut Self {
-        self.cone_outer_gain_shim(val);
+        self.set_cone_outer_gain(val);
         self
     }
     #[cfg(feature = "DistanceModelType")]
@@ -107,35 +196,35 @@ impl PannerOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DistanceModelType`, `PannerOptions`*"]
     pub fn distance_model(&mut self, val: DistanceModelType) -> &mut Self {
-        self.distance_model_shim(val);
+        self.set_distance_model(val);
         self
     }
     #[doc = "Change the `maxDistance` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
     pub fn max_distance(&mut self, val: f64) -> &mut Self {
-        self.max_distance_shim(val);
+        self.set_max_distance(val);
         self
     }
     #[doc = "Change the `orientationX` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
     pub fn orientation_x(&mut self, val: f32) -> &mut Self {
-        self.orientation_x_shim(val);
+        self.set_orientation_x(val);
         self
     }
     #[doc = "Change the `orientationY` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
     pub fn orientation_y(&mut self, val: f32) -> &mut Self {
-        self.orientation_y_shim(val);
+        self.set_orientation_y(val);
         self
     }
     #[doc = "Change the `orientationZ` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
     pub fn orientation_z(&mut self, val: f32) -> &mut Self {
-        self.orientation_z_shim(val);
+        self.set_orientation_z(val);
         self
     }
     #[cfg(feature = "PanningModelType")]
@@ -143,42 +232,42 @@ impl PannerOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PannerOptions`, `PanningModelType`*"]
     pub fn panning_model(&mut self, val: PanningModelType) -> &mut Self {
-        self.panning_model_shim(val);
+        self.set_panning_model(val);
         self
     }
     #[doc = "Change the `positionX` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
     pub fn position_x(&mut self, val: f32) -> &mut Self {
-        self.position_x_shim(val);
+        self.set_position_x(val);
         self
     }
     #[doc = "Change the `positionY` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
     pub fn position_y(&mut self, val: f32) -> &mut Self {
-        self.position_y_shim(val);
+        self.set_position_y(val);
         self
     }
     #[doc = "Change the `positionZ` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
     pub fn position_z(&mut self, val: f32) -> &mut Self {
-        self.position_z_shim(val);
+        self.set_position_z(val);
         self
     }
     #[doc = "Change the `refDistance` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
     pub fn ref_distance(&mut self, val: f64) -> &mut Self {
-        self.ref_distance_shim(val);
+        self.set_ref_distance(val);
         self
     }
     #[doc = "Change the `rolloffFactor` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PannerOptions`*"]
     pub fn rolloff_factor(&mut self, val: f64) -> &mut Self {
-        self.rolloff_factor_shim(val);
+        self.set_rolloff_factor(val);
         self
     }
 }

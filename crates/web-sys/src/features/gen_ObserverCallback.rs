@@ -10,8 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ObserverCallback`*"]
     pub type ObserverCallback;
+    #[doc = "Get the `handleEvent` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ObserverCallback`*"]
+    #[wasm_bindgen(method, getter = "handleEvent")]
+    pub fn get_handle_event(this: &ObserverCallback) -> Option<::js_sys::Function>;
     #[wasm_bindgen(method, setter = "handleEvent")]
-    fn handle_event_shim(this: &ObserverCallback, val: &::js_sys::Function);
+    fn set_handle_event(this: &ObserverCallback, val: &::js_sys::Function);
 }
 impl ObserverCallback {
     #[doc = "Construct a new `ObserverCallback`."]
@@ -26,7 +31,7 @@ impl ObserverCallback {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ObserverCallback`*"]
     pub fn handle_event(&mut self, val: &::js_sys::Function) -> &mut Self {
-        self.handle_event_shim(val);
+        self.set_handle_event(val);
         self
     }
 }

@@ -10,8 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DocumentTimelineOptions`*"]
     pub type DocumentTimelineOptions;
+    #[doc = "Get the `originTime` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DocumentTimelineOptions`*"]
+    #[wasm_bindgen(method, getter = "originTime")]
+    pub fn get_origin_time(this: &DocumentTimelineOptions) -> Option<f64>;
     #[wasm_bindgen(method, setter = "originTime")]
-    fn origin_time_shim(this: &DocumentTimelineOptions, val: f64);
+    fn set_origin_time(this: &DocumentTimelineOptions, val: f64);
 }
 impl DocumentTimelineOptions {
     #[doc = "Construct a new `DocumentTimelineOptions`."]
@@ -26,7 +31,7 @@ impl DocumentTimelineOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DocumentTimelineOptions`*"]
     pub fn origin_time(&mut self, val: f64) -> &mut Self {
-        self.origin_time_shim(val);
+        self.set_origin_time(val);
         self
     }
 }

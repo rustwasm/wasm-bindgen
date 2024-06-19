@@ -14,13 +14,41 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuVertexState;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `entryPoint` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuVertexState`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "entryPoint")]
+    pub fn get_entry_point(this: &GpuVertexState) -> Option<String>;
     #[wasm_bindgen(method, setter = "entryPoint")]
-    fn entry_point_shim(this: &GpuVertexState, val: &str);
+    fn set_entry_point(this: &GpuVertexState, val: &str);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuShaderModule")]
+    #[doc = "Get the `module` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuShaderModule`, `GpuVertexState`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "module")]
+    pub fn get_module(this: &GpuVertexState) -> GpuShaderModule;
     #[cfg(feature = "GpuShaderModule")]
     #[wasm_bindgen(method, setter = "module")]
-    fn module_shim(this: &GpuVertexState, val: &GpuShaderModule);
+    fn set_module(this: &GpuVertexState, val: &GpuShaderModule);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `buffers` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuVertexState`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "buffers")]
+    pub fn get_buffers(this: &GpuVertexState) -> Option<::js_sys::Array>;
     #[wasm_bindgen(method, setter = "buffers")]
-    fn buffers_shim(this: &GpuVertexState, val: &::wasm_bindgen::JsValue);
+    fn set_buffers(this: &GpuVertexState, val: &::wasm_bindgen::JsValue);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuVertexState {
@@ -45,7 +73,7 @@ impl GpuVertexState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn entry_point(&mut self, val: &str) -> &mut Self {
-        self.entry_point_shim(val);
+        self.set_entry_point(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -57,7 +85,7 @@ impl GpuVertexState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn module(&mut self, val: &GpuShaderModule) -> &mut Self {
-        self.module_shim(val);
+        self.set_module(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -68,7 +96,7 @@ impl GpuVertexState {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn buffers(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.buffers_shim(val);
+        self.set_buffers(val);
         self
     }
 }

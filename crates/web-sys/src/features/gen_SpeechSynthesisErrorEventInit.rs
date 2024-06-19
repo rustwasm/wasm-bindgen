@@ -10,26 +10,73 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisErrorEventInit`*"]
     pub type SpeechSynthesisErrorEventInit;
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisErrorEventInit`*"]
+    #[wasm_bindgen(method, getter = "bubbles")]
+    pub fn get_bubbles(this: &SpeechSynthesisErrorEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &SpeechSynthesisErrorEventInit, val: bool);
+    fn set_bubbles(this: &SpeechSynthesisErrorEventInit, val: bool);
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisErrorEventInit`*"]
+    #[wasm_bindgen(method, getter = "cancelable")]
+    pub fn get_cancelable(this: &SpeechSynthesisErrorEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &SpeechSynthesisErrorEventInit, val: bool);
+    fn set_cancelable(this: &SpeechSynthesisErrorEventInit, val: bool);
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisErrorEventInit`*"]
+    #[wasm_bindgen(method, getter = "composed")]
+    pub fn get_composed(this: &SpeechSynthesisErrorEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &SpeechSynthesisErrorEventInit, val: bool);
+    fn set_composed(this: &SpeechSynthesisErrorEventInit, val: bool);
+    #[doc = "Get the `charIndex` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisErrorEventInit`*"]
+    #[wasm_bindgen(method, getter = "charIndex")]
+    pub fn get_char_index(this: &SpeechSynthesisErrorEventInit) -> Option<u32>;
     #[wasm_bindgen(method, setter = "charIndex")]
-    fn char_index_shim(this: &SpeechSynthesisErrorEventInit, val: u32);
+    fn set_char_index(this: &SpeechSynthesisErrorEventInit, val: u32);
+    #[doc = "Get the `charLength` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisErrorEventInit`*"]
+    #[wasm_bindgen(method, getter = "charLength")]
+    pub fn get_char_length(this: &SpeechSynthesisErrorEventInit) -> Option<u32>;
     #[wasm_bindgen(method, setter = "charLength")]
-    fn char_length_shim(this: &SpeechSynthesisErrorEventInit, val: Option<u32>);
+    fn set_char_length(this: &SpeechSynthesisErrorEventInit, val: Option<u32>);
+    #[doc = "Get the `elapsedTime` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisErrorEventInit`*"]
+    #[wasm_bindgen(method, getter = "elapsedTime")]
+    pub fn get_elapsed_time(this: &SpeechSynthesisErrorEventInit) -> Option<f32>;
     #[wasm_bindgen(method, setter = "elapsedTime")]
-    fn elapsed_time_shim(this: &SpeechSynthesisErrorEventInit, val: f32);
+    fn set_elapsed_time(this: &SpeechSynthesisErrorEventInit, val: f32);
+    #[doc = "Get the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisErrorEventInit`*"]
+    #[wasm_bindgen(method, getter = "name")]
+    pub fn get_name(this: &SpeechSynthesisErrorEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "name")]
-    fn name_shim(this: &SpeechSynthesisErrorEventInit, val: &str);
+    fn set_name(this: &SpeechSynthesisErrorEventInit, val: &str);
+    #[cfg(feature = "SpeechSynthesisUtterance")]
+    #[doc = "Get the `utterance` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisErrorEventInit`, `SpeechSynthesisUtterance`*"]
+    #[wasm_bindgen(method, getter = "utterance")]
+    pub fn get_utterance(this: &SpeechSynthesisErrorEventInit) -> SpeechSynthesisUtterance;
     #[cfg(feature = "SpeechSynthesisUtterance")]
     #[wasm_bindgen(method, setter = "utterance")]
-    fn utterance_shim(this: &SpeechSynthesisErrorEventInit, val: &SpeechSynthesisUtterance);
+    fn set_utterance(this: &SpeechSynthesisErrorEventInit, val: &SpeechSynthesisUtterance);
+    #[cfg(feature = "SpeechSynthesisErrorCode")]
+    #[doc = "Get the `error` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisErrorCode`, `SpeechSynthesisErrorEventInit`*"]
+    #[wasm_bindgen(method, getter = "error")]
+    pub fn get_error(this: &SpeechSynthesisErrorEventInit) -> SpeechSynthesisErrorCode;
     #[cfg(feature = "SpeechSynthesisErrorCode")]
     #[wasm_bindgen(method, setter = "error")]
-    fn error_shim(this: &SpeechSynthesisErrorEventInit, val: SpeechSynthesisErrorCode);
+    fn set_error(this: &SpeechSynthesisErrorEventInit, val: SpeechSynthesisErrorCode);
 }
 impl SpeechSynthesisErrorEventInit {
     #[cfg(all(
@@ -50,49 +97,49 @@ impl SpeechSynthesisErrorEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisErrorEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisErrorEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisErrorEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed(val);
         self
     }
     #[doc = "Change the `charIndex` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisErrorEventInit`*"]
     pub fn char_index(&mut self, val: u32) -> &mut Self {
-        self.char_index_shim(val);
+        self.set_char_index(val);
         self
     }
     #[doc = "Change the `charLength` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisErrorEventInit`*"]
     pub fn char_length(&mut self, val: Option<u32>) -> &mut Self {
-        self.char_length_shim(val);
+        self.set_char_length(val);
         self
     }
     #[doc = "Change the `elapsedTime` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisErrorEventInit`*"]
     pub fn elapsed_time(&mut self, val: f32) -> &mut Self {
-        self.elapsed_time_shim(val);
+        self.set_elapsed_time(val);
         self
     }
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisErrorEventInit`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        self.name_shim(val);
+        self.set_name(val);
         self
     }
     #[cfg(feature = "SpeechSynthesisUtterance")]
@@ -100,7 +147,7 @@ impl SpeechSynthesisErrorEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisErrorEventInit`, `SpeechSynthesisUtterance`*"]
     pub fn utterance(&mut self, val: &SpeechSynthesisUtterance) -> &mut Self {
-        self.utterance_shim(val);
+        self.set_utterance(val);
         self
     }
     #[cfg(feature = "SpeechSynthesisErrorCode")]
@@ -108,7 +155,7 @@ impl SpeechSynthesisErrorEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisErrorCode`, `SpeechSynthesisErrorEventInit`*"]
     pub fn error(&mut self, val: SpeechSynthesisErrorCode) -> &mut Self {
-        self.error_shim(val);
+        self.set_error(val);
         self
     }
 }

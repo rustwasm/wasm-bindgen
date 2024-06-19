@@ -14,12 +14,39 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type MediaImage;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `sizes` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaImage`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "sizes")]
+    pub fn get_sizes(this: &MediaImage) -> Option<String>;
     #[wasm_bindgen(method, setter = "sizes")]
-    fn sizes_shim(this: &MediaImage, val: &str);
+    fn set_sizes(this: &MediaImage, val: &str);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `src` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaImage`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "src")]
+    pub fn get_src(this: &MediaImage) -> String;
     #[wasm_bindgen(method, setter = "src")]
-    fn src_shim(this: &MediaImage, val: &str);
+    fn set_src(this: &MediaImage, val: &str);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaImage`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "type")]
+    pub fn get_type(this: &MediaImage) -> Option<String>;
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &MediaImage, val: &str);
+    fn set_type(this: &MediaImage, val: &str);
 }
 #[cfg(web_sys_unstable_apis)]
 impl MediaImage {
@@ -43,7 +70,7 @@ impl MediaImage {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn sizes(&mut self, val: &str) -> &mut Self {
-        self.sizes_shim(val);
+        self.set_sizes(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -54,7 +81,7 @@ impl MediaImage {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn src(&mut self, val: &str) -> &mut Self {
-        self.src_shim(val);
+        self.set_src(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -65,7 +92,7 @@ impl MediaImage {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn type_(&mut self, val: &str) -> &mut Self {
-        self.type__shim(val);
+        self.set_type(val);
         self
     }
 }

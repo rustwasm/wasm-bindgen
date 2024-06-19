@@ -14,13 +14,41 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuQuerySetDescriptor;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `label` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuQuerySetDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "label")]
+    pub fn get_label(this: &GpuQuerySetDescriptor) -> Option<String>;
     #[wasm_bindgen(method, setter = "label")]
-    fn label_shim(this: &GpuQuerySetDescriptor, val: &str);
+    fn set_label(this: &GpuQuerySetDescriptor, val: &str);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `count` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuQuerySetDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "count")]
+    pub fn get_count(this: &GpuQuerySetDescriptor) -> u32;
     #[wasm_bindgen(method, setter = "count")]
-    fn count_shim(this: &GpuQuerySetDescriptor, val: u32);
+    fn set_count(this: &GpuQuerySetDescriptor, val: u32);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuQueryType")]
+    #[doc = "Get the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuQuerySetDescriptor`, `GpuQueryType`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "type")]
+    pub fn get_type(this: &GpuQuerySetDescriptor) -> GpuQueryType;
     #[cfg(feature = "GpuQueryType")]
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &GpuQuerySetDescriptor, val: GpuQueryType);
+    fn set_type(this: &GpuQuerySetDescriptor, val: GpuQueryType);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuQuerySetDescriptor {
@@ -46,7 +74,7 @@ impl GpuQuerySetDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn label(&mut self, val: &str) -> &mut Self {
-        self.label_shim(val);
+        self.set_label(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -57,7 +85,7 @@ impl GpuQuerySetDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn count(&mut self, val: u32) -> &mut Self {
-        self.count_shim(val);
+        self.set_count(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -69,7 +97,7 @@ impl GpuQuerySetDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn type_(&mut self, val: GpuQueryType) -> &mut Self {
-        self.type__shim(val);
+        self.set_type(val);
         self
     }
 }

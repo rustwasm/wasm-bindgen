@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProvider`*"]
     pub type RtcIdentityProvider;
+    #[doc = "Get the `generateAssertion` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProvider`*"]
+    #[wasm_bindgen(method, getter = "generateAssertion")]
+    pub fn get_generate_assertion(this: &RtcIdentityProvider) -> ::js_sys::Function;
     #[wasm_bindgen(method, setter = "generateAssertion")]
-    fn generate_assertion_shim(this: &RtcIdentityProvider, val: &::js_sys::Function);
+    fn set_generate_assertion(this: &RtcIdentityProvider, val: &::js_sys::Function);
+    #[doc = "Get the `validateAssertion` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProvider`*"]
+    #[wasm_bindgen(method, getter = "validateAssertion")]
+    pub fn get_validate_assertion(this: &RtcIdentityProvider) -> ::js_sys::Function;
     #[wasm_bindgen(method, setter = "validateAssertion")]
-    fn validate_assertion_shim(this: &RtcIdentityProvider, val: &::js_sys::Function);
+    fn set_validate_assertion(this: &RtcIdentityProvider, val: &::js_sys::Function);
 }
 impl RtcIdentityProvider {
     #[doc = "Construct a new `RtcIdentityProvider`."]
@@ -33,14 +43,14 @@ impl RtcIdentityProvider {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProvider`*"]
     pub fn generate_assertion(&mut self, val: &::js_sys::Function) -> &mut Self {
-        self.generate_assertion_shim(val);
+        self.set_generate_assertion(val);
         self
     }
     #[doc = "Change the `validateAssertion` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProvider`*"]
     pub fn validate_assertion(&mut self, val: &::js_sys::Function) -> &mut Self {
-        self.validate_assertion_shim(val);
+        self.set_validate_assertion(val);
         self
     }
 }

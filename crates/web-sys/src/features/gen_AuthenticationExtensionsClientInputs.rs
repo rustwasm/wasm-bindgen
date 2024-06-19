@@ -10,8 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientInputs`*"]
     pub type AuthenticationExtensionsClientInputs;
+    #[doc = "Get the `appid` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientInputs`*"]
+    #[wasm_bindgen(method, getter = "appid")]
+    pub fn get_appid(this: &AuthenticationExtensionsClientInputs) -> Option<String>;
     #[wasm_bindgen(method, setter = "appid")]
-    fn appid_shim(this: &AuthenticationExtensionsClientInputs, val: &str);
+    fn set_appid(this: &AuthenticationExtensionsClientInputs, val: &str);
 }
 impl AuthenticationExtensionsClientInputs {
     #[doc = "Construct a new `AuthenticationExtensionsClientInputs`."]
@@ -26,7 +31,7 @@ impl AuthenticationExtensionsClientInputs {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientInputs`*"]
     pub fn appid(&mut self, val: &str) -> &mut Self {
-        self.appid_shim(val);
+        self.set_appid(val);
         self
     }
 }

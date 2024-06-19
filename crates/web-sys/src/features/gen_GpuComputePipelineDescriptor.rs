@@ -14,13 +14,41 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuComputePipelineDescriptor;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `label` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuComputePipelineDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "label")]
+    pub fn get_label(this: &GpuComputePipelineDescriptor) -> Option<String>;
     #[wasm_bindgen(method, setter = "label")]
-    fn label_shim(this: &GpuComputePipelineDescriptor, val: &str);
+    fn set_label(this: &GpuComputePipelineDescriptor, val: &str);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `layout` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuComputePipelineDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "layout")]
+    pub fn get_layout(this: &GpuComputePipelineDescriptor) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "layout")]
-    fn layout_shim(this: &GpuComputePipelineDescriptor, val: &::wasm_bindgen::JsValue);
+    fn set_layout(this: &GpuComputePipelineDescriptor, val: &::wasm_bindgen::JsValue);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuProgrammableStage")]
+    #[doc = "Get the `compute` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuComputePipelineDescriptor`, `GpuProgrammableStage`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "compute")]
+    pub fn get_compute(this: &GpuComputePipelineDescriptor) -> GpuProgrammableStage;
     #[cfg(feature = "GpuProgrammableStage")]
     #[wasm_bindgen(method, setter = "compute")]
-    fn compute_shim(this: &GpuComputePipelineDescriptor, val: &GpuProgrammableStage);
+    fn set_compute(this: &GpuComputePipelineDescriptor, val: &GpuProgrammableStage);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuComputePipelineDescriptor {
@@ -46,7 +74,7 @@ impl GpuComputePipelineDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn label(&mut self, val: &str) -> &mut Self {
-        self.label_shim(val);
+        self.set_label(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -57,7 +85,7 @@ impl GpuComputePipelineDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn layout(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.layout_shim(val);
+        self.set_layout(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -69,7 +97,7 @@ impl GpuComputePipelineDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn compute(&mut self, val: &GpuProgrammableStage) -> &mut Self {
-        self.compute_shim(val);
+        self.set_compute(val);
         self
     }
 }

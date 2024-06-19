@@ -14,29 +14,122 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type VideoFrameBufferInit;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `codedHeight` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoFrameBufferInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "codedHeight")]
+    pub fn get_coded_height(this: &VideoFrameBufferInit) -> u32;
     #[wasm_bindgen(method, setter = "codedHeight")]
-    fn coded_height_shim(this: &VideoFrameBufferInit, val: u32);
+    fn set_coded_height(this: &VideoFrameBufferInit, val: u32);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `codedWidth` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoFrameBufferInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "codedWidth")]
+    pub fn get_coded_width(this: &VideoFrameBufferInit) -> u32;
     #[wasm_bindgen(method, setter = "codedWidth")]
-    fn coded_width_shim(this: &VideoFrameBufferInit, val: u32);
+    fn set_coded_width(this: &VideoFrameBufferInit, val: u32);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "VideoColorSpaceInit")]
+    #[doc = "Get the `colorSpace` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoColorSpaceInit`, `VideoFrameBufferInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "colorSpace")]
+    pub fn get_color_space(this: &VideoFrameBufferInit) -> Option<VideoColorSpaceInit>;
     #[cfg(feature = "VideoColorSpaceInit")]
     #[wasm_bindgen(method, setter = "colorSpace")]
-    fn color_space_shim(this: &VideoFrameBufferInit, val: &VideoColorSpaceInit);
+    fn set_color_space(this: &VideoFrameBufferInit, val: &VideoColorSpaceInit);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `displayHeight` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoFrameBufferInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "displayHeight")]
+    pub fn get_display_height(this: &VideoFrameBufferInit) -> Option<u32>;
     #[wasm_bindgen(method, setter = "displayHeight")]
-    fn display_height_shim(this: &VideoFrameBufferInit, val: u32);
+    fn set_display_height(this: &VideoFrameBufferInit, val: u32);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `displayWidth` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoFrameBufferInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "displayWidth")]
+    pub fn get_display_width(this: &VideoFrameBufferInit) -> Option<u32>;
     #[wasm_bindgen(method, setter = "displayWidth")]
-    fn display_width_shim(this: &VideoFrameBufferInit, val: u32);
+    fn set_display_width(this: &VideoFrameBufferInit, val: u32);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `duration` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoFrameBufferInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "duration")]
+    pub fn get_duration(this: &VideoFrameBufferInit) -> Option<f64>;
     #[wasm_bindgen(method, setter = "duration")]
-    fn duration_shim(this: &VideoFrameBufferInit, val: f64);
+    fn set_duration(this: &VideoFrameBufferInit, val: f64);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "VideoPixelFormat")]
+    #[doc = "Get the `format` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoFrameBufferInit`, `VideoPixelFormat`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "format")]
+    pub fn get_format(this: &VideoFrameBufferInit) -> VideoPixelFormat;
     #[cfg(feature = "VideoPixelFormat")]
     #[wasm_bindgen(method, setter = "format")]
-    fn format_shim(this: &VideoFrameBufferInit, val: VideoPixelFormat);
+    fn set_format(this: &VideoFrameBufferInit, val: VideoPixelFormat);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `layout` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoFrameBufferInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "layout")]
+    pub fn get_layout(this: &VideoFrameBufferInit) -> Option<::js_sys::Array>;
     #[wasm_bindgen(method, setter = "layout")]
-    fn layout_shim(this: &VideoFrameBufferInit, val: &::wasm_bindgen::JsValue);
+    fn set_layout(this: &VideoFrameBufferInit, val: &::wasm_bindgen::JsValue);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `timestamp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoFrameBufferInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "timestamp")]
+    pub fn get_timestamp(this: &VideoFrameBufferInit) -> f64;
     #[wasm_bindgen(method, setter = "timestamp")]
-    fn timestamp_shim(this: &VideoFrameBufferInit, val: f64);
+    fn set_timestamp(this: &VideoFrameBufferInit, val: f64);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "DomRectInit")]
+    #[doc = "Get the `visibleRect` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomRectInit`, `VideoFrameBufferInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "visibleRect")]
+    pub fn get_visible_rect(this: &VideoFrameBufferInit) -> Option<DomRectInit>;
     #[cfg(feature = "DomRectInit")]
     #[wasm_bindgen(method, setter = "visibleRect")]
-    fn visible_rect_shim(this: &VideoFrameBufferInit, val: &DomRectInit);
+    fn set_visible_rect(this: &VideoFrameBufferInit, val: &DomRectInit);
 }
 #[cfg(web_sys_unstable_apis)]
 impl VideoFrameBufferInit {
@@ -69,7 +162,7 @@ impl VideoFrameBufferInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn coded_height(&mut self, val: u32) -> &mut Self {
-        self.coded_height_shim(val);
+        self.set_coded_height(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -80,7 +173,7 @@ impl VideoFrameBufferInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn coded_width(&mut self, val: u32) -> &mut Self {
-        self.coded_width_shim(val);
+        self.set_coded_width(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -92,7 +185,7 @@ impl VideoFrameBufferInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn color_space(&mut self, val: &VideoColorSpaceInit) -> &mut Self {
-        self.color_space_shim(val);
+        self.set_color_space(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -103,7 +196,7 @@ impl VideoFrameBufferInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn display_height(&mut self, val: u32) -> &mut Self {
-        self.display_height_shim(val);
+        self.set_display_height(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -114,7 +207,7 @@ impl VideoFrameBufferInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn display_width(&mut self, val: u32) -> &mut Self {
-        self.display_width_shim(val);
+        self.set_display_width(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -125,7 +218,7 @@ impl VideoFrameBufferInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn duration(&mut self, val: f64) -> &mut Self {
-        self.duration_shim(val);
+        self.set_duration(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -137,7 +230,7 @@ impl VideoFrameBufferInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn format(&mut self, val: VideoPixelFormat) -> &mut Self {
-        self.format_shim(val);
+        self.set_format(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -148,7 +241,7 @@ impl VideoFrameBufferInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn layout(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.layout_shim(val);
+        self.set_layout(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -159,7 +252,7 @@ impl VideoFrameBufferInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn timestamp(&mut self, val: f64) -> &mut Self {
-        self.timestamp_shim(val);
+        self.set_timestamp(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -171,7 +264,7 @@ impl VideoFrameBufferInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn visible_rect(&mut self, val: &DomRectInit) -> &mut Self {
-        self.visible_rect_shim(val);
+        self.set_visible_rect(val);
         self
     }
 }

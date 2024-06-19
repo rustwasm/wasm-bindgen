@@ -10,12 +10,27 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
     pub type IdbIndexParameters;
+    #[doc = "Get the `locale` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
+    #[wasm_bindgen(method, getter = "locale")]
+    pub fn get_locale(this: &IdbIndexParameters) -> Option<String>;
     #[wasm_bindgen(method, setter = "locale")]
-    fn locale_shim(this: &IdbIndexParameters, val: Option<&str>);
+    fn set_locale(this: &IdbIndexParameters, val: Option<&str>);
+    #[doc = "Get the `multiEntry` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
+    #[wasm_bindgen(method, getter = "multiEntry")]
+    pub fn get_multi_entry(this: &IdbIndexParameters) -> Option<bool>;
     #[wasm_bindgen(method, setter = "multiEntry")]
-    fn multi_entry_shim(this: &IdbIndexParameters, val: bool);
+    fn set_multi_entry(this: &IdbIndexParameters, val: bool);
+    #[doc = "Get the `unique` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
+    #[wasm_bindgen(method, getter = "unique")]
+    pub fn get_unique(this: &IdbIndexParameters) -> Option<bool>;
     #[wasm_bindgen(method, setter = "unique")]
-    fn unique_shim(this: &IdbIndexParameters, val: bool);
+    fn set_unique(this: &IdbIndexParameters, val: bool);
 }
 impl IdbIndexParameters {
     #[doc = "Construct a new `IdbIndexParameters`."]
@@ -30,21 +45,21 @@ impl IdbIndexParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
     pub fn locale(&mut self, val: Option<&str>) -> &mut Self {
-        self.locale_shim(val);
+        self.set_locale(val);
         self
     }
     #[doc = "Change the `multiEntry` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
     pub fn multi_entry(&mut self, val: bool) -> &mut Self {
-        self.multi_entry_shim(val);
+        self.set_multi_entry(val);
         self
     }
     #[doc = "Change the `unique` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
     pub fn unique(&mut self, val: bool) -> &mut Self {
-        self.unique_shim(val);
+        self.set_unique(val);
         self
     }
 }

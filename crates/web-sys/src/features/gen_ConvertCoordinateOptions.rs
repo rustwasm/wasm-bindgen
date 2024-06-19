@@ -11,11 +11,23 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ConvertCoordinateOptions`*"]
     pub type ConvertCoordinateOptions;
     #[cfg(feature = "CssBoxType")]
+    #[doc = "Get the `fromBox` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConvertCoordinateOptions`, `CssBoxType`*"]
+    #[wasm_bindgen(method, getter = "fromBox")]
+    pub fn get_from_box(this: &ConvertCoordinateOptions) -> Option<CssBoxType>;
+    #[cfg(feature = "CssBoxType")]
     #[wasm_bindgen(method, setter = "fromBox")]
-    fn from_box_shim(this: &ConvertCoordinateOptions, val: CssBoxType);
+    fn set_from_box(this: &ConvertCoordinateOptions, val: CssBoxType);
+    #[cfg(feature = "CssBoxType")]
+    #[doc = "Get the `toBox` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConvertCoordinateOptions`, `CssBoxType`*"]
+    #[wasm_bindgen(method, getter = "toBox")]
+    pub fn get_to_box(this: &ConvertCoordinateOptions) -> Option<CssBoxType>;
     #[cfg(feature = "CssBoxType")]
     #[wasm_bindgen(method, setter = "toBox")]
-    fn to_box_shim(this: &ConvertCoordinateOptions, val: CssBoxType);
+    fn set_to_box(this: &ConvertCoordinateOptions, val: CssBoxType);
 }
 impl ConvertCoordinateOptions {
     #[doc = "Construct a new `ConvertCoordinateOptions`."]
@@ -31,7 +43,7 @@ impl ConvertCoordinateOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConvertCoordinateOptions`, `CssBoxType`*"]
     pub fn from_box(&mut self, val: CssBoxType) -> &mut Self {
-        self.from_box_shim(val);
+        self.set_from_box(val);
         self
     }
     #[cfg(feature = "CssBoxType")]
@@ -39,7 +51,7 @@ impl ConvertCoordinateOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConvertCoordinateOptions`, `CssBoxType`*"]
     pub fn to_box(&mut self, val: CssBoxType) -> &mut Self {
-        self.to_box_shim(val);
+        self.set_to_box(val);
         self
     }
 }

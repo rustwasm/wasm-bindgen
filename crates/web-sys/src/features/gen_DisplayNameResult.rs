@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
     pub type DisplayNameResult;
+    #[doc = "Get the `locale` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
+    #[wasm_bindgen(method, getter = "locale")]
+    pub fn get_locale(this: &DisplayNameResult) -> Option<String>;
     #[wasm_bindgen(method, setter = "locale")]
-    fn locale_shim(this: &DisplayNameResult, val: &str);
+    fn set_locale(this: &DisplayNameResult, val: &str);
+    #[doc = "Get the `style` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
+    #[wasm_bindgen(method, getter = "style")]
+    pub fn get_style(this: &DisplayNameResult) -> Option<String>;
     #[wasm_bindgen(method, setter = "style")]
-    fn style_shim(this: &DisplayNameResult, val: &str);
+    fn set_style(this: &DisplayNameResult, val: &str);
 }
 impl DisplayNameResult {
     #[doc = "Construct a new `DisplayNameResult`."]
@@ -28,14 +38,14 @@ impl DisplayNameResult {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
     pub fn locale(&mut self, val: &str) -> &mut Self {
-        self.locale_shim(val);
+        self.set_locale(val);
         self
     }
     #[doc = "Change the `style` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
     pub fn style(&mut self, val: &str) -> &mut Self {
-        self.style_shim(val);
+        self.set_style(val);
         self
     }
 }

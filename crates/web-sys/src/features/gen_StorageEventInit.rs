@@ -10,23 +10,64 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageEventInit`*"]
     pub type StorageEventInit;
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `StorageEventInit`*"]
+    #[wasm_bindgen(method, getter = "bubbles")]
+    pub fn get_bubbles(this: &StorageEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &StorageEventInit, val: bool);
+    fn set_bubbles(this: &StorageEventInit, val: bool);
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `StorageEventInit`*"]
+    #[wasm_bindgen(method, getter = "cancelable")]
+    pub fn get_cancelable(this: &StorageEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &StorageEventInit, val: bool);
+    fn set_cancelable(this: &StorageEventInit, val: bool);
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `StorageEventInit`*"]
+    #[wasm_bindgen(method, getter = "composed")]
+    pub fn get_composed(this: &StorageEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &StorageEventInit, val: bool);
+    fn set_composed(this: &StorageEventInit, val: bool);
+    #[doc = "Get the `key` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `StorageEventInit`*"]
+    #[wasm_bindgen(method, getter = "key")]
+    pub fn get_key(this: &StorageEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "key")]
-    fn key_shim(this: &StorageEventInit, val: Option<&str>);
+    fn set_key(this: &StorageEventInit, val: Option<&str>);
+    #[doc = "Get the `newValue` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `StorageEventInit`*"]
+    #[wasm_bindgen(method, getter = "newValue")]
+    pub fn get_new_value(this: &StorageEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "newValue")]
-    fn new_value_shim(this: &StorageEventInit, val: Option<&str>);
+    fn set_new_value(this: &StorageEventInit, val: Option<&str>);
+    #[doc = "Get the `oldValue` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `StorageEventInit`*"]
+    #[wasm_bindgen(method, getter = "oldValue")]
+    pub fn get_old_value(this: &StorageEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "oldValue")]
-    fn old_value_shim(this: &StorageEventInit, val: Option<&str>);
+    fn set_old_value(this: &StorageEventInit, val: Option<&str>);
+    #[cfg(feature = "Storage")]
+    #[doc = "Get the `storageArea` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Storage`, `StorageEventInit`*"]
+    #[wasm_bindgen(method, getter = "storageArea")]
+    pub fn get_storage_area(this: &StorageEventInit) -> Option<Storage>;
     #[cfg(feature = "Storage")]
     #[wasm_bindgen(method, setter = "storageArea")]
-    fn storage_area_shim(this: &StorageEventInit, val: Option<&Storage>);
+    fn set_storage_area(this: &StorageEventInit, val: Option<&Storage>);
+    #[doc = "Get the `url` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `StorageEventInit`*"]
+    #[wasm_bindgen(method, getter = "url")]
+    pub fn get_url(this: &StorageEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "url")]
-    fn url_shim(this: &StorageEventInit, val: &str);
+    fn set_url(this: &StorageEventInit, val: &str);
 }
 impl StorageEventInit {
     #[doc = "Construct a new `StorageEventInit`."]
@@ -41,42 +82,42 @@ impl StorageEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed(val);
         self
     }
     #[doc = "Change the `key` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageEventInit`*"]
     pub fn key(&mut self, val: Option<&str>) -> &mut Self {
-        self.key_shim(val);
+        self.set_key(val);
         self
     }
     #[doc = "Change the `newValue` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageEventInit`*"]
     pub fn new_value(&mut self, val: Option<&str>) -> &mut Self {
-        self.new_value_shim(val);
+        self.set_new_value(val);
         self
     }
     #[doc = "Change the `oldValue` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageEventInit`*"]
     pub fn old_value(&mut self, val: Option<&str>) -> &mut Self {
-        self.old_value_shim(val);
+        self.set_old_value(val);
         self
     }
     #[cfg(feature = "Storage")]
@@ -84,14 +125,14 @@ impl StorageEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Storage`, `StorageEventInit`*"]
     pub fn storage_area(&mut self, val: Option<&Storage>) -> &mut Self {
-        self.storage_area_shim(val);
+        self.set_storage_area(val);
         self
     }
     #[doc = "Change the `url` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageEventInit`*"]
     pub fn url(&mut self, val: &str) -> &mut Self {
-        self.url_shim(val);
+        self.set_url(val);
         self
     }
 }

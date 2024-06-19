@@ -10,11 +10,22 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DhKeyDeriveParams`*"]
     pub type DhKeyDeriveParams;
+    #[doc = "Get the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DhKeyDeriveParams`*"]
+    #[wasm_bindgen(method, getter = "name")]
+    pub fn get_name(this: &DhKeyDeriveParams) -> String;
     #[wasm_bindgen(method, setter = "name")]
-    fn name_shim(this: &DhKeyDeriveParams, val: &str);
+    fn set_name(this: &DhKeyDeriveParams, val: &str);
+    #[cfg(feature = "CryptoKey")]
+    #[doc = "Get the `public` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `DhKeyDeriveParams`*"]
+    #[wasm_bindgen(method, getter = "public")]
+    pub fn get_public(this: &DhKeyDeriveParams) -> CryptoKey;
     #[cfg(feature = "CryptoKey")]
     #[wasm_bindgen(method, setter = "public")]
-    fn public_shim(this: &DhKeyDeriveParams, val: &CryptoKey);
+    fn set_public(this: &DhKeyDeriveParams, val: &CryptoKey);
 }
 impl DhKeyDeriveParams {
     #[cfg(feature = "CryptoKey")]
@@ -32,7 +43,7 @@ impl DhKeyDeriveParams {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DhKeyDeriveParams`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        self.name_shim(val);
+        self.set_name(val);
         self
     }
     #[cfg(feature = "CryptoKey")]
@@ -40,7 +51,7 @@ impl DhKeyDeriveParams {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `DhKeyDeriveParams`*"]
     pub fn public(&mut self, val: &CryptoKey) -> &mut Self {
-        self.public_shim(val);
+        self.set_public(val);
         self
     }
 }

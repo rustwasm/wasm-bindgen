@@ -10,8 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtxParameters`*"]
     pub type RtcRtxParameters;
+    #[doc = "Get the `ssrc` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtxParameters`*"]
+    #[wasm_bindgen(method, getter = "ssrc")]
+    pub fn get_ssrc(this: &RtcRtxParameters) -> Option<u32>;
     #[wasm_bindgen(method, setter = "ssrc")]
-    fn ssrc_shim(this: &RtcRtxParameters, val: u32);
+    fn set_ssrc(this: &RtcRtxParameters, val: u32);
 }
 impl RtcRtxParameters {
     #[doc = "Construct a new `RtcRtxParameters`."]
@@ -26,7 +31,7 @@ impl RtcRtxParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtxParameters`*"]
     pub fn ssrc(&mut self, val: u32) -> &mut Self {
-        self.ssrc_shim(val);
+        self.set_ssrc(val);
         self
     }
 }

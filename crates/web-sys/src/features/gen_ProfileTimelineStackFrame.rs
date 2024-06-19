@@ -10,20 +10,55 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
     pub type ProfileTimelineStackFrame;
+    #[doc = "Get the `asyncCause` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
+    #[wasm_bindgen(method, getter = "asyncCause")]
+    pub fn get_async_cause(this: &ProfileTimelineStackFrame) -> Option<String>;
     #[wasm_bindgen(method, setter = "asyncCause")]
-    fn async_cause_shim(this: &ProfileTimelineStackFrame, val: &str);
+    fn set_async_cause(this: &ProfileTimelineStackFrame, val: &str);
+    #[doc = "Get the `asyncParent` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
+    #[wasm_bindgen(method, getter = "asyncParent")]
+    pub fn get_async_parent(this: &ProfileTimelineStackFrame) -> Option<::js_sys::Object>;
     #[wasm_bindgen(method, setter = "asyncParent")]
-    fn async_parent_shim(this: &ProfileTimelineStackFrame, val: Option<&::js_sys::Object>);
+    fn set_async_parent(this: &ProfileTimelineStackFrame, val: Option<&::js_sys::Object>);
+    #[doc = "Get the `column` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
+    #[wasm_bindgen(method, getter = "column")]
+    pub fn get_column(this: &ProfileTimelineStackFrame) -> Option<i32>;
     #[wasm_bindgen(method, setter = "column")]
-    fn column_shim(this: &ProfileTimelineStackFrame, val: i32);
+    fn set_column(this: &ProfileTimelineStackFrame, val: i32);
+    #[doc = "Get the `functionDisplayName` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
+    #[wasm_bindgen(method, getter = "functionDisplayName")]
+    pub fn get_function_display_name(this: &ProfileTimelineStackFrame) -> Option<String>;
     #[wasm_bindgen(method, setter = "functionDisplayName")]
-    fn function_display_name_shim(this: &ProfileTimelineStackFrame, val: &str);
+    fn set_function_display_name(this: &ProfileTimelineStackFrame, val: &str);
+    #[doc = "Get the `line` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
+    #[wasm_bindgen(method, getter = "line")]
+    pub fn get_line(this: &ProfileTimelineStackFrame) -> Option<i32>;
     #[wasm_bindgen(method, setter = "line")]
-    fn line_shim(this: &ProfileTimelineStackFrame, val: i32);
+    fn set_line(this: &ProfileTimelineStackFrame, val: i32);
+    #[doc = "Get the `parent` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
+    #[wasm_bindgen(method, getter = "parent")]
+    pub fn get_parent(this: &ProfileTimelineStackFrame) -> Option<::js_sys::Object>;
     #[wasm_bindgen(method, setter = "parent")]
-    fn parent_shim(this: &ProfileTimelineStackFrame, val: Option<&::js_sys::Object>);
+    fn set_parent(this: &ProfileTimelineStackFrame, val: Option<&::js_sys::Object>);
+    #[doc = "Get the `source` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
+    #[wasm_bindgen(method, getter = "source")]
+    pub fn get_source(this: &ProfileTimelineStackFrame) -> Option<String>;
     #[wasm_bindgen(method, setter = "source")]
-    fn source_shim(this: &ProfileTimelineStackFrame, val: &str);
+    fn set_source(this: &ProfileTimelineStackFrame, val: &str);
 }
 impl ProfileTimelineStackFrame {
     #[doc = "Construct a new `ProfileTimelineStackFrame`."]
@@ -38,49 +73,49 @@ impl ProfileTimelineStackFrame {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
     pub fn async_cause(&mut self, val: &str) -> &mut Self {
-        self.async_cause_shim(val);
+        self.set_async_cause(val);
         self
     }
     #[doc = "Change the `asyncParent` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
     pub fn async_parent(&mut self, val: Option<&::js_sys::Object>) -> &mut Self {
-        self.async_parent_shim(val);
+        self.set_async_parent(val);
         self
     }
     #[doc = "Change the `column` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
     pub fn column(&mut self, val: i32) -> &mut Self {
-        self.column_shim(val);
+        self.set_column(val);
         self
     }
     #[doc = "Change the `functionDisplayName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
     pub fn function_display_name(&mut self, val: &str) -> &mut Self {
-        self.function_display_name_shim(val);
+        self.set_function_display_name(val);
         self
     }
     #[doc = "Change the `line` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
     pub fn line(&mut self, val: i32) -> &mut Self {
-        self.line_shim(val);
+        self.set_line(val);
         self
     }
     #[doc = "Change the `parent` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
     pub fn parent(&mut self, val: Option<&::js_sys::Object>) -> &mut Self {
-        self.parent_shim(val);
+        self.set_parent(val);
         self
     }
     #[doc = "Change the `source` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
     pub fn source(&mut self, val: &str) -> &mut Self {
-        self.source_shim(val);
+        self.set_source(val);
         self
     }
 }

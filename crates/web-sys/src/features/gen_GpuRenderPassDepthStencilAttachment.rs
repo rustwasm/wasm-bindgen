@@ -14,29 +14,115 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuRenderPassDepthStencilAttachment;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `depthClearValue` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassDepthStencilAttachment`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "depthClearValue")]
+    pub fn get_depth_clear_value(this: &GpuRenderPassDepthStencilAttachment) -> Option<f32>;
     #[wasm_bindgen(method, setter = "depthClearValue")]
-    fn depth_clear_value_shim(this: &GpuRenderPassDepthStencilAttachment, val: f32);
+    fn set_depth_clear_value(this: &GpuRenderPassDepthStencilAttachment, val: f32);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuLoadOp")]
+    #[doc = "Get the `depthLoadOp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuLoadOp`, `GpuRenderPassDepthStencilAttachment`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "depthLoadOp")]
+    pub fn get_depth_load_op(this: &GpuRenderPassDepthStencilAttachment) -> Option<GpuLoadOp>;
     #[cfg(feature = "GpuLoadOp")]
     #[wasm_bindgen(method, setter = "depthLoadOp")]
-    fn depth_load_op_shim(this: &GpuRenderPassDepthStencilAttachment, val: GpuLoadOp);
+    fn set_depth_load_op(this: &GpuRenderPassDepthStencilAttachment, val: GpuLoadOp);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `depthReadOnly` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassDepthStencilAttachment`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "depthReadOnly")]
+    pub fn get_depth_read_only(this: &GpuRenderPassDepthStencilAttachment) -> Option<bool>;
     #[wasm_bindgen(method, setter = "depthReadOnly")]
-    fn depth_read_only_shim(this: &GpuRenderPassDepthStencilAttachment, val: bool);
+    fn set_depth_read_only(this: &GpuRenderPassDepthStencilAttachment, val: bool);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuStoreOp")]
+    #[doc = "Get the `depthStoreOp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassDepthStencilAttachment`, `GpuStoreOp`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "depthStoreOp")]
+    pub fn get_depth_store_op(this: &GpuRenderPassDepthStencilAttachment) -> Option<GpuStoreOp>;
     #[cfg(feature = "GpuStoreOp")]
     #[wasm_bindgen(method, setter = "depthStoreOp")]
-    fn depth_store_op_shim(this: &GpuRenderPassDepthStencilAttachment, val: GpuStoreOp);
+    fn set_depth_store_op(this: &GpuRenderPassDepthStencilAttachment, val: GpuStoreOp);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `stencilClearValue` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassDepthStencilAttachment`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "stencilClearValue")]
+    pub fn get_stencil_clear_value(this: &GpuRenderPassDepthStencilAttachment) -> Option<u32>;
     #[wasm_bindgen(method, setter = "stencilClearValue")]
-    fn stencil_clear_value_shim(this: &GpuRenderPassDepthStencilAttachment, val: u32);
+    fn set_stencil_clear_value(this: &GpuRenderPassDepthStencilAttachment, val: u32);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuLoadOp")]
+    #[doc = "Get the `stencilLoadOp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuLoadOp`, `GpuRenderPassDepthStencilAttachment`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "stencilLoadOp")]
+    pub fn get_stencil_load_op(this: &GpuRenderPassDepthStencilAttachment) -> Option<GpuLoadOp>;
     #[cfg(feature = "GpuLoadOp")]
     #[wasm_bindgen(method, setter = "stencilLoadOp")]
-    fn stencil_load_op_shim(this: &GpuRenderPassDepthStencilAttachment, val: GpuLoadOp);
+    fn set_stencil_load_op(this: &GpuRenderPassDepthStencilAttachment, val: GpuLoadOp);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `stencilReadOnly` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassDepthStencilAttachment`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "stencilReadOnly")]
+    pub fn get_stencil_read_only(this: &GpuRenderPassDepthStencilAttachment) -> Option<bool>;
     #[wasm_bindgen(method, setter = "stencilReadOnly")]
-    fn stencil_read_only_shim(this: &GpuRenderPassDepthStencilAttachment, val: bool);
+    fn set_stencil_read_only(this: &GpuRenderPassDepthStencilAttachment, val: bool);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuStoreOp")]
+    #[doc = "Get the `stencilStoreOp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassDepthStencilAttachment`, `GpuStoreOp`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "stencilStoreOp")]
+    pub fn get_stencil_store_op(this: &GpuRenderPassDepthStencilAttachment) -> Option<GpuStoreOp>;
     #[cfg(feature = "GpuStoreOp")]
     #[wasm_bindgen(method, setter = "stencilStoreOp")]
-    fn stencil_store_op_shim(this: &GpuRenderPassDepthStencilAttachment, val: GpuStoreOp);
+    fn set_stencil_store_op(this: &GpuRenderPassDepthStencilAttachment, val: GpuStoreOp);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuTextureView")]
+    #[doc = "Get the `view` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassDepthStencilAttachment`, `GpuTextureView`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "view")]
+    pub fn get_view(this: &GpuRenderPassDepthStencilAttachment) -> GpuTextureView;
     #[cfg(feature = "GpuTextureView")]
     #[wasm_bindgen(method, setter = "view")]
-    fn view_shim(this: &GpuRenderPassDepthStencilAttachment, val: &GpuTextureView);
+    fn set_view(this: &GpuRenderPassDepthStencilAttachment, val: &GpuTextureView);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuRenderPassDepthStencilAttachment {
@@ -61,7 +147,7 @@ impl GpuRenderPassDepthStencilAttachment {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn depth_clear_value(&mut self, val: f32) -> &mut Self {
-        self.depth_clear_value_shim(val);
+        self.set_depth_clear_value(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -73,7 +159,7 @@ impl GpuRenderPassDepthStencilAttachment {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn depth_load_op(&mut self, val: GpuLoadOp) -> &mut Self {
-        self.depth_load_op_shim(val);
+        self.set_depth_load_op(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -84,7 +170,7 @@ impl GpuRenderPassDepthStencilAttachment {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn depth_read_only(&mut self, val: bool) -> &mut Self {
-        self.depth_read_only_shim(val);
+        self.set_depth_read_only(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -96,7 +182,7 @@ impl GpuRenderPassDepthStencilAttachment {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn depth_store_op(&mut self, val: GpuStoreOp) -> &mut Self {
-        self.depth_store_op_shim(val);
+        self.set_depth_store_op(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -107,7 +193,7 @@ impl GpuRenderPassDepthStencilAttachment {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn stencil_clear_value(&mut self, val: u32) -> &mut Self {
-        self.stencil_clear_value_shim(val);
+        self.set_stencil_clear_value(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -119,7 +205,7 @@ impl GpuRenderPassDepthStencilAttachment {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn stencil_load_op(&mut self, val: GpuLoadOp) -> &mut Self {
-        self.stencil_load_op_shim(val);
+        self.set_stencil_load_op(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -130,7 +216,7 @@ impl GpuRenderPassDepthStencilAttachment {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn stencil_read_only(&mut self, val: bool) -> &mut Self {
-        self.stencil_read_only_shim(val);
+        self.set_stencil_read_only(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -142,7 +228,7 @@ impl GpuRenderPassDepthStencilAttachment {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn stencil_store_op(&mut self, val: GpuStoreOp) -> &mut Self {
-        self.stencil_store_op_shim(val);
+        self.set_stencil_store_op(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -154,7 +240,7 @@ impl GpuRenderPassDepthStencilAttachment {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn view(&mut self, val: &GpuTextureView) -> &mut Self {
-        self.view_shim(val);
+        self.set_view(val);
         self
     }
 }

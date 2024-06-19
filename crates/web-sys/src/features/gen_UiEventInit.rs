@@ -10,17 +10,43 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UiEventInit`*"]
     pub type UiEventInit;
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UiEventInit`*"]
+    #[wasm_bindgen(method, getter = "bubbles")]
+    pub fn get_bubbles(this: &UiEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &UiEventInit, val: bool);
+    fn set_bubbles(this: &UiEventInit, val: bool);
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UiEventInit`*"]
+    #[wasm_bindgen(method, getter = "cancelable")]
+    pub fn get_cancelable(this: &UiEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &UiEventInit, val: bool);
+    fn set_cancelable(this: &UiEventInit, val: bool);
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UiEventInit`*"]
+    #[wasm_bindgen(method, getter = "composed")]
+    pub fn get_composed(this: &UiEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &UiEventInit, val: bool);
+    fn set_composed(this: &UiEventInit, val: bool);
+    #[doc = "Get the `detail` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UiEventInit`*"]
+    #[wasm_bindgen(method, getter = "detail")]
+    pub fn get_detail(this: &UiEventInit) -> Option<i32>;
     #[wasm_bindgen(method, setter = "detail")]
-    fn detail_shim(this: &UiEventInit, val: i32);
+    fn set_detail(this: &UiEventInit, val: i32);
+    #[cfg(feature = "Window")]
+    #[doc = "Get the `view` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UiEventInit`, `Window`*"]
+    #[wasm_bindgen(method, getter = "view")]
+    pub fn get_view(this: &UiEventInit) -> Option<Window>;
     #[cfg(feature = "Window")]
     #[wasm_bindgen(method, setter = "view")]
-    fn view_shim(this: &UiEventInit, val: Option<&Window>);
+    fn set_view(this: &UiEventInit, val: Option<&Window>);
 }
 impl UiEventInit {
     #[doc = "Construct a new `UiEventInit`."]
@@ -35,28 +61,28 @@ impl UiEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UiEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UiEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UiEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed(val);
         self
     }
     #[doc = "Change the `detail` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UiEventInit`*"]
     pub fn detail(&mut self, val: i32) -> &mut Self {
-        self.detail_shim(val);
+        self.set_detail(val);
         self
     }
     #[cfg(feature = "Window")]
@@ -64,7 +90,7 @@ impl UiEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UiEventInit`, `Window`*"]
     pub fn view(&mut self, val: Option<&Window>) -> &mut Self {
-        self.view_shim(val);
+        self.set_view(val);
         self
     }
 }

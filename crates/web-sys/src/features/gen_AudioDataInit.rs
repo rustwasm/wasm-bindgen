@@ -14,19 +14,74 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type AudioDataInit;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `data` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioDataInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "data")]
+    pub fn get_data(this: &AudioDataInit) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "data")]
-    fn data_shim(this: &AudioDataInit, val: &::js_sys::Object);
+    fn set_data(this: &AudioDataInit, val: &::js_sys::Object);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "AudioSampleFormat")]
+    #[doc = "Get the `format` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioDataInit`, `AudioSampleFormat`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "format")]
+    pub fn get_format(this: &AudioDataInit) -> AudioSampleFormat;
     #[cfg(feature = "AudioSampleFormat")]
     #[wasm_bindgen(method, setter = "format")]
-    fn format_shim(this: &AudioDataInit, val: AudioSampleFormat);
+    fn set_format(this: &AudioDataInit, val: AudioSampleFormat);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `numberOfChannels` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioDataInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "numberOfChannels")]
+    pub fn get_number_of_channels(this: &AudioDataInit) -> u32;
     #[wasm_bindgen(method, setter = "numberOfChannels")]
-    fn number_of_channels_shim(this: &AudioDataInit, val: u32);
+    fn set_number_of_channels(this: &AudioDataInit, val: u32);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `numberOfFrames` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioDataInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "numberOfFrames")]
+    pub fn get_number_of_frames(this: &AudioDataInit) -> u32;
     #[wasm_bindgen(method, setter = "numberOfFrames")]
-    fn number_of_frames_shim(this: &AudioDataInit, val: u32);
+    fn set_number_of_frames(this: &AudioDataInit, val: u32);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `sampleRate` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioDataInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "sampleRate")]
+    pub fn get_sample_rate(this: &AudioDataInit) -> f32;
     #[wasm_bindgen(method, setter = "sampleRate")]
-    fn sample_rate_shim(this: &AudioDataInit, val: f32);
+    fn set_sample_rate(this: &AudioDataInit, val: f32);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `timestamp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioDataInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "timestamp")]
+    pub fn get_timestamp(this: &AudioDataInit) -> f64;
     #[wasm_bindgen(method, setter = "timestamp")]
-    fn timestamp_shim(this: &AudioDataInit, val: f64);
+    fn set_timestamp(this: &AudioDataInit, val: f64);
 }
 #[cfg(web_sys_unstable_apis)]
 impl AudioDataInit {
@@ -63,7 +118,7 @@ impl AudioDataInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn data(&mut self, val: &::js_sys::Object) -> &mut Self {
-        self.data_shim(val);
+        self.set_data(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -75,7 +130,7 @@ impl AudioDataInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn format(&mut self, val: AudioSampleFormat) -> &mut Self {
-        self.format_shim(val);
+        self.set_format(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -86,7 +141,7 @@ impl AudioDataInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn number_of_channels(&mut self, val: u32) -> &mut Self {
-        self.number_of_channels_shim(val);
+        self.set_number_of_channels(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -97,7 +152,7 @@ impl AudioDataInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn number_of_frames(&mut self, val: u32) -> &mut Self {
-        self.number_of_frames_shim(val);
+        self.set_number_of_frames(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -108,7 +163,7 @@ impl AudioDataInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn sample_rate(&mut self, val: f32) -> &mut Self {
-        self.sample_rate_shim(val);
+        self.set_sample_rate(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -119,7 +174,7 @@ impl AudioDataInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn timestamp(&mut self, val: f64) -> &mut Self {
-        self.timestamp_shim(val);
+        self.set_timestamp(val);
         self
     }
 }

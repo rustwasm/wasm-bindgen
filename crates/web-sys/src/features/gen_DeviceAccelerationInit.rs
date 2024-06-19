@@ -10,12 +10,27 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceAccelerationInit`*"]
     pub type DeviceAccelerationInit;
+    #[doc = "Get the `x` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DeviceAccelerationInit`*"]
+    #[wasm_bindgen(method, getter = "x")]
+    pub fn get_x(this: &DeviceAccelerationInit) -> Option<f64>;
     #[wasm_bindgen(method, setter = "x")]
-    fn x_shim(this: &DeviceAccelerationInit, val: Option<f64>);
+    fn set_x(this: &DeviceAccelerationInit, val: Option<f64>);
+    #[doc = "Get the `y` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DeviceAccelerationInit`*"]
+    #[wasm_bindgen(method, getter = "y")]
+    pub fn get_y(this: &DeviceAccelerationInit) -> Option<f64>;
     #[wasm_bindgen(method, setter = "y")]
-    fn y_shim(this: &DeviceAccelerationInit, val: Option<f64>);
+    fn set_y(this: &DeviceAccelerationInit, val: Option<f64>);
+    #[doc = "Get the `z` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DeviceAccelerationInit`*"]
+    #[wasm_bindgen(method, getter = "z")]
+    pub fn get_z(this: &DeviceAccelerationInit) -> Option<f64>;
     #[wasm_bindgen(method, setter = "z")]
-    fn z_shim(this: &DeviceAccelerationInit, val: Option<f64>);
+    fn set_z(this: &DeviceAccelerationInit, val: Option<f64>);
 }
 impl DeviceAccelerationInit {
     #[doc = "Construct a new `DeviceAccelerationInit`."]
@@ -30,21 +45,21 @@ impl DeviceAccelerationInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceAccelerationInit`*"]
     pub fn x(&mut self, val: Option<f64>) -> &mut Self {
-        self.x_shim(val);
+        self.set_x(val);
         self
     }
     #[doc = "Change the `y` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceAccelerationInit`*"]
     pub fn y(&mut self, val: Option<f64>) -> &mut Self {
-        self.y_shim(val);
+        self.set_y(val);
         self
     }
     #[doc = "Change the `z` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceAccelerationInit`*"]
     pub fn z(&mut self, val: Option<f64>) -> &mut Self {
-        self.z_shim(val);
+        self.set_z(val);
         self
     }
 }

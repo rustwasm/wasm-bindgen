@@ -10,14 +10,34 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcdtmfToneChangeEventInit`*"]
     pub type RtcdtmfToneChangeEventInit;
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcdtmfToneChangeEventInit`*"]
+    #[wasm_bindgen(method, getter = "bubbles")]
+    pub fn get_bubbles(this: &RtcdtmfToneChangeEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &RtcdtmfToneChangeEventInit, val: bool);
+    fn set_bubbles(this: &RtcdtmfToneChangeEventInit, val: bool);
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcdtmfToneChangeEventInit`*"]
+    #[wasm_bindgen(method, getter = "cancelable")]
+    pub fn get_cancelable(this: &RtcdtmfToneChangeEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &RtcdtmfToneChangeEventInit, val: bool);
+    fn set_cancelable(this: &RtcdtmfToneChangeEventInit, val: bool);
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcdtmfToneChangeEventInit`*"]
+    #[wasm_bindgen(method, getter = "composed")]
+    pub fn get_composed(this: &RtcdtmfToneChangeEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &RtcdtmfToneChangeEventInit, val: bool);
+    fn set_composed(this: &RtcdtmfToneChangeEventInit, val: bool);
+    #[doc = "Get the `tone` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcdtmfToneChangeEventInit`*"]
+    #[wasm_bindgen(method, getter = "tone")]
+    pub fn get_tone(this: &RtcdtmfToneChangeEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "tone")]
-    fn tone_shim(this: &RtcdtmfToneChangeEventInit, val: &str);
+    fn set_tone(this: &RtcdtmfToneChangeEventInit, val: &str);
 }
 impl RtcdtmfToneChangeEventInit {
     #[doc = "Construct a new `RtcdtmfToneChangeEventInit`."]
@@ -32,28 +52,28 @@ impl RtcdtmfToneChangeEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcdtmfToneChangeEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcdtmfToneChangeEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcdtmfToneChangeEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed(val);
         self
     }
     #[doc = "Change the `tone` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcdtmfToneChangeEventInit`*"]
     pub fn tone(&mut self, val: &str) -> &mut Self {
-        self.tone_shim(val);
+        self.set_tone(val);
         self
     }
 }

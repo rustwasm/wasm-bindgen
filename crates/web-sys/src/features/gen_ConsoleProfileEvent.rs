@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleProfileEvent`*"]
     pub type ConsoleProfileEvent;
+    #[doc = "Get the `action` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleProfileEvent`*"]
+    #[wasm_bindgen(method, getter = "action")]
+    pub fn get_action(this: &ConsoleProfileEvent) -> Option<String>;
     #[wasm_bindgen(method, setter = "action")]
-    fn action_shim(this: &ConsoleProfileEvent, val: &str);
+    fn set_action(this: &ConsoleProfileEvent, val: &str);
+    #[doc = "Get the `arguments` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleProfileEvent`*"]
+    #[wasm_bindgen(method, getter = "arguments")]
+    pub fn get_arguments(this: &ConsoleProfileEvent) -> Option<::js_sys::Array>;
     #[wasm_bindgen(method, setter = "arguments")]
-    fn arguments_shim(this: &ConsoleProfileEvent, val: &::wasm_bindgen::JsValue);
+    fn set_arguments(this: &ConsoleProfileEvent, val: &::wasm_bindgen::JsValue);
 }
 impl ConsoleProfileEvent {
     #[doc = "Construct a new `ConsoleProfileEvent`."]
@@ -28,14 +38,14 @@ impl ConsoleProfileEvent {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleProfileEvent`*"]
     pub fn action(&mut self, val: &str) -> &mut Self {
-        self.action_shim(val);
+        self.set_action(val);
         self
     }
     #[doc = "Change the `arguments` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleProfileEvent`*"]
     pub fn arguments(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.arguments_shim(val);
+        self.set_arguments(val);
         self
     }
 }

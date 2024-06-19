@@ -14,31 +14,133 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type VideoEncoderConfig;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "AlphaOption")]
+    #[doc = "Get the `alpha` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AlphaOption`, `VideoEncoderConfig`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "alpha")]
+    pub fn get_alpha(this: &VideoEncoderConfig) -> Option<AlphaOption>;
     #[cfg(feature = "AlphaOption")]
     #[wasm_bindgen(method, setter = "alpha")]
-    fn alpha_shim(this: &VideoEncoderConfig, val: AlphaOption);
+    fn set_alpha(this: &VideoEncoderConfig, val: AlphaOption);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `bitrate` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoEncoderConfig`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "bitrate")]
+    pub fn get_bitrate(this: &VideoEncoderConfig) -> Option<f64>;
     #[wasm_bindgen(method, setter = "bitrate")]
-    fn bitrate_shim(this: &VideoEncoderConfig, val: f64);
+    fn set_bitrate(this: &VideoEncoderConfig, val: f64);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `codec` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoEncoderConfig`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "codec")]
+    pub fn get_codec(this: &VideoEncoderConfig) -> String;
     #[wasm_bindgen(method, setter = "codec")]
-    fn codec_shim(this: &VideoEncoderConfig, val: &str);
+    fn set_codec(this: &VideoEncoderConfig, val: &str);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `displayHeight` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoEncoderConfig`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "displayHeight")]
+    pub fn get_display_height(this: &VideoEncoderConfig) -> Option<u32>;
     #[wasm_bindgen(method, setter = "displayHeight")]
-    fn display_height_shim(this: &VideoEncoderConfig, val: u32);
+    fn set_display_height(this: &VideoEncoderConfig, val: u32);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `displayWidth` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoEncoderConfig`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "displayWidth")]
+    pub fn get_display_width(this: &VideoEncoderConfig) -> Option<u32>;
     #[wasm_bindgen(method, setter = "displayWidth")]
-    fn display_width_shim(this: &VideoEncoderConfig, val: u32);
+    fn set_display_width(this: &VideoEncoderConfig, val: u32);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `framerate` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoEncoderConfig`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "framerate")]
+    pub fn get_framerate(this: &VideoEncoderConfig) -> Option<f64>;
     #[wasm_bindgen(method, setter = "framerate")]
-    fn framerate_shim(this: &VideoEncoderConfig, val: f64);
+    fn set_framerate(this: &VideoEncoderConfig, val: f64);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "HardwareAcceleration")]
+    #[doc = "Get the `hardwareAcceleration` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HardwareAcceleration`, `VideoEncoderConfig`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "hardwareAcceleration")]
+    pub fn get_hardware_acceleration(this: &VideoEncoderConfig) -> Option<HardwareAcceleration>;
     #[cfg(feature = "HardwareAcceleration")]
     #[wasm_bindgen(method, setter = "hardwareAcceleration")]
-    fn hardware_acceleration_shim(this: &VideoEncoderConfig, val: HardwareAcceleration);
+    fn set_hardware_acceleration(this: &VideoEncoderConfig, val: HardwareAcceleration);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `height` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoEncoderConfig`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "height")]
+    pub fn get_height(this: &VideoEncoderConfig) -> u32;
     #[wasm_bindgen(method, setter = "height")]
-    fn height_shim(this: &VideoEncoderConfig, val: u32);
+    fn set_height(this: &VideoEncoderConfig, val: u32);
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "LatencyMode")]
+    #[doc = "Get the `latencyMode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `LatencyMode`, `VideoEncoderConfig`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "latencyMode")]
+    pub fn get_latency_mode(this: &VideoEncoderConfig) -> Option<LatencyMode>;
     #[cfg(feature = "LatencyMode")]
     #[wasm_bindgen(method, setter = "latencyMode")]
-    fn latency_mode_shim(this: &VideoEncoderConfig, val: LatencyMode);
+    fn set_latency_mode(this: &VideoEncoderConfig, val: LatencyMode);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `scalabilityMode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoEncoderConfig`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "scalabilityMode")]
+    pub fn get_scalability_mode(this: &VideoEncoderConfig) -> Option<String>;
     #[wasm_bindgen(method, setter = "scalabilityMode")]
-    fn scalability_mode_shim(this: &VideoEncoderConfig, val: &str);
+    fn set_scalability_mode(this: &VideoEncoderConfig, val: &str);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `width` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoEncoderConfig`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "width")]
+    pub fn get_width(this: &VideoEncoderConfig) -> u32;
     #[wasm_bindgen(method, setter = "width")]
-    fn width_shim(this: &VideoEncoderConfig, val: u32);
+    fn set_width(this: &VideoEncoderConfig, val: u32);
 }
 #[cfg(web_sys_unstable_apis)]
 impl VideoEncoderConfig {
@@ -65,7 +167,7 @@ impl VideoEncoderConfig {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn alpha(&mut self, val: AlphaOption) -> &mut Self {
-        self.alpha_shim(val);
+        self.set_alpha(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -76,7 +178,7 @@ impl VideoEncoderConfig {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn bitrate(&mut self, val: f64) -> &mut Self {
-        self.bitrate_shim(val);
+        self.set_bitrate(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -87,7 +189,7 @@ impl VideoEncoderConfig {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn codec(&mut self, val: &str) -> &mut Self {
-        self.codec_shim(val);
+        self.set_codec(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -98,7 +200,7 @@ impl VideoEncoderConfig {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn display_height(&mut self, val: u32) -> &mut Self {
-        self.display_height_shim(val);
+        self.set_display_height(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -109,7 +211,7 @@ impl VideoEncoderConfig {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn display_width(&mut self, val: u32) -> &mut Self {
-        self.display_width_shim(val);
+        self.set_display_width(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -120,7 +222,7 @@ impl VideoEncoderConfig {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn framerate(&mut self, val: f64) -> &mut Self {
-        self.framerate_shim(val);
+        self.set_framerate(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -132,7 +234,7 @@ impl VideoEncoderConfig {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn hardware_acceleration(&mut self, val: HardwareAcceleration) -> &mut Self {
-        self.hardware_acceleration_shim(val);
+        self.set_hardware_acceleration(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -143,7 +245,7 @@ impl VideoEncoderConfig {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn height(&mut self, val: u32) -> &mut Self {
-        self.height_shim(val);
+        self.set_height(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -155,7 +257,7 @@ impl VideoEncoderConfig {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn latency_mode(&mut self, val: LatencyMode) -> &mut Self {
-        self.latency_mode_shim(val);
+        self.set_latency_mode(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -166,7 +268,7 @@ impl VideoEncoderConfig {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn scalability_mode(&mut self, val: &str) -> &mut Self {
-        self.scalability_mode_shim(val);
+        self.set_scalability_mode(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -177,7 +279,7 @@ impl VideoEncoderConfig {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn width(&mut self, val: u32) -> &mut Self {
-        self.width_shim(val);
+        self.set_width(val);
         self
     }
 }

@@ -10,8 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaHashedImportParams`*"]
     pub type RsaHashedImportParams;
+    #[doc = "Get the `hash` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RsaHashedImportParams`*"]
+    #[wasm_bindgen(method, getter = "hash")]
+    pub fn get_hash(this: &RsaHashedImportParams) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "hash")]
-    fn hash_shim(this: &RsaHashedImportParams, val: &::wasm_bindgen::JsValue);
+    fn set_hash(this: &RsaHashedImportParams, val: &::wasm_bindgen::JsValue);
 }
 impl RsaHashedImportParams {
     #[doc = "Construct a new `RsaHashedImportParams`."]
@@ -27,7 +32,7 @@ impl RsaHashedImportParams {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaHashedImportParams`*"]
     pub fn hash(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.hash_shim(val);
+        self.set_hash(val);
         self
     }
 }

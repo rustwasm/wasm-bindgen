@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaPssParams`*"]
     pub type RsaPssParams;
+    #[doc = "Get the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RsaPssParams`*"]
+    #[wasm_bindgen(method, getter = "name")]
+    pub fn get_name(this: &RsaPssParams) -> String;
     #[wasm_bindgen(method, setter = "name")]
-    fn name_shim(this: &RsaPssParams, val: &str);
+    fn set_name(this: &RsaPssParams, val: &str);
+    #[doc = "Get the `saltLength` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RsaPssParams`*"]
+    #[wasm_bindgen(method, getter = "saltLength")]
+    pub fn get_salt_length(this: &RsaPssParams) -> u32;
     #[wasm_bindgen(method, setter = "saltLength")]
-    fn salt_length_shim(this: &RsaPssParams, val: u32);
+    fn set_salt_length(this: &RsaPssParams, val: u32);
 }
 impl RsaPssParams {
     #[doc = "Construct a new `RsaPssParams`."]
@@ -30,14 +40,14 @@ impl RsaPssParams {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaPssParams`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        self.name_shim(val);
+        self.set_name(val);
         self
     }
     #[doc = "Change the `saltLength` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaPssParams`*"]
     pub fn salt_length(&mut self, val: u32) -> &mut Self {
-        self.salt_length_shim(val);
+        self.set_salt_length(val);
         self
     }
 }

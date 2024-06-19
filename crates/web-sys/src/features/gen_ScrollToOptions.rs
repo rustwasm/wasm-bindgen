@@ -11,12 +11,28 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ScrollToOptions`*"]
     pub type ScrollToOptions;
     #[cfg(feature = "ScrollBehavior")]
+    #[doc = "Get the `behavior` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollBehavior`, `ScrollToOptions`*"]
+    #[wasm_bindgen(method, getter = "behavior")]
+    pub fn get_behavior(this: &ScrollToOptions) -> Option<ScrollBehavior>;
+    #[cfg(feature = "ScrollBehavior")]
     #[wasm_bindgen(method, setter = "behavior")]
-    fn behavior_shim(this: &ScrollToOptions, val: ScrollBehavior);
+    fn set_behavior(this: &ScrollToOptions, val: ScrollBehavior);
+    #[doc = "Get the `left` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollToOptions`*"]
+    #[wasm_bindgen(method, getter = "left")]
+    pub fn get_left(this: &ScrollToOptions) -> Option<f64>;
     #[wasm_bindgen(method, setter = "left")]
-    fn left_shim(this: &ScrollToOptions, val: f64);
+    fn set_left(this: &ScrollToOptions, val: f64);
+    #[doc = "Get the `top` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollToOptions`*"]
+    #[wasm_bindgen(method, getter = "top")]
+    pub fn get_top(this: &ScrollToOptions) -> Option<f64>;
     #[wasm_bindgen(method, setter = "top")]
-    fn top_shim(this: &ScrollToOptions, val: f64);
+    fn set_top(this: &ScrollToOptions, val: f64);
 }
 impl ScrollToOptions {
     #[doc = "Construct a new `ScrollToOptions`."]
@@ -32,21 +48,21 @@ impl ScrollToOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ScrollBehavior`, `ScrollToOptions`*"]
     pub fn behavior(&mut self, val: ScrollBehavior) -> &mut Self {
-        self.behavior_shim(val);
+        self.set_behavior(val);
         self
     }
     #[doc = "Change the `left` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ScrollToOptions`*"]
     pub fn left(&mut self, val: f64) -> &mut Self {
-        self.left_shim(val);
+        self.set_left(val);
         self
     }
     #[doc = "Change the `top` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ScrollToOptions`*"]
     pub fn top(&mut self, val: f64) -> &mut Self {
-        self.top_shim(val);
+        self.set_top(val);
         self
     }
 }

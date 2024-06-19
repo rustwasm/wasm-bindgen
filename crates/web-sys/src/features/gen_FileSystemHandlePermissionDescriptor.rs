@@ -14,9 +14,21 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type FileSystemHandlePermissionDescriptor;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "FileSystemPermissionMode")]
+    #[doc = "Get the `mode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemHandlePermissionDescriptor`, `FileSystemPermissionMode`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "mode")]
+    pub fn get_mode(
+        this: &FileSystemHandlePermissionDescriptor,
+    ) -> Option<FileSystemPermissionMode>;
     #[cfg(feature = "FileSystemPermissionMode")]
     #[wasm_bindgen(method, setter = "mode")]
-    fn mode_shim(this: &FileSystemHandlePermissionDescriptor, val: FileSystemPermissionMode);
+    fn set_mode(this: &FileSystemHandlePermissionDescriptor, val: FileSystemPermissionMode);
 }
 #[cfg(web_sys_unstable_apis)]
 impl FileSystemHandlePermissionDescriptor {
@@ -40,7 +52,7 @@ impl FileSystemHandlePermissionDescriptor {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn mode(&mut self, val: FileSystemPermissionMode) -> &mut Self {
-        self.mode_shim(val);
+        self.set_mode(val);
         self
     }
 }

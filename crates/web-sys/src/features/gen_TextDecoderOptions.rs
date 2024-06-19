@@ -10,8 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextDecoderOptions`*"]
     pub type TextDecoderOptions;
+    #[doc = "Get the `fatal` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TextDecoderOptions`*"]
+    #[wasm_bindgen(method, getter = "fatal")]
+    pub fn get_fatal(this: &TextDecoderOptions) -> Option<bool>;
     #[wasm_bindgen(method, setter = "fatal")]
-    fn fatal_shim(this: &TextDecoderOptions, val: bool);
+    fn set_fatal(this: &TextDecoderOptions, val: bool);
 }
 impl TextDecoderOptions {
     #[doc = "Construct a new `TextDecoderOptions`."]
@@ -26,7 +31,7 @@ impl TextDecoderOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextDecoderOptions`*"]
     pub fn fatal(&mut self, val: bool) -> &mut Self {
-        self.fatal_shim(val);
+        self.set_fatal(val);
         self
     }
 }

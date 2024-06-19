@@ -14,10 +14,28 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type DoubleRange;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `max` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DoubleRange`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "max")]
+    pub fn get_max(this: &DoubleRange) -> Option<f64>;
     #[wasm_bindgen(method, setter = "max")]
-    fn max_shim(this: &DoubleRange, val: f64);
+    fn set_max(this: &DoubleRange, val: f64);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `min` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DoubleRange`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "min")]
+    pub fn get_min(this: &DoubleRange) -> Option<f64>;
     #[wasm_bindgen(method, setter = "min")]
-    fn min_shim(this: &DoubleRange, val: f64);
+    fn set_min(this: &DoubleRange, val: f64);
 }
 #[cfg(web_sys_unstable_apis)]
 impl DoubleRange {
@@ -40,7 +58,7 @@ impl DoubleRange {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn max(&mut self, val: f64) -> &mut Self {
-        self.max_shim(val);
+        self.set_max(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -51,7 +69,7 @@ impl DoubleRange {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn min(&mut self, val: f64) -> &mut Self {
-        self.min_shim(val);
+        self.set_min(val);
         self
     }
 }

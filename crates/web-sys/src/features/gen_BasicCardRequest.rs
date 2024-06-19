@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasicCardRequest`*"]
     pub type BasicCardRequest;
+    #[doc = "Get the `supportedNetworks` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BasicCardRequest`*"]
+    #[wasm_bindgen(method, getter = "supportedNetworks")]
+    pub fn get_supported_networks(this: &BasicCardRequest) -> Option<::js_sys::Array>;
     #[wasm_bindgen(method, setter = "supportedNetworks")]
-    fn supported_networks_shim(this: &BasicCardRequest, val: &::wasm_bindgen::JsValue);
+    fn set_supported_networks(this: &BasicCardRequest, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `supportedTypes` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BasicCardRequest`*"]
+    #[wasm_bindgen(method, getter = "supportedTypes")]
+    pub fn get_supported_types(this: &BasicCardRequest) -> Option<::js_sys::Array>;
     #[wasm_bindgen(method, setter = "supportedTypes")]
-    fn supported_types_shim(this: &BasicCardRequest, val: &::wasm_bindgen::JsValue);
+    fn set_supported_types(this: &BasicCardRequest, val: &::wasm_bindgen::JsValue);
 }
 impl BasicCardRequest {
     #[doc = "Construct a new `BasicCardRequest`."]
@@ -28,14 +38,14 @@ impl BasicCardRequest {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasicCardRequest`*"]
     pub fn supported_networks(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.supported_networks_shim(val);
+        self.set_supported_networks(val);
         self
     }
     #[doc = "Change the `supportedTypes` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasicCardRequest`*"]
     pub fn supported_types(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.supported_types_shim(val);
+        self.set_supported_types(val);
         self
     }
 }

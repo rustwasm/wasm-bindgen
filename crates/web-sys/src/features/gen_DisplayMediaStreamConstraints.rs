@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayMediaStreamConstraints`*"]
     pub type DisplayMediaStreamConstraints;
+    #[doc = "Get the `audio` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DisplayMediaStreamConstraints`*"]
+    #[wasm_bindgen(method, getter = "audio")]
+    pub fn get_audio(this: &DisplayMediaStreamConstraints) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "audio")]
-    fn audio_shim(this: &DisplayMediaStreamConstraints, val: &::wasm_bindgen::JsValue);
+    fn set_audio(this: &DisplayMediaStreamConstraints, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `video` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DisplayMediaStreamConstraints`*"]
+    #[wasm_bindgen(method, getter = "video")]
+    pub fn get_video(this: &DisplayMediaStreamConstraints) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "video")]
-    fn video_shim(this: &DisplayMediaStreamConstraints, val: &::wasm_bindgen::JsValue);
+    fn set_video(this: &DisplayMediaStreamConstraints, val: &::wasm_bindgen::JsValue);
 }
 impl DisplayMediaStreamConstraints {
     #[doc = "Construct a new `DisplayMediaStreamConstraints`."]
@@ -28,14 +38,14 @@ impl DisplayMediaStreamConstraints {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayMediaStreamConstraints`*"]
     pub fn audio(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.audio_shim(val);
+        self.set_audio(val);
         self
     }
     #[doc = "Change the `video` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayMediaStreamConstraints`*"]
     pub fn video(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.video_shim(val);
+        self.set_video(val);
         self
     }
 }

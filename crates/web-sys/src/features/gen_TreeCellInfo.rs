@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TreeCellInfo`*"]
     pub type TreeCellInfo;
+    #[doc = "Get the `childElt` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TreeCellInfo`*"]
+    #[wasm_bindgen(method, getter = "childElt")]
+    pub fn get_child_elt(this: &TreeCellInfo) -> Option<String>;
     #[wasm_bindgen(method, setter = "childElt")]
-    fn child_elt_shim(this: &TreeCellInfo, val: &str);
+    fn set_child_elt(this: &TreeCellInfo, val: &str);
+    #[doc = "Get the `row` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TreeCellInfo`*"]
+    #[wasm_bindgen(method, getter = "row")]
+    pub fn get_row(this: &TreeCellInfo) -> Option<i32>;
     #[wasm_bindgen(method, setter = "row")]
-    fn row_shim(this: &TreeCellInfo, val: i32);
+    fn set_row(this: &TreeCellInfo, val: i32);
 }
 impl TreeCellInfo {
     #[doc = "Construct a new `TreeCellInfo`."]
@@ -28,14 +38,14 @@ impl TreeCellInfo {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TreeCellInfo`*"]
     pub fn child_elt(&mut self, val: &str) -> &mut Self {
-        self.child_elt_shim(val);
+        self.set_child_elt(val);
         self
     }
     #[doc = "Change the `row` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TreeCellInfo`*"]
     pub fn row(&mut self, val: i32) -> &mut Self {
-        self.row_shim(val);
+        self.set_row(val);
         self
     }
 }

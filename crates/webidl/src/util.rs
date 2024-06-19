@@ -81,6 +81,25 @@ pub fn snake_case_ident(identifier: &str) -> String {
     fix_ident(identifier).to_snake_case()
 }
 
+/// Wrap [`TypePosition::Return`] type into an `Option` if not already and if not a `JsValue`.
+pub fn optional_return_ty(ty: syn::Type) -> syn::Type {
+    if let syn::Type::Path(path) = &ty {
+        if let Some(segment) = path.path.segments.first() {
+            if segment.ident == "Option" {
+                return ty;
+            } else if path.path.leading_colon.is_some() && segment.ident == "wasm_bindgen" {
+                if let Some(segment) = path.path.segments.iter().nth(1) {
+                    if segment.ident == "JsValue" {
+                        return ty;
+                    }
+                }
+            }
+        }
+    }
+
+    option_ty(ty)
+}
+
 // Returns a link to MDN
 pub fn mdn_doc(class: &str, method: Option<&str>) -> String {
     let mut link = format!("https://developer.mozilla.org/en-US/docs/Web/API/{}", class);

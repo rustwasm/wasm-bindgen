@@ -10,11 +10,22 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcSessionDescriptionInit`*"]
     pub type RtcSessionDescriptionInit;
+    #[doc = "Get the `sdp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcSessionDescriptionInit`*"]
+    #[wasm_bindgen(method, getter = "sdp")]
+    pub fn get_sdp(this: &RtcSessionDescriptionInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "sdp")]
-    fn sdp_shim(this: &RtcSessionDescriptionInit, val: &str);
+    fn set_sdp(this: &RtcSessionDescriptionInit, val: &str);
+    #[cfg(feature = "RtcSdpType")]
+    #[doc = "Get the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcSdpType`, `RtcSessionDescriptionInit`*"]
+    #[wasm_bindgen(method, getter = "type")]
+    pub fn get_type(this: &RtcSessionDescriptionInit) -> RtcSdpType;
     #[cfg(feature = "RtcSdpType")]
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &RtcSessionDescriptionInit, val: RtcSdpType);
+    fn set_type(this: &RtcSessionDescriptionInit, val: RtcSdpType);
 }
 impl RtcSessionDescriptionInit {
     #[cfg(feature = "RtcSdpType")]
@@ -31,7 +42,7 @@ impl RtcSessionDescriptionInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcSessionDescriptionInit`*"]
     pub fn sdp(&mut self, val: &str) -> &mut Self {
-        self.sdp_shim(val);
+        self.set_sdp(val);
         self
     }
     #[cfg(feature = "RtcSdpType")]
@@ -39,7 +50,7 @@ impl RtcSessionDescriptionInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcSdpType`, `RtcSessionDescriptionInit`*"]
     pub fn type_(&mut self, val: RtcSdpType) -> &mut Self {
-        self.type__shim(val);
+        self.set_type(val);
         self
     }
 }

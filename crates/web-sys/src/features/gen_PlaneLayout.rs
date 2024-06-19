@@ -14,10 +14,28 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type PlaneLayout;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `offset` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PlaneLayout`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "offset")]
+    pub fn get_offset(this: &PlaneLayout) -> u32;
     #[wasm_bindgen(method, setter = "offset")]
-    fn offset_shim(this: &PlaneLayout, val: u32);
+    fn set_offset(this: &PlaneLayout, val: u32);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `stride` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PlaneLayout`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "stride")]
+    pub fn get_stride(this: &PlaneLayout) -> u32;
     #[wasm_bindgen(method, setter = "stride")]
-    fn stride_shim(this: &PlaneLayout, val: u32);
+    fn set_stride(this: &PlaneLayout, val: u32);
 }
 #[cfg(web_sys_unstable_apis)]
 impl PlaneLayout {
@@ -42,7 +60,7 @@ impl PlaneLayout {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn offset(&mut self, val: u32) -> &mut Self {
-        self.offset_shim(val);
+        self.set_offset(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -53,7 +71,7 @@ impl PlaneLayout {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn stride(&mut self, val: u32) -> &mut Self {
-        self.stride_shim(val);
+        self.set_stride(val);
         self
     }
 }

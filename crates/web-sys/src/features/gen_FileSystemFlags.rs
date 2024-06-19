@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemFlags`*"]
     pub type FileSystemFlags;
+    #[doc = "Get the `create` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemFlags`*"]
+    #[wasm_bindgen(method, getter = "create")]
+    pub fn get_create(this: &FileSystemFlags) -> Option<bool>;
     #[wasm_bindgen(method, setter = "create")]
-    fn create_shim(this: &FileSystemFlags, val: bool);
+    fn set_create(this: &FileSystemFlags, val: bool);
+    #[doc = "Get the `exclusive` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemFlags`*"]
+    #[wasm_bindgen(method, getter = "exclusive")]
+    pub fn get_exclusive(this: &FileSystemFlags) -> Option<bool>;
     #[wasm_bindgen(method, setter = "exclusive")]
-    fn exclusive_shim(this: &FileSystemFlags, val: bool);
+    fn set_exclusive(this: &FileSystemFlags, val: bool);
 }
 impl FileSystemFlags {
     #[doc = "Construct a new `FileSystemFlags`."]
@@ -28,14 +38,14 @@ impl FileSystemFlags {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemFlags`*"]
     pub fn create(&mut self, val: bool) -> &mut Self {
-        self.create_shim(val);
+        self.set_create(val);
         self
     }
     #[doc = "Change the `exclusive` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemFlags`*"]
     pub fn exclusive(&mut self, val: bool) -> &mut Self {
-        self.exclusive_shim(val);
+        self.set_exclusive(val);
         self
     }
 }

@@ -10,19 +10,50 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEventInit`*"]
     pub type PopupBlockedEventInit;
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEventInit`*"]
+    #[wasm_bindgen(method, getter = "bubbles")]
+    pub fn get_bubbles(this: &PopupBlockedEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &PopupBlockedEventInit, val: bool);
+    fn set_bubbles(this: &PopupBlockedEventInit, val: bool);
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEventInit`*"]
+    #[wasm_bindgen(method, getter = "cancelable")]
+    pub fn get_cancelable(this: &PopupBlockedEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &PopupBlockedEventInit, val: bool);
+    fn set_cancelable(this: &PopupBlockedEventInit, val: bool);
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEventInit`*"]
+    #[wasm_bindgen(method, getter = "composed")]
+    pub fn get_composed(this: &PopupBlockedEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &PopupBlockedEventInit, val: bool);
+    fn set_composed(this: &PopupBlockedEventInit, val: bool);
+    #[doc = "Get the `popupWindowFeatures` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEventInit`*"]
+    #[wasm_bindgen(method, getter = "popupWindowFeatures")]
+    pub fn get_popup_window_features(this: &PopupBlockedEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "popupWindowFeatures")]
-    fn popup_window_features_shim(this: &PopupBlockedEventInit, val: &str);
+    fn set_popup_window_features(this: &PopupBlockedEventInit, val: &str);
+    #[doc = "Get the `popupWindowName` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEventInit`*"]
+    #[wasm_bindgen(method, getter = "popupWindowName")]
+    pub fn get_popup_window_name(this: &PopupBlockedEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "popupWindowName")]
-    fn popup_window_name_shim(this: &PopupBlockedEventInit, val: &str);
+    fn set_popup_window_name(this: &PopupBlockedEventInit, val: &str);
+    #[cfg(feature = "Window")]
+    #[doc = "Get the `requestingWindow` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEventInit`, `Window`*"]
+    #[wasm_bindgen(method, getter = "requestingWindow")]
+    pub fn get_requesting_window(this: &PopupBlockedEventInit) -> Option<Window>;
     #[cfg(feature = "Window")]
     #[wasm_bindgen(method, setter = "requestingWindow")]
-    fn requesting_window_shim(this: &PopupBlockedEventInit, val: Option<&Window>);
+    fn set_requesting_window(this: &PopupBlockedEventInit, val: Option<&Window>);
 }
 impl PopupBlockedEventInit {
     #[doc = "Construct a new `PopupBlockedEventInit`."]
@@ -37,35 +68,35 @@ impl PopupBlockedEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed(val);
         self
     }
     #[doc = "Change the `popupWindowFeatures` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEventInit`*"]
     pub fn popup_window_features(&mut self, val: &str) -> &mut Self {
-        self.popup_window_features_shim(val);
+        self.set_popup_window_features(val);
         self
     }
     #[doc = "Change the `popupWindowName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEventInit`*"]
     pub fn popup_window_name(&mut self, val: &str) -> &mut Self {
-        self.popup_window_name_shim(val);
+        self.set_popup_window_name(val);
         self
     }
     #[cfg(feature = "Window")]
@@ -73,7 +104,7 @@ impl PopupBlockedEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEventInit`, `Window`*"]
     pub fn requesting_window(&mut self, val: Option<&Window>) -> &mut Self {
-        self.requesting_window_shim(val);
+        self.set_requesting_window(val);
         self
     }
 }

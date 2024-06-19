@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesKeyGenParams`*"]
     pub type AesKeyGenParams;
+    #[doc = "Get the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AesKeyGenParams`*"]
+    #[wasm_bindgen(method, getter = "name")]
+    pub fn get_name(this: &AesKeyGenParams) -> String;
     #[wasm_bindgen(method, setter = "name")]
-    fn name_shim(this: &AesKeyGenParams, val: &str);
+    fn set_name(this: &AesKeyGenParams, val: &str);
+    #[doc = "Get the `length` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AesKeyGenParams`*"]
+    #[wasm_bindgen(method, getter = "length")]
+    pub fn get_length(this: &AesKeyGenParams) -> u16;
     #[wasm_bindgen(method, setter = "length")]
-    fn length_shim(this: &AesKeyGenParams, val: u16);
+    fn set_length(this: &AesKeyGenParams, val: u16);
 }
 impl AesKeyGenParams {
     #[doc = "Construct a new `AesKeyGenParams`."]
@@ -30,14 +40,14 @@ impl AesKeyGenParams {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesKeyGenParams`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        self.name_shim(val);
+        self.set_name(val);
         self
     }
     #[doc = "Change the `length` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesKeyGenParams`*"]
     pub fn length(&mut self, val: u16) -> &mut Self {
-        self.length_shim(val);
+        self.set_length(val);
         self
     }
 }

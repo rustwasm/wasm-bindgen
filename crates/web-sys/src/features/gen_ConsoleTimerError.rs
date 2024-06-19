@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerError`*"]
     pub type ConsoleTimerError;
+    #[doc = "Get the `error` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerError`*"]
+    #[wasm_bindgen(method, getter = "error")]
+    pub fn get_error(this: &ConsoleTimerError) -> Option<String>;
     #[wasm_bindgen(method, setter = "error")]
-    fn error_shim(this: &ConsoleTimerError, val: &str);
+    fn set_error(this: &ConsoleTimerError, val: &str);
+    #[doc = "Get the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerError`*"]
+    #[wasm_bindgen(method, getter = "name")]
+    pub fn get_name(this: &ConsoleTimerError) -> Option<String>;
     #[wasm_bindgen(method, setter = "name")]
-    fn name_shim(this: &ConsoleTimerError, val: &str);
+    fn set_name(this: &ConsoleTimerError, val: &str);
 }
 impl ConsoleTimerError {
     #[doc = "Construct a new `ConsoleTimerError`."]
@@ -28,14 +38,14 @@ impl ConsoleTimerError {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerError`*"]
     pub fn error(&mut self, val: &str) -> &mut Self {
-        self.error_shim(val);
+        self.set_error(val);
         self
     }
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerError`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        self.name_shim(val);
+        self.set_name(val);
         self
     }
 }

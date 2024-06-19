@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSetIteratorResult`*"]
     pub type FontFaceSetIteratorResult;
+    #[doc = "Get the `done` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FontFaceSetIteratorResult`*"]
+    #[wasm_bindgen(method, getter = "done")]
+    pub fn get_done(this: &FontFaceSetIteratorResult) -> bool;
     #[wasm_bindgen(method, setter = "done")]
-    fn done_shim(this: &FontFaceSetIteratorResult, val: bool);
+    fn set_done(this: &FontFaceSetIteratorResult, val: bool);
+    #[doc = "Get the `value` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FontFaceSetIteratorResult`*"]
+    #[wasm_bindgen(method, getter = "value")]
+    pub fn get_value(this: &FontFaceSetIteratorResult) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "value")]
-    fn value_shim(this: &FontFaceSetIteratorResult, val: &::wasm_bindgen::JsValue);
+    fn set_value(this: &FontFaceSetIteratorResult, val: &::wasm_bindgen::JsValue);
 }
 impl FontFaceSetIteratorResult {
     #[doc = "Construct a new `FontFaceSetIteratorResult`."]
@@ -30,14 +40,14 @@ impl FontFaceSetIteratorResult {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSetIteratorResult`*"]
     pub fn done(&mut self, val: bool) -> &mut Self {
-        self.done_shim(val);
+        self.set_done(val);
         self
     }
     #[doc = "Change the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceSetIteratorResult`*"]
     pub fn value(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.value_shim(val);
+        self.set_value(val);
         self
     }
 }

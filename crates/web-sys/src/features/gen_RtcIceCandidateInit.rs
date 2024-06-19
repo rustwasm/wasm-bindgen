@@ -10,12 +10,27 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateInit`*"]
     pub type RtcIceCandidateInit;
+    #[doc = "Get the `candidate` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateInit`*"]
+    #[wasm_bindgen(method, getter = "candidate")]
+    pub fn get_candidate(this: &RtcIceCandidateInit) -> String;
     #[wasm_bindgen(method, setter = "candidate")]
-    fn candidate_shim(this: &RtcIceCandidateInit, val: &str);
+    fn set_candidate(this: &RtcIceCandidateInit, val: &str);
+    #[doc = "Get the `sdpMLineIndex` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateInit`*"]
+    #[wasm_bindgen(method, getter = "sdpMLineIndex")]
+    pub fn get_sdp_m_line_index(this: &RtcIceCandidateInit) -> Option<u16>;
     #[wasm_bindgen(method, setter = "sdpMLineIndex")]
-    fn sdp_m_line_index_shim(this: &RtcIceCandidateInit, val: Option<u16>);
+    fn set_sdp_m_line_index(this: &RtcIceCandidateInit, val: Option<u16>);
+    #[doc = "Get the `sdpMid` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateInit`*"]
+    #[wasm_bindgen(method, getter = "sdpMid")]
+    pub fn get_sdp_mid(this: &RtcIceCandidateInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "sdpMid")]
-    fn sdp_mid_shim(this: &RtcIceCandidateInit, val: Option<&str>);
+    fn set_sdp_mid(this: &RtcIceCandidateInit, val: Option<&str>);
 }
 impl RtcIceCandidateInit {
     #[doc = "Construct a new `RtcIceCandidateInit`."]
@@ -31,21 +46,21 @@ impl RtcIceCandidateInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateInit`*"]
     pub fn candidate(&mut self, val: &str) -> &mut Self {
-        self.candidate_shim(val);
+        self.set_candidate(val);
         self
     }
     #[doc = "Change the `sdpMLineIndex` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateInit`*"]
     pub fn sdp_m_line_index(&mut self, val: Option<u16>) -> &mut Self {
-        self.sdp_m_line_index_shim(val);
+        self.set_sdp_m_line_index(val);
         self
     }
     #[doc = "Change the `sdpMid` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateInit`*"]
     pub fn sdp_mid(&mut self, val: Option<&str>) -> &mut Self {
-        self.sdp_mid_shim(val);
+        self.set_sdp_mid(val);
         self
     }
 }

@@ -10,13 +10,25 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionOptionsInit`*"]
     pub type PushSubscriptionOptionsInit;
+    #[doc = "Get the `applicationServerKey` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionOptionsInit`*"]
+    #[wasm_bindgen(method, getter = "applicationServerKey")]
+    pub fn get_application_server_key(
+        this: &PushSubscriptionOptionsInit,
+    ) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "applicationServerKey")]
-    fn application_server_key_shim(
+    fn set_application_server_key(
         this: &PushSubscriptionOptionsInit,
         val: &::wasm_bindgen::JsValue,
     );
+    #[doc = "Get the `userVisibleOnly` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionOptionsInit`*"]
+    #[wasm_bindgen(method, getter = "userVisibleOnly")]
+    pub fn get_user_visible_only(this: &PushSubscriptionOptionsInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "userVisibleOnly")]
-    fn user_visible_only_shim(this: &PushSubscriptionOptionsInit, val: bool);
+    fn set_user_visible_only(this: &PushSubscriptionOptionsInit, val: bool);
 }
 impl PushSubscriptionOptionsInit {
     #[doc = "Construct a new `PushSubscriptionOptionsInit`."]
@@ -31,14 +43,14 @@ impl PushSubscriptionOptionsInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionOptionsInit`*"]
     pub fn application_server_key(&mut self, val: Option<&::wasm_bindgen::JsValue>) -> &mut Self {
-        self.application_server_key_shim(val.unwrap_or(&::wasm_bindgen::JsValue::NULL));
+        self.set_application_server_key(val.unwrap_or(&::wasm_bindgen::JsValue::NULL));
         self
     }
     #[doc = "Change the `userVisibleOnly` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionOptionsInit`*"]
     pub fn user_visible_only(&mut self, val: bool) -> &mut Self {
-        self.user_visible_only_shim(val);
+        self.set_user_visible_only(val);
         self
     }
 }

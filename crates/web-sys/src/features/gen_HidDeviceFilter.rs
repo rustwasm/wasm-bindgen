@@ -14,14 +14,50 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type HidDeviceFilter;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `productId` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HidDeviceFilter`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "productId")]
+    pub fn get_product_id(this: &HidDeviceFilter) -> Option<u16>;
     #[wasm_bindgen(method, setter = "productId")]
-    fn product_id_shim(this: &HidDeviceFilter, val: u16);
+    fn set_product_id(this: &HidDeviceFilter, val: u16);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `usage` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HidDeviceFilter`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "usage")]
+    pub fn get_usage(this: &HidDeviceFilter) -> Option<u16>;
     #[wasm_bindgen(method, setter = "usage")]
-    fn usage_shim(this: &HidDeviceFilter, val: u16);
+    fn set_usage(this: &HidDeviceFilter, val: u16);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `usagePage` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HidDeviceFilter`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "usagePage")]
+    pub fn get_usage_page(this: &HidDeviceFilter) -> Option<u16>;
     #[wasm_bindgen(method, setter = "usagePage")]
-    fn usage_page_shim(this: &HidDeviceFilter, val: u16);
+    fn set_usage_page(this: &HidDeviceFilter, val: u16);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `vendorId` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HidDeviceFilter`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "vendorId")]
+    pub fn get_vendor_id(this: &HidDeviceFilter) -> Option<u32>;
     #[wasm_bindgen(method, setter = "vendorId")]
-    fn vendor_id_shim(this: &HidDeviceFilter, val: u32);
+    fn set_vendor_id(this: &HidDeviceFilter, val: u32);
 }
 #[cfg(web_sys_unstable_apis)]
 impl HidDeviceFilter {
@@ -44,7 +80,7 @@ impl HidDeviceFilter {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn product_id(&mut self, val: u16) -> &mut Self {
-        self.product_id_shim(val);
+        self.set_product_id(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -55,7 +91,7 @@ impl HidDeviceFilter {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn usage(&mut self, val: u16) -> &mut Self {
-        self.usage_shim(val);
+        self.set_usage(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -66,7 +102,7 @@ impl HidDeviceFilter {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn usage_page(&mut self, val: u16) -> &mut Self {
-        self.usage_page_shim(val);
+        self.set_usage_page(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -77,7 +113,7 @@ impl HidDeviceFilter {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn vendor_id(&mut self, val: u32) -> &mut Self {
-        self.vendor_id_shim(val);
+        self.set_vendor_id(val);
         self
     }
 }

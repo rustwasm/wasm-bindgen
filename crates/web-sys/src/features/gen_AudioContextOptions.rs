@@ -10,12 +10,31 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioContextOptions`*"]
     pub type AudioContextOptions;
+    #[doc = "Get the `latencyHint` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioContextOptions`*"]
+    #[wasm_bindgen(method, getter = "latencyHint")]
+    pub fn get_latency_hint(this: &AudioContextOptions) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "latencyHint")]
-    fn latency_hint_shim(this: &AudioContextOptions, val: &::wasm_bindgen::JsValue);
+    fn set_latency_hint(this: &AudioContextOptions, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `sampleRate` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioContextOptions`*"]
+    #[wasm_bindgen(method, getter = "sampleRate")]
+    pub fn get_sample_rate(this: &AudioContextOptions) -> Option<f32>;
     #[wasm_bindgen(method, setter = "sampleRate")]
-    fn sample_rate_shim(this: &AudioContextOptions, val: f32);
+    fn set_sample_rate(this: &AudioContextOptions, val: f32);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `sinkId` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioContextOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "sinkId")]
+    pub fn get_sink_id(this: &AudioContextOptions) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "sinkId")]
-    fn sink_id_shim(this: &AudioContextOptions, val: &::wasm_bindgen::JsValue);
+    fn set_sink_id(this: &AudioContextOptions, val: &::wasm_bindgen::JsValue);
 }
 impl AudioContextOptions {
     #[doc = "Construct a new `AudioContextOptions`."]
@@ -30,14 +49,14 @@ impl AudioContextOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioContextOptions`*"]
     pub fn latency_hint(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.latency_hint_shim(val);
+        self.set_latency_hint(val);
         self
     }
     #[doc = "Change the `sampleRate` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioContextOptions`*"]
     pub fn sample_rate(&mut self, val: f32) -> &mut Self {
-        self.sample_rate_shim(val);
+        self.set_sample_rate(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -48,7 +67,7 @@ impl AudioContextOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn sink_id(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.sink_id_shim(val);
+        self.set_sink_id(val);
         self
     }
 }

@@ -10,15 +10,36 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioCompletionEventInit`*"]
     pub type OfflineAudioCompletionEventInit;
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `OfflineAudioCompletionEventInit`*"]
+    #[wasm_bindgen(method, getter = "bubbles")]
+    pub fn get_bubbles(this: &OfflineAudioCompletionEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &OfflineAudioCompletionEventInit, val: bool);
+    fn set_bubbles(this: &OfflineAudioCompletionEventInit, val: bool);
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `OfflineAudioCompletionEventInit`*"]
+    #[wasm_bindgen(method, getter = "cancelable")]
+    pub fn get_cancelable(this: &OfflineAudioCompletionEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &OfflineAudioCompletionEventInit, val: bool);
+    fn set_cancelable(this: &OfflineAudioCompletionEventInit, val: bool);
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `OfflineAudioCompletionEventInit`*"]
+    #[wasm_bindgen(method, getter = "composed")]
+    pub fn get_composed(this: &OfflineAudioCompletionEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &OfflineAudioCompletionEventInit, val: bool);
+    fn set_composed(this: &OfflineAudioCompletionEventInit, val: bool);
+    #[cfg(feature = "AudioBuffer")]
+    #[doc = "Get the `renderedBuffer` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`, `OfflineAudioCompletionEventInit`*"]
+    #[wasm_bindgen(method, getter = "renderedBuffer")]
+    pub fn get_rendered_buffer(this: &OfflineAudioCompletionEventInit) -> AudioBuffer;
     #[cfg(feature = "AudioBuffer")]
     #[wasm_bindgen(method, setter = "renderedBuffer")]
-    fn rendered_buffer_shim(this: &OfflineAudioCompletionEventInit, val: &AudioBuffer);
+    fn set_rendered_buffer(this: &OfflineAudioCompletionEventInit, val: &AudioBuffer);
 }
 impl OfflineAudioCompletionEventInit {
     #[cfg(feature = "AudioBuffer")]
@@ -35,21 +56,21 @@ impl OfflineAudioCompletionEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioCompletionEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioCompletionEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioCompletionEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed(val);
         self
     }
     #[cfg(feature = "AudioBuffer")]
@@ -57,7 +78,7 @@ impl OfflineAudioCompletionEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`, `OfflineAudioCompletionEventInit`*"]
     pub fn rendered_buffer(&mut self, val: &AudioBuffer) -> &mut Self {
-        self.rendered_buffer_shim(val);
+        self.set_rendered_buffer(val);
         self
     }
 }

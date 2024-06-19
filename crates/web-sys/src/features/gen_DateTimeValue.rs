@@ -10,16 +10,41 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DateTimeValue`*"]
     pub type DateTimeValue;
+    #[doc = "Get the `day` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DateTimeValue`*"]
+    #[wasm_bindgen(method, getter = "day")]
+    pub fn get_day(this: &DateTimeValue) -> Option<i32>;
     #[wasm_bindgen(method, setter = "day")]
-    fn day_shim(this: &DateTimeValue, val: i32);
+    fn set_day(this: &DateTimeValue, val: i32);
+    #[doc = "Get the `hour` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DateTimeValue`*"]
+    #[wasm_bindgen(method, getter = "hour")]
+    pub fn get_hour(this: &DateTimeValue) -> Option<i32>;
     #[wasm_bindgen(method, setter = "hour")]
-    fn hour_shim(this: &DateTimeValue, val: i32);
+    fn set_hour(this: &DateTimeValue, val: i32);
+    #[doc = "Get the `minute` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DateTimeValue`*"]
+    #[wasm_bindgen(method, getter = "minute")]
+    pub fn get_minute(this: &DateTimeValue) -> Option<i32>;
     #[wasm_bindgen(method, setter = "minute")]
-    fn minute_shim(this: &DateTimeValue, val: i32);
+    fn set_minute(this: &DateTimeValue, val: i32);
+    #[doc = "Get the `month` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DateTimeValue`*"]
+    #[wasm_bindgen(method, getter = "month")]
+    pub fn get_month(this: &DateTimeValue) -> Option<i32>;
     #[wasm_bindgen(method, setter = "month")]
-    fn month_shim(this: &DateTimeValue, val: i32);
+    fn set_month(this: &DateTimeValue, val: i32);
+    #[doc = "Get the `year` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DateTimeValue`*"]
+    #[wasm_bindgen(method, getter = "year")]
+    pub fn get_year(this: &DateTimeValue) -> Option<i32>;
     #[wasm_bindgen(method, setter = "year")]
-    fn year_shim(this: &DateTimeValue, val: i32);
+    fn set_year(this: &DateTimeValue, val: i32);
 }
 impl DateTimeValue {
     #[doc = "Construct a new `DateTimeValue`."]
@@ -34,35 +59,35 @@ impl DateTimeValue {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DateTimeValue`*"]
     pub fn day(&mut self, val: i32) -> &mut Self {
-        self.day_shim(val);
+        self.set_day(val);
         self
     }
     #[doc = "Change the `hour` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DateTimeValue`*"]
     pub fn hour(&mut self, val: i32) -> &mut Self {
-        self.hour_shim(val);
+        self.set_hour(val);
         self
     }
     #[doc = "Change the `minute` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DateTimeValue`*"]
     pub fn minute(&mut self, val: i32) -> &mut Self {
-        self.minute_shim(val);
+        self.set_minute(val);
         self
     }
     #[doc = "Change the `month` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DateTimeValue`*"]
     pub fn month(&mut self, val: i32) -> &mut Self {
-        self.month_shim(val);
+        self.set_month(val);
         self
     }
     #[doc = "Change the `year` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DateTimeValue`*"]
     pub fn year(&mut self, val: i32) -> &mut Self {
-        self.year_shim(val);
+        self.set_year(val);
         self
     }
 }

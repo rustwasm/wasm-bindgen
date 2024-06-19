@@ -11,8 +11,14 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `WorkletOptions`*"]
     pub type WorkletOptions;
     #[cfg(feature = "RequestCredentials")]
+    #[doc = "Get the `credentials` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RequestCredentials`, `WorkletOptions`*"]
+    #[wasm_bindgen(method, getter = "credentials")]
+    pub fn get_credentials(this: &WorkletOptions) -> Option<RequestCredentials>;
+    #[cfg(feature = "RequestCredentials")]
     #[wasm_bindgen(method, setter = "credentials")]
-    fn credentials_shim(this: &WorkletOptions, val: RequestCredentials);
+    fn set_credentials(this: &WorkletOptions, val: RequestCredentials);
 }
 impl WorkletOptions {
     #[doc = "Construct a new `WorkletOptions`."]
@@ -28,7 +34,7 @@ impl WorkletOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RequestCredentials`, `WorkletOptions`*"]
     pub fn credentials(&mut self, val: RequestCredentials) -> &mut Self {
-        self.credentials_shim(val);
+        self.set_credentials(val);
         self
     }
 }

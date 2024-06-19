@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesCbcParams`*"]
     pub type AesCbcParams;
+    #[doc = "Get the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AesCbcParams`*"]
+    #[wasm_bindgen(method, getter = "name")]
+    pub fn get_name(this: &AesCbcParams) -> String;
     #[wasm_bindgen(method, setter = "name")]
-    fn name_shim(this: &AesCbcParams, val: &str);
+    fn set_name(this: &AesCbcParams, val: &str);
+    #[doc = "Get the `iv` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AesCbcParams`*"]
+    #[wasm_bindgen(method, getter = "iv")]
+    pub fn get_iv(this: &AesCbcParams) -> ::js_sys::Object;
     #[wasm_bindgen(method, setter = "iv")]
-    fn iv_shim(this: &AesCbcParams, val: &::js_sys::Object);
+    fn set_iv(this: &AesCbcParams, val: &::js_sys::Object);
 }
 impl AesCbcParams {
     #[doc = "Construct a new `AesCbcParams`."]
@@ -30,14 +40,14 @@ impl AesCbcParams {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesCbcParams`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        self.name_shim(val);
+        self.set_name(val);
         self
     }
     #[doc = "Change the `iv` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesCbcParams`*"]
     pub fn iv(&mut self, val: &::js_sys::Object) -> &mut Self {
-        self.iv_shim(val);
+        self.set_iv(val);
         self
     }
 }

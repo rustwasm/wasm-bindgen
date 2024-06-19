@@ -10,16 +10,38 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GainOptions`*"]
     pub type GainOptions;
+    #[doc = "Get the `channelCount` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GainOptions`*"]
+    #[wasm_bindgen(method, getter = "channelCount")]
+    pub fn get_channel_count(this: &GainOptions) -> Option<u32>;
     #[wasm_bindgen(method, setter = "channelCount")]
-    fn channel_count_shim(this: &GainOptions, val: u32);
+    fn set_channel_count(this: &GainOptions, val: u32);
+    #[cfg(feature = "ChannelCountMode")]
+    #[doc = "Get the `channelCountMode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelCountMode`, `GainOptions`*"]
+    #[wasm_bindgen(method, getter = "channelCountMode")]
+    pub fn get_channel_count_mode(this: &GainOptions) -> Option<ChannelCountMode>;
     #[cfg(feature = "ChannelCountMode")]
     #[wasm_bindgen(method, setter = "channelCountMode")]
-    fn channel_count_mode_shim(this: &GainOptions, val: ChannelCountMode);
+    fn set_channel_count_mode(this: &GainOptions, val: ChannelCountMode);
+    #[cfg(feature = "ChannelInterpretation")]
+    #[doc = "Get the `channelInterpretation` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelInterpretation`, `GainOptions`*"]
+    #[wasm_bindgen(method, getter = "channelInterpretation")]
+    pub fn get_channel_interpretation(this: &GainOptions) -> Option<ChannelInterpretation>;
     #[cfg(feature = "ChannelInterpretation")]
     #[wasm_bindgen(method, setter = "channelInterpretation")]
-    fn channel_interpretation_shim(this: &GainOptions, val: ChannelInterpretation);
+    fn set_channel_interpretation(this: &GainOptions, val: ChannelInterpretation);
+    #[doc = "Get the `gain` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GainOptions`*"]
+    #[wasm_bindgen(method, getter = "gain")]
+    pub fn get_gain(this: &GainOptions) -> Option<f32>;
     #[wasm_bindgen(method, setter = "gain")]
-    fn gain_shim(this: &GainOptions, val: f32);
+    fn set_gain(this: &GainOptions, val: f32);
 }
 impl GainOptions {
     #[doc = "Construct a new `GainOptions`."]
@@ -34,7 +56,7 @@ impl GainOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GainOptions`*"]
     pub fn channel_count(&mut self, val: u32) -> &mut Self {
-        self.channel_count_shim(val);
+        self.set_channel_count(val);
         self
     }
     #[cfg(feature = "ChannelCountMode")]
@@ -42,7 +64,7 @@ impl GainOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ChannelCountMode`, `GainOptions`*"]
     pub fn channel_count_mode(&mut self, val: ChannelCountMode) -> &mut Self {
-        self.channel_count_mode_shim(val);
+        self.set_channel_count_mode(val);
         self
     }
     #[cfg(feature = "ChannelInterpretation")]
@@ -50,14 +72,14 @@ impl GainOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ChannelInterpretation`, `GainOptions`*"]
     pub fn channel_interpretation(&mut self, val: ChannelInterpretation) -> &mut Self {
-        self.channel_interpretation_shim(val);
+        self.set_channel_interpretation(val);
         self
     }
     #[doc = "Change the `gain` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GainOptions`*"]
     pub fn gain(&mut self, val: f32) -> &mut Self {
-        self.gain_shim(val);
+        self.set_gain(val);
         self
     }
 }

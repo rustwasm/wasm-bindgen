@@ -10,18 +10,48 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceProximityEventInit`*"]
     pub type DeviceProximityEventInit;
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DeviceProximityEventInit`*"]
+    #[wasm_bindgen(method, getter = "bubbles")]
+    pub fn get_bubbles(this: &DeviceProximityEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &DeviceProximityEventInit, val: bool);
+    fn set_bubbles(this: &DeviceProximityEventInit, val: bool);
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DeviceProximityEventInit`*"]
+    #[wasm_bindgen(method, getter = "cancelable")]
+    pub fn get_cancelable(this: &DeviceProximityEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &DeviceProximityEventInit, val: bool);
+    fn set_cancelable(this: &DeviceProximityEventInit, val: bool);
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DeviceProximityEventInit`*"]
+    #[wasm_bindgen(method, getter = "composed")]
+    pub fn get_composed(this: &DeviceProximityEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &DeviceProximityEventInit, val: bool);
+    fn set_composed(this: &DeviceProximityEventInit, val: bool);
+    #[doc = "Get the `max` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DeviceProximityEventInit`*"]
+    #[wasm_bindgen(method, getter = "max")]
+    pub fn get_max(this: &DeviceProximityEventInit) -> Option<f64>;
     #[wasm_bindgen(method, setter = "max")]
-    fn max_shim(this: &DeviceProximityEventInit, val: f64);
+    fn set_max(this: &DeviceProximityEventInit, val: f64);
+    #[doc = "Get the `min` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DeviceProximityEventInit`*"]
+    #[wasm_bindgen(method, getter = "min")]
+    pub fn get_min(this: &DeviceProximityEventInit) -> Option<f64>;
     #[wasm_bindgen(method, setter = "min")]
-    fn min_shim(this: &DeviceProximityEventInit, val: f64);
+    fn set_min(this: &DeviceProximityEventInit, val: f64);
+    #[doc = "Get the `value` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DeviceProximityEventInit`*"]
+    #[wasm_bindgen(method, getter = "value")]
+    pub fn get_value(this: &DeviceProximityEventInit) -> Option<f64>;
     #[wasm_bindgen(method, setter = "value")]
-    fn value_shim(this: &DeviceProximityEventInit, val: f64);
+    fn set_value(this: &DeviceProximityEventInit, val: f64);
 }
 impl DeviceProximityEventInit {
     #[doc = "Construct a new `DeviceProximityEventInit`."]
@@ -36,42 +66,42 @@ impl DeviceProximityEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceProximityEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceProximityEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceProximityEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed(val);
         self
     }
     #[doc = "Change the `max` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceProximityEventInit`*"]
     pub fn max(&mut self, val: f64) -> &mut Self {
-        self.max_shim(val);
+        self.set_max(val);
         self
     }
     #[doc = "Change the `min` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceProximityEventInit`*"]
     pub fn min(&mut self, val: f64) -> &mut Self {
-        self.min_shim(val);
+        self.set_min(val);
         self
     }
     #[doc = "Change the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DeviceProximityEventInit`*"]
     pub fn value(&mut self, val: f64) -> &mut Self {
-        self.value_shim(val);
+        self.set_value(val);
         self
     }
 }

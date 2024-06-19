@@ -14,16 +14,61 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type SaveFilePickerOptions;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `excludeAcceptAllOption` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SaveFilePickerOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "excludeAcceptAllOption")]
+    pub fn get_exclude_accept_all_option(this: &SaveFilePickerOptions) -> Option<bool>;
     #[wasm_bindgen(method, setter = "excludeAcceptAllOption")]
-    fn exclude_accept_all_option_shim(this: &SaveFilePickerOptions, val: bool);
+    fn set_exclude_accept_all_option(this: &SaveFilePickerOptions, val: bool);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `id` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SaveFilePickerOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "id")]
+    pub fn get_id(this: &SaveFilePickerOptions) -> Option<String>;
     #[wasm_bindgen(method, setter = "id")]
-    fn id_shim(this: &SaveFilePickerOptions, val: &str);
+    fn set_id(this: &SaveFilePickerOptions, val: &str);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `startIn` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SaveFilePickerOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "startIn")]
+    pub fn get_start_in(this: &SaveFilePickerOptions) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "startIn")]
-    fn start_in_shim(this: &SaveFilePickerOptions, val: &::wasm_bindgen::JsValue);
+    fn set_start_in(this: &SaveFilePickerOptions, val: &::wasm_bindgen::JsValue);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `types` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SaveFilePickerOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "types")]
+    pub fn get_types(this: &SaveFilePickerOptions) -> Option<::js_sys::Array>;
     #[wasm_bindgen(method, setter = "types")]
-    fn types_shim(this: &SaveFilePickerOptions, val: &::wasm_bindgen::JsValue);
+    fn set_types(this: &SaveFilePickerOptions, val: &::wasm_bindgen::JsValue);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `suggestedName` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SaveFilePickerOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "suggestedName")]
+    pub fn get_suggested_name(this: &SaveFilePickerOptions) -> Option<String>;
     #[wasm_bindgen(method, setter = "suggestedName")]
-    fn suggested_name_shim(this: &SaveFilePickerOptions, val: Option<&str>);
+    fn set_suggested_name(this: &SaveFilePickerOptions, val: Option<&str>);
 }
 #[cfg(web_sys_unstable_apis)]
 impl SaveFilePickerOptions {
@@ -46,7 +91,7 @@ impl SaveFilePickerOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn exclude_accept_all_option(&mut self, val: bool) -> &mut Self {
-        self.exclude_accept_all_option_shim(val);
+        self.set_exclude_accept_all_option(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -57,7 +102,7 @@ impl SaveFilePickerOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn id(&mut self, val: &str) -> &mut Self {
-        self.id_shim(val);
+        self.set_id(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -68,7 +113,7 @@ impl SaveFilePickerOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn start_in(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.start_in_shim(val);
+        self.set_start_in(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -79,7 +124,7 @@ impl SaveFilePickerOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn types(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.types_shim(val);
+        self.set_types(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -90,7 +135,7 @@ impl SaveFilePickerOptions {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn suggested_name(&mut self, val: Option<&str>) -> &mut Self {
-        self.suggested_name_shim(val);
+        self.set_suggested_name(val);
         self
     }
 }

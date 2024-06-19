@@ -10,8 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HalfOpenInfoDict`*"]
     pub type HalfOpenInfoDict;
+    #[doc = "Get the `speculative` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HalfOpenInfoDict`*"]
+    #[wasm_bindgen(method, getter = "speculative")]
+    pub fn get_speculative(this: &HalfOpenInfoDict) -> Option<bool>;
     #[wasm_bindgen(method, setter = "speculative")]
-    fn speculative_shim(this: &HalfOpenInfoDict, val: bool);
+    fn set_speculative(this: &HalfOpenInfoDict, val: bool);
 }
 impl HalfOpenInfoDict {
     #[doc = "Construct a new `HalfOpenInfoDict`."]
@@ -26,7 +31,7 @@ impl HalfOpenInfoDict {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HalfOpenInfoDict`*"]
     pub fn speculative(&mut self, val: bool) -> &mut Self {
-        self.speculative_shim(val);
+        self.set_speculative(val);
         self
     }
 }

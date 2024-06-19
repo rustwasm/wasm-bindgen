@@ -11,16 +11,37 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AuthenticatorSelectionCriteria`*"]
     pub type AuthenticatorSelectionCriteria;
     #[cfg(feature = "AuthenticatorAttachment")]
+    #[doc = "Get the `authenticatorAttachment` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AuthenticatorAttachment`, `AuthenticatorSelectionCriteria`*"]
+    #[wasm_bindgen(method, getter = "authenticatorAttachment")]
+    pub fn get_authenticator_attachment(
+        this: &AuthenticatorSelectionCriteria,
+    ) -> Option<AuthenticatorAttachment>;
+    #[cfg(feature = "AuthenticatorAttachment")]
     #[wasm_bindgen(method, setter = "authenticatorAttachment")]
-    fn authenticator_attachment_shim(
+    fn set_authenticator_attachment(
         this: &AuthenticatorSelectionCriteria,
         val: AuthenticatorAttachment,
     );
+    #[doc = "Get the `requireResidentKey` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AuthenticatorSelectionCriteria`*"]
+    #[wasm_bindgen(method, getter = "requireResidentKey")]
+    pub fn get_require_resident_key(this: &AuthenticatorSelectionCriteria) -> Option<bool>;
     #[wasm_bindgen(method, setter = "requireResidentKey")]
-    fn require_resident_key_shim(this: &AuthenticatorSelectionCriteria, val: bool);
+    fn set_require_resident_key(this: &AuthenticatorSelectionCriteria, val: bool);
+    #[cfg(feature = "UserVerificationRequirement")]
+    #[doc = "Get the `userVerification` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AuthenticatorSelectionCriteria`, `UserVerificationRequirement`*"]
+    #[wasm_bindgen(method, getter = "userVerification")]
+    pub fn get_user_verification(
+        this: &AuthenticatorSelectionCriteria,
+    ) -> Option<UserVerificationRequirement>;
     #[cfg(feature = "UserVerificationRequirement")]
     #[wasm_bindgen(method, setter = "userVerification")]
-    fn user_verification_shim(
+    fn set_user_verification(
         this: &AuthenticatorSelectionCriteria,
         val: UserVerificationRequirement,
     );
@@ -39,14 +60,14 @@ impl AuthenticatorSelectionCriteria {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticatorAttachment`, `AuthenticatorSelectionCriteria`*"]
     pub fn authenticator_attachment(&mut self, val: AuthenticatorAttachment) -> &mut Self {
-        self.authenticator_attachment_shim(val);
+        self.set_authenticator_attachment(val);
         self
     }
     #[doc = "Change the `requireResidentKey` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticatorSelectionCriteria`*"]
     pub fn require_resident_key(&mut self, val: bool) -> &mut Self {
-        self.require_resident_key_shim(val);
+        self.set_require_resident_key(val);
         self
     }
     #[cfg(feature = "UserVerificationRequirement")]
@@ -54,7 +75,7 @@ impl AuthenticatorSelectionCriteria {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticatorSelectionCriteria`, `UserVerificationRequirement`*"]
     pub fn user_verification(&mut self, val: UserVerificationRequirement) -> &mut Self {
-        self.user_verification_shim(val);
+        self.set_user_verification(val);
         self
     }
 }

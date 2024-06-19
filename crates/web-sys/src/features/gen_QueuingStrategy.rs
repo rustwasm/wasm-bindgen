@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `QueuingStrategy`*"]
     pub type QueuingStrategy;
+    #[doc = "Get the `highWaterMark` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `QueuingStrategy`*"]
+    #[wasm_bindgen(method, getter = "highWaterMark")]
+    pub fn get_high_water_mark(this: &QueuingStrategy) -> Option<f64>;
     #[wasm_bindgen(method, setter = "highWaterMark")]
-    fn high_water_mark_shim(this: &QueuingStrategy, val: f64);
+    fn set_high_water_mark(this: &QueuingStrategy, val: f64);
+    #[doc = "Get the `size` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `QueuingStrategy`*"]
+    #[wasm_bindgen(method, getter = "size")]
+    pub fn get_size(this: &QueuingStrategy) -> Option<::js_sys::Function>;
     #[wasm_bindgen(method, setter = "size")]
-    fn size_shim(this: &QueuingStrategy, val: &::js_sys::Function);
+    fn set_size(this: &QueuingStrategy, val: &::js_sys::Function);
 }
 impl QueuingStrategy {
     #[doc = "Construct a new `QueuingStrategy`."]
@@ -28,14 +38,14 @@ impl QueuingStrategy {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `QueuingStrategy`*"]
     pub fn high_water_mark(&mut self, val: f64) -> &mut Self {
-        self.high_water_mark_shim(val);
+        self.set_high_water_mark(val);
         self
     }
     #[doc = "Change the `size` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `QueuingStrategy`*"]
     pub fn size(&mut self, val: &::js_sys::Function) -> &mut Self {
-        self.size_shim(val);
+        self.set_size(val);
         self
     }
 }

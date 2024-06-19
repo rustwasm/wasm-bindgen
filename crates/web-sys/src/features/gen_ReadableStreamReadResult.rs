@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamReadResult`*"]
     pub type ReadableStreamReadResult;
+    #[doc = "Get the `done` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ReadableStreamReadResult`*"]
+    #[wasm_bindgen(method, getter = "done")]
+    pub fn get_done(this: &ReadableStreamReadResult) -> Option<bool>;
     #[wasm_bindgen(method, setter = "done")]
-    fn done_shim(this: &ReadableStreamReadResult, val: bool);
+    fn set_done(this: &ReadableStreamReadResult, val: bool);
+    #[doc = "Get the `value` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ReadableStreamReadResult`*"]
+    #[wasm_bindgen(method, getter = "value")]
+    pub fn get_value(this: &ReadableStreamReadResult) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "value")]
-    fn value_shim(this: &ReadableStreamReadResult, val: &::wasm_bindgen::JsValue);
+    fn set_value(this: &ReadableStreamReadResult, val: &::wasm_bindgen::JsValue);
 }
 impl ReadableStreamReadResult {
     #[doc = "Construct a new `ReadableStreamReadResult`."]
@@ -28,14 +38,14 @@ impl ReadableStreamReadResult {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamReadResult`*"]
     pub fn done(&mut self, val: bool) -> &mut Self {
-        self.done_shim(val);
+        self.set_done(val);
         self
     }
     #[doc = "Change the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamReadResult`*"]
     pub fn value(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.value_shim(val);
+        self.set_value(val);
         self
     }
 }

@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiOptions`*"]
     pub type MidiOptions;
+    #[doc = "Get the `software` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MidiOptions`*"]
+    #[wasm_bindgen(method, getter = "software")]
+    pub fn get_software(this: &MidiOptions) -> Option<bool>;
     #[wasm_bindgen(method, setter = "software")]
-    fn software_shim(this: &MidiOptions, val: bool);
+    fn set_software(this: &MidiOptions, val: bool);
+    #[doc = "Get the `sysex` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MidiOptions`*"]
+    #[wasm_bindgen(method, getter = "sysex")]
+    pub fn get_sysex(this: &MidiOptions) -> Option<bool>;
     #[wasm_bindgen(method, setter = "sysex")]
-    fn sysex_shim(this: &MidiOptions, val: bool);
+    fn set_sysex(this: &MidiOptions, val: bool);
 }
 impl MidiOptions {
     #[doc = "Construct a new `MidiOptions`."]
@@ -28,14 +38,14 @@ impl MidiOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiOptions`*"]
     pub fn software(&mut self, val: bool) -> &mut Self {
-        self.software_shim(val);
+        self.set_software(val);
         self
     }
     #[doc = "Change the `sysex` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiOptions`*"]
     pub fn sysex(&mut self, val: bool) -> &mut Self {
-        self.sysex_shim(val);
+        self.set_sysex(val);
         self
     }
 }

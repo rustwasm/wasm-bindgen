@@ -10,16 +10,41 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]
     pub type SignResponse;
+    #[doc = "Get the `clientData` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]
+    #[wasm_bindgen(method, getter = "clientData")]
+    pub fn get_client_data(this: &SignResponse) -> Option<String>;
     #[wasm_bindgen(method, setter = "clientData")]
-    fn client_data_shim(this: &SignResponse, val: &str);
+    fn set_client_data(this: &SignResponse, val: &str);
+    #[doc = "Get the `errorCode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]
+    #[wasm_bindgen(method, getter = "errorCode")]
+    pub fn get_error_code(this: &SignResponse) -> Option<u16>;
     #[wasm_bindgen(method, setter = "errorCode")]
-    fn error_code_shim(this: &SignResponse, val: Option<u16>);
+    fn set_error_code(this: &SignResponse, val: Option<u16>);
+    #[doc = "Get the `errorMessage` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]
+    #[wasm_bindgen(method, getter = "errorMessage")]
+    pub fn get_error_message(this: &SignResponse) -> Option<String>;
     #[wasm_bindgen(method, setter = "errorMessage")]
-    fn error_message_shim(this: &SignResponse, val: Option<&str>);
+    fn set_error_message(this: &SignResponse, val: Option<&str>);
+    #[doc = "Get the `keyHandle` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]
+    #[wasm_bindgen(method, getter = "keyHandle")]
+    pub fn get_key_handle(this: &SignResponse) -> Option<String>;
     #[wasm_bindgen(method, setter = "keyHandle")]
-    fn key_handle_shim(this: &SignResponse, val: &str);
+    fn set_key_handle(this: &SignResponse, val: &str);
+    #[doc = "Get the `signatureData` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]
+    #[wasm_bindgen(method, getter = "signatureData")]
+    pub fn get_signature_data(this: &SignResponse) -> Option<String>;
     #[wasm_bindgen(method, setter = "signatureData")]
-    fn signature_data_shim(this: &SignResponse, val: &str);
+    fn set_signature_data(this: &SignResponse, val: &str);
 }
 impl SignResponse {
     #[doc = "Construct a new `SignResponse`."]
@@ -34,35 +59,35 @@ impl SignResponse {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]
     pub fn client_data(&mut self, val: &str) -> &mut Self {
-        self.client_data_shim(val);
+        self.set_client_data(val);
         self
     }
     #[doc = "Change the `errorCode` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]
     pub fn error_code(&mut self, val: Option<u16>) -> &mut Self {
-        self.error_code_shim(val);
+        self.set_error_code(val);
         self
     }
     #[doc = "Change the `errorMessage` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]
     pub fn error_message(&mut self, val: Option<&str>) -> &mut Self {
-        self.error_message_shim(val);
+        self.set_error_message(val);
         self
     }
     #[doc = "Change the `keyHandle` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]
     pub fn key_handle(&mut self, val: &str) -> &mut Self {
-        self.key_handle_shim(val);
+        self.set_key_handle(val);
         self
     }
     #[doc = "Change the `signatureData` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]
     pub fn signature_data(&mut self, val: &str) -> &mut Self {
-        self.signature_data_shim(val);
+        self.set_signature_data(val);
         self
     }
 }

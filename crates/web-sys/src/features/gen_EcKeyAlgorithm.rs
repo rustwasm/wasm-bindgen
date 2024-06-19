@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
     pub type EcKeyAlgorithm;
+    #[doc = "Get the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
+    #[wasm_bindgen(method, getter = "name")]
+    pub fn get_name(this: &EcKeyAlgorithm) -> String;
     #[wasm_bindgen(method, setter = "name")]
-    fn name_shim(this: &EcKeyAlgorithm, val: &str);
+    fn set_name(this: &EcKeyAlgorithm, val: &str);
+    #[doc = "Get the `namedCurve` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
+    #[wasm_bindgen(method, getter = "namedCurve")]
+    pub fn get_named_curve(this: &EcKeyAlgorithm) -> String;
     #[wasm_bindgen(method, setter = "namedCurve")]
-    fn named_curve_shim(this: &EcKeyAlgorithm, val: &str);
+    fn set_named_curve(this: &EcKeyAlgorithm, val: &str);
 }
 impl EcKeyAlgorithm {
     #[doc = "Construct a new `EcKeyAlgorithm`."]
@@ -30,14 +40,14 @@ impl EcKeyAlgorithm {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        self.name_shim(val);
+        self.set_name(val);
         self
     }
     #[doc = "Change the `namedCurve` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
     pub fn named_curve(&mut self, val: &str) -> &mut Self {
-        self.named_curve_shim(val);
+        self.set_named_curve(val);
         self
     }
 }

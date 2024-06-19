@@ -10,16 +10,41 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UnderlyingSink`*"]
     pub type UnderlyingSink;
+    #[doc = "Get the `abort` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UnderlyingSink`*"]
+    #[wasm_bindgen(method, getter = "abort")]
+    pub fn get_abort(this: &UnderlyingSink) -> Option<::js_sys::Function>;
     #[wasm_bindgen(method, setter = "abort")]
-    fn abort_shim(this: &UnderlyingSink, val: &::js_sys::Function);
+    fn set_abort(this: &UnderlyingSink, val: &::js_sys::Function);
+    #[doc = "Get the `close` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UnderlyingSink`*"]
+    #[wasm_bindgen(method, getter = "close")]
+    pub fn get_close(this: &UnderlyingSink) -> Option<::js_sys::Function>;
     #[wasm_bindgen(method, setter = "close")]
-    fn close_shim(this: &UnderlyingSink, val: &::js_sys::Function);
+    fn set_close(this: &UnderlyingSink, val: &::js_sys::Function);
+    #[doc = "Get the `start` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UnderlyingSink`*"]
+    #[wasm_bindgen(method, getter = "start")]
+    pub fn get_start(this: &UnderlyingSink) -> Option<::js_sys::Function>;
     #[wasm_bindgen(method, setter = "start")]
-    fn start_shim(this: &UnderlyingSink, val: &::js_sys::Function);
+    fn set_start(this: &UnderlyingSink, val: &::js_sys::Function);
+    #[doc = "Get the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UnderlyingSink`*"]
+    #[wasm_bindgen(method, getter = "type")]
+    pub fn get_type(this: &UnderlyingSink) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &UnderlyingSink, val: &::wasm_bindgen::JsValue);
+    fn set_type(this: &UnderlyingSink, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `write` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UnderlyingSink`*"]
+    #[wasm_bindgen(method, getter = "write")]
+    pub fn get_write(this: &UnderlyingSink) -> Option<::js_sys::Function>;
     #[wasm_bindgen(method, setter = "write")]
-    fn write_shim(this: &UnderlyingSink, val: &::js_sys::Function);
+    fn set_write(this: &UnderlyingSink, val: &::js_sys::Function);
 }
 impl UnderlyingSink {
     #[doc = "Construct a new `UnderlyingSink`."]
@@ -34,35 +59,35 @@ impl UnderlyingSink {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UnderlyingSink`*"]
     pub fn abort(&mut self, val: &::js_sys::Function) -> &mut Self {
-        self.abort_shim(val);
+        self.set_abort(val);
         self
     }
     #[doc = "Change the `close` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UnderlyingSink`*"]
     pub fn close(&mut self, val: &::js_sys::Function) -> &mut Self {
-        self.close_shim(val);
+        self.set_close(val);
         self
     }
     #[doc = "Change the `start` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UnderlyingSink`*"]
     pub fn start(&mut self, val: &::js_sys::Function) -> &mut Self {
-        self.start_shim(val);
+        self.set_start(val);
         self
     }
     #[doc = "Change the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UnderlyingSink`*"]
     pub fn type_(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.type__shim(val);
+        self.set_type(val);
         self
     }
     #[doc = "Change the `write` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UnderlyingSink`*"]
     pub fn write(&mut self, val: &::js_sys::Function) -> &mut Self {
-        self.write_shim(val);
+        self.set_write(val);
         self
     }
 }

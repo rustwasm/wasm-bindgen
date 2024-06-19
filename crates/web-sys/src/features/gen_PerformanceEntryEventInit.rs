@@ -10,24 +10,69 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
     pub type PerformanceEntryEventInit;
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
+    #[wasm_bindgen(method, getter = "bubbles")]
+    pub fn get_bubbles(this: &PerformanceEntryEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &PerformanceEntryEventInit, val: bool);
+    fn set_bubbles(this: &PerformanceEntryEventInit, val: bool);
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
+    #[wasm_bindgen(method, getter = "cancelable")]
+    pub fn get_cancelable(this: &PerformanceEntryEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &PerformanceEntryEventInit, val: bool);
+    fn set_cancelable(this: &PerformanceEntryEventInit, val: bool);
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
+    #[wasm_bindgen(method, getter = "composed")]
+    pub fn get_composed(this: &PerformanceEntryEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &PerformanceEntryEventInit, val: bool);
+    fn set_composed(this: &PerformanceEntryEventInit, val: bool);
+    #[doc = "Get the `duration` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
+    #[wasm_bindgen(method, getter = "duration")]
+    pub fn get_duration(this: &PerformanceEntryEventInit) -> Option<f64>;
     #[wasm_bindgen(method, setter = "duration")]
-    fn duration_shim(this: &PerformanceEntryEventInit, val: f64);
+    fn set_duration(this: &PerformanceEntryEventInit, val: f64);
+    #[doc = "Get the `entryType` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
+    #[wasm_bindgen(method, getter = "entryType")]
+    pub fn get_entry_type(this: &PerformanceEntryEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "entryType")]
-    fn entry_type_shim(this: &PerformanceEntryEventInit, val: &str);
+    fn set_entry_type(this: &PerformanceEntryEventInit, val: &str);
+    #[doc = "Get the `epoch` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
+    #[wasm_bindgen(method, getter = "epoch")]
+    pub fn get_epoch(this: &PerformanceEntryEventInit) -> Option<f64>;
     #[wasm_bindgen(method, setter = "epoch")]
-    fn epoch_shim(this: &PerformanceEntryEventInit, val: f64);
+    fn set_epoch(this: &PerformanceEntryEventInit, val: f64);
+    #[doc = "Get the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
+    #[wasm_bindgen(method, getter = "name")]
+    pub fn get_name(this: &PerformanceEntryEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "name")]
-    fn name_shim(this: &PerformanceEntryEventInit, val: &str);
+    fn set_name(this: &PerformanceEntryEventInit, val: &str);
+    #[doc = "Get the `origin` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
+    #[wasm_bindgen(method, getter = "origin")]
+    pub fn get_origin(this: &PerformanceEntryEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "origin")]
-    fn origin_shim(this: &PerformanceEntryEventInit, val: &str);
+    fn set_origin(this: &PerformanceEntryEventInit, val: &str);
+    #[doc = "Get the `startTime` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
+    #[wasm_bindgen(method, getter = "startTime")]
+    pub fn get_start_time(this: &PerformanceEntryEventInit) -> Option<f64>;
     #[wasm_bindgen(method, setter = "startTime")]
-    fn start_time_shim(this: &PerformanceEntryEventInit, val: f64);
+    fn set_start_time(this: &PerformanceEntryEventInit, val: f64);
 }
 impl PerformanceEntryEventInit {
     #[doc = "Construct a new `PerformanceEntryEventInit`."]
@@ -42,63 +87,63 @@ impl PerformanceEntryEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed(val);
         self
     }
     #[doc = "Change the `duration` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
     pub fn duration(&mut self, val: f64) -> &mut Self {
-        self.duration_shim(val);
+        self.set_duration(val);
         self
     }
     #[doc = "Change the `entryType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
     pub fn entry_type(&mut self, val: &str) -> &mut Self {
-        self.entry_type_shim(val);
+        self.set_entry_type(val);
         self
     }
     #[doc = "Change the `epoch` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
     pub fn epoch(&mut self, val: f64) -> &mut Self {
-        self.epoch_shim(val);
+        self.set_epoch(val);
         self
     }
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        self.name_shim(val);
+        self.set_name(val);
         self
     }
     #[doc = "Change the `origin` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
     pub fn origin(&mut self, val: &str) -> &mut Self {
-        self.origin_shim(val);
+        self.set_origin(val);
         self
     }
     #[doc = "Change the `startTime` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
     pub fn start_time(&mut self, val: f64) -> &mut Self {
-        self.start_time_shim(val);
+        self.set_start_time(val);
         self
     }
 }

@@ -10,8 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemEntryCallback`*"]
     pub type FileSystemEntryCallback;
+    #[doc = "Get the `handleEvent` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemEntryCallback`*"]
+    #[wasm_bindgen(method, getter = "handleEvent")]
+    pub fn get_handle_event(this: &FileSystemEntryCallback) -> Option<::js_sys::Function>;
     #[wasm_bindgen(method, setter = "handleEvent")]
-    fn handle_event_shim(this: &FileSystemEntryCallback, val: &::js_sys::Function);
+    fn set_handle_event(this: &FileSystemEntryCallback, val: &::js_sys::Function);
 }
 impl FileSystemEntryCallback {
     #[doc = "Construct a new `FileSystemEntryCallback`."]
@@ -26,7 +31,7 @@ impl FileSystemEntryCallback {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemEntryCallback`*"]
     pub fn handle_event(&mut self, val: &::js_sys::Function) -> &mut Self {
-        self.handle_event_shim(val);
+        self.set_handle_event(val);
         self
     }
 }

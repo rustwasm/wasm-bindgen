@@ -14,13 +14,41 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuBufferBinding;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuBuffer")]
+    #[doc = "Get the `buffer` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuBufferBinding`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "buffer")]
+    pub fn get_buffer(this: &GpuBufferBinding) -> GpuBuffer;
     #[cfg(feature = "GpuBuffer")]
     #[wasm_bindgen(method, setter = "buffer")]
-    fn buffer_shim(this: &GpuBufferBinding, val: &GpuBuffer);
+    fn set_buffer(this: &GpuBufferBinding, val: &GpuBuffer);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `offset` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBufferBinding`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "offset")]
+    pub fn get_offset(this: &GpuBufferBinding) -> Option<f64>;
     #[wasm_bindgen(method, setter = "offset")]
-    fn offset_shim(this: &GpuBufferBinding, val: f64);
+    fn set_offset(this: &GpuBufferBinding, val: f64);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `size` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBufferBinding`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "size")]
+    pub fn get_size(this: &GpuBufferBinding) -> Option<f64>;
     #[wasm_bindgen(method, setter = "size")]
-    fn size_shim(this: &GpuBufferBinding, val: f64);
+    fn set_size(this: &GpuBufferBinding, val: f64);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuBufferBinding {
@@ -46,7 +74,7 @@ impl GpuBufferBinding {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn buffer(&mut self, val: &GpuBuffer) -> &mut Self {
-        self.buffer_shim(val);
+        self.set_buffer(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -57,7 +85,7 @@ impl GpuBufferBinding {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn offset(&mut self, val: f64) -> &mut Self {
-        self.offset_shim(val);
+        self.set_offset(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -68,7 +96,7 @@ impl GpuBufferBinding {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn size(&mut self, val: f64) -> &mut Self {
-        self.size_shim(val);
+        self.set_size(val);
         self
     }
 }

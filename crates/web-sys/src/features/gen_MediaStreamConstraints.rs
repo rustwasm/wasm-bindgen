@@ -10,16 +10,41 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamConstraints`*"]
     pub type MediaStreamConstraints;
+    #[doc = "Get the `audio` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamConstraints`*"]
+    #[wasm_bindgen(method, getter = "audio")]
+    pub fn get_audio(this: &MediaStreamConstraints) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "audio")]
-    fn audio_shim(this: &MediaStreamConstraints, val: &::wasm_bindgen::JsValue);
+    fn set_audio(this: &MediaStreamConstraints, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `fake` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamConstraints`*"]
+    #[wasm_bindgen(method, getter = "fake")]
+    pub fn get_fake(this: &MediaStreamConstraints) -> Option<bool>;
     #[wasm_bindgen(method, setter = "fake")]
-    fn fake_shim(this: &MediaStreamConstraints, val: bool);
+    fn set_fake(this: &MediaStreamConstraints, val: bool);
+    #[doc = "Get the `peerIdentity` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamConstraints`*"]
+    #[wasm_bindgen(method, getter = "peerIdentity")]
+    pub fn get_peer_identity(this: &MediaStreamConstraints) -> Option<String>;
     #[wasm_bindgen(method, setter = "peerIdentity")]
-    fn peer_identity_shim(this: &MediaStreamConstraints, val: Option<&str>);
+    fn set_peer_identity(this: &MediaStreamConstraints, val: Option<&str>);
+    #[doc = "Get the `picture` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamConstraints`*"]
+    #[wasm_bindgen(method, getter = "picture")]
+    pub fn get_picture(this: &MediaStreamConstraints) -> Option<bool>;
     #[wasm_bindgen(method, setter = "picture")]
-    fn picture_shim(this: &MediaStreamConstraints, val: bool);
+    fn set_picture(this: &MediaStreamConstraints, val: bool);
+    #[doc = "Get the `video` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamConstraints`*"]
+    #[wasm_bindgen(method, getter = "video")]
+    pub fn get_video(this: &MediaStreamConstraints) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "video")]
-    fn video_shim(this: &MediaStreamConstraints, val: &::wasm_bindgen::JsValue);
+    fn set_video(this: &MediaStreamConstraints, val: &::wasm_bindgen::JsValue);
 }
 impl MediaStreamConstraints {
     #[doc = "Construct a new `MediaStreamConstraints`."]
@@ -34,35 +59,35 @@ impl MediaStreamConstraints {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamConstraints`*"]
     pub fn audio(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.audio_shim(val);
+        self.set_audio(val);
         self
     }
     #[doc = "Change the `fake` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamConstraints`*"]
     pub fn fake(&mut self, val: bool) -> &mut Self {
-        self.fake_shim(val);
+        self.set_fake(val);
         self
     }
     #[doc = "Change the `peerIdentity` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamConstraints`*"]
     pub fn peer_identity(&mut self, val: Option<&str>) -> &mut Self {
-        self.peer_identity_shim(val);
+        self.set_peer_identity(val);
         self
     }
     #[doc = "Change the `picture` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamConstraints`*"]
     pub fn picture(&mut self, val: bool) -> &mut Self {
-        self.picture_shim(val);
+        self.set_picture(val);
         self
     }
     #[doc = "Change the `video` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamConstraints`*"]
     pub fn video(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.video_shim(val);
+        self.set_video(val);
         self
     }
 }

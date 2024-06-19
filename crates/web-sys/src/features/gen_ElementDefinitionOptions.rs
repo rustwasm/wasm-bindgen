@@ -10,8 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ElementDefinitionOptions`*"]
     pub type ElementDefinitionOptions;
+    #[doc = "Get the `extends` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ElementDefinitionOptions`*"]
+    #[wasm_bindgen(method, getter = "extends")]
+    pub fn get_extends(this: &ElementDefinitionOptions) -> Option<String>;
     #[wasm_bindgen(method, setter = "extends")]
-    fn extends_shim(this: &ElementDefinitionOptions, val: &str);
+    fn set_extends(this: &ElementDefinitionOptions, val: &str);
 }
 impl ElementDefinitionOptions {
     #[doc = "Construct a new `ElementDefinitionOptions`."]
@@ -26,7 +31,7 @@ impl ElementDefinitionOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ElementDefinitionOptions`*"]
     pub fn extends(&mut self, val: &str) -> &mut Self {
-        self.extends_shim(val);
+        self.set_extends(val);
         self
     }
 }

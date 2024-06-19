@@ -10,36 +10,111 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
     pub type MediaTrackSupportedConstraints;
+    #[doc = "Get the `aspectRatio` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
+    #[wasm_bindgen(method, getter = "aspectRatio")]
+    pub fn get_aspect_ratio(this: &MediaTrackSupportedConstraints) -> Option<bool>;
     #[wasm_bindgen(method, setter = "aspectRatio")]
-    fn aspect_ratio_shim(this: &MediaTrackSupportedConstraints, val: bool);
+    fn set_aspect_ratio(this: &MediaTrackSupportedConstraints, val: bool);
+    #[doc = "Get the `autoGainControl` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
+    #[wasm_bindgen(method, getter = "autoGainControl")]
+    pub fn get_auto_gain_control(this: &MediaTrackSupportedConstraints) -> Option<bool>;
     #[wasm_bindgen(method, setter = "autoGainControl")]
-    fn auto_gain_control_shim(this: &MediaTrackSupportedConstraints, val: bool);
+    fn set_auto_gain_control(this: &MediaTrackSupportedConstraints, val: bool);
+    #[doc = "Get the `channelCount` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
+    #[wasm_bindgen(method, getter = "channelCount")]
+    pub fn get_channel_count(this: &MediaTrackSupportedConstraints) -> Option<bool>;
     #[wasm_bindgen(method, setter = "channelCount")]
-    fn channel_count_shim(this: &MediaTrackSupportedConstraints, val: bool);
+    fn set_channel_count(this: &MediaTrackSupportedConstraints, val: bool);
+    #[doc = "Get the `deviceId` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
+    #[wasm_bindgen(method, getter = "deviceId")]
+    pub fn get_device_id(this: &MediaTrackSupportedConstraints) -> Option<bool>;
     #[wasm_bindgen(method, setter = "deviceId")]
-    fn device_id_shim(this: &MediaTrackSupportedConstraints, val: bool);
+    fn set_device_id(this: &MediaTrackSupportedConstraints, val: bool);
+    #[doc = "Get the `echoCancellation` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
+    #[wasm_bindgen(method, getter = "echoCancellation")]
+    pub fn get_echo_cancellation(this: &MediaTrackSupportedConstraints) -> Option<bool>;
     #[wasm_bindgen(method, setter = "echoCancellation")]
-    fn echo_cancellation_shim(this: &MediaTrackSupportedConstraints, val: bool);
+    fn set_echo_cancellation(this: &MediaTrackSupportedConstraints, val: bool);
+    #[doc = "Get the `facingMode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
+    #[wasm_bindgen(method, getter = "facingMode")]
+    pub fn get_facing_mode(this: &MediaTrackSupportedConstraints) -> Option<bool>;
     #[wasm_bindgen(method, setter = "facingMode")]
-    fn facing_mode_shim(this: &MediaTrackSupportedConstraints, val: bool);
+    fn set_facing_mode(this: &MediaTrackSupportedConstraints, val: bool);
+    #[doc = "Get the `frameRate` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
+    #[wasm_bindgen(method, getter = "frameRate")]
+    pub fn get_frame_rate(this: &MediaTrackSupportedConstraints) -> Option<bool>;
     #[wasm_bindgen(method, setter = "frameRate")]
-    fn frame_rate_shim(this: &MediaTrackSupportedConstraints, val: bool);
+    fn set_frame_rate(this: &MediaTrackSupportedConstraints, val: bool);
+    #[doc = "Get the `groupId` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
+    #[wasm_bindgen(method, getter = "groupId")]
+    pub fn get_group_id(this: &MediaTrackSupportedConstraints) -> Option<bool>;
     #[wasm_bindgen(method, setter = "groupId")]
-    fn group_id_shim(this: &MediaTrackSupportedConstraints, val: bool);
+    fn set_group_id(this: &MediaTrackSupportedConstraints, val: bool);
+    #[doc = "Get the `height` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
+    #[wasm_bindgen(method, getter = "height")]
+    pub fn get_height(this: &MediaTrackSupportedConstraints) -> Option<bool>;
     #[wasm_bindgen(method, setter = "height")]
-    fn height_shim(this: &MediaTrackSupportedConstraints, val: bool);
+    fn set_height(this: &MediaTrackSupportedConstraints, val: bool);
+    #[doc = "Get the `latency` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
+    #[wasm_bindgen(method, getter = "latency")]
+    pub fn get_latency(this: &MediaTrackSupportedConstraints) -> Option<bool>;
     #[wasm_bindgen(method, setter = "latency")]
-    fn latency_shim(this: &MediaTrackSupportedConstraints, val: bool);
+    fn set_latency(this: &MediaTrackSupportedConstraints, val: bool);
+    #[doc = "Get the `noiseSuppression` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
+    #[wasm_bindgen(method, getter = "noiseSuppression")]
+    pub fn get_noise_suppression(this: &MediaTrackSupportedConstraints) -> Option<bool>;
     #[wasm_bindgen(method, setter = "noiseSuppression")]
-    fn noise_suppression_shim(this: &MediaTrackSupportedConstraints, val: bool);
+    fn set_noise_suppression(this: &MediaTrackSupportedConstraints, val: bool);
+    #[doc = "Get the `sampleRate` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
+    #[wasm_bindgen(method, getter = "sampleRate")]
+    pub fn get_sample_rate(this: &MediaTrackSupportedConstraints) -> Option<bool>;
     #[wasm_bindgen(method, setter = "sampleRate")]
-    fn sample_rate_shim(this: &MediaTrackSupportedConstraints, val: bool);
+    fn set_sample_rate(this: &MediaTrackSupportedConstraints, val: bool);
+    #[doc = "Get the `sampleSize` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
+    #[wasm_bindgen(method, getter = "sampleSize")]
+    pub fn get_sample_size(this: &MediaTrackSupportedConstraints) -> Option<bool>;
     #[wasm_bindgen(method, setter = "sampleSize")]
-    fn sample_size_shim(this: &MediaTrackSupportedConstraints, val: bool);
+    fn set_sample_size(this: &MediaTrackSupportedConstraints, val: bool);
+    #[doc = "Get the `volume` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
+    #[wasm_bindgen(method, getter = "volume")]
+    pub fn get_volume(this: &MediaTrackSupportedConstraints) -> Option<bool>;
     #[wasm_bindgen(method, setter = "volume")]
-    fn volume_shim(this: &MediaTrackSupportedConstraints, val: bool);
+    fn set_volume(this: &MediaTrackSupportedConstraints, val: bool);
+    #[doc = "Get the `width` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
+    #[wasm_bindgen(method, getter = "width")]
+    pub fn get_width(this: &MediaTrackSupportedConstraints) -> Option<bool>;
     #[wasm_bindgen(method, setter = "width")]
-    fn width_shim(this: &MediaTrackSupportedConstraints, val: bool);
+    fn set_width(this: &MediaTrackSupportedConstraints, val: bool);
 }
 impl MediaTrackSupportedConstraints {
     #[doc = "Construct a new `MediaTrackSupportedConstraints`."]
@@ -54,105 +129,105 @@ impl MediaTrackSupportedConstraints {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
     pub fn aspect_ratio(&mut self, val: bool) -> &mut Self {
-        self.aspect_ratio_shim(val);
+        self.set_aspect_ratio(val);
         self
     }
     #[doc = "Change the `autoGainControl` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
     pub fn auto_gain_control(&mut self, val: bool) -> &mut Self {
-        self.auto_gain_control_shim(val);
+        self.set_auto_gain_control(val);
         self
     }
     #[doc = "Change the `channelCount` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
     pub fn channel_count(&mut self, val: bool) -> &mut Self {
-        self.channel_count_shim(val);
+        self.set_channel_count(val);
         self
     }
     #[doc = "Change the `deviceId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
     pub fn device_id(&mut self, val: bool) -> &mut Self {
-        self.device_id_shim(val);
+        self.set_device_id(val);
         self
     }
     #[doc = "Change the `echoCancellation` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
     pub fn echo_cancellation(&mut self, val: bool) -> &mut Self {
-        self.echo_cancellation_shim(val);
+        self.set_echo_cancellation(val);
         self
     }
     #[doc = "Change the `facingMode` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
     pub fn facing_mode(&mut self, val: bool) -> &mut Self {
-        self.facing_mode_shim(val);
+        self.set_facing_mode(val);
         self
     }
     #[doc = "Change the `frameRate` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
     pub fn frame_rate(&mut self, val: bool) -> &mut Self {
-        self.frame_rate_shim(val);
+        self.set_frame_rate(val);
         self
     }
     #[doc = "Change the `groupId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
     pub fn group_id(&mut self, val: bool) -> &mut Self {
-        self.group_id_shim(val);
+        self.set_group_id(val);
         self
     }
     #[doc = "Change the `height` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
     pub fn height(&mut self, val: bool) -> &mut Self {
-        self.height_shim(val);
+        self.set_height(val);
         self
     }
     #[doc = "Change the `latency` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
     pub fn latency(&mut self, val: bool) -> &mut Self {
-        self.latency_shim(val);
+        self.set_latency(val);
         self
     }
     #[doc = "Change the `noiseSuppression` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
     pub fn noise_suppression(&mut self, val: bool) -> &mut Self {
-        self.noise_suppression_shim(val);
+        self.set_noise_suppression(val);
         self
     }
     #[doc = "Change the `sampleRate` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
     pub fn sample_rate(&mut self, val: bool) -> &mut Self {
-        self.sample_rate_shim(val);
+        self.set_sample_rate(val);
         self
     }
     #[doc = "Change the `sampleSize` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
     pub fn sample_size(&mut self, val: bool) -> &mut Self {
-        self.sample_size_shim(val);
+        self.set_sample_size(val);
         self
     }
     #[doc = "Change the `volume` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
     pub fn volume(&mut self, val: bool) -> &mut Self {
-        self.volume_shim(val);
+        self.set_volume(val);
         self
     }
     #[doc = "Change the `width` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackSupportedConstraints`*"]
     pub fn width(&mut self, val: bool) -> &mut Self {
-        self.width_shim(val);
+        self.set_width(val);
         self
     }
 }

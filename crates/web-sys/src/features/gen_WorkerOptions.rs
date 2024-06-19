@@ -11,13 +11,30 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `WorkerOptions`*"]
     pub type WorkerOptions;
     #[cfg(feature = "RequestCredentials")]
+    #[doc = "Get the `credentials` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RequestCredentials`, `WorkerOptions`*"]
+    #[wasm_bindgen(method, getter = "credentials")]
+    pub fn get_credentials(this: &WorkerOptions) -> Option<RequestCredentials>;
+    #[cfg(feature = "RequestCredentials")]
     #[wasm_bindgen(method, setter = "credentials")]
-    fn credentials_shim(this: &WorkerOptions, val: RequestCredentials);
+    fn set_credentials(this: &WorkerOptions, val: RequestCredentials);
+    #[doc = "Get the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WorkerOptions`*"]
+    #[wasm_bindgen(method, getter = "name")]
+    pub fn get_name(this: &WorkerOptions) -> Option<String>;
     #[wasm_bindgen(method, setter = "name")]
-    fn name_shim(this: &WorkerOptions, val: &str);
+    fn set_name(this: &WorkerOptions, val: &str);
+    #[cfg(feature = "WorkerType")]
+    #[doc = "Get the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WorkerOptions`, `WorkerType`*"]
+    #[wasm_bindgen(method, getter = "type")]
+    pub fn get_type(this: &WorkerOptions) -> Option<WorkerType>;
     #[cfg(feature = "WorkerType")]
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &WorkerOptions, val: WorkerType);
+    fn set_type(this: &WorkerOptions, val: WorkerType);
 }
 impl WorkerOptions {
     #[doc = "Construct a new `WorkerOptions`."]
@@ -33,14 +50,14 @@ impl WorkerOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RequestCredentials`, `WorkerOptions`*"]
     pub fn credentials(&mut self, val: RequestCredentials) -> &mut Self {
-        self.credentials_shim(val);
+        self.set_credentials(val);
         self
     }
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerOptions`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        self.name_shim(val);
+        self.set_name(val);
         self
     }
     #[cfg(feature = "WorkerType")]
@@ -48,7 +65,7 @@ impl WorkerOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerOptions`, `WorkerType`*"]
     pub fn type_(&mut self, val: WorkerType) -> &mut Self {
-        self.type__shim(val);
+        self.set_type(val);
         self
     }
 }

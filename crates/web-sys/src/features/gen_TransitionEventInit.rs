@@ -10,18 +10,48 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TransitionEventInit`*"]
     pub type TransitionEventInit;
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TransitionEventInit`*"]
+    #[wasm_bindgen(method, getter = "bubbles")]
+    pub fn get_bubbles(this: &TransitionEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &TransitionEventInit, val: bool);
+    fn set_bubbles(this: &TransitionEventInit, val: bool);
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TransitionEventInit`*"]
+    #[wasm_bindgen(method, getter = "cancelable")]
+    pub fn get_cancelable(this: &TransitionEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &TransitionEventInit, val: bool);
+    fn set_cancelable(this: &TransitionEventInit, val: bool);
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TransitionEventInit`*"]
+    #[wasm_bindgen(method, getter = "composed")]
+    pub fn get_composed(this: &TransitionEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &TransitionEventInit, val: bool);
+    fn set_composed(this: &TransitionEventInit, val: bool);
+    #[doc = "Get the `elapsedTime` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TransitionEventInit`*"]
+    #[wasm_bindgen(method, getter = "elapsedTime")]
+    pub fn get_elapsed_time(this: &TransitionEventInit) -> Option<f32>;
     #[wasm_bindgen(method, setter = "elapsedTime")]
-    fn elapsed_time_shim(this: &TransitionEventInit, val: f32);
+    fn set_elapsed_time(this: &TransitionEventInit, val: f32);
+    #[doc = "Get the `propertyName` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TransitionEventInit`*"]
+    #[wasm_bindgen(method, getter = "propertyName")]
+    pub fn get_property_name(this: &TransitionEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "propertyName")]
-    fn property_name_shim(this: &TransitionEventInit, val: &str);
+    fn set_property_name(this: &TransitionEventInit, val: &str);
+    #[doc = "Get the `pseudoElement` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TransitionEventInit`*"]
+    #[wasm_bindgen(method, getter = "pseudoElement")]
+    pub fn get_pseudo_element(this: &TransitionEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "pseudoElement")]
-    fn pseudo_element_shim(this: &TransitionEventInit, val: &str);
+    fn set_pseudo_element(this: &TransitionEventInit, val: &str);
 }
 impl TransitionEventInit {
     #[doc = "Construct a new `TransitionEventInit`."]
@@ -36,42 +66,42 @@ impl TransitionEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TransitionEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TransitionEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TransitionEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed(val);
         self
     }
     #[doc = "Change the `elapsedTime` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TransitionEventInit`*"]
     pub fn elapsed_time(&mut self, val: f32) -> &mut Self {
-        self.elapsed_time_shim(val);
+        self.set_elapsed_time(val);
         self
     }
     #[doc = "Change the `propertyName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TransitionEventInit`*"]
     pub fn property_name(&mut self, val: &str) -> &mut Self {
-        self.property_name_shim(val);
+        self.set_property_name(val);
         self
     }
     #[doc = "Change the `pseudoElement` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TransitionEventInit`*"]
     pub fn pseudo_element(&mut self, val: &str) -> &mut Self {
-        self.pseudo_element_shim(val);
+        self.set_pseudo_element(val);
         self
     }
 }

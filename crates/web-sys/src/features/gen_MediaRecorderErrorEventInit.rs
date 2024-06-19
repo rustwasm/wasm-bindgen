@@ -10,15 +10,36 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorderErrorEventInit`*"]
     pub type MediaRecorderErrorEventInit;
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaRecorderErrorEventInit`*"]
+    #[wasm_bindgen(method, getter = "bubbles")]
+    pub fn get_bubbles(this: &MediaRecorderErrorEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &MediaRecorderErrorEventInit, val: bool);
+    fn set_bubbles(this: &MediaRecorderErrorEventInit, val: bool);
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaRecorderErrorEventInit`*"]
+    #[wasm_bindgen(method, getter = "cancelable")]
+    pub fn get_cancelable(this: &MediaRecorderErrorEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &MediaRecorderErrorEventInit, val: bool);
+    fn set_cancelable(this: &MediaRecorderErrorEventInit, val: bool);
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaRecorderErrorEventInit`*"]
+    #[wasm_bindgen(method, getter = "composed")]
+    pub fn get_composed(this: &MediaRecorderErrorEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &MediaRecorderErrorEventInit, val: bool);
+    fn set_composed(this: &MediaRecorderErrorEventInit, val: bool);
+    #[cfg(feature = "DomException")]
+    #[doc = "Get the `error` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomException`, `MediaRecorderErrorEventInit`*"]
+    #[wasm_bindgen(method, getter = "error")]
+    pub fn get_error(this: &MediaRecorderErrorEventInit) -> DomException;
     #[cfg(feature = "DomException")]
     #[wasm_bindgen(method, setter = "error")]
-    fn error_shim(this: &MediaRecorderErrorEventInit, val: &DomException);
+    fn set_error(this: &MediaRecorderErrorEventInit, val: &DomException);
 }
 impl MediaRecorderErrorEventInit {
     #[cfg(feature = "DomException")]
@@ -35,21 +56,21 @@ impl MediaRecorderErrorEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorderErrorEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorderErrorEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorderErrorEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed(val);
         self
     }
     #[cfg(feature = "DomException")]
@@ -57,7 +78,7 @@ impl MediaRecorderErrorEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomException`, `MediaRecorderErrorEventInit`*"]
     pub fn error(&mut self, val: &DomException) -> &mut Self {
-        self.error_shim(val);
+        self.set_error(val);
         self
     }
 }

@@ -11,21 +11,55 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`*"]
     pub type ImageBitmapOptions;
     #[cfg(feature = "ColorSpaceConversion")]
+    #[doc = "Get the `colorSpaceConversion` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ColorSpaceConversion`, `ImageBitmapOptions`*"]
+    #[wasm_bindgen(method, getter = "colorSpaceConversion")]
+    pub fn get_color_space_conversion(this: &ImageBitmapOptions) -> Option<ColorSpaceConversion>;
+    #[cfg(feature = "ColorSpaceConversion")]
     #[wasm_bindgen(method, setter = "colorSpaceConversion")]
-    fn color_space_conversion_shim(this: &ImageBitmapOptions, val: ColorSpaceConversion);
+    fn set_color_space_conversion(this: &ImageBitmapOptions, val: ColorSpaceConversion);
+    #[cfg(feature = "ImageOrientation")]
+    #[doc = "Get the `imageOrientation` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`, `ImageOrientation`*"]
+    #[wasm_bindgen(method, getter = "imageOrientation")]
+    pub fn get_image_orientation(this: &ImageBitmapOptions) -> Option<ImageOrientation>;
     #[cfg(feature = "ImageOrientation")]
     #[wasm_bindgen(method, setter = "imageOrientation")]
-    fn image_orientation_shim(this: &ImageBitmapOptions, val: ImageOrientation);
+    fn set_image_orientation(this: &ImageBitmapOptions, val: ImageOrientation);
+    #[cfg(feature = "PremultiplyAlpha")]
+    #[doc = "Get the `premultiplyAlpha` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`, `PremultiplyAlpha`*"]
+    #[wasm_bindgen(method, getter = "premultiplyAlpha")]
+    pub fn get_premultiply_alpha(this: &ImageBitmapOptions) -> Option<PremultiplyAlpha>;
     #[cfg(feature = "PremultiplyAlpha")]
     #[wasm_bindgen(method, setter = "premultiplyAlpha")]
-    fn premultiply_alpha_shim(this: &ImageBitmapOptions, val: PremultiplyAlpha);
+    fn set_premultiply_alpha(this: &ImageBitmapOptions, val: PremultiplyAlpha);
+    #[doc = "Get the `resizeHeight` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`*"]
+    #[wasm_bindgen(method, getter = "resizeHeight")]
+    pub fn get_resize_height(this: &ImageBitmapOptions) -> Option<u32>;
     #[wasm_bindgen(method, setter = "resizeHeight")]
-    fn resize_height_shim(this: &ImageBitmapOptions, val: u32);
+    fn set_resize_height(this: &ImageBitmapOptions, val: u32);
+    #[cfg(feature = "ResizeQuality")]
+    #[doc = "Get the `resizeQuality` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`, `ResizeQuality`*"]
+    #[wasm_bindgen(method, getter = "resizeQuality")]
+    pub fn get_resize_quality(this: &ImageBitmapOptions) -> Option<ResizeQuality>;
     #[cfg(feature = "ResizeQuality")]
     #[wasm_bindgen(method, setter = "resizeQuality")]
-    fn resize_quality_shim(this: &ImageBitmapOptions, val: ResizeQuality);
+    fn set_resize_quality(this: &ImageBitmapOptions, val: ResizeQuality);
+    #[doc = "Get the `resizeWidth` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`*"]
+    #[wasm_bindgen(method, getter = "resizeWidth")]
+    pub fn get_resize_width(this: &ImageBitmapOptions) -> Option<u32>;
     #[wasm_bindgen(method, setter = "resizeWidth")]
-    fn resize_width_shim(this: &ImageBitmapOptions, val: u32);
+    fn set_resize_width(this: &ImageBitmapOptions, val: u32);
 }
 impl ImageBitmapOptions {
     #[doc = "Construct a new `ImageBitmapOptions`."]
@@ -41,7 +75,7 @@ impl ImageBitmapOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ColorSpaceConversion`, `ImageBitmapOptions`*"]
     pub fn color_space_conversion(&mut self, val: ColorSpaceConversion) -> &mut Self {
-        self.color_space_conversion_shim(val);
+        self.set_color_space_conversion(val);
         self
     }
     #[cfg(feature = "ImageOrientation")]
@@ -49,7 +83,7 @@ impl ImageBitmapOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`, `ImageOrientation`*"]
     pub fn image_orientation(&mut self, val: ImageOrientation) -> &mut Self {
-        self.image_orientation_shim(val);
+        self.set_image_orientation(val);
         self
     }
     #[cfg(feature = "PremultiplyAlpha")]
@@ -57,14 +91,14 @@ impl ImageBitmapOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`, `PremultiplyAlpha`*"]
     pub fn premultiply_alpha(&mut self, val: PremultiplyAlpha) -> &mut Self {
-        self.premultiply_alpha_shim(val);
+        self.set_premultiply_alpha(val);
         self
     }
     #[doc = "Change the `resizeHeight` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`*"]
     pub fn resize_height(&mut self, val: u32) -> &mut Self {
-        self.resize_height_shim(val);
+        self.set_resize_height(val);
         self
     }
     #[cfg(feature = "ResizeQuality")]
@@ -72,14 +106,14 @@ impl ImageBitmapOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`, `ResizeQuality`*"]
     pub fn resize_quality(&mut self, val: ResizeQuality) -> &mut Self {
-        self.resize_quality_shim(val);
+        self.set_resize_quality(val);
         self
     }
     #[doc = "Change the `resizeWidth` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`*"]
     pub fn resize_width(&mut self, val: u32) -> &mut Self {
-        self.resize_width_shim(val);
+        self.set_resize_width(val);
         self
     }
 }

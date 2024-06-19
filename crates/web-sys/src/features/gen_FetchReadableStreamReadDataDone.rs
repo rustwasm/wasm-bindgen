@@ -10,8 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FetchReadableStreamReadDataDone`*"]
     pub type FetchReadableStreamReadDataDone;
+    #[doc = "Get the `done` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FetchReadableStreamReadDataDone`*"]
+    #[wasm_bindgen(method, getter = "done")]
+    pub fn get_done(this: &FetchReadableStreamReadDataDone) -> Option<bool>;
     #[wasm_bindgen(method, setter = "done")]
-    fn done_shim(this: &FetchReadableStreamReadDataDone, val: bool);
+    fn set_done(this: &FetchReadableStreamReadDataDone, val: bool);
 }
 impl FetchReadableStreamReadDataDone {
     #[doc = "Construct a new `FetchReadableStreamReadDataDone`."]
@@ -26,7 +31,7 @@ impl FetchReadableStreamReadDataDone {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FetchReadableStreamReadDataDone`*"]
     pub fn done(&mut self, val: bool) -> &mut Self {
-        self.done_shim(val);
+        self.set_done(val);
         self
     }
 }

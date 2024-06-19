@@ -11,11 +11,23 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ReadableWritablePair`*"]
     pub type ReadableWritablePair;
     #[cfg(feature = "ReadableStream")]
+    #[doc = "Get the `readable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ReadableStream`, `ReadableWritablePair`*"]
+    #[wasm_bindgen(method, getter = "readable")]
+    pub fn get_readable(this: &ReadableWritablePair) -> ReadableStream;
+    #[cfg(feature = "ReadableStream")]
     #[wasm_bindgen(method, setter = "readable")]
-    fn readable_shim(this: &ReadableWritablePair, val: &ReadableStream);
+    fn set_readable(this: &ReadableWritablePair, val: &ReadableStream);
+    #[cfg(feature = "WritableStream")]
+    #[doc = "Get the `writable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ReadableWritablePair`, `WritableStream`*"]
+    #[wasm_bindgen(method, getter = "writable")]
+    pub fn get_writable(this: &ReadableWritablePair) -> WritableStream;
     #[cfg(feature = "WritableStream")]
     #[wasm_bindgen(method, setter = "writable")]
-    fn writable_shim(this: &ReadableWritablePair, val: &WritableStream);
+    fn set_writable(this: &ReadableWritablePair, val: &WritableStream);
 }
 impl ReadableWritablePair {
     #[cfg(all(feature = "ReadableStream", feature = "WritableStream",))]
@@ -34,7 +46,7 @@ impl ReadableWritablePair {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStream`, `ReadableWritablePair`*"]
     pub fn readable(&mut self, val: &ReadableStream) -> &mut Self {
-        self.readable_shim(val);
+        self.set_readable(val);
         self
     }
     #[cfg(feature = "WritableStream")]
@@ -42,7 +54,7 @@ impl ReadableWritablePair {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableWritablePair`, `WritableStream`*"]
     pub fn writable(&mut self, val: &WritableStream) -> &mut Self {
-        self.writable_shim(val);
+        self.set_writable(val);
         self
     }
 }

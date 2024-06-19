@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NativeOsFileReadOptions`*"]
     pub type NativeOsFileReadOptions;
+    #[doc = "Get the `bytes` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `NativeOsFileReadOptions`*"]
+    #[wasm_bindgen(method, getter = "bytes")]
+    pub fn get_bytes(this: &NativeOsFileReadOptions) -> Option<f64>;
     #[wasm_bindgen(method, setter = "bytes")]
-    fn bytes_shim(this: &NativeOsFileReadOptions, val: Option<f64>);
+    fn set_bytes(this: &NativeOsFileReadOptions, val: Option<f64>);
+    #[doc = "Get the `encoding` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `NativeOsFileReadOptions`*"]
+    #[wasm_bindgen(method, getter = "encoding")]
+    pub fn get_encoding(this: &NativeOsFileReadOptions) -> Option<String>;
     #[wasm_bindgen(method, setter = "encoding")]
-    fn encoding_shim(this: &NativeOsFileReadOptions, val: Option<&str>);
+    fn set_encoding(this: &NativeOsFileReadOptions, val: Option<&str>);
 }
 impl NativeOsFileReadOptions {
     #[doc = "Construct a new `NativeOsFileReadOptions`."]
@@ -28,14 +38,14 @@ impl NativeOsFileReadOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NativeOsFileReadOptions`*"]
     pub fn bytes(&mut self, val: Option<f64>) -> &mut Self {
-        self.bytes_shim(val);
+        self.set_bytes(val);
         self
     }
     #[doc = "Change the `encoding` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NativeOsFileReadOptions`*"]
     pub fn encoding(&mut self, val: Option<&str>) -> &mut Self {
-        self.encoding_shim(val);
+        self.set_encoding(val);
         self
     }
 }

@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `LocaleInfo`*"]
     pub type LocaleInfo;
+    #[doc = "Get the `direction` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `LocaleInfo`*"]
+    #[wasm_bindgen(method, getter = "direction")]
+    pub fn get_direction(this: &LocaleInfo) -> Option<String>;
     #[wasm_bindgen(method, setter = "direction")]
-    fn direction_shim(this: &LocaleInfo, val: &str);
+    fn set_direction(this: &LocaleInfo, val: &str);
+    #[doc = "Get the `locale` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `LocaleInfo`*"]
+    #[wasm_bindgen(method, getter = "locale")]
+    pub fn get_locale(this: &LocaleInfo) -> Option<String>;
     #[wasm_bindgen(method, setter = "locale")]
-    fn locale_shim(this: &LocaleInfo, val: &str);
+    fn set_locale(this: &LocaleInfo, val: &str);
 }
 impl LocaleInfo {
     #[doc = "Construct a new `LocaleInfo`."]
@@ -28,14 +38,14 @@ impl LocaleInfo {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `LocaleInfo`*"]
     pub fn direction(&mut self, val: &str) -> &mut Self {
-        self.direction_shim(val);
+        self.set_direction(val);
         self
     }
     #[doc = "Change the `locale` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `LocaleInfo`*"]
     pub fn locale(&mut self, val: &str) -> &mut Self {
-        self.locale_shim(val);
+        self.set_locale(val);
         self
     }
 }

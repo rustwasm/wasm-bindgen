@@ -14,9 +14,19 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuSamplerBindingLayout;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuSamplerBindingType")]
+    #[doc = "Get the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuSamplerBindingLayout`, `GpuSamplerBindingType`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "type")]
+    pub fn get_type(this: &GpuSamplerBindingLayout) -> Option<GpuSamplerBindingType>;
     #[cfg(feature = "GpuSamplerBindingType")]
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &GpuSamplerBindingLayout, val: GpuSamplerBindingType);
+    fn set_type(this: &GpuSamplerBindingLayout, val: GpuSamplerBindingType);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuSamplerBindingLayout {
@@ -40,7 +50,7 @@ impl GpuSamplerBindingLayout {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn type_(&mut self, val: GpuSamplerBindingType) -> &mut Self {
-        self.type__shim(val);
+        self.set_type(val);
         self
     }
 }

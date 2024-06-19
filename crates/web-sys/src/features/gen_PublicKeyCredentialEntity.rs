@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialEntity`*"]
     pub type PublicKeyCredentialEntity;
+    #[doc = "Get the `icon` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialEntity`*"]
+    #[wasm_bindgen(method, getter = "icon")]
+    pub fn get_icon(this: &PublicKeyCredentialEntity) -> Option<String>;
     #[wasm_bindgen(method, setter = "icon")]
-    fn icon_shim(this: &PublicKeyCredentialEntity, val: &str);
+    fn set_icon(this: &PublicKeyCredentialEntity, val: &str);
+    #[doc = "Get the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialEntity`*"]
+    #[wasm_bindgen(method, getter = "name")]
+    pub fn get_name(this: &PublicKeyCredentialEntity) -> String;
     #[wasm_bindgen(method, setter = "name")]
-    fn name_shim(this: &PublicKeyCredentialEntity, val: &str);
+    fn set_name(this: &PublicKeyCredentialEntity, val: &str);
 }
 impl PublicKeyCredentialEntity {
     #[doc = "Construct a new `PublicKeyCredentialEntity`."]
@@ -29,14 +39,14 @@ impl PublicKeyCredentialEntity {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialEntity`*"]
     pub fn icon(&mut self, val: &str) -> &mut Self {
-        self.icon_shim(val);
+        self.set_icon(val);
         self
     }
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialEntity`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        self.name_shim(val);
+        self.set_name(val);
         self
     }
 }

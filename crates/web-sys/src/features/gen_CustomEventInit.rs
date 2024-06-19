@@ -10,14 +10,34 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CustomEventInit`*"]
     pub type CustomEventInit;
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CustomEventInit`*"]
+    #[wasm_bindgen(method, getter = "bubbles")]
+    pub fn get_bubbles(this: &CustomEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &CustomEventInit, val: bool);
+    fn set_bubbles(this: &CustomEventInit, val: bool);
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CustomEventInit`*"]
+    #[wasm_bindgen(method, getter = "cancelable")]
+    pub fn get_cancelable(this: &CustomEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &CustomEventInit, val: bool);
+    fn set_cancelable(this: &CustomEventInit, val: bool);
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CustomEventInit`*"]
+    #[wasm_bindgen(method, getter = "composed")]
+    pub fn get_composed(this: &CustomEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &CustomEventInit, val: bool);
+    fn set_composed(this: &CustomEventInit, val: bool);
+    #[doc = "Get the `detail` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CustomEventInit`*"]
+    #[wasm_bindgen(method, getter = "detail")]
+    pub fn get_detail(this: &CustomEventInit) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "detail")]
-    fn detail_shim(this: &CustomEventInit, val: &::wasm_bindgen::JsValue);
+    fn set_detail(this: &CustomEventInit, val: &::wasm_bindgen::JsValue);
 }
 impl CustomEventInit {
     #[doc = "Construct a new `CustomEventInit`."]
@@ -32,28 +52,28 @@ impl CustomEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CustomEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CustomEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CustomEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed(val);
         self
     }
     #[doc = "Change the `detail` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CustomEventInit`*"]
     pub fn detail(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.detail_shim(val);
+        self.set_detail(val);
         self
     }
 }

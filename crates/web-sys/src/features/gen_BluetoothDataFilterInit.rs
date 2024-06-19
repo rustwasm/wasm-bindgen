@@ -14,10 +14,28 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type BluetoothDataFilterInit;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `dataPrefix` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothDataFilterInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "dataPrefix")]
+    pub fn get_data_prefix(this: &BluetoothDataFilterInit) -> Option<::js_sys::Object>;
     #[wasm_bindgen(method, setter = "dataPrefix")]
-    fn data_prefix_shim(this: &BluetoothDataFilterInit, val: &::js_sys::Object);
+    fn set_data_prefix(this: &BluetoothDataFilterInit, val: &::js_sys::Object);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `mask` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothDataFilterInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "mask")]
+    pub fn get_mask(this: &BluetoothDataFilterInit) -> Option<::js_sys::Object>;
     #[wasm_bindgen(method, setter = "mask")]
-    fn mask_shim(this: &BluetoothDataFilterInit, val: &::js_sys::Object);
+    fn set_mask(this: &BluetoothDataFilterInit, val: &::js_sys::Object);
 }
 #[cfg(web_sys_unstable_apis)]
 impl BluetoothDataFilterInit {
@@ -40,7 +58,7 @@ impl BluetoothDataFilterInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn data_prefix(&mut self, val: &::js_sys::Object) -> &mut Self {
-        self.data_prefix_shim(val);
+        self.set_data_prefix(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -51,7 +69,7 @@ impl BluetoothDataFilterInit {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn mask(&mut self, val: &::js_sys::Object) -> &mut Self {
-        self.mask_shim(val);
+        self.set_mask(val);
         self
     }
 }

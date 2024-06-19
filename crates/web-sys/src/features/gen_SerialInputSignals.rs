@@ -14,14 +14,50 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type SerialInputSignals;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `clearToSend` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SerialInputSignals`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "clearToSend")]
+    pub fn get_clear_to_send(this: &SerialInputSignals) -> bool;
     #[wasm_bindgen(method, setter = "clearToSend")]
-    fn clear_to_send_shim(this: &SerialInputSignals, val: bool);
+    fn set_clear_to_send(this: &SerialInputSignals, val: bool);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `dataCarrierDetect` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SerialInputSignals`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "dataCarrierDetect")]
+    pub fn get_data_carrier_detect(this: &SerialInputSignals) -> bool;
     #[wasm_bindgen(method, setter = "dataCarrierDetect")]
-    fn data_carrier_detect_shim(this: &SerialInputSignals, val: bool);
+    fn set_data_carrier_detect(this: &SerialInputSignals, val: bool);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `dataSetReady` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SerialInputSignals`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "dataSetReady")]
+    pub fn get_data_set_ready(this: &SerialInputSignals) -> bool;
     #[wasm_bindgen(method, setter = "dataSetReady")]
-    fn data_set_ready_shim(this: &SerialInputSignals, val: bool);
+    fn set_data_set_ready(this: &SerialInputSignals, val: bool);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `ringIndicator` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SerialInputSignals`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "ringIndicator")]
+    pub fn get_ring_indicator(this: &SerialInputSignals) -> bool;
     #[wasm_bindgen(method, setter = "ringIndicator")]
-    fn ring_indicator_shim(this: &SerialInputSignals, val: bool);
+    fn set_ring_indicator(this: &SerialInputSignals, val: bool);
 }
 #[cfg(web_sys_unstable_apis)]
 impl SerialInputSignals {
@@ -53,7 +89,7 @@ impl SerialInputSignals {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn clear_to_send(&mut self, val: bool) -> &mut Self {
-        self.clear_to_send_shim(val);
+        self.set_clear_to_send(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -64,7 +100,7 @@ impl SerialInputSignals {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn data_carrier_detect(&mut self, val: bool) -> &mut Self {
-        self.data_carrier_detect_shim(val);
+        self.set_data_carrier_detect(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -75,7 +111,7 @@ impl SerialInputSignals {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn data_set_ready(&mut self, val: bool) -> &mut Self {
-        self.data_set_ready_shim(val);
+        self.set_data_set_ready(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -86,7 +122,7 @@ impl SerialInputSignals {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn ring_indicator(&mut self, val: bool) -> &mut Self {
-        self.ring_indicator_shim(val);
+        self.set_ring_indicator(val);
         self
     }
 }

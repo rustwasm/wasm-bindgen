@@ -10,18 +10,48 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
     pub type UdpOptions;
+    #[doc = "Get the `addressReuse` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
+    #[wasm_bindgen(method, getter = "addressReuse")]
+    pub fn get_address_reuse(this: &UdpOptions) -> Option<bool>;
     #[wasm_bindgen(method, setter = "addressReuse")]
-    fn address_reuse_shim(this: &UdpOptions, val: bool);
+    fn set_address_reuse(this: &UdpOptions, val: bool);
+    #[doc = "Get the `localAddress` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
+    #[wasm_bindgen(method, getter = "localAddress")]
+    pub fn get_local_address(this: &UdpOptions) -> Option<String>;
     #[wasm_bindgen(method, setter = "localAddress")]
-    fn local_address_shim(this: &UdpOptions, val: &str);
+    fn set_local_address(this: &UdpOptions, val: &str);
+    #[doc = "Get the `localPort` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
+    #[wasm_bindgen(method, getter = "localPort")]
+    pub fn get_local_port(this: &UdpOptions) -> Option<u16>;
     #[wasm_bindgen(method, setter = "localPort")]
-    fn local_port_shim(this: &UdpOptions, val: u16);
+    fn set_local_port(this: &UdpOptions, val: u16);
+    #[doc = "Get the `loopback` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
+    #[wasm_bindgen(method, getter = "loopback")]
+    pub fn get_loopback(this: &UdpOptions) -> Option<bool>;
     #[wasm_bindgen(method, setter = "loopback")]
-    fn loopback_shim(this: &UdpOptions, val: bool);
+    fn set_loopback(this: &UdpOptions, val: bool);
+    #[doc = "Get the `remoteAddress` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
+    #[wasm_bindgen(method, getter = "remoteAddress")]
+    pub fn get_remote_address(this: &UdpOptions) -> Option<String>;
     #[wasm_bindgen(method, setter = "remoteAddress")]
-    fn remote_address_shim(this: &UdpOptions, val: &str);
+    fn set_remote_address(this: &UdpOptions, val: &str);
+    #[doc = "Get the `remotePort` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
+    #[wasm_bindgen(method, getter = "remotePort")]
+    pub fn get_remote_port(this: &UdpOptions) -> Option<u16>;
     #[wasm_bindgen(method, setter = "remotePort")]
-    fn remote_port_shim(this: &UdpOptions, val: u16);
+    fn set_remote_port(this: &UdpOptions, val: u16);
 }
 impl UdpOptions {
     #[doc = "Construct a new `UdpOptions`."]
@@ -36,42 +66,42 @@ impl UdpOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
     pub fn address_reuse(&mut self, val: bool) -> &mut Self {
-        self.address_reuse_shim(val);
+        self.set_address_reuse(val);
         self
     }
     #[doc = "Change the `localAddress` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
     pub fn local_address(&mut self, val: &str) -> &mut Self {
-        self.local_address_shim(val);
+        self.set_local_address(val);
         self
     }
     #[doc = "Change the `localPort` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
     pub fn local_port(&mut self, val: u16) -> &mut Self {
-        self.local_port_shim(val);
+        self.set_local_port(val);
         self
     }
     #[doc = "Change the `loopback` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
     pub fn loopback(&mut self, val: bool) -> &mut Self {
-        self.loopback_shim(val);
+        self.set_loopback(val);
         self
     }
     #[doc = "Change the `remoteAddress` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
     pub fn remote_address(&mut self, val: &str) -> &mut Self {
-        self.remote_address_shim(val);
+        self.set_remote_address(val);
         self
     }
     #[doc = "Change the `remotePort` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
     pub fn remote_port(&mut self, val: u16) -> &mut Self {
-        self.remote_port_shim(val);
+        self.set_remote_port(val);
         self
     }
 }

@@ -10,12 +10,27 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RcwnPerfStats`*"]
     pub type RcwnPerfStats;
+    #[doc = "Get the `avgLong` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RcwnPerfStats`*"]
+    #[wasm_bindgen(method, getter = "avgLong")]
+    pub fn get_avg_long(this: &RcwnPerfStats) -> Option<u32>;
     #[wasm_bindgen(method, setter = "avgLong")]
-    fn avg_long_shim(this: &RcwnPerfStats, val: u32);
+    fn set_avg_long(this: &RcwnPerfStats, val: u32);
+    #[doc = "Get the `avgShort` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RcwnPerfStats`*"]
+    #[wasm_bindgen(method, getter = "avgShort")]
+    pub fn get_avg_short(this: &RcwnPerfStats) -> Option<u32>;
     #[wasm_bindgen(method, setter = "avgShort")]
-    fn avg_short_shim(this: &RcwnPerfStats, val: u32);
+    fn set_avg_short(this: &RcwnPerfStats, val: u32);
+    #[doc = "Get the `stddevLong` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RcwnPerfStats`*"]
+    #[wasm_bindgen(method, getter = "stddevLong")]
+    pub fn get_stddev_long(this: &RcwnPerfStats) -> Option<u32>;
     #[wasm_bindgen(method, setter = "stddevLong")]
-    fn stddev_long_shim(this: &RcwnPerfStats, val: u32);
+    fn set_stddev_long(this: &RcwnPerfStats, val: u32);
 }
 impl RcwnPerfStats {
     #[doc = "Construct a new `RcwnPerfStats`."]
@@ -30,21 +45,21 @@ impl RcwnPerfStats {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RcwnPerfStats`*"]
     pub fn avg_long(&mut self, val: u32) -> &mut Self {
-        self.avg_long_shim(val);
+        self.set_avg_long(val);
         self
     }
     #[doc = "Change the `avgShort` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RcwnPerfStats`*"]
     pub fn avg_short(&mut self, val: u32) -> &mut Self {
-        self.avg_short_shim(val);
+        self.set_avg_short(val);
         self
     }
     #[doc = "Change the `stddevLong` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RcwnPerfStats`*"]
     pub fn stddev_long(&mut self, val: u32) -> &mut Self {
-        self.stddev_long_shim(val);
+        self.set_stddev_long(val);
         self
     }
 }

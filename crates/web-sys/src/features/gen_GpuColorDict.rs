@@ -14,14 +14,50 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuColorDict;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `a` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuColorDict`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "a")]
+    pub fn get_a(this: &GpuColorDict) -> f64;
     #[wasm_bindgen(method, setter = "a")]
-    fn a_shim(this: &GpuColorDict, val: f64);
+    fn set_a(this: &GpuColorDict, val: f64);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `b` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuColorDict`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "b")]
+    pub fn get_b(this: &GpuColorDict) -> f64;
     #[wasm_bindgen(method, setter = "b")]
-    fn b_shim(this: &GpuColorDict, val: f64);
+    fn set_b(this: &GpuColorDict, val: f64);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `g` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuColorDict`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "g")]
+    pub fn get_g(this: &GpuColorDict) -> f64;
     #[wasm_bindgen(method, setter = "g")]
-    fn g_shim(this: &GpuColorDict, val: f64);
+    fn set_g(this: &GpuColorDict, val: f64);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `r` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuColorDict`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "r")]
+    pub fn get_r(this: &GpuColorDict) -> f64;
     #[wasm_bindgen(method, setter = "r")]
-    fn r_shim(this: &GpuColorDict, val: f64);
+    fn set_r(this: &GpuColorDict, val: f64);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuColorDict {
@@ -48,7 +84,7 @@ impl GpuColorDict {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn a(&mut self, val: f64) -> &mut Self {
-        self.a_shim(val);
+        self.set_a(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -59,7 +95,7 @@ impl GpuColorDict {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn b(&mut self, val: f64) -> &mut Self {
-        self.b_shim(val);
+        self.set_b(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -70,7 +106,7 @@ impl GpuColorDict {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn g(&mut self, val: f64) -> &mut Self {
-        self.g_shim(val);
+        self.set_g(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -81,7 +117,7 @@ impl GpuColorDict {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn r(&mut self, val: f64) -> &mut Self {
-        self.r_shim(val);
+        self.set_r(val);
         self
     }
 }

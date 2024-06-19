@@ -10,11 +10,22 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ClientQueryOptions`*"]
     pub type ClientQueryOptions;
+    #[doc = "Get the `includeUncontrolled` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ClientQueryOptions`*"]
+    #[wasm_bindgen(method, getter = "includeUncontrolled")]
+    pub fn get_include_uncontrolled(this: &ClientQueryOptions) -> Option<bool>;
     #[wasm_bindgen(method, setter = "includeUncontrolled")]
-    fn include_uncontrolled_shim(this: &ClientQueryOptions, val: bool);
+    fn set_include_uncontrolled(this: &ClientQueryOptions, val: bool);
+    #[cfg(feature = "ClientType")]
+    #[doc = "Get the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ClientQueryOptions`, `ClientType`*"]
+    #[wasm_bindgen(method, getter = "type")]
+    pub fn get_type(this: &ClientQueryOptions) -> Option<ClientType>;
     #[cfg(feature = "ClientType")]
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &ClientQueryOptions, val: ClientType);
+    fn set_type(this: &ClientQueryOptions, val: ClientType);
 }
 impl ClientQueryOptions {
     #[doc = "Construct a new `ClientQueryOptions`."]
@@ -29,7 +40,7 @@ impl ClientQueryOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ClientQueryOptions`*"]
     pub fn include_uncontrolled(&mut self, val: bool) -> &mut Self {
-        self.include_uncontrolled_shim(val);
+        self.set_include_uncontrolled(val);
         self
     }
     #[cfg(feature = "ClientType")]
@@ -37,7 +48,7 @@ impl ClientQueryOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ClientQueryOptions`, `ClientType`*"]
     pub fn type_(&mut self, val: ClientType) -> &mut Self {
-        self.type__shim(val);
+        self.set_type(val);
         self
     }
 }

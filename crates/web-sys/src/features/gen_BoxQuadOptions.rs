@@ -11,10 +11,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `BoxQuadOptions`*"]
     pub type BoxQuadOptions;
     #[cfg(feature = "CssBoxType")]
+    #[doc = "Get the `box` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BoxQuadOptions`, `CssBoxType`*"]
+    #[wasm_bindgen(method, getter = "box")]
+    pub fn get_box(this: &BoxQuadOptions) -> Option<CssBoxType>;
+    #[cfg(feature = "CssBoxType")]
     #[wasm_bindgen(method, setter = "box")]
-    fn box__shim(this: &BoxQuadOptions, val: CssBoxType);
+    fn set_box(this: &BoxQuadOptions, val: CssBoxType);
+    #[doc = "Get the `relativeTo` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BoxQuadOptions`*"]
+    #[wasm_bindgen(method, getter = "relativeTo")]
+    pub fn get_relative_to(this: &BoxQuadOptions) -> Option<::js_sys::Object>;
     #[wasm_bindgen(method, setter = "relativeTo")]
-    fn relative_to_shim(this: &BoxQuadOptions, val: &::js_sys::Object);
+    fn set_relative_to(this: &BoxQuadOptions, val: &::js_sys::Object);
 }
 impl BoxQuadOptions {
     #[doc = "Construct a new `BoxQuadOptions`."]
@@ -30,14 +41,14 @@ impl BoxQuadOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BoxQuadOptions`, `CssBoxType`*"]
     pub fn box_(&mut self, val: CssBoxType) -> &mut Self {
-        self.box__shim(val);
+        self.set_box(val);
         self
     }
     #[doc = "Change the `relativeTo` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BoxQuadOptions`*"]
     pub fn relative_to(&mut self, val: &::js_sys::Object) -> &mut Self {
-        self.relative_to_shim(val);
+        self.set_relative_to(val);
         self
     }
 }

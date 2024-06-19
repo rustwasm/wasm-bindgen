@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleCounter`*"]
     pub type ConsoleCounter;
+    #[doc = "Get the `count` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleCounter`*"]
+    #[wasm_bindgen(method, getter = "count")]
+    pub fn get_count(this: &ConsoleCounter) -> Option<u32>;
     #[wasm_bindgen(method, setter = "count")]
-    fn count_shim(this: &ConsoleCounter, val: u32);
+    fn set_count(this: &ConsoleCounter, val: u32);
+    #[doc = "Get the `label` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleCounter`*"]
+    #[wasm_bindgen(method, getter = "label")]
+    pub fn get_label(this: &ConsoleCounter) -> Option<String>;
     #[wasm_bindgen(method, setter = "label")]
-    fn label_shim(this: &ConsoleCounter, val: &str);
+    fn set_label(this: &ConsoleCounter, val: &str);
 }
 impl ConsoleCounter {
     #[doc = "Construct a new `ConsoleCounter`."]
@@ -28,14 +38,14 @@ impl ConsoleCounter {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleCounter`*"]
     pub fn count(&mut self, val: u32) -> &mut Self {
-        self.count_shim(val);
+        self.set_count(val);
         self
     }
     #[doc = "Change the `label` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleCounter`*"]
     pub fn label(&mut self, val: &str) -> &mut Self {
-        self.label_shim(val);
+        self.set_label(val);
         self
     }
 }

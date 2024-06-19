@@ -10,8 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemCreateWritableOptions`*"]
     pub type FileSystemCreateWritableOptions;
+    #[doc = "Get the `keepExistingData` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemCreateWritableOptions`*"]
+    #[wasm_bindgen(method, getter = "keepExistingData")]
+    pub fn get_keep_existing_data(this: &FileSystemCreateWritableOptions) -> Option<bool>;
     #[wasm_bindgen(method, setter = "keepExistingData")]
-    fn keep_existing_data_shim(this: &FileSystemCreateWritableOptions, val: bool);
+    fn set_keep_existing_data(this: &FileSystemCreateWritableOptions, val: bool);
 }
 impl FileSystemCreateWritableOptions {
     #[doc = "Construct a new `FileSystemCreateWritableOptions`."]
@@ -26,7 +31,7 @@ impl FileSystemCreateWritableOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemCreateWritableOptions`*"]
     pub fn keep_existing_data(&mut self, val: bool) -> &mut Self {
-        self.keep_existing_data_shim(val);
+        self.set_keep_existing_data(val);
         self
     }
 }

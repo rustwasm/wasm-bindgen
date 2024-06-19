@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemMediaCapability`*"]
     pub type MediaKeySystemMediaCapability;
+    #[doc = "Get the `contentType` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemMediaCapability`*"]
+    #[wasm_bindgen(method, getter = "contentType")]
+    pub fn get_content_type(this: &MediaKeySystemMediaCapability) -> Option<String>;
     #[wasm_bindgen(method, setter = "contentType")]
-    fn content_type_shim(this: &MediaKeySystemMediaCapability, val: &str);
+    fn set_content_type(this: &MediaKeySystemMediaCapability, val: &str);
+    #[doc = "Get the `robustness` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemMediaCapability`*"]
+    #[wasm_bindgen(method, getter = "robustness")]
+    pub fn get_robustness(this: &MediaKeySystemMediaCapability) -> Option<String>;
     #[wasm_bindgen(method, setter = "robustness")]
-    fn robustness_shim(this: &MediaKeySystemMediaCapability, val: &str);
+    fn set_robustness(this: &MediaKeySystemMediaCapability, val: &str);
 }
 impl MediaKeySystemMediaCapability {
     #[doc = "Construct a new `MediaKeySystemMediaCapability`."]
@@ -28,14 +38,14 @@ impl MediaKeySystemMediaCapability {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemMediaCapability`*"]
     pub fn content_type(&mut self, val: &str) -> &mut Self {
-        self.content_type_shim(val);
+        self.set_content_type(val);
         self
     }
     #[doc = "Change the `robustness` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemMediaCapability`*"]
     pub fn robustness(&mut self, val: &str) -> &mut Self {
-        self.robustness_shim(val);
+        self.set_robustness(val);
         self
     }
 }

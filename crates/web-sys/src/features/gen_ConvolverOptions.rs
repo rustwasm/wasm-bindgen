@@ -10,19 +10,47 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConvolverOptions`*"]
     pub type ConvolverOptions;
+    #[doc = "Get the `channelCount` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConvolverOptions`*"]
+    #[wasm_bindgen(method, getter = "channelCount")]
+    pub fn get_channel_count(this: &ConvolverOptions) -> Option<u32>;
     #[wasm_bindgen(method, setter = "channelCount")]
-    fn channel_count_shim(this: &ConvolverOptions, val: u32);
+    fn set_channel_count(this: &ConvolverOptions, val: u32);
+    #[cfg(feature = "ChannelCountMode")]
+    #[doc = "Get the `channelCountMode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelCountMode`, `ConvolverOptions`*"]
+    #[wasm_bindgen(method, getter = "channelCountMode")]
+    pub fn get_channel_count_mode(this: &ConvolverOptions) -> Option<ChannelCountMode>;
     #[cfg(feature = "ChannelCountMode")]
     #[wasm_bindgen(method, setter = "channelCountMode")]
-    fn channel_count_mode_shim(this: &ConvolverOptions, val: ChannelCountMode);
+    fn set_channel_count_mode(this: &ConvolverOptions, val: ChannelCountMode);
+    #[cfg(feature = "ChannelInterpretation")]
+    #[doc = "Get the `channelInterpretation` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelInterpretation`, `ConvolverOptions`*"]
+    #[wasm_bindgen(method, getter = "channelInterpretation")]
+    pub fn get_channel_interpretation(this: &ConvolverOptions) -> Option<ChannelInterpretation>;
     #[cfg(feature = "ChannelInterpretation")]
     #[wasm_bindgen(method, setter = "channelInterpretation")]
-    fn channel_interpretation_shim(this: &ConvolverOptions, val: ChannelInterpretation);
+    fn set_channel_interpretation(this: &ConvolverOptions, val: ChannelInterpretation);
+    #[cfg(feature = "AudioBuffer")]
+    #[doc = "Get the `buffer` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`, `ConvolverOptions`*"]
+    #[wasm_bindgen(method, getter = "buffer")]
+    pub fn get_buffer(this: &ConvolverOptions) -> Option<AudioBuffer>;
     #[cfg(feature = "AudioBuffer")]
     #[wasm_bindgen(method, setter = "buffer")]
-    fn buffer_shim(this: &ConvolverOptions, val: Option<&AudioBuffer>);
+    fn set_buffer(this: &ConvolverOptions, val: Option<&AudioBuffer>);
+    #[doc = "Get the `disableNormalization` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConvolverOptions`*"]
+    #[wasm_bindgen(method, getter = "disableNormalization")]
+    pub fn get_disable_normalization(this: &ConvolverOptions) -> Option<bool>;
     #[wasm_bindgen(method, setter = "disableNormalization")]
-    fn disable_normalization_shim(this: &ConvolverOptions, val: bool);
+    fn set_disable_normalization(this: &ConvolverOptions, val: bool);
 }
 impl ConvolverOptions {
     #[doc = "Construct a new `ConvolverOptions`."]
@@ -37,7 +65,7 @@ impl ConvolverOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConvolverOptions`*"]
     pub fn channel_count(&mut self, val: u32) -> &mut Self {
-        self.channel_count_shim(val);
+        self.set_channel_count(val);
         self
     }
     #[cfg(feature = "ChannelCountMode")]
@@ -45,7 +73,7 @@ impl ConvolverOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ChannelCountMode`, `ConvolverOptions`*"]
     pub fn channel_count_mode(&mut self, val: ChannelCountMode) -> &mut Self {
-        self.channel_count_mode_shim(val);
+        self.set_channel_count_mode(val);
         self
     }
     #[cfg(feature = "ChannelInterpretation")]
@@ -53,7 +81,7 @@ impl ConvolverOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ChannelInterpretation`, `ConvolverOptions`*"]
     pub fn channel_interpretation(&mut self, val: ChannelInterpretation) -> &mut Self {
-        self.channel_interpretation_shim(val);
+        self.set_channel_interpretation(val);
         self
     }
     #[cfg(feature = "AudioBuffer")]
@@ -61,14 +89,14 @@ impl ConvolverOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`, `ConvolverOptions`*"]
     pub fn buffer(&mut self, val: Option<&AudioBuffer>) -> &mut Self {
-        self.buffer_shim(val);
+        self.set_buffer(val);
         self
     }
     #[doc = "Change the `disableNormalization` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConvolverOptions`*"]
     pub fn disable_normalization(&mut self, val: bool) -> &mut Self {
-        self.disable_normalization_shim(val);
+        self.set_disable_normalization(val);
         self
     }
 }

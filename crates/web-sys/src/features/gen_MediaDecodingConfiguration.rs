@@ -11,14 +11,32 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `MediaDecodingConfiguration`*"]
     pub type MediaDecodingConfiguration;
     #[cfg(feature = "AudioConfiguration")]
+    #[doc = "Get the `audio` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`, `MediaDecodingConfiguration`*"]
+    #[wasm_bindgen(method, getter = "audio")]
+    pub fn get_audio(this: &MediaDecodingConfiguration) -> Option<AudioConfiguration>;
+    #[cfg(feature = "AudioConfiguration")]
     #[wasm_bindgen(method, setter = "audio")]
-    fn audio_shim(this: &MediaDecodingConfiguration, val: &AudioConfiguration);
+    fn set_audio(this: &MediaDecodingConfiguration, val: &AudioConfiguration);
+    #[cfg(feature = "VideoConfiguration")]
+    #[doc = "Get the `video` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaDecodingConfiguration`, `VideoConfiguration`*"]
+    #[wasm_bindgen(method, getter = "video")]
+    pub fn get_video(this: &MediaDecodingConfiguration) -> Option<VideoConfiguration>;
     #[cfg(feature = "VideoConfiguration")]
     #[wasm_bindgen(method, setter = "video")]
-    fn video_shim(this: &MediaDecodingConfiguration, val: &VideoConfiguration);
+    fn set_video(this: &MediaDecodingConfiguration, val: &VideoConfiguration);
+    #[cfg(feature = "MediaDecodingType")]
+    #[doc = "Get the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaDecodingConfiguration`, `MediaDecodingType`*"]
+    #[wasm_bindgen(method, getter = "type")]
+    pub fn get_type(this: &MediaDecodingConfiguration) -> MediaDecodingType;
     #[cfg(feature = "MediaDecodingType")]
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &MediaDecodingConfiguration, val: MediaDecodingType);
+    fn set_type(this: &MediaDecodingConfiguration, val: MediaDecodingType);
 }
 impl MediaDecodingConfiguration {
     #[cfg(feature = "MediaDecodingType")]
@@ -36,7 +54,7 @@ impl MediaDecodingConfiguration {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`, `MediaDecodingConfiguration`*"]
     pub fn audio(&mut self, val: &AudioConfiguration) -> &mut Self {
-        self.audio_shim(val);
+        self.set_audio(val);
         self
     }
     #[cfg(feature = "VideoConfiguration")]
@@ -44,7 +62,7 @@ impl MediaDecodingConfiguration {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaDecodingConfiguration`, `VideoConfiguration`*"]
     pub fn video(&mut self, val: &VideoConfiguration) -> &mut Self {
-        self.video_shim(val);
+        self.set_video(val);
         self
     }
     #[cfg(feature = "MediaDecodingType")]
@@ -52,7 +70,7 @@ impl MediaDecodingConfiguration {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaDecodingConfiguration`, `MediaDecodingType`*"]
     pub fn type_(&mut self, val: MediaDecodingType) -> &mut Self {
-        self.type__shim(val);
+        self.set_type(val);
         self
     }
 }

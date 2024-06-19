@@ -10,16 +10,41 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PromiseRejectionEventInit`*"]
     pub type PromiseRejectionEventInit;
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PromiseRejectionEventInit`*"]
+    #[wasm_bindgen(method, getter = "bubbles")]
+    pub fn get_bubbles(this: &PromiseRejectionEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &PromiseRejectionEventInit, val: bool);
+    fn set_bubbles(this: &PromiseRejectionEventInit, val: bool);
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PromiseRejectionEventInit`*"]
+    #[wasm_bindgen(method, getter = "cancelable")]
+    pub fn get_cancelable(this: &PromiseRejectionEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &PromiseRejectionEventInit, val: bool);
+    fn set_cancelable(this: &PromiseRejectionEventInit, val: bool);
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PromiseRejectionEventInit`*"]
+    #[wasm_bindgen(method, getter = "composed")]
+    pub fn get_composed(this: &PromiseRejectionEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &PromiseRejectionEventInit, val: bool);
+    fn set_composed(this: &PromiseRejectionEventInit, val: bool);
+    #[doc = "Get the `promise` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PromiseRejectionEventInit`*"]
+    #[wasm_bindgen(method, getter = "promise")]
+    pub fn get_promise(this: &PromiseRejectionEventInit) -> ::js_sys::Promise;
     #[wasm_bindgen(method, setter = "promise")]
-    fn promise_shim(this: &PromiseRejectionEventInit, val: &::js_sys::Promise);
+    fn set_promise(this: &PromiseRejectionEventInit, val: &::js_sys::Promise);
+    #[doc = "Get the `reason` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PromiseRejectionEventInit`*"]
+    #[wasm_bindgen(method, getter = "reason")]
+    pub fn get_reason(this: &PromiseRejectionEventInit) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "reason")]
-    fn reason_shim(this: &PromiseRejectionEventInit, val: &::wasm_bindgen::JsValue);
+    fn set_reason(this: &PromiseRejectionEventInit, val: &::wasm_bindgen::JsValue);
 }
 impl PromiseRejectionEventInit {
     #[doc = "Construct a new `PromiseRejectionEventInit`."]
@@ -35,35 +60,35 @@ impl PromiseRejectionEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PromiseRejectionEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PromiseRejectionEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PromiseRejectionEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed(val);
         self
     }
     #[doc = "Change the `promise` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PromiseRejectionEventInit`*"]
     pub fn promise(&mut self, val: &::js_sys::Promise) -> &mut Self {
-        self.promise_shim(val);
+        self.set_promise(val);
         self
     }
     #[doc = "Change the `reason` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PromiseRejectionEventInit`*"]
     pub fn reason(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.reason_shim(val);
+        self.set_reason(val);
         self
     }
 }

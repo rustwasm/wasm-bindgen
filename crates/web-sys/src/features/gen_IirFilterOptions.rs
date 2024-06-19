@@ -10,18 +10,45 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IirFilterOptions`*"]
     pub type IirFilterOptions;
+    #[doc = "Get the `channelCount` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IirFilterOptions`*"]
+    #[wasm_bindgen(method, getter = "channelCount")]
+    pub fn get_channel_count(this: &IirFilterOptions) -> Option<u32>;
     #[wasm_bindgen(method, setter = "channelCount")]
-    fn channel_count_shim(this: &IirFilterOptions, val: u32);
+    fn set_channel_count(this: &IirFilterOptions, val: u32);
+    #[cfg(feature = "ChannelCountMode")]
+    #[doc = "Get the `channelCountMode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelCountMode`, `IirFilterOptions`*"]
+    #[wasm_bindgen(method, getter = "channelCountMode")]
+    pub fn get_channel_count_mode(this: &IirFilterOptions) -> Option<ChannelCountMode>;
     #[cfg(feature = "ChannelCountMode")]
     #[wasm_bindgen(method, setter = "channelCountMode")]
-    fn channel_count_mode_shim(this: &IirFilterOptions, val: ChannelCountMode);
+    fn set_channel_count_mode(this: &IirFilterOptions, val: ChannelCountMode);
+    #[cfg(feature = "ChannelInterpretation")]
+    #[doc = "Get the `channelInterpretation` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelInterpretation`, `IirFilterOptions`*"]
+    #[wasm_bindgen(method, getter = "channelInterpretation")]
+    pub fn get_channel_interpretation(this: &IirFilterOptions) -> Option<ChannelInterpretation>;
     #[cfg(feature = "ChannelInterpretation")]
     #[wasm_bindgen(method, setter = "channelInterpretation")]
-    fn channel_interpretation_shim(this: &IirFilterOptions, val: ChannelInterpretation);
+    fn set_channel_interpretation(this: &IirFilterOptions, val: ChannelInterpretation);
+    #[doc = "Get the `feedback` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IirFilterOptions`*"]
+    #[wasm_bindgen(method, getter = "feedback")]
+    pub fn get_feedback(this: &IirFilterOptions) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "feedback")]
-    fn feedback_shim(this: &IirFilterOptions, val: &::wasm_bindgen::JsValue);
+    fn set_feedback(this: &IirFilterOptions, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `feedforward` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IirFilterOptions`*"]
+    #[wasm_bindgen(method, getter = "feedforward")]
+    pub fn get_feedforward(this: &IirFilterOptions) -> ::js_sys::Array;
     #[wasm_bindgen(method, setter = "feedforward")]
-    fn feedforward_shim(this: &IirFilterOptions, val: &::wasm_bindgen::JsValue);
+    fn set_feedforward(this: &IirFilterOptions, val: &::wasm_bindgen::JsValue);
 }
 impl IirFilterOptions {
     #[doc = "Construct a new `IirFilterOptions`."]
@@ -38,7 +65,7 @@ impl IirFilterOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IirFilterOptions`*"]
     pub fn channel_count(&mut self, val: u32) -> &mut Self {
-        self.channel_count_shim(val);
+        self.set_channel_count(val);
         self
     }
     #[cfg(feature = "ChannelCountMode")]
@@ -46,7 +73,7 @@ impl IirFilterOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ChannelCountMode`, `IirFilterOptions`*"]
     pub fn channel_count_mode(&mut self, val: ChannelCountMode) -> &mut Self {
-        self.channel_count_mode_shim(val);
+        self.set_channel_count_mode(val);
         self
     }
     #[cfg(feature = "ChannelInterpretation")]
@@ -54,21 +81,21 @@ impl IirFilterOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ChannelInterpretation`, `IirFilterOptions`*"]
     pub fn channel_interpretation(&mut self, val: ChannelInterpretation) -> &mut Self {
-        self.channel_interpretation_shim(val);
+        self.set_channel_interpretation(val);
         self
     }
     #[doc = "Change the `feedback` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IirFilterOptions`*"]
     pub fn feedback(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.feedback_shim(val);
+        self.set_feedback(val);
         self
     }
     #[doc = "Change the `feedforward` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IirFilterOptions`*"]
     pub fn feedforward(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.feedforward_shim(val);
+        self.set_feedforward(val);
         self
     }
 }

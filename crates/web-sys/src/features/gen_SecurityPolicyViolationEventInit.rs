@@ -10,40 +10,118 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
     pub type SecurityPolicyViolationEventInit;
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
+    #[wasm_bindgen(method, getter = "bubbles")]
+    pub fn get_bubbles(this: &SecurityPolicyViolationEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &SecurityPolicyViolationEventInit, val: bool);
+    fn set_bubbles(this: &SecurityPolicyViolationEventInit, val: bool);
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
+    #[wasm_bindgen(method, getter = "cancelable")]
+    pub fn get_cancelable(this: &SecurityPolicyViolationEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &SecurityPolicyViolationEventInit, val: bool);
+    fn set_cancelable(this: &SecurityPolicyViolationEventInit, val: bool);
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
+    #[wasm_bindgen(method, getter = "composed")]
+    pub fn get_composed(this: &SecurityPolicyViolationEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &SecurityPolicyViolationEventInit, val: bool);
+    fn set_composed(this: &SecurityPolicyViolationEventInit, val: bool);
+    #[doc = "Get the `blockedURI` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
+    #[wasm_bindgen(method, getter = "blockedURI")]
+    pub fn get_blocked_uri(this: &SecurityPolicyViolationEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "blockedURI")]
-    fn blocked_uri_shim(this: &SecurityPolicyViolationEventInit, val: &str);
+    fn set_blocked_uri(this: &SecurityPolicyViolationEventInit, val: &str);
+    #[doc = "Get the `columnNumber` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
+    #[wasm_bindgen(method, getter = "columnNumber")]
+    pub fn get_column_number(this: &SecurityPolicyViolationEventInit) -> Option<i32>;
     #[wasm_bindgen(method, setter = "columnNumber")]
-    fn column_number_shim(this: &SecurityPolicyViolationEventInit, val: i32);
+    fn set_column_number(this: &SecurityPolicyViolationEventInit, val: i32);
+    #[cfg(feature = "SecurityPolicyViolationEventDisposition")]
+    #[doc = "Get the `disposition` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventDisposition`, `SecurityPolicyViolationEventInit`*"]
+    #[wasm_bindgen(method, getter = "disposition")]
+    pub fn get_disposition(
+        this: &SecurityPolicyViolationEventInit,
+    ) -> Option<SecurityPolicyViolationEventDisposition>;
     #[cfg(feature = "SecurityPolicyViolationEventDisposition")]
     #[wasm_bindgen(method, setter = "disposition")]
-    fn disposition_shim(
+    fn set_disposition(
         this: &SecurityPolicyViolationEventInit,
         val: SecurityPolicyViolationEventDisposition,
     );
+    #[doc = "Get the `documentURI` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
+    #[wasm_bindgen(method, getter = "documentURI")]
+    pub fn get_document_uri(this: &SecurityPolicyViolationEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "documentURI")]
-    fn document_uri_shim(this: &SecurityPolicyViolationEventInit, val: &str);
+    fn set_document_uri(this: &SecurityPolicyViolationEventInit, val: &str);
+    #[doc = "Get the `effectiveDirective` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
+    #[wasm_bindgen(method, getter = "effectiveDirective")]
+    pub fn get_effective_directive(this: &SecurityPolicyViolationEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "effectiveDirective")]
-    fn effective_directive_shim(this: &SecurityPolicyViolationEventInit, val: &str);
+    fn set_effective_directive(this: &SecurityPolicyViolationEventInit, val: &str);
+    #[doc = "Get the `lineNumber` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
+    #[wasm_bindgen(method, getter = "lineNumber")]
+    pub fn get_line_number(this: &SecurityPolicyViolationEventInit) -> Option<i32>;
     #[wasm_bindgen(method, setter = "lineNumber")]
-    fn line_number_shim(this: &SecurityPolicyViolationEventInit, val: i32);
+    fn set_line_number(this: &SecurityPolicyViolationEventInit, val: i32);
+    #[doc = "Get the `originalPolicy` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
+    #[wasm_bindgen(method, getter = "originalPolicy")]
+    pub fn get_original_policy(this: &SecurityPolicyViolationEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "originalPolicy")]
-    fn original_policy_shim(this: &SecurityPolicyViolationEventInit, val: &str);
+    fn set_original_policy(this: &SecurityPolicyViolationEventInit, val: &str);
+    #[doc = "Get the `referrer` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
+    #[wasm_bindgen(method, getter = "referrer")]
+    pub fn get_referrer(this: &SecurityPolicyViolationEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "referrer")]
-    fn referrer_shim(this: &SecurityPolicyViolationEventInit, val: &str);
+    fn set_referrer(this: &SecurityPolicyViolationEventInit, val: &str);
+    #[doc = "Get the `sample` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
+    #[wasm_bindgen(method, getter = "sample")]
+    pub fn get_sample(this: &SecurityPolicyViolationEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "sample")]
-    fn sample_shim(this: &SecurityPolicyViolationEventInit, val: &str);
+    fn set_sample(this: &SecurityPolicyViolationEventInit, val: &str);
+    #[doc = "Get the `sourceFile` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
+    #[wasm_bindgen(method, getter = "sourceFile")]
+    pub fn get_source_file(this: &SecurityPolicyViolationEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "sourceFile")]
-    fn source_file_shim(this: &SecurityPolicyViolationEventInit, val: &str);
+    fn set_source_file(this: &SecurityPolicyViolationEventInit, val: &str);
+    #[doc = "Get the `statusCode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
+    #[wasm_bindgen(method, getter = "statusCode")]
+    pub fn get_status_code(this: &SecurityPolicyViolationEventInit) -> Option<u16>;
     #[wasm_bindgen(method, setter = "statusCode")]
-    fn status_code_shim(this: &SecurityPolicyViolationEventInit, val: u16);
+    fn set_status_code(this: &SecurityPolicyViolationEventInit, val: u16);
+    #[doc = "Get the `violatedDirective` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
+    #[wasm_bindgen(method, getter = "violatedDirective")]
+    pub fn get_violated_directive(this: &SecurityPolicyViolationEventInit) -> Option<String>;
     #[wasm_bindgen(method, setter = "violatedDirective")]
-    fn violated_directive_shim(this: &SecurityPolicyViolationEventInit, val: &str);
+    fn set_violated_directive(this: &SecurityPolicyViolationEventInit, val: &str);
 }
 impl SecurityPolicyViolationEventInit {
     #[doc = "Construct a new `SecurityPolicyViolationEventInit`."]
@@ -58,35 +136,35 @@ impl SecurityPolicyViolationEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed(val);
         self
     }
     #[doc = "Change the `blockedURI` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
     pub fn blocked_uri(&mut self, val: &str) -> &mut Self {
-        self.blocked_uri_shim(val);
+        self.set_blocked_uri(val);
         self
     }
     #[doc = "Change the `columnNumber` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
     pub fn column_number(&mut self, val: i32) -> &mut Self {
-        self.column_number_shim(val);
+        self.set_column_number(val);
         self
     }
     #[cfg(feature = "SecurityPolicyViolationEventDisposition")]
@@ -94,70 +172,70 @@ impl SecurityPolicyViolationEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventDisposition`, `SecurityPolicyViolationEventInit`*"]
     pub fn disposition(&mut self, val: SecurityPolicyViolationEventDisposition) -> &mut Self {
-        self.disposition_shim(val);
+        self.set_disposition(val);
         self
     }
     #[doc = "Change the `documentURI` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
     pub fn document_uri(&mut self, val: &str) -> &mut Self {
-        self.document_uri_shim(val);
+        self.set_document_uri(val);
         self
     }
     #[doc = "Change the `effectiveDirective` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
     pub fn effective_directive(&mut self, val: &str) -> &mut Self {
-        self.effective_directive_shim(val);
+        self.set_effective_directive(val);
         self
     }
     #[doc = "Change the `lineNumber` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
     pub fn line_number(&mut self, val: i32) -> &mut Self {
-        self.line_number_shim(val);
+        self.set_line_number(val);
         self
     }
     #[doc = "Change the `originalPolicy` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
     pub fn original_policy(&mut self, val: &str) -> &mut Self {
-        self.original_policy_shim(val);
+        self.set_original_policy(val);
         self
     }
     #[doc = "Change the `referrer` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
     pub fn referrer(&mut self, val: &str) -> &mut Self {
-        self.referrer_shim(val);
+        self.set_referrer(val);
         self
     }
     #[doc = "Change the `sample` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
     pub fn sample(&mut self, val: &str) -> &mut Self {
-        self.sample_shim(val);
+        self.set_sample(val);
         self
     }
     #[doc = "Change the `sourceFile` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
     pub fn source_file(&mut self, val: &str) -> &mut Self {
-        self.source_file_shim(val);
+        self.set_source_file(val);
         self
     }
     #[doc = "Change the `statusCode` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
     pub fn status_code(&mut self, val: u16) -> &mut Self {
-        self.status_code_shim(val);
+        self.set_status_code(val);
         self
     }
     #[doc = "Change the `violatedDirective` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
     pub fn violated_directive(&mut self, val: &str) -> &mut Self {
-        self.violated_directive_shim(val);
+        self.set_violated_directive(val);
         self
     }
 }

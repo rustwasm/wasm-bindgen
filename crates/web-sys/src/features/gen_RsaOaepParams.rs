@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOaepParams`*"]
     pub type RsaOaepParams;
+    #[doc = "Get the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RsaOaepParams`*"]
+    #[wasm_bindgen(method, getter = "name")]
+    pub fn get_name(this: &RsaOaepParams) -> String;
     #[wasm_bindgen(method, setter = "name")]
-    fn name_shim(this: &RsaOaepParams, val: &str);
+    fn set_name(this: &RsaOaepParams, val: &str);
+    #[doc = "Get the `label` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RsaOaepParams`*"]
+    #[wasm_bindgen(method, getter = "label")]
+    pub fn get_label(this: &RsaOaepParams) -> Option<::js_sys::Object>;
     #[wasm_bindgen(method, setter = "label")]
-    fn label_shim(this: &RsaOaepParams, val: &::js_sys::Object);
+    fn set_label(this: &RsaOaepParams, val: &::js_sys::Object);
 }
 impl RsaOaepParams {
     #[doc = "Construct a new `RsaOaepParams`."]
@@ -29,14 +39,14 @@ impl RsaOaepParams {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOaepParams`*"]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        self.name_shim(val);
+        self.set_name(val);
         self
     }
     #[doc = "Change the `label` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOaepParams`*"]
     pub fn label(&mut self, val: &::js_sys::Object) -> &mut Self {
-        self.label_shim(val);
+        self.set_label(val);
         self
     }
 }

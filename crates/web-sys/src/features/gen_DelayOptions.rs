@@ -10,18 +10,45 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DelayOptions`*"]
     pub type DelayOptions;
+    #[doc = "Get the `channelCount` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DelayOptions`*"]
+    #[wasm_bindgen(method, getter = "channelCount")]
+    pub fn get_channel_count(this: &DelayOptions) -> Option<u32>;
     #[wasm_bindgen(method, setter = "channelCount")]
-    fn channel_count_shim(this: &DelayOptions, val: u32);
+    fn set_channel_count(this: &DelayOptions, val: u32);
+    #[cfg(feature = "ChannelCountMode")]
+    #[doc = "Get the `channelCountMode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelCountMode`, `DelayOptions`*"]
+    #[wasm_bindgen(method, getter = "channelCountMode")]
+    pub fn get_channel_count_mode(this: &DelayOptions) -> Option<ChannelCountMode>;
     #[cfg(feature = "ChannelCountMode")]
     #[wasm_bindgen(method, setter = "channelCountMode")]
-    fn channel_count_mode_shim(this: &DelayOptions, val: ChannelCountMode);
+    fn set_channel_count_mode(this: &DelayOptions, val: ChannelCountMode);
+    #[cfg(feature = "ChannelInterpretation")]
+    #[doc = "Get the `channelInterpretation` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelInterpretation`, `DelayOptions`*"]
+    #[wasm_bindgen(method, getter = "channelInterpretation")]
+    pub fn get_channel_interpretation(this: &DelayOptions) -> Option<ChannelInterpretation>;
     #[cfg(feature = "ChannelInterpretation")]
     #[wasm_bindgen(method, setter = "channelInterpretation")]
-    fn channel_interpretation_shim(this: &DelayOptions, val: ChannelInterpretation);
+    fn set_channel_interpretation(this: &DelayOptions, val: ChannelInterpretation);
+    #[doc = "Get the `delayTime` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DelayOptions`*"]
+    #[wasm_bindgen(method, getter = "delayTime")]
+    pub fn get_delay_time(this: &DelayOptions) -> Option<f64>;
     #[wasm_bindgen(method, setter = "delayTime")]
-    fn delay_time_shim(this: &DelayOptions, val: f64);
+    fn set_delay_time(this: &DelayOptions, val: f64);
+    #[doc = "Get the `maxDelayTime` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DelayOptions`*"]
+    #[wasm_bindgen(method, getter = "maxDelayTime")]
+    pub fn get_max_delay_time(this: &DelayOptions) -> Option<f64>;
     #[wasm_bindgen(method, setter = "maxDelayTime")]
-    fn max_delay_time_shim(this: &DelayOptions, val: f64);
+    fn set_max_delay_time(this: &DelayOptions, val: f64);
 }
 impl DelayOptions {
     #[doc = "Construct a new `DelayOptions`."]
@@ -36,7 +63,7 @@ impl DelayOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DelayOptions`*"]
     pub fn channel_count(&mut self, val: u32) -> &mut Self {
-        self.channel_count_shim(val);
+        self.set_channel_count(val);
         self
     }
     #[cfg(feature = "ChannelCountMode")]
@@ -44,7 +71,7 @@ impl DelayOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ChannelCountMode`, `DelayOptions`*"]
     pub fn channel_count_mode(&mut self, val: ChannelCountMode) -> &mut Self {
-        self.channel_count_mode_shim(val);
+        self.set_channel_count_mode(val);
         self
     }
     #[cfg(feature = "ChannelInterpretation")]
@@ -52,21 +79,21 @@ impl DelayOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ChannelInterpretation`, `DelayOptions`*"]
     pub fn channel_interpretation(&mut self, val: ChannelInterpretation) -> &mut Self {
-        self.channel_interpretation_shim(val);
+        self.set_channel_interpretation(val);
         self
     }
     #[doc = "Change the `delayTime` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DelayOptions`*"]
     pub fn delay_time(&mut self, val: f64) -> &mut Self {
-        self.delay_time_shim(val);
+        self.set_delay_time(val);
         self
     }
     #[doc = "Change the `maxDelayTime` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DelayOptions`*"]
     pub fn max_delay_time(&mut self, val: f64) -> &mut Self {
-        self.max_delay_time_shim(val);
+        self.set_max_delay_time(val);
         self
     }
 }

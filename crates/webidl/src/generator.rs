@@ -630,9 +630,10 @@ impl Interface {
 }
 
 pub struct DictionaryField {
-    pub name: Ident,
+    pub name: String,
     pub js_name: String,
     pub ty: Type,
+    pub return_ty: Type,
     pub is_js_value_ref_option_type: bool,
     pub required: bool,
     pub unstable: bool,
@@ -642,10 +643,14 @@ impl DictionaryField {
     fn generate_rust_shim(
         &self,
         parent_ident: &Ident,
+        options: &Options,
+        features: &BTreeSet<String>,
         cfg_features: &Option<syn::Attribute>,
     ) -> TokenStream {
         let ty = &self.ty;
-        let shim_name = self.shim_name();
+        let return_ty = &self.return_ty;
+        let getter_name = format_ident!("get_{}", self.name);
+        let setter_name = self.setter_name();
         let js_name = &self.js_name;
 
         let js_value_ref_type = shared_ref(
@@ -659,10 +664,25 @@ impl DictionaryField {
             ty.clone()
         };
 
+        let unstable_attr = maybe_unstable_attr(self.unstable);
+        let unstable_docs = maybe_unstable_docs(self.unstable);
+
+        let doc_comment = comment(
+            format!("Get the `{}` field of this object.", js_name),
+            &required_doc_string(options, features),
+        );
+
         quote! {
+            #unstable_attr
+            #cfg_features
+            #doc_comment
+            #unstable_docs
+            #[wasm_bindgen(method, getter = #js_name)]
+            pub fn #getter_name(this: &#parent_ident) -> #return_ty;
+
             #cfg_features
             #[wasm_bindgen(method, setter = #js_name)]
-            fn #shim_name(this: &#parent_ident, val: #ty);
+            fn #setter_name(this: &#parent_ident, val: #ty);
         }
     }
 
@@ -676,11 +696,13 @@ impl DictionaryField {
             name,
             js_name,
             ty,
+            return_ty: _,
             is_js_value_ref_option_type: _,
             required: _,
             unstable,
         } = self;
 
+        let name = rust_ident(name);
         let unstable_attr = maybe_unstable_attr(*unstable);
         let unstable_docs = maybe_unstable_docs(*unstable);
 
@@ -689,7 +711,7 @@ impl DictionaryField {
             &required_doc_string(options, features),
         );
 
-        let shim_name = self.shim_name();
+        let setter_name = self.setter_name();
 
         let shim_args = if self.is_js_value_ref_option_type {
             quote! { val.unwrap_or(&::wasm_bindgen::JsValue::NULL) }
@@ -703,7 +725,7 @@ impl DictionaryField {
             #doc_comment
             #unstable_docs
             pub fn #name(&mut self, val: #ty) -> &mut Self {
-                self.#shim_name(#shim_args);
+                self.#setter_name(#shim_args);
                 self
             }
         }
@@ -727,8 +749,8 @@ impl DictionaryField {
         (features, cfg_features)
     }
 
-    fn shim_name(&self) -> Ident {
-        format_ident!("{}_shim", self.name)
+    fn setter_name(&self) -> Ident {
+        format_ident!("set_{}", self.name)
     }
 }
 
@@ -759,7 +781,7 @@ impl Dictionary {
 
         for field in fields.iter() {
             if field.required {
-                let name = &field.name;
+                let name = rust_ident(&field.name);
                 let ty = &field.ty;
                 required_args.push(quote!( #name: #ty ));
                 required_calls.push(quote!( ret.#name(#name); ));
@@ -789,8 +811,11 @@ impl Dictionary {
 
         let field_shims = fields
             .iter()
+            .zip(field_features.iter())
             .zip(field_cfg_features.iter())
-            .map(|(field, cfg_features)| field.generate_rust_shim(name, cfg_features))
+            .map(|((field, features), cfg_features)| {
+                field.generate_rust_shim(name, options, features, cfg_features)
+            })
             .collect::<Vec<_>>();
 
         let fields = fields

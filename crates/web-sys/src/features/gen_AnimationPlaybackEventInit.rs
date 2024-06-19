@@ -10,16 +10,41 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPlaybackEventInit`*"]
     pub type AnimationPlaybackEventInit;
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPlaybackEventInit`*"]
+    #[wasm_bindgen(method, getter = "bubbles")]
+    pub fn get_bubbles(this: &AnimationPlaybackEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &AnimationPlaybackEventInit, val: bool);
+    fn set_bubbles(this: &AnimationPlaybackEventInit, val: bool);
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPlaybackEventInit`*"]
+    #[wasm_bindgen(method, getter = "cancelable")]
+    pub fn get_cancelable(this: &AnimationPlaybackEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &AnimationPlaybackEventInit, val: bool);
+    fn set_cancelable(this: &AnimationPlaybackEventInit, val: bool);
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPlaybackEventInit`*"]
+    #[wasm_bindgen(method, getter = "composed")]
+    pub fn get_composed(this: &AnimationPlaybackEventInit) -> Option<bool>;
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &AnimationPlaybackEventInit, val: bool);
+    fn set_composed(this: &AnimationPlaybackEventInit, val: bool);
+    #[doc = "Get the `currentTime` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPlaybackEventInit`*"]
+    #[wasm_bindgen(method, getter = "currentTime")]
+    pub fn get_current_time(this: &AnimationPlaybackEventInit) -> Option<f64>;
     #[wasm_bindgen(method, setter = "currentTime")]
-    fn current_time_shim(this: &AnimationPlaybackEventInit, val: Option<f64>);
+    fn set_current_time(this: &AnimationPlaybackEventInit, val: Option<f64>);
+    #[doc = "Get the `timelineTime` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPlaybackEventInit`*"]
+    #[wasm_bindgen(method, getter = "timelineTime")]
+    pub fn get_timeline_time(this: &AnimationPlaybackEventInit) -> Option<f64>;
     #[wasm_bindgen(method, setter = "timelineTime")]
-    fn timeline_time_shim(this: &AnimationPlaybackEventInit, val: Option<f64>);
+    fn set_timeline_time(this: &AnimationPlaybackEventInit, val: Option<f64>);
 }
 impl AnimationPlaybackEventInit {
     #[doc = "Construct a new `AnimationPlaybackEventInit`."]
@@ -34,35 +59,35 @@ impl AnimationPlaybackEventInit {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPlaybackEventInit`*"]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles(val);
         self
     }
     #[doc = "Change the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPlaybackEventInit`*"]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable(val);
         self
     }
     #[doc = "Change the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPlaybackEventInit`*"]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed(val);
         self
     }
     #[doc = "Change the `currentTime` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPlaybackEventInit`*"]
     pub fn current_time(&mut self, val: Option<f64>) -> &mut Self {
-        self.current_time_shim(val);
+        self.set_current_time(val);
         self
     }
     #[doc = "Change the `timelineTime` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPlaybackEventInit`*"]
     pub fn timeline_time(&mut self, val: Option<f64>) -> &mut Self {
-        self.timeline_time_shim(val);
+        self.set_timeline_time(val);
         self
     }
 }

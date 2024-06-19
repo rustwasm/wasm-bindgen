@@ -10,8 +10,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ErrorCallback`*"]
     pub type ErrorCallback;
+    #[doc = "Get the `handleEvent` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ErrorCallback`*"]
+    #[wasm_bindgen(method, getter = "handleEvent")]
+    pub fn get_handle_event(this: &ErrorCallback) -> Option<::js_sys::Function>;
     #[wasm_bindgen(method, setter = "handleEvent")]
-    fn handle_event_shim(this: &ErrorCallback, val: &::js_sys::Function);
+    fn set_handle_event(this: &ErrorCallback, val: &::js_sys::Function);
 }
 impl ErrorCallback {
     #[doc = "Construct a new `ErrorCallback`."]
@@ -26,7 +31,7 @@ impl ErrorCallback {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ErrorCallback`*"]
     pub fn handle_event(&mut self, val: &::js_sys::Function) -> &mut Self {
-        self.handle_event_shim(val);
+        self.set_handle_event(val);
         self
     }
 }

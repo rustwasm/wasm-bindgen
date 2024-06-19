@@ -11,14 +11,35 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
     pub type AnimationPropertyValueDetails;
     #[cfg(feature = "CompositeOperation")]
+    #[doc = "Get the `composite` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`, `CompositeOperation`*"]
+    #[wasm_bindgen(method, getter = "composite")]
+    pub fn get_composite(this: &AnimationPropertyValueDetails) -> CompositeOperation;
+    #[cfg(feature = "CompositeOperation")]
     #[wasm_bindgen(method, setter = "composite")]
-    fn composite_shim(this: &AnimationPropertyValueDetails, val: CompositeOperation);
+    fn set_composite(this: &AnimationPropertyValueDetails, val: CompositeOperation);
+    #[doc = "Get the `easing` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
+    #[wasm_bindgen(method, getter = "easing")]
+    pub fn get_easing(this: &AnimationPropertyValueDetails) -> Option<String>;
     #[wasm_bindgen(method, setter = "easing")]
-    fn easing_shim(this: &AnimationPropertyValueDetails, val: &str);
+    fn set_easing(this: &AnimationPropertyValueDetails, val: &str);
+    #[doc = "Get the `offset` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
+    #[wasm_bindgen(method, getter = "offset")]
+    pub fn get_offset(this: &AnimationPropertyValueDetails) -> f64;
     #[wasm_bindgen(method, setter = "offset")]
-    fn offset_shim(this: &AnimationPropertyValueDetails, val: f64);
+    fn set_offset(this: &AnimationPropertyValueDetails, val: f64);
+    #[doc = "Get the `value` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
+    #[wasm_bindgen(method, getter = "value")]
+    pub fn get_value(this: &AnimationPropertyValueDetails) -> Option<String>;
     #[wasm_bindgen(method, setter = "value")]
-    fn value_shim(this: &AnimationPropertyValueDetails, val: &str);
+    fn set_value(this: &AnimationPropertyValueDetails, val: &str);
 }
 impl AnimationPropertyValueDetails {
     #[cfg(feature = "CompositeOperation")]
@@ -37,28 +58,28 @@ impl AnimationPropertyValueDetails {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`, `CompositeOperation`*"]
     pub fn composite(&mut self, val: CompositeOperation) -> &mut Self {
-        self.composite_shim(val);
+        self.set_composite(val);
         self
     }
     #[doc = "Change the `easing` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
     pub fn easing(&mut self, val: &str) -> &mut Self {
-        self.easing_shim(val);
+        self.set_easing(val);
         self
     }
     #[doc = "Change the `offset` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
     pub fn offset(&mut self, val: f64) -> &mut Self {
-        self.offset_shim(val);
+        self.set_offset(val);
         self
     }
     #[doc = "Change the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
     pub fn value(&mut self, val: &str) -> &mut Self {
-        self.value_shim(val);
+        self.set_value(val);
         self
     }
 }

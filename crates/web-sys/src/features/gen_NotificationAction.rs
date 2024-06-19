@@ -10,12 +10,27 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationAction`*"]
     pub type NotificationAction;
+    #[doc = "Get the `action` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `NotificationAction`*"]
+    #[wasm_bindgen(method, getter = "action")]
+    pub fn get_action(this: &NotificationAction) -> String;
     #[wasm_bindgen(method, setter = "action")]
-    fn action_shim(this: &NotificationAction, val: &str);
+    fn set_action(this: &NotificationAction, val: &str);
+    #[doc = "Get the `icon` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `NotificationAction`*"]
+    #[wasm_bindgen(method, getter = "icon")]
+    pub fn get_icon(this: &NotificationAction) -> Option<String>;
     #[wasm_bindgen(method, setter = "icon")]
-    fn icon_shim(this: &NotificationAction, val: &str);
+    fn set_icon(this: &NotificationAction, val: &str);
+    #[doc = "Get the `title` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `NotificationAction`*"]
+    #[wasm_bindgen(method, getter = "title")]
+    pub fn get_title(this: &NotificationAction) -> String;
     #[wasm_bindgen(method, setter = "title")]
-    fn title_shim(this: &NotificationAction, val: &str);
+    fn set_title(this: &NotificationAction, val: &str);
 }
 impl NotificationAction {
     #[doc = "Construct a new `NotificationAction`."]
@@ -32,21 +47,21 @@ impl NotificationAction {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationAction`*"]
     pub fn action(&mut self, val: &str) -> &mut Self {
-        self.action_shim(val);
+        self.set_action(val);
         self
     }
     #[doc = "Change the `icon` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationAction`*"]
     pub fn icon(&mut self, val: &str) -> &mut Self {
-        self.icon_shim(val);
+        self.set_icon(val);
         self
     }
     #[doc = "Change the `title` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationAction`*"]
     pub fn title(&mut self, val: &str) -> &mut Self {
-        self.title_shim(val);
+        self.set_title(val);
         self
     }
 }

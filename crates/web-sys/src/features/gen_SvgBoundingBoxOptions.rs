@@ -10,14 +10,34 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgBoundingBoxOptions`*"]
     pub type SvgBoundingBoxOptions;
+    #[doc = "Get the `clipped` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgBoundingBoxOptions`*"]
+    #[wasm_bindgen(method, getter = "clipped")]
+    pub fn get_clipped(this: &SvgBoundingBoxOptions) -> Option<bool>;
     #[wasm_bindgen(method, setter = "clipped")]
-    fn clipped_shim(this: &SvgBoundingBoxOptions, val: bool);
+    fn set_clipped(this: &SvgBoundingBoxOptions, val: bool);
+    #[doc = "Get the `fill` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgBoundingBoxOptions`*"]
+    #[wasm_bindgen(method, getter = "fill")]
+    pub fn get_fill(this: &SvgBoundingBoxOptions) -> Option<bool>;
     #[wasm_bindgen(method, setter = "fill")]
-    fn fill_shim(this: &SvgBoundingBoxOptions, val: bool);
+    fn set_fill(this: &SvgBoundingBoxOptions, val: bool);
+    #[doc = "Get the `markers` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgBoundingBoxOptions`*"]
+    #[wasm_bindgen(method, getter = "markers")]
+    pub fn get_markers(this: &SvgBoundingBoxOptions) -> Option<bool>;
     #[wasm_bindgen(method, setter = "markers")]
-    fn markers_shim(this: &SvgBoundingBoxOptions, val: bool);
+    fn set_markers(this: &SvgBoundingBoxOptions, val: bool);
+    #[doc = "Get the `stroke` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvgBoundingBoxOptions`*"]
+    #[wasm_bindgen(method, getter = "stroke")]
+    pub fn get_stroke(this: &SvgBoundingBoxOptions) -> Option<bool>;
     #[wasm_bindgen(method, setter = "stroke")]
-    fn stroke_shim(this: &SvgBoundingBoxOptions, val: bool);
+    fn set_stroke(this: &SvgBoundingBoxOptions, val: bool);
 }
 impl SvgBoundingBoxOptions {
     #[doc = "Construct a new `SvgBoundingBoxOptions`."]
@@ -32,28 +52,28 @@ impl SvgBoundingBoxOptions {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgBoundingBoxOptions`*"]
     pub fn clipped(&mut self, val: bool) -> &mut Self {
-        self.clipped_shim(val);
+        self.set_clipped(val);
         self
     }
     #[doc = "Change the `fill` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgBoundingBoxOptions`*"]
     pub fn fill(&mut self, val: bool) -> &mut Self {
-        self.fill_shim(val);
+        self.set_fill(val);
         self
     }
     #[doc = "Change the `markers` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgBoundingBoxOptions`*"]
     pub fn markers(&mut self, val: bool) -> &mut Self {
-        self.markers_shim(val);
+        self.set_markers(val);
         self
     }
     #[doc = "Change the `stroke` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgBoundingBoxOptions`*"]
     pub fn stroke(&mut self, val: bool) -> &mut Self {
-        self.stroke_shim(val);
+        self.set_stroke(val);
         self
     }
 }

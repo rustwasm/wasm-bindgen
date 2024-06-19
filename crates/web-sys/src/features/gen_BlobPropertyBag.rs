@@ -11,10 +11,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `BlobPropertyBag`*"]
     pub type BlobPropertyBag;
     #[cfg(feature = "EndingTypes")]
+    #[doc = "Get the `endings` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BlobPropertyBag`, `EndingTypes`*"]
+    #[wasm_bindgen(method, getter = "endings")]
+    pub fn get_endings(this: &BlobPropertyBag) -> Option<EndingTypes>;
+    #[cfg(feature = "EndingTypes")]
     #[wasm_bindgen(method, setter = "endings")]
-    fn endings_shim(this: &BlobPropertyBag, val: EndingTypes);
+    fn set_endings(this: &BlobPropertyBag, val: EndingTypes);
+    #[doc = "Get the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BlobPropertyBag`*"]
+    #[wasm_bindgen(method, getter = "type")]
+    pub fn get_type(this: &BlobPropertyBag) -> Option<String>;
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &BlobPropertyBag, val: &str);
+    fn set_type(this: &BlobPropertyBag, val: &str);
 }
 impl BlobPropertyBag {
     #[doc = "Construct a new `BlobPropertyBag`."]
@@ -30,14 +41,14 @@ impl BlobPropertyBag {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BlobPropertyBag`, `EndingTypes`*"]
     pub fn endings(&mut self, val: EndingTypes) -> &mut Self {
-        self.endings_shim(val);
+        self.set_endings(val);
         self
     }
     #[doc = "Change the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BlobPropertyBag`*"]
     pub fn type_(&mut self, val: &str) -> &mut Self {
-        self.type__shim(val);
+        self.set_type(val);
         self
     }
 }

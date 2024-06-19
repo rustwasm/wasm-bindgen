@@ -10,10 +10,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConstrainDomStringParameters`*"]
     pub type ConstrainDomStringParameters;
+    #[doc = "Get the `exact` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConstrainDomStringParameters`*"]
+    #[wasm_bindgen(method, getter = "exact")]
+    pub fn get_exact(this: &ConstrainDomStringParameters) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "exact")]
-    fn exact_shim(this: &ConstrainDomStringParameters, val: &::wasm_bindgen::JsValue);
+    fn set_exact(this: &ConstrainDomStringParameters, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `ideal` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConstrainDomStringParameters`*"]
+    #[wasm_bindgen(method, getter = "ideal")]
+    pub fn get_ideal(this: &ConstrainDomStringParameters) -> ::wasm_bindgen::JsValue;
     #[wasm_bindgen(method, setter = "ideal")]
-    fn ideal_shim(this: &ConstrainDomStringParameters, val: &::wasm_bindgen::JsValue);
+    fn set_ideal(this: &ConstrainDomStringParameters, val: &::wasm_bindgen::JsValue);
 }
 impl ConstrainDomStringParameters {
     #[doc = "Construct a new `ConstrainDomStringParameters`."]
@@ -28,14 +38,14 @@ impl ConstrainDomStringParameters {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConstrainDomStringParameters`*"]
     pub fn exact(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.exact_shim(val);
+        self.set_exact(val);
         self
     }
     #[doc = "Change the `ideal` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConstrainDomStringParameters`*"]
     pub fn ideal(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.ideal_shim(val);
+        self.set_ideal(val);
         self
     }
 }

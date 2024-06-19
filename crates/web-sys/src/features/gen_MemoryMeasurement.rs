@@ -14,10 +14,28 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type MemoryMeasurement;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `breakdown` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MemoryMeasurement`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "breakdown")]
+    pub fn get_breakdown(this: &MemoryMeasurement) -> Option<::js_sys::Array>;
     #[wasm_bindgen(method, setter = "breakdown")]
-    fn breakdown_shim(this: &MemoryMeasurement, val: &::wasm_bindgen::JsValue);
+    fn set_breakdown(this: &MemoryMeasurement, val: &::wasm_bindgen::JsValue);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `bytes` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MemoryMeasurement`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "bytes")]
+    pub fn get_bytes(this: &MemoryMeasurement) -> Option<f64>;
     #[wasm_bindgen(method, setter = "bytes")]
-    fn bytes_shim(this: &MemoryMeasurement, val: f64);
+    fn set_bytes(this: &MemoryMeasurement, val: f64);
 }
 #[cfg(web_sys_unstable_apis)]
 impl MemoryMeasurement {
@@ -40,7 +58,7 @@ impl MemoryMeasurement {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn breakdown(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.breakdown_shim(val);
+        self.set_breakdown(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
@@ -51,7 +69,7 @@ impl MemoryMeasurement {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn bytes(&mut self, val: f64) -> &mut Self {
-        self.bytes_shim(val);
+        self.set_bytes(val);
         self
     }
 }
