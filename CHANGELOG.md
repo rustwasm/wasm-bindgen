@@ -44,6 +44,9 @@
 * Greatly improve the performance of sending WebIDL 'string enums' across the JavaScript boundary by converting the enum variant string to/from an int.
   [#3915](https://github.com/rustwasm/wasm-bindgen/pull/3915)
 
+* Use `table.fill` when appropriate.
+  [#3446](https://github.com/rustwasm/wasm-bindgen/pull/3446)
+
 ### Fixed
 
 * Copy port from headless test server when using `WASM_BINDGEN_TEST_ADDRESS`.
