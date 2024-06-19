@@ -15,8 +15,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `FileSystemCreateWritableOptions`*"]
     #[wasm_bindgen(method, getter = "keepExistingData")]
     pub fn get_keep_existing_data(this: &FileSystemCreateWritableOptions) -> Option<bool>;
+    #[doc = "Change the `keepExistingData` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemCreateWritableOptions`*"]
     #[wasm_bindgen(method, setter = "keepExistingData")]
-    fn set_keep_existing_data(this: &FileSystemCreateWritableOptions, val: bool);
+    pub fn set_keep_existing_data(this: &FileSystemCreateWritableOptions, val: bool);
 }
 impl FileSystemCreateWritableOptions {
     #[doc = "Construct a new `FileSystemCreateWritableOptions`."]
@@ -27,9 +30,7 @@ impl FileSystemCreateWritableOptions {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `keepExistingData` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FileSystemCreateWritableOptions`*"]
+    #[deprecated = "Use `set_keep_existing_data()` instead."]
     pub fn keep_existing_data(&mut self, val: bool) -> &mut Self {
         self.set_keep_existing_data(val);
         self

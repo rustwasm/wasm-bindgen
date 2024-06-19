@@ -15,15 +15,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AttributeNameValue`*"]
     #[wasm_bindgen(method, getter = "name")]
     pub fn get_name(this: &AttributeNameValue) -> String;
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AttributeNameValue`*"]
     #[wasm_bindgen(method, setter = "name")]
-    fn set_name(this: &AttributeNameValue, val: &str);
+    pub fn set_name(this: &AttributeNameValue, val: &str);
     #[doc = "Get the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AttributeNameValue`*"]
     #[wasm_bindgen(method, getter = "value")]
     pub fn get_value(this: &AttributeNameValue) -> String;
+    #[doc = "Change the `value` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AttributeNameValue`*"]
     #[wasm_bindgen(method, setter = "value")]
-    fn set_value(this: &AttributeNameValue, val: &str);
+    pub fn set_value(this: &AttributeNameValue, val: &str);
 }
 impl AttributeNameValue {
     #[doc = "Construct a new `AttributeNameValue`."]
@@ -36,16 +42,12 @@ impl AttributeNameValue {
         ret.value(value);
         ret
     }
-    #[doc = "Change the `name` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AttributeNameValue`*"]
+    #[deprecated = "Use `set_name()` instead."]
     pub fn name(&mut self, val: &str) -> &mut Self {
         self.set_name(val);
         self
     }
-    #[doc = "Change the `value` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AttributeNameValue`*"]
+    #[deprecated = "Use `set_value()` instead."]
     pub fn value(&mut self, val: &str) -> &mut Self {
         self.set_value(val);
         self

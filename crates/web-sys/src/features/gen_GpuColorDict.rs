@@ -23,8 +23,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "a")]
     pub fn get_a(this: &GpuColorDict) -> f64;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `a` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuColorDict`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "a")]
-    fn set_a(this: &GpuColorDict, val: f64);
+    pub fn set_a(this: &GpuColorDict, val: f64);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `b` field of this object."]
     #[doc = ""]
@@ -34,8 +41,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "b")]
     pub fn get_b(this: &GpuColorDict) -> f64;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `b` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuColorDict`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "b")]
-    fn set_b(this: &GpuColorDict, val: f64);
+    pub fn set_b(this: &GpuColorDict, val: f64);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `g` field of this object."]
     #[doc = ""]
@@ -45,8 +59,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "g")]
     pub fn get_g(this: &GpuColorDict) -> f64;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `g` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuColorDict`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "g")]
-    fn set_g(this: &GpuColorDict, val: f64);
+    pub fn set_g(this: &GpuColorDict, val: f64);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `r` field of this object."]
     #[doc = ""]
@@ -56,8 +77,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "r")]
     pub fn get_r(this: &GpuColorDict) -> f64;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `r` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuColorDict`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "r")]
-    fn set_r(this: &GpuColorDict, val: f64);
+    pub fn set_r(this: &GpuColorDict, val: f64);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuColorDict {
@@ -77,45 +105,25 @@ impl GpuColorDict {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `a` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuColorDict`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_a()` instead."]
     pub fn a(&mut self, val: f64) -> &mut Self {
         self.set_a(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `b` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuColorDict`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_b()` instead."]
     pub fn b(&mut self, val: f64) -> &mut Self {
         self.set_b(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `g` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuColorDict`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_g()` instead."]
     pub fn g(&mut self, val: f64) -> &mut Self {
         self.set_g(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `r` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuColorDict`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_r()` instead."]
     pub fn r(&mut self, val: f64) -> &mut Self {
         self.set_r(val);
         self

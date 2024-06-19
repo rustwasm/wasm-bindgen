@@ -23,8 +23,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "x")]
     pub fn get_x(this: &GpuOrigin3dDict) -> Option<u32>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `x` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuOrigin3dDict`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "x")]
-    fn set_x(this: &GpuOrigin3dDict, val: u32);
+    pub fn set_x(this: &GpuOrigin3dDict, val: u32);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `y` field of this object."]
     #[doc = ""]
@@ -34,8 +41,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "y")]
     pub fn get_y(this: &GpuOrigin3dDict) -> Option<u32>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `y` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuOrigin3dDict`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "y")]
-    fn set_y(this: &GpuOrigin3dDict, val: u32);
+    pub fn set_y(this: &GpuOrigin3dDict, val: u32);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `z` field of this object."]
     #[doc = ""]
@@ -45,8 +59,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "z")]
     pub fn get_z(this: &GpuOrigin3dDict) -> Option<u32>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `z` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuOrigin3dDict`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "z")]
-    fn set_z(this: &GpuOrigin3dDict, val: u32);
+    pub fn set_z(this: &GpuOrigin3dDict, val: u32);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuOrigin3dDict {
@@ -62,34 +83,19 @@ impl GpuOrigin3dDict {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `x` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuOrigin3dDict`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_x()` instead."]
     pub fn x(&mut self, val: u32) -> &mut Self {
         self.set_x(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `y` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuOrigin3dDict`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_y()` instead."]
     pub fn y(&mut self, val: u32) -> &mut Self {
         self.set_y(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `z` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuOrigin3dDict`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_z()` instead."]
     pub fn z(&mut self, val: u32) -> &mut Self {
         self.set_z(val);
         self

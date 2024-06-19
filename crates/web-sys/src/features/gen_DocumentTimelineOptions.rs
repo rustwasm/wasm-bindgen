@@ -15,8 +15,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `DocumentTimelineOptions`*"]
     #[wasm_bindgen(method, getter = "originTime")]
     pub fn get_origin_time(this: &DocumentTimelineOptions) -> Option<f64>;
+    #[doc = "Change the `originTime` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DocumentTimelineOptions`*"]
     #[wasm_bindgen(method, setter = "originTime")]
-    fn set_origin_time(this: &DocumentTimelineOptions, val: f64);
+    pub fn set_origin_time(this: &DocumentTimelineOptions, val: f64);
 }
 impl DocumentTimelineOptions {
     #[doc = "Construct a new `DocumentTimelineOptions`."]
@@ -27,9 +30,7 @@ impl DocumentTimelineOptions {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `originTime` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DocumentTimelineOptions`*"]
+    #[deprecated = "Use `set_origin_time()` instead."]
     pub fn origin_time(&mut self, val: f64) -> &mut Self {
         self.set_origin_time(val);
         self

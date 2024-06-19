@@ -15,15 +15,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementExecuteScriptOptions`*"]
     #[wasm_bindgen(method, getter = "origin")]
     pub fn get_origin(this: &BrowserElementExecuteScriptOptions) -> Option<String>;
+    #[doc = "Change the `origin` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BrowserElementExecuteScriptOptions`*"]
     #[wasm_bindgen(method, setter = "origin")]
-    fn set_origin(this: &BrowserElementExecuteScriptOptions, val: Option<&str>);
+    pub fn set_origin(this: &BrowserElementExecuteScriptOptions, val: Option<&str>);
     #[doc = "Get the `url` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementExecuteScriptOptions`*"]
     #[wasm_bindgen(method, getter = "url")]
     pub fn get_url(this: &BrowserElementExecuteScriptOptions) -> Option<String>;
+    #[doc = "Change the `url` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BrowserElementExecuteScriptOptions`*"]
     #[wasm_bindgen(method, setter = "url")]
-    fn set_url(this: &BrowserElementExecuteScriptOptions, val: Option<&str>);
+    pub fn set_url(this: &BrowserElementExecuteScriptOptions, val: Option<&str>);
 }
 impl BrowserElementExecuteScriptOptions {
     #[doc = "Construct a new `BrowserElementExecuteScriptOptions`."]
@@ -34,16 +40,12 @@ impl BrowserElementExecuteScriptOptions {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `origin` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BrowserElementExecuteScriptOptions`*"]
+    #[deprecated = "Use `set_origin()` instead."]
     pub fn origin(&mut self, val: Option<&str>) -> &mut Self {
         self.set_origin(val);
         self
     }
-    #[doc = "Change the `url` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BrowserElementExecuteScriptOptions`*"]
+    #[deprecated = "Use `set_url()` instead."]
     pub fn url(&mut self, val: Option<&str>) -> &mut Self {
         self.set_url(val);
         self

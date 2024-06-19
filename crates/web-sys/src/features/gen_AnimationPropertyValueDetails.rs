@@ -17,29 +17,41 @@ extern "C" {
     #[wasm_bindgen(method, getter = "composite")]
     pub fn get_composite(this: &AnimationPropertyValueDetails) -> CompositeOperation;
     #[cfg(feature = "CompositeOperation")]
+    #[doc = "Change the `composite` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`, `CompositeOperation`*"]
     #[wasm_bindgen(method, setter = "composite")]
-    fn set_composite(this: &AnimationPropertyValueDetails, val: CompositeOperation);
+    pub fn set_composite(this: &AnimationPropertyValueDetails, val: CompositeOperation);
     #[doc = "Get the `easing` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
     #[wasm_bindgen(method, getter = "easing")]
     pub fn get_easing(this: &AnimationPropertyValueDetails) -> Option<String>;
+    #[doc = "Change the `easing` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
     #[wasm_bindgen(method, setter = "easing")]
-    fn set_easing(this: &AnimationPropertyValueDetails, val: &str);
+    pub fn set_easing(this: &AnimationPropertyValueDetails, val: &str);
     #[doc = "Get the `offset` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
     #[wasm_bindgen(method, getter = "offset")]
     pub fn get_offset(this: &AnimationPropertyValueDetails) -> f64;
+    #[doc = "Change the `offset` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
     #[wasm_bindgen(method, setter = "offset")]
-    fn set_offset(this: &AnimationPropertyValueDetails, val: f64);
+    pub fn set_offset(this: &AnimationPropertyValueDetails, val: f64);
     #[doc = "Get the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
     #[wasm_bindgen(method, getter = "value")]
     pub fn get_value(this: &AnimationPropertyValueDetails) -> Option<String>;
+    #[doc = "Change the `value` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
     #[wasm_bindgen(method, setter = "value")]
-    fn set_value(this: &AnimationPropertyValueDetails, val: &str);
+    pub fn set_value(this: &AnimationPropertyValueDetails, val: &str);
 }
 impl AnimationPropertyValueDetails {
     #[cfg(feature = "CompositeOperation")]
@@ -54,30 +66,22 @@ impl AnimationPropertyValueDetails {
         ret
     }
     #[cfg(feature = "CompositeOperation")]
-    #[doc = "Change the `composite` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`, `CompositeOperation`*"]
+    #[deprecated = "Use `set_composite()` instead."]
     pub fn composite(&mut self, val: CompositeOperation) -> &mut Self {
         self.set_composite(val);
         self
     }
-    #[doc = "Change the `easing` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
+    #[deprecated = "Use `set_easing()` instead."]
     pub fn easing(&mut self, val: &str) -> &mut Self {
         self.set_easing(val);
         self
     }
-    #[doc = "Change the `offset` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
+    #[deprecated = "Use `set_offset()` instead."]
     pub fn offset(&mut self, val: f64) -> &mut Self {
         self.set_offset(val);
         self
     }
-    #[doc = "Change the `value` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
+    #[deprecated = "Use `set_value()` instead."]
     pub fn value(&mut self, val: &str) -> &mut Self {
         self.set_value(val);
         self

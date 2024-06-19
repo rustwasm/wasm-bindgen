@@ -23,8 +23,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "keyFrame")]
     pub fn get_key_frame(this: &VideoEncoderEncodeOptions) -> Option<bool>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `keyFrame` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoEncoderEncodeOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "keyFrame")]
-    fn set_key_frame(this: &VideoEncoderEncodeOptions, val: bool);
+    pub fn set_key_frame(this: &VideoEncoderEncodeOptions, val: bool);
 }
 #[cfg(web_sys_unstable_apis)]
 impl VideoEncoderEncodeOptions {
@@ -40,12 +47,7 @@ impl VideoEncoderEncodeOptions {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `keyFrame` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `VideoEncoderEncodeOptions`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_key_frame()` instead."]
     pub fn key_frame(&mut self, val: bool) -> &mut Self {
         self.set_key_frame(val);
         self

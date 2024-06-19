@@ -23,8 +23,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "depthOrArrayLayers")]
     pub fn get_depth_or_array_layers(this: &GpuExtent3dDict) -> Option<u32>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `depthOrArrayLayers` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuExtent3dDict`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "depthOrArrayLayers")]
-    fn set_depth_or_array_layers(this: &GpuExtent3dDict, val: u32);
+    pub fn set_depth_or_array_layers(this: &GpuExtent3dDict, val: u32);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `height` field of this object."]
     #[doc = ""]
@@ -34,8 +41,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "height")]
     pub fn get_height(this: &GpuExtent3dDict) -> Option<u32>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `height` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuExtent3dDict`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "height")]
-    fn set_height(this: &GpuExtent3dDict, val: u32);
+    pub fn set_height(this: &GpuExtent3dDict, val: u32);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `width` field of this object."]
     #[doc = ""]
@@ -45,8 +59,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "width")]
     pub fn get_width(this: &GpuExtent3dDict) -> u32;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `width` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuExtent3dDict`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "width")]
-    fn set_width(this: &GpuExtent3dDict, val: u32);
+    pub fn set_width(this: &GpuExtent3dDict, val: u32);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuExtent3dDict {
@@ -63,34 +84,19 @@ impl GpuExtent3dDict {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `depthOrArrayLayers` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuExtent3dDict`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_depth_or_array_layers()` instead."]
     pub fn depth_or_array_layers(&mut self, val: u32) -> &mut Self {
         self.set_depth_or_array_layers(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `height` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuExtent3dDict`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_height()` instead."]
     pub fn height(&mut self, val: u32) -> &mut Self {
         self.set_height(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `width` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuExtent3dDict`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_width()` instead."]
     pub fn width(&mut self, val: u32) -> &mut Self {
         self.set_width(val);
         self

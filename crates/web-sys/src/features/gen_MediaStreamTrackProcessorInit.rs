@@ -23,8 +23,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "maxBufferSize")]
     pub fn get_max_buffer_size(this: &MediaStreamTrackProcessorInit) -> Option<u16>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `maxBufferSize` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrackProcessorInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "maxBufferSize")]
-    fn set_max_buffer_size(this: &MediaStreamTrackProcessorInit, val: u16);
+    pub fn set_max_buffer_size(this: &MediaStreamTrackProcessorInit, val: u16);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "MediaStreamTrack")]
     #[doc = "Get the `track` field of this object."]
@@ -35,9 +42,16 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "track")]
     pub fn get_track(this: &MediaStreamTrackProcessorInit) -> MediaStreamTrack;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "MediaStreamTrack")]
+    #[doc = "Change the `track` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `MediaStreamTrackProcessorInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "track")]
-    fn set_track(this: &MediaStreamTrackProcessorInit, val: &MediaStreamTrack);
+    pub fn set_track(this: &MediaStreamTrackProcessorInit, val: &MediaStreamTrack);
 }
 #[cfg(web_sys_unstable_apis)]
 impl MediaStreamTrackProcessorInit {
@@ -55,24 +69,14 @@ impl MediaStreamTrackProcessorInit {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `maxBufferSize` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrackProcessorInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_max_buffer_size()` instead."]
     pub fn max_buffer_size(&mut self, val: u16) -> &mut Self {
         self.set_max_buffer_size(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "MediaStreamTrack")]
-    #[doc = "Change the `track` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `MediaStreamTrackProcessorInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_track()` instead."]
     pub fn track(&mut self, val: &MediaStreamTrack) -> &mut Self {
         self.set_track(val);
         self

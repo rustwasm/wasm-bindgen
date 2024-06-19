@@ -15,8 +15,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IdleRequestOptions`*"]
     #[wasm_bindgen(method, getter = "timeout")]
     pub fn get_timeout(this: &IdleRequestOptions) -> Option<u32>;
+    #[doc = "Change the `timeout` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdleRequestOptions`*"]
     #[wasm_bindgen(method, setter = "timeout")]
-    fn set_timeout(this: &IdleRequestOptions, val: u32);
+    pub fn set_timeout(this: &IdleRequestOptions, val: u32);
 }
 impl IdleRequestOptions {
     #[doc = "Construct a new `IdleRequestOptions`."]
@@ -27,9 +30,7 @@ impl IdleRequestOptions {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `timeout` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `IdleRequestOptions`*"]
+    #[deprecated = "Use `set_timeout()` instead."]
     pub fn timeout(&mut self, val: u32) -> &mut Self {
         self.set_timeout(val);
         self

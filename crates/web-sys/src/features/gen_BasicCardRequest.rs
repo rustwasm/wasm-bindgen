@@ -15,15 +15,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `BasicCardRequest`*"]
     #[wasm_bindgen(method, getter = "supportedNetworks")]
     pub fn get_supported_networks(this: &BasicCardRequest) -> Option<::js_sys::Array>;
+    #[doc = "Change the `supportedNetworks` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BasicCardRequest`*"]
     #[wasm_bindgen(method, setter = "supportedNetworks")]
-    fn set_supported_networks(this: &BasicCardRequest, val: &::wasm_bindgen::JsValue);
+    pub fn set_supported_networks(this: &BasicCardRequest, val: &::wasm_bindgen::JsValue);
     #[doc = "Get the `supportedTypes` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasicCardRequest`*"]
     #[wasm_bindgen(method, getter = "supportedTypes")]
     pub fn get_supported_types(this: &BasicCardRequest) -> Option<::js_sys::Array>;
+    #[doc = "Change the `supportedTypes` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BasicCardRequest`*"]
     #[wasm_bindgen(method, setter = "supportedTypes")]
-    fn set_supported_types(this: &BasicCardRequest, val: &::wasm_bindgen::JsValue);
+    pub fn set_supported_types(this: &BasicCardRequest, val: &::wasm_bindgen::JsValue);
 }
 impl BasicCardRequest {
     #[doc = "Construct a new `BasicCardRequest`."]
@@ -34,16 +40,12 @@ impl BasicCardRequest {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `supportedNetworks` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BasicCardRequest`*"]
+    #[deprecated = "Use `set_supported_networks()` instead."]
     pub fn supported_networks(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_supported_networks(val);
         self
     }
-    #[doc = "Change the `supportedTypes` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BasicCardRequest`*"]
+    #[deprecated = "Use `set_supported_types()` instead."]
     pub fn supported_types(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_supported_types(val);
         self

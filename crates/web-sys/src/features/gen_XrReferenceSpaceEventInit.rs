@@ -23,8 +23,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "bubbles")]
     pub fn get_bubbles(this: &XrReferenceSpaceEventInit) -> Option<bool>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XrReferenceSpaceEventInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn set_bubbles(this: &XrReferenceSpaceEventInit, val: bool);
+    pub fn set_bubbles(this: &XrReferenceSpaceEventInit, val: bool);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `cancelable` field of this object."]
     #[doc = ""]
@@ -34,8 +41,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "cancelable")]
     pub fn get_cancelable(this: &XrReferenceSpaceEventInit) -> Option<bool>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XrReferenceSpaceEventInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn set_cancelable(this: &XrReferenceSpaceEventInit, val: bool);
+    pub fn set_cancelable(this: &XrReferenceSpaceEventInit, val: bool);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `composed` field of this object."]
     #[doc = ""]
@@ -45,8 +59,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "composed")]
     pub fn get_composed(this: &XrReferenceSpaceEventInit) -> Option<bool>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XrReferenceSpaceEventInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "composed")]
-    fn set_composed(this: &XrReferenceSpaceEventInit, val: bool);
+    pub fn set_composed(this: &XrReferenceSpaceEventInit, val: bool);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrReferenceSpace")]
     #[doc = "Get the `referenceSpace` field of this object."]
@@ -57,9 +78,16 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "referenceSpace")]
     pub fn get_reference_space(this: &XrReferenceSpaceEventInit) -> XrReferenceSpace;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrReferenceSpace")]
+    #[doc = "Change the `referenceSpace` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XrReferenceSpace`, `XrReferenceSpaceEventInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "referenceSpace")]
-    fn set_reference_space(this: &XrReferenceSpaceEventInit, val: &XrReferenceSpace);
+    pub fn set_reference_space(this: &XrReferenceSpaceEventInit, val: &XrReferenceSpace);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrRigidTransform")]
     #[doc = "Get the `transform` field of this object."]
@@ -70,9 +98,16 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "transform")]
     pub fn get_transform(this: &XrReferenceSpaceEventInit) -> Option<XrRigidTransform>;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrRigidTransform")]
+    #[doc = "Change the `transform` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XrReferenceSpaceEventInit`, `XrRigidTransform`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "transform")]
-    fn set_transform(this: &XrReferenceSpaceEventInit, val: Option<&XrRigidTransform>);
+    pub fn set_transform(this: &XrReferenceSpaceEventInit, val: Option<&XrRigidTransform>);
 }
 #[cfg(web_sys_unstable_apis)]
 impl XrReferenceSpaceEventInit {
@@ -90,58 +125,33 @@ impl XrReferenceSpaceEventInit {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `bubbles` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `XrReferenceSpaceEventInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_bubbles()` instead."]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
         self.set_bubbles(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `cancelable` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `XrReferenceSpaceEventInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_cancelable()` instead."]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
         self.set_cancelable(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `composed` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `XrReferenceSpaceEventInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_composed()` instead."]
     pub fn composed(&mut self, val: bool) -> &mut Self {
         self.set_composed(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrReferenceSpace")]
-    #[doc = "Change the `referenceSpace` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `XrReferenceSpace`, `XrReferenceSpaceEventInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_reference_space()` instead."]
     pub fn reference_space(&mut self, val: &XrReferenceSpace) -> &mut Self {
         self.set_reference_space(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "XrRigidTransform")]
-    #[doc = "Change the `transform` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `XrReferenceSpaceEventInit`, `XrRigidTransform`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_transform()` instead."]
     pub fn transform(&mut self, val: Option<&XrRigidTransform>) -> &mut Self {
         self.set_transform(val);
         self

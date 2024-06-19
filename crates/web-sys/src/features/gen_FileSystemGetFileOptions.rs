@@ -15,8 +15,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `FileSystemGetFileOptions`*"]
     #[wasm_bindgen(method, getter = "create")]
     pub fn get_create(this: &FileSystemGetFileOptions) -> Option<bool>;
+    #[doc = "Change the `create` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemGetFileOptions`*"]
     #[wasm_bindgen(method, setter = "create")]
-    fn set_create(this: &FileSystemGetFileOptions, val: bool);
+    pub fn set_create(this: &FileSystemGetFileOptions, val: bool);
 }
 impl FileSystemGetFileOptions {
     #[doc = "Construct a new `FileSystemGetFileOptions`."]
@@ -27,9 +30,7 @@ impl FileSystemGetFileOptions {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `create` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FileSystemGetFileOptions`*"]
+    #[deprecated = "Use `set_create()` instead."]
     pub fn create(&mut self, val: bool) -> &mut Self {
         self.set_create(val);
         self

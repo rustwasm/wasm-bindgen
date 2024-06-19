@@ -15,15 +15,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `DomWindowResizeEventDetail`*"]
     #[wasm_bindgen(method, getter = "height")]
     pub fn get_height(this: &DomWindowResizeEventDetail) -> Option<i32>;
+    #[doc = "Change the `height` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomWindowResizeEventDetail`*"]
     #[wasm_bindgen(method, setter = "height")]
-    fn set_height(this: &DomWindowResizeEventDetail, val: i32);
+    pub fn set_height(this: &DomWindowResizeEventDetail, val: i32);
     #[doc = "Get the `width` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomWindowResizeEventDetail`*"]
     #[wasm_bindgen(method, getter = "width")]
     pub fn get_width(this: &DomWindowResizeEventDetail) -> Option<i32>;
+    #[doc = "Change the `width` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomWindowResizeEventDetail`*"]
     #[wasm_bindgen(method, setter = "width")]
-    fn set_width(this: &DomWindowResizeEventDetail, val: i32);
+    pub fn set_width(this: &DomWindowResizeEventDetail, val: i32);
 }
 impl DomWindowResizeEventDetail {
     #[doc = "Construct a new `DomWindowResizeEventDetail`."]
@@ -34,16 +40,12 @@ impl DomWindowResizeEventDetail {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `height` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DomWindowResizeEventDetail`*"]
+    #[deprecated = "Use `set_height()` instead."]
     pub fn height(&mut self, val: i32) -> &mut Self {
         self.set_height(val);
         self
     }
-    #[doc = "Change the `width` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DomWindowResizeEventDetail`*"]
+    #[deprecated = "Use `set_width()` instead."]
     pub fn width(&mut self, val: i32) -> &mut Self {
         self.set_width(val);
         self

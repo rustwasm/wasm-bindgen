@@ -15,8 +15,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `TextDecodeOptions`*"]
     #[wasm_bindgen(method, getter = "stream")]
     pub fn get_stream(this: &TextDecodeOptions) -> Option<bool>;
+    #[doc = "Change the `stream` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TextDecodeOptions`*"]
     #[wasm_bindgen(method, setter = "stream")]
-    fn set_stream(this: &TextDecodeOptions, val: bool);
+    pub fn set_stream(this: &TextDecodeOptions, val: bool);
 }
 impl TextDecodeOptions {
     #[doc = "Construct a new `TextDecodeOptions`."]
@@ -27,9 +30,7 @@ impl TextDecodeOptions {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `stream` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `TextDecodeOptions`*"]
+    #[deprecated = "Use `set_stream()` instead."]
     pub fn stream(&mut self, val: bool) -> &mut Self {
         self.set_stream(val);
         self

@@ -15,15 +15,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `EcKeyImportParams`*"]
     #[wasm_bindgen(method, getter = "name")]
     pub fn get_name(this: &EcKeyImportParams) -> String;
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `EcKeyImportParams`*"]
     #[wasm_bindgen(method, setter = "name")]
-    fn set_name(this: &EcKeyImportParams, val: &str);
+    pub fn set_name(this: &EcKeyImportParams, val: &str);
     #[doc = "Get the `namedCurve` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcKeyImportParams`*"]
     #[wasm_bindgen(method, getter = "namedCurve")]
     pub fn get_named_curve(this: &EcKeyImportParams) -> Option<String>;
+    #[doc = "Change the `namedCurve` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `EcKeyImportParams`*"]
     #[wasm_bindgen(method, setter = "namedCurve")]
-    fn set_named_curve(this: &EcKeyImportParams, val: &str);
+    pub fn set_named_curve(this: &EcKeyImportParams, val: &str);
 }
 impl EcKeyImportParams {
     #[doc = "Construct a new `EcKeyImportParams`."]
@@ -35,16 +41,12 @@ impl EcKeyImportParams {
         ret.name(name);
         ret
     }
-    #[doc = "Change the `name` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `EcKeyImportParams`*"]
+    #[deprecated = "Use `set_name()` instead."]
     pub fn name(&mut self, val: &str) -> &mut Self {
         self.set_name(val);
         self
     }
-    #[doc = "Change the `namedCurve` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `EcKeyImportParams`*"]
+    #[deprecated = "Use `set_named_curve()` instead."]
     pub fn named_curve(&mut self, val: &str) -> &mut Self {
         self.set_named_curve(val);
         self

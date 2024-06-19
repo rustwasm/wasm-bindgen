@@ -23,8 +23,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "label")]
     pub fn get_label(this: &GpuRenderPassLayout) -> Option<String>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `label` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassLayout`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "label")]
-    fn set_label(this: &GpuRenderPassLayout, val: &str);
+    pub fn set_label(this: &GpuRenderPassLayout, val: &str);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `colorFormats` field of this object."]
     #[doc = ""]
@@ -34,8 +41,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "colorFormats")]
     pub fn get_color_formats(this: &GpuRenderPassLayout) -> ::js_sys::Array;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `colorFormats` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassLayout`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "colorFormats")]
-    fn set_color_formats(this: &GpuRenderPassLayout, val: &::wasm_bindgen::JsValue);
+    pub fn set_color_formats(this: &GpuRenderPassLayout, val: &::wasm_bindgen::JsValue);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureFormat")]
     #[doc = "Get the `depthStencilFormat` field of this object."]
@@ -46,9 +60,16 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "depthStencilFormat")]
     pub fn get_depth_stencil_format(this: &GpuRenderPassLayout) -> Option<GpuTextureFormat>;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureFormat")]
+    #[doc = "Change the `depthStencilFormat` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassLayout`, `GpuTextureFormat`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "depthStencilFormat")]
-    fn set_depth_stencil_format(this: &GpuRenderPassLayout, val: GpuTextureFormat);
+    pub fn set_depth_stencil_format(this: &GpuRenderPassLayout, val: GpuTextureFormat);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `sampleCount` field of this object."]
     #[doc = ""]
@@ -58,8 +79,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "sampleCount")]
     pub fn get_sample_count(this: &GpuRenderPassLayout) -> Option<u32>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `sampleCount` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassLayout`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "sampleCount")]
-    fn set_sample_count(this: &GpuRenderPassLayout, val: u32);
+    pub fn set_sample_count(this: &GpuRenderPassLayout, val: u32);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuRenderPassLayout {
@@ -76,46 +104,26 @@ impl GpuRenderPassLayout {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `label` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassLayout`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_label()` instead."]
     pub fn label(&mut self, val: &str) -> &mut Self {
         self.set_label(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `colorFormats` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassLayout`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_color_formats()` instead."]
     pub fn color_formats(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_color_formats(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureFormat")]
-    #[doc = "Change the `depthStencilFormat` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassLayout`, `GpuTextureFormat`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_depth_stencil_format()` instead."]
     pub fn depth_stencil_format(&mut self, val: GpuTextureFormat) -> &mut Self {
         self.set_depth_stencil_format(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `sampleCount` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderPassLayout`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_sample_count()` instead."]
     pub fn sample_count(&mut self, val: u32) -> &mut Self {
         self.set_sample_count(val);
         self

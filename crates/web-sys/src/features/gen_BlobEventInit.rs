@@ -15,22 +15,31 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `BlobEventInit`*"]
     #[wasm_bindgen(method, getter = "bubbles")]
     pub fn get_bubbles(this: &BlobEventInit) -> Option<bool>;
+    #[doc = "Change the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BlobEventInit`*"]
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn set_bubbles(this: &BlobEventInit, val: bool);
+    pub fn set_bubbles(this: &BlobEventInit, val: bool);
     #[doc = "Get the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BlobEventInit`*"]
     #[wasm_bindgen(method, getter = "cancelable")]
     pub fn get_cancelable(this: &BlobEventInit) -> Option<bool>;
+    #[doc = "Change the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BlobEventInit`*"]
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn set_cancelable(this: &BlobEventInit, val: bool);
+    pub fn set_cancelable(this: &BlobEventInit, val: bool);
     #[doc = "Get the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BlobEventInit`*"]
     #[wasm_bindgen(method, getter = "composed")]
     pub fn get_composed(this: &BlobEventInit) -> Option<bool>;
+    #[doc = "Change the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BlobEventInit`*"]
     #[wasm_bindgen(method, setter = "composed")]
-    fn set_composed(this: &BlobEventInit, val: bool);
+    pub fn set_composed(this: &BlobEventInit, val: bool);
     #[cfg(feature = "Blob")]
     #[doc = "Get the `data` field of this object."]
     #[doc = ""]
@@ -38,8 +47,11 @@ extern "C" {
     #[wasm_bindgen(method, getter = "data")]
     pub fn get_data(this: &BlobEventInit) -> Option<Blob>;
     #[cfg(feature = "Blob")]
+    #[doc = "Change the `data` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Blob`, `BlobEventInit`*"]
     #[wasm_bindgen(method, setter = "data")]
-    fn set_data(this: &BlobEventInit, val: Option<&Blob>);
+    pub fn set_data(this: &BlobEventInit, val: Option<&Blob>);
 }
 impl BlobEventInit {
     #[doc = "Construct a new `BlobEventInit`."]
@@ -50,31 +62,23 @@ impl BlobEventInit {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `bubbles` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BlobEventInit`*"]
+    #[deprecated = "Use `set_bubbles()` instead."]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
         self.set_bubbles(val);
         self
     }
-    #[doc = "Change the `cancelable` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BlobEventInit`*"]
+    #[deprecated = "Use `set_cancelable()` instead."]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
         self.set_cancelable(val);
         self
     }
-    #[doc = "Change the `composed` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BlobEventInit`*"]
+    #[deprecated = "Use `set_composed()` instead."]
     pub fn composed(&mut self, val: bool) -> &mut Self {
         self.set_composed(val);
         self
     }
     #[cfg(feature = "Blob")]
-    #[doc = "Change the `data` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Blob`, `BlobEventInit`*"]
+    #[deprecated = "Use `set_data()` instead."]
     pub fn data(&mut self, val: Option<&Blob>) -> &mut Self {
         self.set_data(val);
         self

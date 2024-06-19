@@ -15,15 +15,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `MidiOptions`*"]
     #[wasm_bindgen(method, getter = "software")]
     pub fn get_software(this: &MidiOptions) -> Option<bool>;
+    #[doc = "Change the `software` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MidiOptions`*"]
     #[wasm_bindgen(method, setter = "software")]
-    fn set_software(this: &MidiOptions, val: bool);
+    pub fn set_software(this: &MidiOptions, val: bool);
     #[doc = "Get the `sysex` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiOptions`*"]
     #[wasm_bindgen(method, getter = "sysex")]
     pub fn get_sysex(this: &MidiOptions) -> Option<bool>;
+    #[doc = "Change the `sysex` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MidiOptions`*"]
     #[wasm_bindgen(method, setter = "sysex")]
-    fn set_sysex(this: &MidiOptions, val: bool);
+    pub fn set_sysex(this: &MidiOptions, val: bool);
 }
 impl MidiOptions {
     #[doc = "Construct a new `MidiOptions`."]
@@ -34,16 +40,12 @@ impl MidiOptions {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `software` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MidiOptions`*"]
+    #[deprecated = "Use `set_software()` instead."]
     pub fn software(&mut self, val: bool) -> &mut Self {
         self.set_software(val);
         self
     }
-    #[doc = "Change the `sysex` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MidiOptions`*"]
+    #[deprecated = "Use `set_sysex()` instead."]
     pub fn sysex(&mut self, val: bool) -> &mut Self {
         self.set_sysex(val);
         self

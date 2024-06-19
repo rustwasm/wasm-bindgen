@@ -17,8 +17,11 @@ extern "C" {
     #[wasm_bindgen(method, getter = "colorSpaceConversion")]
     pub fn get_color_space_conversion(this: &ImageBitmapOptions) -> Option<ColorSpaceConversion>;
     #[cfg(feature = "ColorSpaceConversion")]
+    #[doc = "Change the `colorSpaceConversion` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ColorSpaceConversion`, `ImageBitmapOptions`*"]
     #[wasm_bindgen(method, setter = "colorSpaceConversion")]
-    fn set_color_space_conversion(this: &ImageBitmapOptions, val: ColorSpaceConversion);
+    pub fn set_color_space_conversion(this: &ImageBitmapOptions, val: ColorSpaceConversion);
     #[cfg(feature = "ImageOrientation")]
     #[doc = "Get the `imageOrientation` field of this object."]
     #[doc = ""]
@@ -26,8 +29,11 @@ extern "C" {
     #[wasm_bindgen(method, getter = "imageOrientation")]
     pub fn get_image_orientation(this: &ImageBitmapOptions) -> Option<ImageOrientation>;
     #[cfg(feature = "ImageOrientation")]
+    #[doc = "Change the `imageOrientation` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`, `ImageOrientation`*"]
     #[wasm_bindgen(method, setter = "imageOrientation")]
-    fn set_image_orientation(this: &ImageBitmapOptions, val: ImageOrientation);
+    pub fn set_image_orientation(this: &ImageBitmapOptions, val: ImageOrientation);
     #[cfg(feature = "PremultiplyAlpha")]
     #[doc = "Get the `premultiplyAlpha` field of this object."]
     #[doc = ""]
@@ -35,15 +41,21 @@ extern "C" {
     #[wasm_bindgen(method, getter = "premultiplyAlpha")]
     pub fn get_premultiply_alpha(this: &ImageBitmapOptions) -> Option<PremultiplyAlpha>;
     #[cfg(feature = "PremultiplyAlpha")]
+    #[doc = "Change the `premultiplyAlpha` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`, `PremultiplyAlpha`*"]
     #[wasm_bindgen(method, setter = "premultiplyAlpha")]
-    fn set_premultiply_alpha(this: &ImageBitmapOptions, val: PremultiplyAlpha);
+    pub fn set_premultiply_alpha(this: &ImageBitmapOptions, val: PremultiplyAlpha);
     #[doc = "Get the `resizeHeight` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`*"]
     #[wasm_bindgen(method, getter = "resizeHeight")]
     pub fn get_resize_height(this: &ImageBitmapOptions) -> Option<u32>;
+    #[doc = "Change the `resizeHeight` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`*"]
     #[wasm_bindgen(method, setter = "resizeHeight")]
-    fn set_resize_height(this: &ImageBitmapOptions, val: u32);
+    pub fn set_resize_height(this: &ImageBitmapOptions, val: u32);
     #[cfg(feature = "ResizeQuality")]
     #[doc = "Get the `resizeQuality` field of this object."]
     #[doc = ""]
@@ -51,15 +63,21 @@ extern "C" {
     #[wasm_bindgen(method, getter = "resizeQuality")]
     pub fn get_resize_quality(this: &ImageBitmapOptions) -> Option<ResizeQuality>;
     #[cfg(feature = "ResizeQuality")]
+    #[doc = "Change the `resizeQuality` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`, `ResizeQuality`*"]
     #[wasm_bindgen(method, setter = "resizeQuality")]
-    fn set_resize_quality(this: &ImageBitmapOptions, val: ResizeQuality);
+    pub fn set_resize_quality(this: &ImageBitmapOptions, val: ResizeQuality);
     #[doc = "Get the `resizeWidth` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`*"]
     #[wasm_bindgen(method, getter = "resizeWidth")]
     pub fn get_resize_width(this: &ImageBitmapOptions) -> Option<u32>;
+    #[doc = "Change the `resizeWidth` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`*"]
     #[wasm_bindgen(method, setter = "resizeWidth")]
-    fn set_resize_width(this: &ImageBitmapOptions, val: u32);
+    pub fn set_resize_width(this: &ImageBitmapOptions, val: u32);
 }
 impl ImageBitmapOptions {
     #[doc = "Construct a new `ImageBitmapOptions`."]
@@ -71,47 +89,35 @@ impl ImageBitmapOptions {
         ret
     }
     #[cfg(feature = "ColorSpaceConversion")]
-    #[doc = "Change the `colorSpaceConversion` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ColorSpaceConversion`, `ImageBitmapOptions`*"]
+    #[deprecated = "Use `set_color_space_conversion()` instead."]
     pub fn color_space_conversion(&mut self, val: ColorSpaceConversion) -> &mut Self {
         self.set_color_space_conversion(val);
         self
     }
     #[cfg(feature = "ImageOrientation")]
-    #[doc = "Change the `imageOrientation` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`, `ImageOrientation`*"]
+    #[deprecated = "Use `set_image_orientation()` instead."]
     pub fn image_orientation(&mut self, val: ImageOrientation) -> &mut Self {
         self.set_image_orientation(val);
         self
     }
     #[cfg(feature = "PremultiplyAlpha")]
-    #[doc = "Change the `premultiplyAlpha` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`, `PremultiplyAlpha`*"]
+    #[deprecated = "Use `set_premultiply_alpha()` instead."]
     pub fn premultiply_alpha(&mut self, val: PremultiplyAlpha) -> &mut Self {
         self.set_premultiply_alpha(val);
         self
     }
-    #[doc = "Change the `resizeHeight` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`*"]
+    #[deprecated = "Use `set_resize_height()` instead."]
     pub fn resize_height(&mut self, val: u32) -> &mut Self {
         self.set_resize_height(val);
         self
     }
     #[cfg(feature = "ResizeQuality")]
-    #[doc = "Change the `resizeQuality` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`, `ResizeQuality`*"]
+    #[deprecated = "Use `set_resize_quality()` instead."]
     pub fn resize_quality(&mut self, val: ResizeQuality) -> &mut Self {
         self.set_resize_quality(val);
         self
     }
-    #[doc = "Change the `resizeWidth` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ImageBitmapOptions`*"]
+    #[deprecated = "Use `set_resize_width()` instead."]
     pub fn resize_width(&mut self, val: u32) -> &mut Self {
         self.set_resize_width(val);
         self

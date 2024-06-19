@@ -17,15 +17,21 @@ extern "C" {
     #[wasm_bindgen(method, getter = "box")]
     pub fn get_box(this: &BoxQuadOptions) -> Option<CssBoxType>;
     #[cfg(feature = "CssBoxType")]
+    #[doc = "Change the `box` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BoxQuadOptions`, `CssBoxType`*"]
     #[wasm_bindgen(method, setter = "box")]
-    fn set_box(this: &BoxQuadOptions, val: CssBoxType);
+    pub fn set_box(this: &BoxQuadOptions, val: CssBoxType);
     #[doc = "Get the `relativeTo` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BoxQuadOptions`*"]
     #[wasm_bindgen(method, getter = "relativeTo")]
     pub fn get_relative_to(this: &BoxQuadOptions) -> Option<::js_sys::Object>;
+    #[doc = "Change the `relativeTo` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BoxQuadOptions`*"]
     #[wasm_bindgen(method, setter = "relativeTo")]
-    fn set_relative_to(this: &BoxQuadOptions, val: &::js_sys::Object);
+    pub fn set_relative_to(this: &BoxQuadOptions, val: &::js_sys::Object);
 }
 impl BoxQuadOptions {
     #[doc = "Construct a new `BoxQuadOptions`."]
@@ -37,16 +43,12 @@ impl BoxQuadOptions {
         ret
     }
     #[cfg(feature = "CssBoxType")]
-    #[doc = "Change the `box` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BoxQuadOptions`, `CssBoxType`*"]
+    #[deprecated = "Use `set_box()` instead."]
     pub fn box_(&mut self, val: CssBoxType) -> &mut Self {
         self.set_box(val);
         self
     }
-    #[doc = "Change the `relativeTo` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BoxQuadOptions`*"]
+    #[deprecated = "Use `set_relative_to()` instead."]
     pub fn relative_to(&mut self, val: &::js_sys::Object) -> &mut Self {
         self.set_relative_to(val);
         self

@@ -15,22 +15,31 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `U2fClientData`*"]
     #[wasm_bindgen(method, getter = "challenge")]
     pub fn get_challenge(this: &U2fClientData) -> Option<String>;
+    #[doc = "Change the `challenge` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `U2fClientData`*"]
     #[wasm_bindgen(method, setter = "challenge")]
-    fn set_challenge(this: &U2fClientData, val: &str);
+    pub fn set_challenge(this: &U2fClientData, val: &str);
     #[doc = "Get the `origin` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `U2fClientData`*"]
     #[wasm_bindgen(method, getter = "origin")]
     pub fn get_origin(this: &U2fClientData) -> Option<String>;
+    #[doc = "Change the `origin` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `U2fClientData`*"]
     #[wasm_bindgen(method, setter = "origin")]
-    fn set_origin(this: &U2fClientData, val: &str);
+    pub fn set_origin(this: &U2fClientData, val: &str);
     #[doc = "Get the `typ` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `U2fClientData`*"]
     #[wasm_bindgen(method, getter = "typ")]
     pub fn get_typ(this: &U2fClientData) -> Option<String>;
+    #[doc = "Change the `typ` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `U2fClientData`*"]
     #[wasm_bindgen(method, setter = "typ")]
-    fn set_typ(this: &U2fClientData, val: &str);
+    pub fn set_typ(this: &U2fClientData, val: &str);
 }
 impl U2fClientData {
     #[doc = "Construct a new `U2fClientData`."]
@@ -41,23 +50,17 @@ impl U2fClientData {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `challenge` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `U2fClientData`*"]
+    #[deprecated = "Use `set_challenge()` instead."]
     pub fn challenge(&mut self, val: &str) -> &mut Self {
         self.set_challenge(val);
         self
     }
-    #[doc = "Change the `origin` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `U2fClientData`*"]
+    #[deprecated = "Use `set_origin()` instead."]
     pub fn origin(&mut self, val: &str) -> &mut Self {
         self.set_origin(val);
         self
     }
-    #[doc = "Change the `typ` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `U2fClientData`*"]
+    #[deprecated = "Use `set_typ()` instead."]
     pub fn typ(&mut self, val: &str) -> &mut Self {
         self.set_typ(val);
         self

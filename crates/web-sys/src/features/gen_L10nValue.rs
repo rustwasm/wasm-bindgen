@@ -15,15 +15,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `L10nValue`*"]
     #[wasm_bindgen(method, getter = "attributes")]
     pub fn get_attributes(this: &L10nValue) -> Option<::js_sys::Array>;
+    #[doc = "Change the `attributes` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `L10nValue`*"]
     #[wasm_bindgen(method, setter = "attributes")]
-    fn set_attributes(this: &L10nValue, val: &::wasm_bindgen::JsValue);
+    pub fn set_attributes(this: &L10nValue, val: &::wasm_bindgen::JsValue);
     #[doc = "Get the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nValue`*"]
     #[wasm_bindgen(method, getter = "value")]
     pub fn get_value(this: &L10nValue) -> Option<String>;
+    #[doc = "Change the `value` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `L10nValue`*"]
     #[wasm_bindgen(method, setter = "value")]
-    fn set_value(this: &L10nValue, val: Option<&str>);
+    pub fn set_value(this: &L10nValue, val: Option<&str>);
 }
 impl L10nValue {
     #[doc = "Construct a new `L10nValue`."]
@@ -34,16 +40,12 @@ impl L10nValue {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `attributes` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `L10nValue`*"]
+    #[deprecated = "Use `set_attributes()` instead."]
     pub fn attributes(&mut self, val: Option<&::wasm_bindgen::JsValue>) -> &mut Self {
         self.set_attributes(val.unwrap_or(&::wasm_bindgen::JsValue::NULL));
         self
     }
-    #[doc = "Change the `value` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `L10nValue`*"]
+    #[deprecated = "Use `set_value()` instead."]
     pub fn value(&mut self, val: Option<&str>) -> &mut Self {
         self.set_value(val);
         self

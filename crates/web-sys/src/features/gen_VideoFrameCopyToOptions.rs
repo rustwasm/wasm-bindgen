@@ -23,8 +23,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "layout")]
     pub fn get_layout(this: &VideoFrameCopyToOptions) -> Option<::js_sys::Array>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `layout` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoFrameCopyToOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "layout")]
-    fn set_layout(this: &VideoFrameCopyToOptions, val: &::wasm_bindgen::JsValue);
+    pub fn set_layout(this: &VideoFrameCopyToOptions, val: &::wasm_bindgen::JsValue);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "DomRectInit")]
     #[doc = "Get the `rect` field of this object."]
@@ -35,9 +42,16 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "rect")]
     pub fn get_rect(this: &VideoFrameCopyToOptions) -> Option<DomRectInit>;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "DomRectInit")]
+    #[doc = "Change the `rect` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomRectInit`, `VideoFrameCopyToOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "rect")]
-    fn set_rect(this: &VideoFrameCopyToOptions, val: &DomRectInit);
+    pub fn set_rect(this: &VideoFrameCopyToOptions, val: &DomRectInit);
 }
 #[cfg(web_sys_unstable_apis)]
 impl VideoFrameCopyToOptions {
@@ -53,24 +67,14 @@ impl VideoFrameCopyToOptions {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `layout` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `VideoFrameCopyToOptions`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_layout()` instead."]
     pub fn layout(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_layout(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "DomRectInit")]
-    #[doc = "Change the `rect` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DomRectInit`, `VideoFrameCopyToOptions`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_rect()` instead."]
     pub fn rect(&mut self, val: &DomRectInit) -> &mut Self {
         self.set_rect(val);
         self

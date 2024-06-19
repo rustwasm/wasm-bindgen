@@ -15,15 +15,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
     #[wasm_bindgen(method, getter = "locale")]
     pub fn get_locale(this: &DisplayNameResult) -> Option<String>;
+    #[doc = "Change the `locale` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
     #[wasm_bindgen(method, setter = "locale")]
-    fn set_locale(this: &DisplayNameResult, val: &str);
+    pub fn set_locale(this: &DisplayNameResult, val: &str);
     #[doc = "Get the `style` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
     #[wasm_bindgen(method, getter = "style")]
     pub fn get_style(this: &DisplayNameResult) -> Option<String>;
+    #[doc = "Change the `style` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
     #[wasm_bindgen(method, setter = "style")]
-    fn set_style(this: &DisplayNameResult, val: &str);
+    pub fn set_style(this: &DisplayNameResult, val: &str);
 }
 impl DisplayNameResult {
     #[doc = "Construct a new `DisplayNameResult`."]
@@ -34,16 +40,12 @@ impl DisplayNameResult {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `locale` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
+    #[deprecated = "Use `set_locale()` instead."]
     pub fn locale(&mut self, val: &str) -> &mut Self {
         self.set_locale(val);
         self
     }
-    #[doc = "Change the `style` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
+    #[deprecated = "Use `set_style()` instead."]
     pub fn style(&mut self, val: &str) -> &mut Self {
         self.set_style(val);
         self

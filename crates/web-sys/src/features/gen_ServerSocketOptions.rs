@@ -17,8 +17,11 @@ extern "C" {
     #[wasm_bindgen(method, getter = "binaryType")]
     pub fn get_binary_type(this: &ServerSocketOptions) -> Option<TcpSocketBinaryType>;
     #[cfg(feature = "TcpSocketBinaryType")]
+    #[doc = "Change the `binaryType` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ServerSocketOptions`, `TcpSocketBinaryType`*"]
     #[wasm_bindgen(method, setter = "binaryType")]
-    fn set_binary_type(this: &ServerSocketOptions, val: TcpSocketBinaryType);
+    pub fn set_binary_type(this: &ServerSocketOptions, val: TcpSocketBinaryType);
 }
 impl ServerSocketOptions {
     #[doc = "Construct a new `ServerSocketOptions`."]
@@ -30,9 +33,7 @@ impl ServerSocketOptions {
         ret
     }
     #[cfg(feature = "TcpSocketBinaryType")]
-    #[doc = "Change the `binaryType` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ServerSocketOptions`, `TcpSocketBinaryType`*"]
+    #[deprecated = "Use `set_binary_type()` instead."]
     pub fn binary_type(&mut self, val: TcpSocketBinaryType) -> &mut Self {
         self.set_binary_type(val);
         self

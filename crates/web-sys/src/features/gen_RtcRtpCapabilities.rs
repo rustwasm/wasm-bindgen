@@ -15,15 +15,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCapabilities`*"]
     #[wasm_bindgen(method, getter = "codecs")]
     pub fn get_codecs(this: &RtcRtpCapabilities) -> ::js_sys::Array;
+    #[doc = "Change the `codecs` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCapabilities`*"]
     #[wasm_bindgen(method, setter = "codecs")]
-    fn set_codecs(this: &RtcRtpCapabilities, val: &::wasm_bindgen::JsValue);
+    pub fn set_codecs(this: &RtcRtpCapabilities, val: &::wasm_bindgen::JsValue);
     #[doc = "Get the `headerExtensions` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCapabilities`*"]
     #[wasm_bindgen(method, getter = "headerExtensions")]
     pub fn get_header_extensions(this: &RtcRtpCapabilities) -> ::js_sys::Array;
+    #[doc = "Change the `headerExtensions` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCapabilities`*"]
     #[wasm_bindgen(method, setter = "headerExtensions")]
-    fn set_header_extensions(this: &RtcRtpCapabilities, val: &::wasm_bindgen::JsValue);
+    pub fn set_header_extensions(this: &RtcRtpCapabilities, val: &::wasm_bindgen::JsValue);
 }
 impl RtcRtpCapabilities {
     #[doc = "Construct a new `RtcRtpCapabilities`."]
@@ -39,16 +45,12 @@ impl RtcRtpCapabilities {
         ret.header_extensions(header_extensions);
         ret
     }
-    #[doc = "Change the `codecs` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCapabilities`*"]
+    #[deprecated = "Use `set_codecs()` instead."]
     pub fn codecs(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_codecs(val);
         self
     }
-    #[doc = "Change the `headerExtensions` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcRtpCapabilities`*"]
+    #[deprecated = "Use `set_header_extensions()` instead."]
     pub fn header_extensions(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_header_extensions(val);
         self

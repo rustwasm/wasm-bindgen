@@ -24,9 +24,16 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "dstFactor")]
     pub fn get_dst_factor(this: &GpuBlendComponent) -> Option<GpuBlendFactor>;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBlendFactor")]
+    #[doc = "Change the `dstFactor` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBlendComponent`, `GpuBlendFactor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "dstFactor")]
-    fn set_dst_factor(this: &GpuBlendComponent, val: GpuBlendFactor);
+    pub fn set_dst_factor(this: &GpuBlendComponent, val: GpuBlendFactor);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBlendOperation")]
     #[doc = "Get the `operation` field of this object."]
@@ -37,9 +44,16 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "operation")]
     pub fn get_operation(this: &GpuBlendComponent) -> Option<GpuBlendOperation>;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBlendOperation")]
+    #[doc = "Change the `operation` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBlendComponent`, `GpuBlendOperation`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "operation")]
-    fn set_operation(this: &GpuBlendComponent, val: GpuBlendOperation);
+    pub fn set_operation(this: &GpuBlendComponent, val: GpuBlendOperation);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBlendFactor")]
     #[doc = "Get the `srcFactor` field of this object."]
@@ -50,9 +64,16 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "srcFactor")]
     pub fn get_src_factor(this: &GpuBlendComponent) -> Option<GpuBlendFactor>;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBlendFactor")]
+    #[doc = "Change the `srcFactor` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBlendComponent`, `GpuBlendFactor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "srcFactor")]
-    fn set_src_factor(this: &GpuBlendComponent, val: GpuBlendFactor);
+    pub fn set_src_factor(this: &GpuBlendComponent, val: GpuBlendFactor);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuBlendComponent {
@@ -69,36 +90,21 @@ impl GpuBlendComponent {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBlendFactor")]
-    #[doc = "Change the `dstFactor` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBlendComponent`, `GpuBlendFactor`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_dst_factor()` instead."]
     pub fn dst_factor(&mut self, val: GpuBlendFactor) -> &mut Self {
         self.set_dst_factor(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBlendOperation")]
-    #[doc = "Change the `operation` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBlendComponent`, `GpuBlendOperation`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_operation()` instead."]
     pub fn operation(&mut self, val: GpuBlendOperation) -> &mut Self {
         self.set_operation(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBlendFactor")]
-    #[doc = "Change the `srcFactor` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBlendComponent`, `GpuBlendFactor`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_src_factor()` instead."]
     pub fn src_factor(&mut self, val: GpuBlendFactor) -> &mut Self {
         self.set_src_factor(val);
         self

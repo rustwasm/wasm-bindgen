@@ -15,8 +15,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `WebSocketDict`*"]
     #[wasm_bindgen(method, getter = "websockets")]
     pub fn get_websockets(this: &WebSocketDict) -> Option<::js_sys::Array>;
+    #[doc = "Change the `websockets` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebSocketDict`*"]
     #[wasm_bindgen(method, setter = "websockets")]
-    fn set_websockets(this: &WebSocketDict, val: &::wasm_bindgen::JsValue);
+    pub fn set_websockets(this: &WebSocketDict, val: &::wasm_bindgen::JsValue);
 }
 impl WebSocketDict {
     #[doc = "Construct a new `WebSocketDict`."]
@@ -27,9 +30,7 @@ impl WebSocketDict {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `websockets` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `WebSocketDict`*"]
+    #[deprecated = "Use `set_websockets()` instead."]
     pub fn websockets(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_websockets(val);
         self

@@ -15,8 +15,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcSessionDescriptionInit`*"]
     #[wasm_bindgen(method, getter = "sdp")]
     pub fn get_sdp(this: &RtcSessionDescriptionInit) -> Option<String>;
+    #[doc = "Change the `sdp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcSessionDescriptionInit`*"]
     #[wasm_bindgen(method, setter = "sdp")]
-    fn set_sdp(this: &RtcSessionDescriptionInit, val: &str);
+    pub fn set_sdp(this: &RtcSessionDescriptionInit, val: &str);
     #[cfg(feature = "RtcSdpType")]
     #[doc = "Get the `type` field of this object."]
     #[doc = ""]
@@ -24,8 +27,11 @@ extern "C" {
     #[wasm_bindgen(method, getter = "type")]
     pub fn get_type(this: &RtcSessionDescriptionInit) -> RtcSdpType;
     #[cfg(feature = "RtcSdpType")]
+    #[doc = "Change the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcSdpType`, `RtcSessionDescriptionInit`*"]
     #[wasm_bindgen(method, setter = "type")]
-    fn set_type(this: &RtcSessionDescriptionInit, val: RtcSdpType);
+    pub fn set_type(this: &RtcSessionDescriptionInit, val: RtcSdpType);
 }
 impl RtcSessionDescriptionInit {
     #[cfg(feature = "RtcSdpType")]
@@ -38,17 +44,13 @@ impl RtcSessionDescriptionInit {
         ret.type_(type_);
         ret
     }
-    #[doc = "Change the `sdp` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcSessionDescriptionInit`*"]
+    #[deprecated = "Use `set_sdp()` instead."]
     pub fn sdp(&mut self, val: &str) -> &mut Self {
         self.set_sdp(val);
         self
     }
     #[cfg(feature = "RtcSdpType")]
-    #[doc = "Change the `type` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcSdpType`, `RtcSessionDescriptionInit`*"]
+    #[deprecated = "Use `set_type()` instead."]
     pub fn type_(&mut self, val: RtcSdpType) -> &mut Self {
         self.set_type(val);
         self

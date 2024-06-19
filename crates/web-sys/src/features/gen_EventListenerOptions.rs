@@ -15,8 +15,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `EventListenerOptions`*"]
     #[wasm_bindgen(method, getter = "capture")]
     pub fn get_capture(this: &EventListenerOptions) -> Option<bool>;
+    #[doc = "Change the `capture` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `EventListenerOptions`*"]
     #[wasm_bindgen(method, setter = "capture")]
-    fn set_capture(this: &EventListenerOptions, val: bool);
+    pub fn set_capture(this: &EventListenerOptions, val: bool);
 }
 impl EventListenerOptions {
     #[doc = "Construct a new `EventListenerOptions`."]
@@ -27,9 +30,7 @@ impl EventListenerOptions {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `capture` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `EventListenerOptions`*"]
+    #[deprecated = "Use `set_capture()` instead."]
     pub fn capture(&mut self, val: bool) -> &mut Self {
         self.set_capture(val);
         self

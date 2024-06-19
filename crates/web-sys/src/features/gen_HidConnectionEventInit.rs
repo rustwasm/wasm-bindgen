@@ -23,8 +23,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "bubbles")]
     pub fn get_bubbles(this: &HidConnectionEventInit) -> Option<bool>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HidConnectionEventInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn set_bubbles(this: &HidConnectionEventInit, val: bool);
+    pub fn set_bubbles(this: &HidConnectionEventInit, val: bool);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `cancelable` field of this object."]
     #[doc = ""]
@@ -34,8 +41,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "cancelable")]
     pub fn get_cancelable(this: &HidConnectionEventInit) -> Option<bool>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HidConnectionEventInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn set_cancelable(this: &HidConnectionEventInit, val: bool);
+    pub fn set_cancelable(this: &HidConnectionEventInit, val: bool);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `composed` field of this object."]
     #[doc = ""]
@@ -45,8 +59,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "composed")]
     pub fn get_composed(this: &HidConnectionEventInit) -> Option<bool>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HidConnectionEventInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "composed")]
-    fn set_composed(this: &HidConnectionEventInit, val: bool);
+    pub fn set_composed(this: &HidConnectionEventInit, val: bool);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "HidDevice")]
     #[doc = "Get the `device` field of this object."]
@@ -57,9 +78,16 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "device")]
     pub fn get_device(this: &HidConnectionEventInit) -> HidDevice;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "HidDevice")]
+    #[doc = "Change the `device` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HidConnectionEventInit`, `HidDevice`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "device")]
-    fn set_device(this: &HidConnectionEventInit, val: &HidDevice);
+    pub fn set_device(this: &HidConnectionEventInit, val: &HidDevice);
 }
 #[cfg(web_sys_unstable_apis)]
 impl HidConnectionEventInit {
@@ -77,46 +105,26 @@ impl HidConnectionEventInit {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `bubbles` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `HidConnectionEventInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_bubbles()` instead."]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
         self.set_bubbles(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `cancelable` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `HidConnectionEventInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_cancelable()` instead."]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
         self.set_cancelable(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `composed` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `HidConnectionEventInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_composed()` instead."]
     pub fn composed(&mut self, val: bool) -> &mut Self {
         self.set_composed(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "HidDevice")]
-    #[doc = "Change the `device` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `HidConnectionEventInit`, `HidDevice`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_device()` instead."]
     pub fn device(&mut self, val: &HidDevice) -> &mut Self {
         self.set_device(val);
         self

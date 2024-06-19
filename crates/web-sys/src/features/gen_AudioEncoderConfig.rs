@@ -23,8 +23,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "bitrate")]
     pub fn get_bitrate(this: &AudioEncoderConfig) -> Option<f64>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `bitrate` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioEncoderConfig`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "bitrate")]
-    fn set_bitrate(this: &AudioEncoderConfig, val: f64);
+    pub fn set_bitrate(this: &AudioEncoderConfig, val: f64);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `codec` field of this object."]
     #[doc = ""]
@@ -34,8 +41,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "codec")]
     pub fn get_codec(this: &AudioEncoderConfig) -> String;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `codec` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioEncoderConfig`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "codec")]
-    fn set_codec(this: &AudioEncoderConfig, val: &str);
+    pub fn set_codec(this: &AudioEncoderConfig, val: &str);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `numberOfChannels` field of this object."]
     #[doc = ""]
@@ -45,8 +59,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "numberOfChannels")]
     pub fn get_number_of_channels(this: &AudioEncoderConfig) -> Option<u32>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `numberOfChannels` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioEncoderConfig`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "numberOfChannels")]
-    fn set_number_of_channels(this: &AudioEncoderConfig, val: u32);
+    pub fn set_number_of_channels(this: &AudioEncoderConfig, val: u32);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `sampleRate` field of this object."]
     #[doc = ""]
@@ -56,8 +77,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "sampleRate")]
     pub fn get_sample_rate(this: &AudioEncoderConfig) -> Option<u32>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `sampleRate` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioEncoderConfig`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "sampleRate")]
-    fn set_sample_rate(this: &AudioEncoderConfig, val: u32);
+    pub fn set_sample_rate(this: &AudioEncoderConfig, val: u32);
 }
 #[cfg(web_sys_unstable_apis)]
 impl AudioEncoderConfig {
@@ -74,45 +102,25 @@ impl AudioEncoderConfig {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `bitrate` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AudioEncoderConfig`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_bitrate()` instead."]
     pub fn bitrate(&mut self, val: f64) -> &mut Self {
         self.set_bitrate(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `codec` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AudioEncoderConfig`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_codec()` instead."]
     pub fn codec(&mut self, val: &str) -> &mut Self {
         self.set_codec(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `numberOfChannels` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AudioEncoderConfig`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_number_of_channels()` instead."]
     pub fn number_of_channels(&mut self, val: u32) -> &mut Self {
         self.set_number_of_channels(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `sampleRate` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AudioEncoderConfig`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_sample_rate()` instead."]
     pub fn sample_rate(&mut self, val: u32) -> &mut Self {
         self.set_sample_rate(val);
         self

@@ -15,22 +15,31 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContextOptions`*"]
     #[wasm_bindgen(method, getter = "length")]
     pub fn get_length(this: &OfflineAudioContextOptions) -> u32;
+    #[doc = "Change the `length` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContextOptions`*"]
     #[wasm_bindgen(method, setter = "length")]
-    fn set_length(this: &OfflineAudioContextOptions, val: u32);
+    pub fn set_length(this: &OfflineAudioContextOptions, val: u32);
     #[doc = "Get the `numberOfChannels` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContextOptions`*"]
     #[wasm_bindgen(method, getter = "numberOfChannels")]
     pub fn get_number_of_channels(this: &OfflineAudioContextOptions) -> Option<u32>;
+    #[doc = "Change the `numberOfChannels` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContextOptions`*"]
     #[wasm_bindgen(method, setter = "numberOfChannels")]
-    fn set_number_of_channels(this: &OfflineAudioContextOptions, val: u32);
+    pub fn set_number_of_channels(this: &OfflineAudioContextOptions, val: u32);
     #[doc = "Get the `sampleRate` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContextOptions`*"]
     #[wasm_bindgen(method, getter = "sampleRate")]
     pub fn get_sample_rate(this: &OfflineAudioContextOptions) -> f32;
+    #[doc = "Change the `sampleRate` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContextOptions`*"]
     #[wasm_bindgen(method, setter = "sampleRate")]
-    fn set_sample_rate(this: &OfflineAudioContextOptions, val: f32);
+    pub fn set_sample_rate(this: &OfflineAudioContextOptions, val: f32);
 }
 impl OfflineAudioContextOptions {
     #[doc = "Construct a new `OfflineAudioContextOptions`."]
@@ -43,23 +52,17 @@ impl OfflineAudioContextOptions {
         ret.sample_rate(sample_rate);
         ret
     }
-    #[doc = "Change the `length` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContextOptions`*"]
+    #[deprecated = "Use `set_length()` instead."]
     pub fn length(&mut self, val: u32) -> &mut Self {
         self.set_length(val);
         self
     }
-    #[doc = "Change the `numberOfChannels` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContextOptions`*"]
+    #[deprecated = "Use `set_number_of_channels()` instead."]
     pub fn number_of_channels(&mut self, val: u32) -> &mut Self {
         self.set_number_of_channels(val);
         self
     }
-    #[doc = "Change the `sampleRate` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `OfflineAudioContextOptions`*"]
+    #[deprecated = "Use `set_sample_rate()` instead."]
     pub fn sample_rate(&mut self, val: f32) -> &mut Self {
         self.set_sample_rate(val);
         self

@@ -23,8 +23,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "label")]
     pub fn get_label(this: &GpuBufferDescriptor) -> Option<String>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `label` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBufferDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "label")]
-    fn set_label(this: &GpuBufferDescriptor, val: &str);
+    pub fn set_label(this: &GpuBufferDescriptor, val: &str);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `mappedAtCreation` field of this object."]
     #[doc = ""]
@@ -34,8 +41,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "mappedAtCreation")]
     pub fn get_mapped_at_creation(this: &GpuBufferDescriptor) -> Option<bool>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `mappedAtCreation` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBufferDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "mappedAtCreation")]
-    fn set_mapped_at_creation(this: &GpuBufferDescriptor, val: bool);
+    pub fn set_mapped_at_creation(this: &GpuBufferDescriptor, val: bool);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `size` field of this object."]
     #[doc = ""]
@@ -45,8 +59,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "size")]
     pub fn get_size(this: &GpuBufferDescriptor) -> f64;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `size` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBufferDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "size")]
-    fn set_size(this: &GpuBufferDescriptor, val: f64);
+    pub fn set_size(this: &GpuBufferDescriptor, val: f64);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `usage` field of this object."]
     #[doc = ""]
@@ -56,8 +77,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "usage")]
     pub fn get_usage(this: &GpuBufferDescriptor) -> u32;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `usage` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBufferDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "usage")]
-    fn set_usage(this: &GpuBufferDescriptor, val: u32);
+    pub fn set_usage(this: &GpuBufferDescriptor, val: u32);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuBufferDescriptor {
@@ -75,45 +103,25 @@ impl GpuBufferDescriptor {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `label` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBufferDescriptor`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_label()` instead."]
     pub fn label(&mut self, val: &str) -> &mut Self {
         self.set_label(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `mappedAtCreation` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBufferDescriptor`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_mapped_at_creation()` instead."]
     pub fn mapped_at_creation(&mut self, val: bool) -> &mut Self {
         self.set_mapped_at_creation(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `size` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBufferDescriptor`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_size()` instead."]
     pub fn size(&mut self, val: f64) -> &mut Self {
         self.set_size(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `usage` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBufferDescriptor`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_usage()` instead."]
     pub fn usage(&mut self, val: u32) -> &mut Self {
         self.set_usage(val);
         self

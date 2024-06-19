@@ -23,8 +23,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "unsanitized")]
     pub fn get_unsanitized(this: &ClipboardUnsanitizedFormats) -> Option<::js_sys::Array>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `unsanitized` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ClipboardUnsanitizedFormats`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "unsanitized")]
-    fn set_unsanitized(this: &ClipboardUnsanitizedFormats, val: &::wasm_bindgen::JsValue);
+    pub fn set_unsanitized(this: &ClipboardUnsanitizedFormats, val: &::wasm_bindgen::JsValue);
 }
 #[cfg(web_sys_unstable_apis)]
 impl ClipboardUnsanitizedFormats {
@@ -40,12 +47,7 @@ impl ClipboardUnsanitizedFormats {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `unsanitized` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ClipboardUnsanitizedFormats`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_unsanitized()` instead."]
     pub fn unsanitized(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_unsanitized(val);
         self

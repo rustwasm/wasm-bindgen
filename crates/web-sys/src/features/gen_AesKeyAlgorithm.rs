@@ -15,15 +15,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AesKeyAlgorithm`*"]
     #[wasm_bindgen(method, getter = "name")]
     pub fn get_name(this: &AesKeyAlgorithm) -> String;
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AesKeyAlgorithm`*"]
     #[wasm_bindgen(method, setter = "name")]
-    fn set_name(this: &AesKeyAlgorithm, val: &str);
+    pub fn set_name(this: &AesKeyAlgorithm, val: &str);
     #[doc = "Get the `length` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesKeyAlgorithm`*"]
     #[wasm_bindgen(method, getter = "length")]
     pub fn get_length(this: &AesKeyAlgorithm) -> u16;
+    #[doc = "Change the `length` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AesKeyAlgorithm`*"]
     #[wasm_bindgen(method, setter = "length")]
-    fn set_length(this: &AesKeyAlgorithm, val: u16);
+    pub fn set_length(this: &AesKeyAlgorithm, val: u16);
 }
 impl AesKeyAlgorithm {
     #[doc = "Construct a new `AesKeyAlgorithm`."]
@@ -36,16 +42,12 @@ impl AesKeyAlgorithm {
         ret.length(length);
         ret
     }
-    #[doc = "Change the `name` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AesKeyAlgorithm`*"]
+    #[deprecated = "Use `set_name()` instead."]
     pub fn name(&mut self, val: &str) -> &mut Self {
         self.set_name(val);
         self
     }
-    #[doc = "Change the `length` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AesKeyAlgorithm`*"]
+    #[deprecated = "Use `set_length()` instead."]
     pub fn length(&mut self, val: u16) -> &mut Self {
         self.set_length(val);
         self

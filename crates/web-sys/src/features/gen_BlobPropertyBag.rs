@@ -17,15 +17,21 @@ extern "C" {
     #[wasm_bindgen(method, getter = "endings")]
     pub fn get_endings(this: &BlobPropertyBag) -> Option<EndingTypes>;
     #[cfg(feature = "EndingTypes")]
+    #[doc = "Change the `endings` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BlobPropertyBag`, `EndingTypes`*"]
     #[wasm_bindgen(method, setter = "endings")]
-    fn set_endings(this: &BlobPropertyBag, val: EndingTypes);
+    pub fn set_endings(this: &BlobPropertyBag, val: EndingTypes);
     #[doc = "Get the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BlobPropertyBag`*"]
     #[wasm_bindgen(method, getter = "type")]
     pub fn get_type(this: &BlobPropertyBag) -> Option<String>;
+    #[doc = "Change the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BlobPropertyBag`*"]
     #[wasm_bindgen(method, setter = "type")]
-    fn set_type(this: &BlobPropertyBag, val: &str);
+    pub fn set_type(this: &BlobPropertyBag, val: &str);
 }
 impl BlobPropertyBag {
     #[doc = "Construct a new `BlobPropertyBag`."]
@@ -37,16 +43,12 @@ impl BlobPropertyBag {
         ret
     }
     #[cfg(feature = "EndingTypes")]
-    #[doc = "Change the `endings` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BlobPropertyBag`, `EndingTypes`*"]
+    #[deprecated = "Use `set_endings()` instead."]
     pub fn endings(&mut self, val: EndingTypes) -> &mut Self {
         self.set_endings(val);
         self
     }
-    #[doc = "Change the `type` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BlobPropertyBag`*"]
+    #[deprecated = "Use `set_type()` instead."]
     pub fn type_(&mut self, val: &str) -> &mut Self {
         self.set_type(val);
         self

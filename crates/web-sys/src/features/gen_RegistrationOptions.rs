@@ -15,15 +15,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RegistrationOptions`*"]
     #[wasm_bindgen(method, getter = "scope")]
     pub fn get_scope(this: &RegistrationOptions) -> Option<String>;
+    #[doc = "Change the `scope` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RegistrationOptions`*"]
     #[wasm_bindgen(method, setter = "scope")]
-    fn set_scope(this: &RegistrationOptions, val: &str);
+    pub fn set_scope(this: &RegistrationOptions, val: &str);
     #[doc = "Get the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegistrationOptions`*"]
     #[wasm_bindgen(method, getter = "type")]
     pub fn get_type(this: &RegistrationOptions) -> Option<String>;
+    #[doc = "Change the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RegistrationOptions`*"]
     #[wasm_bindgen(method, setter = "type")]
-    fn set_type(this: &RegistrationOptions, val: &str);
+    pub fn set_type(this: &RegistrationOptions, val: &str);
     #[cfg(feature = "ServiceWorkerUpdateViaCache")]
     #[doc = "Get the `updateViaCache` field of this object."]
     #[doc = ""]
@@ -31,8 +37,11 @@ extern "C" {
     #[wasm_bindgen(method, getter = "updateViaCache")]
     pub fn get_update_via_cache(this: &RegistrationOptions) -> Option<ServiceWorkerUpdateViaCache>;
     #[cfg(feature = "ServiceWorkerUpdateViaCache")]
+    #[doc = "Change the `updateViaCache` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RegistrationOptions`, `ServiceWorkerUpdateViaCache`*"]
     #[wasm_bindgen(method, setter = "updateViaCache")]
-    fn set_update_via_cache(this: &RegistrationOptions, val: ServiceWorkerUpdateViaCache);
+    pub fn set_update_via_cache(this: &RegistrationOptions, val: ServiceWorkerUpdateViaCache);
 }
 impl RegistrationOptions {
     #[doc = "Construct a new `RegistrationOptions`."]
@@ -43,24 +52,18 @@ impl RegistrationOptions {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `scope` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RegistrationOptions`*"]
+    #[deprecated = "Use `set_scope()` instead."]
     pub fn scope(&mut self, val: &str) -> &mut Self {
         self.set_scope(val);
         self
     }
-    #[doc = "Change the `type` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RegistrationOptions`*"]
+    #[deprecated = "Use `set_type()` instead."]
     pub fn type_(&mut self, val: &str) -> &mut Self {
         self.set_type(val);
         self
     }
     #[cfg(feature = "ServiceWorkerUpdateViaCache")]
-    #[doc = "Change the `updateViaCache` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RegistrationOptions`, `ServiceWorkerUpdateViaCache`*"]
+    #[deprecated = "Use `set_update_via_cache()` instead."]
     pub fn update_via_cache(&mut self, val: ServiceWorkerUpdateViaCache) -> &mut Self {
         self.set_update_via_cache(val);
         self

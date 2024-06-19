@@ -15,15 +15,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `VrLayer`*"]
     #[wasm_bindgen(method, getter = "leftBounds")]
     pub fn get_left_bounds(this: &VrLayer) -> Option<::js_sys::Array>;
+    #[doc = "Change the `leftBounds` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VrLayer`*"]
     #[wasm_bindgen(method, setter = "leftBounds")]
-    fn set_left_bounds(this: &VrLayer, val: &::wasm_bindgen::JsValue);
+    pub fn set_left_bounds(this: &VrLayer, val: &::wasm_bindgen::JsValue);
     #[doc = "Get the `rightBounds` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrLayer`*"]
     #[wasm_bindgen(method, getter = "rightBounds")]
     pub fn get_right_bounds(this: &VrLayer) -> Option<::js_sys::Array>;
+    #[doc = "Change the `rightBounds` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VrLayer`*"]
     #[wasm_bindgen(method, setter = "rightBounds")]
-    fn set_right_bounds(this: &VrLayer, val: &::wasm_bindgen::JsValue);
+    pub fn set_right_bounds(this: &VrLayer, val: &::wasm_bindgen::JsValue);
     #[cfg(feature = "HtmlCanvasElement")]
     #[doc = "Get the `source` field of this object."]
     #[doc = ""]
@@ -31,8 +37,11 @@ extern "C" {
     #[wasm_bindgen(method, getter = "source")]
     pub fn get_source(this: &VrLayer) -> Option<HtmlCanvasElement>;
     #[cfg(feature = "HtmlCanvasElement")]
+    #[doc = "Change the `source` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlCanvasElement`, `VrLayer`*"]
     #[wasm_bindgen(method, setter = "source")]
-    fn set_source(this: &VrLayer, val: Option<&HtmlCanvasElement>);
+    pub fn set_source(this: &VrLayer, val: Option<&HtmlCanvasElement>);
 }
 impl VrLayer {
     #[doc = "Construct a new `VrLayer`."]
@@ -43,24 +52,18 @@ impl VrLayer {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `leftBounds` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `VrLayer`*"]
+    #[deprecated = "Use `set_left_bounds()` instead."]
     pub fn left_bounds(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_left_bounds(val);
         self
     }
-    #[doc = "Change the `rightBounds` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `VrLayer`*"]
+    #[deprecated = "Use `set_right_bounds()` instead."]
     pub fn right_bounds(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_right_bounds(val);
         self
     }
     #[cfg(feature = "HtmlCanvasElement")]
-    #[doc = "Change the `source` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `HtmlCanvasElement`, `VrLayer`*"]
+    #[deprecated = "Use `set_source()` instead."]
     pub fn source(&mut self, val: Option<&HtmlCanvasElement>) -> &mut Self {
         self.set_source(val);
         self

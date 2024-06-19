@@ -15,8 +15,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcRtxParameters`*"]
     #[wasm_bindgen(method, getter = "ssrc")]
     pub fn get_ssrc(this: &RtcRtxParameters) -> Option<u32>;
+    #[doc = "Change the `ssrc` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtxParameters`*"]
     #[wasm_bindgen(method, setter = "ssrc")]
-    fn set_ssrc(this: &RtcRtxParameters, val: u32);
+    pub fn set_ssrc(this: &RtcRtxParameters, val: u32);
 }
 impl RtcRtxParameters {
     #[doc = "Construct a new `RtcRtxParameters`."]
@@ -27,9 +30,7 @@ impl RtcRtxParameters {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `ssrc` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcRtxParameters`*"]
+    #[deprecated = "Use `set_ssrc()` instead."]
     pub fn ssrc(&mut self, val: u32) -> &mut Self {
         self.set_ssrc(val);
         self

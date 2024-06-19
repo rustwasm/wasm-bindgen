@@ -15,22 +15,31 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
     #[wasm_bindgen(method, getter = "locale")]
     pub fn get_locale(this: &IdbIndexParameters) -> Option<String>;
+    #[doc = "Change the `locale` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
     #[wasm_bindgen(method, setter = "locale")]
-    fn set_locale(this: &IdbIndexParameters, val: Option<&str>);
+    pub fn set_locale(this: &IdbIndexParameters, val: Option<&str>);
     #[doc = "Get the `multiEntry` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
     #[wasm_bindgen(method, getter = "multiEntry")]
     pub fn get_multi_entry(this: &IdbIndexParameters) -> Option<bool>;
+    #[doc = "Change the `multiEntry` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
     #[wasm_bindgen(method, setter = "multiEntry")]
-    fn set_multi_entry(this: &IdbIndexParameters, val: bool);
+    pub fn set_multi_entry(this: &IdbIndexParameters, val: bool);
     #[doc = "Get the `unique` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
     #[wasm_bindgen(method, getter = "unique")]
     pub fn get_unique(this: &IdbIndexParameters) -> Option<bool>;
+    #[doc = "Change the `unique` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
     #[wasm_bindgen(method, setter = "unique")]
-    fn set_unique(this: &IdbIndexParameters, val: bool);
+    pub fn set_unique(this: &IdbIndexParameters, val: bool);
 }
 impl IdbIndexParameters {
     #[doc = "Construct a new `IdbIndexParameters`."]
@@ -41,23 +50,17 @@ impl IdbIndexParameters {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `locale` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
+    #[deprecated = "Use `set_locale()` instead."]
     pub fn locale(&mut self, val: Option<&str>) -> &mut Self {
         self.set_locale(val);
         self
     }
-    #[doc = "Change the `multiEntry` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
+    #[deprecated = "Use `set_multi_entry()` instead."]
     pub fn multi_entry(&mut self, val: bool) -> &mut Self {
         self.set_multi_entry(val);
         self
     }
-    #[doc = "Change the `unique` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
+    #[deprecated = "Use `set_unique()` instead."]
     pub fn unique(&mut self, val: bool) -> &mut Self {
         self.set_unique(val);
         self

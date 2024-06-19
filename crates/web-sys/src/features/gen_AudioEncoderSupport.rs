@@ -24,9 +24,16 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "config")]
     pub fn get_config(this: &AudioEncoderSupport) -> Option<AudioEncoderConfig>;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "AudioEncoderConfig")]
+    #[doc = "Change the `config` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioEncoderConfig`, `AudioEncoderSupport`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "config")]
-    fn set_config(this: &AudioEncoderSupport, val: &AudioEncoderConfig);
+    pub fn set_config(this: &AudioEncoderSupport, val: &AudioEncoderConfig);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `supported` field of this object."]
     #[doc = ""]
@@ -36,8 +43,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "supported")]
     pub fn get_supported(this: &AudioEncoderSupport) -> Option<bool>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `supported` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioEncoderSupport`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "supported")]
-    fn set_supported(this: &AudioEncoderSupport, val: bool);
+    pub fn set_supported(this: &AudioEncoderSupport, val: bool);
 }
 #[cfg(web_sys_unstable_apis)]
 impl AudioEncoderSupport {
@@ -54,23 +68,13 @@ impl AudioEncoderSupport {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "AudioEncoderConfig")]
-    #[doc = "Change the `config` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AudioEncoderConfig`, `AudioEncoderSupport`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_config()` instead."]
     pub fn config(&mut self, val: &AudioEncoderConfig) -> &mut Self {
         self.set_config(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `supported` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AudioEncoderSupport`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_supported()` instead."]
     pub fn supported(&mut self, val: bool) -> &mut Self {
         self.set_supported(val);
         self

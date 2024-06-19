@@ -15,36 +15,51 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     #[wasm_bindgen(method, getter = "clientData")]
     pub fn get_client_data(this: &RegisterResponse) -> Option<String>;
+    #[doc = "Change the `clientData` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     #[wasm_bindgen(method, setter = "clientData")]
-    fn set_client_data(this: &RegisterResponse, val: &str);
+    pub fn set_client_data(this: &RegisterResponse, val: &str);
     #[doc = "Get the `errorCode` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     #[wasm_bindgen(method, getter = "errorCode")]
     pub fn get_error_code(this: &RegisterResponse) -> Option<u16>;
+    #[doc = "Change the `errorCode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     #[wasm_bindgen(method, setter = "errorCode")]
-    fn set_error_code(this: &RegisterResponse, val: Option<u16>);
+    pub fn set_error_code(this: &RegisterResponse, val: Option<u16>);
     #[doc = "Get the `errorMessage` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     #[wasm_bindgen(method, getter = "errorMessage")]
     pub fn get_error_message(this: &RegisterResponse) -> Option<String>;
+    #[doc = "Change the `errorMessage` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     #[wasm_bindgen(method, setter = "errorMessage")]
-    fn set_error_message(this: &RegisterResponse, val: Option<&str>);
+    pub fn set_error_message(this: &RegisterResponse, val: Option<&str>);
     #[doc = "Get the `registrationData` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     #[wasm_bindgen(method, getter = "registrationData")]
     pub fn get_registration_data(this: &RegisterResponse) -> Option<String>;
+    #[doc = "Change the `registrationData` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     #[wasm_bindgen(method, setter = "registrationData")]
-    fn set_registration_data(this: &RegisterResponse, val: &str);
+    pub fn set_registration_data(this: &RegisterResponse, val: &str);
     #[doc = "Get the `version` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     #[wasm_bindgen(method, getter = "version")]
     pub fn get_version(this: &RegisterResponse) -> Option<String>;
+    #[doc = "Change the `version` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     #[wasm_bindgen(method, setter = "version")]
-    fn set_version(this: &RegisterResponse, val: &str);
+    pub fn set_version(this: &RegisterResponse, val: &str);
 }
 impl RegisterResponse {
     #[doc = "Construct a new `RegisterResponse`."]
@@ -55,37 +70,27 @@ impl RegisterResponse {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `clientData` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
+    #[deprecated = "Use `set_client_data()` instead."]
     pub fn client_data(&mut self, val: &str) -> &mut Self {
         self.set_client_data(val);
         self
     }
-    #[doc = "Change the `errorCode` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
+    #[deprecated = "Use `set_error_code()` instead."]
     pub fn error_code(&mut self, val: Option<u16>) -> &mut Self {
         self.set_error_code(val);
         self
     }
-    #[doc = "Change the `errorMessage` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
+    #[deprecated = "Use `set_error_message()` instead."]
     pub fn error_message(&mut self, val: Option<&str>) -> &mut Self {
         self.set_error_message(val);
         self
     }
-    #[doc = "Change the `registrationData` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
+    #[deprecated = "Use `set_registration_data()` instead."]
     pub fn registration_data(&mut self, val: &str) -> &mut Self {
         self.set_registration_data(val);
         self
     }
-    #[doc = "Change the `version` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
+    #[deprecated = "Use `set_version()` instead."]
     pub fn version(&mut self, val: &str) -> &mut Self {
         self.set_version(val);
         self

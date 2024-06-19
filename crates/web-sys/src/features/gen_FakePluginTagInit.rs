@@ -15,64 +15,91 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, getter = "description")]
     pub fn get_description(this: &FakePluginTagInit) -> Option<String>;
+    #[doc = "Change the `description` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, setter = "description")]
-    fn set_description(this: &FakePluginTagInit, val: &str);
+    pub fn set_description(this: &FakePluginTagInit, val: &str);
     #[doc = "Get the `fileName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, getter = "fileName")]
     pub fn get_file_name(this: &FakePluginTagInit) -> Option<String>;
+    #[doc = "Change the `fileName` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, setter = "fileName")]
-    fn set_file_name(this: &FakePluginTagInit, val: &str);
+    pub fn set_file_name(this: &FakePluginTagInit, val: &str);
     #[doc = "Get the `fullPath` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, getter = "fullPath")]
     pub fn get_full_path(this: &FakePluginTagInit) -> Option<String>;
+    #[doc = "Change the `fullPath` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, setter = "fullPath")]
-    fn set_full_path(this: &FakePluginTagInit, val: &str);
+    pub fn set_full_path(this: &FakePluginTagInit, val: &str);
     #[doc = "Get the `handlerURI` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, getter = "handlerURI")]
     pub fn get_handler_uri(this: &FakePluginTagInit) -> String;
+    #[doc = "Change the `handlerURI` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, setter = "handlerURI")]
-    fn set_handler_uri(this: &FakePluginTagInit, val: &str);
+    pub fn set_handler_uri(this: &FakePluginTagInit, val: &str);
     #[doc = "Get the `mimeEntries` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, getter = "mimeEntries")]
     pub fn get_mime_entries(this: &FakePluginTagInit) -> ::js_sys::Array;
+    #[doc = "Change the `mimeEntries` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, setter = "mimeEntries")]
-    fn set_mime_entries(this: &FakePluginTagInit, val: &::wasm_bindgen::JsValue);
+    pub fn set_mime_entries(this: &FakePluginTagInit, val: &::wasm_bindgen::JsValue);
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, getter = "name")]
     pub fn get_name(this: &FakePluginTagInit) -> Option<String>;
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, setter = "name")]
-    fn set_name(this: &FakePluginTagInit, val: &str);
+    pub fn set_name(this: &FakePluginTagInit, val: &str);
     #[doc = "Get the `niceName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, getter = "niceName")]
     pub fn get_nice_name(this: &FakePluginTagInit) -> Option<String>;
+    #[doc = "Change the `niceName` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, setter = "niceName")]
-    fn set_nice_name(this: &FakePluginTagInit, val: &str);
+    pub fn set_nice_name(this: &FakePluginTagInit, val: &str);
     #[doc = "Get the `sandboxScript` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, getter = "sandboxScript")]
     pub fn get_sandbox_script(this: &FakePluginTagInit) -> Option<String>;
+    #[doc = "Change the `sandboxScript` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, setter = "sandboxScript")]
-    fn set_sandbox_script(this: &FakePluginTagInit, val: &str);
+    pub fn set_sandbox_script(this: &FakePluginTagInit, val: &str);
     #[doc = "Get the `version` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, getter = "version")]
     pub fn get_version(this: &FakePluginTagInit) -> Option<String>;
+    #[doc = "Change the `version` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, setter = "version")]
-    fn set_version(this: &FakePluginTagInit, val: &str);
+    pub fn set_version(this: &FakePluginTagInit, val: &str);
 }
 impl FakePluginTagInit {
     #[doc = "Construct a new `FakePluginTagInit`."]
@@ -85,65 +112,47 @@ impl FakePluginTagInit {
         ret.mime_entries(mime_entries);
         ret
     }
-    #[doc = "Change the `description` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
+    #[deprecated = "Use `set_description()` instead."]
     pub fn description(&mut self, val: &str) -> &mut Self {
         self.set_description(val);
         self
     }
-    #[doc = "Change the `fileName` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
+    #[deprecated = "Use `set_file_name()` instead."]
     pub fn file_name(&mut self, val: &str) -> &mut Self {
         self.set_file_name(val);
         self
     }
-    #[doc = "Change the `fullPath` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
+    #[deprecated = "Use `set_full_path()` instead."]
     pub fn full_path(&mut self, val: &str) -> &mut Self {
         self.set_full_path(val);
         self
     }
-    #[doc = "Change the `handlerURI` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
+    #[deprecated = "Use `set_handler_uri()` instead."]
     pub fn handler_uri(&mut self, val: &str) -> &mut Self {
         self.set_handler_uri(val);
         self
     }
-    #[doc = "Change the `mimeEntries` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
+    #[deprecated = "Use `set_mime_entries()` instead."]
     pub fn mime_entries(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_mime_entries(val);
         self
     }
-    #[doc = "Change the `name` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
+    #[deprecated = "Use `set_name()` instead."]
     pub fn name(&mut self, val: &str) -> &mut Self {
         self.set_name(val);
         self
     }
-    #[doc = "Change the `niceName` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
+    #[deprecated = "Use `set_nice_name()` instead."]
     pub fn nice_name(&mut self, val: &str) -> &mut Self {
         self.set_nice_name(val);
         self
     }
-    #[doc = "Change the `sandboxScript` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
+    #[deprecated = "Use `set_sandbox_script()` instead."]
     pub fn sandbox_script(&mut self, val: &str) -> &mut Self {
         self.set_sandbox_script(val);
         self
     }
-    #[doc = "Change the `version` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
+    #[deprecated = "Use `set_version()` instead."]
     pub fn version(&mut self, val: &str) -> &mut Self {
         self.set_version(val);
         self

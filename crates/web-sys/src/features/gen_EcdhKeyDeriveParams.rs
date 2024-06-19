@@ -15,8 +15,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `EcdhKeyDeriveParams`*"]
     #[wasm_bindgen(method, getter = "name")]
     pub fn get_name(this: &EcdhKeyDeriveParams) -> String;
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `EcdhKeyDeriveParams`*"]
     #[wasm_bindgen(method, setter = "name")]
-    fn set_name(this: &EcdhKeyDeriveParams, val: &str);
+    pub fn set_name(this: &EcdhKeyDeriveParams, val: &str);
     #[cfg(feature = "CryptoKey")]
     #[doc = "Get the `public` field of this object."]
     #[doc = ""]
@@ -24,8 +27,11 @@ extern "C" {
     #[wasm_bindgen(method, getter = "public")]
     pub fn get_public(this: &EcdhKeyDeriveParams) -> CryptoKey;
     #[cfg(feature = "CryptoKey")]
+    #[doc = "Change the `public` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `EcdhKeyDeriveParams`*"]
     #[wasm_bindgen(method, setter = "public")]
-    fn set_public(this: &EcdhKeyDeriveParams, val: &CryptoKey);
+    pub fn set_public(this: &EcdhKeyDeriveParams, val: &CryptoKey);
 }
 impl EcdhKeyDeriveParams {
     #[cfg(feature = "CryptoKey")]
@@ -39,17 +45,13 @@ impl EcdhKeyDeriveParams {
         ret.public(public);
         ret
     }
-    #[doc = "Change the `name` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `EcdhKeyDeriveParams`*"]
+    #[deprecated = "Use `set_name()` instead."]
     pub fn name(&mut self, val: &str) -> &mut Self {
         self.set_name(val);
         self
     }
     #[cfg(feature = "CryptoKey")]
-    #[doc = "Change the `public` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `CryptoKey`, `EcdhKeyDeriveParams`*"]
+    #[deprecated = "Use `set_public()` instead."]
     pub fn public(&mut self, val: &CryptoKey) -> &mut Self {
         self.set_public(val);
         self

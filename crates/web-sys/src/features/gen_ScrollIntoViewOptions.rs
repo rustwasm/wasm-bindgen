@@ -17,8 +17,11 @@ extern "C" {
     #[wasm_bindgen(method, getter = "behavior")]
     pub fn get_behavior(this: &ScrollIntoViewOptions) -> Option<ScrollBehavior>;
     #[cfg(feature = "ScrollBehavior")]
+    #[doc = "Change the `behavior` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollBehavior`, `ScrollIntoViewOptions`*"]
     #[wasm_bindgen(method, setter = "behavior")]
-    fn set_behavior(this: &ScrollIntoViewOptions, val: ScrollBehavior);
+    pub fn set_behavior(this: &ScrollIntoViewOptions, val: ScrollBehavior);
     #[cfg(feature = "ScrollLogicalPosition")]
     #[doc = "Get the `block` field of this object."]
     #[doc = ""]
@@ -26,8 +29,11 @@ extern "C" {
     #[wasm_bindgen(method, getter = "block")]
     pub fn get_block(this: &ScrollIntoViewOptions) -> Option<ScrollLogicalPosition>;
     #[cfg(feature = "ScrollLogicalPosition")]
+    #[doc = "Change the `block` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollIntoViewOptions`, `ScrollLogicalPosition`*"]
     #[wasm_bindgen(method, setter = "block")]
-    fn set_block(this: &ScrollIntoViewOptions, val: ScrollLogicalPosition);
+    pub fn set_block(this: &ScrollIntoViewOptions, val: ScrollLogicalPosition);
     #[cfg(feature = "ScrollLogicalPosition")]
     #[doc = "Get the `inline` field of this object."]
     #[doc = ""]
@@ -35,8 +41,11 @@ extern "C" {
     #[wasm_bindgen(method, getter = "inline")]
     pub fn get_inline(this: &ScrollIntoViewOptions) -> Option<ScrollLogicalPosition>;
     #[cfg(feature = "ScrollLogicalPosition")]
+    #[doc = "Change the `inline` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollIntoViewOptions`, `ScrollLogicalPosition`*"]
     #[wasm_bindgen(method, setter = "inline")]
-    fn set_inline(this: &ScrollIntoViewOptions, val: ScrollLogicalPosition);
+    pub fn set_inline(this: &ScrollIntoViewOptions, val: ScrollLogicalPosition);
 }
 impl ScrollIntoViewOptions {
     #[doc = "Construct a new `ScrollIntoViewOptions`."]
@@ -48,25 +57,19 @@ impl ScrollIntoViewOptions {
         ret
     }
     #[cfg(feature = "ScrollBehavior")]
-    #[doc = "Change the `behavior` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ScrollBehavior`, `ScrollIntoViewOptions`*"]
+    #[deprecated = "Use `set_behavior()` instead."]
     pub fn behavior(&mut self, val: ScrollBehavior) -> &mut Self {
         self.set_behavior(val);
         self
     }
     #[cfg(feature = "ScrollLogicalPosition")]
-    #[doc = "Change the `block` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ScrollIntoViewOptions`, `ScrollLogicalPosition`*"]
+    #[deprecated = "Use `set_block()` instead."]
     pub fn block(&mut self, val: ScrollLogicalPosition) -> &mut Self {
         self.set_block(val);
         self
     }
     #[cfg(feature = "ScrollLogicalPosition")]
-    #[doc = "Change the `inline` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ScrollIntoViewOptions`, `ScrollLogicalPosition`*"]
+    #[deprecated = "Use `set_inline()` instead."]
     pub fn inline(&mut self, val: ScrollLogicalPosition) -> &mut Self {
         self.set_inline(val);
         self

@@ -15,15 +15,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RsaOaepParams`*"]
     #[wasm_bindgen(method, getter = "name")]
     pub fn get_name(this: &RsaOaepParams) -> String;
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RsaOaepParams`*"]
     #[wasm_bindgen(method, setter = "name")]
-    fn set_name(this: &RsaOaepParams, val: &str);
+    pub fn set_name(this: &RsaOaepParams, val: &str);
     #[doc = "Get the `label` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOaepParams`*"]
     #[wasm_bindgen(method, getter = "label")]
     pub fn get_label(this: &RsaOaepParams) -> Option<::js_sys::Object>;
+    #[doc = "Change the `label` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RsaOaepParams`*"]
     #[wasm_bindgen(method, setter = "label")]
-    fn set_label(this: &RsaOaepParams, val: &::js_sys::Object);
+    pub fn set_label(this: &RsaOaepParams, val: &::js_sys::Object);
 }
 impl RsaOaepParams {
     #[doc = "Construct a new `RsaOaepParams`."]
@@ -35,16 +41,12 @@ impl RsaOaepParams {
         ret.name(name);
         ret
     }
-    #[doc = "Change the `name` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RsaOaepParams`*"]
+    #[deprecated = "Use `set_name()` instead."]
     pub fn name(&mut self, val: &str) -> &mut Self {
         self.set_name(val);
         self
     }
-    #[doc = "Change the `label` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RsaOaepParams`*"]
+    #[deprecated = "Use `set_label()` instead."]
     pub fn label(&mut self, val: &::js_sys::Object) -> &mut Self {
         self.set_label(val);
         self

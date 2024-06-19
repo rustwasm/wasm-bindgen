@@ -15,29 +15,41 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
     #[wasm_bindgen(method, getter = "name")]
     pub fn get_name(this: &HkdfParams) -> String;
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
     #[wasm_bindgen(method, setter = "name")]
-    fn set_name(this: &HkdfParams, val: &str);
+    pub fn set_name(this: &HkdfParams, val: &str);
     #[doc = "Get the `hash` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
     #[wasm_bindgen(method, getter = "hash")]
     pub fn get_hash(this: &HkdfParams) -> ::wasm_bindgen::JsValue;
+    #[doc = "Change the `hash` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
     #[wasm_bindgen(method, setter = "hash")]
-    fn set_hash(this: &HkdfParams, val: &::wasm_bindgen::JsValue);
+    pub fn set_hash(this: &HkdfParams, val: &::wasm_bindgen::JsValue);
     #[doc = "Get the `info` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
     #[wasm_bindgen(method, getter = "info")]
     pub fn get_info(this: &HkdfParams) -> ::js_sys::Object;
+    #[doc = "Change the `info` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
     #[wasm_bindgen(method, setter = "info")]
-    fn set_info(this: &HkdfParams, val: &::js_sys::Object);
+    pub fn set_info(this: &HkdfParams, val: &::js_sys::Object);
     #[doc = "Get the `salt` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
     #[wasm_bindgen(method, getter = "salt")]
     pub fn get_salt(this: &HkdfParams) -> ::js_sys::Object;
+    #[doc = "Change the `salt` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
     #[wasm_bindgen(method, setter = "salt")]
-    fn set_salt(this: &HkdfParams, val: &::js_sys::Object);
+    pub fn set_salt(this: &HkdfParams, val: &::js_sys::Object);
 }
 impl HkdfParams {
     #[doc = "Construct a new `HkdfParams`."]
@@ -57,30 +69,22 @@ impl HkdfParams {
         ret.salt(salt);
         ret
     }
-    #[doc = "Change the `name` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
+    #[deprecated = "Use `set_name()` instead."]
     pub fn name(&mut self, val: &str) -> &mut Self {
         self.set_name(val);
         self
     }
-    #[doc = "Change the `hash` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
+    #[deprecated = "Use `set_hash()` instead."]
     pub fn hash(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_hash(val);
         self
     }
-    #[doc = "Change the `info` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
+    #[deprecated = "Use `set_info()` instead."]
     pub fn info(&mut self, val: &::js_sys::Object) -> &mut Self {
         self.set_info(val);
         self
     }
-    #[doc = "Change the `salt` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
+    #[deprecated = "Use `set_salt()` instead."]
     pub fn salt(&mut self, val: &::js_sys::Object) -> &mut Self {
         self.set_salt(val);
         self

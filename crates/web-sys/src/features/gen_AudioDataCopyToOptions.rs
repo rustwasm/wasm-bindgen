@@ -24,9 +24,16 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "format")]
     pub fn get_format(this: &AudioDataCopyToOptions) -> Option<AudioSampleFormat>;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "AudioSampleFormat")]
+    #[doc = "Change the `format` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioDataCopyToOptions`, `AudioSampleFormat`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "format")]
-    fn set_format(this: &AudioDataCopyToOptions, val: AudioSampleFormat);
+    pub fn set_format(this: &AudioDataCopyToOptions, val: AudioSampleFormat);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `frameCount` field of this object."]
     #[doc = ""]
@@ -36,8 +43,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "frameCount")]
     pub fn get_frame_count(this: &AudioDataCopyToOptions) -> Option<u32>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `frameCount` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioDataCopyToOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "frameCount")]
-    fn set_frame_count(this: &AudioDataCopyToOptions, val: u32);
+    pub fn set_frame_count(this: &AudioDataCopyToOptions, val: u32);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `frameOffset` field of this object."]
     #[doc = ""]
@@ -47,8 +61,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "frameOffset")]
     pub fn get_frame_offset(this: &AudioDataCopyToOptions) -> Option<u32>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `frameOffset` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioDataCopyToOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "frameOffset")]
-    fn set_frame_offset(this: &AudioDataCopyToOptions, val: u32);
+    pub fn set_frame_offset(this: &AudioDataCopyToOptions, val: u32);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `planeIndex` field of this object."]
     #[doc = ""]
@@ -58,8 +79,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "planeIndex")]
     pub fn get_plane_index(this: &AudioDataCopyToOptions) -> u32;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `planeIndex` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioDataCopyToOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "planeIndex")]
-    fn set_plane_index(this: &AudioDataCopyToOptions, val: u32);
+    pub fn set_plane_index(this: &AudioDataCopyToOptions, val: u32);
 }
 #[cfg(web_sys_unstable_apis)]
 impl AudioDataCopyToOptions {
@@ -77,45 +105,25 @@ impl AudioDataCopyToOptions {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "AudioSampleFormat")]
-    #[doc = "Change the `format` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AudioDataCopyToOptions`, `AudioSampleFormat`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_format()` instead."]
     pub fn format(&mut self, val: AudioSampleFormat) -> &mut Self {
         self.set_format(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `frameCount` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AudioDataCopyToOptions`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_frame_count()` instead."]
     pub fn frame_count(&mut self, val: u32) -> &mut Self {
         self.set_frame_count(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `frameOffset` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AudioDataCopyToOptions`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_frame_offset()` instead."]
     pub fn frame_offset(&mut self, val: u32) -> &mut Self {
         self.set_frame_offset(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `planeIndex` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AudioDataCopyToOptions`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_plane_index()` instead."]
     pub fn plane_index(&mut self, val: u32) -> &mut Self {
         self.set_plane_index(val);
         self

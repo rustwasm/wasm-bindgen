@@ -15,8 +15,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialParameters`*"]
     #[wasm_bindgen(method, getter = "alg")]
     pub fn get_alg(this: &PublicKeyCredentialParameters) -> i32;
+    #[doc = "Change the `alg` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialParameters`*"]
     #[wasm_bindgen(method, setter = "alg")]
-    fn set_alg(this: &PublicKeyCredentialParameters, val: i32);
+    pub fn set_alg(this: &PublicKeyCredentialParameters, val: i32);
     #[cfg(feature = "PublicKeyCredentialType")]
     #[doc = "Get the `type` field of this object."]
     #[doc = ""]
@@ -24,8 +27,11 @@ extern "C" {
     #[wasm_bindgen(method, getter = "type")]
     pub fn get_type(this: &PublicKeyCredentialParameters) -> PublicKeyCredentialType;
     #[cfg(feature = "PublicKeyCredentialType")]
+    #[doc = "Change the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialParameters`, `PublicKeyCredentialType`*"]
     #[wasm_bindgen(method, setter = "type")]
-    fn set_type(this: &PublicKeyCredentialParameters, val: PublicKeyCredentialType);
+    pub fn set_type(this: &PublicKeyCredentialParameters, val: PublicKeyCredentialType);
 }
 impl PublicKeyCredentialParameters {
     #[cfg(feature = "PublicKeyCredentialType")]
@@ -39,17 +45,13 @@ impl PublicKeyCredentialParameters {
         ret.type_(type_);
         ret
     }
-    #[doc = "Change the `alg` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialParameters`*"]
+    #[deprecated = "Use `set_alg()` instead."]
     pub fn alg(&mut self, val: i32) -> &mut Self {
         self.set_alg(val);
         self
     }
     #[cfg(feature = "PublicKeyCredentialType")]
-    #[doc = "Change the `type` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialParameters`, `PublicKeyCredentialType`*"]
+    #[deprecated = "Use `set_type()` instead."]
     pub fn type_(&mut self, val: PublicKeyCredentialType) -> &mut Self {
         self.set_type(val);
         self

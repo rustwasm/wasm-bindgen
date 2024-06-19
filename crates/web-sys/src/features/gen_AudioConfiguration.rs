@@ -15,29 +15,41 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`*"]
     #[wasm_bindgen(method, getter = "bitrate")]
     pub fn get_bitrate(this: &AudioConfiguration) -> Option<f64>;
+    #[doc = "Change the `bitrate` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`*"]
     #[wasm_bindgen(method, setter = "bitrate")]
-    fn set_bitrate(this: &AudioConfiguration, val: f64);
+    pub fn set_bitrate(this: &AudioConfiguration, val: f64);
     #[doc = "Get the `channels` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`*"]
     #[wasm_bindgen(method, getter = "channels")]
     pub fn get_channels(this: &AudioConfiguration) -> Option<String>;
+    #[doc = "Change the `channels` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`*"]
     #[wasm_bindgen(method, setter = "channels")]
-    fn set_channels(this: &AudioConfiguration, val: &str);
+    pub fn set_channels(this: &AudioConfiguration, val: &str);
     #[doc = "Get the `contentType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`*"]
     #[wasm_bindgen(method, getter = "contentType")]
     pub fn get_content_type(this: &AudioConfiguration) -> Option<String>;
+    #[doc = "Change the `contentType` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`*"]
     #[wasm_bindgen(method, setter = "contentType")]
-    fn set_content_type(this: &AudioConfiguration, val: &str);
+    pub fn set_content_type(this: &AudioConfiguration, val: &str);
     #[doc = "Get the `samplerate` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`*"]
     #[wasm_bindgen(method, getter = "samplerate")]
     pub fn get_samplerate(this: &AudioConfiguration) -> Option<u32>;
+    #[doc = "Change the `samplerate` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`*"]
     #[wasm_bindgen(method, setter = "samplerate")]
-    fn set_samplerate(this: &AudioConfiguration, val: u32);
+    pub fn set_samplerate(this: &AudioConfiguration, val: u32);
 }
 impl AudioConfiguration {
     #[doc = "Construct a new `AudioConfiguration`."]
@@ -48,30 +60,22 @@ impl AudioConfiguration {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `bitrate` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`*"]
+    #[deprecated = "Use `set_bitrate()` instead."]
     pub fn bitrate(&mut self, val: f64) -> &mut Self {
         self.set_bitrate(val);
         self
     }
-    #[doc = "Change the `channels` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`*"]
+    #[deprecated = "Use `set_channels()` instead."]
     pub fn channels(&mut self, val: &str) -> &mut Self {
         self.set_channels(val);
         self
     }
-    #[doc = "Change the `contentType` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`*"]
+    #[deprecated = "Use `set_content_type()` instead."]
     pub fn content_type(&mut self, val: &str) -> &mut Self {
         self.set_content_type(val);
         self
     }
-    #[doc = "Change the `samplerate` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`*"]
+    #[deprecated = "Use `set_samplerate()` instead."]
     pub fn samplerate(&mut self, val: u32) -> &mut Self {
         self.set_samplerate(val);
         self

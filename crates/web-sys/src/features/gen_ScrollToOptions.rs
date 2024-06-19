@@ -17,22 +17,31 @@ extern "C" {
     #[wasm_bindgen(method, getter = "behavior")]
     pub fn get_behavior(this: &ScrollToOptions) -> Option<ScrollBehavior>;
     #[cfg(feature = "ScrollBehavior")]
+    #[doc = "Change the `behavior` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollBehavior`, `ScrollToOptions`*"]
     #[wasm_bindgen(method, setter = "behavior")]
-    fn set_behavior(this: &ScrollToOptions, val: ScrollBehavior);
+    pub fn set_behavior(this: &ScrollToOptions, val: ScrollBehavior);
     #[doc = "Get the `left` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ScrollToOptions`*"]
     #[wasm_bindgen(method, getter = "left")]
     pub fn get_left(this: &ScrollToOptions) -> Option<f64>;
+    #[doc = "Change the `left` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollToOptions`*"]
     #[wasm_bindgen(method, setter = "left")]
-    fn set_left(this: &ScrollToOptions, val: f64);
+    pub fn set_left(this: &ScrollToOptions, val: f64);
     #[doc = "Get the `top` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ScrollToOptions`*"]
     #[wasm_bindgen(method, getter = "top")]
     pub fn get_top(this: &ScrollToOptions) -> Option<f64>;
+    #[doc = "Change the `top` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollToOptions`*"]
     #[wasm_bindgen(method, setter = "top")]
-    fn set_top(this: &ScrollToOptions, val: f64);
+    pub fn set_top(this: &ScrollToOptions, val: f64);
 }
 impl ScrollToOptions {
     #[doc = "Construct a new `ScrollToOptions`."]
@@ -44,23 +53,17 @@ impl ScrollToOptions {
         ret
     }
     #[cfg(feature = "ScrollBehavior")]
-    #[doc = "Change the `behavior` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ScrollBehavior`, `ScrollToOptions`*"]
+    #[deprecated = "Use `set_behavior()` instead."]
     pub fn behavior(&mut self, val: ScrollBehavior) -> &mut Self {
         self.set_behavior(val);
         self
     }
-    #[doc = "Change the `left` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ScrollToOptions`*"]
+    #[deprecated = "Use `set_left()` instead."]
     pub fn left(&mut self, val: f64) -> &mut Self {
         self.set_left(val);
         self
     }
-    #[doc = "Change the `top` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ScrollToOptions`*"]
+    #[deprecated = "Use `set_top()` instead."]
     pub fn top(&mut self, val: f64) -> &mut Self {
         self.set_top(val);
         self

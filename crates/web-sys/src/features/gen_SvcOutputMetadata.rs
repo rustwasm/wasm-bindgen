@@ -23,8 +23,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "temporalLayerId")]
     pub fn get_temporal_layer_id(this: &SvcOutputMetadata) -> Option<u32>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `temporalLayerId` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SvcOutputMetadata`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "temporalLayerId")]
-    fn set_temporal_layer_id(this: &SvcOutputMetadata, val: u32);
+    pub fn set_temporal_layer_id(this: &SvcOutputMetadata, val: u32);
 }
 #[cfg(web_sys_unstable_apis)]
 impl SvcOutputMetadata {
@@ -40,12 +47,7 @@ impl SvcOutputMetadata {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `temporalLayerId` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `SvcOutputMetadata`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_temporal_layer_id()` instead."]
     pub fn temporal_layer_id(&mut self, val: u32) -> &mut Self {
         self.set_temporal_layer_id(val);
         self

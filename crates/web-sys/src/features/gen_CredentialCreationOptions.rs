@@ -19,8 +19,14 @@ extern "C" {
         this: &CredentialCreationOptions,
     ) -> Option<PublicKeyCredentialCreationOptions>;
     #[cfg(feature = "PublicKeyCredentialCreationOptions")]
+    #[doc = "Change the `publicKey` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CredentialCreationOptions`, `PublicKeyCredentialCreationOptions`*"]
     #[wasm_bindgen(method, setter = "publicKey")]
-    fn set_public_key(this: &CredentialCreationOptions, val: &PublicKeyCredentialCreationOptions);
+    pub fn set_public_key(
+        this: &CredentialCreationOptions,
+        val: &PublicKeyCredentialCreationOptions,
+    );
     #[cfg(feature = "AbortSignal")]
     #[doc = "Get the `signal` field of this object."]
     #[doc = ""]
@@ -28,8 +34,11 @@ extern "C" {
     #[wasm_bindgen(method, getter = "signal")]
     pub fn get_signal(this: &CredentialCreationOptions) -> Option<AbortSignal>;
     #[cfg(feature = "AbortSignal")]
+    #[doc = "Change the `signal` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AbortSignal`, `CredentialCreationOptions`*"]
     #[wasm_bindgen(method, setter = "signal")]
-    fn set_signal(this: &CredentialCreationOptions, val: &AbortSignal);
+    pub fn set_signal(this: &CredentialCreationOptions, val: &AbortSignal);
 }
 impl CredentialCreationOptions {
     #[doc = "Construct a new `CredentialCreationOptions`."]
@@ -41,17 +50,13 @@ impl CredentialCreationOptions {
         ret
     }
     #[cfg(feature = "PublicKeyCredentialCreationOptions")]
-    #[doc = "Change the `publicKey` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `CredentialCreationOptions`, `PublicKeyCredentialCreationOptions`*"]
+    #[deprecated = "Use `set_public_key()` instead."]
     pub fn public_key(&mut self, val: &PublicKeyCredentialCreationOptions) -> &mut Self {
         self.set_public_key(val);
         self
     }
     #[cfg(feature = "AbortSignal")]
-    #[doc = "Change the `signal` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AbortSignal`, `CredentialCreationOptions`*"]
+    #[deprecated = "Use `set_signal()` instead."]
     pub fn signal(&mut self, val: &AbortSignal) -> &mut Self {
         self.set_signal(val);
         self

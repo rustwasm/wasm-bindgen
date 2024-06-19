@@ -23,8 +23,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "manufacturerData")]
     pub fn get_manufacturer_data(this: &BluetoothLeScanFilterInit) -> Option<::js_sys::Object>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `manufacturerData` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothLeScanFilterInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "manufacturerData")]
-    fn set_manufacturer_data(this: &BluetoothLeScanFilterInit, val: &::js_sys::Object);
+    pub fn set_manufacturer_data(this: &BluetoothLeScanFilterInit, val: &::js_sys::Object);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
@@ -34,8 +41,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "name")]
     pub fn get_name(this: &BluetoothLeScanFilterInit) -> Option<String>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothLeScanFilterInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "name")]
-    fn set_name(this: &BluetoothLeScanFilterInit, val: &str);
+    pub fn set_name(this: &BluetoothLeScanFilterInit, val: &str);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `namePrefix` field of this object."]
     #[doc = ""]
@@ -45,8 +59,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "namePrefix")]
     pub fn get_name_prefix(this: &BluetoothLeScanFilterInit) -> Option<String>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `namePrefix` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothLeScanFilterInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "namePrefix")]
-    fn set_name_prefix(this: &BluetoothLeScanFilterInit, val: &str);
+    pub fn set_name_prefix(this: &BluetoothLeScanFilterInit, val: &str);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `serviceData` field of this object."]
     #[doc = ""]
@@ -56,8 +77,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "serviceData")]
     pub fn get_service_data(this: &BluetoothLeScanFilterInit) -> Option<::js_sys::Object>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `serviceData` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothLeScanFilterInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "serviceData")]
-    fn set_service_data(this: &BluetoothLeScanFilterInit, val: &::js_sys::Object);
+    pub fn set_service_data(this: &BluetoothLeScanFilterInit, val: &::js_sys::Object);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `services` field of this object."]
     #[doc = ""]
@@ -67,8 +95,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "services")]
     pub fn get_services(this: &BluetoothLeScanFilterInit) -> Option<::js_sys::Array>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `services` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothLeScanFilterInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "services")]
-    fn set_services(this: &BluetoothLeScanFilterInit, val: &::wasm_bindgen::JsValue);
+    pub fn set_services(this: &BluetoothLeScanFilterInit, val: &::wasm_bindgen::JsValue);
 }
 #[cfg(web_sys_unstable_apis)]
 impl BluetoothLeScanFilterInit {
@@ -84,56 +119,31 @@ impl BluetoothLeScanFilterInit {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `manufacturerData` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BluetoothLeScanFilterInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_manufacturer_data()` instead."]
     pub fn manufacturer_data(&mut self, val: &::js_sys::Object) -> &mut Self {
         self.set_manufacturer_data(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `name` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BluetoothLeScanFilterInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_name()` instead."]
     pub fn name(&mut self, val: &str) -> &mut Self {
         self.set_name(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `namePrefix` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BluetoothLeScanFilterInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_name_prefix()` instead."]
     pub fn name_prefix(&mut self, val: &str) -> &mut Self {
         self.set_name_prefix(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `serviceData` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BluetoothLeScanFilterInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_service_data()` instead."]
     pub fn service_data(&mut self, val: &::js_sys::Object) -> &mut Self {
         self.set_service_data(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `services` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BluetoothLeScanFilterInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_services()` instead."]
     pub fn services(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_services(val);
         self

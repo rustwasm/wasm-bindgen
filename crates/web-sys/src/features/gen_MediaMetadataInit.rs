@@ -23,8 +23,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "album")]
     pub fn get_album(this: &MediaMetadataInit) -> Option<String>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `album` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaMetadataInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "album")]
-    fn set_album(this: &MediaMetadataInit, val: &str);
+    pub fn set_album(this: &MediaMetadataInit, val: &str);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `artist` field of this object."]
     #[doc = ""]
@@ -34,8 +41,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "artist")]
     pub fn get_artist(this: &MediaMetadataInit) -> Option<String>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `artist` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaMetadataInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "artist")]
-    fn set_artist(this: &MediaMetadataInit, val: &str);
+    pub fn set_artist(this: &MediaMetadataInit, val: &str);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `artwork` field of this object."]
     #[doc = ""]
@@ -45,8 +59,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "artwork")]
     pub fn get_artwork(this: &MediaMetadataInit) -> Option<::js_sys::Array>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `artwork` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaMetadataInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "artwork")]
-    fn set_artwork(this: &MediaMetadataInit, val: &::wasm_bindgen::JsValue);
+    pub fn set_artwork(this: &MediaMetadataInit, val: &::wasm_bindgen::JsValue);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `title` field of this object."]
     #[doc = ""]
@@ -56,8 +77,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "title")]
     pub fn get_title(this: &MediaMetadataInit) -> Option<String>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `title` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaMetadataInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "title")]
-    fn set_title(this: &MediaMetadataInit, val: &str);
+    pub fn set_title(this: &MediaMetadataInit, val: &str);
 }
 #[cfg(web_sys_unstable_apis)]
 impl MediaMetadataInit {
@@ -73,45 +101,25 @@ impl MediaMetadataInit {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `album` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaMetadataInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_album()` instead."]
     pub fn album(&mut self, val: &str) -> &mut Self {
         self.set_album(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `artist` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaMetadataInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_artist()` instead."]
     pub fn artist(&mut self, val: &str) -> &mut Self {
         self.set_artist(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `artwork` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaMetadataInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_artwork()` instead."]
     pub fn artwork(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_artwork(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `title` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaMetadataInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_title()` instead."]
     pub fn title(&mut self, val: &str) -> &mut Self {
         self.set_title(val);
         self

@@ -17,8 +17,11 @@ extern "C" {
     #[wasm_bindgen(method, getter = "fromBox")]
     pub fn get_from_box(this: &ConvertCoordinateOptions) -> Option<CssBoxType>;
     #[cfg(feature = "CssBoxType")]
+    #[doc = "Change the `fromBox` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConvertCoordinateOptions`, `CssBoxType`*"]
     #[wasm_bindgen(method, setter = "fromBox")]
-    fn set_from_box(this: &ConvertCoordinateOptions, val: CssBoxType);
+    pub fn set_from_box(this: &ConvertCoordinateOptions, val: CssBoxType);
     #[cfg(feature = "CssBoxType")]
     #[doc = "Get the `toBox` field of this object."]
     #[doc = ""]
@@ -26,8 +29,11 @@ extern "C" {
     #[wasm_bindgen(method, getter = "toBox")]
     pub fn get_to_box(this: &ConvertCoordinateOptions) -> Option<CssBoxType>;
     #[cfg(feature = "CssBoxType")]
+    #[doc = "Change the `toBox` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConvertCoordinateOptions`, `CssBoxType`*"]
     #[wasm_bindgen(method, setter = "toBox")]
-    fn set_to_box(this: &ConvertCoordinateOptions, val: CssBoxType);
+    pub fn set_to_box(this: &ConvertCoordinateOptions, val: CssBoxType);
 }
 impl ConvertCoordinateOptions {
     #[doc = "Construct a new `ConvertCoordinateOptions`."]
@@ -39,17 +45,13 @@ impl ConvertCoordinateOptions {
         ret
     }
     #[cfg(feature = "CssBoxType")]
-    #[doc = "Change the `fromBox` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ConvertCoordinateOptions`, `CssBoxType`*"]
+    #[deprecated = "Use `set_from_box()` instead."]
     pub fn from_box(&mut self, val: CssBoxType) -> &mut Self {
         self.set_from_box(val);
         self
     }
     #[cfg(feature = "CssBoxType")]
-    #[doc = "Change the `toBox` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ConvertCoordinateOptions`, `CssBoxType`*"]
+    #[deprecated = "Use `set_to_box()` instead."]
     pub fn to_box(&mut self, val: CssBoxType) -> &mut Self {
         self.set_to_box(val);
         self

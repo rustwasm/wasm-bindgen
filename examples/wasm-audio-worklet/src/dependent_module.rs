@@ -23,9 +23,11 @@ pub fn on_the_fly(code: &str) -> Result<String, JsValue> {
         IMPORT_META.url(),
     );
 
+    let options = BlobPropertyBag::new();
+    options.set_type("text/javascript");
     Url::create_object_url_with_blob(&Blob::new_with_str_sequence_and_options(
         &Array::of2(&JsValue::from(header.as_str()), &JsValue::from(code)),
-        BlobPropertyBag::new().type_("text/javascript"),
+        &options,
     )?)
 }
 

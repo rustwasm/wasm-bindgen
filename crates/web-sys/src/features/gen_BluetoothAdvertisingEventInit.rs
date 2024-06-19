@@ -23,8 +23,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "bubbles")]
     pub fn get_bubbles(this: &BluetoothAdvertisingEventInit) -> Option<bool>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothAdvertisingEventInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn set_bubbles(this: &BluetoothAdvertisingEventInit, val: bool);
+    pub fn set_bubbles(this: &BluetoothAdvertisingEventInit, val: bool);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `cancelable` field of this object."]
     #[doc = ""]
@@ -34,8 +41,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "cancelable")]
     pub fn get_cancelable(this: &BluetoothAdvertisingEventInit) -> Option<bool>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothAdvertisingEventInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn set_cancelable(this: &BluetoothAdvertisingEventInit, val: bool);
+    pub fn set_cancelable(this: &BluetoothAdvertisingEventInit, val: bool);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `composed` field of this object."]
     #[doc = ""]
@@ -45,8 +59,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "composed")]
     pub fn get_composed(this: &BluetoothAdvertisingEventInit) -> Option<bool>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothAdvertisingEventInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "composed")]
-    fn set_composed(this: &BluetoothAdvertisingEventInit, val: bool);
+    pub fn set_composed(this: &BluetoothAdvertisingEventInit, val: bool);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `appearance` field of this object."]
     #[doc = ""]
@@ -56,8 +77,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "appearance")]
     pub fn get_appearance(this: &BluetoothAdvertisingEventInit) -> Option<u16>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `appearance` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothAdvertisingEventInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "appearance")]
-    fn set_appearance(this: &BluetoothAdvertisingEventInit, val: u16);
+    pub fn set_appearance(this: &BluetoothAdvertisingEventInit, val: u16);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "BluetoothDevice")]
     #[doc = "Get the `device` field of this object."]
@@ -68,9 +96,16 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "device")]
     pub fn get_device(this: &BluetoothAdvertisingEventInit) -> BluetoothDevice;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "BluetoothDevice")]
+    #[doc = "Change the `device` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothAdvertisingEventInit`, `BluetoothDevice`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "device")]
-    fn set_device(this: &BluetoothAdvertisingEventInit, val: &BluetoothDevice);
+    pub fn set_device(this: &BluetoothAdvertisingEventInit, val: &BluetoothDevice);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "BluetoothManufacturerDataMap")]
     #[doc = "Get the `manufacturerData` field of this object."]
@@ -83,9 +118,16 @@ extern "C" {
     pub fn get_manufacturer_data(
         this: &BluetoothAdvertisingEventInit,
     ) -> Option<BluetoothManufacturerDataMap>;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "BluetoothManufacturerDataMap")]
+    #[doc = "Change the `manufacturerData` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothAdvertisingEventInit`, `BluetoothManufacturerDataMap`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "manufacturerData")]
-    fn set_manufacturer_data(
+    pub fn set_manufacturer_data(
         this: &BluetoothAdvertisingEventInit,
         val: &BluetoothManufacturerDataMap,
     );
@@ -98,8 +140,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "name")]
     pub fn get_name(this: &BluetoothAdvertisingEventInit) -> Option<String>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothAdvertisingEventInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "name")]
-    fn set_name(this: &BluetoothAdvertisingEventInit, val: &str);
+    pub fn set_name(this: &BluetoothAdvertisingEventInit, val: &str);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `rssi` field of this object."]
     #[doc = ""]
@@ -109,8 +158,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "rssi")]
     pub fn get_rssi(this: &BluetoothAdvertisingEventInit) -> Option<i8>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `rssi` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothAdvertisingEventInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "rssi")]
-    fn set_rssi(this: &BluetoothAdvertisingEventInit, val: i8);
+    pub fn set_rssi(this: &BluetoothAdvertisingEventInit, val: i8);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "BluetoothServiceDataMap")]
     #[doc = "Get the `serviceData` field of this object."]
@@ -123,9 +179,16 @@ extern "C" {
     pub fn get_service_data(
         this: &BluetoothAdvertisingEventInit,
     ) -> Option<BluetoothServiceDataMap>;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "BluetoothServiceDataMap")]
+    #[doc = "Change the `serviceData` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothAdvertisingEventInit`, `BluetoothServiceDataMap`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "serviceData")]
-    fn set_service_data(this: &BluetoothAdvertisingEventInit, val: &BluetoothServiceDataMap);
+    pub fn set_service_data(this: &BluetoothAdvertisingEventInit, val: &BluetoothServiceDataMap);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `txPower` field of this object."]
     #[doc = ""]
@@ -135,8 +198,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "txPower")]
     pub fn get_tx_power(this: &BluetoothAdvertisingEventInit) -> Option<i8>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `txPower` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothAdvertisingEventInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "txPower")]
-    fn set_tx_power(this: &BluetoothAdvertisingEventInit, val: i8);
+    pub fn set_tx_power(this: &BluetoothAdvertisingEventInit, val: i8);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `uuids` field of this object."]
     #[doc = ""]
@@ -146,8 +216,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "uuids")]
     pub fn get_uuids(this: &BluetoothAdvertisingEventInit) -> Option<::js_sys::Array>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `uuids` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothAdvertisingEventInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "uuids")]
-    fn set_uuids(this: &BluetoothAdvertisingEventInit, val: &::wasm_bindgen::JsValue);
+    pub fn set_uuids(this: &BluetoothAdvertisingEventInit, val: &::wasm_bindgen::JsValue);
 }
 #[cfg(web_sys_unstable_apis)]
 impl BluetoothAdvertisingEventInit {
@@ -165,125 +242,70 @@ impl BluetoothAdvertisingEventInit {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `bubbles` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BluetoothAdvertisingEventInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_bubbles()` instead."]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
         self.set_bubbles(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `cancelable` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BluetoothAdvertisingEventInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_cancelable()` instead."]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
         self.set_cancelable(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `composed` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BluetoothAdvertisingEventInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_composed()` instead."]
     pub fn composed(&mut self, val: bool) -> &mut Self {
         self.set_composed(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `appearance` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BluetoothAdvertisingEventInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_appearance()` instead."]
     pub fn appearance(&mut self, val: u16) -> &mut Self {
         self.set_appearance(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "BluetoothDevice")]
-    #[doc = "Change the `device` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BluetoothAdvertisingEventInit`, `BluetoothDevice`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_device()` instead."]
     pub fn device(&mut self, val: &BluetoothDevice) -> &mut Self {
         self.set_device(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "BluetoothManufacturerDataMap")]
-    #[doc = "Change the `manufacturerData` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BluetoothAdvertisingEventInit`, `BluetoothManufacturerDataMap`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_manufacturer_data()` instead."]
     pub fn manufacturer_data(&mut self, val: &BluetoothManufacturerDataMap) -> &mut Self {
         self.set_manufacturer_data(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `name` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BluetoothAdvertisingEventInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_name()` instead."]
     pub fn name(&mut self, val: &str) -> &mut Self {
         self.set_name(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `rssi` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BluetoothAdvertisingEventInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_rssi()` instead."]
     pub fn rssi(&mut self, val: i8) -> &mut Self {
         self.set_rssi(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "BluetoothServiceDataMap")]
-    #[doc = "Change the `serviceData` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BluetoothAdvertisingEventInit`, `BluetoothServiceDataMap`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_service_data()` instead."]
     pub fn service_data(&mut self, val: &BluetoothServiceDataMap) -> &mut Self {
         self.set_service_data(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `txPower` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BluetoothAdvertisingEventInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_tx_power()` instead."]
     pub fn tx_power(&mut self, val: i8) -> &mut Self {
         self.set_tx_power(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `uuids` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BluetoothAdvertisingEventInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_uuids()` instead."]
     pub fn uuids(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_uuids(val);
         self

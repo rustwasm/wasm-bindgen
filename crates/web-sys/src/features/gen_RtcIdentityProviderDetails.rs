@@ -15,15 +15,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
     #[wasm_bindgen(method, getter = "domain")]
     pub fn get_domain(this: &RtcIdentityProviderDetails) -> String;
+    #[doc = "Change the `domain` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
     #[wasm_bindgen(method, setter = "domain")]
-    fn set_domain(this: &RtcIdentityProviderDetails, val: &str);
+    pub fn set_domain(this: &RtcIdentityProviderDetails, val: &str);
     #[doc = "Get the `protocol` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
     #[wasm_bindgen(method, getter = "protocol")]
     pub fn get_protocol(this: &RtcIdentityProviderDetails) -> Option<String>;
+    #[doc = "Change the `protocol` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
     #[wasm_bindgen(method, setter = "protocol")]
-    fn set_protocol(this: &RtcIdentityProviderDetails, val: &str);
+    pub fn set_protocol(this: &RtcIdentityProviderDetails, val: &str);
 }
 impl RtcIdentityProviderDetails {
     #[doc = "Construct a new `RtcIdentityProviderDetails`."]
@@ -35,16 +41,12 @@ impl RtcIdentityProviderDetails {
         ret.domain(domain);
         ret
     }
-    #[doc = "Change the `domain` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
+    #[deprecated = "Use `set_domain()` instead."]
     pub fn domain(&mut self, val: &str) -> &mut Self {
         self.set_domain(val);
         self
     }
-    #[doc = "Change the `protocol` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
+    #[deprecated = "Use `set_protocol()` instead."]
     pub fn protocol(&mut self, val: &str) -> &mut Self {
         self.set_protocol(val);
         self

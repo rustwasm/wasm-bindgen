@@ -15,15 +15,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `FileSystemFlags`*"]
     #[wasm_bindgen(method, getter = "create")]
     pub fn get_create(this: &FileSystemFlags) -> Option<bool>;
+    #[doc = "Change the `create` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemFlags`*"]
     #[wasm_bindgen(method, setter = "create")]
-    fn set_create(this: &FileSystemFlags, val: bool);
+    pub fn set_create(this: &FileSystemFlags, val: bool);
     #[doc = "Get the `exclusive` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemFlags`*"]
     #[wasm_bindgen(method, getter = "exclusive")]
     pub fn get_exclusive(this: &FileSystemFlags) -> Option<bool>;
+    #[doc = "Change the `exclusive` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemFlags`*"]
     #[wasm_bindgen(method, setter = "exclusive")]
-    fn set_exclusive(this: &FileSystemFlags, val: bool);
+    pub fn set_exclusive(this: &FileSystemFlags, val: bool);
 }
 impl FileSystemFlags {
     #[doc = "Construct a new `FileSystemFlags`."]
@@ -34,16 +40,12 @@ impl FileSystemFlags {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `create` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FileSystemFlags`*"]
+    #[deprecated = "Use `set_create()` instead."]
     pub fn create(&mut self, val: bool) -> &mut Self {
         self.set_create(val);
         self
     }
-    #[doc = "Change the `exclusive` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FileSystemFlags`*"]
+    #[deprecated = "Use `set_exclusive()` instead."]
     pub fn exclusive(&mut self, val: bool) -> &mut Self {
         self.set_exclusive(val);
         self

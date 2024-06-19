@@ -15,22 +15,31 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SocketsDict`*"]
     #[wasm_bindgen(method, getter = "received")]
     pub fn get_received(this: &SocketsDict) -> Option<f64>;
+    #[doc = "Change the `received` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SocketsDict`*"]
     #[wasm_bindgen(method, setter = "received")]
-    fn set_received(this: &SocketsDict, val: f64);
+    pub fn set_received(this: &SocketsDict, val: f64);
     #[doc = "Get the `sent` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SocketsDict`*"]
     #[wasm_bindgen(method, getter = "sent")]
     pub fn get_sent(this: &SocketsDict) -> Option<f64>;
+    #[doc = "Change the `sent` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SocketsDict`*"]
     #[wasm_bindgen(method, setter = "sent")]
-    fn set_sent(this: &SocketsDict, val: f64);
+    pub fn set_sent(this: &SocketsDict, val: f64);
     #[doc = "Get the `sockets` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SocketsDict`*"]
     #[wasm_bindgen(method, getter = "sockets")]
     pub fn get_sockets(this: &SocketsDict) -> Option<::js_sys::Array>;
+    #[doc = "Change the `sockets` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SocketsDict`*"]
     #[wasm_bindgen(method, setter = "sockets")]
-    fn set_sockets(this: &SocketsDict, val: &::wasm_bindgen::JsValue);
+    pub fn set_sockets(this: &SocketsDict, val: &::wasm_bindgen::JsValue);
 }
 impl SocketsDict {
     #[doc = "Construct a new `SocketsDict`."]
@@ -41,23 +50,17 @@ impl SocketsDict {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `received` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `SocketsDict`*"]
+    #[deprecated = "Use `set_received()` instead."]
     pub fn received(&mut self, val: f64) -> &mut Self {
         self.set_received(val);
         self
     }
-    #[doc = "Change the `sent` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `SocketsDict`*"]
+    #[deprecated = "Use `set_sent()` instead."]
     pub fn sent(&mut self, val: f64) -> &mut Self {
         self.set_sent(val);
         self
     }
-    #[doc = "Change the `sockets` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `SocketsDict`*"]
+    #[deprecated = "Use `set_sockets()` instead."]
     pub fn sockets(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_sockets(val);
         self

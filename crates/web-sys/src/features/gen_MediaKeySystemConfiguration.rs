@@ -15,8 +15,14 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`*"]
     #[wasm_bindgen(method, getter = "audioCapabilities")]
     pub fn get_audio_capabilities(this: &MediaKeySystemConfiguration) -> Option<::js_sys::Array>;
+    #[doc = "Change the `audioCapabilities` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`*"]
     #[wasm_bindgen(method, setter = "audioCapabilities")]
-    fn set_audio_capabilities(this: &MediaKeySystemConfiguration, val: &::wasm_bindgen::JsValue);
+    pub fn set_audio_capabilities(
+        this: &MediaKeySystemConfiguration,
+        val: &::wasm_bindgen::JsValue,
+    );
     #[cfg(feature = "MediaKeysRequirement")]
     #[doc = "Get the `distinctiveIdentifier` field of this object."]
     #[doc = ""]
@@ -26,22 +32,34 @@ extern "C" {
         this: &MediaKeySystemConfiguration,
     ) -> Option<MediaKeysRequirement>;
     #[cfg(feature = "MediaKeysRequirement")]
+    #[doc = "Change the `distinctiveIdentifier` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`, `MediaKeysRequirement`*"]
     #[wasm_bindgen(method, setter = "distinctiveIdentifier")]
-    fn set_distinctive_identifier(this: &MediaKeySystemConfiguration, val: MediaKeysRequirement);
+    pub fn set_distinctive_identifier(
+        this: &MediaKeySystemConfiguration,
+        val: MediaKeysRequirement,
+    );
     #[doc = "Get the `initDataTypes` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`*"]
     #[wasm_bindgen(method, getter = "initDataTypes")]
     pub fn get_init_data_types(this: &MediaKeySystemConfiguration) -> Option<::js_sys::Array>;
+    #[doc = "Change the `initDataTypes` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`*"]
     #[wasm_bindgen(method, setter = "initDataTypes")]
-    fn set_init_data_types(this: &MediaKeySystemConfiguration, val: &::wasm_bindgen::JsValue);
+    pub fn set_init_data_types(this: &MediaKeySystemConfiguration, val: &::wasm_bindgen::JsValue);
     #[doc = "Get the `label` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`*"]
     #[wasm_bindgen(method, getter = "label")]
     pub fn get_label(this: &MediaKeySystemConfiguration) -> Option<String>;
+    #[doc = "Change the `label` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`*"]
     #[wasm_bindgen(method, setter = "label")]
-    fn set_label(this: &MediaKeySystemConfiguration, val: &str);
+    pub fn set_label(this: &MediaKeySystemConfiguration, val: &str);
     #[cfg(feature = "MediaKeysRequirement")]
     #[doc = "Get the `persistentState` field of this object."]
     #[doc = ""]
@@ -50,22 +68,34 @@ extern "C" {
     pub fn get_persistent_state(this: &MediaKeySystemConfiguration)
         -> Option<MediaKeysRequirement>;
     #[cfg(feature = "MediaKeysRequirement")]
+    #[doc = "Change the `persistentState` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`, `MediaKeysRequirement`*"]
     #[wasm_bindgen(method, setter = "persistentState")]
-    fn set_persistent_state(this: &MediaKeySystemConfiguration, val: MediaKeysRequirement);
+    pub fn set_persistent_state(this: &MediaKeySystemConfiguration, val: MediaKeysRequirement);
     #[doc = "Get the `sessionTypes` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`*"]
     #[wasm_bindgen(method, getter = "sessionTypes")]
     pub fn get_session_types(this: &MediaKeySystemConfiguration) -> Option<::js_sys::Array>;
+    #[doc = "Change the `sessionTypes` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`*"]
     #[wasm_bindgen(method, setter = "sessionTypes")]
-    fn set_session_types(this: &MediaKeySystemConfiguration, val: &::wasm_bindgen::JsValue);
+    pub fn set_session_types(this: &MediaKeySystemConfiguration, val: &::wasm_bindgen::JsValue);
     #[doc = "Get the `videoCapabilities` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`*"]
     #[wasm_bindgen(method, getter = "videoCapabilities")]
     pub fn get_video_capabilities(this: &MediaKeySystemConfiguration) -> Option<::js_sys::Array>;
+    #[doc = "Change the `videoCapabilities` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`*"]
     #[wasm_bindgen(method, setter = "videoCapabilities")]
-    fn set_video_capabilities(this: &MediaKeySystemConfiguration, val: &::wasm_bindgen::JsValue);
+    pub fn set_video_capabilities(
+        this: &MediaKeySystemConfiguration,
+        val: &::wasm_bindgen::JsValue,
+    );
 }
 impl MediaKeySystemConfiguration {
     #[doc = "Construct a new `MediaKeySystemConfiguration`."]
@@ -76,53 +106,39 @@ impl MediaKeySystemConfiguration {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `audioCapabilities` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`*"]
+    #[deprecated = "Use `set_audio_capabilities()` instead."]
     pub fn audio_capabilities(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_audio_capabilities(val);
         self
     }
     #[cfg(feature = "MediaKeysRequirement")]
-    #[doc = "Change the `distinctiveIdentifier` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`, `MediaKeysRequirement`*"]
+    #[deprecated = "Use `set_distinctive_identifier()` instead."]
     pub fn distinctive_identifier(&mut self, val: MediaKeysRequirement) -> &mut Self {
         self.set_distinctive_identifier(val);
         self
     }
-    #[doc = "Change the `initDataTypes` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`*"]
+    #[deprecated = "Use `set_init_data_types()` instead."]
     pub fn init_data_types(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_init_data_types(val);
         self
     }
-    #[doc = "Change the `label` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`*"]
+    #[deprecated = "Use `set_label()` instead."]
     pub fn label(&mut self, val: &str) -> &mut Self {
         self.set_label(val);
         self
     }
     #[cfg(feature = "MediaKeysRequirement")]
-    #[doc = "Change the `persistentState` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`, `MediaKeysRequirement`*"]
+    #[deprecated = "Use `set_persistent_state()` instead."]
     pub fn persistent_state(&mut self, val: MediaKeysRequirement) -> &mut Self {
         self.set_persistent_state(val);
         self
     }
-    #[doc = "Change the `sessionTypes` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`*"]
+    #[deprecated = "Use `set_session_types()` instead."]
     pub fn session_types(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_session_types(val);
         self
     }
-    #[doc = "Change the `videoCapabilities` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`*"]
+    #[deprecated = "Use `set_video_capabilities()` instead."]
     pub fn video_capabilities(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_video_capabilities(val);
         self

@@ -15,15 +15,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `PerformanceObserverInit`*"]
     #[wasm_bindgen(method, getter = "buffered")]
     pub fn get_buffered(this: &PerformanceObserverInit) -> Option<bool>;
+    #[doc = "Change the `buffered` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceObserverInit`*"]
     #[wasm_bindgen(method, setter = "buffered")]
-    fn set_buffered(this: &PerformanceObserverInit, val: bool);
+    pub fn set_buffered(this: &PerformanceObserverInit, val: bool);
     #[doc = "Get the `entryTypes` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceObserverInit`*"]
     #[wasm_bindgen(method, getter = "entryTypes")]
     pub fn get_entry_types(this: &PerformanceObserverInit) -> ::js_sys::Array;
+    #[doc = "Change the `entryTypes` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PerformanceObserverInit`*"]
     #[wasm_bindgen(method, setter = "entryTypes")]
-    fn set_entry_types(this: &PerformanceObserverInit, val: &::wasm_bindgen::JsValue);
+    pub fn set_entry_types(this: &PerformanceObserverInit, val: &::wasm_bindgen::JsValue);
 }
 impl PerformanceObserverInit {
     #[doc = "Construct a new `PerformanceObserverInit`."]
@@ -35,16 +41,12 @@ impl PerformanceObserverInit {
         ret.entry_types(entry_types);
         ret
     }
-    #[doc = "Change the `buffered` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `PerformanceObserverInit`*"]
+    #[deprecated = "Use `set_buffered()` instead."]
     pub fn buffered(&mut self, val: bool) -> &mut Self {
         self.set_buffered(val);
         self
     }
-    #[doc = "Change the `entryTypes` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `PerformanceObserverInit`*"]
+    #[deprecated = "Use `set_entry_types()` instead."]
     pub fn entry_types(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_entry_types(val);
         self

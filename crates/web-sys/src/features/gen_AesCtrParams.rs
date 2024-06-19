@@ -15,22 +15,31 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AesCtrParams`*"]
     #[wasm_bindgen(method, getter = "name")]
     pub fn get_name(this: &AesCtrParams) -> String;
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AesCtrParams`*"]
     #[wasm_bindgen(method, setter = "name")]
-    fn set_name(this: &AesCtrParams, val: &str);
+    pub fn set_name(this: &AesCtrParams, val: &str);
     #[doc = "Get the `counter` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesCtrParams`*"]
     #[wasm_bindgen(method, getter = "counter")]
     pub fn get_counter(this: &AesCtrParams) -> ::js_sys::Object;
+    #[doc = "Change the `counter` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AesCtrParams`*"]
     #[wasm_bindgen(method, setter = "counter")]
-    fn set_counter(this: &AesCtrParams, val: &::js_sys::Object);
+    pub fn set_counter(this: &AesCtrParams, val: &::js_sys::Object);
     #[doc = "Get the `length` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesCtrParams`*"]
     #[wasm_bindgen(method, getter = "length")]
     pub fn get_length(this: &AesCtrParams) -> u8;
+    #[doc = "Change the `length` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AesCtrParams`*"]
     #[wasm_bindgen(method, setter = "length")]
-    fn set_length(this: &AesCtrParams, val: u8);
+    pub fn set_length(this: &AesCtrParams, val: u8);
 }
 impl AesCtrParams {
     #[doc = "Construct a new `AesCtrParams`."]
@@ -44,23 +53,17 @@ impl AesCtrParams {
         ret.length(length);
         ret
     }
-    #[doc = "Change the `name` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AesCtrParams`*"]
+    #[deprecated = "Use `set_name()` instead."]
     pub fn name(&mut self, val: &str) -> &mut Self {
         self.set_name(val);
         self
     }
-    #[doc = "Change the `counter` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AesCtrParams`*"]
+    #[deprecated = "Use `set_counter()` instead."]
     pub fn counter(&mut self, val: &::js_sys::Object) -> &mut Self {
         self.set_counter(val);
         self
     }
-    #[doc = "Change the `length` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AesCtrParams`*"]
+    #[deprecated = "Use `set_length()` instead."]
     pub fn length(&mut self, val: u8) -> &mut Self {
         self.set_length(val);
         self

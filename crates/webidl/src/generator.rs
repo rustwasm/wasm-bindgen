@@ -667,34 +667,37 @@ impl DictionaryField {
         let unstable_attr = maybe_unstable_attr(self.unstable);
         let unstable_docs = maybe_unstable_docs(self.unstable);
 
-        let doc_comment = comment(
+        let getter_doc_comment = comment(
             format!("Get the `{}` field of this object.", js_name),
+            &required_doc_string(options, features),
+        );
+
+        let setter_doc_comment = comment(
+            format!("Change the `{}` field of this object.", js_name),
             &required_doc_string(options, features),
         );
 
         quote! {
             #unstable_attr
             #cfg_features
-            #doc_comment
+            #getter_doc_comment
             #unstable_docs
             #[wasm_bindgen(method, getter = #js_name)]
             pub fn #getter_name(this: &#parent_ident) -> #return_ty;
 
+            #unstable_attr
             #cfg_features
+            #setter_doc_comment
+            #unstable_docs
             #[wasm_bindgen(method, setter = #js_name)]
-            fn #setter_name(this: &#parent_ident, val: #ty);
+            pub fn #setter_name(this: &#parent_ident, val: #ty);
         }
     }
 
-    fn generate_rust_setter(
-        &self,
-        options: &Options,
-        features: &BTreeSet<String>,
-        cfg_features: &Option<syn::Attribute>,
-    ) -> TokenStream {
+    fn generate_rust_setter(&self, cfg_features: &Option<syn::Attribute>) -> TokenStream {
         let DictionaryField {
             name,
-            js_name,
+            js_name: _,
             ty,
             return_ty: _,
             is_js_value_ref_option_type: _,
@@ -704,14 +707,9 @@ impl DictionaryField {
 
         let name = rust_ident(name);
         let unstable_attr = maybe_unstable_attr(*unstable);
-        let unstable_docs = maybe_unstable_docs(*unstable);
-
-        let doc_comment = comment(
-            format!("Change the `{}` field of this object.", js_name),
-            &required_doc_string(options, features),
-        );
 
         let setter_name = self.setter_name();
+        let deprecated = format!("Use `{}()` instead.", setter_name);
 
         let shim_args = if self.is_js_value_ref_option_type {
             quote! { val.unwrap_or(&::wasm_bindgen::JsValue::NULL) }
@@ -722,8 +720,7 @@ impl DictionaryField {
         quote! {
             #unstable_attr
             #cfg_features
-            #doc_comment
-            #unstable_docs
+            #[deprecated = #deprecated]
             pub fn #name(&mut self, val: #ty) -> &mut Self {
                 self.#setter_name(#shim_args);
                 self
@@ -820,11 +817,8 @@ impl Dictionary {
 
         let fields = fields
             .iter()
-            .zip(field_features.iter())
             .zip(field_cfg_features.iter())
-            .map(|((field, features), cfg_features)| {
-                field.generate_rust_setter(options, features, cfg_features)
-            })
+            .map(|(field, cfg_features)| field.generate_rust_setter(cfg_features))
             .collect::<Vec<_>>();
 
         let mut base_stream = quote! {

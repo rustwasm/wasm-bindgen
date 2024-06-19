@@ -15,15 +15,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `TreeCellInfo`*"]
     #[wasm_bindgen(method, getter = "childElt")]
     pub fn get_child_elt(this: &TreeCellInfo) -> Option<String>;
+    #[doc = "Change the `childElt` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TreeCellInfo`*"]
     #[wasm_bindgen(method, setter = "childElt")]
-    fn set_child_elt(this: &TreeCellInfo, val: &str);
+    pub fn set_child_elt(this: &TreeCellInfo, val: &str);
     #[doc = "Get the `row` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TreeCellInfo`*"]
     #[wasm_bindgen(method, getter = "row")]
     pub fn get_row(this: &TreeCellInfo) -> Option<i32>;
+    #[doc = "Change the `row` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TreeCellInfo`*"]
     #[wasm_bindgen(method, setter = "row")]
-    fn set_row(this: &TreeCellInfo, val: i32);
+    pub fn set_row(this: &TreeCellInfo, val: i32);
 }
 impl TreeCellInfo {
     #[doc = "Construct a new `TreeCellInfo`."]
@@ -34,16 +40,12 @@ impl TreeCellInfo {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `childElt` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `TreeCellInfo`*"]
+    #[deprecated = "Use `set_child_elt()` instead."]
     pub fn child_elt(&mut self, val: &str) -> &mut Self {
         self.set_child_elt(val);
         self
     }
-    #[doc = "Change the `row` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `TreeCellInfo`*"]
+    #[deprecated = "Use `set_row()` instead."]
     pub fn row(&mut self, val: i32) -> &mut Self {
         self.set_row(val);
         self

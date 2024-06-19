@@ -15,8 +15,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `FileCallback`*"]
     #[wasm_bindgen(method, getter = "handleEvent")]
     pub fn get_handle_event(this: &FileCallback) -> Option<::js_sys::Function>;
+    #[doc = "Change the `handleEvent` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileCallback`*"]
     #[wasm_bindgen(method, setter = "handleEvent")]
-    fn set_handle_event(this: &FileCallback, val: &::js_sys::Function);
+    pub fn set_handle_event(this: &FileCallback, val: &::js_sys::Function);
 }
 impl FileCallback {
     #[doc = "Construct a new `FileCallback`."]
@@ -27,9 +30,7 @@ impl FileCallback {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `handleEvent` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FileCallback`*"]
+    #[deprecated = "Use `set_handle_event()` instead."]
     pub fn handle_event(&mut self, val: &::js_sys::Function) -> &mut Self {
         self.set_handle_event(val);
         self

@@ -15,22 +15,31 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `FakePluginMimeEntry`*"]
     #[wasm_bindgen(method, getter = "description")]
     pub fn get_description(this: &FakePluginMimeEntry) -> Option<String>;
+    #[doc = "Change the `description` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FakePluginMimeEntry`*"]
     #[wasm_bindgen(method, setter = "description")]
-    fn set_description(this: &FakePluginMimeEntry, val: &str);
+    pub fn set_description(this: &FakePluginMimeEntry, val: &str);
     #[doc = "Get the `extension` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginMimeEntry`*"]
     #[wasm_bindgen(method, getter = "extension")]
     pub fn get_extension(this: &FakePluginMimeEntry) -> Option<String>;
+    #[doc = "Change the `extension` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FakePluginMimeEntry`*"]
     #[wasm_bindgen(method, setter = "extension")]
-    fn set_extension(this: &FakePluginMimeEntry, val: &str);
+    pub fn set_extension(this: &FakePluginMimeEntry, val: &str);
     #[doc = "Get the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginMimeEntry`*"]
     #[wasm_bindgen(method, getter = "type")]
     pub fn get_type(this: &FakePluginMimeEntry) -> String;
+    #[doc = "Change the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FakePluginMimeEntry`*"]
     #[wasm_bindgen(method, setter = "type")]
-    fn set_type(this: &FakePluginMimeEntry, val: &str);
+    pub fn set_type(this: &FakePluginMimeEntry, val: &str);
 }
 impl FakePluginMimeEntry {
     #[doc = "Construct a new `FakePluginMimeEntry`."]
@@ -42,23 +51,17 @@ impl FakePluginMimeEntry {
         ret.type_(type_);
         ret
     }
-    #[doc = "Change the `description` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FakePluginMimeEntry`*"]
+    #[deprecated = "Use `set_description()` instead."]
     pub fn description(&mut self, val: &str) -> &mut Self {
         self.set_description(val);
         self
     }
-    #[doc = "Change the `extension` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FakePluginMimeEntry`*"]
+    #[deprecated = "Use `set_extension()` instead."]
     pub fn extension(&mut self, val: &str) -> &mut Self {
         self.set_extension(val);
         self
     }
-    #[doc = "Change the `type` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FakePluginMimeEntry`*"]
+    #[deprecated = "Use `set_type()` instead."]
     pub fn type_(&mut self, val: &str) -> &mut Self {
         self.set_type(val);
         self

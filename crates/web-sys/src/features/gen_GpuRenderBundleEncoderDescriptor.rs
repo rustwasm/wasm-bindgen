@@ -23,8 +23,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "label")]
     pub fn get_label(this: &GpuRenderBundleEncoderDescriptor) -> Option<String>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `label` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderBundleEncoderDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "label")]
-    fn set_label(this: &GpuRenderBundleEncoderDescriptor, val: &str);
+    pub fn set_label(this: &GpuRenderBundleEncoderDescriptor, val: &str);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `colorFormats` field of this object."]
     #[doc = ""]
@@ -34,8 +41,18 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "colorFormats")]
     pub fn get_color_formats(this: &GpuRenderBundleEncoderDescriptor) -> ::js_sys::Array;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `colorFormats` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderBundleEncoderDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "colorFormats")]
-    fn set_color_formats(this: &GpuRenderBundleEncoderDescriptor, val: &::wasm_bindgen::JsValue);
+    pub fn set_color_formats(
+        this: &GpuRenderBundleEncoderDescriptor,
+        val: &::wasm_bindgen::JsValue,
+    );
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureFormat")]
     #[doc = "Get the `depthStencilFormat` field of this object."]
@@ -48,9 +65,16 @@ extern "C" {
     pub fn get_depth_stencil_format(
         this: &GpuRenderBundleEncoderDescriptor,
     ) -> Option<GpuTextureFormat>;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureFormat")]
+    #[doc = "Change the `depthStencilFormat` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderBundleEncoderDescriptor`, `GpuTextureFormat`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "depthStencilFormat")]
-    fn set_depth_stencil_format(this: &GpuRenderBundleEncoderDescriptor, val: GpuTextureFormat);
+    pub fn set_depth_stencil_format(this: &GpuRenderBundleEncoderDescriptor, val: GpuTextureFormat);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `sampleCount` field of this object."]
     #[doc = ""]
@@ -60,8 +84,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "sampleCount")]
     pub fn get_sample_count(this: &GpuRenderBundleEncoderDescriptor) -> Option<u32>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `sampleCount` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderBundleEncoderDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "sampleCount")]
-    fn set_sample_count(this: &GpuRenderBundleEncoderDescriptor, val: u32);
+    pub fn set_sample_count(this: &GpuRenderBundleEncoderDescriptor, val: u32);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `depthReadOnly` field of this object."]
     #[doc = ""]
@@ -71,8 +102,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "depthReadOnly")]
     pub fn get_depth_read_only(this: &GpuRenderBundleEncoderDescriptor) -> Option<bool>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `depthReadOnly` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderBundleEncoderDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "depthReadOnly")]
-    fn set_depth_read_only(this: &GpuRenderBundleEncoderDescriptor, val: bool);
+    pub fn set_depth_read_only(this: &GpuRenderBundleEncoderDescriptor, val: bool);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `stencilReadOnly` field of this object."]
     #[doc = ""]
@@ -82,8 +120,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "stencilReadOnly")]
     pub fn get_stencil_read_only(this: &GpuRenderBundleEncoderDescriptor) -> Option<bool>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `stencilReadOnly` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRenderBundleEncoderDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "stencilReadOnly")]
-    fn set_stencil_read_only(this: &GpuRenderBundleEncoderDescriptor, val: bool);
+    pub fn set_stencil_read_only(this: &GpuRenderBundleEncoderDescriptor, val: bool);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuRenderBundleEncoderDescriptor {
@@ -100,68 +145,38 @@ impl GpuRenderBundleEncoderDescriptor {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `label` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderBundleEncoderDescriptor`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_label()` instead."]
     pub fn label(&mut self, val: &str) -> &mut Self {
         self.set_label(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `colorFormats` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderBundleEncoderDescriptor`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_color_formats()` instead."]
     pub fn color_formats(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_color_formats(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureFormat")]
-    #[doc = "Change the `depthStencilFormat` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderBundleEncoderDescriptor`, `GpuTextureFormat`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_depth_stencil_format()` instead."]
     pub fn depth_stencil_format(&mut self, val: GpuTextureFormat) -> &mut Self {
         self.set_depth_stencil_format(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `sampleCount` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderBundleEncoderDescriptor`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_sample_count()` instead."]
     pub fn sample_count(&mut self, val: u32) -> &mut Self {
         self.set_sample_count(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `depthReadOnly` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderBundleEncoderDescriptor`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_depth_read_only()` instead."]
     pub fn depth_read_only(&mut self, val: bool) -> &mut Self {
         self.set_depth_read_only(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `stencilReadOnly` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuRenderBundleEncoderDescriptor`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_stencil_read_only()` instead."]
     pub fn stencil_read_only(&mut self, val: bool) -> &mut Self {
         self.set_stencil_read_only(val);
         self

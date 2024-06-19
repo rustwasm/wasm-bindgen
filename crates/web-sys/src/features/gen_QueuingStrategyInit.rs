@@ -15,8 +15,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `QueuingStrategyInit`*"]
     #[wasm_bindgen(method, getter = "highWaterMark")]
     pub fn get_high_water_mark(this: &QueuingStrategyInit) -> f64;
+    #[doc = "Change the `highWaterMark` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `QueuingStrategyInit`*"]
     #[wasm_bindgen(method, setter = "highWaterMark")]
-    fn set_high_water_mark(this: &QueuingStrategyInit, val: f64);
+    pub fn set_high_water_mark(this: &QueuingStrategyInit, val: f64);
 }
 impl QueuingStrategyInit {
     #[doc = "Construct a new `QueuingStrategyInit`."]
@@ -28,9 +31,7 @@ impl QueuingStrategyInit {
         ret.high_water_mark(high_water_mark);
         ret
     }
-    #[doc = "Change the `highWaterMark` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `QueuingStrategyInit`*"]
+    #[deprecated = "Use `set_high_water_mark()` instead."]
     pub fn high_water_mark(&mut self, val: f64) -> &mut Self {
         self.set_high_water_mark(val);
         self

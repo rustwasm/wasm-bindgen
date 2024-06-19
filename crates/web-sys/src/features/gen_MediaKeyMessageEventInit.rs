@@ -15,29 +15,41 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `MediaKeyMessageEventInit`*"]
     #[wasm_bindgen(method, getter = "bubbles")]
     pub fn get_bubbles(this: &MediaKeyMessageEventInit) -> Option<bool>;
+    #[doc = "Change the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeyMessageEventInit`*"]
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn set_bubbles(this: &MediaKeyMessageEventInit, val: bool);
+    pub fn set_bubbles(this: &MediaKeyMessageEventInit, val: bool);
     #[doc = "Get the `cancelable` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeyMessageEventInit`*"]
     #[wasm_bindgen(method, getter = "cancelable")]
     pub fn get_cancelable(this: &MediaKeyMessageEventInit) -> Option<bool>;
+    #[doc = "Change the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeyMessageEventInit`*"]
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn set_cancelable(this: &MediaKeyMessageEventInit, val: bool);
+    pub fn set_cancelable(this: &MediaKeyMessageEventInit, val: bool);
     #[doc = "Get the `composed` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeyMessageEventInit`*"]
     #[wasm_bindgen(method, getter = "composed")]
     pub fn get_composed(this: &MediaKeyMessageEventInit) -> Option<bool>;
+    #[doc = "Change the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeyMessageEventInit`*"]
     #[wasm_bindgen(method, setter = "composed")]
-    fn set_composed(this: &MediaKeyMessageEventInit, val: bool);
+    pub fn set_composed(this: &MediaKeyMessageEventInit, val: bool);
     #[doc = "Get the `message` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeyMessageEventInit`*"]
     #[wasm_bindgen(method, getter = "message")]
     pub fn get_message(this: &MediaKeyMessageEventInit) -> ::js_sys::ArrayBuffer;
+    #[doc = "Change the `message` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeyMessageEventInit`*"]
     #[wasm_bindgen(method, setter = "message")]
-    fn set_message(this: &MediaKeyMessageEventInit, val: &::js_sys::ArrayBuffer);
+    pub fn set_message(this: &MediaKeyMessageEventInit, val: &::js_sys::ArrayBuffer);
     #[cfg(feature = "MediaKeyMessageType")]
     #[doc = "Get the `messageType` field of this object."]
     #[doc = ""]
@@ -45,8 +57,11 @@ extern "C" {
     #[wasm_bindgen(method, getter = "messageType")]
     pub fn get_message_type(this: &MediaKeyMessageEventInit) -> MediaKeyMessageType;
     #[cfg(feature = "MediaKeyMessageType")]
+    #[doc = "Change the `messageType` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeyMessageEventInit`, `MediaKeyMessageType`*"]
     #[wasm_bindgen(method, setter = "messageType")]
-    fn set_message_type(this: &MediaKeyMessageEventInit, val: MediaKeyMessageType);
+    pub fn set_message_type(this: &MediaKeyMessageEventInit, val: MediaKeyMessageType);
 }
 impl MediaKeyMessageEventInit {
     #[cfg(feature = "MediaKeyMessageType")]
@@ -60,38 +75,28 @@ impl MediaKeyMessageEventInit {
         ret.message_type(message_type);
         ret
     }
-    #[doc = "Change the `bubbles` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaKeyMessageEventInit`*"]
+    #[deprecated = "Use `set_bubbles()` instead."]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
         self.set_bubbles(val);
         self
     }
-    #[doc = "Change the `cancelable` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaKeyMessageEventInit`*"]
+    #[deprecated = "Use `set_cancelable()` instead."]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
         self.set_cancelable(val);
         self
     }
-    #[doc = "Change the `composed` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaKeyMessageEventInit`*"]
+    #[deprecated = "Use `set_composed()` instead."]
     pub fn composed(&mut self, val: bool) -> &mut Self {
         self.set_composed(val);
         self
     }
-    #[doc = "Change the `message` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaKeyMessageEventInit`*"]
+    #[deprecated = "Use `set_message()` instead."]
     pub fn message(&mut self, val: &::js_sys::ArrayBuffer) -> &mut Self {
         self.set_message(val);
         self
     }
     #[cfg(feature = "MediaKeyMessageType")]
-    #[doc = "Change the `messageType` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaKeyMessageEventInit`, `MediaKeyMessageType`*"]
+    #[deprecated = "Use `set_message_type()` instead."]
     pub fn message_type(&mut self, val: MediaKeyMessageType) -> &mut Self {
         self.set_message_type(val);
         self

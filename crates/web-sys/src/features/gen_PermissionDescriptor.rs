@@ -17,8 +17,11 @@ extern "C" {
     #[wasm_bindgen(method, getter = "name")]
     pub fn get_name(this: &PermissionDescriptor) -> PermissionName;
     #[cfg(feature = "PermissionName")]
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PermissionDescriptor`, `PermissionName`*"]
     #[wasm_bindgen(method, setter = "name")]
-    fn set_name(this: &PermissionDescriptor, val: PermissionName);
+    pub fn set_name(this: &PermissionDescriptor, val: PermissionName);
 }
 impl PermissionDescriptor {
     #[cfg(feature = "PermissionName")]
@@ -32,9 +35,7 @@ impl PermissionDescriptor {
         ret
     }
     #[cfg(feature = "PermissionName")]
-    #[doc = "Change the `name` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `PermissionDescriptor`, `PermissionName`*"]
+    #[deprecated = "Use `set_name()` instead."]
     pub fn name(&mut self, val: PermissionName) -> &mut Self {
         self.set_name(val);
         self

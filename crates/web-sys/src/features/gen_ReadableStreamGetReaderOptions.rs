@@ -17,8 +17,11 @@ extern "C" {
     #[wasm_bindgen(method, getter = "mode")]
     pub fn get_mode(this: &ReadableStreamGetReaderOptions) -> Option<ReadableStreamReaderMode>;
     #[cfg(feature = "ReadableStreamReaderMode")]
+    #[doc = "Change the `mode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ReadableStreamGetReaderOptions`, `ReadableStreamReaderMode`*"]
     #[wasm_bindgen(method, setter = "mode")]
-    fn set_mode(this: &ReadableStreamGetReaderOptions, val: ReadableStreamReaderMode);
+    pub fn set_mode(this: &ReadableStreamGetReaderOptions, val: ReadableStreamReaderMode);
 }
 impl ReadableStreamGetReaderOptions {
     #[doc = "Construct a new `ReadableStreamGetReaderOptions`."]
@@ -30,9 +33,7 @@ impl ReadableStreamGetReaderOptions {
         ret
     }
     #[cfg(feature = "ReadableStreamReaderMode")]
-    #[doc = "Change the `mode` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ReadableStreamGetReaderOptions`, `ReadableStreamReaderMode`*"]
+    #[deprecated = "Use `set_mode()` instead."]
     pub fn mode(&mut self, val: ReadableStreamReaderMode) -> &mut Self {
         self.set_mode(val);
         self

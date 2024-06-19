@@ -15,15 +15,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `LocaleInfo`*"]
     #[wasm_bindgen(method, getter = "direction")]
     pub fn get_direction(this: &LocaleInfo) -> Option<String>;
+    #[doc = "Change the `direction` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `LocaleInfo`*"]
     #[wasm_bindgen(method, setter = "direction")]
-    fn set_direction(this: &LocaleInfo, val: &str);
+    pub fn set_direction(this: &LocaleInfo, val: &str);
     #[doc = "Get the `locale` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `LocaleInfo`*"]
     #[wasm_bindgen(method, getter = "locale")]
     pub fn get_locale(this: &LocaleInfo) -> Option<String>;
+    #[doc = "Change the `locale` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `LocaleInfo`*"]
     #[wasm_bindgen(method, setter = "locale")]
-    fn set_locale(this: &LocaleInfo, val: &str);
+    pub fn set_locale(this: &LocaleInfo, val: &str);
 }
 impl LocaleInfo {
     #[doc = "Construct a new `LocaleInfo`."]
@@ -34,16 +40,12 @@ impl LocaleInfo {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `direction` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `LocaleInfo`*"]
+    #[deprecated = "Use `set_direction()` instead."]
     pub fn direction(&mut self, val: &str) -> &mut Self {
         self.set_direction(val);
         self
     }
-    #[doc = "Change the `locale` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `LocaleInfo`*"]
+    #[deprecated = "Use `set_locale()` instead."]
     pub fn locale(&mut self, val: &str) -> &mut Self {
         self.set_locale(val);
         self

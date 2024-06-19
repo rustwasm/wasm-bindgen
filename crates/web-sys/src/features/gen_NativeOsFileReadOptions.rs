@@ -15,15 +15,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `NativeOsFileReadOptions`*"]
     #[wasm_bindgen(method, getter = "bytes")]
     pub fn get_bytes(this: &NativeOsFileReadOptions) -> Option<f64>;
+    #[doc = "Change the `bytes` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `NativeOsFileReadOptions`*"]
     #[wasm_bindgen(method, setter = "bytes")]
-    fn set_bytes(this: &NativeOsFileReadOptions, val: Option<f64>);
+    pub fn set_bytes(this: &NativeOsFileReadOptions, val: Option<f64>);
     #[doc = "Get the `encoding` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NativeOsFileReadOptions`*"]
     #[wasm_bindgen(method, getter = "encoding")]
     pub fn get_encoding(this: &NativeOsFileReadOptions) -> Option<String>;
+    #[doc = "Change the `encoding` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `NativeOsFileReadOptions`*"]
     #[wasm_bindgen(method, setter = "encoding")]
-    fn set_encoding(this: &NativeOsFileReadOptions, val: Option<&str>);
+    pub fn set_encoding(this: &NativeOsFileReadOptions, val: Option<&str>);
 }
 impl NativeOsFileReadOptions {
     #[doc = "Construct a new `NativeOsFileReadOptions`."]
@@ -34,16 +40,12 @@ impl NativeOsFileReadOptions {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `bytes` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `NativeOsFileReadOptions`*"]
+    #[deprecated = "Use `set_bytes()` instead."]
     pub fn bytes(&mut self, val: Option<f64>) -> &mut Self {
         self.set_bytes(val);
         self
     }
-    #[doc = "Change the `encoding` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `NativeOsFileReadOptions`*"]
+    #[deprecated = "Use `set_encoding()` instead."]
     pub fn encoding(&mut self, val: Option<&str>) -> &mut Self {
         self.set_encoding(val);
         self

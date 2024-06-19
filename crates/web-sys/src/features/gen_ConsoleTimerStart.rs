@@ -15,8 +15,11 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerStart`*"]
     #[wasm_bindgen(method, getter = "name")]
     pub fn get_name(this: &ConsoleTimerStart) -> Option<String>;
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerStart`*"]
     #[wasm_bindgen(method, setter = "name")]
-    fn set_name(this: &ConsoleTimerStart, val: &str);
+    pub fn set_name(this: &ConsoleTimerStart, val: &str);
 }
 impl ConsoleTimerStart {
     #[doc = "Construct a new `ConsoleTimerStart`."]
@@ -27,9 +30,7 @@ impl ConsoleTimerStart {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `name` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerStart`*"]
+    #[deprecated = "Use `set_name()` instead."]
     pub fn name(&mut self, val: &str) -> &mut Self {
         self.set_name(val);
         self

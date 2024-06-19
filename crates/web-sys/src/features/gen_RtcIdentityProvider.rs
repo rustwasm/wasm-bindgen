@@ -15,15 +15,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProvider`*"]
     #[wasm_bindgen(method, getter = "generateAssertion")]
     pub fn get_generate_assertion(this: &RtcIdentityProvider) -> ::js_sys::Function;
+    #[doc = "Change the `generateAssertion` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProvider`*"]
     #[wasm_bindgen(method, setter = "generateAssertion")]
-    fn set_generate_assertion(this: &RtcIdentityProvider, val: &::js_sys::Function);
+    pub fn set_generate_assertion(this: &RtcIdentityProvider, val: &::js_sys::Function);
     #[doc = "Get the `validateAssertion` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProvider`*"]
     #[wasm_bindgen(method, getter = "validateAssertion")]
     pub fn get_validate_assertion(this: &RtcIdentityProvider) -> ::js_sys::Function;
+    #[doc = "Change the `validateAssertion` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProvider`*"]
     #[wasm_bindgen(method, setter = "validateAssertion")]
-    fn set_validate_assertion(this: &RtcIdentityProvider, val: &::js_sys::Function);
+    pub fn set_validate_assertion(this: &RtcIdentityProvider, val: &::js_sys::Function);
 }
 impl RtcIdentityProvider {
     #[doc = "Construct a new `RtcIdentityProvider`."]
@@ -39,16 +45,12 @@ impl RtcIdentityProvider {
         ret.validate_assertion(validate_assertion);
         ret
     }
-    #[doc = "Change the `generateAssertion` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProvider`*"]
+    #[deprecated = "Use `set_generate_assertion()` instead."]
     pub fn generate_assertion(&mut self, val: &::js_sys::Function) -> &mut Self {
         self.set_generate_assertion(val);
         self
     }
-    #[doc = "Change the `validateAssertion` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProvider`*"]
+    #[deprecated = "Use `set_validate_assertion()` instead."]
     pub fn validate_assertion(&mut self, val: &::js_sys::Function) -> &mut Self {
         self.set_validate_assertion(val);
         self

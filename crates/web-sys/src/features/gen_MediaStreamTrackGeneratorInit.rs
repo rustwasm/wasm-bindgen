@@ -23,8 +23,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "kind")]
     pub fn get_kind(this: &MediaStreamTrackGeneratorInit) -> String;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `kind` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrackGeneratorInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "kind")]
-    fn set_kind(this: &MediaStreamTrackGeneratorInit, val: &str);
+    pub fn set_kind(this: &MediaStreamTrackGeneratorInit, val: &str);
 }
 #[cfg(web_sys_unstable_apis)]
 impl MediaStreamTrackGeneratorInit {
@@ -41,12 +48,7 @@ impl MediaStreamTrackGeneratorInit {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `kind` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrackGeneratorInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_kind()` instead."]
     pub fn kind(&mut self, val: &str) -> &mut Self {
         self.set_kind(val);
         self

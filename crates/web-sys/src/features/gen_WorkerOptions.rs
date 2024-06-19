@@ -17,15 +17,21 @@ extern "C" {
     #[wasm_bindgen(method, getter = "credentials")]
     pub fn get_credentials(this: &WorkerOptions) -> Option<RequestCredentials>;
     #[cfg(feature = "RequestCredentials")]
+    #[doc = "Change the `credentials` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RequestCredentials`, `WorkerOptions`*"]
     #[wasm_bindgen(method, setter = "credentials")]
-    fn set_credentials(this: &WorkerOptions, val: RequestCredentials);
+    pub fn set_credentials(this: &WorkerOptions, val: RequestCredentials);
     #[doc = "Get the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerOptions`*"]
     #[wasm_bindgen(method, getter = "name")]
     pub fn get_name(this: &WorkerOptions) -> Option<String>;
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WorkerOptions`*"]
     #[wasm_bindgen(method, setter = "name")]
-    fn set_name(this: &WorkerOptions, val: &str);
+    pub fn set_name(this: &WorkerOptions, val: &str);
     #[cfg(feature = "WorkerType")]
     #[doc = "Get the `type` field of this object."]
     #[doc = ""]
@@ -33,8 +39,11 @@ extern "C" {
     #[wasm_bindgen(method, getter = "type")]
     pub fn get_type(this: &WorkerOptions) -> Option<WorkerType>;
     #[cfg(feature = "WorkerType")]
+    #[doc = "Change the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WorkerOptions`, `WorkerType`*"]
     #[wasm_bindgen(method, setter = "type")]
-    fn set_type(this: &WorkerOptions, val: WorkerType);
+    pub fn set_type(this: &WorkerOptions, val: WorkerType);
 }
 impl WorkerOptions {
     #[doc = "Construct a new `WorkerOptions`."]
@@ -46,24 +55,18 @@ impl WorkerOptions {
         ret
     }
     #[cfg(feature = "RequestCredentials")]
-    #[doc = "Change the `credentials` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RequestCredentials`, `WorkerOptions`*"]
+    #[deprecated = "Use `set_credentials()` instead."]
     pub fn credentials(&mut self, val: RequestCredentials) -> &mut Self {
         self.set_credentials(val);
         self
     }
-    #[doc = "Change the `name` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `WorkerOptions`*"]
+    #[deprecated = "Use `set_name()` instead."]
     pub fn name(&mut self, val: &str) -> &mut Self {
         self.set_name(val);
         self
     }
     #[cfg(feature = "WorkerType")]
-    #[doc = "Change the `type` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `WorkerOptions`, `WorkerType`*"]
+    #[deprecated = "Use `set_type()` instead."]
     pub fn type_(&mut self, val: WorkerType) -> &mut Self {
         self.set_type(val);
         self

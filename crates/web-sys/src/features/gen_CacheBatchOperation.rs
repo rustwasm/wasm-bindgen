@@ -17,8 +17,11 @@ extern "C" {
     #[wasm_bindgen(method, getter = "options")]
     pub fn get_options(this: &CacheBatchOperation) -> Option<CacheQueryOptions>;
     #[cfg(feature = "CacheQueryOptions")]
+    #[doc = "Change the `options` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CacheBatchOperation`, `CacheQueryOptions`*"]
     #[wasm_bindgen(method, setter = "options")]
-    fn set_options(this: &CacheBatchOperation, val: &CacheQueryOptions);
+    pub fn set_options(this: &CacheBatchOperation, val: &CacheQueryOptions);
     #[cfg(feature = "Request")]
     #[doc = "Get the `request` field of this object."]
     #[doc = ""]
@@ -26,8 +29,11 @@ extern "C" {
     #[wasm_bindgen(method, getter = "request")]
     pub fn get_request(this: &CacheBatchOperation) -> Option<Request>;
     #[cfg(feature = "Request")]
+    #[doc = "Change the `request` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CacheBatchOperation`, `Request`*"]
     #[wasm_bindgen(method, setter = "request")]
-    fn set_request(this: &CacheBatchOperation, val: &Request);
+    pub fn set_request(this: &CacheBatchOperation, val: &Request);
     #[cfg(feature = "Response")]
     #[doc = "Get the `response` field of this object."]
     #[doc = ""]
@@ -35,15 +41,21 @@ extern "C" {
     #[wasm_bindgen(method, getter = "response")]
     pub fn get_response(this: &CacheBatchOperation) -> Option<Response>;
     #[cfg(feature = "Response")]
+    #[doc = "Change the `response` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CacheBatchOperation`, `Response`*"]
     #[wasm_bindgen(method, setter = "response")]
-    fn set_response(this: &CacheBatchOperation, val: &Response);
+    pub fn set_response(this: &CacheBatchOperation, val: &Response);
     #[doc = "Get the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheBatchOperation`*"]
     #[wasm_bindgen(method, getter = "type")]
     pub fn get_type(this: &CacheBatchOperation) -> Option<String>;
+    #[doc = "Change the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CacheBatchOperation`*"]
     #[wasm_bindgen(method, setter = "type")]
-    fn set_type(this: &CacheBatchOperation, val: &str);
+    pub fn set_type(this: &CacheBatchOperation, val: &str);
 }
 impl CacheBatchOperation {
     #[doc = "Construct a new `CacheBatchOperation`."]
@@ -55,32 +67,24 @@ impl CacheBatchOperation {
         ret
     }
     #[cfg(feature = "CacheQueryOptions")]
-    #[doc = "Change the `options` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `CacheBatchOperation`, `CacheQueryOptions`*"]
+    #[deprecated = "Use `set_options()` instead."]
     pub fn options(&mut self, val: &CacheQueryOptions) -> &mut Self {
         self.set_options(val);
         self
     }
     #[cfg(feature = "Request")]
-    #[doc = "Change the `request` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `CacheBatchOperation`, `Request`*"]
+    #[deprecated = "Use `set_request()` instead."]
     pub fn request(&mut self, val: &Request) -> &mut Self {
         self.set_request(val);
         self
     }
     #[cfg(feature = "Response")]
-    #[doc = "Change the `response` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `CacheBatchOperation`, `Response`*"]
+    #[deprecated = "Use `set_response()` instead."]
     pub fn response(&mut self, val: &Response) -> &mut Self {
         self.set_response(val);
         self
     }
-    #[doc = "Change the `type` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `CacheBatchOperation`*"]
+    #[deprecated = "Use `set_type()` instead."]
     pub fn type_(&mut self, val: &str) -> &mut Self {
         self.set_type(val);
         self

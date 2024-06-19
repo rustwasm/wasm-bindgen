@@ -17,8 +17,11 @@ extern "C" {
     #[wasm_bindgen(method, getter = "mediaStream")]
     pub fn get_media_stream(this: &MediaStreamAudioSourceOptions) -> MediaStream;
     #[cfg(feature = "MediaStream")]
+    #[doc = "Change the `mediaStream` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStream`, `MediaStreamAudioSourceOptions`*"]
     #[wasm_bindgen(method, setter = "mediaStream")]
-    fn set_media_stream(this: &MediaStreamAudioSourceOptions, val: &MediaStream);
+    pub fn set_media_stream(this: &MediaStreamAudioSourceOptions, val: &MediaStream);
 }
 impl MediaStreamAudioSourceOptions {
     #[cfg(feature = "MediaStream")]
@@ -32,9 +35,7 @@ impl MediaStreamAudioSourceOptions {
         ret
     }
     #[cfg(feature = "MediaStream")]
-    #[doc = "Change the `mediaStream` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaStream`, `MediaStreamAudioSourceOptions`*"]
+    #[deprecated = "Use `set_media_stream()` instead."]
     pub fn media_stream(&mut self, val: &MediaStream) -> &mut Self {
         self.set_media_stream(val);
         self

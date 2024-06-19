@@ -24,9 +24,16 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "access")]
     pub fn get_access(this: &GpuStorageTextureBindingLayout) -> Option<GpuStorageTextureAccess>;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuStorageTextureAccess")]
+    #[doc = "Change the `access` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuStorageTextureAccess`, `GpuStorageTextureBindingLayout`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "access")]
-    fn set_access(this: &GpuStorageTextureBindingLayout, val: GpuStorageTextureAccess);
+    pub fn set_access(this: &GpuStorageTextureBindingLayout, val: GpuStorageTextureAccess);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureFormat")]
     #[doc = "Get the `format` field of this object."]
@@ -37,9 +44,16 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "format")]
     pub fn get_format(this: &GpuStorageTextureBindingLayout) -> GpuTextureFormat;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureFormat")]
+    #[doc = "Change the `format` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuStorageTextureBindingLayout`, `GpuTextureFormat`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "format")]
-    fn set_format(this: &GpuStorageTextureBindingLayout, val: GpuTextureFormat);
+    pub fn set_format(this: &GpuStorageTextureBindingLayout, val: GpuTextureFormat);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureViewDimension")]
     #[doc = "Get the `viewDimension` field of this object."]
@@ -52,9 +66,16 @@ extern "C" {
     pub fn get_view_dimension(
         this: &GpuStorageTextureBindingLayout,
     ) -> Option<GpuTextureViewDimension>;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureViewDimension")]
+    #[doc = "Change the `viewDimension` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuStorageTextureBindingLayout`, `GpuTextureViewDimension`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "viewDimension")]
-    fn set_view_dimension(this: &GpuStorageTextureBindingLayout, val: GpuTextureViewDimension);
+    pub fn set_view_dimension(this: &GpuStorageTextureBindingLayout, val: GpuTextureViewDimension);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuStorageTextureBindingLayout {
@@ -73,36 +94,21 @@ impl GpuStorageTextureBindingLayout {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuStorageTextureAccess")]
-    #[doc = "Change the `access` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuStorageTextureAccess`, `GpuStorageTextureBindingLayout`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_access()` instead."]
     pub fn access(&mut self, val: GpuStorageTextureAccess) -> &mut Self {
         self.set_access(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureFormat")]
-    #[doc = "Change the `format` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuStorageTextureBindingLayout`, `GpuTextureFormat`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_format()` instead."]
     pub fn format(&mut self, val: GpuTextureFormat) -> &mut Self {
         self.set_format(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureViewDimension")]
-    #[doc = "Change the `viewDimension` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuStorageTextureBindingLayout`, `GpuTextureViewDimension`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_view_dimension()` instead."]
     pub fn view_dimension(&mut self, val: GpuTextureViewDimension) -> &mut Self {
         self.set_view_dimension(val);
         self

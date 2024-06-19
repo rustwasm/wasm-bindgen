@@ -15,15 +15,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IterableKeyAndValueResult`*"]
     #[wasm_bindgen(method, getter = "done")]
     pub fn get_done(this: &IterableKeyAndValueResult) -> Option<bool>;
+    #[doc = "Change the `done` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IterableKeyAndValueResult`*"]
     #[wasm_bindgen(method, setter = "done")]
-    fn set_done(this: &IterableKeyAndValueResult, val: bool);
+    pub fn set_done(this: &IterableKeyAndValueResult, val: bool);
     #[doc = "Get the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IterableKeyAndValueResult`*"]
     #[wasm_bindgen(method, getter = "value")]
     pub fn get_value(this: &IterableKeyAndValueResult) -> Option<::js_sys::Array>;
+    #[doc = "Change the `value` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IterableKeyAndValueResult`*"]
     #[wasm_bindgen(method, setter = "value")]
-    fn set_value(this: &IterableKeyAndValueResult, val: &::wasm_bindgen::JsValue);
+    pub fn set_value(this: &IterableKeyAndValueResult, val: &::wasm_bindgen::JsValue);
 }
 impl IterableKeyAndValueResult {
     #[doc = "Construct a new `IterableKeyAndValueResult`."]
@@ -34,16 +40,12 @@ impl IterableKeyAndValueResult {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `done` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `IterableKeyAndValueResult`*"]
+    #[deprecated = "Use `set_done()` instead."]
     pub fn done(&mut self, val: bool) -> &mut Self {
         self.set_done(val);
         self
     }
-    #[doc = "Change the `value` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `IterableKeyAndValueResult`*"]
+    #[deprecated = "Use `set_value()` instead."]
     pub fn value(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_value(val);
         self

@@ -24,9 +24,16 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "name")]
     pub fn get_name(this: &BluetoothPermissionDescriptor) -> PermissionName;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "PermissionName")]
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothPermissionDescriptor`, `PermissionName`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "name")]
-    fn set_name(this: &BluetoothPermissionDescriptor, val: PermissionName);
+    pub fn set_name(this: &BluetoothPermissionDescriptor, val: PermissionName);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `acceptAllDevices` field of this object."]
     #[doc = ""]
@@ -36,8 +43,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "acceptAllDevices")]
     pub fn get_accept_all_devices(this: &BluetoothPermissionDescriptor) -> Option<bool>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `acceptAllDevices` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothPermissionDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "acceptAllDevices")]
-    fn set_accept_all_devices(this: &BluetoothPermissionDescriptor, val: bool);
+    pub fn set_accept_all_devices(this: &BluetoothPermissionDescriptor, val: bool);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `deviceId` field of this object."]
     #[doc = ""]
@@ -47,8 +61,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "deviceId")]
     pub fn get_device_id(this: &BluetoothPermissionDescriptor) -> Option<String>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `deviceId` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothPermissionDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "deviceId")]
-    fn set_device_id(this: &BluetoothPermissionDescriptor, val: &str);
+    pub fn set_device_id(this: &BluetoothPermissionDescriptor, val: &str);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `filters` field of this object."]
     #[doc = ""]
@@ -58,8 +79,15 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "filters")]
     pub fn get_filters(this: &BluetoothPermissionDescriptor) -> Option<::js_sys::Array>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `filters` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothPermissionDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "filters")]
-    fn set_filters(this: &BluetoothPermissionDescriptor, val: &::wasm_bindgen::JsValue);
+    pub fn set_filters(this: &BluetoothPermissionDescriptor, val: &::wasm_bindgen::JsValue);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `optionalServices` field of this object."]
     #[doc = ""]
@@ -69,8 +97,18 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "optionalServices")]
     pub fn get_optional_services(this: &BluetoothPermissionDescriptor) -> Option<::js_sys::Array>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `optionalServices` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothPermissionDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "optionalServices")]
-    fn set_optional_services(this: &BluetoothPermissionDescriptor, val: &::wasm_bindgen::JsValue);
+    pub fn set_optional_services(
+        this: &BluetoothPermissionDescriptor,
+        val: &::wasm_bindgen::JsValue,
+    );
 }
 #[cfg(web_sys_unstable_apis)]
 impl BluetoothPermissionDescriptor {
@@ -89,56 +127,31 @@ impl BluetoothPermissionDescriptor {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "PermissionName")]
-    #[doc = "Change the `name` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BluetoothPermissionDescriptor`, `PermissionName`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_name()` instead."]
     pub fn name(&mut self, val: PermissionName) -> &mut Self {
         self.set_name(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `acceptAllDevices` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BluetoothPermissionDescriptor`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_accept_all_devices()` instead."]
     pub fn accept_all_devices(&mut self, val: bool) -> &mut Self {
         self.set_accept_all_devices(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `deviceId` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BluetoothPermissionDescriptor`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_device_id()` instead."]
     pub fn device_id(&mut self, val: &str) -> &mut Self {
         self.set_device_id(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `filters` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BluetoothPermissionDescriptor`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_filters()` instead."]
     pub fn filters(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_filters(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `optionalServices` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BluetoothPermissionDescriptor`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_optional_services()` instead."]
     pub fn optional_services(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_optional_services(val);
         self
