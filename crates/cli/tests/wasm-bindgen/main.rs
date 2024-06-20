@@ -332,11 +332,17 @@ fn default_module_path_target_web() {
     let contents = fs::read_to_string(out_dir.join("default_module_path_target_web.js")).unwrap();
     assert!(contents.contains(
         "\
-async function __wbg_init(input) {
+async function __wbg_init(module_or_path) {
     if (wasm !== undefined) return wasm;
 
-    if (typeof input === 'undefined') {
-        input = new URL('default_module_path_target_web_bg.wasm', import.meta.url);
+
+    if (typeof module_or_path !== 'undefined' && Object.getPrototypeOf(module_or_path) === Object.prototype)
+    ({module_or_path} = module_or_path)
+    else
+    console.warn('using deprecated parameters for the initialization function; pass a single object instead')
+
+    if (typeof module_or_path === 'undefined') {
+        module_or_path = new URL('default_module_path_target_web_bg.wasm', import.meta.url);
     }",
     ));
 }
@@ -361,11 +367,17 @@ fn default_module_path_target_no_modules() {
     ));
     assert!(contents.contains(
         "\
-    async function __wbg_init(input) {
+    async function __wbg_init(module_or_path) {
         if (wasm !== undefined) return wasm;
 
-        if (typeof input === 'undefined' && typeof script_src !== 'undefined') {
-            input = script_src.replace(/\\.js$/, '_bg.wasm');
+
+        if (typeof module_or_path !== 'undefined' && Object.getPrototypeOf(module_or_path) === Object.prototype)
+        ({module_or_path} = module_or_path)
+        else
+        console.warn('using deprecated parameters for the initialization function; pass a single object instead')
+
+        if (typeof module_or_path === 'undefined' && typeof script_src !== 'undefined') {
+            module_or_path = script_src.replace(/\\.js$/, '_bg.wasm');
         }",
     ));
 }
@@ -384,8 +396,14 @@ fn omit_default_module_path_target_web() {
         fs::read_to_string(out_dir.join("omit_default_module_path_target_web.js")).unwrap();
     assert!(contents.contains(
         "\
-async function __wbg_init(input) {
+async function __wbg_init(module_or_path) {
     if (wasm !== undefined) return wasm;
+
+
+    if (typeof module_or_path !== 'undefined' && Object.getPrototypeOf(module_or_path) === Object.prototype)
+    ({module_or_path} = module_or_path)
+    else
+    console.warn('using deprecated parameters for the initialization function; pass a single object instead')
 
 
     const imports = __wbg_get_imports();",
@@ -406,8 +424,14 @@ fn omit_default_module_path_target_no_modules() {
         fs::read_to_string(out_dir.join("omit_default_module_path_target_no_modules.js")).unwrap();
     assert!(contents.contains(
         "\
-    async function __wbg_init(input) {
+    async function __wbg_init(module_or_path) {
         if (wasm !== undefined) return wasm;
+
+
+        if (typeof module_or_path !== 'undefined' && Object.getPrototypeOf(module_or_path) === Object.prototype)
+        ({module_or_path} = module_or_path)
+        else
+        console.warn('using deprecated parameters for the initialization function; pass a single object instead')
 
 
         const imports = __wbg_get_imports();",

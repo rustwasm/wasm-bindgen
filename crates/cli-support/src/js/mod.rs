@@ -63,6 +63,9 @@ pub struct Context<'a> {
 
     /// A flag to track if the stack pointer setter shim has been injected.
     stack_pointer_shim_injected: bool,
+
+    /// If threading is enabled.
+    threads_enabled: bool,
 }
 
 #[derive(Default)]
@@ -107,6 +110,7 @@ impl<'a> Context<'a> {
             wasm_import_definitions: Default::default(),
             exported_classes: Some(Default::default()),
             config,
+            threads_enabled: config.threads.is_enabled(module),
             module,
             npm_dependencies: Default::default(),
             next_export_idx: 0,
@@ -613,11 +617,16 @@ impl<'a> Context<'a> {
 
         let (memory_doc, memory_param) = if has_memory {
             (
-                "* @param {WebAssembly.Memory} maybe_memory\n",
-                ", maybe_memory?: WebAssembly.Memory",
+                "* @param {WebAssembly.Memory} memory - Deprecated.\n",
+                ", memory?: WebAssembly.Memory",
             )
         } else {
             ("", "")
+        };
+        let stack_size = if self.threads_enabled {
+            ", thread_stack_size?: number"
+        } else {
+            ""
         };
         let arg_optional = if has_module_or_path_optional { "?" } else { "" };
         // With TypeScript 3.8.3, I'm seeing that any "export"s at the root level cause TypeScript to ignore all "declare" statements.
@@ -639,12 +648,12 @@ impl<'a> Context<'a> {
                 * Instantiates the given `module`, which can either be bytes or\n\
                 * a precompiled `WebAssembly.Module`.\n\
                 *\n\
-                * @param {{SyncInitInput}} module\n\
+                * @param {{{{ module: SyncInitInput{memory_param}{stack_size} }}}} module - Passing `SyncInitInput` directly is deprecated.\n\
                 {memory_doc}\
                 *\n\
                 * @returns {{InitOutput}}\n\
                 */\n\
-                export function initSync(module: SyncInitInput{memory_param}): InitOutput;\n\n\
+                export function initSync(module: {{ module: SyncInitInput{memory_param}{stack_size} }} | SyncInitInput{memory_param}): InitOutput;\n\n\
                 ",
                 memory_doc = memory_doc,
                 memory_param = memory_param
@@ -664,13 +673,13 @@ impl<'a> Context<'a> {
             * If `module_or_path` is {{RequestInfo}} or {{URL}}, makes a request and\n\
             * for everything else, calls `WebAssembly.instantiate` directly.\n\
             *\n\
-            * @param {{InitInput | Promise<InitInput>}} module_or_path\n\
+            * @param {{{{ module_or_path: InitInput | Promise<InitInput>{memory_param}{stack_size} }}}} module_or_path - Passing `InitInput` directly is deprecated.\n\
             {}\
             *\n\
             * @returns {{Promise<InitOutput>}}\n\
             */\n\
             {setup_function_declaration} \
-                (module_or_path{}: InitInput | Promise<InitInput>{}): Promise<InitOutput>;\n",
+                (module_or_path{}: {{ module_or_path: InitInput | Promise<InitInput>{memory_param}{stack_size} }} | InitInput | Promise<InitInput>{}): Promise<InitOutput>;\n",
             memory_doc, arg_optional, memory_param,
             output = output,
             sync_init_function = sync_init_function,
@@ -692,7 +701,7 @@ impl<'a> Context<'a> {
             if let Some(id) = mem.import {
                 self.module.imports.get_mut(id).module = module_name.to_string();
                 init_memory = format!(
-                    "imports.{}.memory = maybe_memory || new WebAssembly.Memory({{",
+                    "imports.{}.memory = memory || new WebAssembly.Memory({{",
                     module_name
                 );
                 init_memory.push_str(&format!("initial:{}", mem.initial));
@@ -703,7 +712,7 @@ impl<'a> Context<'a> {
                     init_memory.push_str(",shared:true");
                 }
                 init_memory.push_str("});");
-                init_memory_arg = ", maybe_memory";
+                init_memory_arg = ", memory";
                 has_memory = true;
             }
         }
@@ -712,14 +721,14 @@ impl<'a> Context<'a> {
             match self.config.mode {
                 OutputMode::Web => format!(
                     "\
-                    if (typeof input === 'undefined') {{
-                        input = new URL('{stem}_bg.wasm', import.meta.url);
+                    if (typeof module_or_path === 'undefined') {{
+                        module_or_path = new URL('{stem}_bg.wasm', import.meta.url);
                     }}",
                     stem = self.config.stem()?
                 ),
                 OutputMode::NoModules { .. } => "\
-                    if (typeof input === 'undefined' && typeof script_src !== 'undefined') {
-                        input = script_src.replace(/\\.js$/, '_bg.wasm');
+                    if (typeof module_or_path === 'undefined' && typeof script_src !== 'undefined') {
+                        module_or_path = script_src.replace(/\\.js$/, '_bg.wasm');
                     }"
                 .to_string(),
                 _ => "".to_string(),
@@ -836,20 +845,27 @@ impl<'a> Context<'a> {
                     return imports;
                 }}
 
-                function __wbg_init_memory(imports, maybe_memory) {{
+                function __wbg_init_memory(imports, memory) {{
                     {init_memory}
                 }}
 
-                function __wbg_finalize_init(instance, module) {{
+                function __wbg_finalize_init(instance, module{init_stack_size_arg}) {{
                     wasm = instance.exports;
                     __wbg_init.__wbindgen_wasm_module = module;
                     {init_memviews}
+                    {init_stack_size_check}
                     {start}
                     return wasm;
                 }}
 
                 function initSync(module{init_memory_arg}) {{
                     if (wasm !== undefined) return wasm;
+
+                    {init_stack_size}
+                    if (typeof module !== 'undefined' && Object.getPrototypeOf(module) === Object.prototype)
+                        ({{module{init_memory_arg}{init_stack_size_arg}}} = module)
+                    else
+                        console.warn('using deprecated parameters for `initSync()`; pass a single object instead')
 
                     const imports = __wbg_get_imports();
 
@@ -861,36 +877,62 @@ impl<'a> Context<'a> {
 
                     const instance = new WebAssembly.Instance(module, imports);
 
-                    return __wbg_finalize_init(instance, module);
+                    return __wbg_finalize_init(instance, module{init_stack_size_arg});
                 }}
 
-                async function __wbg_init(input{init_memory_arg}) {{
+                async function __wbg_init(module_or_path{init_memory_arg}) {{
                     if (wasm !== undefined) return wasm;
+
+                    {init_stack_size}
+                    if (typeof module_or_path !== 'undefined' && Object.getPrototypeOf(module_or_path) === Object.prototype)
+                        ({{module_or_path{init_memory_arg}{init_stack_size_arg}}} = module_or_path)
+                    else
+                        console.warn('using deprecated parameters for the initialization function; pass a single object instead')
 
                     {default_module_path}
                     const imports = __wbg_get_imports();
 
-                    if (typeof input === 'string' || (typeof Request === 'function' && input instanceof Request) || (typeof URL === 'function' && input instanceof URL)) {{
-                        input = fetch(input);
+                    if (typeof module_or_path === 'string' || (typeof Request === 'function' && module_or_path instanceof Request) || (typeof URL === 'function' && module_or_path instanceof URL)) {{
+                        module_or_path = fetch(module_or_path);
                     }}
 
                     __wbg_init_memory(imports{init_memory_arg});
 
-                    const {{ instance, module }} = await __wbg_load(await input, imports);
+                    const {{ instance, module }} = await __wbg_load(await module_or_path, imports);
 
-                    return __wbg_finalize_init(instance, module);
+                    return __wbg_finalize_init(instance, module{init_stack_size_arg});
                 }}
             ",
             init_memory_arg = init_memory_arg,
             default_module_path = default_module_path,
             init_memory = init_memory,
             init_memviews = init_memviews,
-            start = if needs_manual_start {
+            start = if needs_manual_start && self.threads_enabled {
+                "wasm.__wbindgen_start(thread_stack_size);"
+            } else if needs_manual_start {
                 "wasm.__wbindgen_start();"
             } else {
                 ""
             },
             imports_init = imports_init,
+            init_stack_size = if self.threads_enabled {
+                "let thread_stack_size"
+            } else {
+                ""
+            },
+            init_stack_size_arg = if self.threads_enabled {
+                ", thread_stack_size"
+            } else {
+                ""
+            },
+            init_stack_size_check = if self.threads_enabled {
+                format!(
+                    "if (typeof thread_stack_size !== 'undefined' && (typeof thread_stack_size !== 'number' || thread_stack_size === 0 || thread_stack_size % {} !== 0)) {{ throw 'invalid stack size' }}",
+                    wasm_bindgen_threads_xform::PAGE_SIZE,
+                )
+            } else {
+                String::new()
+            },
         );
 
         Ok((js, ts))

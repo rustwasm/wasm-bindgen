@@ -2,13 +2,14 @@ use anyhow::{anyhow, bail, Error};
 use std::cmp;
 use std::env;
 use walrus::ir::Value;
+use walrus::FunctionBuilder;
 use walrus::{
     ir::MemArg, ExportItem, FunctionId, GlobalId, GlobalKind, InitExpr, InstrSeqBuilder, MemoryId,
     Module, ValType,
 };
 use wasm_bindgen_wasm_conventions as wasm_conventions;
 
-const PAGE_SIZE: u32 = 1 << 16;
+pub const PAGE_SIZE: u32 = 1 << 16;
 const ATOMIC_MEM_ARG: MemArg = MemArg {
     align: 4,
     offset: 0,
@@ -31,7 +32,7 @@ impl Config {
     pub fn new() -> Config {
         Config {
             maximum_memory: 1 << 30,    // 1GB
-            thread_stack_size: 1 << 20, // 1MB
+            thread_stack_size: 1 << 21, // 2MB
             enabled: env::var("WASM_BINDGEN_THREADS").is_ok(),
         }
     }
@@ -149,13 +150,19 @@ impl Config {
         // Make sure the temporary stack is aligned down
         let temp_stack = (base + static_data_pages * PAGE_SIZE) & !(static_data_align - 1);
 
+        assert!(self.thread_stack_size % PAGE_SIZE == 0);
+
         let stack = Stack {
             pointer: wasm_conventions::get_shadow_stack_pointer(module)
                 .ok_or_else(|| anyhow!("failed to find shadow stack pointer"))?,
             temp: temp_stack as i32,
             temp_lock: thread_counter_addr + 4,
             alloc: stack_alloc,
-            size: self.thread_stack_size,
+            size: module.globals.add_local(
+                ValType::I32,
+                true,
+                InitExpr::Value(Value::I32(self.thread_stack_size as i32)),
+            ),
         };
 
         let _ = module.exports.add("__stack_alloc", stack.alloc);
@@ -172,20 +179,20 @@ impl Config {
         // You can also call it from a "leader" agent, passing appropriate values, if said leader
         // is in charge of cleaning up after a "follower" agent. In that case:
         // - The "appropriate values" are the values of the `__tls_base` and `__stack_alloc` globals
-        //   from the follower thread, after initialization.
+        //   and the stack size from the follower thread, after initialization.
         // - The leader does _not_ need to block.
         // - Similar restrictions apply: the follower thread should be considered unusable afterwards,
         //   the leader should not call this function with the same set of parameters twice.
         // - Moreover, concurrent calls can lead to UB: the follower could be in the middle of a
         //   call while the leader is destroying its stack! You should make sure that this cannot happen.
-        inject_destroy(module, &tls, &stack, memory)?;
+        inject_destroy(self, module, &tls, &stack, memory)?;
 
         Ok(Some(thread_count))
     }
 }
 
 impl ThreadCount {
-    pub fn wrap_start(self, builder: &mut walrus::FunctionBuilder, start: FunctionId) {
+    pub fn wrap_start(self, builder: &mut FunctionBuilder, start: FunctionId) {
         // We only want to call the start function if we are in the first thread.
         // The thread counter should be 0 for the first thread.
         builder.func_body().local_get(self.0).if_else(
@@ -307,7 +314,7 @@ struct Stack {
     /// A global to store allocated stack
     alloc: GlobalId,
     /// The size of the stack
-    size: u32,
+    size: GlobalId,
 }
 
 fn inject_start(
@@ -319,14 +326,18 @@ fn inject_start(
 ) -> Result<ThreadCount, Error> {
     use walrus::ir::*;
 
-    assert!(stack.size % PAGE_SIZE == 0);
-
     let local = module.locals.add(ValType::I32);
     let thread_count = module.locals.add(ValType::I32);
+    let stack_size = module.locals.add(ValType::I32);
 
     let malloc = find_function(module, "__wbindgen_malloc")?;
 
-    let builder = wasm_bindgen_wasm_conventions::get_or_insert_start_builder(module);
+    let prev_start = wasm_bindgen_wasm_conventions::get_start(module);
+    let mut builder = FunctionBuilder::new(&mut module.types, &[ValType::I32], &[]);
+
+    if let Ok(prev_start) | Err(Some(prev_start)) = prev_start {
+        builder.func_body().call(prev_start);
+    }
 
     let mut body = builder.func_body();
 
@@ -343,9 +354,17 @@ fn inject_start(
             // we give ourselves a stack and we update our stack
             // pointer as the default stack pointer is surely wrong for us.
             |body| {
+                body.local_get(stack_size).if_else(
+                    None,
+                    |body| {
+                        body.local_get(stack_size).global_set(stack.size);
+                    },
+                    |_| (),
+                );
+
                 // local = malloc(stack.size, align) [aka base]
                 with_temp_stack(body, memory, stack, |body| {
-                    body.i32_const(stack.size as i32)
+                    body.global_get(stack.size)
                         .i32_const(16)
                         .call(malloc)
                         .local_tee(local);
@@ -356,7 +375,7 @@ fn inject_start(
 
                 // stack_pointer = base + stack.size
                 body.global_get(stack.alloc)
-                    .i32_const(stack.size as i32)
+                    .global_get(stack.size)
                     .binop(BinaryOp::I32Add)
                     .global_set(stack.pointer);
             },
@@ -373,10 +392,14 @@ fn inject_start(
         .global_get(tls.base)
         .call(tls.init);
 
+    let id = builder.finish(vec![stack_size], &mut module.funcs);
+    module.start = Some(id);
+
     Ok(ThreadCount(thread_count))
 }
 
 fn inject_destroy(
+    config: &Config,
     module: &mut Module,
     tls: &Tls,
     stack: &Stack,
@@ -384,8 +407,11 @@ fn inject_destroy(
 ) -> Result<(), Error> {
     let free = find_function(module, "__wbindgen_free")?;
 
-    let mut builder =
-        walrus::FunctionBuilder::new(&mut module.types, &[ValType::I32, ValType::I32], &[]);
+    let mut builder = FunctionBuilder::new(
+        &mut module.types,
+        &[ValType::I32, ValType::I32, ValType::I32],
+        &[],
+    );
 
     builder.name("__wbindgen_thread_destroy".into());
 
@@ -395,6 +421,7 @@ fn inject_destroy(
     // we're being called from the agent that must be destroyed and rely on its globals
     let tls_base = module.locals.add(ValType::I32);
     let stack_alloc = module.locals.add(ValType::I32);
+    let stack_size = module.locals.add(ValType::I32);
 
     // Ideally, at this point, we would destroy the values stored in TLS.
     // We can't really do that without help from the standard library.
@@ -425,14 +452,17 @@ fn inject_destroy(
         |body| {
             // we're destroying somebody else's stack, so we can use our own
             body.local_get(stack_alloc)
-                .i32_const(stack.size as i32)
+                .local_get(stack_size)
+                .i32_const(config.thread_stack_size as i32)
+                .local_get(stack_size)
+                .select(None)
                 .i32_const(16)
                 .call(free);
         },
         |body| {
             with_temp_stack(body, memory, stack, |body| {
                 body.global_get(stack.alloc)
-                    .i32_const(stack.size as i32)
+                    .global_get(stack.size)
                     .i32_const(16)
                     .call(free);
             });
@@ -442,7 +472,7 @@ fn inject_destroy(
         },
     );
 
-    let destroy_id = builder.finish(Vec::new(), &mut module.funcs);
+    let destroy_id = builder.finish(vec![tls_base, stack_alloc, stack_size], &mut module.funcs);
 
     module.exports.add("__wbindgen_thread_destroy", destroy_id);
 
