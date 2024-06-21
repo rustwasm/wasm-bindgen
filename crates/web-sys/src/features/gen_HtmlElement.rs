@@ -1540,4 +1540,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlElement`*"]
     pub fn focus(this: &HtmlElement) -> Result<(), JsValue>;
+    #[cfg(feature = "FocusOptions")]
+    # [wasm_bindgen (catch , method , structural , js_class = "HTMLElement" , js_name = focus)]
+    #[doc = "The `focus()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FocusOptions`, `HtmlElement`*"]
+    pub fn focus_with_options(this: &HtmlElement, options: &FocusOptions) -> Result<(), JsValue>;
 }

@@ -2707,6 +2707,13 @@ mod gen_FocusEventInit;
 #[allow(unused_imports)]
 pub use gen_FocusEventInit::*;
 
+#[cfg(feature = "FocusOptions")]
+#[allow(non_snake_case)]
+mod gen_FocusOptions;
+#[cfg(feature = "FocusOptions")]
+#[allow(unused_imports)]
+pub use gen_FocusOptions::*;
+
 #[cfg(feature = "FontData")]
 #[allow(non_snake_case)]
 mod gen_FontData;
