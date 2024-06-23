@@ -13,7 +13,9 @@ use weedle::common::Identifier;
 use weedle::literal::{ConstValue as ConstValueLit, FloatLit, IntegerLit};
 use weedle::types::{MayBeNull, NonAnyType, SingleType};
 
-use crate::constants::{FIXED_INTERFACES, IMMUTABLE_SLICE_WHITELIST};
+use crate::constants::{
+    BREAKING_GETTER_THROWS, BREAKING_SETTER_THROWS, FIXED_INTERFACES, IMMUTABLE_SLICE_WHITELIST,
+};
 use crate::first_pass::{FirstPassRecord, OperationData, OperationId, Signature};
 use crate::generator::{ConstValue, InterfaceMethod, InterfaceMethodKind};
 use crate::idl_type::{IdlType, ToIdlType};
@@ -623,6 +625,36 @@ pub fn is_structural(
 /// Whether a webidl object is marked as throwing.
 pub fn throws(attrs: &Option<ExtendedAttributeList>) -> bool {
     has_named_attribute(attrs.as_ref(), "Throws")
+}
+
+/// Whether a getter is marked as throwing.
+pub fn getter_throws(
+    parent_js_name: &str,
+    js_name: &str,
+    attrs: &Option<ExtendedAttributeList>,
+) -> bool {
+    if let Some(parent) = BREAKING_GETTER_THROWS.get(parent_js_name) {
+        if parent.contains(&js_name) {
+            return false;
+        }
+    }
+
+    has_named_attribute(attrs.as_ref(), "GetterThrows")
+}
+
+/// Whether a setter is marked as throwing.
+pub fn setter_throws(
+    parent_js_name: &str,
+    js_name: &str,
+    attrs: &Option<ExtendedAttributeList>,
+) -> bool {
+    if let Some(parent) = BREAKING_SETTER_THROWS.get(parent_js_name) {
+        if parent.contains(&js_name) {
+            return false;
+        }
+    }
+
+    has_named_attribute(attrs.as_ref(), "SetterThrows")
 }
 
 fn flag_slices_immutable(ty: &mut IdlType) {
