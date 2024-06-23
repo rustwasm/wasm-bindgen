@@ -234,12 +234,18 @@ impl Driver {
                 .collect::<Vec<_>>()
         };
 
-        let drivers = [
-            ("geckodriver", Driver::Gecko as fn(Locate) -> Driver),
-            ("safaridriver", Driver::Safari as fn(Locate) -> Driver),
-            ("chromedriver", Driver::Chrome as fn(Locate) -> Driver),
-            ("msedgedriver", Driver::Edge as fn(Locate) -> Driver),
-        ];
+        let drivers = match Self::filter().unwrap_or_default().as_str() {
+            "firefox" => vec![("geckodriver", Driver::Gecko as fn(Locate) -> Driver)],
+            "safari" => vec![("safaridriver", Driver::Safari as fn(Locate) -> Driver)],
+            "chrome" => vec![("chromedriver", Driver::Chrome as fn(Locate) -> Driver)],
+            "edge" => vec![("msedgedriver", Driver::Edge as fn(Locate) -> Driver)],
+            _ => vec![
+                ("geckodriver", Driver::Gecko as fn(Locate) -> Driver),
+                ("safaridriver", Driver::Safari as fn(Locate) -> Driver),
+                ("chromedriver", Driver::Chrome as fn(Locate) -> Driver),
+                ("msedgedriver", Driver::Edge as fn(Locate) -> Driver),
+            ],
+        };
 
         // First up, if env vars like GECKODRIVER_REMOTE are present, use those
         // to allow forcing usage of a particular remote driver.
@@ -309,6 +315,24 @@ If you're still having difficulty resolving this error, please feel free to open
 an issue against rustwasm/wasm-bindgen!
     "
         )
+    }
+
+    /// Checks if a filter for a specific Browser to be used was set using WASM_BINDGEN_USE_BROWSER
+    fn filter() -> Option<String> {
+        if let Ok(browser) = env::var("WASM_BINDGEN_USE_BROWSER") {
+            match browser.to_lowercase().as_str() {
+                "firefox" | "safari" | "chrome" | "edge" => Some(browser),
+                other => {
+                    println!(
+                        "unknown browser: {} referenced in WASM_BINDGEN_USE_BROWSER",
+                        other
+                    );
+                    None
+                }
+            }
+        } else {
+            None
+        }
     }
 
     fn browser(&self) -> &str {
