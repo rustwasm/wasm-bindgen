@@ -33,6 +33,9 @@
 * Add bindings for `queueMicrotask`.
   [#3981](https://github.com/rustwasm/wasm-bindgen/pull/3981)
 
+* Add experimental bindings for User Agent Client Hints API
+  [#3989](https://github.com/rustwasm/wasm-bindgen/pull/3989)
+
 ### Changed
 
 * Stabilize Web Share API.
