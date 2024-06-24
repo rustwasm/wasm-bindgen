@@ -42,7 +42,7 @@ interface HTMLElement : Element {
   [CEReactions, SetterThrows, Pure]
            attribute long tabIndex;
   [Throws]
-  undefined focus();
+  undefined focus(optional FocusOptions options = {});
   [Throws]
   undefined blur();
   [CEReactions, SetterThrows, Pure]

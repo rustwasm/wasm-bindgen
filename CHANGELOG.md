@@ -36,6 +36,9 @@
 * Add experimental bindings for User Agent Client Hints API
   [#3989](https://github.com/rustwasm/wasm-bindgen/pull/3989)
 
+* Add bindings for `FocusOptions`.
+  [#3996](https://github.com/rustwasm/wasm-bindgen/pull/3996)
+
 ### Changed
 
 * Stabilize Web Share API.
