@@ -32,3 +32,17 @@ If you don't see a particular web API in `web-sys`, here is how to add it.
 2. Annotate the functions that can throw with `[Throws]`
 3. Run `cargo run --release --package wasm-bindgen-webidl -- webidls src/features ./Cargo.toml`
 4. Run `git add .` to add all the generated files into git.
+5. Add an entry in CHANGELOG.md like the following
+   ```md
+   ...
+   
+   ## Unreleased
+   
+   ### Added
+   
+   ...
+   
+   * Added <your addition>
+     [#1234](https://github.com/rustwasm/wasm-bindgen/pull/1234)  # <- link to your PR
+   ```
+
