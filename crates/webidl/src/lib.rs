@@ -25,8 +25,9 @@ use crate::generator::{
 use crate::idl_type::ToIdlType;
 use crate::traverse::TraverseType;
 use crate::util::{
-    camel_case_ident, is_structural, is_type_unstable, read_dir, shouty_snake_case_ident,
-    snake_case_ident, throws, webidl_const_v_to_backend_const_v, TypePosition,
+    camel_case_ident, getter_throws, is_structural, is_type_unstable, read_dir, setter_throws,
+    shouty_snake_case_ident, snake_case_ident, throws, webidl_const_v_to_backend_const_v,
+    TypePosition,
 };
 use anyhow::Context;
 use anyhow::Result;
@@ -597,6 +598,7 @@ impl<'src> FirstPassRecord<'src> {
                 member.identifier.0.to_string(),
                 &member.attributes,
                 data.definition_attributes,
+                &js_name,
                 unstable,
             );
         }
@@ -630,6 +632,7 @@ impl<'src> FirstPassRecord<'src> {
                     member.identifier.0.to_string(),
                     &member.attributes,
                     data.definition_attributes,
+                    &js_name,
                     unstable,
                 );
             }
@@ -670,6 +673,7 @@ impl<'src> FirstPassRecord<'src> {
         js_name: String,
         attrs: &'src Option<ExtendedAttributeList<'src>>,
         container_attrs: Option<&'src ExtendedAttributeList<'src>>,
+        parent_js_name: &str,
         unstable: bool,
     ) {
         use weedle::interface::StringifierOrInheritOrStatic::*;
@@ -697,7 +701,7 @@ impl<'src> FirstPassRecord<'src> {
             attributes.push(InterfaceAttribute {
                 is_static,
                 structural,
-                catch,
+                catch: catch || getter_throws(parent_js_name, &js_name, attrs),
                 ty,
                 js_name: js_name.clone(),
                 kind,
@@ -718,7 +722,7 @@ impl<'src> FirstPassRecord<'src> {
                 attributes.push(InterfaceAttribute {
                     is_static,
                     structural,
-                    catch,
+                    catch: catch || setter_throws(parent_js_name, &js_name, attrs),
                     ty,
                     js_name,
                     kind,
