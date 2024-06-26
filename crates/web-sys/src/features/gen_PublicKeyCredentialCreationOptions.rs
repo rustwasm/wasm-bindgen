@@ -27,6 +27,29 @@ extern "C" {
         this: &PublicKeyCredentialCreationOptions,
         val: AttestationConveyancePreference,
     );
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `attestationFormats` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialCreationOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "attestationFormats")]
+    pub fn get_attestation_formats(
+        this: &PublicKeyCredentialCreationOptions,
+    ) -> Option<::js_sys::Array>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `attestationFormats` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialCreationOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, setter = "attestationFormats")]
+    pub fn set_attestation_formats(
+        this: &PublicKeyCredentialCreationOptions,
+        val: &::wasm_bindgen::JsValue,
+    );
     #[cfg(feature = "AuthenticatorSelectionCriteria")]
     #[doc = "Get the `authenticatorSelection` field of this object."]
     #[doc = ""]
@@ -86,6 +109,24 @@ extern "C" {
         this: &PublicKeyCredentialCreationOptions,
         val: &AuthenticationExtensionsClientInputs,
     );
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `hints` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialCreationOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "hints")]
+    pub fn get_hints(this: &PublicKeyCredentialCreationOptions) -> Option<::js_sys::Array>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `hints` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialCreationOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, setter = "hints")]
+    pub fn set_hints(this: &PublicKeyCredentialCreationOptions, val: &::wasm_bindgen::JsValue);
     #[doc = "Get the `pubKeyCredParams` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialCreationOptions`*"]
@@ -162,6 +203,12 @@ impl PublicKeyCredentialCreationOptions {
         self.set_attestation(val);
         self
     }
+    #[cfg(web_sys_unstable_apis)]
+    #[deprecated = "Use `set_attestation_formats()` instead."]
+    pub fn attestation_formats(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
+        self.set_attestation_formats(val);
+        self
+    }
     #[cfg(feature = "AuthenticatorSelectionCriteria")]
     #[deprecated = "Use `set_authenticator_selection()` instead."]
     pub fn authenticator_selection(&mut self, val: &AuthenticatorSelectionCriteria) -> &mut Self {
@@ -182,6 +229,12 @@ impl PublicKeyCredentialCreationOptions {
     #[deprecated = "Use `set_extensions()` instead."]
     pub fn extensions(&mut self, val: &AuthenticationExtensionsClientInputs) -> &mut Self {
         self.set_extensions(val);
+        self
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[deprecated = "Use `set_hints()` instead."]
+    pub fn hints(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
+        self.set_hints(val);
         self
     }
     #[deprecated = "Use `set_pub_key_cred_params()` instead."]

@@ -71,6 +71,9 @@
 * Allow imported async functions to return any type that can be converted from a `JsValue`.
   [#3919](https://github.com/rustwasm/wasm-bindgen/pull/3919)
 
+* Update Web Authentication API to level 3.
+  [#4000](https://github.com/rustwasm/wasm-bindgen/pull/4000)
+
 ### Fixed
 
 * Copy port from headless test server when using `WASM_BINDGEN_TEST_ADDRESS`.

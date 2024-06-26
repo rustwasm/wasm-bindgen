@@ -25,8 +25,8 @@ use crate::generator::{
 use crate::idl_type::ToIdlType;
 use crate::traverse::TraverseType;
 use crate::util::{
-    camel_case_ident, getter_throws, is_structural, is_type_unstable, optional_return_ty, read_dir,
-    setter_throws, shouty_snake_case_ident, snake_case_ident, throws,
+    camel_case_ident, get_rust_deprecated, getter_throws, is_structural, is_type_unstable,
+    optional_return_ty, read_dir, setter_throws, shouty_snake_case_ident, snake_case_ident, throws,
     webidl_const_v_to_backend_const_v, TypePosition,
 };
 use anyhow::Context;
@@ -447,6 +447,7 @@ impl<'src> FirstPassRecord<'src> {
             return_ty,
             is_js_value_ref_option_type,
             unstable: unstable_override,
+            deprecated: get_rust_deprecated(&field.attributes),
         })
     }
 
@@ -800,6 +801,7 @@ impl<'src> FirstPassRecord<'src> {
                         ),
                         is_js_value_ref_option_type: false,
                         unstable: false,
+                        deprecated: get_rust_deprecated(&item.definition.attributes),
                     })
                 }
                 _ => {

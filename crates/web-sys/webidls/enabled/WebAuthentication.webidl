@@ -16,6 +16,14 @@ interface PublicKeyCredential : Credential {
     AuthenticationExtensionsClientOutputs getClientExtensionResults();
 };
 
+partial dictionary CredentialCreationOptions {
+    PublicKeyCredentialCreationOptions      publicKey;
+};
+
+partial dictionary CredentialRequestOptions {
+    PublicKeyCredentialRequestOptions      publicKey;
+};
+
 [SecureContext]
 partial interface PublicKeyCredential {
     static Promise<boolean> isUserVerifyingPlatformAuthenticatorAvailable();
@@ -28,7 +36,11 @@ interface AuthenticatorResponse {
 
 [SecureContext, Pref="security.webauth.webauthn"]
 interface AuthenticatorAttestationResponse : AuthenticatorResponse {
-    [SameObject] readonly attribute ArrayBuffer attestationObject;
+    [SameObject] readonly attribute ArrayBuffer      attestationObject;
+    sequence<DOMString>                              getTransports();
+    [Throws] ArrayBuffer                             getAuthenticatorData();
+    [Throws] ArrayBuffer?                            getPublicKey();
+    [Throws] COSEAlgorithmIdentifier                 getPublicKeyAlgorithm();
 };
 
 [SecureContext, Pref="security.webauth.webauthn"]
@@ -39,6 +51,7 @@ interface AuthenticatorAssertionResponse : AuthenticatorResponse {
 };
 
 dictionary PublicKeyCredentialParameters {
+    // Should be `DOMString`.
     required PublicKeyCredentialType  type;
     required COSEAlgorithmIdentifier  alg;
 };
@@ -53,12 +66,14 @@ dictionary PublicKeyCredentialCreationOptions {
     unsigned long                                timeout;
     sequence<PublicKeyCredentialDescriptor>      excludeCredentials = [];
     AuthenticatorSelectionCriteria               authenticatorSelection;
+    // Should be `DOMString`.
     AttestationConveyancePreference              attestation = "none";
     AuthenticationExtensionsClientInputs         extensions;
 };
 
 dictionary PublicKeyCredentialEntity {
     required DOMString    name;
+    [RustDeprecated]
     USVString             icon;
 };
 
@@ -72,8 +87,11 @@ dictionary PublicKeyCredentialUserEntity : PublicKeyCredentialEntity {
 };
 
 dictionary AuthenticatorSelectionCriteria {
+    // Should be `DOMString`.
     AuthenticatorAttachment      authenticatorAttachment;
+    DOMString                    residentKey;
     boolean                      requireResidentKey = false;
+    // Should be `DOMString`.
     UserVerificationRequirement  userVerification = "preferred";
 };
 
@@ -82,16 +100,17 @@ enum AuthenticatorAttachment {
     "cross-platform"  // Cross-platform attachment
 };
 
+enum ResidentKeyRequirement {
+    "discouraged",
+    "preferred",
+    "required"
+};
+
 enum AttestationConveyancePreference {
     "none",
     "indirect",
-    "direct"
-};
-
-enum UserVerificationRequirement {
-    "required",
-    "preferred",
-    "discouraged"
+    "direct",
+    "enterprise"
 };
 
 dictionary PublicKeyCredentialRequestOptions {
@@ -99,68 +118,131 @@ dictionary PublicKeyCredentialRequestOptions {
     unsigned long                        timeout;
     USVString                            rpId;
     sequence<PublicKeyCredentialDescriptor> allowCredentials = [];
+    // Should be `DOMString`.
     UserVerificationRequirement          userVerification = "preferred";
     AuthenticationExtensionsClientInputs extensions;
 };
 
-// TODO - Use partial dictionaries when bug 1436329 is fixed.
 dictionary AuthenticationExtensionsClientInputs {
-    // FIDO AppID Extension (appid)
-    // <https://w3c.github.io/webauthn/#sctn-appid-extension>
-    USVString appid;
 };
 
-// TODO - Use partial dictionaries when bug 1436329 is fixed.
 dictionary AuthenticationExtensionsClientOutputs {
-    // FIDO AppID Extension (appid)
-    // <https://w3c.github.io/webauthn/#sctn-appid-extension>
-    boolean appid;
 };
-
-typedef record<DOMString, DOMString> AuthenticationExtensionsAuthenticatorInputs;
 
 dictionary CollectedClientData {
     required DOMString           type;
     required DOMString           challenge;
     required DOMString           origin;
+    [RustDeprecated]
     required DOMString           hashAlgorithm;
+    [RustDeprecated]
     DOMString                    tokenBindingId;
+    [RustDeprecated]
     AuthenticationExtensionsClientInputs clientExtensions;
+    [RustDeprecated]
     AuthenticationExtensionsAuthenticatorInputs authenticatorExtensions;
+    boolean                      crossOrigin;
+    TokenBinding                 tokenBinding;
 };
+
+dictionary TokenBinding {
+    required DOMString status;
+    DOMString id;
+};
+
+enum TokenBindingStatus { "present", "supported" };
 
 enum PublicKeyCredentialType {
     "public-key"
 };
 
 dictionary PublicKeyCredentialDescriptor {
+    // Should be `DOMString`.
     required PublicKeyCredentialType      type;
     required BufferSource                 id;
+    // Should be `DOMString`.
     sequence<AuthenticatorTransport>      transports;
 };
 
 enum AuthenticatorTransport {
     "usb",
     "nfc",
-    "ble"
+    "ble",
+    "internal"
 };
 
 typedef long COSEAlgorithmIdentifier;
 
-typedef sequence<AAGUID>      AuthenticatorSelectionList;
+enum UserVerificationRequirement {
+    "required",
+    "preferred",
+    "discouraged"
+};
 
-typedef BufferSource      AAGUID;
-
-/*
-// FIDO AppID Extension (appid)
-// <https://w3c.github.io/webauthn/#sctn-appid-extension>
 partial dictionary AuthenticationExtensionsClientInputs {
+    // FIDO AppID Extension (appid)
+    // <https://w3c.github.io/webauthn/#sctn-appid-extension>
     USVString appid;
 };
 
-// FIDO AppID Extension (appid)
-// <https://w3c.github.io/webauthn/#sctn-appid-extension>
 partial dictionary AuthenticationExtensionsClientOutputs {
-  boolean appid;
+    // FIDO AppID Extension (appid)
+    // <https://w3c.github.io/webauthn/#sctn-appid-extension>
+    boolean appid;
 };
-*/
+
+partial dictionary AuthenticationExtensionsClientInputs {
+  USVString appidExclude;
+};
+
+partial dictionary AuthenticationExtensionsClientOutputs {
+  boolean appidExclude;
+};
+
+partial dictionary AuthenticationExtensionsClientInputs {
+  boolean uvm;
+};
+
+typedef sequence<unsigned long> UvmEntry;
+typedef sequence<UvmEntry> UvmEntries;
+
+partial dictionary AuthenticationExtensionsClientOutputs {
+  UvmEntries uvm;
+};
+
+partial dictionary AuthenticationExtensionsClientInputs {
+    boolean credProps;
+};
+
+dictionary CredentialPropertiesOutput {
+    boolean rk;
+};
+
+partial dictionary AuthenticationExtensionsClientOutputs {
+    CredentialPropertiesOutput credProps;
+};
+
+partial dictionary AuthenticationExtensionsClientInputs {
+    AuthenticationExtensionsLargeBlobInputs largeBlob;
+};
+
+enum LargeBlobSupport {
+  "required",
+  "preferred",
+};
+
+dictionary AuthenticationExtensionsLargeBlobInputs {
+    DOMString support;
+    boolean read;
+    BufferSource write;
+};
+
+partial dictionary AuthenticationExtensionsClientOutputs {
+    AuthenticationExtensionsLargeBlobOutputs largeBlob;
+};
+
+dictionary AuthenticationExtensionsLargeBlobOutputs {
+    boolean supported;
+    ArrayBuffer blob;
+    boolean written;
+};

@@ -517,7 +517,7 @@ impl InterfaceMethod {
 pub struct Interface {
     pub name: Ident,
     pub js_name: String,
-    pub deprecated: Option<String>,
+    pub deprecated: Option<Option<String>>,
     pub has_interface: bool,
     pub parents: Vec<Ident>,
     pub consts: Vec<Const>,
@@ -548,9 +548,10 @@ impl Interface {
             &get_features_doc(options, name.to_string()),
         );
 
-        let deprecated = deprecated
-            .as_ref()
-            .map(|msg| quote!( #[deprecated(note = #msg)] ));
+        let deprecated = deprecated.as_ref().map(|msg| match msg {
+            Some(msg) => quote!( #[deprecated(note = #msg)] ),
+            None => quote!( #[deprecated] ),
+        });
 
         let is_type_of = if *has_interface {
             None
@@ -637,6 +638,7 @@ pub struct DictionaryField {
     pub is_js_value_ref_option_type: bool,
     pub required: bool,
     pub unstable: bool,
+    pub deprecated: Option<Option<String>>,
 }
 
 impl DictionaryField {
@@ -667,6 +669,11 @@ impl DictionaryField {
         let unstable_attr = maybe_unstable_attr(self.unstable);
         let unstable_docs = maybe_unstable_docs(self.unstable);
 
+        let deprecated = self.deprecated.as_ref().map(|msg| match msg {
+            Some(msg) => quote!( #[deprecated(note = #msg)] ),
+            None => quote!( #[deprecated] ),
+        });
+
         let getter_doc_comment = comment(
             format!("Get the `{}` field of this object.", js_name),
             &required_doc_string(options, features),
@@ -682,6 +689,7 @@ impl DictionaryField {
             #cfg_features
             #getter_doc_comment
             #unstable_docs
+            #deprecated
             #[wasm_bindgen(method, getter = #js_name)]
             pub fn #getter_name(this: &#parent_ident) -> #return_ty;
 
@@ -689,6 +697,7 @@ impl DictionaryField {
             #cfg_features
             #setter_doc_comment
             #unstable_docs
+            #deprecated
             #[wasm_bindgen(method, setter = #js_name)]
             pub fn #setter_name(this: &#parent_ident, val: #ty);
         }
@@ -703,6 +712,7 @@ impl DictionaryField {
             is_js_value_ref_option_type: _,
             required: _,
             unstable,
+            deprecated: _,
         } = self;
 
         let name = rust_ident(name);

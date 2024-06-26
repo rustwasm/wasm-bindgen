@@ -8,7 +8,10 @@ use heck::{CamelCase, ShoutySnakeCase, SnakeCase};
 use proc_macro2::{Ident, TokenStream};
 use quote::quote;
 use wasm_bindgen_backend::util::{ident_ty, raw_ident, rust_ident};
-use weedle::attribute::{ExtendedAttribute, ExtendedAttributeList, IdentifierOrString};
+use weedle::attribute::{
+    ExtendedAttribute, ExtendedAttributeIdent, ExtendedAttributeList, ExtendedAttributeNoArgs,
+    IdentifierOrString,
+};
 use weedle::common::Identifier;
 use weedle::literal::{ConstValue as ConstValueLit, FloatLit, IntegerLit};
 use weedle::types::{MayBeNull, NonAnyType, SingleType};
@@ -607,22 +610,27 @@ pub fn is_no_interface_object(ext_attrs: &Option<ExtendedAttributeList>) -> bool
     has_named_attribute(ext_attrs.as_ref(), "NoInterfaceObject")
 }
 
-pub fn get_rust_deprecated<'a>(ext_attrs: &Option<ExtendedAttributeList<'a>>) -> Option<&'a str> {
+pub fn get_rust_deprecated(ext_attrs: &Option<ExtendedAttributeList>) -> Option<Option<String>> {
     ext_attrs
         .as_ref()?
         .body
         .list
         .iter()
         .filter_map(|attr| match attr {
-            ExtendedAttribute::Ident(id) => Some(id),
+            ExtendedAttribute::NoArgs(ExtendedAttributeNoArgs(id)) => Some((id, None)),
+            ExtendedAttribute::Ident(ExtendedAttributeIdent {
+                lhs_identifier: id,
+                rhs,
+                ..
+            }) => Some((id, Some(rhs))),
             _ => None,
         })
-        .filter(|attr| attr.lhs_identifier.0 == "RustDeprecated")
-        .find_map(|ident| match ident.rhs {
-            IdentifierOrString::String(s) => Some(s),
-            IdentifierOrString::Identifier(_) => None,
+        .filter(|(id, _)| id.0 == "RustDeprecated")
+        .find_map(|(_, rhs)| match rhs {
+            None => Some(None),
+            Some(IdentifierOrString::String(s)) => Some(Some(s.0.to_owned())),
+            _ => unimplemented!(),
         })
-        .map(|s| s.0)
 }
 
 /// Whether a webidl object is marked as structural.
