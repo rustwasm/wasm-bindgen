@@ -53,6 +53,9 @@
 * Use `table.fill` when appropriate.
   [#3446](https://github.com/rustwasm/wasm-bindgen/pull/3446)
 
+* Annotated methods in WebCodecs that throw.
+  [#3970](https://github.com/rustwasm/wasm-bindgen/pull/3970)
+
 ### Fixed
 
 * Copy port from headless test server when using `WASM_BINDGEN_TEST_ADDRESS`.

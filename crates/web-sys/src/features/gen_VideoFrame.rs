@@ -349,7 +349,7 @@ extern "C" {
         init: &VideoFrameBufferInit,
     ) -> Result<VideoFrame, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "VideoFrame" , js_name = allocationSize)]
+    # [wasm_bindgen (catch , method , structural , js_class = "VideoFrame" , js_name = allocationSize)]
     #[doc = "The `allocationSize()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoFrame/allocationSize)"]
@@ -358,10 +358,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn allocation_size(this: &VideoFrame) -> u32;
+    pub fn allocation_size(this: &VideoFrame) -> Result<u32, JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "VideoFrameCopyToOptions")]
-    # [wasm_bindgen (method , structural , js_class = "VideoFrame" , js_name = allocationSize)]
+    # [wasm_bindgen (catch , method , structural , js_class = "VideoFrame" , js_name = allocationSize)]
     #[doc = "The `allocationSize()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoFrame/allocationSize)"]
@@ -373,9 +373,9 @@ extern "C" {
     pub fn allocation_size_with_options(
         this: &VideoFrame,
         options: &VideoFrameCopyToOptions,
-    ) -> u32;
+    ) -> Result<u32, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "VideoFrame" , js_name = clone)]
+    # [wasm_bindgen (catch , method , structural , js_class = "VideoFrame" , js_name = clone)]
     #[doc = "The `clone()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoFrame/clone)"]
@@ -384,7 +384,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn clone(this: &VideoFrame) -> VideoFrame;
+    pub fn clone(this: &VideoFrame) -> Result<VideoFrame, JsValue>;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (method , structural , js_class = "VideoFrame" , js_name = close)]
     #[doc = "The `close()` method."]

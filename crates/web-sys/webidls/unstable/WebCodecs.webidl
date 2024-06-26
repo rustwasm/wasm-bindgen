@@ -5,11 +5,11 @@ interface AudioDecoder {
   readonly attribute CodecState state;
   readonly attribute unsigned long decodeQueueSize;
 
-  undefined configure(AudioDecoderConfig config);
-  undefined decode(EncodedAudioChunk chunk);
+  [Throws] undefined configure(AudioDecoderConfig config);
+  [Throws] undefined decode(EncodedAudioChunk chunk);
   Promise<undefined> flush();
-  undefined reset();
-  undefined close();
+  [Throws] undefined reset();
+  [Throws] undefined close();
 
   static Promise<AudioDecoderSupport> isConfigSupported(AudioDecoderConfig config);
 };
@@ -28,11 +28,11 @@ interface VideoDecoder {
   readonly attribute CodecState state;
   readonly attribute unsigned long decodeQueueSize;
 
-  undefined configure(VideoDecoderConfig config);
-  undefined decode(EncodedVideoChunk chunk);
+  [Throws] undefined configure(VideoDecoderConfig config);
+  [Throws] undefined decode(EncodedVideoChunk chunk);
   Promise<undefined> flush();
-  undefined reset();
-  undefined close();
+  [Throws] undefined reset();
+  [Throws] undefined close();
 
   static Promise<VideoDecoderSupport> isConfigSupported(VideoDecoderConfig config);
 };
@@ -51,11 +51,11 @@ interface AudioEncoder {
   readonly attribute CodecState state;
   readonly attribute unsigned long encodeQueueSize;
 
-  undefined configure(AudioEncoderConfig config);
-  undefined encode(AudioData data);
+  [Throws] undefined configure(AudioEncoderConfig config);
+  [Throws] undefined encode(AudioData data);
   Promise<undefined> flush();
-  undefined reset();
-  undefined close();
+  [Throws] undefined reset();
+  [Throws] undefined close();
 
   static Promise<AudioEncoderSupport> isConfigSupported(AudioEncoderConfig config);
 };
@@ -80,11 +80,11 @@ interface VideoEncoder {
   readonly attribute CodecState state;
   readonly attribute unsigned long encodeQueueSize;
 
-  undefined configure(VideoEncoderConfig config);
-  undefined encode(VideoFrame frame, optional VideoEncoderEncodeOptions options = {});
+  [Throws] undefined configure(VideoEncoderConfig config);
+  [Throws] undefined encode(VideoFrame frame, optional VideoEncoderEncodeOptions options = {});
   Promise<undefined> flush();
-  undefined reset();
-  undefined close();
+  [Throws] undefined reset();
+  [Throws] undefined close();
 
   static Promise<VideoEncoderSupport> isConfigSupported(VideoEncoderConfig config);
 };
@@ -199,13 +199,13 @@ callback WebCodecsErrorCallback = undefined(DOMException error);
 
 [Exposed=(Window,DedicatedWorker)]
 interface EncodedAudioChunk {
-  constructor(EncodedAudioChunkInit init);
+  [Throws] constructor(EncodedAudioChunkInit init);
   readonly attribute EncodedAudioChunkType type;
   readonly attribute long long timestamp;          // microseconds
   readonly attribute unsigned long long? duration; // microseconds
   readonly attribute unsigned long byteLength;
 
-  undefined copyTo([AllowShared] BufferSource destination);
+  [Throws] undefined copyTo([AllowShared] BufferSource destination);
 };
 
 dictionary EncodedAudioChunkInit {
@@ -222,13 +222,13 @@ enum EncodedAudioChunkType {
 
 [Exposed=(Window,DedicatedWorker)]
 interface EncodedVideoChunk {
-  constructor(EncodedVideoChunkInit init);
+  [Throws] constructor(EncodedVideoChunkInit init);
   readonly attribute EncodedVideoChunkType type;
   readonly attribute long long timestamp;             // microseconds
   readonly attribute unsigned long long? duration;    // microseconds
   readonly attribute unsigned long byteLength;
 
-  undefined copyTo([AllowShared] BufferSource destination);
+  [Throws] undefined copyTo([AllowShared] BufferSource destination);
 };
 
 dictionary EncodedVideoChunkInit {
@@ -245,7 +245,7 @@ enum EncodedVideoChunkType {
 
 [Exposed=(Window,DedicatedWorker), Serializable, Transferable]
 interface AudioData {
-  constructor(AudioDataInit init);
+  [Throws] constructor(AudioDataInit init);
 
   readonly attribute AudioSampleFormat? format;
   readonly attribute float sampleRate;
@@ -254,9 +254,9 @@ interface AudioData {
   readonly attribute unsigned long long duration;  // microseconds
   readonly attribute long long timestamp;          // microseconds
 
-  unsigned long allocationSize(AudioDataCopyToOptions options);
-  undefined copyTo([AllowShared] BufferSource destination, AudioDataCopyToOptions options);
-  AudioData clone();
+  [Throws] unsigned long allocationSize(AudioDataCopyToOptions options);
+  [Throws] undefined copyTo([AllowShared] BufferSource destination, AudioDataCopyToOptions options);
+  [Throws] AudioData clone();
   undefined close();
 };
 
@@ -289,8 +289,8 @@ enum AudioSampleFormat {
 
 [Exposed=(Window,DedicatedWorker), Serializable, Transferable]
 interface VideoFrame {
-  constructor(CanvasImageSource image, optional VideoFrameInit init = {});
-  constructor([AllowShared] BufferSource data, VideoFrameBufferInit init);
+  [Throws] constructor(CanvasImageSource image, optional VideoFrameInit init = {});
+  [Throws] constructor([AllowShared] BufferSource data, VideoFrameBufferInit init);
 
   readonly attribute VideoPixelFormat? format;
   readonly attribute unsigned long codedWidth;
@@ -303,12 +303,12 @@ interface VideoFrame {
   readonly attribute long long? timestamp;          // microseconds
   readonly attribute VideoColorSpace colorSpace;
 
-  unsigned long allocationSize(
+  [Throws] unsigned long allocationSize(
       optional VideoFrameCopyToOptions options = {});
   Promise<sequence<PlaneLayout>> copyTo(
       [AllowShared] BufferSource destination,
       optional VideoFrameCopyToOptions options = {});
-  VideoFrame clone();
+  [Throws] VideoFrame clone();
   undefined close();
 };
 
@@ -418,7 +418,7 @@ enum VideoMatrixCoefficients {
 
 [Exposed=(Window,DedicatedWorker), SecureContext]
 interface ImageDecoder {
-  constructor(ImageDecoderInit init);
+  [Throws] constructor(ImageDecoderInit init);
 
   readonly attribute DOMString type;
   readonly attribute boolean complete;

@@ -52,7 +52,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn new(init: &VideoEncoderInit) -> Result<VideoEncoder, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "VideoEncoder" , js_name = close)]
+    # [wasm_bindgen (catch , method , structural , js_class = "VideoEncoder" , js_name = close)]
     #[doc = "The `close()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoEncoder/close)"]
@@ -61,10 +61,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn close(this: &VideoEncoder);
+    pub fn close(this: &VideoEncoder) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "VideoEncoderConfig")]
-    # [wasm_bindgen (method , structural , js_class = "VideoEncoder" , js_name = configure)]
+    # [wasm_bindgen (catch , method , structural , js_class = "VideoEncoder" , js_name = configure)]
     #[doc = "The `configure()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoEncoder/configure)"]
@@ -73,10 +73,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn configure(this: &VideoEncoder, config: &VideoEncoderConfig);
+    pub fn configure(this: &VideoEncoder, config: &VideoEncoderConfig) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "VideoFrame")]
-    # [wasm_bindgen (method , structural , js_class = "VideoEncoder" , js_name = encode)]
+    # [wasm_bindgen (catch , method , structural , js_class = "VideoEncoder" , js_name = encode)]
     #[doc = "The `encode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoEncoder/encode)"]
@@ -85,10 +85,10 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn encode(this: &VideoEncoder, frame: &VideoFrame);
+    pub fn encode(this: &VideoEncoder, frame: &VideoFrame) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(feature = "VideoEncoderEncodeOptions", feature = "VideoFrame",))]
-    # [wasm_bindgen (method , structural , js_class = "VideoEncoder" , js_name = encode)]
+    # [wasm_bindgen (catch , method , structural , js_class = "VideoEncoder" , js_name = encode)]
     #[doc = "The `encode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoEncoder/encode)"]
@@ -101,7 +101,7 @@ extern "C" {
         this: &VideoEncoder,
         frame: &VideoFrame,
         options: &VideoEncoderEncodeOptions,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (method , structural , js_class = "VideoEncoder" , js_name = flush)]
     #[doc = "The `flush()` method."]
@@ -126,7 +126,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn is_config_supported(config: &VideoEncoderConfig) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "VideoEncoder" , js_name = reset)]
+    # [wasm_bindgen (catch , method , structural , js_class = "VideoEncoder" , js_name = reset)]
     #[doc = "The `reset()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoEncoder/reset)"]
@@ -135,5 +135,5 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn reset(this: &VideoEncoder);
+    pub fn reset(this: &VideoEncoder) -> Result<(), JsValue>;
 }
