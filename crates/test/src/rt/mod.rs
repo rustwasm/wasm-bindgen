@@ -709,7 +709,7 @@ impl State {
         }
         logs.push_str(which);
         logs.push_str(" output:\n");
-        logs.push_str(&tab(output));
+        logs.push_str(output);
         logs.push('\n');
     }
 
@@ -747,7 +747,7 @@ impl State {
             logs.push_str(&tab(&error_string));
         }
 
-        let msg = format!("---- {} output ----\n{}", test.name, tab(&logs));
+        let msg = format!("---- {} output ----\n{}", test.name, &logs);
         self.formatter.writeln(&msg);
     }
 }
