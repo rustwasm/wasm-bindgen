@@ -57,9 +57,13 @@ pub struct LegacyNewSessionParameters {
 /// will return an error if some tests failed.
 pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error> {
     let driver = Driver::find()?;
-    let mut drop_log: Box<dyn FnMut()> = Box::new(|| ());
-    let driver_url = match driver.location() {
-        Locate::Remote(url) => Ok(url.clone()),
+    let mut client = match driver.location() {
+        Locate::Remote(url) => Client {
+            agent: Agent::new(),
+            driver_url: url.clone(),
+            session: None,
+            background_child: None,
+        },
         Locate::Local((path, args)) => {
             // Allow tests to run in parallel (in theory) by finding any open port
             // available for our driver. We can't bind the port for the driver, but
@@ -70,8 +74,8 @@ pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error
             // threads. We'll print this output later.
             let mut cmd = Command::new(path);
             cmd.args(args).arg(format!("--port={}", driver_addr.port()));
-            let mut child = BackgroundChild::spawn(path, &mut cmd, shell)?;
-            drop_log = Box::new(move || child.print_stdio_on_drop = false);
+
+            let child = BackgroundChild::spawn(path, &mut cmd, shell)?;
 
             // Wait for the driver to come online and bind its port before we try to
             // connect to it.
@@ -88,20 +92,20 @@ pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error
             if !bound {
                 bail!("driver failed to bind port during startup")
             }
-            Url::parse(&format!("http://{}", driver_addr)).map_err(Error::from)
+            Client {
+                agent: Agent::new(),
+                driver_url: Url::parse(&format!("http://{}", driver_addr)).map_err(Error::from)?,
+                session: None,
+                background_child: Some(child),
+            }
         }
-    }?;
+    };
     println!(
         "Running headless tests in {} on `{}`",
         driver.browser(),
-        driver_url.as_str(),
+        client.driver_url().as_str(),
     );
 
-    let mut client = Client {
-        agent: Agent::new(),
-        driver_url,
-        session: None,
-    };
     println!("Try find `webdriver.json` for configure browser's capabilities:");
     let capabilities: Capabilities = match File::open("webdriver.json") {
         Ok(file) => {
@@ -180,7 +184,7 @@ pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error
         // If the tests harness finished (either successfully or unsuccessfully)
         // then in theory all the info needed to debug the failure is in its own
         // output, so we shouldn't need the driver logs to get printed.
-        drop_log();
+        client.drop_log();
     } else {
         println!("Failed to detect test as having been run. It might have timed out.");
         if !output.is_empty() {
@@ -354,10 +358,11 @@ an issue against rustwasm/wasm-bindgen!
     }
 }
 
-struct Client {
+struct Client<'b> {
     agent: Agent,
     driver_url: Url,
     session: Option<String>,
+    background_child: Option<BackgroundChild<'b>>,
 }
 
 enum Method<'a> {
@@ -370,7 +375,17 @@ enum Method<'a> {
 // I'm not too familiar with them myself, but these seem to work! I mostly
 // copied the `webdriver-client` crate when writing the below bindings.
 
-impl Client {
+impl<'b> Client<'b> {
+    fn driver_url(&self) -> &Url {
+        &self.driver_url
+    }
+
+    fn drop_log(&mut self) {
+        if let Some(child) = self.background_child.as_mut() {
+            child.print_stdio_on_drop = false;
+        }
+    }
+
     fn new_session(&mut self, driver: &Driver, mut cap: Capabilities) -> Result<String, Error> {
         match driver {
             Driver::Gecko(_) => {
@@ -606,7 +621,7 @@ impl Client {
     }
 }
 
-impl Drop for Client {
+impl<'b> Drop for Client<'b> {
     fn drop(&mut self) {
         let id = match &self.session {
             Some(id) => id.clone(),
@@ -640,6 +655,7 @@ struct BackgroundChild<'a> {
     stderr: Option<thread::JoinHandle<io::Result<Vec<u8>>>>,
     shell: &'a Shell,
     print_stdio_on_drop: bool,
+    lock: Option<SafariLock>,
 }
 
 impl<'a> BackgroundChild<'a> {
@@ -648,6 +664,8 @@ impl<'a> BackgroundChild<'a> {
         cmd: &mut Command,
         shell: &'a Shell,
     ) -> Result<BackgroundChild<'a>, Error> {
+        let lock = Self::lock(path);
+
         cmd.stdout(Stdio::piped())
             .stderr(Stdio::piped())
             .stdin(Stdio::null());
@@ -665,8 +683,31 @@ impl<'a> BackgroundChild<'a> {
             stderr,
             shell,
             print_stdio_on_drop: true,
+            lock,
         })
     }
+
+    fn lock(path: &Path) -> Option<SafariLock> {
+        if path.to_string_lossy().contains("safaridriver") {
+            let mut lock = SafariLock::new();
+            while !lock.enter() {
+                thread::sleep(Duration::from_millis(100));
+            }
+            Some(lock)
+        } else {
+            None
+        }
+    }
+}
+
+fn is_safaridriver_running() -> bool {
+    let output = Command::new("pgrep")
+        .arg("-x")
+        .arg("safaridriver")
+        .output()
+        .expect("Failed to execute pgrep command");
+
+    !output.stdout.is_empty()
 }
 
 impl<'a> Drop for BackgroundChild<'a> {
@@ -687,6 +728,47 @@ impl<'a> Drop for BackgroundChild<'a> {
         let stderr = self.stderr.take().unwrap().join().unwrap().unwrap();
         if !stderr.is_empty() {
             println!("driver stderr:\n{}", tab(&String::from_utf8_lossy(&stderr)));
+        }
+    }
+}
+
+struct SafariLock {
+    counter: u32,
+    file: PathBuf,
+}
+
+impl SafariLock {
+    fn new() -> Self {
+        let file = env::temp_dir().join("safaridriver.lock");
+        Self { counter: 0, file }
+    }
+
+    fn enter(&mut self) -> bool {
+        if self.file.exists() {
+            if !is_safaridriver_running() {
+                self.counter += 1;
+            }
+            if self.counter < 10 {
+                return false;
+            }
+            self.counter = 0;
+            std::fs::remove_file(&self.file).unwrap();
+        }
+
+        std::fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(&self.file).is_ok()
+    }
+}
+
+impl Drop for SafariLock {
+    fn drop(&mut self) {
+        while is_safaridriver_running() {
+            thread::sleep(Duration::from_millis(100));
+        }
+        if self.file.exists() {
+            std::fs::remove_file(&self.file).unwrap();
         }
     }
 }
