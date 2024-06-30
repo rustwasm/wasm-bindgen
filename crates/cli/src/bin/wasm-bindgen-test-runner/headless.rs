@@ -746,20 +746,25 @@ impl SafariLock {
 
     fn enter(&mut self) -> bool {
         if self.file.exists() {
-            if !is_safaridriver_running() {
-                self.counter += 1;
-            }
-            if self.counter < 10 {
+            if is_safaridriver_running() {
+                self.counter = 0;
                 return false;
             }
+
+            if self.counter < 10 {
+                self.counter += 1;
+                return false;
+            }
+
             self.counter = 0;
             std::fs::remove_file(&self.file).unwrap();
         }
 
         std::fs::OpenOptions::new()
-        .write(true)
-        .create_new(true)
-        .open(&self.file).is_ok()
+            .write(true)
+            .create_new(true)
+            .open(&self.file)
+            .is_ok()
     }
 }
 
