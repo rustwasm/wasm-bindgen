@@ -326,6 +326,7 @@ an issue against rustwasm/wasm-bindgen!
         if let Ok(browser) = env::var("WASM_BINDGEN_USE_BROWSER") {
             match browser.to_lowercase().as_str() {
                 "firefox" | "safari" | "chrome" | "edge" => Some(browser),
+                "yes" => None,
                 other => {
                     println!(
                         "unknown browser: {} referenced in WASM_BINDGEN_USE_BROWSER",
