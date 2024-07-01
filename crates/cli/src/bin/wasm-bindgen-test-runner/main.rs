@@ -23,6 +23,7 @@ use wasm_bindgen_cli_support::Bindgen;
 
 mod deno;
 mod headless;
+mod lock;
 mod node;
 mod server;
 mod shell;

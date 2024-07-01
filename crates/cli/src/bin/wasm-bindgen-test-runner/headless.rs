@@ -1,3 +1,4 @@
+use crate::lock::{is_process_running, Lock};
 use crate::shell::Shell;
 use anyhow::{bail, format_err, Context, Error};
 use log::{debug, warn};
@@ -656,7 +657,7 @@ struct BackgroundChild<'a> {
     stderr: Option<thread::JoinHandle<io::Result<Vec<u8>>>>,
     shell: &'a Shell,
     print_stdio_on_drop: bool,
-    lock: Option<SafariLock>,
+    lock: Option<Lock>,
 }
 
 impl<'a> BackgroundChild<'a> {
@@ -665,7 +666,7 @@ impl<'a> BackgroundChild<'a> {
         cmd: &mut Command,
         shell: &'a Shell,
     ) -> Result<BackgroundChild<'a>, Error> {
-        let lock = Self::lock(path);
+        let lock = Self::lock(path)?;
 
         cmd.stdout(Stdio::piped())
             .stderr(Stdio::piped())
@@ -688,33 +689,26 @@ impl<'a> BackgroundChild<'a> {
         })
     }
 
-    fn lock(path: &Path) -> Option<SafariLock> {
+    fn lock(path: &Path) -> Result<Option<Lock>, Error> {
         if path.to_string_lossy().contains("safaridriver") {
-            let mut lock = SafariLock::new();
-            while !lock.enter() {
-                thread::sleep(Duration::from_millis(100));
-            }
-            Some(lock)
+            Ok(Some(Lock::try_new("safaridriver")?))
         } else {
-            None
+            Ok(None)
         }
     }
 }
 
-fn is_safaridriver_running() -> bool {
-    let output = Command::new("pgrep")
-        .arg("-x")
-        .arg("safaridriver")
-        .output()
-        .expect("Failed to execute pgrep command");
-
-    !output.stdout.is_empty()
-}
-
 impl<'a> Drop for BackgroundChild<'a> {
     fn drop(&mut self) {
+        let pid = self.child.id();
+
         self.child.kill().unwrap();
         let status = self.child.wait().unwrap();
+
+        while is_process_running(pid) {
+            thread::sleep(Duration::from_millis(100));
+        }
+
         if !self.print_stdio_on_drop {
             return;
         }
@@ -729,52 +723,6 @@ impl<'a> Drop for BackgroundChild<'a> {
         let stderr = self.stderr.take().unwrap().join().unwrap().unwrap();
         if !stderr.is_empty() {
             println!("driver stderr:\n{}", tab(&String::from_utf8_lossy(&stderr)));
-        }
-    }
-}
-
-struct SafariLock {
-    counter: u32,
-    file: PathBuf,
-}
-
-impl SafariLock {
-    fn new() -> Self {
-        let file = env::temp_dir().join("safaridriver.lock");
-        Self { counter: 0, file }
-    }
-
-    fn enter(&mut self) -> bool {
-        if self.file.exists() {
-            if is_safaridriver_running() {
-                self.counter = 0;
-                return false;
-            }
-
-            if self.counter < 10 {
-                self.counter += 1;
-                return false;
-            }
-
-            self.counter = 0;
-            std::fs::remove_file(&self.file).unwrap();
-        }
-
-        std::fs::OpenOptions::new()
-            .write(true)
-            .create_new(true)
-            .open(&self.file)
-            .is_ok()
-    }
-}
-
-impl Drop for SafariLock {
-    fn drop(&mut self) {
-        while is_safaridriver_running() {
-            thread::sleep(Duration::from_millis(100));
-        }
-        if self.file.exists() {
-            std::fs::remove_file(&self.file).unwrap();
         }
     }
 }
