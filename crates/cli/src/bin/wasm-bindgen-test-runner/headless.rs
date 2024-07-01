@@ -444,7 +444,14 @@ impl<'b> Client<'b> {
                     "capabilities": {
                     }
                 });
-                let x: Response = self.post("/session", &request)?;
+                let mut x: Result<Response, Error> = self.post("/session", &request);
+                if let Some(_) = self.background_child.as_ref() {
+                    while x.is_err() {
+                        terminate_safari_automation();
+                        x = self.post("/session", &request);
+                    }
+                }
+                let x = x?;
                 Ok(x.clone()
                     .session_id
                     .or_else(|| x.value.map(|v| v.session_id.unwrap()))
@@ -700,14 +707,8 @@ impl<'a> BackgroundChild<'a> {
 
 impl<'a> Drop for BackgroundChild<'a> {
     fn drop(&mut self) {
-        let pid = self.child.id();
-
         self.child.kill().unwrap();
         let status = self.child.wait().unwrap();
-
-        while is_process_running(pid) {
-            thread::sleep(Duration::from_millis(100));
-        }
 
         if !self.print_stdio_on_drop {
             return;
@@ -724,5 +725,50 @@ impl<'a> Drop for BackgroundChild<'a> {
         if !stderr.is_empty() {
             println!("driver stderr:\n{}", tab(&String::from_utf8_lossy(&stderr)));
         }
+    }
+}
+
+fn get_safari_automation_pids() -> Vec<u32> {
+    let output = Command::new("pgrep")
+        .args(&["-f", "Safari --automation"])
+        .output()
+        .ok()
+        .expect("failed to execute pgrep");
+
+    if output.stdout.is_empty() {
+        return Vec::new();
+    }
+
+    let pids = String::from_utf8(output.stdout)
+        .ok()
+        .expect("failed to parse pgrep output");
+
+    pids.trim()
+        .split('\n')
+        .map(|pid| pid.parse().expect("failed to parse pid"))
+        .collect()
+}
+
+fn terminate_safari_automation() {
+    for pid in get_safari_automation_pids() {
+        terminate_process(pid);
+    }
+}
+
+fn terminate_process(pid: u32) {
+    let output = Command::new("kill")
+        .arg("-9") // SIGTERM
+        .arg(pid.to_string())
+        .output()
+        .map_err(|e| format!("Failed to execute kill command: {}", e))
+        .unwrap();
+
+    if !output.status.success() {
+        let error = String::from_utf8_lossy(&output.stderr);
+        println!("Failed to terminate process: {}", error);
+    }
+
+    while is_process_running(pid) {
+        thread::sleep(Duration::from_millis(100));
     }
 }
