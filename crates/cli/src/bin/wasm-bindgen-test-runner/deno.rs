@@ -24,7 +24,7 @@ pub fn execute(
         // `wasm-bindgen-test-runner` which forwards them to deno which we
         // forward to the test harness. this is basically only used for test
         // filters for now.
-        cx.args(Deno.args.slice(1));
+        cx.args(Deno.args);
 
         const tests = [];
 "#,
