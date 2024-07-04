@@ -37,6 +37,7 @@ jobs:
     - uses: actions/checkout@v4
     - run: rustup update --no-self-update stable && rustup default stable
     - run: cargo check --all
+    - run: cargo check --no-default-features
 
   # Run `cargo clippy` over everything
   clippy:
