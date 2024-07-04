@@ -6,9 +6,10 @@
 
 #![allow(clippy::fn_to_numeric_cast)]
 
-use std::fmt;
-use std::mem::{self, ManuallyDrop};
-use std::prelude::v1::*;
+use alloc::boxed::Box;
+use alloc::string::String;
+use core::fmt;
+use core::mem::{self, ManuallyDrop};
 
 use crate::convert::*;
 use crate::describe::*;
@@ -356,7 +357,7 @@ where
     /// lifetime dynamically managed by the JS GC. This function can be used
     /// to drop this `Closure` while keeping the associated JS function still
     /// valid.
-    /// 
+    ///
     /// If the platform supports weak references, the Rust memory will be
     /// reclaimed when the JS closure is GC'd. If weak references is not
     /// supported, this can be dangerous if this function is called many times
@@ -685,7 +686,7 @@ macro_rules! doit {
             }
 
             fn into_js_function(self) -> JsValue {
-                use std::rc::Rc;
+                use alloc::rc::Rc;
                 use crate::__rt::WasmRefCell;
 
                 let mut me = Some(self);
@@ -866,7 +867,7 @@ where
 
     fn into_js_function(self) -> JsValue {
         use crate::__rt::WasmRefCell;
-        use std::rc::Rc;
+        use alloc::rc::Rc;
 
         let mut me = Some(self);
 

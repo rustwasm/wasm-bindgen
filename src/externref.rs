@@ -1,8 +1,9 @@
 use crate::JsValue;
-use std::cell::Cell;
-use std::slice;
-use std::vec::Vec;
-use std::cmp::max;
+
+use alloc::slice;
+use alloc::vec::Vec;
+use core::cell::Cell;
+use core::cmp::max;
 
 externs! {
     #[link(wasm_import_module = "__wbindgen_externref_xform__")]
@@ -98,10 +99,17 @@ impl Slab {
 }
 
 fn internal_error(msg: &str) -> ! {
-    if cfg!(debug_assertions) {
+    if cfg!(debug_assertions) || !cfg!(feature = "std") {
         super::throw_str(msg)
     } else {
-        std::process::abort()
+        #[cfg(feature = "std")]
+        {
+            std::process::abort()
+        }
+        #[cfg(not(feature = "std"))]
+        {
+            unreachable!()
+        }
     }
 }
 
