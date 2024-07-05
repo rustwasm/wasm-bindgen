@@ -1,1 +1,1 @@
-mod with_one_successful_test;
+mod executes_test_feature;
