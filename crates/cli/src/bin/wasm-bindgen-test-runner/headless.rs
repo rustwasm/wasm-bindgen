@@ -354,7 +354,7 @@ an issue against rustwasm/wasm-bindgen!
             return browser;
         }
 
-        None
+        Self::filter_generic("WASM_BINDGEN_USE_SHARED_WORKER")
     }
 
     fn browser(&self) -> &str {

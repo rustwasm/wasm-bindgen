@@ -225,6 +225,11 @@ fn main() -> anyhow::Result<()> {
                 no_modules: std::env::var("WASM_BINDGEN_USE_NO_MODULE").is_ok(),
             }
         }
+        None if std::env::var("WASM_BINDGEN_USE_SHARED_WORKER").is_ok() => {
+            TestMode::DedicatedWorker {
+                no_modules: std::env::var("WASM_BINDGEN_USE_NO_MODULE").is_ok(),
+            }
+        }
         None => TestMode::Node,
     };
 
