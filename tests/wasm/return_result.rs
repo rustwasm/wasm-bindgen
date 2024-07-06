@@ -68,5 +68,5 @@ fn test_return_some() {
 
 #[wasm_bindgen_test]
 fn test_return_none() {
-    assert_eq!(return_none().unwrap().is_none(), true)
+    assert!(return_none().unwrap().is_none())
 }
