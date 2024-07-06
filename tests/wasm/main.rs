@@ -50,6 +50,7 @@ pub mod optional_primitives;
 pub mod result;
 pub mod result_jserror;
 pub mod rethrow;
+pub mod return_result;
 pub mod simple;
 pub mod slice;
 pub mod string_vecs;
