@@ -322,23 +322,34 @@ an issue against rustwasm/wasm-bindgen!
         )
     }
 
-    /// Checks if a filter for a specific Browser to be used was set using WASM_BINDGEN_USE_BROWSER
-    fn filter() -> Option<String> {
-        if let Ok(browser) = env::var("WASM_BINDGEN_USE_BROWSER") {
+    fn filter_generic(name: &str) -> Option<String> {
+        if let Ok(browser) = env::var(name) {
             match browser.to_lowercase().as_str() {
                 "firefox" | "safari" | "chrome" | "edge" => Some(browser),
                 "yes" => None,
                 other => {
-                    println!(
-                        "unknown browser: {} referenced in WASM_BINDGEN_USE_BROWSER",
-                        other
-                    );
+                    println!("unknown browser: {} referenced in {}", other, name);
                     None
                 }
             }
         } else {
             None
         }
+    }
+
+    /// Checks if a filter for a specific Browser to be used was set
+    fn filter() -> Option<String> {
+        let browser = Self::filter_generic("WASM_BINDGEN_USE_BROWSER");
+        if browser.is_some() {
+            return browser;
+        }
+
+        let browser = Self::filter_generic("WASM_BINDGEN_USE_DEDICATED_WORKER");
+        if browser.is_some() {
+            return browser;
+        }
+
+        None
     }
 
     fn browser(&self) -> &str {
