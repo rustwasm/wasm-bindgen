@@ -12,4 +12,9 @@ pub enum TestMode {
     DedicatedWorkerEdge,
     DedicatedWorkerFirefox,
     DedicatedWorkerSafari,
+    ServiceWorkerDefault,
+    ServiceWorkerChrome,
+    ServiceWorkerEdge,
+    ServiceWorkerFirefox,
+    ServiceWorkerSafari,
 }
