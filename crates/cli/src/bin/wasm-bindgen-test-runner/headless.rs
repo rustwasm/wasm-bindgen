@@ -349,6 +349,11 @@ an issue against rustwasm/wasm-bindgen!
             return browser;
         }
 
+        let browser = Self::filter_generic("WASM_BINDGEN_USE_SERVICE_WORKER");
+        if browser.is_some() {
+            return browser;
+        }
+
         None
     }
 
