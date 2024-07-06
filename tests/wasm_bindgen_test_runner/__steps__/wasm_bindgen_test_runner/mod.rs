@@ -1,4 +1,3 @@
-mod firefox;
 mod node;
 mod sandbox;
 mod wasm_bindgen_test_runner_command;
@@ -9,7 +8,6 @@ mod when_wasm_bindgen_test_runner_is_invoked_with_the_assembly_for_test_mode_and
 mod when_wasm_bindgen_test_runner_is_invoked_with_the_option;
 mod when_wasm_bindgen_test_runner_is_invoked_without_arguments;
 
-pub use firefox::*;
 pub use node::*;
 pub use sandbox::*;
 pub use wasm_bindgen_test_runner_command::*;
