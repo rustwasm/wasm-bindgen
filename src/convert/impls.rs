@@ -323,12 +323,26 @@ impl IntoWasmAbi for JsValue {
     }
 }
 
+impl OptionIntoWasmAbi for JsValue {
+    #[inline]
+    fn none() -> u32 {
+        JsValue::undefined().into_abi()
+    }
+}
+
 impl FromWasmAbi for JsValue {
     type Abi = u32;
 
     #[inline]
     unsafe fn from_abi(js: u32) -> JsValue {
         JsValue::_new(js)
+    }
+}
+
+impl OptionFromWasmAbi for JsValue {
+    #[inline]
+    fn is_none(js: &u32) -> bool {
+        *js == 0
     }
 }
 
