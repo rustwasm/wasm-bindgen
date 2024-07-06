@@ -7,4 +7,9 @@ pub enum TestMode {
     BrowserEdge,
     BrowserFirefox,
     BrowserSafari,
+    DedicatedWorkerDefault,
+    DedicatedWorkerChrome,
+    DedicatedWorkerEdge,
+    DedicatedWorkerFirefox,
+    DedicatedWorkerSafari,
 }
