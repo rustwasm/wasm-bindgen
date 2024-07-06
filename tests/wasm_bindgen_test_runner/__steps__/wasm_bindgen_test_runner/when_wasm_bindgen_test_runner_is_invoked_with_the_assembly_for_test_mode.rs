@@ -16,6 +16,11 @@ pub fn when_wasm_bindgen_test_runner_is_invoked_with_the_assembly_for_test_mode(
         TestMode::BrowserEdge => command.env("WASM_BINDGEN_USE_BROWSER", "edge"),
         TestMode::BrowserFirefox => command.env("WASM_BINDGEN_USE_BROWSER", "firefox"),
         TestMode::BrowserSafari => command.env("WASM_BINDGEN_USE_BROWSER", "safari"),
+        TestMode::DedicatedWorkerDefault => command.env("WASM_BINDGEN_USE_DEDICATED_WORKER", "true"),
+        TestMode::DedicatedWorkerChrome => command.env("WASM_BINDGEN_USE_DEDICATED_WORKER", "chrome"),
+        TestMode::DedicatedWorkerEdge => command.env("WASM_BINDGEN_USE_DEDICATED_WORKER", "edge"),
+        TestMode::DedicatedWorkerFirefox => command.env("WASM_BINDGEN_USE_DEDICATED_WORKER", "firefox"),
+        TestMode::DedicatedWorkerSafari => command.env("WASM_BINDGEN_USE_DEDICATED_WORKER", "safari"),
     };
 
     command.arg(context.sandbox_mut().assembly());
