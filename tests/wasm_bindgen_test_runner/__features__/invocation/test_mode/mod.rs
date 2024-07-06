@@ -4,3 +4,4 @@ mod default;
 mod deno;
 mod node;
 mod service_worker;
+mod shared_worker;

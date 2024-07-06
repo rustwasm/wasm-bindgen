@@ -17,4 +17,9 @@ pub enum TestMode {
     ServiceWorkerEdge,
     ServiceWorkerFirefox,
     ServiceWorkerSafari,
+    SharedWorkerDefault,
+    SharedWorkerChrome,
+    SharedWorkerEdge,
+    SharedWorkerFirefox,
+    SharedWorkerSafari,
 }
