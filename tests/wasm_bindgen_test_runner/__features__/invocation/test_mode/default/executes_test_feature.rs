@@ -21,7 +21,7 @@ fn pass() {
     }
 
     "Outputs the successful test summary" {
-        then_the_standard_output_should_have("test assembly_with_one_successful_test::pass ... ok");
+        then_the_standard_output_should_have("test assembly::pass ... ok");
     }
 
     "Outputs the assembly test summary" {

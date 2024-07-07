@@ -8,7 +8,7 @@ use std::sync::Mutex;
 
 lazy_static! {
     static ref ASSEMBLY_CACHE: Mutex<HashMap<String, PathBuf>> = Mutex::new(HashMap::new());
-    static ref ASSEMBLY: PathBuf = AssemblyBuilder::new("assembly_with_one_successful_test")
+    static ref ASSEMBLY: PathBuf = AssemblyBuilder::new("assembly")
         .file(
             "src/lib.rs",
             r#"#[cfg(test)]
@@ -31,7 +31,7 @@ pub fn given_there_is_an_assembly_with(context: &mut Context, content: &str) {
         .entry(content.to_string())
         .or_insert_with(|| {
             // If the assembly is not in the cache, compile it and insert into the cache
-            AssemblyBuilder::new("assembly_with_one_successful_test")
+            AssemblyBuilder::new("assembly")
                 .file("src/lib.rs", &generate_content(content))
                 .build()
         })
