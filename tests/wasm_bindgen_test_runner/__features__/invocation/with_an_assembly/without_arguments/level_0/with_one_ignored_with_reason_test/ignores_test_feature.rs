@@ -1,4 +1,4 @@
-use crate::__steps__::assembly::given_there_is_an_assembly_with_one_ignored_with_reason_test;
+use crate::__steps__::assembly::given_there_is_an_assembly_with;
 use crate::__steps__::standard_error::then_the_standard_error_should_be_empty;
 use crate::__steps__::standard_output::then_the_standard_output_should_have;
 use crate::__steps__::success::then_success_should_have_been_returned;
@@ -10,7 +10,13 @@ use auroka_morpheus_macros_feature::feature;
 feature! {
     mode: TestMode
 
-    given_there_is_an_assembly_with_one_ignored_with_reason_test();
+    given_there_is_an_assembly_with(r#"
+#[wasm_bindgen_test]
+#[ignore = "test"]
+fn ignored() {
+    assert_eq!(1, 1);
+}
+"#);
     when_wasm_bindgen_test_runner_is_invoked_with_the_assembly_for_test_mode(mode);
 
     "Outputs its running 1 test" {
@@ -18,7 +24,7 @@ feature! {
     }
 
     "Outputs the ignored test summary" {
-        then_the_standard_output_should_have("test assembly_with_one_ignored_with_reason_test::ignored ... ignored, test");
+        then_the_standard_output_should_have("test assembly::ignored ... ignored, test");
     }
 
     "Outputs no error" {
