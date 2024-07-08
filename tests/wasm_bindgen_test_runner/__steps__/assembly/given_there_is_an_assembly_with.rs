@@ -8,20 +8,6 @@ use std::sync::Mutex;
 
 lazy_static! {
     static ref ASSEMBLY_CACHE: Mutex<HashMap<String, PathBuf>> = Mutex::new(HashMap::new());
-    static ref ASSEMBLY: PathBuf = AssemblyBuilder::new("assembly")
-        .file(
-            "src/lib.rs",
-            r#"#[cfg(test)]
-use wasm_bindgen_test::*;
-
-#[cfg(test)]
-#[wasm_bindgen_test]
-fn pass() {
-    assert_eq!(1, 1);
-}
-            "#,
-        )
-        .build();
 }
 
 pub fn given_there_is_an_assembly_with(context: &mut Context, content: &str) {
@@ -30,7 +16,6 @@ pub fn given_there_is_an_assembly_with(context: &mut Context, content: &str) {
     let assembly_path = cache
         .entry(content.to_string())
         .or_insert_with(|| {
-            // If the assembly is not in the cache, compile it and insert into the cache
             AssemblyBuilder::new("assembly")
                 .file("src/lib.rs", &generate_content(content))
                 .build()

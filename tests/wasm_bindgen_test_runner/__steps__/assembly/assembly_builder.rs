@@ -1,10 +1,18 @@
 use predicates::str;
+use rand::Rng;
 use regex::Regex;
 use std::env;
 use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
 use std::process::Output;
+
+fn build_dir() -> PathBuf {
+    target_dir()
+        .join("wasm32-unknown-unknown")
+        .join("debug")
+        .join("deps")
+}
 
 fn target_dir() -> PathBuf {
     let mut dir = env::current_exe().unwrap();
@@ -27,11 +35,15 @@ pub struct AssemblyBuilder {
 
 impl AssemblyBuilder {
     pub fn new(name: &'static str) -> AssemblyBuilder {
+        let mut rng = rand::thread_rng();
+
         let root = target_dir()
             .join("wasm-bindgen-test-runner-tests")
-            .join(name);
+            .join(format!("{}-{}", name, rng.gen_range(1000..9999)));
+
         drop(fs::remove_dir_all(&root));
         fs::create_dir_all(&root).unwrap();
+
         AssemblyBuilder {
             root,
             name: name.to_string(),
@@ -75,6 +87,8 @@ wasm-bindgen = {{ path = '{}' }}
             );
         }
 
+        remove_files_prefix(&build_dir(), &format!("{}-", self.name));
+
         let output = Command::new("cargo")
             .current_dir(&self.root)
             .arg("test")
@@ -85,9 +99,15 @@ wasm-bindgen = {{ path = '{}' }}
             .output()
             .expect("Failed to build test assembly");
 
-        let assembly = extract_assembly_from_output(output);
+        let assembly = PathBuf::from(extract_assembly_from_output(output));
 
-        self.root.join(assembly)
+        let destination = self.root.join(format!("{}.wasm", self.name));
+
+        fs::copy(&assembly, &destination).unwrap();
+
+        fs::remove_file(&assembly).unwrap();
+
+        destination
     }
 }
 
@@ -105,4 +125,23 @@ fn extract_assembly_from_output(output: Output) -> String {
         .expect(&format!("Failed to generate assembly\n{}", error_str));
 
     captures.get(1).unwrap().as_str().to_string()
+}
+
+fn remove_files_prefix(dir: &PathBuf, prefix: &str) {
+    if let Ok(entries) = fs::read_dir(dir) {
+        for entry in entries {
+            let entry = entry.unwrap();
+            let path = entry.path();
+            if path.is_file()
+                && path
+                    .file_name()
+                    .unwrap()
+                    .to_str()
+                    .unwrap()
+                    .starts_with(prefix)
+            {
+                fs::remove_file(&path).unwrap();
+            }
+        }
+    }
 }
