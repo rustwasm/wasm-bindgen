@@ -30,10 +30,13 @@ impl Lock {
 
     fn try_aquire(&mut self) -> Result<bool> {
         if self.lock.exists() {
-            let pid = Self::read_pid(&self.lock);
-
-            if pid.is_ok() && is_process_running(pid.unwrap()) {
-                return Ok(false);
+            if let Ok(pid) = Self::read_pid(&self.lock) {
+                if pid == id() {
+                    return Ok(true);
+                }
+                if is_process_running(pid) {
+                    return Ok(false);
+                }
             }
 
             std::fs::remove_file(&self.lock).ok();
@@ -41,12 +44,13 @@ impl Lock {
 
         hard_link(&self.file, &self.lock).ok();
 
-        let pid = Self::read_pid(&self.lock);
-        if pid.is_err() || pid.unwrap() != id() {
-            return Ok(false);
+        if let Ok(pid) = Self::read_pid(&self.lock) {
+            if pid == id() {
+                return Ok(true);
+            }
         }
 
-        Ok(true)
+        Ok(false)
     }
 
     fn create_file(name: &str) -> Result<PathBuf> {
@@ -84,9 +88,10 @@ impl Drop for Lock {
             std::fs::remove_file(&self.file).ok();
         }
         if self.lock.exists() {
-            let pid = Self::read_pid(&self.lock);
-            if pid.is_ok() && pid.unwrap() == id() {
-                std::fs::remove_file(&self.lock).ok();
+            if let Ok(pid) = Self::read_pid(&self.lock) {
+                if pid == id() {
+                    std::fs::remove_file(&self.lock).ok();
+                }
             }
         }
     }
