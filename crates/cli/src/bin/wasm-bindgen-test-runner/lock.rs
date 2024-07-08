@@ -39,7 +39,7 @@ impl Lock {
                 }
             }
 
-            std::fs::remove_file(&self.lock).ok();
+            self.remove_lock();
         }
 
         hard_link(&self.file, &self.lock).ok();
@@ -80,17 +80,25 @@ impl Lock {
         file.read_to_string(&mut pid)?;
         Ok(pid.parse()?)
     }
+
+    fn remove_file(&self) {
+        std::fs::remove_file(&self.file).ok();
+    }
+
+    fn remove_lock(&self) {
+        std::fs::remove_file(&self.lock).ok();
+    }
 }
 
 impl Drop for Lock {
     fn drop(&mut self) {
         if self.file.exists() {
-            std::fs::remove_file(&self.file).ok();
+            self.remove_file();
         }
         if self.lock.exists() {
             if let Ok(pid) = self.read_lock_pid() {
                 if pid == id() {
-                    std::fs::remove_file(&self.lock).ok();
+                    self.remove_lock();
                 }
             }
         }
