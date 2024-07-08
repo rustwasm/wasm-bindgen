@@ -49,6 +49,15 @@ impl Lock {
         Ok(env::temp_dir().join(format!("{}.lock", name)))
     }
 
+    fn has_lock(&self) -> bool {
+        if let Ok(pid) = self.read_lock_pid() {
+            if pid == id() {
+                return true;
+            }
+        }
+        false
+    }
+
     fn read_lock_pid(&self) -> Result<u32> {
         let mut file = File::open(&self.lock)?;
         let mut pid = String::new();
@@ -80,13 +89,7 @@ impl Lock {
 
         hard_link(&self.file, &self.lock).ok();
 
-        if let Ok(pid) = self.read_lock_pid() {
-            if pid == id() {
-                return Ok(true);
-            }
-        }
-
-        Ok(false)
+        Ok(self.has_lock())
     }
 }
 
@@ -95,12 +98,8 @@ impl Drop for Lock {
         if self.file.exists() {
             self.remove_file();
         }
-        if self.lock.exists() {
-            if let Ok(pid) = self.read_lock_pid() {
-                if pid == id() {
-                    self.remove_lock();
-                }
-            }
+        if self.lock.exists() && self.has_lock() {
+            self.remove_lock();
         }
     }
 }
