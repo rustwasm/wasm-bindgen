@@ -81,7 +81,7 @@ pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error
             // Wait for the driver to come online and bind its port before we try to
             // connect to it.
             let start = Instant::now();
-            let max = Duration::new(5, 0);
+            let max = Duration::new(10, 0); //safaridriver sometimes refuses to start and has to be restarted
             let mut bound = false;
             while start.elapsed() < max {
                 if TcpStream::connect(driver_addr).is_ok() {
@@ -725,9 +725,11 @@ impl<'a> BackgroundChild<'a> {
 
     fn check(&mut self) -> Result<(), Error> {
         if is_process_defunct(self.child.id()) {
-            let child = self.cmd.spawn();
+            let mut child = self
+                .cmd
+                .spawn()
+                .context(format!("failed to spawn {:?} binary", self.path))?;
 
-            let mut child = child.context(format!("failed to spawn {:?} binary", self.path))?;
             let mut stdout = child.stdout.take().unwrap();
             let mut stderr = child.stderr.take().unwrap();
 
@@ -803,7 +805,7 @@ fn terminate_safari_automation() {
 
 fn terminate_process(pid: u32) {
     let output = Command::new("kill")
-        .arg("-9") // SIGTERM
+        .arg("-15") // SIGTERM
         .arg(pid.to_string())
         .output()
         .map_err(|e| format!("Failed to execute kill command: {}", e))
@@ -814,7 +816,16 @@ fn terminate_process(pid: u32) {
         println!("Failed to terminate process: {}", error);
     }
 
+    thread::sleep(Duration::from_millis(100));
+
     while is_process_running(pid) {
+        Command::new("kill")
+            .arg("-9") // SIGKILL
+            .arg(pid.to_string())
+            .output()
+            .map_err(|e| format!("Failed to execute kill command: {}", e))
+            .unwrap();
+
         thread::sleep(Duration::from_millis(100));
     }
 }
