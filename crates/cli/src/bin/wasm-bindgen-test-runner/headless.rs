@@ -76,7 +76,7 @@ pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error
             let mut cmd = Command::new(path);
             cmd.args(args).arg(format!("--port={}", driver_addr.port()));
 
-            let child = BackgroundChild::spawn(path, &mut cmd, shell)?;
+            let mut child = BackgroundChild::spawn(path, cmd, shell)?;
 
             // Wait for the driver to come online and bind its port before we try to
             // connect to it.
@@ -88,8 +88,10 @@ pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error
                     bound = true;
                     break;
                 }
+                child.check()?;
                 thread::sleep(Duration::from_millis(100));
             }
+
             if !bound {
                 bail!("driver failed to bind port during startup")
             }
@@ -676,17 +678,19 @@ fn tab(s: &str) -> String {
 
 struct BackgroundChild<'a> {
     child: Child,
+    cmd: Command,
     stdout: Option<thread::JoinHandle<io::Result<Vec<u8>>>>,
     stderr: Option<thread::JoinHandle<io::Result<Vec<u8>>>>,
     shell: &'a Shell,
+    path: &'a Path,
     print_stdio_on_drop: bool,
     lock: Option<Lock>,
 }
 
 impl<'a> BackgroundChild<'a> {
     fn spawn(
-        path: &Path,
-        cmd: &mut Command,
+        path: &'a Path,
+        mut cmd: Command,
         shell: &'a Shell,
     ) -> Result<BackgroundChild<'a>, Error> {
         let lock = Self::lock(path)?;
@@ -694,22 +698,48 @@ impl<'a> BackgroundChild<'a> {
         cmd.stdout(Stdio::piped())
             .stderr(Stdio::piped())
             .stdin(Stdio::null());
+
         log::debug!("executing {:?}", cmd);
+
         let mut child = cmd
             .spawn()
             .context(format!("failed to spawn {:?} binary", path))?;
+
         let mut stdout = child.stdout.take().unwrap();
         let mut stderr = child.stderr.take().unwrap();
+
         let stdout = Some(thread::spawn(move || read(&mut stdout)));
         let stderr = Some(thread::spawn(move || read(&mut stderr)));
+
         Ok(BackgroundChild {
             child,
+            cmd,
             stdout,
             stderr,
             shell,
+            path,
             print_stdio_on_drop: true,
             lock,
         })
+    }
+
+    fn check(&mut self) -> Result<(), Error> {
+        if is_process_defunct(self.child.id()) {
+            let child = self.cmd.spawn();
+
+            let mut child = child.context(format!("failed to spawn {:?} binary", self.path))?;
+            let mut stdout = child.stdout.take().unwrap();
+            let mut stderr = child.stderr.take().unwrap();
+
+            let stdout = Some(thread::spawn(move || read(&mut stdout)));
+            let stderr = Some(thread::spawn(move || read(&mut stderr)));
+
+            self.child = child;
+            self.stdout = stdout;
+            self.stderr = stderr;
+        }
+
+        Ok(())
     }
 
     fn lock(path: &Path) -> Result<Option<Lock>, Error> {
@@ -787,4 +817,16 @@ fn terminate_process(pid: u32) {
     while is_process_running(pid) {
         thread::sleep(Duration::from_millis(100));
     }
+}
+
+pub fn is_process_defunct(pid: u32) -> bool {
+    let output = Command::new("ps")
+        .arg("-o")
+        .arg("stat=")
+        .arg("-p")
+        .arg(pid.to_string())
+        .output()
+        .expect("Failed to execute ps command");
+
+    output.stdout.is_empty() || std::str::from_utf8(&output.stdout).unwrap().contains("Z")
 }
