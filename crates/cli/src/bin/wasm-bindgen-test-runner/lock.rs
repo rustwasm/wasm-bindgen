@@ -12,17 +12,20 @@ pub struct Lock {
     file: PathBuf,
     lock: PathBuf,
     name: String,
+    pid: u32,
     timestamp: SystemTime,
 }
 
 impl Lock {
     pub fn try_new(name: &str) -> Result<Self> {
-        let file = Self::create_file(name)?;
+        let pid = id();
+        let file = Self::create_file(name, pid)?;
         let timestamp = metadata(&file).unwrap().modified().unwrap();
         let mut lock = Self {
             file,
             lock: Self::create_lock(name)?,
             name: name.to_string(),
+            pid,
             timestamp,
         };
         lock.aquire()?;
@@ -36,10 +39,8 @@ impl Lock {
         Ok(())
     }
 
-    fn create_file(name: &str) -> Result<PathBuf> {
-        let id = id();
-
-        let file = env::temp_dir().join(format!("{}.{}", name, id));
+    fn create_file(name: &str, pid: u32) -> Result<PathBuf> {
+        let file = env::temp_dir().join(format!("{}.{}", name, pid));
 
         let mut file_handle = OpenOptions::new()
             .write(true)
@@ -47,7 +48,7 @@ impl Lock {
             .truncate(true)
             .open(&file)?;
 
-        file_handle.write_all(id.to_string().as_bytes())?;
+        file_handle.write_all(pid.to_string().as_bytes())?;
         file_handle.sync_all()?;
 
         Ok(file)
@@ -59,7 +60,7 @@ impl Lock {
 
     fn has_lock(&self) -> bool {
         if let Ok(pid) = self.read_lock_pid() {
-            if pid == id() {
+            if pid == self.pid {
                 return true;
             }
         }
@@ -124,7 +125,7 @@ impl Lock {
     fn try_aquire(&mut self) -> Result<bool> {
         if self.lock.exists() {
             if let Ok(pid) = self.read_lock_pid() {
-                if pid == id() {
+                if pid == self.pid {
                     return Ok(true);
                 }
                 if is_process_running(pid) {
