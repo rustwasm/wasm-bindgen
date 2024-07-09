@@ -185,7 +185,7 @@ extern "C" {
     # [wasm_bindgen (catch , static_method_of = Url , js_class = "URL" , js_name = createObjectURL)]
     #[doc = "The `createObjectURL()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL_static)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`, `Url`*"]
     pub fn create_object_url_with_blob(blob: &Blob) -> Result<String, JsValue>;
@@ -193,14 +193,14 @@ extern "C" {
     # [wasm_bindgen (catch , static_method_of = Url , js_class = "URL" , js_name = createObjectURL)]
     #[doc = "The `createObjectURL()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL_static)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaSource`, `Url`*"]
     pub fn create_object_url_with_source(source: &MediaSource) -> Result<String, JsValue>;
     # [wasm_bindgen (catch , static_method_of = Url , js_class = "URL" , js_name = revokeObjectURL)]
     #[doc = "The `revokeObjectURL()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/revokeObjectURL)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/revokeObjectURL_static)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Url`*"]
     pub fn revoke_object_url(url: &str) -> Result<(), JsValue>;

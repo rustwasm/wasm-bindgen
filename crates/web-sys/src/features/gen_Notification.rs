@@ -217,14 +217,14 @@ extern "C" {
     # [wasm_bindgen (catch , static_method_of = Notification , js_class = "Notification" , js_name = requestPermission)]
     #[doc = "The `requestPermission()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/requestPermission)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/requestPermission_static)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
     pub fn request_permission() -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (catch , static_method_of = Notification , js_class = "Notification" , js_name = requestPermission)]
     #[doc = "The `requestPermission()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/requestPermission)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/requestPermission_static)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
     pub fn request_permission_with_permission_callback(

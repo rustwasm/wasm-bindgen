@@ -102,7 +102,7 @@ extern "C" {
     # [wasm_bindgen (static_method_of = AudioDecoder , js_class = "AudioDecoder" , js_name = isConfigSupported)]
     #[doc = "The `isConfigSupported()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioDecoder/isConfigSupported)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioDecoder/isConfigSupported_static)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioDecoder`, `AudioDecoderConfig`*"]
     #[doc = ""]

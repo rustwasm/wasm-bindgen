@@ -135,7 +135,7 @@ extern "C" {
     # [wasm_bindgen (static_method_of = MediaSource , js_class = "MediaSource" , js_name = isTypeSupported)]
     #[doc = "The `isTypeSupported()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaSource/isTypeSupported)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaSource/isTypeSupported_static)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaSource`*"]
     pub fn is_type_supported(type_: &str) -> bool;

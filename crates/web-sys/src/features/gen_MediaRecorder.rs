@@ -158,7 +158,7 @@ extern "C" {
     # [wasm_bindgen (static_method_of = MediaRecorder , js_class = "MediaRecorder" , js_name = isTypeSupported)]
     #[doc = "The `isTypeSupported()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/isTypeSupported)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/isTypeSupported_static)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorder`*"]
     pub fn is_type_supported(type_: &str) -> bool;

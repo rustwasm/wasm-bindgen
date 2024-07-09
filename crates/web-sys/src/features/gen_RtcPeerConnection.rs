@@ -671,7 +671,7 @@ extern "C" {
     # [wasm_bindgen (catch , static_method_of = RtcPeerConnection , js_class = "RTCPeerConnection" , js_name = generateCertificate)]
     #[doc = "The `generateCertificate()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/generateCertificate)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/generateCertificate_static)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     pub fn generate_certificate_with_object(
@@ -680,7 +680,7 @@ extern "C" {
     # [wasm_bindgen (catch , static_method_of = RtcPeerConnection , js_class = "RTCPeerConnection" , js_name = generateCertificate)]
     #[doc = "The `generateCertificate()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/generateCertificate)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/generateCertificate_static)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
     pub fn generate_certificate_with_str(

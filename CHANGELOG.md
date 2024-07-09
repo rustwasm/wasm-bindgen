@@ -88,6 +88,9 @@
 * Fix triggering `clippy::mem_forget` lint in exported structs.
   [#3985](https://github.com/rustwasm/wasm-bindgen/pull/3985)
 
+* Fix MDN links to static interface methods.
+  [#4010](https://github.com/rustwasm/wasm-bindgen/pull/4010)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.92](https://github.com/rustwasm/wasm-bindgen/compare/0.2.91...0.2.92)

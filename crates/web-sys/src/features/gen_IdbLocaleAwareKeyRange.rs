@@ -15,7 +15,7 @@ extern "C" {
     # [wasm_bindgen (catch , static_method_of = IdbLocaleAwareKeyRange , js_class = "IDBLocaleAwareKeyRange" , js_name = bound)]
     #[doc = "The `bound()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBLocaleAwareKeyRange/bound)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBLocaleAwareKeyRange/bound_static)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbLocaleAwareKeyRange`*"]
     pub fn bound(
@@ -25,7 +25,7 @@ extern "C" {
     # [wasm_bindgen (catch , static_method_of = IdbLocaleAwareKeyRange , js_class = "IDBLocaleAwareKeyRange" , js_name = bound)]
     #[doc = "The `bound()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBLocaleAwareKeyRange/bound)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBLocaleAwareKeyRange/bound_static)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbLocaleAwareKeyRange`*"]
     pub fn bound_with_lower_open(
@@ -36,7 +36,7 @@ extern "C" {
     # [wasm_bindgen (catch , static_method_of = IdbLocaleAwareKeyRange , js_class = "IDBLocaleAwareKeyRange" , js_name = bound)]
     #[doc = "The `bound()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBLocaleAwareKeyRange/bound)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBLocaleAwareKeyRange/bound_static)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbLocaleAwareKeyRange`*"]
     pub fn bound_with_lower_open_and_upper_open(
