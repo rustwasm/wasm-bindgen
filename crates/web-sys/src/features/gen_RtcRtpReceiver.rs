@@ -20,6 +20,31 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `RtcRtpReceiver`*"]
     pub fn track(this: &RtcRtpReceiver) -> MediaStreamTrack;
+    #[cfg(web_sys_unstable_apis)]
+    # [wasm_bindgen (structural , method , getter , js_class = "RTCRtpReceiver" , js_name = jitterBufferTarget)]
+    #[doc = "Getter for the `jitterBufferTarget` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpReceiver/jitterBufferTarget)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpReceiver`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn jitter_buffer_target(this: &RtcRtpReceiver) -> Option<f64>;
+    #[cfg(web_sys_unstable_apis)]
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "RTCRtpReceiver" , js_name = jitterBufferTarget)]
+    #[doc = "Setter for the `jitterBufferTarget` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpReceiver/jitterBufferTarget)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpReceiver`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn set_jitter_buffer_target(
+        this: &RtcRtpReceiver,
+        value: Option<f64>,
+    ) -> Result<(), JsValue>;
     #[cfg(feature = "RtcRtpCapabilities")]
     # [wasm_bindgen (static_method_of = RtcRtpReceiver , js_class = "RTCRtpReceiver" , js_name = getCapabilities)]
     #[doc = "The `getCapabilities()` method."]
