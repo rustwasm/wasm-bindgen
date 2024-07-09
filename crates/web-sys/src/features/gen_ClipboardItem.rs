@@ -34,4 +34,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ClipboardItem`*"]
     pub fn get_type(this: &ClipboardItem, type_: &str) -> ::js_sys::Promise;
+    # [wasm_bindgen (static_method_of = ClipboardItem , js_class = "ClipboardItem" , js_name = supports)]
+    #[doc = "The `supports()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ClipboardItem/supports)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ClipboardItem`*"]
+    pub fn supports(type_: &str) -> bool;
 }

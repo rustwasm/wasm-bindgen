@@ -7,6 +7,16 @@
  * https://w3c.github.io/clipboard-apis/#idl-index
  */
 
+dictionary ClipboardEventInit : EventInit {
+  DataTransfer? clipboardData = null;
+};
+
+[Exposed=Window]
+interface ClipboardEvent : Event {
+  constructor(DOMString type, optional ClipboardEventInit eventInitDict = {});
+  readonly attribute DataTransfer? clipboardData;
+};
+
 partial interface Navigator {
   [SecureContext, SameObject] readonly attribute Clipboard clipboard;
 };
@@ -15,6 +25,7 @@ typedef Promise<(DOMString or Blob)> ClipboardItemData;
 
 [SecureContext, Exposed=Window]
 interface ClipboardItem {
+  [Throws]
   constructor(record<DOMString, ClipboardItemData> items,
               optional ClipboardItemOptions options = {});
 
@@ -23,8 +34,7 @@ interface ClipboardItem {
 
   Promise<Blob> getType(DOMString type);
 
-  // Not supported by WebKit
-  // static boolean supports(DOMString type);
+  static boolean supports(DOMString type);
 };
 
 enum PresentationStyle { "unspecified", "inline", "attachment" };
@@ -37,7 +47,7 @@ typedef sequence<ClipboardItem> ClipboardItems;
 
 [SecureContext, Exposed=Window]
 interface Clipboard : EventTarget {
-  Promise<ClipboardItems> read(/* optional ClipboardUnsanitizedFormats formats = {} */);
+  Promise<ClipboardItems> read(optional ClipboardUnsanitizedFormats formats = {});
   Promise<DOMString> readText();
   Promise<undefined> write(ClipboardItems data);
   Promise<undefined> writeText(DOMString data);
@@ -49,7 +59,7 @@ interface Clipboard : EventTarget {
 //   sequence<DOMString> unsanitized;
 // };
 
-// Also Chrome-only
+// Also Chrome-only.
 // dictionary ClipboardPermissionDescriptor : PermissionDescriptor {
 //   boolean allowWithoutGesture = false;
 // };
