@@ -443,14 +443,9 @@ impl<'src> FirstPassRecord<'src> {
             // If any of the arguments types are `unstable` then this method is downgraded
             // to be unstable.
             let has_unstable_args = signature
-                .orig
                 .args
                 .iter()
-                .any(|arg| is_type_unstable(arg.ty, unstable_types))
-                | signature
-                    .args
-                    .iter()
-                    .any(|arg| is_idl_type_unstable(arg, unstable_types));
+                .any(|arg| is_idl_type_unstable(arg, unstable_types));
 
             let unstable = unstable || data.stability.is_unstable() || has_unstable_args;
 
@@ -552,7 +547,9 @@ pub fn is_type_unstable(ty: &weedle::types::Type, unstable_types: &HashSet<Ident
 
 fn is_idl_type_unstable(ty: &IdlType, unstable_types: &HashSet<Identifier>) -> bool {
     match ty {
-        IdlType::Interface(name) => unstable_types.contains(&Identifier(name)),
+        IdlType::Dictionary(name) | IdlType::Interface(name) => {
+            unstable_types.contains(&Identifier(name))
+        }
         _ => false,
     }
 }

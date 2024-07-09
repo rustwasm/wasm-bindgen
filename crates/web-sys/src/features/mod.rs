@@ -1139,6 +1139,13 @@ mod gen_ClipboardPermissionDescriptor;
 #[allow(unused_imports)]
 pub use gen_ClipboardPermissionDescriptor::*;
 
+#[cfg(feature = "ClipboardUnsanitizedFormats")]
+#[allow(non_snake_case)]
+mod gen_ClipboardUnsanitizedFormats;
+#[cfg(feature = "ClipboardUnsanitizedFormats")]
+#[allow(unused_imports)]
+pub use gen_ClipboardUnsanitizedFormats::*;
+
 #[cfg(feature = "CloseEvent")]
 #[allow(non_snake_case)]
 mod gen_CloseEvent;

@@ -59,6 +59,9 @@
 * Annotated methods in WebCodecs that throw.
   [#3970](https://github.com/rustwasm/wasm-bindgen/pull/3970)
 
+* Update and stabilize the Clipboard API.
+  [#3992](https://github.com/rustwasm/wasm-bindgen/pull/3992)
+
 ### Fixed
 
 * Copy port from headless test server when using `WASM_BINDGEN_TEST_ADDRESS`.
