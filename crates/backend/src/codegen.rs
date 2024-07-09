@@ -274,12 +274,12 @@ impl ToTokens for ast::Struct {
                     let ptr = #wasm_bindgen::convert::IntoWasmAbi::into_abi(value);
 
                     #[link(wasm_import_module = "__wbindgen_placeholder__")]
-                    #[cfg(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi"))))]
+                    #[cfg(all(target_arch = "wasm32", not(any(target_os = "wasi"))))]
                     extern "C" {
                         fn #new_fn(ptr: u32) -> u32;
                     }
 
-                    #[cfg(not(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi")))))]
+                    #[cfg(not(all(target_arch = "wasm32", not(any(target_os = "wasi")))))]
                     unsafe fn #new_fn(_: u32) -> u32 {
                         panic!("cannot convert to JsValue outside of the wasm target")
                     }
@@ -291,7 +291,7 @@ impl ToTokens for ast::Struct {
                 }
             }
 
-            #[cfg(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi"))))]
+            #[cfg(all(target_arch = "wasm32", not(any(target_os = "wasi"))))]
             #[automatically_derived]
             const _: () = {
                 #[no_mangle]
@@ -379,12 +379,12 @@ impl ToTokens for ast::Struct {
                     let idx = #wasm_bindgen::convert::IntoWasmAbi::into_abi(&value);
 
                     #[link(wasm_import_module = "__wbindgen_placeholder__")]
-                    #[cfg(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi"))))]
+                    #[cfg(all(target_arch = "wasm32", not(any(target_os = "wasi"))))]
                     extern "C" {
                         fn #unwrap_fn(ptr: u32) -> u32;
                     }
 
-                    #[cfg(not(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi")))))]
+                    #[cfg(not(all(target_arch = "wasm32", not(any(target_os = "wasi")))))]
                     unsafe fn #unwrap_fn(_: u32) -> u32 {
                         panic!("cannot convert from JsValue outside of the wasm target")
                     }
@@ -487,7 +487,7 @@ impl ToTokens for ast::StructField {
         (quote! {
             #[automatically_derived]
             const _: () = {
-                #[cfg_attr(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi"))), no_mangle)]
+                #[cfg_attr(all(target_arch = "wasm32", not(any(target_os = "wasi"))), no_mangle)]
                 #[doc(hidden)]
                 pub unsafe extern "C" fn #getter(js: u32)
                     -> #wasm_bindgen::convert::WasmRet<<#ty as #wasm_bindgen::convert::IntoWasmAbi>::Abi>
@@ -525,7 +525,7 @@ impl ToTokens for ast::StructField {
         let (args, names) = splat(wasm_bindgen, &Ident::new("val", rust_name.span()), &abi);
 
         (quote! {
-            #[cfg(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi"))))]
+            #[cfg(all(target_arch = "wasm32", not(any(target_os = "wasi"))))]
             #[automatically_derived]
             const _: () = {
                 #[no_mangle]
@@ -783,7 +783,7 @@ impl TryToTokens for ast::Export {
             const _: () = {
                 #(#attrs)*
                 #[cfg_attr(
-                    all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi"))),
+                    all(target_arch = "wasm32", not(any(target_os = "wasi"))),
                     export_name = #export_name,
                 )]
                 pub unsafe extern "C" fn #generated_name(#(#args),*) -> #wasm_bindgen::convert::WasmRet<#projection::Abi> {
@@ -1042,11 +1042,11 @@ impl ToTokens for ast::ImportType {
                 impl JsCast for #rust_name {
                     fn instanceof(val: &JsValue) -> bool {
                         #[link(wasm_import_module = "__wbindgen_placeholder__")]
-                        #[cfg(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi"))))]
+                        #[cfg(all(target_arch = "wasm32", not(any(target_os = "wasi"))))]
                         extern "C" {
                             fn #instanceof_shim(val: u32) -> u32;
                         }
-                        #[cfg(not(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi")))))]
+                        #[cfg(not(all(target_arch = "wasm32", not(any(target_os = "wasi")))))]
                         unsafe fn #instanceof_shim(_: u32) -> u32 {
                             panic!("cannot check instanceof on non-wasm targets");
                         }
@@ -1661,12 +1661,12 @@ impl ToTokens for ast::ImportStatic {
             #vis static #name: #wasm_bindgen::JsStatic<#ty> = {
                 fn init() -> #ty {
                     #[link(wasm_import_module = "__wbindgen_placeholder__")]
-                    #[cfg(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi"))))]
+                    #[cfg(all(target_arch = "wasm32", not(any(target_os = "wasi"))))]
                     extern "C" {
                         fn #shim_name() -> #abi_ret;
                     }
 
-                    #[cfg(not(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi")))))]
+                    #[cfg(not(all(target_arch = "wasm32", not(any(target_os = "wasi")))))]
                     unsafe fn #shim_name() -> #abi_ret {
                         panic!("cannot access imported statics on non-wasm targets")
                     }
@@ -1731,7 +1731,7 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
         let attrs = &self.attrs;
         let wasm_bindgen = &self.wasm_bindgen;
         (quote! {
-            #[cfg(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi"))))]
+            #[cfg(all(target_arch = "wasm32", not(any(target_os = "wasi"))))]
             #[automatically_derived]
             const _: () = {
                 #(#attrs)*
@@ -1757,14 +1757,14 @@ fn extern_fn(
     abi_ret: TokenStream,
 ) -> TokenStream {
     quote! {
-        #[cfg(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi"))))]
+        #[cfg(all(target_arch = "wasm32", not(any(target_os = "wasi"))))]
         #(#attrs)*
         #[link(wasm_import_module = "__wbindgen_placeholder__")]
         extern "C" {
             fn #import_name(#(#abi_arguments),*) -> #abi_ret;
         }
 
-        #[cfg(not(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi")))))]
+        #[cfg(not(all(target_arch = "wasm32", not(any(target_os = "wasi")))))]
         unsafe fn #import_name(#(#abi_arguments),*) -> #abi_ret {
             #(
                 drop(#abi_argument_names);
