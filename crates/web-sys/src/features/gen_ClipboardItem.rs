@@ -37,7 +37,7 @@ extern "C" {
     # [wasm_bindgen (static_method_of = ClipboardItem , js_class = "ClipboardItem" , js_name = supports)]
     #[doc = "The `supports()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ClipboardItem/supports)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ClipboardItem/supports_static)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ClipboardItem`*"]
     pub fn supports(type_: &str) -> bool;

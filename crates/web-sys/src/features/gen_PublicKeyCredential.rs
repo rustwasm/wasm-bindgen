@@ -40,7 +40,7 @@ extern "C" {
     # [wasm_bindgen (static_method_of = PublicKeyCredential , js_class = "PublicKeyCredential" , js_name = isUserVerifyingPlatformAuthenticatorAvailable)]
     #[doc = "The `isUserVerifyingPlatformAuthenticatorAvailable()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredential/isUserVerifyingPlatformAuthenticatorAvailable)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredential/isUserVerifyingPlatformAuthenticatorAvailable_static)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredential`*"]
     pub fn is_user_verifying_platform_authenticator_available() -> ::js_sys::Promise;

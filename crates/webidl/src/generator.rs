@@ -416,10 +416,15 @@ impl InterfaceMethod {
                     let js_name = raw_ident(js_name);
                     extra_args.push(quote!( js_name = #js_name ));
                 }
+                let method = if *is_static {
+                    &format!("{js_name}_static")
+                } else {
+                    js_name
+                };
                 format!(
                     "The `{}()` method.\n\n{}",
                     js_name,
-                    mdn_doc(&parent_js_name, Some(js_name))
+                    mdn_doc(&parent_js_name, Some(method))
                 )
             }
             InterfaceMethodKind::IndexingGetter => {

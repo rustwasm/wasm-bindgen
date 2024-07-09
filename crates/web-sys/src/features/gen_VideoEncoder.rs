@@ -118,7 +118,7 @@ extern "C" {
     # [wasm_bindgen (static_method_of = VideoEncoder , js_class = "VideoEncoder" , js_name = isConfigSupported)]
     #[doc = "The `isConfigSupported()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoEncoder/isConfigSupported)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoEncoder/isConfigSupported_static)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VideoEncoder`, `VideoEncoderConfig`*"]
     #[doc = ""]

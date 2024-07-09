@@ -102,7 +102,7 @@ extern "C" {
     # [wasm_bindgen (static_method_of = VideoDecoder , js_class = "VideoDecoder" , js_name = isConfigSupported)]
     #[doc = "The `isConfigSupported()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoDecoder/isConfigSupported)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoDecoder/isConfigSupported_static)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VideoDecoder`, `VideoDecoderConfig`*"]
     #[doc = ""]

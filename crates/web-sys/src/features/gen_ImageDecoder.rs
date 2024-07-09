@@ -114,7 +114,7 @@ extern "C" {
     # [wasm_bindgen (static_method_of = ImageDecoder , js_class = "ImageDecoder" , js_name = isTypeSupported)]
     #[doc = "The `isTypeSupported()` method."]
     #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageDecoder/isTypeSupported)"]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageDecoder/isTypeSupported_static)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageDecoder`*"]
     #[doc = ""]
