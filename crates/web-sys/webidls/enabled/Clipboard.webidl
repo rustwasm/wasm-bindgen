@@ -52,14 +52,3 @@ interface Clipboard : EventTarget {
   Promise<undefined> write(ClipboardItems data);
   Promise<undefined> writeText(DOMString data);
 };
-
-// There is no consensus by browsers to implement this API.
-// See https://github.com/w3c/clipboard-apis/pull/197.
-// dictionary ClipboardUnsanitizedFormats {
-//   sequence<DOMString> unsanitized;
-// };
-
-// Also Chrome-only.
-// dictionary ClipboardPermissionDescriptor : PermissionDescriptor {
-//   boolean allowWithoutGesture = false;
-// };
