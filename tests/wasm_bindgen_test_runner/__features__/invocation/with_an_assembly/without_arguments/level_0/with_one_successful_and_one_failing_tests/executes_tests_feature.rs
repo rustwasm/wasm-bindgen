@@ -1,4 +1,4 @@
-use crate::__steps__::assembly::given_there_is_an_assembly_with_one_successful_and_one_failing_tests;
+use crate::__steps__::assembly::given_there_is_an_assembly_with;
 use crate::__steps__::error_code::then_failure_should_have_been_returned;
 use crate::__steps__::standard_output::then_the_standard_output_should_have;
 use crate::__steps__::wasm_bindgen_test_runner::when_wasm_bindgen_test_runner_is_invoked_with_the_assembly_for_test_mode;
@@ -9,7 +9,17 @@ use auroka_morpheus_macros_feature::feature;
 feature! {
     test_mode: TestMode
 
-    given_there_is_an_assembly_with_one_successful_and_one_failing_tests();
+    given_there_is_an_assembly_with(r#"
+#[wasm_bindgen_test]
+fn pass() {
+    assert_eq!(1, 1);
+}
+
+#[wasm_bindgen_test]
+fn fail() {
+    assert_eq!(1, 2);
+}
+"#);
     when_wasm_bindgen_test_runner_is_invoked_with_the_assembly_for_test_mode(test_mode);
 
     "Outputs its running 2 tests" {
@@ -17,11 +27,11 @@ feature! {
     }
 
     "Outputs the failed test summary" {
-        then_the_standard_output_should_have("test assembly_with_one_successful_and_one_failing_tests::fail ... FAIL");
+        then_the_standard_output_should_have("test assembly::fail ... FAIL");
     }
 
     "Outputs the successful test summary" {
-        then_the_standard_output_should_have("test assembly_with_one_successful_and_one_failing_tests::pass ... ok");
+        then_the_standard_output_should_have("test assembly::pass ... ok");
     }
 
     "Outputs the failed test assertion error" {
@@ -29,7 +39,7 @@ feature! {
     }
 
     "Outputs the assembly failure summary" {
-        then_the_standard_output_should_have("failures:\n\n    assembly_with_one_successful_and_one_failing_tests::fail\n");
+        then_the_standard_output_should_have("failures:\n\n    assembly::fail\n");
     }
 
     "Outputs the assembly test summary" {
