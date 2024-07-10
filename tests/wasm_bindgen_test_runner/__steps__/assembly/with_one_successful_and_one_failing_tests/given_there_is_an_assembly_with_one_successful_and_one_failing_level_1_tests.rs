@@ -9,17 +9,16 @@ lazy_static! {
         AssemblyBuilder::new("assembly_with_one_successful_and_one_failing_level_1_tests")
             .file(
                 "src/lib.rs",
-                r#"#[cfg(test)]
+                r#"
+#[cfg(test)]
 mod level_1 {
     use wasm_bindgen_test::*;
 
-    #[cfg(test)]
     #[wasm_bindgen_test]
     fn pass() {
         assert_eq!(1, 1);
     }
 
-    #[cfg(test)]
     #[wasm_bindgen_test]
     fn fail() {
         assert_eq!(1, 2);
