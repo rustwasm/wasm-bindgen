@@ -26,13 +26,20 @@ pub fn given_there_is_an_assembly_with(context: &mut Context, content: &str) {
 }
 
 fn generate_content(content: &str) -> String {
-    format!(
-        r#"#[cfg(test)]
-use wasm_bindgen_test::*;
-
+    let mut final_content = String::from(
+        r#"
 #[cfg(test)]
-{}
+use wasm_bindgen_test::*;
 "#,
-        content
-    )
+    );
+
+    for line in content.lines() {
+        if line.starts_with("#[wasm_bindgen_test]") || line.starts_with("mod") {
+            final_content.push_str("#[cfg(test)]\n");
+        }
+        final_content.push_str(line);
+        final_content.push_str("\n");
+    }
+
+    final_content
 }
