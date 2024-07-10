@@ -1,4 +1,4 @@
-use crate::__steps__::assembly::given_there_is_an_assembly_with_one_successful_and_one_ignored_tests;
+use crate::__steps__::assembly::given_there_is_an_assembly_with;
 use crate::__steps__::standard_output::then_the_standard_output_should_have;
 use crate::__steps__::success::then_success_should_have_been_returned;
 use crate::__steps__::wasm_bindgen_test_runner::when_wasm_bindgen_test_runner_is_invoked_with_the_assembly_for_test_mode_and_the_arguments;
@@ -9,7 +9,18 @@ use auroka_morpheus_macros_feature::feature;
 feature! {
     test_mode: TestMode
 
-    given_there_is_an_assembly_with_one_successful_and_one_ignored_tests();
+    given_there_is_an_assembly_with(r#"
+#[wasm_bindgen_test]
+fn pass() {
+    assert_eq!(1, 1);
+}
+
+#[wasm_bindgen_test]
+#[ignore]
+fn ignored() {
+    assert_eq!(1, 1);
+}
+"#);
     when_wasm_bindgen_test_runner_is_invoked_with_the_assembly_for_test_mode_and_the_arguments(test_mode, "--include-ignored");
 
     "Outputs its running 2 tests" {
@@ -17,11 +28,11 @@ feature! {
     }
 
     "Outputs the successful test summary" {
-        then_the_standard_output_should_have("test assembly_with_one_successful_and_one_ignored_tests::pass ... ok");
+        then_the_standard_output_should_have("test assembly::pass ... ok");
     }
 
     "Outputs the ignored test summary" {
-        then_the_standard_output_should_have("test assembly_with_one_successful_and_one_ignored_tests::ignored ... ok");
+        then_the_standard_output_should_have("test assembly::ignored ... ok");
     }
 
     "Outputs the assembly test summary" {
