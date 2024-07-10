@@ -1,3 +1,0 @@
-mod given_there_is_an_assembly_with_two_successful_level_1_tests;
-
-pub use given_there_is_an_assembly_with_two_successful_level_1_tests::*;
