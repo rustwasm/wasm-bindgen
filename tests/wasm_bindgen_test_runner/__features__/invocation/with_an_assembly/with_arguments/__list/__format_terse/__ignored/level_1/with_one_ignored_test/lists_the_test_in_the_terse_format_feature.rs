@@ -6,7 +6,7 @@ use crate::__steps__::Context;
 use auroka_morpheus_macros_feature::feature;
 
 feature! {
-    given_there_is_an_assembly_with(r#"#[cfg(test)]
+    given_there_is_an_assembly_with(r#"
 mod level_1 {
     use wasm_bindgen_test::*;
 
