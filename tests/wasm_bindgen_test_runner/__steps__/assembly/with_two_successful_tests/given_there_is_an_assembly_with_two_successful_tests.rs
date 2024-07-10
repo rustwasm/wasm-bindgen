@@ -24,7 +24,7 @@ fn pass_2() {
     console_log!("pass_2 standard output");
     assert_eq!(1, 1);
 }
-            "#,
+"#,
         )
         .build();
 }
