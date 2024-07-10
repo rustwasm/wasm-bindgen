@@ -1,3 +1,0 @@
-mod given_there_is_an_assembly_with_one_successful_and_one_ignored_level_2_tests;
-
-pub use given_there_is_an_assembly_with_one_successful_and_one_ignored_level_2_tests::*;
