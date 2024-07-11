@@ -2,6 +2,7 @@ const WIDTH: usize = 50;
 
 use std::io::{self, Write};
 
+#[derive(Clone)]
 pub struct Shell {}
 
 impl Shell {

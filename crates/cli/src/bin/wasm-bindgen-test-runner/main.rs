@@ -11,7 +11,10 @@
 //! For more documentation about this see the `wasm-bindgen-test` crate README
 //! and source code.
 
-use anyhow::{anyhow, bail, Context};
+use anyhow::{anyhow, bail, Context, Result};
+use auroka_common_concurrency_filesystem_resource_coordinator::ResourceCoordinator;
+use commands::list;
+use commands::version;
 use docopt::Docopt;
 use log::error;
 use serde::Deserialize;
@@ -21,6 +24,7 @@ use std::path::PathBuf;
 use std::thread;
 use wasm_bindgen_cli_support::Bindgen;
 
+mod commands;
 mod deno;
 mod headless;
 mod lock;
@@ -54,6 +58,23 @@ impl TestMode {
             | Self::DedicatedWorker { no_modules }
             | Self::SharedWorker { no_modules }
             | Self::ServiceWorker { no_modules } => no_modules,
+        }
+    }
+
+    fn summary(self) -> &'static str {
+        match self {
+            Self::Node => "node",
+            Self::Deno => "deno",
+            Self::Browser { .. }
+            | Self::DedicatedWorker { .. }
+            | Self::SharedWorker { .. }
+            | Self::ServiceWorker { .. } => {
+                if self.no_modules() {
+                    "no_modules"
+                } else {
+                    "web"
+                }
+            }
         }
     }
 }
@@ -120,11 +141,7 @@ fn main() -> anyhow::Result<()> {
         .unwrap_or_else(|e| e.exit());
 
     if args_.flag_version {
-        println!(
-            "wasm-bindgen-test-runner {}",
-            wasm_bindgen_shared::version()
-        );
-        return Ok(());
+        return version();
     }
 
     let wasm_file_to_test: PathBuf = if let Some(input) = args_.arg_input {
@@ -143,52 +160,26 @@ fn main() -> anyhow::Result<()> {
         walrus::Module::from_buffer(&wasm).context("failed to deserialize wasm module")?;
 
     if args_.flag_list {
-        let mut found = false;
-        for export in wasm.exports.iter() {
-            if !export.name.starts_with("___wbgt_") {
-                continue;
-            }
-
-            let parts: Vec<&str> = export.name.split('$').collect();
-
-            if args_.flag_ignored {
-                if parts.len() == 3 {
-                    let test = parts[1];
-                    let test = &test[test.find("::").unwrap_or(0) + 2..];
-                    println!("{}: test", test);
-                }
-            } else {
-                let test = parts[1];
-                let test = &test[test.find("::").unwrap_or(0) + 2..];
-                println!("{}: test", test);
-            }
-            found = true;
-        }
-
-        if !found || args_.flag_ignored {
-            return Ok(());
-        }
+        return list(&wasm, args_.flag_ignored);
     }
 
     let mut tests = Vec::new();
-    if !args_.flag_list {
-        // Collect all tests that the test harness is supposed to run. We assume
-        // that any exported function with the prefix `__wbg_test` is a test we need
-        // to execute.
-        for export in wasm.exports.iter() {
-            if !export.name.starts_with("__wbgt_") {
-                continue;
-            }
-            tests.push(export.name.to_string());
+    // Collect all tests that the test harness is supposed to run. We assume
+    // that any exported function with the prefix `__wbg_test` is a test we need
+    // to execute.
+    for export in wasm.exports.iter() {
+        if !export.name.starts_with("__wbgt_") {
+            continue;
         }
+        tests.push(export.name.to_string());
+    }
 
-        // Right now there's a bug where if no tests are present then the
-        // `wasm-bindgen-test` runtime support isn't linked in, so just bail out
-        // early saying everything is ok.
-        if tests.is_empty() {
-            println!("no tests to run!");
-            return Ok(());
-        }
+    // Right now there's a bug where if no tests are present then the
+    // `wasm-bindgen-test` runtime support isn't linked in, so just bail out
+    // early saying everything is ok.
+    if tests.is_empty() {
+        println!("no tests to run!");
+        return Ok(());
     }
 
     // Figure out if this tests is supposed to execute in node.js or a browser.
@@ -271,6 +262,13 @@ fn main() -> anyhow::Result<()> {
     // we would like a directory we have write access to. if we assume cargo-like directories,
     // we end up with the path `/wbg-out`
     let wasm_file_str = wasm_file_to_test.to_string_lossy();
+    let mut tmp = format!("wbg-tmp-{}-{}", file_name, test_mode.summary());
+    if debug {
+        tmp += "-debug";
+    }
+    if std::env::var("WASM_BINDGEN_SPLIT_LINKED_MODULES").is_ok() {
+        tmp += "-split";
+    }
     let tmpdir =
         if wasm_file_str.starts_with("/tmp/rustdoc") || wasm_file_str.starts_with("/var/folders") {
             wasm_file_to_test.parent() // chop off the file name and give us the /tmp/rustdoc<hash> directory
@@ -280,68 +278,69 @@ fn main() -> anyhow::Result<()> {
                 .and_then(|p| p.parent()) // chop off `deps`
                 .and_then(|p| p.parent()) // chop off `debug`
         }
-        .map(|p| p.join(format!("wbg-tmp-{}", file_name)))
+        .map(|p| p.join(tmp.clone()))
         .ok_or_else(|| anyhow!("file to test doesn't follow the expected Cargo conventions"))?;
 
-    let shell = if !args_.flag_list {
-        Some(shell::Shell::new())
-    } else {
-        None
-    };
-    let _guard = if args_.flag_list || args_.flag_exact {
-        None
-    } else {
-        Some(TmpDirDeleteGuard(tmpdir.clone()))
-    };
+    let shell = shell::Shell::new();
 
-    if !args_.flag_exact || !tmpdir.exists() {
-        // Make sure there's no stale state from before
-        drop(fs::remove_dir_all(&tmpdir));
-        fs::create_dir(&tmpdir).context("creating temporary directory")?;
+    let mut resource_coordinator = ResourceCoordinator::try_new(tmp)?;
 
-        // Make the generated bindings available for the tests to execute against.
-        if let Some(ref shell) = shell {
+    resource_coordinator.initialize({
+        let shell = shell.clone();
+        let tmpdir = tmpdir.clone();
+        move || -> Result<()> {
+            // Make sure there's no stale state from before
+            drop(fs::remove_dir_all(&tmpdir));
+            fs::create_dir(&tmpdir).context("creating temporary directory")?;
+
+            // Make the generated bindings available for the tests to execute against.
             shell.status("Executing bindgen...");
+
+            let mut b = Bindgen::new();
+            match test_mode {
+                TestMode::Node => b.nodejs(true)?,
+                TestMode::Deno => b.deno(true)?,
+                TestMode::Browser { .. }
+                | TestMode::DedicatedWorker { .. }
+                | TestMode::SharedWorker { .. }
+                | TestMode::ServiceWorker { .. } => {
+                    if test_mode.no_modules() {
+                        b.no_modules(true)?
+                    } else {
+                        b.web(true)?
+                    }
+                }
+            };
+
+            if std::env::var("WASM_BINDGEN_SPLIT_LINKED_MODULES").is_ok() {
+                b.split_linked_modules(true);
+            }
+
+            b.debug(debug)
+                .input_module(module, wasm)
+                .keep_debug(false)
+                .emit_start(false)
+                .generate(&tmpdir)
+                .context("executing `wasm-bindgen` over the wasm file")?;
+
+            shell.clear();
+
+            Ok(())
         }
-        let mut b = Bindgen::new();
-        match test_mode {
-            TestMode::Node => b.nodejs(true)?,
-            TestMode::Deno => b.deno(true)?,
-            TestMode::Browser { .. }
-            | TestMode::DedicatedWorker { .. }
-            | TestMode::SharedWorker { .. }
-            | TestMode::ServiceWorker { .. } => {
-                if test_mode.no_modules() {
-                    b.no_modules(true)?
-                } else {
-                    b.web(true)?
+    });
+
+    resource_coordinator.finalize({
+        let tmpdir = tmpdir.clone();
+        move || {
+            if fs::exists(&tmpdir).unwrap() {
+                if let Err(e) = fs::remove_dir_all(&tmpdir) {
+                    error!("failed to remove temporary directory: {}", e);
                 }
             }
-        };
-
-        if std::env::var("WASM_BINDGEN_SPLIT_LINKED_MODULES").is_ok() {
-            b.split_linked_modules(true);
         }
+    });
 
-        b.debug(debug)
-            .input_module(module, wasm)
-            .keep_debug(false)
-            .emit_start(false)
-            .generate(&tmpdir)
-            .context("executing `wasm-bindgen` over the wasm file")?;
-
-        if let Some(ref shell) = shell {
-            shell.clear();
-        }
-    }
-
-    if args_.flag_list {
-        return Ok(());
-    }
-
-    let Some(shell) = shell else {
-        bail!("no shell available");
-    };
+    resource_coordinator.enter()?;
 
     let timeout = env::var("WASM_BINDGEN_TEST_TIMEOUT")
         .map(|timeout| {
