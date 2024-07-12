@@ -224,6 +224,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Navigator`*"]
     pub fn hardware_concurrency(this: &Navigator) -> f64;
+    # [wasm_bindgen (structural , method , getter , js_class = "Navigator" , js_name = deviceMemory)]
+    #[doc = "Getter for the `deviceMemory` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/deviceMemory)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Navigator`*"]
+    pub fn device_memory(this: &Navigator) -> f64;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "Gpu")]
     # [wasm_bindgen (structural , method , getter , js_class = "Navigator" , js_name = gpu)]
