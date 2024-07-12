@@ -72,8 +72,8 @@ impl Lock {
         let file_prefix = format!("{}.", &self.name);
 
         for entry in read_dir(env::temp_dir()).unwrap() {
-            if let Some((path, name)) = Self::is_candidate(entry, &lock_name, &file_prefix) {
-                if self.is_candidate_older(&path) && Self::is_candidate_running(&name) {
+            if let Some((path, pid)) = self.is_candidate(entry, &lock_name, &file_prefix) {
+                if self.is_candidate_older(&path, pid) && is_process_running(pid) {
                     return false;
                 }
             }
@@ -83,28 +83,33 @@ impl Lock {
     }
 
     fn is_candidate(
+        &self,
         entry: Result<DirEntry, Error>,
         lock_name: &str,
         file_prefix: &str,
-    ) -> Option<(PathBuf, String)> {
+    ) -> Option<(PathBuf, u32)> {
         if let Ok(entry) = entry {
             let path = entry.path();
             if let Some(name) = path.clone().file_name().and_then(|n| n.to_str()) {
                 if name.starts_with(file_prefix) && name != lock_name {
-                    return Some((path, name.to_string()));
+                    if let Some(pid) = name.split('.').last().and_then(|n| n.parse().ok()) {
+                        if pid != self.pid {
+                            return Some((path, pid));
+                        }
+                    }
                 }
             }
         }
         None
     }
 
-    fn is_candidate_older(&self, candidate: &PathBuf) -> bool {
-        metadata(candidate).unwrap().modified().unwrap() < self.timestamp
-    }
-
-    fn is_candidate_running(name: &str) -> bool {
-        let pid = name.split('.').last().unwrap().parse().unwrap();
-        is_process_running(pid)
+    fn is_candidate_older(&self, candidate: &PathBuf, pid: u32) -> bool {
+        if let Ok(metadata) = metadata(candidate) {
+            if let Ok(modified) = metadata.modified() {
+                return modified < self.timestamp;
+            }
+        }
+        pid < self.pid
     }
 
     fn read_lock_pid(&self) -> Result<u32> {
