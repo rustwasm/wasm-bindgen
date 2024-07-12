@@ -5,6 +5,9 @@
 
 ### Added
 
+* Added support for `deviceMemory` property in `Navigator`.
+  [#4011](https://github.com/rustwasm/wasm-bindgen/pull/4011)
+
 * Allow exporting functions named `default`. Throw error in wasm-bindgen-cli if --target web and
   an exported symbol is named `default`.
   [#3930](https://github.com/rustwasm/wasm-bindgen/pull/3930)
