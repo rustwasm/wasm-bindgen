@@ -20,7 +20,7 @@ use log::error;
 use serde::Deserialize;
 use std::env;
 use std::fs;
-use std::path::PathBuf;
+use std::path::{PathBuf, MAIN_SEPARATOR};
 use std::thread;
 use wasm_bindgen_cli_support::Bindgen;
 
@@ -75,16 +75,6 @@ impl TestMode {
                     "web"
                 }
             }
-        }
-    }
-}
-
-struct TmpDirDeleteGuard(PathBuf);
-
-impl Drop for TmpDirDeleteGuard {
-    fn drop(&mut self) {
-        if let Err(e) = fs::remove_dir_all(&self.0) {
-            error!("failed to remove temporary directory: {}", e);
         }
     }
 }
@@ -283,9 +273,11 @@ fn main() -> anyhow::Result<()> {
 
     let shell = shell::Shell::new();
 
-    let mut resource_coordinator = ResourceCoordinator::try_new(tmp)?;
+    let lock_name = tmpdir.display().to_string().replace(MAIN_SEPARATOR, "_");
 
-    resource_coordinator.initialize({
+    let mut resource_coordinator = ResourceCoordinator::new(lock_name);
+
+    resource_coordinator.initialize_set({
         let shell = shell.clone();
         let tmpdir = tmpdir.clone();
         move || -> Result<()> {
@@ -329,7 +321,7 @@ fn main() -> anyhow::Result<()> {
         }
     });
 
-    resource_coordinator.finalize({
+    resource_coordinator.finalize_set({
         let tmpdir = tmpdir.clone();
         move || {
             if fs::exists(&tmpdir).unwrap() {
