@@ -17,6 +17,7 @@
  * https://w3c.github.io/webappsec-credential-management/#framework-credential-management
  * https://w3c.github.io/webdriver/webdriver-spec.html#interface
  * https://wicg.github.io/media-capabilities/#idl-index
+ * https://www.w3.org/TR/device-memory/#sec-device-memory-js-api
  *
  * © Copyright 2004-2011 Apple Computer, Inc., Mozilla Foundation, and
  * Opera Software ASA. You are granted a license to use, reproduce
@@ -36,6 +37,7 @@ Navigator includes NavigatorStorageUtils;
 Navigator includes NavigatorConcurrentHardware;
 Navigator includes NavigatorStorage;
 Navigator includes NavigatorAutomationInformation;
+Navigator includes NavigatorDeviceMemory;
 
 [Exposed=(Window,Worker)]
 interface mixin NavigatorID {
@@ -225,6 +227,12 @@ partial interface Navigator {
   Promise<MediaKeySystemAccess>
   requestMediaKeySystemAccess(DOMString keySystem,
                               sequence<MediaKeySystemConfiguration> supportedConfigurations);
+};
+
+// https://www.w3.org/TR/device-memory/#sec-device-memory-js-api
+[SecureContext, Exposed=(Window,Worker)
+] interface mixin NavigatorDeviceMemory {
+    readonly attribute double deviceMemory;
 };
 
 [Exposed=(Window,Worker)]
