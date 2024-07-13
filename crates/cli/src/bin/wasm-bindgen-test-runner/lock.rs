@@ -106,9 +106,7 @@ impl Lock {
     fn is_candidate_older(&self, candidate: &PathBuf, pid: u32) -> bool {
         if let Ok(metadata) = metadata(candidate) {
             if let Ok(modified) = metadata.modified() {
-                if modified < self.timestamp {
-                    return true;
-                }
+                return modified < self.timestamp;
             }
         }
         pid < self.pid
