@@ -13,17 +13,17 @@
 
 use anyhow::{anyhow, bail, Context, Result};
 use auroka_common_concurrency_filesystem_resource_coordinator::ResourceCoordinator;
-use commands::list;
-use commands::version;
-use docopt::Docopt;
+use clap::Parser;
+use cli::Args;
+use commands::{list, version};
 use log::error;
-use serde::Deserialize;
 use std::env;
 use std::fs;
 use std::path::{PathBuf, MAIN_SEPARATOR};
 use std::thread;
 use wasm_bindgen_cli_support::Bindgen;
 
+mod cli;
 mod commands;
 mod deno;
 mod headless;
@@ -79,62 +79,16 @@ impl TestMode {
     }
 }
 
-const USAGE: &str = "
-Execute all wasm bindgen unit and integration tests and build examples of a local package
-
-Usage:
-    wasm-bindgen-test-runner [options] <input> [<testname>] [--include-ignored] [(--skip PATTERN)...] [--nocapture]
-    wasm-bindgen-test-runner [options] <input> <testname> [--nocapture] --exact
-    wasm-bindgen-test-runner [options] <input> --list [--format FORMAT] [--ignored]
-    wasm-bindgen-test-runner -h | --help
-    wasm-bindgen-test-runner -V | --version
-
-Options:
-    -h, --help         Show this screen.
-    -V, --version      Print the version number of wasm-bindgen-test-runner
-
-    <input>            The wasm file to test
-    <testname>         If specified, only executes the tests containing <testname> in their names
-
-Arguments:
-    --include-ignored  Include ignored tests in the test run
-    --skip PATTERN     Skip tests whose names match the given pattern
-    --nocapture        Disables the tests output capture
-    --exact            Run only the test with the exact name
-
-    --list             List all tests that would be run
-    --format FORMAT    Format of the tests listing output, valid values are [terse, json]
-    --ignored          Restricts the listing to only consider the ignored tests
-
-Additional documentation: https://rustwasm.github.io/wasm-bindgen/wasm-bindgen-test/usage.html
-";
-
-#[derive(Debug, Deserialize)]
-struct Args {
-    arg_input: Option<PathBuf>,
-    arg_testname: Option<String>,
-    flag_exact: bool,
-    flag_format: Option<String>,
-    flag_include_ignored: bool,
-    flag_ignored: bool,
-    flag_list: bool,
-    flag_nocapture: bool,
-    flag_pattern: Vec<String>,
-    flag_version: bool,
-}
-
 fn main() -> anyhow::Result<()> {
     env_logger::init();
     let args = env::args_os().skip(2);
-    let args_: Args = Docopt::new(USAGE)
-        .and_then(|d| d.deserialize())
-        .unwrap_or_else(|e| e.exit());
+    let args_ = Args::parse();
 
-    if args_.flag_version {
+    if args_.version {
         return version();
     }
 
-    let wasm_file_to_test: PathBuf = if let Some(input) = args_.arg_input {
+    let wasm_file_to_test: PathBuf = if let Some(input) = args_.input {
         input
     } else {
         bail!("must have a file to test as first argument");
@@ -149,8 +103,8 @@ fn main() -> anyhow::Result<()> {
     let mut wasm =
         walrus::Module::from_buffer(&wasm).context("failed to deserialize wasm module")?;
 
-    if args_.flag_list {
-        return list(&wasm, args_.flag_ignored);
+    if args_.list.list {
+        return list(&wasm, args_.list.ignored);
     }
 
     let mut tests = Vec::new();

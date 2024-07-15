@@ -11,29 +11,22 @@ feature! {
         then_the_standard_output_should_have(
             r#"Execute all wasm bindgen unit and integration tests and build examples of a local package
 
-Usage:
-    wasm-bindgen-test-runner [options] <input> [<testname>] [--include-ignored] [(--skip PATTERN)...] [--nocapture]
-    wasm-bindgen-test-runner [options] <input> <testname> [--nocapture] --exact
-    wasm-bindgen-test-runner [options] <input> --list [--format FORMAT] [--ignored]
-    wasm-bindgen-test-runner -h | --help
-    wasm-bindgen-test-runner -V | --version
-
-Options:
-    -h, --help         Show this screen.
-    -V, --version      Print the version number of wasm-bindgen-test-runner
-
-    <input>            The wasm file to test
-    <testname>         If specified, only executes the tests containing <testname> in their names
+Usage: wasm-bindgen-test-runner [OPTIONS] [INPUT] [TESTNAME]
 
 Arguments:
-    --include-ignored  Include ignored tests in the test run
-    --skip PATTERN     Skip tests whose names match the given pattern
-    --nocapture        Disables the tests output capture
-    --exact            Run only the test with the exact name
+  [INPUT]     The wasm file to test
+  [TESTNAME]  If specified, only executes the tests containing [testname] in their names
 
-    --list             List all tests that would be run
-    --format FORMAT    Format of the tests listing output, valid values are [terse, json]
-    --ignored          Restricts the listing to only consider the ignored tests
+Options:
+      --exact                Run only the test with the exact name
+      --include-ignored      Include ignored tests in the test run
+      --nocapture            Disables the tests output capture
+      --skip [<PATTERN>...]  Skip tests whose names match the given pattern
+      --list                 List all tests that would be run
+      --format <FORMAT>      Format of the tests listing output [possible values: terse, json]
+      --ignored              Restricts the listing to only consider the ignored tests
+  -V, --version              Print version
+  -h, --help                 Print help
 
 Additional documentation: https://rustwasm.github.io/wasm-bindgen/wasm-bindgen-test/usage.html
 "#,

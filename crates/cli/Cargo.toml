@@ -20,6 +20,7 @@ pkg-url = "https://github.com/rustwasm/wasm-bindgen/releases/download/{ version 
 bin-dir = "wasm-bindgen-{ version }-{ target }/{ bin }{ binary-ext }"
 
 [dependencies]
+clap = { version = "4.5", features = ["derive"] }
 docopt = "1.0"
 env_logger = "0.8"
 anyhow = "1.0"
