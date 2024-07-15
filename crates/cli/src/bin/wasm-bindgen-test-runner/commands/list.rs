@@ -3,7 +3,7 @@ use walrus::Module;
 
 pub fn list(wasm: &Module, ignored: bool) -> Result<()> {
     for export in wasm.exports.iter() {
-        if !export.name.starts_with("___wbgt_") {
+        if !export.name.starts_with("__wbgt_") {
             continue;
         }
 
