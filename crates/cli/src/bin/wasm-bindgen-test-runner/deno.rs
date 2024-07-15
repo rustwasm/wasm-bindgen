@@ -1,4 +1,3 @@
-use std::ffi::OsString;
 use std::fs;
 use std::path::Path;
 use std::process::Command;
@@ -7,12 +6,7 @@ use anyhow::{Context, Error};
 
 use crate::node::{exec, SHARED_SETUP};
 
-pub fn execute(
-    module: &str,
-    tmpdir: &Path,
-    args: &[OsString],
-    tests: &[String],
-) -> Result<(), Error> {
+pub fn execute(module: &str, tmpdir: &Path, args: &[&str], tests: &[String]) -> Result<(), Error> {
     let mut js_to_execute = format!(
         r#"import * as wasm from "./{0}.js";
 

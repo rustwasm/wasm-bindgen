@@ -1,5 +1,4 @@
 use std::borrow::Cow;
-use std::ffi::OsString;
 use std::fs;
 use std::net::SocketAddr;
 use std::path::Path;
@@ -14,7 +13,7 @@ pub(crate) fn spawn(
     headless: bool,
     module: &'static str,
     tmpdir: &Path,
-    args: &[OsString],
+    args: &[&str],
     tests: &[String],
     test_mode: TestMode,
     isolate_origin: bool,

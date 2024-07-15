@@ -1,5 +1,4 @@
 use std::env;
-use std::ffi::OsString;
 use std::fs;
 use std::path::Path;
 use std::process::Command;
@@ -38,12 +37,7 @@ handlers.on_console_warn = wasm.__wbgtest_console_warn;
 handlers.on_console_error = wasm.__wbgtest_console_error;
 "#;
 
-pub fn execute(
-    module: &str,
-    tmpdir: &Path,
-    args: &[OsString],
-    tests: &[String],
-) -> Result<(), Error> {
+pub fn execute(module: &str, tmpdir: &Path, args: &[&str], tests: &[String]) -> Result<(), Error> {
     let mut js_to_execute = format!(
         r#"
         const {{ exit }} = require('process');

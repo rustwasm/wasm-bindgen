@@ -21,3 +21,32 @@ pub struct RunArgs {
     #[arg(long, value_name = "PATTERN", num_args = 0..)]
     pub skip: Vec<String>,
 }
+
+impl RunArgs {
+    pub fn to_args(&self) -> Vec<&str> {
+        let mut args = Vec::<&str>::new();
+
+        if let Some(testname) = &self.testname {
+            args.push(testname);
+        }
+
+        if self.exact {
+            args.push("--exact");
+        }
+
+        if self.include_ignored {
+            args.push("--include-ignored");
+        }
+
+        if self.nocapture {
+            args.push("--nocapture");
+        }
+
+        for skip in &self.skip {
+            args.push("--skip");
+            args.push(skip);
+        }
+
+        args
+    }
+}

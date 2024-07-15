@@ -81,14 +81,13 @@ impl TestMode {
 
 fn main() -> anyhow::Result<()> {
     env_logger::init();
-    let args = env::args_os().skip(2);
-    let args_ = Args::parse();
+    let args = Args::parse();
 
-    if args_.version {
+    if args.version {
         return version();
     }
 
-    let wasm_file_to_test: PathBuf = if let Some(input) = args_.input {
+    let wasm_file_to_test: PathBuf = if let Some(input) = args.input {
         input
     } else {
         bail!("must have a file to test as first argument");
@@ -103,8 +102,8 @@ fn main() -> anyhow::Result<()> {
     let mut wasm =
         walrus::Module::from_buffer(&wasm).context("failed to deserialize wasm module")?;
 
-    if args_.list.list {
-        return list(&wasm, args_.list.ignored);
+    if args.list.list {
+        return list(&wasm, args.list.ignored);
     }
 
     let mut tests = Vec::new();
@@ -300,7 +299,7 @@ fn main() -> anyhow::Result<()> {
         println!("Set timeout to {} seconds...", timeout);
     }
 
-    let args: Vec<_> = args.collect();
+    let args: Vec<_> = args.run.to_args();
 
     match test_mode {
         TestMode::Node => node::execute(module, &tmpdir, &args, &tests)?,
