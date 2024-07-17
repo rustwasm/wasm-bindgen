@@ -1392,7 +1392,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_pass_array_jsvalue_to_wasm(&mut self, memory: MemoryId) -> Result<MemView, Error> {
-        let mem = self.expose_uint32_memory(memory);
+        let mem = self.expose_dataview_memory(memory);
         let ret = MemView {
             name: "passArrayJsValueToWasm".into(),
             num: mem.num,
@@ -1412,7 +1412,7 @@ impl<'a> Context<'a> {
                             const ptr = malloc(array.length * 4, 4) >>> 0;
                             const mem = {}();
                             for (let i = 0; i < array.length; i++) {{
-                                mem[ptr / 4 + i] = {}(array[i]);
+                                mem.setUint32(ptr + 4 * i, {}(array[i]), true);
                             }}
                             WASM_VECTOR_LEN = array.length;
                             return ptr;
@@ -1429,7 +1429,7 @@ impl<'a> Context<'a> {
                             const ptr = malloc(array.length * 4, 4) >>> 0;
                             const mem = {}();
                             for (let i = 0; i < array.length; i++) {{
-                                mem[ptr / 4 + i] = addHeapObject(array[i]);
+                                mem.setUint32(ptr + 4 * i, addHeapObject(array[i]), true);
                             }}
                             WASM_VECTOR_LEN = array.length;
                             return ptr;
@@ -1639,7 +1639,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_get_array_js_value_from_wasm(&mut self, memory: MemoryId) -> Result<MemView, Error> {
-        let mem = self.expose_uint32_memory(memory);
+        let mem = self.expose_dataview_memory(memory);
         let ret = MemView {
             name: "getArrayJsValueFromWasm".into(),
             num: mem.num,
@@ -1656,10 +1656,9 @@ impl<'a> Context<'a> {
                     function {}(ptr, len) {{
                         ptr = ptr >>> 0;
                         const mem = {}();
-                        const slice = mem.subarray(ptr / 4, ptr / 4 + len);
                         const result = [];
-                        for (let i = 0; i < slice.length; i++) {{
-                            result.push(wasm.{}.get(slice[i]));
+                        for (let i = ptr; i < ptr + 4 * len; i += 4) {{
+                            result.push(wasm.{}.get(mem.getUint32(i, true)));
                         }}
                         wasm.{}(ptr, len);
                         return result;
@@ -1675,10 +1674,9 @@ impl<'a> Context<'a> {
                     function {}(ptr, len) {{
                         ptr = ptr >>> 0;
                         const mem = {}();
-                        const slice = mem.subarray(ptr / 4, ptr / 4 + len);
                         const result = [];
-                        for (let i = 0; i < slice.length; i++) {{
-                            result.push(takeObject(slice[i]));
+                        for (let i = ptr; i < ptr + 4 * len; i += 4) {{
+                            result.push(takeObject(mem.getUint32(i, true)));
                         }}
                         return result;
                     }}
@@ -1811,6 +1809,10 @@ impl<'a> Context<'a> {
         self.memview("Float64", memory)
     }
 
+    fn expose_dataview_memory(&mut self, memory: MemoryId) -> MemView {
+        self.memview("DataView", memory)
+    }
+
     fn memview(&mut self, kind: &'static str, memory: walrus::MemoryId) -> MemView {
         let view = self.memview_memory(kind, memory);
         if !self.should_write_global(view.name.clone()) {
@@ -1818,8 +1820,10 @@ impl<'a> Context<'a> {
         }
         let mem = self.export_name_of(memory);
 
+        let is_dataview = kind == "DataView";
+
         let cache = format!("cached{}Memory{}", kind, view.num);
-        let resized_check = if self.module.memories.get(memory).shared {
+        let resized_check = if self.module.memories.get(memory).shared || is_dataview {
             // When it's backed by a `SharedArrayBuffer`, growing the wasm module's memory
             // doesn't detach old references; instead, it just leaves them pointing to a
             // slice of the up-to-date memory. So in order to check if it's been grown, we
@@ -1837,11 +1841,17 @@ impl<'a> Context<'a> {
 
         self.global(&format!("let {cache} = null;\n"));
 
+        let kind = if is_dataview {
+            kind
+        } else {
+            &format!("{}Array", kind)
+        };
+
         self.global(&format!(
             "
             function {name}() {{
                 if ({cache} === null || {resized_check}) {{
-                    {cache} = new {kind}Array(wasm.{mem}.buffer);
+                    {cache} = new {kind}(wasm.{mem}.buffer);
                 }}
                 return {cache};
             }}

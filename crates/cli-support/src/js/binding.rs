@@ -784,19 +784,21 @@ fn instruction(
         }
 
         Instruction::StoreRetptr { ty, offset, mem } => {
-            let (mem, size) = match ty {
-                AdapterType::I32 => (js.cx.expose_int32_memory(*mem), 4),
-                AdapterType::I64 => (js.cx.expose_int64_memory(*mem), 8),
-                AdapterType::F32 => (js.cx.expose_f32_memory(*mem), 4),
-                AdapterType::F64 => (js.cx.expose_f64_memory(*mem), 8),
+            let mem = js.cx.expose_dataview_memory(*mem);
+            let (method, size) = match ty {
+                AdapterType::I32 => ("setInt32", 4),
+                AdapterType::I64 => ("setBigInt64", 8),
+                AdapterType::F32 => ("setFloat32", 4),
+                AdapterType::F64 => ("setFloat64", 8),
                 other => bail!("invalid aggregate return type {:?}", other),
             };
             // Note that we always assume the return pointer is argument 0,
             // which is currently the case for LLVM.
             let val = js.pop();
             let expr = format!(
-                "{}()[{} / {} + {}] = {};",
+                "{}().{}({} + {} * {}, {}, true);",
                 mem,
+                method,
                 js.arg(0),
                 size,
                 offset,
@@ -806,11 +808,12 @@ fn instruction(
         }
 
         Instruction::LoadRetptr { ty, offset, mem } => {
-            let (mem, quads) = match ty {
-                AdapterType::I32 => (js.cx.expose_int32_memory(*mem), 1),
-                AdapterType::I64 => (js.cx.expose_int64_memory(*mem), 2),
-                AdapterType::F32 => (js.cx.expose_f32_memory(*mem), 1),
-                AdapterType::F64 => (js.cx.expose_f64_memory(*mem), 2),
+            let mem = js.cx.expose_dataview_memory(*mem);
+            let (method, quads) = match ty {
+                AdapterType::I32 => ("getInt32", 1),
+                AdapterType::I64 => ("getBigInt64", 2),
+                AdapterType::F32 => ("getFloat32", 1),
+                AdapterType::F64 => ("getFloat64", 2),
                 other => bail!("invalid aggregate return type {:?}", other),
             };
             let size = quads * 4;
@@ -820,7 +823,10 @@ fn instruction(
             // If we're loading from the return pointer then we must have pushed
             // it earlier, and we always push the same value, so load that value
             // here
-            let expr = format!("{}()[retptr / {} + {}]", mem, size, scaled_offset);
+            let expr = format!(
+                "{}().{}(retptr + {} * {}, true)",
+                mem, method, size, scaled_offset
+            );
             js.prelude(&format!("var r{} = {};", offset, expr));
             js.push(format!("r{}", offset));
         }
