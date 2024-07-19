@@ -1,17 +1,20 @@
-use super::wasm_bindgen_test_runner::Sandbox;
+use crate::__steps__::package::PackageBuilder;
 use crate::__steps__::OutputContext;
+use std::path::PathBuf;
 use std::process::Output;
 
 pub struct Context {
     output: Option<Result<Output, std::io::Error>>,
-    sandbox: Option<Sandbox>,
+    package_builder: Option<PackageBuilder>,
+    path: Option<PathBuf>,
 }
 
 impl Context {
     pub fn new() -> Self {
         Context {
             output: None,
-            sandbox: None,
+            package_builder: None,
+            path: None,
         }
     }
 
@@ -23,16 +26,16 @@ impl Context {
         self.output = Some(output);
     }
 
-    pub fn sandbox(&self) -> &Sandbox {
-        self.sandbox.as_ref().unwrap()
+    pub fn package_builder_set(&mut self, package_builder: PackageBuilder) {
+        self.package_builder = Some(package_builder);
     }
 
-    pub fn sandbox_mut(&mut self) -> &mut Sandbox {
-        self.sandbox.as_mut().unwrap()
+    pub fn path(&self) -> &PathBuf {
+        self.path.as_ref().unwrap()
     }
 
-    pub fn sandbox_set(&mut self, sandbox: Sandbox) {
-        self.sandbox = Some(sandbox);
+    pub fn path_set(&mut self, path: PathBuf) {
+        self.path = Some(path);
     }
 }
 

@@ -1,4 +1,5 @@
 use crate::__steps__::assembly::AssemblyBuilder;
+use crate::__steps__::package::prepare_tests;
 use crate::__steps__::wasm_bindgen_test_runner::Sandbox;
 use crate::__steps__::Context;
 use lazy_static::lazy_static;
@@ -17,29 +18,10 @@ pub fn given_there_is_an_assembly_with(context: &mut Context, content: &str) {
         .entry(content.to_string())
         .or_insert_with(|| {
             AssemblyBuilder::new("assembly")
-                .file("src/lib.rs", &generate_content(content))
+                .file("src/lib.rs", &prepare_tests(content))
                 .build()
         })
         .clone();
 
     context.sandbox_set(Sandbox::new(assembly_path));
-}
-
-fn generate_content(content: &str) -> String {
-    let mut final_content = String::from(
-        r#"
-#[cfg(test)]
-use wasm_bindgen_test::*;
-"#,
-    );
-
-    for line in content.lines() {
-        if line.starts_with("#[wasm_bindgen_test]") || line.starts_with("mod") {
-            final_content.push_str("#[cfg(test)]\n");
-        }
-        final_content.push_str(line);
-        final_content.push_str("\n");
-    }
-
-    final_content
 }
