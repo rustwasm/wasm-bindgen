@@ -7,7 +7,5 @@ pub fn when_cargo_nextest_is_invoked_over_the_package(context: &mut Context) {
 
     command.current_dir(context.path());
 
-    println!("Running command: {:?}", context.path());
-
     context.output_set(command.output());
 }
