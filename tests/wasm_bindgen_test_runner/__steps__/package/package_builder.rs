@@ -38,7 +38,7 @@ impl PackageBuilder {
 
         let root = target_dir()
             .join("wasm-bindgen-test-runner-tests")
-            .join(format!("{}-{}", name, rng.gen_range(10000..99999)));
+            .join(format!("{}-{}", name, rng.gen_range(100000..999999)));
 
         drop(fs::remove_dir_all(&root));
         fs::create_dir_all(&root).unwrap();
@@ -121,5 +121,11 @@ runner = '{}'
         self.check_cargo();
         self.check_cargo_config();
         self.root.clone()
+    }
+}
+
+impl Drop for PackageBuilder {
+    fn drop(&mut self) {
+        self.clean();
     }
 }
