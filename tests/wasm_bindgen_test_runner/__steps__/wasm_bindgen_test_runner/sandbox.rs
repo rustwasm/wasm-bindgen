@@ -28,17 +28,7 @@ impl Sandbox {
         let root = self
             .original
             .parent() // chop off file name
-            .and_then(|p| p.parent()) // chop off `deps`
-            .and_then(|p| p.parent()) // chop off `debug`
-            .and_then(|p| p.parent()) // chop off `wasm32-unknown-unknown`
-            .map(|p| p.join("wasm-bindgen-test-runner-tests"))
-            .map(|p| {
-                p.join(format!(
-                    "sandbox-{}-{}",
-                    file_name,
-                    rng.gen_range(1000..9999)
-                ))
-            })
+            .map(|p| p.join(format!("sandbox-{}", rng.gen_range(100000..999999))))
             .unwrap();
 
         drop(fs::remove_dir_all(&root));
