@@ -39,7 +39,7 @@ impl AssemblyBuilder {
 
         let root = target_dir()
             .join("wasm-bindgen-test-runner-tests")
-            .join(format!("{}-{}", name, rng.gen_range(1000..9999)));
+            .join(format!("{}-{}", name, rng.gen_range(100000..999999)));
 
         drop(fs::remove_dir_all(&root));
         fs::create_dir_all(&root).unwrap();
