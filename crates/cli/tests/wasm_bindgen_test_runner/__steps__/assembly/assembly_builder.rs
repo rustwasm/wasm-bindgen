@@ -25,7 +25,9 @@ fn target_dir() -> PathBuf {
 }
 
 fn repo_root() -> PathBuf {
-    env::current_dir().unwrap()
+    let mut dir = target_dir();
+    dir.pop(); // target
+    dir
 }
 
 pub struct AssemblyBuilder {
