@@ -1,5 +1,3 @@
-use crate::__steps__::wasm_bindgen_test_runner::wasm_bindgen_test_runner_command;
-use crate::__steps__::TestMode;
 use predicates::str;
 use rand::Rng;
 use std::env;
@@ -80,8 +78,6 @@ wasm-bindgen = {{ path = '{}' }}
 
     pub fn check_cargo_config(&mut self) {
         if !self.root.join(".cargo/config.toml").is_file() {
-            // to make sure that the wasm-bindgen-test-runner is compiled
-            wasm_bindgen_test_runner_command(TestMode::Default);
             // gets the current test executable
             let runner = env::current_exe().unwrap();
             // drops the executable name
