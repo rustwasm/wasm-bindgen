@@ -20,11 +20,11 @@ module.exports = {
     ".*/src/usize.ts$"
   ],
   injectGlobals: false,
-  globals: {
-    'ts-jest':
-    {
-      useESM: true,
-      isolatedModules: true
-    }
+  transform: {
+    '^.+.tsx?$': ['ts-jest',
+      {
+        useESM: true,
+        isolatedModules: true
+      }]
   }
 };
