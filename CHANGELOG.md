@@ -94,9 +94,6 @@
 * Fixed Deno support.
   [#3990](https://github.com/rustwasm/wasm-bindgen/pull/3990)
 
-* Fixed Deno support.
-  [#3990](https://github.com/rustwasm/wasm-bindgen/pull/3990)
-
 --------------------------------------------------------------------------------
 
 ## [0.2.92](https://github.com/rustwasm/wasm-bindgen/compare/0.2.91...0.2.92)
