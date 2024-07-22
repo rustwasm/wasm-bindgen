@@ -144,6 +144,9 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: '20'
+    - uses: denoland/setup-deno@v1
+      with:
+        deno-version: v1.x
     - run: cargo test
     - run: cargo test -p wasm-bindgen-cli-support
     - run: cargo test -p wasm-bindgen-cli
