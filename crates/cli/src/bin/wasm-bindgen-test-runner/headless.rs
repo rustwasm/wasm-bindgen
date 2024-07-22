@@ -3,7 +3,7 @@ use anyhow::{bail, format_err, Context, Error};
 use log::{debug, warn};
 use rouille::url::Url;
 use serde::{Deserialize, Serialize};
-use serde_json::{self, json, Map, Value as Json};
+use serde_json::{json, Map, Value as Json};
 use std::env;
 use std::fs::File;
 use std::io::{self, Read};

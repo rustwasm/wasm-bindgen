@@ -90,6 +90,9 @@
 
 * Fix MDN links to static interface methods.
   [#4010](https://github.com/rustwasm/wasm-bindgen/pull/4010)
+ 
+* Fixed Deno support.
+  [#3990](https://github.com/rustwasm/wasm-bindgen/pull/3990)
 
 --------------------------------------------------------------------------------
 

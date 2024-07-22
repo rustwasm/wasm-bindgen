@@ -18,16 +18,13 @@ pub fn execute(
 
         {console_override}
 
-        // global.__wbg_test_invoke = f => f();
+        window.__wbg_test_invoke = f => f();
 
         // Forward runtime arguments. These arguments are also arguments to the
         // `wasm-bindgen-test-runner` which forwards them to deno which we
         // forward to the test harness. this is basically only used for test
         // filters for now.
-        cx.args(Deno.args.slice(1));
-
-        const ok = await cx.run(tests.map(n => wasm.__wasm[n]));
-        if (!ok) Deno.exit(1);
+        cx.args(Deno.args);
 
         const tests = [];
     "#,
@@ -38,6 +35,11 @@ pub fn execute(
     for test in tests {
         js_to_execute.push_str(&format!("tests.push('{}')\n", test));
     }
+
+    js_to_execute.push_str(
+        r#"const ok = await cx.run(tests.map(n => wasm.__wasm[n]));
+if (!ok) Deno.exit(1);"#,
+    );
 
     let js_path = tmpdir.join("run.js");
     fs::write(&js_path, js_to_execute).context("failed to write JS file")?;

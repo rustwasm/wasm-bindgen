@@ -30,7 +30,7 @@ wrap("info");
 wrap("warn");
 wrap("error");
 
-cx = new wasm.WasmBindgenTestContext();
+const cx = new wasm.WasmBindgenTestContext();
 handlers.on_console_debug = wasm.__wbgtest_console_debug;
 handlers.on_console_log = wasm.__wbgtest_console_log;
 handlers.on_console_info = wasm.__wbgtest_console_info;
@@ -117,7 +117,10 @@ pub fn execute(
 #[cfg(unix)]
 pub fn exec(cmd: &mut Command) -> Result<(), Error> {
     use std::os::unix::prelude::*;
-    Err(Error::from(cmd.exec()).context("failed to execute `node`"))
+    Err(Error::from(cmd.exec()).context(format!(
+        "failed to execute `{}`",
+        cmd.get_program().to_string_lossy()
+    )))
 }
 
 #[cfg(windows)]
