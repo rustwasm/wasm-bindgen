@@ -27,7 +27,7 @@ pub fn execute(
         cx.args(Deno.args);
 
         const tests = [];
-"#,
+    "#,
         module,
         console_override = SHARED_SETUP,
     );
