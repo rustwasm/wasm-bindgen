@@ -64,3 +64,6 @@ features = [
   'XrSystem',
   'console'
 ]
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(web_sys_unstable_apis)'] }
