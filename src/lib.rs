@@ -70,6 +70,7 @@ pub use wasm_bindgen_macro::link_to;
 pub mod closure;
 pub mod convert;
 pub mod describe;
+mod link;
 
 mod cast;
 pub use crate::cast::{JsCast, JsObject};
@@ -1736,15 +1737,17 @@ pub mod __rt {
 
     #[cold]
     fn malloc_failure() -> ! {
-        if cfg!(debug_assertions) || !cfg!(feature = "std") {
-            super::throw_str("invalid malloc request")
-        } else {
-            #[cfg(feature = "std")]
-            {
+        cfg_if::cfg_if! {
+            if #[cfg(debug_assertions)] {
+                super::throw_str("invalid malloc request")
+            } else if #[cfg(feature = "std")] {
                 std::process::abort();
-            }
-            #[cfg(not(feature = "std"))]
-            {
+            } else if #[cfg(all(
+                target_arch = "wasm32",
+                not(any(target_os = "emscripten", target_os = "wasi"))
+            ))] {
+                core::arch::wasm32::unreachable();
+            } else {
                 unreachable!()
             }
         }
@@ -1795,10 +1798,7 @@ pub mod __rt {
     ///
     /// Ideas for how to improve this are most welcome!
     pub fn link_mem_intrinsics() {
-        #[cfg(feature = "std")]
-        {
-            crate::externref::link_intrinsics();
-        }
+        crate::link::link_intrinsics();
     }
 
     if_std! {

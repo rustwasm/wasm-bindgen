@@ -67,6 +67,7 @@ jobs:
     - run: cargo clippy --no-deps --all-features -p wasm-bindgen-webidl -- -D warnings
     - run: cargo clippy --no-deps --all-features -p webidl-tests -- -D warnings
     - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p web-sys -- -D warnings
+    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -- -D warnings
     - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -- -D warnings
     - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown --tests -- -D warnings
     - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p wasm-bindgen-benchmark -- -D warnings

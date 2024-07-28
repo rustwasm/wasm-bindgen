@@ -99,15 +99,17 @@ impl Slab {
 }
 
 fn internal_error(msg: &str) -> ! {
-    if cfg!(debug_assertions) || !cfg!(feature = "std") {
-        super::throw_str(msg)
-    } else {
-        #[cfg(feature = "std")]
-        {
-            std::process::abort()
-        }
-        #[cfg(not(feature = "std"))]
-        {
+    cfg_if::cfg_if! {
+        if #[cfg(debug_assertions)] {
+            super::throw_str(msg)
+        } else if #[cfg(feature = "std")] {
+            std::process::abort();
+        } else if #[cfg(all(
+            target_arch = "wasm32",
+            not(any(target_os = "emscripten", target_os = "wasi"))
+        ))] {
+            core::arch::wasm32::unreachable();
+        } else {
             unreachable!()
         }
     }
@@ -168,7 +170,3 @@ pub unsafe extern "C" fn __externref_heap_live_count() -> u32 {
         })
         .unwrap_or_else(|_| internal_error("tls access failure"))
 }
-
-// see comment in module above this in `link_mem_intrinsics`
-#[inline(never)]
-pub fn link_intrinsics() {}
