@@ -68,6 +68,9 @@
 * Deprecate builder-pattern type setters for WebIDL dictionary types and introduce non-mutable setters instead.
   [#3993](https://github.com/rustwasm/wasm-bindgen/pull/3993)
 
+* Allow imported async functions to return any type that can be converted from a `JsValue`.
+  [#3919](https://github.com/rustwasm/wasm-bindgen/pull/3919)
+
 ### Fixed
 
 * Copy port from headless test server when using `WASM_BINDGEN_TEST_ADDRESS`.

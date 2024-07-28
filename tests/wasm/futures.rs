@@ -1,3 +1,4 @@
+use js_sys::JsString;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 
@@ -8,10 +9,16 @@ extern "C" {
     async fn call_exports() -> Result<JsValue, JsValue>;
 
     async fn call_promise() -> JsValue;
+    #[wasm_bindgen(js_name = call_promise)]
+    async fn call_promise_string() -> JsString;
     #[wasm_bindgen(catch)]
     async fn call_promise_ok() -> Result<JsValue, JsValue>;
+    #[wasm_bindgen(catch, js_name = call_promise_ok)]
+    async fn call_promise_ok_string() -> Result<JsString, JsString>;
     #[wasm_bindgen(catch)]
     async fn call_promise_err() -> Result<JsValue, JsValue>;
+    #[wasm_bindgen(catch, js_name = call_promise_err)]
+    async fn call_promise_err_string() -> Result<JsString, JsString>;
 
     #[wasm_bindgen]
     async fn call_promise_unit();
@@ -142,6 +149,11 @@ async fn test_promise() {
 }
 
 #[wasm_bindgen_test]
+async fn test_promise_string() {
+    assert_eq!(String::from(call_promise_string().await), "ok")
+}
+
+#[wasm_bindgen_test]
 async fn test_promise_ok() {
     assert_eq!(
         call_promise_ok().await.map(|j| j.as_string()),
@@ -150,10 +162,26 @@ async fn test_promise_ok() {
 }
 
 #[wasm_bindgen_test]
+async fn test_promise_ok_string() {
+    assert_eq!(
+        call_promise_ok_string().await.map(String::from),
+        Ok(String::from("ok"))
+    )
+}
+
+#[wasm_bindgen_test]
 async fn test_promise_err() {
     assert_eq!(
         call_promise_err().await.map_err(|j| j.as_string()),
         Err(Some(String::from("error")))
+    )
+}
+
+#[wasm_bindgen_test]
+async fn test_promise_err_string() {
+    assert_eq!(
+        call_promise_err_string().await.map_err(String::from),
+        Err(String::from("error"))
     )
 }
 

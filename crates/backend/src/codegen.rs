@@ -1335,9 +1335,9 @@ impl TryToTokens for ast::ImportFunction {
                         ).await
                     };
                     convert_ret = if self.catch {
-                        quote! { Ok(#future?) }
+                        quote! { Ok(#wasm_bindgen::JsCast::unchecked_from_js(#future?)) }
                     } else {
-                        quote! { #future.expect("unexpected exception") }
+                        quote! { #wasm_bindgen::JsCast::unchecked_from_js(#future.expect("unexpected exception")) }
                     };
                 } else {
                     abi_ret = quote! {
