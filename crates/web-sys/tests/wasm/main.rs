@@ -30,6 +30,7 @@ pub mod meta_element;
 pub mod meter_element;
 pub mod mod_elements;
 pub mod olist_element;
+pub mod opfs;
 pub mod optgroup_element;
 pub mod option_element;
 pub mod options_collection;

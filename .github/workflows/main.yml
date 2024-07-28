@@ -427,7 +427,9 @@ jobs:
     - run: cargo doc --no-deps --manifest-path crates/web-sys/Cargo.toml --all-features
       env:
         RUSTDOCFLAGS: --cfg=web_sys_unstable_apis
-    - run: cargo doc --no-deps --manifest-path crates/futures/Cargo.toml
+    - run: cargo doc --no-deps --manifest-path crates/futures/Cargo.toml --all-features
+      env:
+        RUSTDOCFLAGS: --cfg=docsrs
     - run: tar czvf docs.tar.gz target/doc
     - uses: actions/upload-artifact@v4
       with:

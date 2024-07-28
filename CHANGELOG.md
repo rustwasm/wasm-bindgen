@@ -45,6 +45,9 @@
 * Generate getters for all WebIDL dictionary types.
   [#3993](https://github.com/rustwasm/wasm-bindgen/pull/3993)
 
+* Support for iterable in WebIDL. Gives `entries`, `keys`, `values` methods for regular and asynchronous, as well as `for_each` for regular, iterables.
+  [#3962](https://github.com/rustwasm/wasm-bindgen/pull/3962)
+
 ### Changed
 
 * Stabilize Web Share API.
