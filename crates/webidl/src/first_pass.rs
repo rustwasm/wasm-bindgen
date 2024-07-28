@@ -96,7 +96,7 @@ pub(crate) struct InterfaceData<'src> {
     /// Whether only partial interfaces were encountered
     pub(crate) partial: bool,
     pub(crate) has_interface: bool,
-    pub(crate) deprecated: Option<String>,
+    pub(crate) deprecated: Option<Option<String>>,
     pub(crate) attributes: Vec<AttributeInterfaceData<'src>>,
     pub(crate) consts: Vec<ConstData<'src>>,
     pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
@@ -415,8 +415,7 @@ impl<'src> FirstPass<'src, ApiStability> for weedle::InterfaceDefinition<'src> {
         interface_data.partial = false;
         interface_data.superclass = self.inheritance.map(|s| s.identifier.0);
         interface_data.definition_attributes = self.attributes.as_ref();
-        interface_data.deprecated =
-            util::get_rust_deprecated(&self.attributes).map(|s| s.to_string());
+        interface_data.deprecated = util::get_rust_deprecated(&self.attributes);
         interface_data.has_interface = !util::is_no_interface_object(&self.attributes);
         interface_data.stability = stability;
         if let Some(attrs) = &self.attributes {

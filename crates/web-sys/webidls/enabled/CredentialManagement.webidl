@@ -26,11 +26,9 @@ interface CredentialsContainer {
 };
 
 dictionary CredentialRequestOptions {
-  PublicKeyCredentialRequestOptions publicKey;
   AbortSignal signal;
 };
 
 dictionary CredentialCreationOptions {
-  PublicKeyCredentialCreationOptions publicKey;
   AbortSignal signal;
 };

@@ -13,11 +13,13 @@ extern "C" {
     #[doc = "Get the `icon` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialEntity`*"]
+    #[deprecated]
     #[wasm_bindgen(method, getter = "icon")]
     pub fn get_icon(this: &PublicKeyCredentialEntity) -> Option<String>;
     #[doc = "Change the `icon` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialEntity`*"]
+    #[deprecated]
     #[wasm_bindgen(method, setter = "icon")]
     pub fn set_icon(this: &PublicKeyCredentialEntity, val: &str);
     #[doc = "Get the `name` field of this object."]

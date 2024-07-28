@@ -10,4 +10,5 @@ pub enum AttestationConveyancePreference {
     None = "none",
     Indirect = "indirect",
     Direct = "direct",
+    Enterprise = "enterprise",
 }

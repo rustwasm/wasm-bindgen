@@ -37,6 +37,16 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AuthenticatorSelectionCriteria`*"]
     #[wasm_bindgen(method, setter = "requireResidentKey")]
     pub fn set_require_resident_key(this: &AuthenticatorSelectionCriteria, val: bool);
+    #[doc = "Get the `residentKey` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AuthenticatorSelectionCriteria`*"]
+    #[wasm_bindgen(method, getter = "residentKey")]
+    pub fn get_resident_key(this: &AuthenticatorSelectionCriteria) -> Option<String>;
+    #[doc = "Change the `residentKey` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AuthenticatorSelectionCriteria`*"]
+    #[wasm_bindgen(method, setter = "residentKey")]
+    pub fn set_resident_key(this: &AuthenticatorSelectionCriteria, val: &str);
     #[cfg(feature = "UserVerificationRequirement")]
     #[doc = "Get the `userVerification` field of this object."]
     #[doc = ""]
@@ -73,6 +83,11 @@ impl AuthenticatorSelectionCriteria {
     #[deprecated = "Use `set_require_resident_key()` instead."]
     pub fn require_resident_key(&mut self, val: bool) -> &mut Self {
         self.set_require_resident_key(val);
+        self
+    }
+    #[deprecated = "Use `set_resident_key()` instead."]
+    pub fn resident_key(&mut self, val: &str) -> &mut Self {
+        self.set_resident_key(val);
         self
     }
     #[cfg(feature = "UserVerificationRequirement")]
