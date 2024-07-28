@@ -24,7 +24,7 @@ pub fn wasm_bindgen(attr: TokenStream, input: TokenStream) -> TokenStream {
 /// The module can be specified in a few ways:
 /// - You can use `inline_js = "..."` to create an inline JS file.
 /// - You can use `module = "/foo/bar"` to reference a file relative to the
-/// root of the crate the macro is invoked in.
+///   root of the crate the macro is invoked in.
 ///
 /// The returned URL can be used for things like creating workers/worklets:
 /// ```no_run
