@@ -83,6 +83,9 @@
 * Update Web Authentication API to level 3.
   [#4000](https://github.com/rustwasm/wasm-bindgen/pull/4000)
 
+* Deprecate `AudioBufferSourceNode.onended` and `AudioBufferSourceNode.stop()`.
+  [#4020](https://github.com/rustwasm/wasm-bindgen/pull/4020)
+
 ### Fixed
 
 * Copy port from headless test server when using `WASM_BINDGEN_TEST_ADDRESS`.

@@ -10,34 +10,28 @@
  * liability, trademark and document use rules apply.
  */
 
-dictionary AudioBufferSourceOptions {
-             AudioBuffer? buffer;
-             float        detune = 0;
-             boolean      loop = false;
-             double       loopEnd = 0;
-             double       loopStart = 0;
-             float        playbackRate = 1;
-};
-
-[Pref="dom.webaudio.enabled",
- Constructor(BaseAudioContext context, optional AudioBufferSourceOptions options)]
+[Exposed=Window]
 interface AudioBufferSourceNode : AudioScheduledSourceNode {
-
+    constructor (BaseAudioContext context,
+                 optional AudioBufferSourceOptions options = {});
     attribute AudioBuffer? buffer;
-
     readonly attribute AudioParam playbackRate;
     readonly attribute AudioParam detune;
-
     attribute boolean loop;
     attribute double loopStart;
     attribute double loopEnd;
+    [RustDeprecated] attribute EventHandler onended;
+    [Throws] undefined start (optional double when = 0,
+                     optional double offset,
+                     optional double duration);
+    [Throws, RustDeprecated] undefined stop (optional double when = 0);
+};
 
-    attribute EventHandler onended;
-
-    [Throws]
-    undefined start(optional double when = 0, optional double grainOffset = 0,
-               optional double grainDuration);
-
-    [Throws]
-    undefined stop (optional double when = 0);
+dictionary AudioBufferSourceOptions {
+    AudioBuffer? buffer;
+    float detune = 0;
+    boolean loop = false;
+    double loopEnd = 0;
+    double loopStart = 0;
+    float playbackRate = 1;
 };
