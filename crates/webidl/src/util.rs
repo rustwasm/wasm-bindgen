@@ -410,6 +410,7 @@ impl<'src> FirstPassRecord<'src> {
             let structural =
                 force_structural || is_structural(signature.orig.attrs.as_ref(), container_attrs);
             let catch = force_throws || throws(signature.orig.attrs);
+            let deprecated = get_rust_deprecated(signature.orig.attrs);
             let ret_ty = if id == &OperationId::IndexingGetter {
                 // All indexing getters should return optional values (or
                 // otherwise be marked with catch).
@@ -476,6 +477,7 @@ impl<'src> FirstPassRecord<'src> {
                     ret.push(InterfaceMethod {
                         name: rust_ident(&rust_name),
                         js_name: name.to_string(),
+                        deprecated: deprecated.clone(),
                         arguments,
                         ret_ty,
                         kind: kind.clone(),
@@ -507,6 +509,7 @@ impl<'src> FirstPassRecord<'src> {
                         ret.push(InterfaceMethod {
                             name: rust_ident(&format!("{}_{}", rust_name, i)),
                             js_name: name.to_string(),
+                            deprecated: deprecated.clone(),
                             arguments,
                             kind: kind.clone(),
                             ret_ty,

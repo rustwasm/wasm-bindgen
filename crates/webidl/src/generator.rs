@@ -225,6 +225,7 @@ pub enum InterfaceAttributeKind {
 
 pub struct InterfaceAttribute {
     pub js_name: String,
+    pub deprecated: Option<Option<String>>,
     pub ty: Type,
     pub is_static: bool,
     pub structural: bool,
@@ -243,6 +244,7 @@ impl InterfaceAttribute {
     ) -> TokenStream {
         let InterfaceAttribute {
             js_name,
+            deprecated,
             ty,
             is_static,
             structural,
@@ -319,6 +321,10 @@ impl InterfaceAttribute {
         };
 
         let catch = if *catch { Some(quote!(catch,)) } else { None };
+        let deprecated = deprecated.as_ref().map(|msg| match msg {
+            Some(msg) => quote!( #[deprecated(note = #msg)] ),
+            None => quote!( #[deprecated] ),
+        });
 
         let doc_comment = comment(
             format!(
@@ -343,6 +349,7 @@ impl InterfaceAttribute {
             )]
             #doc_comment
             #unstable_docs
+            #deprecated
             #def
         }
     }
@@ -360,6 +367,7 @@ pub enum InterfaceMethodKind {
 pub struct InterfaceMethod {
     pub name: Ident,
     pub js_name: String,
+    pub deprecated: Option<Option<String>>,
     pub arguments: Vec<(Ident, Type)>,
     pub ret_ty: Option<Type>,
     pub kind: InterfaceMethodKind,
@@ -381,6 +389,7 @@ impl InterfaceMethod {
         let InterfaceMethod {
             name,
             js_name,
+            deprecated,
             arguments,
             ret_ty,
             kind,
@@ -463,6 +472,11 @@ impl InterfaceMethod {
 
         let doc_comment = comment(doc_comment, &required_doc_string(options, &features));
 
+        let deprecated = deprecated.as_ref().map(|msg| match msg {
+            Some(msg) => quote!( #[deprecated(note = #msg)] ),
+            None => quote!( #[deprecated] ),
+        });
+
         let ret = ret_ty.as_ref().map(|ret| quote!( #ret ));
 
         let ret = if *catch {
@@ -509,6 +523,7 @@ impl InterfaceMethod {
             )]
             #doc_comment
             #unstable_docs
+            #deprecated
             pub fn #name(#this #(#arguments),*) #ret;
         }
     }

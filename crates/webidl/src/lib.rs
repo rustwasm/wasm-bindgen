@@ -696,6 +696,7 @@ impl<'src> FirstPassRecord<'src> {
         let structural = is_structural(attrs.as_ref(), container_attrs);
 
         let catch = throws(attrs);
+        let deprecated: Option<Option<String>> = get_rust_deprecated(attrs);
 
         let ty = type_
             .type_
@@ -712,6 +713,7 @@ impl<'src> FirstPassRecord<'src> {
                 catch: catch || getter_throws(parent_js_name, &js_name, attrs),
                 ty,
                 js_name: js_name.clone(),
+                deprecated: deprecated.clone(),
                 kind,
                 unstable,
             });
@@ -733,6 +735,7 @@ impl<'src> FirstPassRecord<'src> {
                     catch: catch || setter_throws(parent_js_name, &js_name, attrs),
                     ty,
                     js_name,
+                    deprecated,
                     kind,
                     unstable,
                 });

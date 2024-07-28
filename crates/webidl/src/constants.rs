@@ -152,6 +152,19 @@ pub(crate) static FIXED_INTERFACES: Lazy<
             "ReadableStreamByobReader",
             BTreeMap::from_iter([("read", "read_with_array_buffer_view")]),
         ),
+        (
+            "AudioBufferSourceNode",
+            BTreeMap::from_iter([
+                (
+                    "start_with_when_and_offset",
+                    "start_with_when_and_grain_offset",
+                ),
+                (
+                    "start_with_when_and_offset_and_duration",
+                    "start_with_when_and_grain_offset_and_grain_duration",
+                ),
+            ]),
+        ),
     ])
 });
 
