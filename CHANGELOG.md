@@ -57,6 +57,9 @@
 * Added the `thread_stack_size` property to the object parameter of `default()` (`init()`) and `initSync()`, making it possible to set the stack size of spawned threads. `__wbindgen_thread_destroy()` now has a third optional parameter for the stack size, the default stack size is assumed when not passing it. When calling from the thread to be destroyed, by passing no parameters, the correct stack size is determined internally.
   [#3995](https://github.com/rustwasm/wasm-bindgen/pull/3995)
 
+* Added bindings to the Device Memory API.
+  [#4011](https://github.com/rustwasm/wasm-bindgen/pull/4011)
+
 ### Changed
 
 * Stabilize Web Share API.
