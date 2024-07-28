@@ -202,6 +202,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlElement`*"]
     pub fn is_content_editable(this: &HtmlElement) -> bool;
+    # [wasm_bindgen (structural , method , getter , js_class = "HTMLElement" , js_name = popover)]
+    #[doc = "Getter for the `popover` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/popover)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlElement`*"]
+    pub fn popover(this: &HtmlElement) -> Option<String>;
+    # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLElement" , js_name = popover)]
+    #[doc = "Setter for the `popover` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/popover)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlElement`*"]
+    pub fn set_popover(this: &HtmlElement, value: Option<&str>) -> Result<(), JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLElement" , js_name = spellcheck)]
     #[doc = "Getter for the `spellcheck` field of this object."]
     #[doc = ""]
@@ -357,6 +371,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlElement`*"]
     pub fn set_onauxclick(this: &HtmlElement, value: Option<&::js_sys::Function>);
+    # [wasm_bindgen (structural , method , getter , js_class = "HTMLElement" , js_name = onbeforetoggle)]
+    #[doc = "Getter for the `onbeforetoggle` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/onbeforetoggle)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlElement`*"]
+    pub fn onbeforetoggle(this: &HtmlElement) -> Option<::js_sys::Function>;
+    # [wasm_bindgen (structural , method , setter , js_class = "HTMLElement" , js_name = onbeforetoggle)]
+    #[doc = "Setter for the `onbeforetoggle` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/onbeforetoggle)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlElement`*"]
+    pub fn set_onbeforetoggle(this: &HtmlElement, value: Option<&::js_sys::Function>);
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLElement" , js_name = oncanplay)]
     #[doc = "Getter for the `oncanplay` field of this object."]
     #[doc = ""]
@@ -1548,4 +1576,32 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FocusOptions`, `HtmlElement`*"]
     pub fn focus_with_options(this: &HtmlElement, options: &FocusOptions) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "HTMLElement" , js_name = hidePopover)]
+    #[doc = "The `hidePopover()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/hidePopover)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlElement`*"]
+    pub fn hide_popover(this: &HtmlElement) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "HTMLElement" , js_name = showPopover)]
+    #[doc = "The `showPopover()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/showPopover)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlElement`*"]
+    pub fn show_popover(this: &HtmlElement) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "HTMLElement" , js_name = togglePopover)]
+    #[doc = "The `togglePopover()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/togglePopover)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlElement`*"]
+    pub fn toggle_popover(this: &HtmlElement) -> Result<bool, JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "HTMLElement" , js_name = togglePopover)]
+    #[doc = "The `togglePopover()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/togglePopover)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlElement`*"]
+    pub fn toggle_popover_with_force(this: &HtmlElement, force: bool) -> Result<bool, JsValue>;
 }

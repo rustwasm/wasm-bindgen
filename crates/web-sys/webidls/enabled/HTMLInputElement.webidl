@@ -148,6 +148,8 @@ partial interface HTMLInputElement {
            attribute DOMString useMap;
 };
 
+HTMLInputElement includes PopoverInvokerElement;
+
 /*Non standard
 partial interface HTMLInputElement {
   [Pref="dom.input.dirpicker", SetterThrows]

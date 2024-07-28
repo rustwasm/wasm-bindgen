@@ -51,6 +51,9 @@
 * Add bindings for `HTMLTableCellElement.abbr` and `scope` properties.
   [#3972](https://github.com/rustwasm/wasm-bindgen/pull/3972)
 
+* Add WebIDL definitions relating to `Popover API`.
+  [#3977](https://github.com/rustwasm/wasm-bindgen/pull/3977)
+
 ### Changed
 
 * Stabilize Web Share API.
