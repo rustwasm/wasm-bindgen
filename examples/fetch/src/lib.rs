@@ -4,9 +4,9 @@ use web_sys::{Request, RequestInit, RequestMode, Response};
 
 #[wasm_bindgen]
 pub async fn run(repo: String) -> Result<JsValue, JsValue> {
-    let mut opts = RequestInit::new();
-    opts.method("GET");
-    opts.mode(RequestMode::Cors);
+    let opts = RequestInit::new();
+    opts.set_method("GET");
+    opts.set_mode(RequestMode::Cors);
 
     let url = format!("https://api.github.com/repos/{}/branches/master", repo);
 

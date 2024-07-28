@@ -10,8 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemReadWriteOptions`*"]
     pub type FileSystemReadWriteOptions;
+    #[doc = "Get the `at` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemReadWriteOptions`*"]
+    #[wasm_bindgen(method, getter = "at")]
+    pub fn get_at(this: &FileSystemReadWriteOptions) -> Option<f64>;
+    #[doc = "Change the `at` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemReadWriteOptions`*"]
     #[wasm_bindgen(method, setter = "at")]
-    fn at_shim(this: &FileSystemReadWriteOptions, val: f64);
+    pub fn set_at(this: &FileSystemReadWriteOptions, val: f64);
 }
 impl FileSystemReadWriteOptions {
     #[doc = "Construct a new `FileSystemReadWriteOptions`."]
@@ -22,11 +30,9 @@ impl FileSystemReadWriteOptions {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `at` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FileSystemReadWriteOptions`*"]
+    #[deprecated = "Use `set_at()` instead."]
     pub fn at(&mut self, val: f64) -> &mut Self {
-        self.at_shim(val);
+        self.set_at(val);
         self
     }
 }

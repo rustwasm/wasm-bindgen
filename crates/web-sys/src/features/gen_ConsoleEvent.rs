@@ -10,40 +10,176 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     pub type ConsoleEvent;
+    #[doc = "Get the `ID` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[wasm_bindgen(method, getter = "ID")]
+    pub fn get_id(this: &ConsoleEvent) -> ::wasm_bindgen::JsValue;
+    #[doc = "Change the `ID` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     #[wasm_bindgen(method, setter = "ID")]
-    fn id_shim(this: &ConsoleEvent, val: &::wasm_bindgen::JsValue);
+    pub fn set_id(this: &ConsoleEvent, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `addonId` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[wasm_bindgen(method, getter = "addonId")]
+    pub fn get_addon_id(this: &ConsoleEvent) -> Option<String>;
+    #[doc = "Change the `addonId` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     #[wasm_bindgen(method, setter = "addonId")]
-    fn addon_id_shim(this: &ConsoleEvent, val: &str);
+    pub fn set_addon_id(this: &ConsoleEvent, val: &str);
+    #[doc = "Get the `arguments` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[wasm_bindgen(method, getter = "arguments")]
+    pub fn get_arguments(this: &ConsoleEvent) -> Option<::js_sys::Array>;
+    #[doc = "Change the `arguments` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     #[wasm_bindgen(method, setter = "arguments")]
-    fn arguments_shim(this: &ConsoleEvent, val: &::wasm_bindgen::JsValue);
+    pub fn set_arguments(this: &ConsoleEvent, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `columnNumber` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[wasm_bindgen(method, getter = "columnNumber")]
+    pub fn get_column_number(this: &ConsoleEvent) -> Option<u32>;
+    #[doc = "Change the `columnNumber` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     #[wasm_bindgen(method, setter = "columnNumber")]
-    fn column_number_shim(this: &ConsoleEvent, val: u32);
+    pub fn set_column_number(this: &ConsoleEvent, val: u32);
+    #[doc = "Get the `consoleID` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[wasm_bindgen(method, getter = "consoleID")]
+    pub fn get_console_id(this: &ConsoleEvent) -> Option<String>;
+    #[doc = "Change the `consoleID` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     #[wasm_bindgen(method, setter = "consoleID")]
-    fn console_id_shim(this: &ConsoleEvent, val: &str);
+    pub fn set_console_id(this: &ConsoleEvent, val: &str);
+    #[doc = "Get the `counter` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[wasm_bindgen(method, getter = "counter")]
+    pub fn get_counter(this: &ConsoleEvent) -> ::wasm_bindgen::JsValue;
+    #[doc = "Change the `counter` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     #[wasm_bindgen(method, setter = "counter")]
-    fn counter_shim(this: &ConsoleEvent, val: &::wasm_bindgen::JsValue);
+    pub fn set_counter(this: &ConsoleEvent, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `filename` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[wasm_bindgen(method, getter = "filename")]
+    pub fn get_filename(this: &ConsoleEvent) -> Option<String>;
+    #[doc = "Change the `filename` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     #[wasm_bindgen(method, setter = "filename")]
-    fn filename_shim(this: &ConsoleEvent, val: &str);
+    pub fn set_filename(this: &ConsoleEvent, val: &str);
+    #[doc = "Get the `functionName` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[wasm_bindgen(method, getter = "functionName")]
+    pub fn get_function_name(this: &ConsoleEvent) -> Option<String>;
+    #[doc = "Change the `functionName` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     #[wasm_bindgen(method, setter = "functionName")]
-    fn function_name_shim(this: &ConsoleEvent, val: &str);
+    pub fn set_function_name(this: &ConsoleEvent, val: &str);
+    #[doc = "Get the `groupName` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[wasm_bindgen(method, getter = "groupName")]
+    pub fn get_group_name(this: &ConsoleEvent) -> Option<String>;
+    #[doc = "Change the `groupName` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     #[wasm_bindgen(method, setter = "groupName")]
-    fn group_name_shim(this: &ConsoleEvent, val: &str);
+    pub fn set_group_name(this: &ConsoleEvent, val: &str);
+    #[doc = "Get the `innerID` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[wasm_bindgen(method, getter = "innerID")]
+    pub fn get_inner_id(this: &ConsoleEvent) -> ::wasm_bindgen::JsValue;
+    #[doc = "Change the `innerID` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     #[wasm_bindgen(method, setter = "innerID")]
-    fn inner_id_shim(this: &ConsoleEvent, val: &::wasm_bindgen::JsValue);
+    pub fn set_inner_id(this: &ConsoleEvent, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `level` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[wasm_bindgen(method, getter = "level")]
+    pub fn get_level(this: &ConsoleEvent) -> Option<String>;
+    #[doc = "Change the `level` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     #[wasm_bindgen(method, setter = "level")]
-    fn level_shim(this: &ConsoleEvent, val: &str);
+    pub fn set_level(this: &ConsoleEvent, val: &str);
+    #[doc = "Get the `lineNumber` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[wasm_bindgen(method, getter = "lineNumber")]
+    pub fn get_line_number(this: &ConsoleEvent) -> Option<u32>;
+    #[doc = "Change the `lineNumber` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     #[wasm_bindgen(method, setter = "lineNumber")]
-    fn line_number_shim(this: &ConsoleEvent, val: u32);
+    pub fn set_line_number(this: &ConsoleEvent, val: u32);
+    #[doc = "Get the `prefix` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[wasm_bindgen(method, getter = "prefix")]
+    pub fn get_prefix(this: &ConsoleEvent) -> Option<String>;
+    #[doc = "Change the `prefix` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     #[wasm_bindgen(method, setter = "prefix")]
-    fn prefix_shim(this: &ConsoleEvent, val: &str);
+    pub fn set_prefix(this: &ConsoleEvent, val: &str);
+    #[doc = "Get the `private` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[wasm_bindgen(method, getter = "private")]
+    pub fn get_private(this: &ConsoleEvent) -> Option<bool>;
+    #[doc = "Change the `private` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     #[wasm_bindgen(method, setter = "private")]
-    fn private_shim(this: &ConsoleEvent, val: bool);
+    pub fn set_private(this: &ConsoleEvent, val: bool);
+    #[doc = "Get the `styles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[wasm_bindgen(method, getter = "styles")]
+    pub fn get_styles(this: &ConsoleEvent) -> Option<::js_sys::Array>;
+    #[doc = "Change the `styles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     #[wasm_bindgen(method, setter = "styles")]
-    fn styles_shim(this: &ConsoleEvent, val: &::wasm_bindgen::JsValue);
+    pub fn set_styles(this: &ConsoleEvent, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `timeStamp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[wasm_bindgen(method, getter = "timeStamp")]
+    pub fn get_time_stamp(this: &ConsoleEvent) -> Option<f64>;
+    #[doc = "Change the `timeStamp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     #[wasm_bindgen(method, setter = "timeStamp")]
-    fn time_stamp_shim(this: &ConsoleEvent, val: f64);
+    pub fn set_time_stamp(this: &ConsoleEvent, val: f64);
+    #[doc = "Get the `timer` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[wasm_bindgen(method, getter = "timer")]
+    pub fn get_timer(this: &ConsoleEvent) -> ::wasm_bindgen::JsValue;
+    #[doc = "Change the `timer` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     #[wasm_bindgen(method, setter = "timer")]
-    fn timer_shim(this: &ConsoleEvent, val: &::wasm_bindgen::JsValue);
+    pub fn set_timer(this: &ConsoleEvent, val: &::wasm_bindgen::JsValue);
 }
 impl ConsoleEvent {
     #[doc = "Construct a new `ConsoleEvent`."]
@@ -54,123 +190,89 @@ impl ConsoleEvent {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `ID` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[deprecated = "Use `set_id()` instead."]
     pub fn id(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.id_shim(val);
+        self.set_id(val);
         self
     }
-    #[doc = "Change the `addonId` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[deprecated = "Use `set_addon_id()` instead."]
     pub fn addon_id(&mut self, val: &str) -> &mut Self {
-        self.addon_id_shim(val);
+        self.set_addon_id(val);
         self
     }
-    #[doc = "Change the `arguments` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[deprecated = "Use `set_arguments()` instead."]
     pub fn arguments(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.arguments_shim(val);
+        self.set_arguments(val);
         self
     }
-    #[doc = "Change the `columnNumber` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[deprecated = "Use `set_column_number()` instead."]
     pub fn column_number(&mut self, val: u32) -> &mut Self {
-        self.column_number_shim(val);
+        self.set_column_number(val);
         self
     }
-    #[doc = "Change the `consoleID` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[deprecated = "Use `set_console_id()` instead."]
     pub fn console_id(&mut self, val: &str) -> &mut Self {
-        self.console_id_shim(val);
+        self.set_console_id(val);
         self
     }
-    #[doc = "Change the `counter` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[deprecated = "Use `set_counter()` instead."]
     pub fn counter(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.counter_shim(val);
+        self.set_counter(val);
         self
     }
-    #[doc = "Change the `filename` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[deprecated = "Use `set_filename()` instead."]
     pub fn filename(&mut self, val: &str) -> &mut Self {
-        self.filename_shim(val);
+        self.set_filename(val);
         self
     }
-    #[doc = "Change the `functionName` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[deprecated = "Use `set_function_name()` instead."]
     pub fn function_name(&mut self, val: &str) -> &mut Self {
-        self.function_name_shim(val);
+        self.set_function_name(val);
         self
     }
-    #[doc = "Change the `groupName` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[deprecated = "Use `set_group_name()` instead."]
     pub fn group_name(&mut self, val: &str) -> &mut Self {
-        self.group_name_shim(val);
+        self.set_group_name(val);
         self
     }
-    #[doc = "Change the `innerID` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[deprecated = "Use `set_inner_id()` instead."]
     pub fn inner_id(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.inner_id_shim(val);
+        self.set_inner_id(val);
         self
     }
-    #[doc = "Change the `level` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[deprecated = "Use `set_level()` instead."]
     pub fn level(&mut self, val: &str) -> &mut Self {
-        self.level_shim(val);
+        self.set_level(val);
         self
     }
-    #[doc = "Change the `lineNumber` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[deprecated = "Use `set_line_number()` instead."]
     pub fn line_number(&mut self, val: u32) -> &mut Self {
-        self.line_number_shim(val);
+        self.set_line_number(val);
         self
     }
-    #[doc = "Change the `prefix` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[deprecated = "Use `set_prefix()` instead."]
     pub fn prefix(&mut self, val: &str) -> &mut Self {
-        self.prefix_shim(val);
+        self.set_prefix(val);
         self
     }
-    #[doc = "Change the `private` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[deprecated = "Use `set_private()` instead."]
     pub fn private(&mut self, val: bool) -> &mut Self {
-        self.private_shim(val);
+        self.set_private(val);
         self
     }
-    #[doc = "Change the `styles` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[deprecated = "Use `set_styles()` instead."]
     pub fn styles(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.styles_shim(val);
+        self.set_styles(val);
         self
     }
-    #[doc = "Change the `timeStamp` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[deprecated = "Use `set_time_stamp()` instead."]
     pub fn time_stamp(&mut self, val: f64) -> &mut Self {
-        self.time_stamp_shim(val);
+        self.set_time_stamp(val);
         self
     }
-    #[doc = "Change the `timer` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
+    #[deprecated = "Use `set_timer()` instead."]
     pub fn timer(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.timer_shim(val);
+        self.set_timer(val);
         self
     }
 }

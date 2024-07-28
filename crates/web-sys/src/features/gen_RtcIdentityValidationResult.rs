@@ -10,10 +10,26 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityValidationResult`*"]
     pub type RtcIdentityValidationResult;
+    #[doc = "Get the `contents` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityValidationResult`*"]
+    #[wasm_bindgen(method, getter = "contents")]
+    pub fn get_contents(this: &RtcIdentityValidationResult) -> String;
+    #[doc = "Change the `contents` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityValidationResult`*"]
     #[wasm_bindgen(method, setter = "contents")]
-    fn contents_shim(this: &RtcIdentityValidationResult, val: &str);
+    pub fn set_contents(this: &RtcIdentityValidationResult, val: &str);
+    #[doc = "Get the `identity` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityValidationResult`*"]
+    #[wasm_bindgen(method, getter = "identity")]
+    pub fn get_identity(this: &RtcIdentityValidationResult) -> String;
+    #[doc = "Change the `identity` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityValidationResult`*"]
     #[wasm_bindgen(method, setter = "identity")]
-    fn identity_shim(this: &RtcIdentityValidationResult, val: &str);
+    pub fn set_identity(this: &RtcIdentityValidationResult, val: &str);
 }
 impl RtcIdentityValidationResult {
     #[doc = "Construct a new `RtcIdentityValidationResult`."]
@@ -26,18 +42,14 @@ impl RtcIdentityValidationResult {
         ret.identity(identity);
         ret
     }
-    #[doc = "Change the `contents` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityValidationResult`*"]
+    #[deprecated = "Use `set_contents()` instead."]
     pub fn contents(&mut self, val: &str) -> &mut Self {
-        self.contents_shim(val);
+        self.set_contents(val);
         self
     }
-    #[doc = "Change the `identity` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityValidationResult`*"]
+    #[deprecated = "Use `set_identity()` instead."]
     pub fn identity(&mut self, val: &str) -> &mut Self {
-        self.identity_shim(val);
+        self.set_identity(val);
         self
     }
 }

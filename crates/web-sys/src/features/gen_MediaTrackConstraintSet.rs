@@ -10,38 +10,166 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
     pub type MediaTrackConstraintSet;
+    #[doc = "Get the `autoGainControl` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[wasm_bindgen(method, getter = "autoGainControl")]
+    pub fn get_auto_gain_control(this: &MediaTrackConstraintSet) -> ::wasm_bindgen::JsValue;
+    #[doc = "Change the `autoGainControl` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
     #[wasm_bindgen(method, setter = "autoGainControl")]
-    fn auto_gain_control_shim(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    pub fn set_auto_gain_control(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `browserWindow` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[wasm_bindgen(method, getter = "browserWindow")]
+    pub fn get_browser_window(this: &MediaTrackConstraintSet) -> Option<f64>;
+    #[doc = "Change the `browserWindow` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
     #[wasm_bindgen(method, setter = "browserWindow")]
-    fn browser_window_shim(this: &MediaTrackConstraintSet, val: f64);
+    pub fn set_browser_window(this: &MediaTrackConstraintSet, val: f64);
+    #[doc = "Get the `channelCount` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[wasm_bindgen(method, getter = "channelCount")]
+    pub fn get_channel_count(this: &MediaTrackConstraintSet) -> ::wasm_bindgen::JsValue;
+    #[doc = "Change the `channelCount` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
     #[wasm_bindgen(method, setter = "channelCount")]
-    fn channel_count_shim(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    pub fn set_channel_count(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `deviceId` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[wasm_bindgen(method, getter = "deviceId")]
+    pub fn get_device_id(this: &MediaTrackConstraintSet) -> ::wasm_bindgen::JsValue;
+    #[doc = "Change the `deviceId` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
     #[wasm_bindgen(method, setter = "deviceId")]
-    fn device_id_shim(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    pub fn set_device_id(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `echoCancellation` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[wasm_bindgen(method, getter = "echoCancellation")]
+    pub fn get_echo_cancellation(this: &MediaTrackConstraintSet) -> ::wasm_bindgen::JsValue;
+    #[doc = "Change the `echoCancellation` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
     #[wasm_bindgen(method, setter = "echoCancellation")]
-    fn echo_cancellation_shim(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    pub fn set_echo_cancellation(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `facingMode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[wasm_bindgen(method, getter = "facingMode")]
+    pub fn get_facing_mode(this: &MediaTrackConstraintSet) -> ::wasm_bindgen::JsValue;
+    #[doc = "Change the `facingMode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
     #[wasm_bindgen(method, setter = "facingMode")]
-    fn facing_mode_shim(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    pub fn set_facing_mode(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `frameRate` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[wasm_bindgen(method, getter = "frameRate")]
+    pub fn get_frame_rate(this: &MediaTrackConstraintSet) -> ::wasm_bindgen::JsValue;
+    #[doc = "Change the `frameRate` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
     #[wasm_bindgen(method, setter = "frameRate")]
-    fn frame_rate_shim(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    pub fn set_frame_rate(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `height` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[wasm_bindgen(method, getter = "height")]
+    pub fn get_height(this: &MediaTrackConstraintSet) -> ::wasm_bindgen::JsValue;
+    #[doc = "Change the `height` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
     #[wasm_bindgen(method, setter = "height")]
-    fn height_shim(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    pub fn set_height(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `mediaSource` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[wasm_bindgen(method, getter = "mediaSource")]
+    pub fn get_media_source(this: &MediaTrackConstraintSet) -> Option<String>;
+    #[doc = "Change the `mediaSource` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
     #[wasm_bindgen(method, setter = "mediaSource")]
-    fn media_source_shim(this: &MediaTrackConstraintSet, val: &str);
+    pub fn set_media_source(this: &MediaTrackConstraintSet, val: &str);
+    #[doc = "Get the `noiseSuppression` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[wasm_bindgen(method, getter = "noiseSuppression")]
+    pub fn get_noise_suppression(this: &MediaTrackConstraintSet) -> ::wasm_bindgen::JsValue;
+    #[doc = "Change the `noiseSuppression` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
     #[wasm_bindgen(method, setter = "noiseSuppression")]
-    fn noise_suppression_shim(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    pub fn set_noise_suppression(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `scrollWithPage` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[wasm_bindgen(method, getter = "scrollWithPage")]
+    pub fn get_scroll_with_page(this: &MediaTrackConstraintSet) -> Option<bool>;
+    #[doc = "Change the `scrollWithPage` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
     #[wasm_bindgen(method, setter = "scrollWithPage")]
-    fn scroll_with_page_shim(this: &MediaTrackConstraintSet, val: bool);
+    pub fn set_scroll_with_page(this: &MediaTrackConstraintSet, val: bool);
+    #[doc = "Get the `viewportHeight` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[wasm_bindgen(method, getter = "viewportHeight")]
+    pub fn get_viewport_height(this: &MediaTrackConstraintSet) -> ::wasm_bindgen::JsValue;
+    #[doc = "Change the `viewportHeight` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
     #[wasm_bindgen(method, setter = "viewportHeight")]
-    fn viewport_height_shim(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    pub fn set_viewport_height(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `viewportOffsetX` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[wasm_bindgen(method, getter = "viewportOffsetX")]
+    pub fn get_viewport_offset_x(this: &MediaTrackConstraintSet) -> ::wasm_bindgen::JsValue;
+    #[doc = "Change the `viewportOffsetX` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
     #[wasm_bindgen(method, setter = "viewportOffsetX")]
-    fn viewport_offset_x_shim(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    pub fn set_viewport_offset_x(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `viewportOffsetY` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[wasm_bindgen(method, getter = "viewportOffsetY")]
+    pub fn get_viewport_offset_y(this: &MediaTrackConstraintSet) -> ::wasm_bindgen::JsValue;
+    #[doc = "Change the `viewportOffsetY` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
     #[wasm_bindgen(method, setter = "viewportOffsetY")]
-    fn viewport_offset_y_shim(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    pub fn set_viewport_offset_y(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `viewportWidth` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[wasm_bindgen(method, getter = "viewportWidth")]
+    pub fn get_viewport_width(this: &MediaTrackConstraintSet) -> ::wasm_bindgen::JsValue;
+    #[doc = "Change the `viewportWidth` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
     #[wasm_bindgen(method, setter = "viewportWidth")]
-    fn viewport_width_shim(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    pub fn set_viewport_width(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `width` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[wasm_bindgen(method, getter = "width")]
+    pub fn get_width(this: &MediaTrackConstraintSet) -> ::wasm_bindgen::JsValue;
+    #[doc = "Change the `width` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
     #[wasm_bindgen(method, setter = "width")]
-    fn width_shim(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
+    pub fn set_width(this: &MediaTrackConstraintSet, val: &::wasm_bindgen::JsValue);
 }
 impl MediaTrackConstraintSet {
     #[doc = "Construct a new `MediaTrackConstraintSet`."]
@@ -52,116 +180,84 @@ impl MediaTrackConstraintSet {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `autoGainControl` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[deprecated = "Use `set_auto_gain_control()` instead."]
     pub fn auto_gain_control(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.auto_gain_control_shim(val);
+        self.set_auto_gain_control(val);
         self
     }
-    #[doc = "Change the `browserWindow` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[deprecated = "Use `set_browser_window()` instead."]
     pub fn browser_window(&mut self, val: f64) -> &mut Self {
-        self.browser_window_shim(val);
+        self.set_browser_window(val);
         self
     }
-    #[doc = "Change the `channelCount` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[deprecated = "Use `set_channel_count()` instead."]
     pub fn channel_count(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.channel_count_shim(val);
+        self.set_channel_count(val);
         self
     }
-    #[doc = "Change the `deviceId` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[deprecated = "Use `set_device_id()` instead."]
     pub fn device_id(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.device_id_shim(val);
+        self.set_device_id(val);
         self
     }
-    #[doc = "Change the `echoCancellation` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[deprecated = "Use `set_echo_cancellation()` instead."]
     pub fn echo_cancellation(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.echo_cancellation_shim(val);
+        self.set_echo_cancellation(val);
         self
     }
-    #[doc = "Change the `facingMode` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[deprecated = "Use `set_facing_mode()` instead."]
     pub fn facing_mode(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.facing_mode_shim(val);
+        self.set_facing_mode(val);
         self
     }
-    #[doc = "Change the `frameRate` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[deprecated = "Use `set_frame_rate()` instead."]
     pub fn frame_rate(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.frame_rate_shim(val);
+        self.set_frame_rate(val);
         self
     }
-    #[doc = "Change the `height` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[deprecated = "Use `set_height()` instead."]
     pub fn height(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.height_shim(val);
+        self.set_height(val);
         self
     }
-    #[doc = "Change the `mediaSource` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[deprecated = "Use `set_media_source()` instead."]
     pub fn media_source(&mut self, val: &str) -> &mut Self {
-        self.media_source_shim(val);
+        self.set_media_source(val);
         self
     }
-    #[doc = "Change the `noiseSuppression` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[deprecated = "Use `set_noise_suppression()` instead."]
     pub fn noise_suppression(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.noise_suppression_shim(val);
+        self.set_noise_suppression(val);
         self
     }
-    #[doc = "Change the `scrollWithPage` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[deprecated = "Use `set_scroll_with_page()` instead."]
     pub fn scroll_with_page(&mut self, val: bool) -> &mut Self {
-        self.scroll_with_page_shim(val);
+        self.set_scroll_with_page(val);
         self
     }
-    #[doc = "Change the `viewportHeight` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[deprecated = "Use `set_viewport_height()` instead."]
     pub fn viewport_height(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.viewport_height_shim(val);
+        self.set_viewport_height(val);
         self
     }
-    #[doc = "Change the `viewportOffsetX` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[deprecated = "Use `set_viewport_offset_x()` instead."]
     pub fn viewport_offset_x(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.viewport_offset_x_shim(val);
+        self.set_viewport_offset_x(val);
         self
     }
-    #[doc = "Change the `viewportOffsetY` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[deprecated = "Use `set_viewport_offset_y()` instead."]
     pub fn viewport_offset_y(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.viewport_offset_y_shim(val);
+        self.set_viewport_offset_y(val);
         self
     }
-    #[doc = "Change the `viewportWidth` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[deprecated = "Use `set_viewport_width()` instead."]
     pub fn viewport_width(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.viewport_width_shim(val);
+        self.set_viewport_width(val);
         self
     }
-    #[doc = "Change the `width` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaTrackConstraintSet`*"]
+    #[deprecated = "Use `set_width()` instead."]
     pub fn width(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.width_shim(val);
+        self.set_width(val);
         self
     }
 }

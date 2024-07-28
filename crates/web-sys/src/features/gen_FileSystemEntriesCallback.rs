@@ -10,8 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemEntriesCallback`*"]
     pub type FileSystemEntriesCallback;
+    #[doc = "Get the `handleEvent` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemEntriesCallback`*"]
+    #[wasm_bindgen(method, getter = "handleEvent")]
+    pub fn get_handle_event(this: &FileSystemEntriesCallback) -> Option<::js_sys::Function>;
+    #[doc = "Change the `handleEvent` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemEntriesCallback`*"]
     #[wasm_bindgen(method, setter = "handleEvent")]
-    fn handle_event_shim(this: &FileSystemEntriesCallback, val: &::js_sys::Function);
+    pub fn set_handle_event(this: &FileSystemEntriesCallback, val: &::js_sys::Function);
 }
 impl FileSystemEntriesCallback {
     #[doc = "Construct a new `FileSystemEntriesCallback`."]
@@ -22,11 +30,9 @@ impl FileSystemEntriesCallback {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `handleEvent` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FileSystemEntriesCallback`*"]
+    #[deprecated = "Use `set_handle_event()` instead."]
     pub fn handle_event(&mut self, val: &::js_sys::Function) -> &mut Self {
-        self.handle_event_shim(val);
+        self.set_handle_event(val);
         self
     }
 }

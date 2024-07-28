@@ -10,10 +10,26 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtcpParameters`*"]
     pub type RtcRtcpParameters;
+    #[doc = "Get the `cname` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtcpParameters`*"]
+    #[wasm_bindgen(method, getter = "cname")]
+    pub fn get_cname(this: &RtcRtcpParameters) -> Option<String>;
+    #[doc = "Change the `cname` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtcpParameters`*"]
     #[wasm_bindgen(method, setter = "cname")]
-    fn cname_shim(this: &RtcRtcpParameters, val: &str);
+    pub fn set_cname(this: &RtcRtcpParameters, val: &str);
+    #[doc = "Get the `reducedSize` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtcpParameters`*"]
+    #[wasm_bindgen(method, getter = "reducedSize")]
+    pub fn get_reduced_size(this: &RtcRtcpParameters) -> Option<bool>;
+    #[doc = "Change the `reducedSize` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtcpParameters`*"]
     #[wasm_bindgen(method, setter = "reducedSize")]
-    fn reduced_size_shim(this: &RtcRtcpParameters, val: bool);
+    pub fn set_reduced_size(this: &RtcRtcpParameters, val: bool);
 }
 impl RtcRtcpParameters {
     #[doc = "Construct a new `RtcRtcpParameters`."]
@@ -24,18 +40,14 @@ impl RtcRtcpParameters {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `cname` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcRtcpParameters`*"]
+    #[deprecated = "Use `set_cname()` instead."]
     pub fn cname(&mut self, val: &str) -> &mut Self {
-        self.cname_shim(val);
+        self.set_cname(val);
         self
     }
-    #[doc = "Change the `reducedSize` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcRtcpParameters`*"]
+    #[deprecated = "Use `set_reduced_size()` instead."]
     pub fn reduced_size(&mut self, val: bool) -> &mut Self {
-        self.reduced_size_shim(val);
+        self.set_reduced_size(val);
         self
     }
 }

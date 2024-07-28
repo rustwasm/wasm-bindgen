@@ -10,8 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyIdsInitData`*"]
     pub type KeyIdsInitData;
+    #[doc = "Get the `kids` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `KeyIdsInitData`*"]
+    #[wasm_bindgen(method, getter = "kids")]
+    pub fn get_kids(this: &KeyIdsInitData) -> ::js_sys::Array;
+    #[doc = "Change the `kids` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `KeyIdsInitData`*"]
     #[wasm_bindgen(method, setter = "kids")]
-    fn kids_shim(this: &KeyIdsInitData, val: &::wasm_bindgen::JsValue);
+    pub fn set_kids(this: &KeyIdsInitData, val: &::wasm_bindgen::JsValue);
 }
 impl KeyIdsInitData {
     #[doc = "Construct a new `KeyIdsInitData`."]
@@ -23,11 +31,9 @@ impl KeyIdsInitData {
         ret.kids(kids);
         ret
     }
-    #[doc = "Change the `kids` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `KeyIdsInitData`*"]
+    #[deprecated = "Use `set_kids()` instead."]
     pub fn kids(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.kids_shim(val);
+        self.set_kids(val);
         self
     }
 }

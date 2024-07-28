@@ -10,22 +10,73 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     pub type CollectedClientData;
+    #[doc = "Get the `challenge` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
+    #[wasm_bindgen(method, getter = "challenge")]
+    pub fn get_challenge(this: &CollectedClientData) -> String;
+    #[doc = "Change the `challenge` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     #[wasm_bindgen(method, setter = "challenge")]
-    fn challenge_shim(this: &CollectedClientData, val: &str);
+    pub fn set_challenge(this: &CollectedClientData, val: &str);
     #[cfg(feature = "AuthenticationExtensionsClientInputs")]
+    #[doc = "Get the `clientExtensions` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientInputs`, `CollectedClientData`*"]
+    #[wasm_bindgen(method, getter = "clientExtensions")]
+    pub fn get_client_extensions(
+        this: &CollectedClientData,
+    ) -> Option<AuthenticationExtensionsClientInputs>;
+    #[cfg(feature = "AuthenticationExtensionsClientInputs")]
+    #[doc = "Change the `clientExtensions` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientInputs`, `CollectedClientData`*"]
     #[wasm_bindgen(method, setter = "clientExtensions")]
-    fn client_extensions_shim(
+    pub fn set_client_extensions(
         this: &CollectedClientData,
         val: &AuthenticationExtensionsClientInputs,
     );
+    #[doc = "Get the `hashAlgorithm` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
+    #[wasm_bindgen(method, getter = "hashAlgorithm")]
+    pub fn get_hash_algorithm(this: &CollectedClientData) -> String;
+    #[doc = "Change the `hashAlgorithm` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     #[wasm_bindgen(method, setter = "hashAlgorithm")]
-    fn hash_algorithm_shim(this: &CollectedClientData, val: &str);
+    pub fn set_hash_algorithm(this: &CollectedClientData, val: &str);
+    #[doc = "Get the `origin` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
+    #[wasm_bindgen(method, getter = "origin")]
+    pub fn get_origin(this: &CollectedClientData) -> String;
+    #[doc = "Change the `origin` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     #[wasm_bindgen(method, setter = "origin")]
-    fn origin_shim(this: &CollectedClientData, val: &str);
+    pub fn set_origin(this: &CollectedClientData, val: &str);
+    #[doc = "Get the `tokenBindingId` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
+    #[wasm_bindgen(method, getter = "tokenBindingId")]
+    pub fn get_token_binding_id(this: &CollectedClientData) -> Option<String>;
+    #[doc = "Change the `tokenBindingId` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     #[wasm_bindgen(method, setter = "tokenBindingId")]
-    fn token_binding_id_shim(this: &CollectedClientData, val: &str);
+    pub fn set_token_binding_id(this: &CollectedClientData, val: &str);
+    #[doc = "Get the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
+    #[wasm_bindgen(method, getter = "type")]
+    pub fn get_type(this: &CollectedClientData) -> String;
+    #[doc = "Change the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &CollectedClientData, val: &str);
+    pub fn set_type(this: &CollectedClientData, val: &str);
 }
 impl CollectedClientData {
     #[doc = "Construct a new `CollectedClientData`."]
@@ -40,47 +91,35 @@ impl CollectedClientData {
         ret.type_(type_);
         ret
     }
-    #[doc = "Change the `challenge` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
+    #[deprecated = "Use `set_challenge()` instead."]
     pub fn challenge(&mut self, val: &str) -> &mut Self {
-        self.challenge_shim(val);
+        self.set_challenge(val);
         self
     }
     #[cfg(feature = "AuthenticationExtensionsClientInputs")]
-    #[doc = "Change the `clientExtensions` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientInputs`, `CollectedClientData`*"]
+    #[deprecated = "Use `set_client_extensions()` instead."]
     pub fn client_extensions(&mut self, val: &AuthenticationExtensionsClientInputs) -> &mut Self {
-        self.client_extensions_shim(val);
+        self.set_client_extensions(val);
         self
     }
-    #[doc = "Change the `hashAlgorithm` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
+    #[deprecated = "Use `set_hash_algorithm()` instead."]
     pub fn hash_algorithm(&mut self, val: &str) -> &mut Self {
-        self.hash_algorithm_shim(val);
+        self.set_hash_algorithm(val);
         self
     }
-    #[doc = "Change the `origin` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
+    #[deprecated = "Use `set_origin()` instead."]
     pub fn origin(&mut self, val: &str) -> &mut Self {
-        self.origin_shim(val);
+        self.set_origin(val);
         self
     }
-    #[doc = "Change the `tokenBindingId` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
+    #[deprecated = "Use `set_token_binding_id()` instead."]
     pub fn token_binding_id(&mut self, val: &str) -> &mut Self {
-        self.token_binding_id_shim(val);
+        self.set_token_binding_id(val);
         self
     }
-    #[doc = "Change the `type` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
+    #[deprecated = "Use `set_type()` instead."]
     pub fn type_(&mut self, val: &str) -> &mut Self {
-        self.type__shim(val);
+        self.set_type(val);
         self
     }
 }

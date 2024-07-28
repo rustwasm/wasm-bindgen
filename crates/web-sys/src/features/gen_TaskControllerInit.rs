@@ -14,9 +14,26 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type TaskControllerInit;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "TaskPriority")]
+    #[doc = "Get the `priority` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TaskControllerInit`, `TaskPriority`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "priority")]
+    pub fn get_priority(this: &TaskControllerInit) -> Option<TaskPriority>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "TaskPriority")]
+    #[doc = "Change the `priority` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TaskControllerInit`, `TaskPriority`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "priority")]
-    fn priority_shim(this: &TaskControllerInit, val: TaskPriority);
+    pub fn set_priority(this: &TaskControllerInit, val: TaskPriority);
 }
 #[cfg(web_sys_unstable_apis)]
 impl TaskControllerInit {
@@ -33,14 +50,9 @@ impl TaskControllerInit {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "TaskPriority")]
-    #[doc = "Change the `priority` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `TaskControllerInit`, `TaskPriority`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_priority()` instead."]
     pub fn priority(&mut self, val: TaskPriority) -> &mut Self {
-        self.priority_shim(val);
+        self.set_priority(val);
         self
     }
 }

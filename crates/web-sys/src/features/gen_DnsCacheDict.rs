@@ -10,8 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsCacheDict`*"]
     pub type DnsCacheDict;
+    #[doc = "Get the `entries` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DnsCacheDict`*"]
+    #[wasm_bindgen(method, getter = "entries")]
+    pub fn get_entries(this: &DnsCacheDict) -> Option<::js_sys::Array>;
+    #[doc = "Change the `entries` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DnsCacheDict`*"]
     #[wasm_bindgen(method, setter = "entries")]
-    fn entries_shim(this: &DnsCacheDict, val: &::wasm_bindgen::JsValue);
+    pub fn set_entries(this: &DnsCacheDict, val: &::wasm_bindgen::JsValue);
 }
 impl DnsCacheDict {
     #[doc = "Construct a new `DnsCacheDict`."]
@@ -22,11 +30,9 @@ impl DnsCacheDict {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `entries` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DnsCacheDict`*"]
+    #[deprecated = "Use `set_entries()` instead."]
     pub fn entries(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.entries_shim(val);
+        self.set_entries(val);
         self
     }
 }

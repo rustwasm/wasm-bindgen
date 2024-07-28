@@ -14,12 +14,60 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type SerialOutputSignals;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `break` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SerialOutputSignals`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "break")]
+    pub fn get_break(this: &SerialOutputSignals) -> Option<bool>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `break` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SerialOutputSignals`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "break")]
-    fn break__shim(this: &SerialOutputSignals, val: bool);
+    pub fn set_break(this: &SerialOutputSignals, val: bool);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `dataTerminalReady` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SerialOutputSignals`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "dataTerminalReady")]
+    pub fn get_data_terminal_ready(this: &SerialOutputSignals) -> Option<bool>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `dataTerminalReady` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SerialOutputSignals`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "dataTerminalReady")]
-    fn data_terminal_ready_shim(this: &SerialOutputSignals, val: bool);
+    pub fn set_data_terminal_ready(this: &SerialOutputSignals, val: bool);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `requestToSend` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SerialOutputSignals`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "requestToSend")]
+    pub fn get_request_to_send(this: &SerialOutputSignals) -> Option<bool>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `requestToSend` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SerialOutputSignals`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "requestToSend")]
-    fn request_to_send_shim(this: &SerialOutputSignals, val: bool);
+    pub fn set_request_to_send(this: &SerialOutputSignals, val: bool);
 }
 #[cfg(web_sys_unstable_apis)]
 impl SerialOutputSignals {
@@ -35,36 +83,21 @@ impl SerialOutputSignals {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `break` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `SerialOutputSignals`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_break()` instead."]
     pub fn break_(&mut self, val: bool) -> &mut Self {
-        self.break__shim(val);
+        self.set_break(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `dataTerminalReady` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `SerialOutputSignals`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_data_terminal_ready()` instead."]
     pub fn data_terminal_ready(&mut self, val: bool) -> &mut Self {
-        self.data_terminal_ready_shim(val);
+        self.set_data_terminal_ready(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `requestToSend` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `SerialOutputSignals`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_request_to_send()` instead."]
     pub fn request_to_send(&mut self, val: bool) -> &mut Self {
-        self.request_to_send_shim(val);
+        self.set_request_to_send(val);
         self
     }
 }

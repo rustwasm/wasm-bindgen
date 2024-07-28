@@ -10,25 +10,106 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
     pub type WebGlContextAttributes;
+    #[doc = "Get the `alpha` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
+    #[wasm_bindgen(method, getter = "alpha")]
+    pub fn get_alpha(this: &WebGlContextAttributes) -> Option<bool>;
+    #[doc = "Change the `alpha` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
     #[wasm_bindgen(method, setter = "alpha")]
-    fn alpha_shim(this: &WebGlContextAttributes, val: bool);
+    pub fn set_alpha(this: &WebGlContextAttributes, val: bool);
+    #[doc = "Get the `antialias` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
+    #[wasm_bindgen(method, getter = "antialias")]
+    pub fn get_antialias(this: &WebGlContextAttributes) -> Option<bool>;
+    #[doc = "Change the `antialias` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
     #[wasm_bindgen(method, setter = "antialias")]
-    fn antialias_shim(this: &WebGlContextAttributes, val: bool);
+    pub fn set_antialias(this: &WebGlContextAttributes, val: bool);
+    #[doc = "Get the `depth` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
+    #[wasm_bindgen(method, getter = "depth")]
+    pub fn get_depth(this: &WebGlContextAttributes) -> Option<bool>;
+    #[doc = "Change the `depth` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
     #[wasm_bindgen(method, setter = "depth")]
-    fn depth_shim(this: &WebGlContextAttributes, val: bool);
+    pub fn set_depth(this: &WebGlContextAttributes, val: bool);
+    #[doc = "Get the `failIfMajorPerformanceCaveat` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
+    #[wasm_bindgen(method, getter = "failIfMajorPerformanceCaveat")]
+    pub fn get_fail_if_major_performance_caveat(this: &WebGlContextAttributes) -> Option<bool>;
+    #[doc = "Change the `failIfMajorPerformanceCaveat` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
     #[wasm_bindgen(method, setter = "failIfMajorPerformanceCaveat")]
-    fn fail_if_major_performance_caveat_shim(this: &WebGlContextAttributes, val: bool);
+    pub fn set_fail_if_major_performance_caveat(this: &WebGlContextAttributes, val: bool);
     #[cfg(feature = "WebGlPowerPreference")]
+    #[doc = "Get the `powerPreference` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`, `WebGlPowerPreference`*"]
+    #[wasm_bindgen(method, getter = "powerPreference")]
+    pub fn get_power_preference(this: &WebGlContextAttributes) -> Option<WebGlPowerPreference>;
+    #[cfg(feature = "WebGlPowerPreference")]
+    #[doc = "Change the `powerPreference` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`, `WebGlPowerPreference`*"]
     #[wasm_bindgen(method, setter = "powerPreference")]
-    fn power_preference_shim(this: &WebGlContextAttributes, val: WebGlPowerPreference);
+    pub fn set_power_preference(this: &WebGlContextAttributes, val: WebGlPowerPreference);
+    #[doc = "Get the `premultipliedAlpha` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
+    #[wasm_bindgen(method, getter = "premultipliedAlpha")]
+    pub fn get_premultiplied_alpha(this: &WebGlContextAttributes) -> Option<bool>;
+    #[doc = "Change the `premultipliedAlpha` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
     #[wasm_bindgen(method, setter = "premultipliedAlpha")]
-    fn premultiplied_alpha_shim(this: &WebGlContextAttributes, val: bool);
+    pub fn set_premultiplied_alpha(this: &WebGlContextAttributes, val: bool);
+    #[doc = "Get the `preserveDrawingBuffer` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
+    #[wasm_bindgen(method, getter = "preserveDrawingBuffer")]
+    pub fn get_preserve_drawing_buffer(this: &WebGlContextAttributes) -> Option<bool>;
+    #[doc = "Change the `preserveDrawingBuffer` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
     #[wasm_bindgen(method, setter = "preserveDrawingBuffer")]
-    fn preserve_drawing_buffer_shim(this: &WebGlContextAttributes, val: bool);
+    pub fn set_preserve_drawing_buffer(this: &WebGlContextAttributes, val: bool);
+    #[doc = "Get the `stencil` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
+    #[wasm_bindgen(method, getter = "stencil")]
+    pub fn get_stencil(this: &WebGlContextAttributes) -> Option<bool>;
+    #[doc = "Change the `stencil` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
     #[wasm_bindgen(method, setter = "stencil")]
-    fn stencil_shim(this: &WebGlContextAttributes, val: bool);
+    pub fn set_stencil(this: &WebGlContextAttributes, val: bool);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `xrCompatible` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "xrCompatible")]
+    pub fn get_xr_compatible(this: &WebGlContextAttributes) -> Option<bool>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `xrCompatible` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "xrCompatible")]
-    fn xr_compatible_shim(this: &WebGlContextAttributes, val: bool);
+    pub fn set_xr_compatible(this: &WebGlContextAttributes, val: bool);
 }
 impl WebGlContextAttributes {
     #[doc = "Construct a new `WebGlContextAttributes`."]
@@ -39,72 +120,51 @@ impl WebGlContextAttributes {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `alpha` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
+    #[deprecated = "Use `set_alpha()` instead."]
     pub fn alpha(&mut self, val: bool) -> &mut Self {
-        self.alpha_shim(val);
+        self.set_alpha(val);
         self
     }
-    #[doc = "Change the `antialias` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
+    #[deprecated = "Use `set_antialias()` instead."]
     pub fn antialias(&mut self, val: bool) -> &mut Self {
-        self.antialias_shim(val);
+        self.set_antialias(val);
         self
     }
-    #[doc = "Change the `depth` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
+    #[deprecated = "Use `set_depth()` instead."]
     pub fn depth(&mut self, val: bool) -> &mut Self {
-        self.depth_shim(val);
+        self.set_depth(val);
         self
     }
-    #[doc = "Change the `failIfMajorPerformanceCaveat` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
+    #[deprecated = "Use `set_fail_if_major_performance_caveat()` instead."]
     pub fn fail_if_major_performance_caveat(&mut self, val: bool) -> &mut Self {
-        self.fail_if_major_performance_caveat_shim(val);
+        self.set_fail_if_major_performance_caveat(val);
         self
     }
     #[cfg(feature = "WebGlPowerPreference")]
-    #[doc = "Change the `powerPreference` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`, `WebGlPowerPreference`*"]
+    #[deprecated = "Use `set_power_preference()` instead."]
     pub fn power_preference(&mut self, val: WebGlPowerPreference) -> &mut Self {
-        self.power_preference_shim(val);
+        self.set_power_preference(val);
         self
     }
-    #[doc = "Change the `premultipliedAlpha` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
+    #[deprecated = "Use `set_premultiplied_alpha()` instead."]
     pub fn premultiplied_alpha(&mut self, val: bool) -> &mut Self {
-        self.premultiplied_alpha_shim(val);
+        self.set_premultiplied_alpha(val);
         self
     }
-    #[doc = "Change the `preserveDrawingBuffer` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
+    #[deprecated = "Use `set_preserve_drawing_buffer()` instead."]
     pub fn preserve_drawing_buffer(&mut self, val: bool) -> &mut Self {
-        self.preserve_drawing_buffer_shim(val);
+        self.set_preserve_drawing_buffer(val);
         self
     }
-    #[doc = "Change the `stencil` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
+    #[deprecated = "Use `set_stencil()` instead."]
     pub fn stencil(&mut self, val: bool) -> &mut Self {
-        self.stencil_shim(val);
+        self.set_stencil(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `xrCompatible` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `WebGlContextAttributes`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_xr_compatible()` instead."]
     pub fn xr_compatible(&mut self, val: bool) -> &mut Self {
-        self.xr_compatible_shim(val);
+        self.set_xr_compatible(val);
         self
     }
 }

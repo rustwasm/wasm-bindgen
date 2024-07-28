@@ -113,8 +113,8 @@ async fn start() -> Result<(), JsValue> {
         .unwrap();
     console_log!("pc1: offer {:?}", offer_sdp);
 
-    let mut offer_obj = RtcSessionDescriptionInit::new(RtcSdpType::Offer);
-    offer_obj.sdp(&offer_sdp);
+    let offer_obj = RtcSessionDescriptionInit::new(RtcSdpType::Offer);
+    offer_obj.set_sdp(&offer_sdp);
     let sld_promise = pc1.set_local_description(&offer_obj);
     JsFuture::from(sld_promise).await?;
     console_log!("pc1: state {:?}", pc1.signaling_state());
@@ -124,8 +124,8 @@ async fn start() -> Result<(), JsValue> {
      * Create and send ANSWER from pc2 to pc1
      *
      */
-    let mut offer_obj = RtcSessionDescriptionInit::new(RtcSdpType::Offer);
-    offer_obj.sdp(&offer_sdp);
+    let offer_obj = RtcSessionDescriptionInit::new(RtcSdpType::Offer);
+    offer_obj.set_sdp(&offer_sdp);
     let srd_promise = pc2.set_remote_description(&offer_obj);
     JsFuture::from(srd_promise).await?;
     console_log!("pc2: state {:?}", pc2.signaling_state());
@@ -136,8 +136,8 @@ async fn start() -> Result<(), JsValue> {
         .unwrap();
     console_log!("pc2: answer {:?}", answer_sdp);
 
-    let mut answer_obj = RtcSessionDescriptionInit::new(RtcSdpType::Answer);
-    answer_obj.sdp(&answer_sdp);
+    let answer_obj = RtcSessionDescriptionInit::new(RtcSdpType::Answer);
+    answer_obj.set_sdp(&answer_sdp);
     let sld_promise = pc2.set_local_description(&answer_obj);
     JsFuture::from(sld_promise).await?;
     console_log!("pc2: state {:?}", pc2.signaling_state());
@@ -146,8 +146,8 @@ async fn start() -> Result<(), JsValue> {
      * Receive ANSWER from pc2
      *
      */
-    let mut answer_obj = RtcSessionDescriptionInit::new(RtcSdpType::Answer);
-    answer_obj.sdp(&answer_sdp);
+    let answer_obj = RtcSessionDescriptionInit::new(RtcSdpType::Answer);
+    answer_obj.set_sdp(&answer_sdp);
     let srd_promise = pc1.set_remote_description(&answer_obj);
     JsFuture::from(srd_promise).await?;
     console_log!("pc1: state {:?}", pc1.signaling_state());

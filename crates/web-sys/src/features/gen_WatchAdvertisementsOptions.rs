@@ -14,9 +14,26 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type WatchAdvertisementsOptions;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "AbortSignal")]
+    #[doc = "Get the `signal` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AbortSignal`, `WatchAdvertisementsOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "signal")]
+    pub fn get_signal(this: &WatchAdvertisementsOptions) -> Option<AbortSignal>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "AbortSignal")]
+    #[doc = "Change the `signal` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AbortSignal`, `WatchAdvertisementsOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "signal")]
-    fn signal_shim(this: &WatchAdvertisementsOptions, val: &AbortSignal);
+    pub fn set_signal(this: &WatchAdvertisementsOptions, val: &AbortSignal);
 }
 #[cfg(web_sys_unstable_apis)]
 impl WatchAdvertisementsOptions {
@@ -33,14 +50,9 @@ impl WatchAdvertisementsOptions {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "AbortSignal")]
-    #[doc = "Change the `signal` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AbortSignal`, `WatchAdvertisementsOptions`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_signal()` instead."]
     pub fn signal(&mut self, val: &AbortSignal) -> &mut Self {
-        self.signal_shim(val);
+        self.set_signal(val);
         self
     }
 }

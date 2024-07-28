@@ -11,17 +11,53 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `DomQuadInit`*"]
     pub type DomQuadInit;
     #[cfg(feature = "DomPointInit")]
+    #[doc = "Get the `p1` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomPointInit`, `DomQuadInit`*"]
+    #[wasm_bindgen(method, getter = "p1")]
+    pub fn get_p1(this: &DomQuadInit) -> Option<DomPointInit>;
+    #[cfg(feature = "DomPointInit")]
+    #[doc = "Change the `p1` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomPointInit`, `DomQuadInit`*"]
     #[wasm_bindgen(method, setter = "p1")]
-    fn p1_shim(this: &DomQuadInit, val: &DomPointInit);
+    pub fn set_p1(this: &DomQuadInit, val: &DomPointInit);
     #[cfg(feature = "DomPointInit")]
+    #[doc = "Get the `p2` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomPointInit`, `DomQuadInit`*"]
+    #[wasm_bindgen(method, getter = "p2")]
+    pub fn get_p2(this: &DomQuadInit) -> Option<DomPointInit>;
+    #[cfg(feature = "DomPointInit")]
+    #[doc = "Change the `p2` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomPointInit`, `DomQuadInit`*"]
     #[wasm_bindgen(method, setter = "p2")]
-    fn p2_shim(this: &DomQuadInit, val: &DomPointInit);
+    pub fn set_p2(this: &DomQuadInit, val: &DomPointInit);
     #[cfg(feature = "DomPointInit")]
+    #[doc = "Get the `p3` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomPointInit`, `DomQuadInit`*"]
+    #[wasm_bindgen(method, getter = "p3")]
+    pub fn get_p3(this: &DomQuadInit) -> Option<DomPointInit>;
+    #[cfg(feature = "DomPointInit")]
+    #[doc = "Change the `p3` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomPointInit`, `DomQuadInit`*"]
     #[wasm_bindgen(method, setter = "p3")]
-    fn p3_shim(this: &DomQuadInit, val: &DomPointInit);
+    pub fn set_p3(this: &DomQuadInit, val: &DomPointInit);
     #[cfg(feature = "DomPointInit")]
+    #[doc = "Get the `p4` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomPointInit`, `DomQuadInit`*"]
+    #[wasm_bindgen(method, getter = "p4")]
+    pub fn get_p4(this: &DomQuadInit) -> Option<DomPointInit>;
+    #[cfg(feature = "DomPointInit")]
+    #[doc = "Change the `p4` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomPointInit`, `DomQuadInit`*"]
     #[wasm_bindgen(method, setter = "p4")]
-    fn p4_shim(this: &DomQuadInit, val: &DomPointInit);
+    pub fn set_p4(this: &DomQuadInit, val: &DomPointInit);
 }
 impl DomQuadInit {
     #[doc = "Construct a new `DomQuadInit`."]
@@ -33,35 +69,27 @@ impl DomQuadInit {
         ret
     }
     #[cfg(feature = "DomPointInit")]
-    #[doc = "Change the `p1` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DomPointInit`, `DomQuadInit`*"]
+    #[deprecated = "Use `set_p1()` instead."]
     pub fn p1(&mut self, val: &DomPointInit) -> &mut Self {
-        self.p1_shim(val);
+        self.set_p1(val);
         self
     }
     #[cfg(feature = "DomPointInit")]
-    #[doc = "Change the `p2` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DomPointInit`, `DomQuadInit`*"]
+    #[deprecated = "Use `set_p2()` instead."]
     pub fn p2(&mut self, val: &DomPointInit) -> &mut Self {
-        self.p2_shim(val);
+        self.set_p2(val);
         self
     }
     #[cfg(feature = "DomPointInit")]
-    #[doc = "Change the `p3` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DomPointInit`, `DomQuadInit`*"]
+    #[deprecated = "Use `set_p3()` instead."]
     pub fn p3(&mut self, val: &DomPointInit) -> &mut Self {
-        self.p3_shim(val);
+        self.set_p3(val);
         self
     }
     #[cfg(feature = "DomPointInit")]
-    #[doc = "Change the `p4` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DomPointInit`, `DomQuadInit`*"]
+    #[deprecated = "Use `set_p4()` instead."]
     pub fn p4(&mut self, val: &DomPointInit) -> &mut Self {
-        self.p4_shim(val);
+        self.set_p4(val);
         self
     }
 }

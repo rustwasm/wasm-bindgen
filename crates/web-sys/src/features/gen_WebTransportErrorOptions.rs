@@ -14,11 +14,44 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type WebTransportErrorOptions;
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "WebTransportErrorSource")]
+    #[doc = "Get the `source` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebTransportErrorOptions`, `WebTransportErrorSource`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "source")]
+    pub fn get_source(this: &WebTransportErrorOptions) -> Option<WebTransportErrorSource>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "WebTransportErrorSource")]
+    #[doc = "Change the `source` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebTransportErrorOptions`, `WebTransportErrorSource`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "source")]
-    fn source_shim(this: &WebTransportErrorOptions, val: WebTransportErrorSource);
+    pub fn set_source(this: &WebTransportErrorOptions, val: WebTransportErrorSource);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `streamErrorCode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebTransportErrorOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "streamErrorCode")]
+    pub fn get_stream_error_code(this: &WebTransportErrorOptions) -> Option<u8>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `streamErrorCode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebTransportErrorOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "streamErrorCode")]
-    fn stream_error_code_shim(this: &WebTransportErrorOptions, val: Option<u8>);
+    pub fn set_stream_error_code(this: &WebTransportErrorOptions, val: Option<u8>);
 }
 #[cfg(web_sys_unstable_apis)]
 impl WebTransportErrorOptions {
@@ -35,25 +68,15 @@ impl WebTransportErrorOptions {
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "WebTransportErrorSource")]
-    #[doc = "Change the `source` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `WebTransportErrorOptions`, `WebTransportErrorSource`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_source()` instead."]
     pub fn source(&mut self, val: WebTransportErrorSource) -> &mut Self {
-        self.source_shim(val);
+        self.set_source(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `streamErrorCode` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `WebTransportErrorOptions`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_stream_error_code()` instead."]
     pub fn stream_error_code(&mut self, val: Option<u8>) -> &mut Self {
-        self.stream_error_code_shim(val);
+        self.set_stream_error_code(val);
         self
     }
 }

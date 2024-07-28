@@ -10,10 +10,26 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ElementCreationOptions`*"]
     pub type ElementCreationOptions;
+    #[doc = "Get the `is` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ElementCreationOptions`*"]
+    #[wasm_bindgen(method, getter = "is")]
+    pub fn get_is(this: &ElementCreationOptions) -> Option<String>;
+    #[doc = "Change the `is` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ElementCreationOptions`*"]
     #[wasm_bindgen(method, setter = "is")]
-    fn is_shim(this: &ElementCreationOptions, val: &str);
+    pub fn set_is(this: &ElementCreationOptions, val: &str);
+    #[doc = "Get the `pseudo` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ElementCreationOptions`*"]
+    #[wasm_bindgen(method, getter = "pseudo")]
+    pub fn get_pseudo(this: &ElementCreationOptions) -> Option<String>;
+    #[doc = "Change the `pseudo` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ElementCreationOptions`*"]
     #[wasm_bindgen(method, setter = "pseudo")]
-    fn pseudo_shim(this: &ElementCreationOptions, val: &str);
+    pub fn set_pseudo(this: &ElementCreationOptions, val: &str);
 }
 impl ElementCreationOptions {
     #[doc = "Construct a new `ElementCreationOptions`."]
@@ -24,18 +40,14 @@ impl ElementCreationOptions {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `is` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ElementCreationOptions`*"]
+    #[deprecated = "Use `set_is()` instead."]
     pub fn is(&mut self, val: &str) -> &mut Self {
-        self.is_shim(val);
+        self.set_is(val);
         self
     }
-    #[doc = "Change the `pseudo` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ElementCreationOptions`*"]
+    #[deprecated = "Use `set_pseudo()` instead."]
     pub fn pseudo(&mut self, val: &str) -> &mut Self {
-        self.pseudo_shim(val);
+        self.set_pseudo(val);
         self
     }
 }

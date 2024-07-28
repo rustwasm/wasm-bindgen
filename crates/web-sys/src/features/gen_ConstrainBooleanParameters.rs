@@ -10,10 +10,26 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConstrainBooleanParameters`*"]
     pub type ConstrainBooleanParameters;
+    #[doc = "Get the `exact` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConstrainBooleanParameters`*"]
+    #[wasm_bindgen(method, getter = "exact")]
+    pub fn get_exact(this: &ConstrainBooleanParameters) -> Option<bool>;
+    #[doc = "Change the `exact` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConstrainBooleanParameters`*"]
     #[wasm_bindgen(method, setter = "exact")]
-    fn exact_shim(this: &ConstrainBooleanParameters, val: bool);
+    pub fn set_exact(this: &ConstrainBooleanParameters, val: bool);
+    #[doc = "Get the `ideal` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConstrainBooleanParameters`*"]
+    #[wasm_bindgen(method, getter = "ideal")]
+    pub fn get_ideal(this: &ConstrainBooleanParameters) -> Option<bool>;
+    #[doc = "Change the `ideal` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConstrainBooleanParameters`*"]
     #[wasm_bindgen(method, setter = "ideal")]
-    fn ideal_shim(this: &ConstrainBooleanParameters, val: bool);
+    pub fn set_ideal(this: &ConstrainBooleanParameters, val: bool);
 }
 impl ConstrainBooleanParameters {
     #[doc = "Construct a new `ConstrainBooleanParameters`."]
@@ -24,18 +40,14 @@ impl ConstrainBooleanParameters {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `exact` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ConstrainBooleanParameters`*"]
+    #[deprecated = "Use `set_exact()` instead."]
     pub fn exact(&mut self, val: bool) -> &mut Self {
-        self.exact_shim(val);
+        self.set_exact(val);
         self
     }
-    #[doc = "Change the `ideal` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ConstrainBooleanParameters`*"]
+    #[deprecated = "Use `set_ideal()` instead."]
     pub fn ideal(&mut self, val: bool) -> &mut Self {
-        self.ideal_shim(val);
+        self.set_ideal(val);
         self
     }
 }

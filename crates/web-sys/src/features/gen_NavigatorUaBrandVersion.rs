@@ -14,10 +14,42 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type NavigatorUaBrandVersion;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `brand` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `NavigatorUaBrandVersion`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "brand")]
+    pub fn get_brand(this: &NavigatorUaBrandVersion) -> Option<String>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `brand` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `NavigatorUaBrandVersion`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "brand")]
-    fn brand_shim(this: &NavigatorUaBrandVersion, val: &str);
+    pub fn set_brand(this: &NavigatorUaBrandVersion, val: &str);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `version` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `NavigatorUaBrandVersion`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "version")]
+    pub fn get_version(this: &NavigatorUaBrandVersion) -> Option<String>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `version` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `NavigatorUaBrandVersion`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "version")]
-    fn version_shim(this: &NavigatorUaBrandVersion, val: &str);
+    pub fn set_version(this: &NavigatorUaBrandVersion, val: &str);
 }
 #[cfg(web_sys_unstable_apis)]
 impl NavigatorUaBrandVersion {
@@ -33,25 +65,15 @@ impl NavigatorUaBrandVersion {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `brand` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `NavigatorUaBrandVersion`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_brand()` instead."]
     pub fn brand(&mut self, val: &str) -> &mut Self {
-        self.brand_shim(val);
+        self.set_brand(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `version` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `NavigatorUaBrandVersion`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_version()` instead."]
     pub fn version(&mut self, val: &str) -> &mut Self {
-        self.version_shim(val);
+        self.set_version(val);
         self
     }
 }

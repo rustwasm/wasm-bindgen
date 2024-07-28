@@ -42,6 +42,9 @@
 * Add bindings for `RTCRtpReceiver.jitterBufferTarget`.
   [#3968](https://github.com/rustwasm/wasm-bindgen/pull/3968)
 
+* Generate getters for all WebIDL dictionary types.
+  [#3993](https://github.com/rustwasm/wasm-bindgen/pull/3993)
+
 ### Changed
 
 * Stabilize Web Share API.
@@ -61,6 +64,9 @@
 
 * Update and stabilize the Clipboard API.
   [#3992](https://github.com/rustwasm/wasm-bindgen/pull/3992)
+
+* Deprecate builder-pattern type setters for WebIDL dictionary types and introduce non-mutable setters instead.
+  [#3993](https://github.com/rustwasm/wasm-bindgen/pull/3993)
 
 ### Fixed
 

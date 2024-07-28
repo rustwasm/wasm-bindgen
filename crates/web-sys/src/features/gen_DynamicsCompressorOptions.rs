@@ -10,24 +10,92 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DynamicsCompressorOptions`*"]
     pub type DynamicsCompressorOptions;
+    #[doc = "Get the `channelCount` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DynamicsCompressorOptions`*"]
+    #[wasm_bindgen(method, getter = "channelCount")]
+    pub fn get_channel_count(this: &DynamicsCompressorOptions) -> Option<u32>;
+    #[doc = "Change the `channelCount` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DynamicsCompressorOptions`*"]
     #[wasm_bindgen(method, setter = "channelCount")]
-    fn channel_count_shim(this: &DynamicsCompressorOptions, val: u32);
+    pub fn set_channel_count(this: &DynamicsCompressorOptions, val: u32);
     #[cfg(feature = "ChannelCountMode")]
+    #[doc = "Get the `channelCountMode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelCountMode`, `DynamicsCompressorOptions`*"]
+    #[wasm_bindgen(method, getter = "channelCountMode")]
+    pub fn get_channel_count_mode(this: &DynamicsCompressorOptions) -> Option<ChannelCountMode>;
+    #[cfg(feature = "ChannelCountMode")]
+    #[doc = "Change the `channelCountMode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelCountMode`, `DynamicsCompressorOptions`*"]
     #[wasm_bindgen(method, setter = "channelCountMode")]
-    fn channel_count_mode_shim(this: &DynamicsCompressorOptions, val: ChannelCountMode);
+    pub fn set_channel_count_mode(this: &DynamicsCompressorOptions, val: ChannelCountMode);
     #[cfg(feature = "ChannelInterpretation")]
+    #[doc = "Get the `channelInterpretation` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelInterpretation`, `DynamicsCompressorOptions`*"]
+    #[wasm_bindgen(method, getter = "channelInterpretation")]
+    pub fn get_channel_interpretation(
+        this: &DynamicsCompressorOptions,
+    ) -> Option<ChannelInterpretation>;
+    #[cfg(feature = "ChannelInterpretation")]
+    #[doc = "Change the `channelInterpretation` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ChannelInterpretation`, `DynamicsCompressorOptions`*"]
     #[wasm_bindgen(method, setter = "channelInterpretation")]
-    fn channel_interpretation_shim(this: &DynamicsCompressorOptions, val: ChannelInterpretation);
+    pub fn set_channel_interpretation(this: &DynamicsCompressorOptions, val: ChannelInterpretation);
+    #[doc = "Get the `attack` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DynamicsCompressorOptions`*"]
+    #[wasm_bindgen(method, getter = "attack")]
+    pub fn get_attack(this: &DynamicsCompressorOptions) -> Option<f32>;
+    #[doc = "Change the `attack` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DynamicsCompressorOptions`*"]
     #[wasm_bindgen(method, setter = "attack")]
-    fn attack_shim(this: &DynamicsCompressorOptions, val: f32);
+    pub fn set_attack(this: &DynamicsCompressorOptions, val: f32);
+    #[doc = "Get the `knee` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DynamicsCompressorOptions`*"]
+    #[wasm_bindgen(method, getter = "knee")]
+    pub fn get_knee(this: &DynamicsCompressorOptions) -> Option<f32>;
+    #[doc = "Change the `knee` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DynamicsCompressorOptions`*"]
     #[wasm_bindgen(method, setter = "knee")]
-    fn knee_shim(this: &DynamicsCompressorOptions, val: f32);
+    pub fn set_knee(this: &DynamicsCompressorOptions, val: f32);
+    #[doc = "Get the `ratio` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DynamicsCompressorOptions`*"]
+    #[wasm_bindgen(method, getter = "ratio")]
+    pub fn get_ratio(this: &DynamicsCompressorOptions) -> Option<f32>;
+    #[doc = "Change the `ratio` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DynamicsCompressorOptions`*"]
     #[wasm_bindgen(method, setter = "ratio")]
-    fn ratio_shim(this: &DynamicsCompressorOptions, val: f32);
+    pub fn set_ratio(this: &DynamicsCompressorOptions, val: f32);
+    #[doc = "Get the `release` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DynamicsCompressorOptions`*"]
+    #[wasm_bindgen(method, getter = "release")]
+    pub fn get_release(this: &DynamicsCompressorOptions) -> Option<f32>;
+    #[doc = "Change the `release` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DynamicsCompressorOptions`*"]
     #[wasm_bindgen(method, setter = "release")]
-    fn release_shim(this: &DynamicsCompressorOptions, val: f32);
+    pub fn set_release(this: &DynamicsCompressorOptions, val: f32);
+    #[doc = "Get the `threshold` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DynamicsCompressorOptions`*"]
+    #[wasm_bindgen(method, getter = "threshold")]
+    pub fn get_threshold(this: &DynamicsCompressorOptions) -> Option<f32>;
+    #[doc = "Change the `threshold` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DynamicsCompressorOptions`*"]
     #[wasm_bindgen(method, setter = "threshold")]
-    fn threshold_shim(this: &DynamicsCompressorOptions, val: f32);
+    pub fn set_threshold(this: &DynamicsCompressorOptions, val: f32);
 }
 impl DynamicsCompressorOptions {
     #[doc = "Construct a new `DynamicsCompressorOptions`."]
@@ -38,62 +106,46 @@ impl DynamicsCompressorOptions {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `channelCount` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DynamicsCompressorOptions`*"]
+    #[deprecated = "Use `set_channel_count()` instead."]
     pub fn channel_count(&mut self, val: u32) -> &mut Self {
-        self.channel_count_shim(val);
+        self.set_channel_count(val);
         self
     }
     #[cfg(feature = "ChannelCountMode")]
-    #[doc = "Change the `channelCountMode` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ChannelCountMode`, `DynamicsCompressorOptions`*"]
+    #[deprecated = "Use `set_channel_count_mode()` instead."]
     pub fn channel_count_mode(&mut self, val: ChannelCountMode) -> &mut Self {
-        self.channel_count_mode_shim(val);
+        self.set_channel_count_mode(val);
         self
     }
     #[cfg(feature = "ChannelInterpretation")]
-    #[doc = "Change the `channelInterpretation` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ChannelInterpretation`, `DynamicsCompressorOptions`*"]
+    #[deprecated = "Use `set_channel_interpretation()` instead."]
     pub fn channel_interpretation(&mut self, val: ChannelInterpretation) -> &mut Self {
-        self.channel_interpretation_shim(val);
+        self.set_channel_interpretation(val);
         self
     }
-    #[doc = "Change the `attack` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DynamicsCompressorOptions`*"]
+    #[deprecated = "Use `set_attack()` instead."]
     pub fn attack(&mut self, val: f32) -> &mut Self {
-        self.attack_shim(val);
+        self.set_attack(val);
         self
     }
-    #[doc = "Change the `knee` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DynamicsCompressorOptions`*"]
+    #[deprecated = "Use `set_knee()` instead."]
     pub fn knee(&mut self, val: f32) -> &mut Self {
-        self.knee_shim(val);
+        self.set_knee(val);
         self
     }
-    #[doc = "Change the `ratio` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DynamicsCompressorOptions`*"]
+    #[deprecated = "Use `set_ratio()` instead."]
     pub fn ratio(&mut self, val: f32) -> &mut Self {
-        self.ratio_shim(val);
+        self.set_ratio(val);
         self
     }
-    #[doc = "Change the `release` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DynamicsCompressorOptions`*"]
+    #[deprecated = "Use `set_release()` instead."]
     pub fn release(&mut self, val: f32) -> &mut Self {
-        self.release_shim(val);
+        self.set_release(val);
         self
     }
-    #[doc = "Change the `threshold` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DynamicsCompressorOptions`*"]
+    #[deprecated = "Use `set_threshold()` instead."]
     pub fn threshold(&mut self, val: f32) -> &mut Self {
-        self.threshold_shim(val);
+        self.set_threshold(val);
         self
     }
 }

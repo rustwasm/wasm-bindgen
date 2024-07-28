@@ -25,9 +25,9 @@ use crate::generator::{
 use crate::idl_type::ToIdlType;
 use crate::traverse::TraverseType;
 use crate::util::{
-    camel_case_ident, getter_throws, is_structural, is_type_unstable, read_dir, setter_throws,
-    shouty_snake_case_ident, snake_case_ident, throws, webidl_const_v_to_backend_const_v,
-    TypePosition,
+    camel_case_ident, getter_throws, is_structural, is_type_unstable, optional_return_ty, read_dir,
+    setter_throws, shouty_snake_case_ident, snake_case_ident, throws,
+    webidl_const_v_to_backend_const_v, TypePosition,
 };
 use anyhow::Context;
 use anyhow::Result;
@@ -397,6 +397,12 @@ impl<'src> FirstPassRecord<'src> {
             .to_syn_type(TypePosition::Argument)
             .unwrap_or(None)?;
 
+        let mut return_ty = idl_type.to_syn_type(TypePosition::Return).unwrap().unwrap();
+
+        if field.required.is_none() {
+            return_ty = optional_return_ty(return_ty);
+        }
+
         // Slice types aren't supported because they don't implement
         // `Into<JsValue>`
         match ty {
@@ -435,9 +441,10 @@ impl<'src> FirstPassRecord<'src> {
 
         Some(DictionaryField {
             required: field.required.is_some(),
-            name: rust_ident(&snake_case_ident(field.identifier.0)),
+            name: snake_case_ident(field.identifier.0),
             js_name: field.identifier.0.to_string(),
             ty,
+            return_ty,
             is_js_value_ref_option_type,
             unstable: unstable_override,
         })
@@ -779,12 +786,18 @@ impl<'src> FirstPassRecord<'src> {
 
                     fields.push(DictionaryField {
                         required: false,
-                        name: rust_ident(&snake_case_ident(identifier)),
+                        name: snake_case_ident(identifier),
                         js_name: identifier.to_string(),
                         ty: idl_type::IdlType::Callback
                             .to_syn_type(pos)
                             .unwrap()
                             .unwrap(),
+                        return_ty: optional_return_ty(
+                            idl_type::IdlType::Callback
+                                .to_syn_type(TypePosition::Return)
+                                .unwrap()
+                                .unwrap(),
+                        ),
                         is_js_value_ref_option_type: false,
                         unstable: false,
                     })

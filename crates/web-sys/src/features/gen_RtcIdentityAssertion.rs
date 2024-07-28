@@ -10,10 +10,26 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityAssertion`*"]
     pub type RtcIdentityAssertion;
+    #[doc = "Get the `idp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityAssertion`*"]
+    #[wasm_bindgen(method, getter = "idp")]
+    pub fn get_idp(this: &RtcIdentityAssertion) -> Option<String>;
+    #[doc = "Change the `idp` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityAssertion`*"]
     #[wasm_bindgen(method, setter = "idp")]
-    fn idp_shim(this: &RtcIdentityAssertion, val: &str);
+    pub fn set_idp(this: &RtcIdentityAssertion, val: &str);
+    #[doc = "Get the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityAssertion`*"]
+    #[wasm_bindgen(method, getter = "name")]
+    pub fn get_name(this: &RtcIdentityAssertion) -> Option<String>;
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityAssertion`*"]
     #[wasm_bindgen(method, setter = "name")]
-    fn name_shim(this: &RtcIdentityAssertion, val: &str);
+    pub fn set_name(this: &RtcIdentityAssertion, val: &str);
 }
 impl RtcIdentityAssertion {
     #[doc = "Construct a new `RtcIdentityAssertion`."]
@@ -24,18 +40,14 @@ impl RtcIdentityAssertion {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `idp` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityAssertion`*"]
+    #[deprecated = "Use `set_idp()` instead."]
     pub fn idp(&mut self, val: &str) -> &mut Self {
-        self.idp_shim(val);
+        self.set_idp(val);
         self
     }
-    #[doc = "Change the `name` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcIdentityAssertion`*"]
+    #[deprecated = "Use `set_name()` instead."]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        self.name_shim(val);
+        self.set_name(val);
         self
     }
 }

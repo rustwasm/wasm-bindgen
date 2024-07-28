@@ -10,8 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ElementDefinitionOptions`*"]
     pub type ElementDefinitionOptions;
+    #[doc = "Get the `extends` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ElementDefinitionOptions`*"]
+    #[wasm_bindgen(method, getter = "extends")]
+    pub fn get_extends(this: &ElementDefinitionOptions) -> Option<String>;
+    #[doc = "Change the `extends` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ElementDefinitionOptions`*"]
     #[wasm_bindgen(method, setter = "extends")]
-    fn extends_shim(this: &ElementDefinitionOptions, val: &str);
+    pub fn set_extends(this: &ElementDefinitionOptions, val: &str);
 }
 impl ElementDefinitionOptions {
     #[doc = "Construct a new `ElementDefinitionOptions`."]
@@ -22,11 +30,9 @@ impl ElementDefinitionOptions {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `extends` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ElementDefinitionOptions`*"]
+    #[deprecated = "Use `set_extends()` instead."]
     pub fn extends(&mut self, val: &str) -> &mut Self {
-        self.extends_shim(val);
+        self.set_extends(val);
         self
     }
 }

@@ -10,8 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XPathNsResolver`*"]
     pub type XPathNsResolver;
+    #[doc = "Get the `lookupNamespaceURI` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XPathNsResolver`*"]
+    #[wasm_bindgen(method, getter = "lookupNamespaceURI")]
+    pub fn get_lookup_namespace_uri(this: &XPathNsResolver) -> Option<::js_sys::Function>;
+    #[doc = "Change the `lookupNamespaceURI` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `XPathNsResolver`*"]
     #[wasm_bindgen(method, setter = "lookupNamespaceURI")]
-    fn lookup_namespace_uri_shim(this: &XPathNsResolver, val: &::js_sys::Function);
+    pub fn set_lookup_namespace_uri(this: &XPathNsResolver, val: &::js_sys::Function);
 }
 impl XPathNsResolver {
     #[doc = "Construct a new `XPathNsResolver`."]
@@ -22,11 +30,9 @@ impl XPathNsResolver {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `lookupNamespaceURI` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `XPathNsResolver`*"]
+    #[deprecated = "Use `set_lookup_namespace_uri()` instead."]
     pub fn lookup_namespace_uri(&mut self, val: &::js_sys::Function) -> &mut Self {
-        self.lookup_namespace_uri_shim(val);
+        self.set_lookup_namespace_uri(val);
         self
     }
 }

@@ -14,17 +14,84 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type VideoColorSpaceInit;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `fullRange` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoColorSpaceInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "fullRange")]
+    pub fn get_full_range(this: &VideoColorSpaceInit) -> Option<bool>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `fullRange` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoColorSpaceInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "fullRange")]
-    fn full_range_shim(this: &VideoColorSpaceInit, val: bool);
+    pub fn set_full_range(this: &VideoColorSpaceInit, val: bool);
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "VideoMatrixCoefficients")]
+    #[doc = "Get the `matrix` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoColorSpaceInit`, `VideoMatrixCoefficients`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "matrix")]
+    pub fn get_matrix(this: &VideoColorSpaceInit) -> Option<VideoMatrixCoefficients>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "VideoMatrixCoefficients")]
+    #[doc = "Change the `matrix` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoColorSpaceInit`, `VideoMatrixCoefficients`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "matrix")]
-    fn matrix_shim(this: &VideoColorSpaceInit, val: VideoMatrixCoefficients);
+    pub fn set_matrix(this: &VideoColorSpaceInit, val: VideoMatrixCoefficients);
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "VideoColorPrimaries")]
+    #[doc = "Get the `primaries` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoColorPrimaries`, `VideoColorSpaceInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "primaries")]
+    pub fn get_primaries(this: &VideoColorSpaceInit) -> Option<VideoColorPrimaries>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "VideoColorPrimaries")]
+    #[doc = "Change the `primaries` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoColorPrimaries`, `VideoColorSpaceInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "primaries")]
-    fn primaries_shim(this: &VideoColorSpaceInit, val: VideoColorPrimaries);
+    pub fn set_primaries(this: &VideoColorSpaceInit, val: VideoColorPrimaries);
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "VideoTransferCharacteristics")]
+    #[doc = "Get the `transfer` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoColorSpaceInit`, `VideoTransferCharacteristics`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "transfer")]
+    pub fn get_transfer(this: &VideoColorSpaceInit) -> Option<VideoTransferCharacteristics>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "VideoTransferCharacteristics")]
+    #[doc = "Change the `transfer` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `VideoColorSpaceInit`, `VideoTransferCharacteristics`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "transfer")]
-    fn transfer_shim(this: &VideoColorSpaceInit, val: VideoTransferCharacteristics);
+    pub fn set_transfer(this: &VideoColorSpaceInit, val: VideoTransferCharacteristics);
 }
 #[cfg(web_sys_unstable_apis)]
 impl VideoColorSpaceInit {
@@ -40,50 +107,30 @@ impl VideoColorSpaceInit {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `fullRange` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `VideoColorSpaceInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_full_range()` instead."]
     pub fn full_range(&mut self, val: bool) -> &mut Self {
-        self.full_range_shim(val);
+        self.set_full_range(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "VideoMatrixCoefficients")]
-    #[doc = "Change the `matrix` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `VideoColorSpaceInit`, `VideoMatrixCoefficients`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_matrix()` instead."]
     pub fn matrix(&mut self, val: VideoMatrixCoefficients) -> &mut Self {
-        self.matrix_shim(val);
+        self.set_matrix(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "VideoColorPrimaries")]
-    #[doc = "Change the `primaries` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `VideoColorPrimaries`, `VideoColorSpaceInit`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_primaries()` instead."]
     pub fn primaries(&mut self, val: VideoColorPrimaries) -> &mut Self {
-        self.primaries_shim(val);
+        self.set_primaries(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "VideoTransferCharacteristics")]
-    #[doc = "Change the `transfer` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `VideoColorSpaceInit`, `VideoTransferCharacteristics`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_transfer()` instead."]
     pub fn transfer(&mut self, val: VideoTransferCharacteristics) -> &mut Self {
-        self.transfer_shim(val);
+        self.set_transfer(val);
         self
     }
 }

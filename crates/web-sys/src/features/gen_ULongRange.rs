@@ -14,10 +14,42 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type ULongRange;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `max` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ULongRange`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "max")]
+    pub fn get_max(this: &ULongRange) -> Option<u32>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `max` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ULongRange`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "max")]
-    fn max_shim(this: &ULongRange, val: u32);
+    pub fn set_max(this: &ULongRange, val: u32);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `min` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ULongRange`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "min")]
+    pub fn get_min(this: &ULongRange) -> Option<u32>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `min` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ULongRange`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "min")]
-    fn min_shim(this: &ULongRange, val: u32);
+    pub fn set_min(this: &ULongRange, val: u32);
 }
 #[cfg(web_sys_unstable_apis)]
 impl ULongRange {
@@ -33,25 +65,15 @@ impl ULongRange {
         ret
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `max` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ULongRange`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_max()` instead."]
     pub fn max(&mut self, val: u32) -> &mut Self {
-        self.max_shim(val);
+        self.set_max(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `min` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ULongRange`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[deprecated = "Use `set_min()` instead."]
     pub fn min(&mut self, val: u32) -> &mut Self {
-        self.min_shim(val);
+        self.set_min(val);
         self
     }
 }

@@ -11,8 +11,17 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ResizeObserverOptions`*"]
     pub type ResizeObserverOptions;
     #[cfg(feature = "ResizeObserverBoxOptions")]
+    #[doc = "Get the `box` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ResizeObserverBoxOptions`, `ResizeObserverOptions`*"]
+    #[wasm_bindgen(method, getter = "box")]
+    pub fn get_box(this: &ResizeObserverOptions) -> Option<ResizeObserverBoxOptions>;
+    #[cfg(feature = "ResizeObserverBoxOptions")]
+    #[doc = "Change the `box` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ResizeObserverBoxOptions`, `ResizeObserverOptions`*"]
     #[wasm_bindgen(method, setter = "box")]
-    fn box__shim(this: &ResizeObserverOptions, val: ResizeObserverBoxOptions);
+    pub fn set_box(this: &ResizeObserverOptions, val: ResizeObserverBoxOptions);
 }
 impl ResizeObserverOptions {
     #[doc = "Construct a new `ResizeObserverOptions`."]
@@ -24,11 +33,9 @@ impl ResizeObserverOptions {
         ret
     }
     #[cfg(feature = "ResizeObserverBoxOptions")]
-    #[doc = "Change the `box` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ResizeObserverBoxOptions`, `ResizeObserverOptions`*"]
+    #[deprecated = "Use `set_box()` instead."]
     pub fn box_(&mut self, val: ResizeObserverBoxOptions) -> &mut Self {
-        self.box__shim(val);
+        self.set_box(val);
         self
     }
 }

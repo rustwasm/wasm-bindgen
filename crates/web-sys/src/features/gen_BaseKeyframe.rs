@@ -11,14 +11,47 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `BaseKeyframe`*"]
     pub type BaseKeyframe;
     #[cfg(feature = "CompositeOperation")]
+    #[doc = "Get the `composite` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BaseKeyframe`, `CompositeOperation`*"]
+    #[wasm_bindgen(method, getter = "composite")]
+    pub fn get_composite(this: &BaseKeyframe) -> Option<CompositeOperation>;
+    #[cfg(feature = "CompositeOperation")]
+    #[doc = "Change the `composite` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BaseKeyframe`, `CompositeOperation`*"]
     #[wasm_bindgen(method, setter = "composite")]
-    fn composite_shim(this: &BaseKeyframe, val: Option<CompositeOperation>);
+    pub fn set_composite(this: &BaseKeyframe, val: Option<CompositeOperation>);
+    #[doc = "Get the `easing` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BaseKeyframe`*"]
+    #[wasm_bindgen(method, getter = "easing")]
+    pub fn get_easing(this: &BaseKeyframe) -> Option<String>;
+    #[doc = "Change the `easing` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BaseKeyframe`*"]
     #[wasm_bindgen(method, setter = "easing")]
-    fn easing_shim(this: &BaseKeyframe, val: &str);
+    pub fn set_easing(this: &BaseKeyframe, val: &str);
+    #[doc = "Get the `offset` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BaseKeyframe`*"]
+    #[wasm_bindgen(method, getter = "offset")]
+    pub fn get_offset(this: &BaseKeyframe) -> Option<f64>;
+    #[doc = "Change the `offset` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BaseKeyframe`*"]
     #[wasm_bindgen(method, setter = "offset")]
-    fn offset_shim(this: &BaseKeyframe, val: Option<f64>);
+    pub fn set_offset(this: &BaseKeyframe, val: Option<f64>);
+    #[doc = "Get the `simulateComputeValuesFailure` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BaseKeyframe`*"]
+    #[wasm_bindgen(method, getter = "simulateComputeValuesFailure")]
+    pub fn get_simulate_compute_values_failure(this: &BaseKeyframe) -> Option<bool>;
+    #[doc = "Change the `simulateComputeValuesFailure` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BaseKeyframe`*"]
     #[wasm_bindgen(method, setter = "simulateComputeValuesFailure")]
-    fn simulate_compute_values_failure_shim(this: &BaseKeyframe, val: bool);
+    pub fn set_simulate_compute_values_failure(this: &BaseKeyframe, val: bool);
 }
 impl BaseKeyframe {
     #[doc = "Construct a new `BaseKeyframe`."]
@@ -30,32 +63,24 @@ impl BaseKeyframe {
         ret
     }
     #[cfg(feature = "CompositeOperation")]
-    #[doc = "Change the `composite` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BaseKeyframe`, `CompositeOperation`*"]
+    #[deprecated = "Use `set_composite()` instead."]
     pub fn composite(&mut self, val: Option<CompositeOperation>) -> &mut Self {
-        self.composite_shim(val);
+        self.set_composite(val);
         self
     }
-    #[doc = "Change the `easing` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BaseKeyframe`*"]
+    #[deprecated = "Use `set_easing()` instead."]
     pub fn easing(&mut self, val: &str) -> &mut Self {
-        self.easing_shim(val);
+        self.set_easing(val);
         self
     }
-    #[doc = "Change the `offset` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BaseKeyframe`*"]
+    #[deprecated = "Use `set_offset()` instead."]
     pub fn offset(&mut self, val: Option<f64>) -> &mut Self {
-        self.offset_shim(val);
+        self.set_offset(val);
         self
     }
-    #[doc = "Change the `simulateComputeValuesFailure` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BaseKeyframe`*"]
+    #[deprecated = "Use `set_simulate_compute_values_failure()` instead."]
     pub fn simulate_compute_values_failure(&mut self, val: bool) -> &mut Self {
-        self.simulate_compute_values_failure_shim(val);
+        self.set_simulate_compute_values_failure(val);
         self
     }
 }

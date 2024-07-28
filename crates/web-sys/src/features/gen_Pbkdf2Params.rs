@@ -10,14 +10,46 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Pbkdf2Params`*"]
     pub type Pbkdf2Params;
+    #[doc = "Get the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Pbkdf2Params`*"]
+    #[wasm_bindgen(method, getter = "name")]
+    pub fn get_name(this: &Pbkdf2Params) -> String;
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Pbkdf2Params`*"]
     #[wasm_bindgen(method, setter = "name")]
-    fn name_shim(this: &Pbkdf2Params, val: &str);
+    pub fn set_name(this: &Pbkdf2Params, val: &str);
+    #[doc = "Get the `hash` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Pbkdf2Params`*"]
+    #[wasm_bindgen(method, getter = "hash")]
+    pub fn get_hash(this: &Pbkdf2Params) -> ::wasm_bindgen::JsValue;
+    #[doc = "Change the `hash` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Pbkdf2Params`*"]
     #[wasm_bindgen(method, setter = "hash")]
-    fn hash_shim(this: &Pbkdf2Params, val: &::wasm_bindgen::JsValue);
+    pub fn set_hash(this: &Pbkdf2Params, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `iterations` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Pbkdf2Params`*"]
+    #[wasm_bindgen(method, getter = "iterations")]
+    pub fn get_iterations(this: &Pbkdf2Params) -> u32;
+    #[doc = "Change the `iterations` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Pbkdf2Params`*"]
     #[wasm_bindgen(method, setter = "iterations")]
-    fn iterations_shim(this: &Pbkdf2Params, val: u32);
+    pub fn set_iterations(this: &Pbkdf2Params, val: u32);
+    #[doc = "Get the `salt` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Pbkdf2Params`*"]
+    #[wasm_bindgen(method, getter = "salt")]
+    pub fn get_salt(this: &Pbkdf2Params) -> ::js_sys::Object;
+    #[doc = "Change the `salt` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Pbkdf2Params`*"]
     #[wasm_bindgen(method, setter = "salt")]
-    fn salt_shim(this: &Pbkdf2Params, val: &::js_sys::Object);
+    pub fn set_salt(this: &Pbkdf2Params, val: &::js_sys::Object);
 }
 impl Pbkdf2Params {
     #[doc = "Construct a new `Pbkdf2Params`."]
@@ -37,32 +69,24 @@ impl Pbkdf2Params {
         ret.salt(salt);
         ret
     }
-    #[doc = "Change the `name` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Pbkdf2Params`*"]
+    #[deprecated = "Use `set_name()` instead."]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        self.name_shim(val);
+        self.set_name(val);
         self
     }
-    #[doc = "Change the `hash` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Pbkdf2Params`*"]
+    #[deprecated = "Use `set_hash()` instead."]
     pub fn hash(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.hash_shim(val);
+        self.set_hash(val);
         self
     }
-    #[doc = "Change the `iterations` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Pbkdf2Params`*"]
+    #[deprecated = "Use `set_iterations()` instead."]
     pub fn iterations(&mut self, val: u32) -> &mut Self {
-        self.iterations_shim(val);
+        self.set_iterations(val);
         self
     }
-    #[doc = "Change the `salt` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Pbkdf2Params`*"]
+    #[deprecated = "Use `set_salt()` instead."]
     pub fn salt(&mut self, val: &::js_sys::Object) -> &mut Self {
-        self.salt_shim(val);
+        self.set_salt(val);
         self
     }
 }

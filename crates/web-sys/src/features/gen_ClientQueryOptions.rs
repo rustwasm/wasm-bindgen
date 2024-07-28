@@ -10,11 +10,28 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ClientQueryOptions`*"]
     pub type ClientQueryOptions;
+    #[doc = "Get the `includeUncontrolled` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ClientQueryOptions`*"]
+    #[wasm_bindgen(method, getter = "includeUncontrolled")]
+    pub fn get_include_uncontrolled(this: &ClientQueryOptions) -> Option<bool>;
+    #[doc = "Change the `includeUncontrolled` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ClientQueryOptions`*"]
     #[wasm_bindgen(method, setter = "includeUncontrolled")]
-    fn include_uncontrolled_shim(this: &ClientQueryOptions, val: bool);
+    pub fn set_include_uncontrolled(this: &ClientQueryOptions, val: bool);
     #[cfg(feature = "ClientType")]
+    #[doc = "Get the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ClientQueryOptions`, `ClientType`*"]
+    #[wasm_bindgen(method, getter = "type")]
+    pub fn get_type(this: &ClientQueryOptions) -> Option<ClientType>;
+    #[cfg(feature = "ClientType")]
+    #[doc = "Change the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ClientQueryOptions`, `ClientType`*"]
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &ClientQueryOptions, val: ClientType);
+    pub fn set_type(this: &ClientQueryOptions, val: ClientType);
 }
 impl ClientQueryOptions {
     #[doc = "Construct a new `ClientQueryOptions`."]
@@ -25,19 +42,15 @@ impl ClientQueryOptions {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `includeUncontrolled` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ClientQueryOptions`*"]
+    #[deprecated = "Use `set_include_uncontrolled()` instead."]
     pub fn include_uncontrolled(&mut self, val: bool) -> &mut Self {
-        self.include_uncontrolled_shim(val);
+        self.set_include_uncontrolled(val);
         self
     }
     #[cfg(feature = "ClientType")]
-    #[doc = "Change the `type` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ClientQueryOptions`, `ClientType`*"]
+    #[deprecated = "Use `set_type()` instead."]
     pub fn type_(&mut self, val: ClientType) -> &mut Self {
-        self.type__shim(val);
+        self.set_type(val);
         self
     }
 }

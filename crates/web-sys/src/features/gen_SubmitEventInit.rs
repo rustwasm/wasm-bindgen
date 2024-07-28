@@ -10,15 +10,48 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SubmitEventInit`*"]
     pub type SubmitEventInit;
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SubmitEventInit`*"]
+    #[wasm_bindgen(method, getter = "bubbles")]
+    pub fn get_bubbles(this: &SubmitEventInit) -> Option<bool>;
+    #[doc = "Change the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SubmitEventInit`*"]
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &SubmitEventInit, val: bool);
+    pub fn set_bubbles(this: &SubmitEventInit, val: bool);
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SubmitEventInit`*"]
+    #[wasm_bindgen(method, getter = "cancelable")]
+    pub fn get_cancelable(this: &SubmitEventInit) -> Option<bool>;
+    #[doc = "Change the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SubmitEventInit`*"]
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &SubmitEventInit, val: bool);
+    pub fn set_cancelable(this: &SubmitEventInit, val: bool);
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SubmitEventInit`*"]
+    #[wasm_bindgen(method, getter = "composed")]
+    pub fn get_composed(this: &SubmitEventInit) -> Option<bool>;
+    #[doc = "Change the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SubmitEventInit`*"]
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &SubmitEventInit, val: bool);
+    pub fn set_composed(this: &SubmitEventInit, val: bool);
     #[cfg(feature = "HtmlElement")]
+    #[doc = "Get the `submitter` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlElement`, `SubmitEventInit`*"]
+    #[wasm_bindgen(method, getter = "submitter")]
+    pub fn get_submitter(this: &SubmitEventInit) -> Option<HtmlElement>;
+    #[cfg(feature = "HtmlElement")]
+    #[doc = "Change the `submitter` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlElement`, `SubmitEventInit`*"]
     #[wasm_bindgen(method, setter = "submitter")]
-    fn submitter_shim(this: &SubmitEventInit, val: Option<&HtmlElement>);
+    pub fn set_submitter(this: &SubmitEventInit, val: Option<&HtmlElement>);
 }
 impl SubmitEventInit {
     #[doc = "Construct a new `SubmitEventInit`."]
@@ -29,33 +62,25 @@ impl SubmitEventInit {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `bubbles` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `SubmitEventInit`*"]
+    #[deprecated = "Use `set_bubbles()` instead."]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles(val);
         self
     }
-    #[doc = "Change the `cancelable` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `SubmitEventInit`*"]
+    #[deprecated = "Use `set_cancelable()` instead."]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable(val);
         self
     }
-    #[doc = "Change the `composed` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `SubmitEventInit`*"]
+    #[deprecated = "Use `set_composed()` instead."]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed(val);
         self
     }
     #[cfg(feature = "HtmlElement")]
-    #[doc = "Change the `submitter` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `HtmlElement`, `SubmitEventInit`*"]
+    #[deprecated = "Use `set_submitter()` instead."]
     pub fn submitter(&mut self, val: Option<&HtmlElement>) -> &mut Self {
-        self.submitter_shim(val);
+        self.set_submitter(val);
         self
     }
 }

@@ -11,8 +11,17 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ScrollOptions`*"]
     pub type ScrollOptions;
     #[cfg(feature = "ScrollBehavior")]
+    #[doc = "Get the `behavior` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollBehavior`, `ScrollOptions`*"]
+    #[wasm_bindgen(method, getter = "behavior")]
+    pub fn get_behavior(this: &ScrollOptions) -> Option<ScrollBehavior>;
+    #[cfg(feature = "ScrollBehavior")]
+    #[doc = "Change the `behavior` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollBehavior`, `ScrollOptions`*"]
     #[wasm_bindgen(method, setter = "behavior")]
-    fn behavior_shim(this: &ScrollOptions, val: ScrollBehavior);
+    pub fn set_behavior(this: &ScrollOptions, val: ScrollBehavior);
 }
 impl ScrollOptions {
     #[doc = "Construct a new `ScrollOptions`."]
@@ -24,11 +33,9 @@ impl ScrollOptions {
         ret
     }
     #[cfg(feature = "ScrollBehavior")]
-    #[doc = "Change the `behavior` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ScrollBehavior`, `ScrollOptions`*"]
+    #[deprecated = "Use `set_behavior()` instead."]
     pub fn behavior(&mut self, val: ScrollBehavior) -> &mut Self {
-        self.behavior_shim(val);
+        self.set_behavior(val);
         self
     }
 }

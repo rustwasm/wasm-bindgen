@@ -11,14 +11,41 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `ScrollIntoViewOptions`*"]
     pub type ScrollIntoViewOptions;
     #[cfg(feature = "ScrollBehavior")]
+    #[doc = "Get the `behavior` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollBehavior`, `ScrollIntoViewOptions`*"]
+    #[wasm_bindgen(method, getter = "behavior")]
+    pub fn get_behavior(this: &ScrollIntoViewOptions) -> Option<ScrollBehavior>;
+    #[cfg(feature = "ScrollBehavior")]
+    #[doc = "Change the `behavior` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollBehavior`, `ScrollIntoViewOptions`*"]
     #[wasm_bindgen(method, setter = "behavior")]
-    fn behavior_shim(this: &ScrollIntoViewOptions, val: ScrollBehavior);
+    pub fn set_behavior(this: &ScrollIntoViewOptions, val: ScrollBehavior);
     #[cfg(feature = "ScrollLogicalPosition")]
+    #[doc = "Get the `block` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollIntoViewOptions`, `ScrollLogicalPosition`*"]
+    #[wasm_bindgen(method, getter = "block")]
+    pub fn get_block(this: &ScrollIntoViewOptions) -> Option<ScrollLogicalPosition>;
+    #[cfg(feature = "ScrollLogicalPosition")]
+    #[doc = "Change the `block` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollIntoViewOptions`, `ScrollLogicalPosition`*"]
     #[wasm_bindgen(method, setter = "block")]
-    fn block_shim(this: &ScrollIntoViewOptions, val: ScrollLogicalPosition);
+    pub fn set_block(this: &ScrollIntoViewOptions, val: ScrollLogicalPosition);
     #[cfg(feature = "ScrollLogicalPosition")]
+    #[doc = "Get the `inline` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollIntoViewOptions`, `ScrollLogicalPosition`*"]
+    #[wasm_bindgen(method, getter = "inline")]
+    pub fn get_inline(this: &ScrollIntoViewOptions) -> Option<ScrollLogicalPosition>;
+    #[cfg(feature = "ScrollLogicalPosition")]
+    #[doc = "Change the `inline` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ScrollIntoViewOptions`, `ScrollLogicalPosition`*"]
     #[wasm_bindgen(method, setter = "inline")]
-    fn inline_shim(this: &ScrollIntoViewOptions, val: ScrollLogicalPosition);
+    pub fn set_inline(this: &ScrollIntoViewOptions, val: ScrollLogicalPosition);
 }
 impl ScrollIntoViewOptions {
     #[doc = "Construct a new `ScrollIntoViewOptions`."]
@@ -30,27 +57,21 @@ impl ScrollIntoViewOptions {
         ret
     }
     #[cfg(feature = "ScrollBehavior")]
-    #[doc = "Change the `behavior` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ScrollBehavior`, `ScrollIntoViewOptions`*"]
+    #[deprecated = "Use `set_behavior()` instead."]
     pub fn behavior(&mut self, val: ScrollBehavior) -> &mut Self {
-        self.behavior_shim(val);
+        self.set_behavior(val);
         self
     }
     #[cfg(feature = "ScrollLogicalPosition")]
-    #[doc = "Change the `block` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ScrollIntoViewOptions`, `ScrollLogicalPosition`*"]
+    #[deprecated = "Use `set_block()` instead."]
     pub fn block(&mut self, val: ScrollLogicalPosition) -> &mut Self {
-        self.block_shim(val);
+        self.set_block(val);
         self
     }
     #[cfg(feature = "ScrollLogicalPosition")]
-    #[doc = "Change the `inline` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ScrollIntoViewOptions`, `ScrollLogicalPosition`*"]
+    #[deprecated = "Use `set_inline()` instead."]
     pub fn inline(&mut self, val: ScrollLogicalPosition) -> &mut Self {
-        self.inline_shim(val);
+        self.set_inline(val);
         self
     }
 }

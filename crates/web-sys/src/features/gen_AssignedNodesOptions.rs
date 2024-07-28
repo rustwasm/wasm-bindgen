@@ -10,8 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AssignedNodesOptions`*"]
     pub type AssignedNodesOptions;
+    #[doc = "Get the `flatten` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AssignedNodesOptions`*"]
+    #[wasm_bindgen(method, getter = "flatten")]
+    pub fn get_flatten(this: &AssignedNodesOptions) -> Option<bool>;
+    #[doc = "Change the `flatten` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AssignedNodesOptions`*"]
     #[wasm_bindgen(method, setter = "flatten")]
-    fn flatten_shim(this: &AssignedNodesOptions, val: bool);
+    pub fn set_flatten(this: &AssignedNodesOptions, val: bool);
 }
 impl AssignedNodesOptions {
     #[doc = "Construct a new `AssignedNodesOptions`."]
@@ -22,11 +30,9 @@ impl AssignedNodesOptions {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `flatten` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AssignedNodesOptions`*"]
+    #[deprecated = "Use `set_flatten()` instead."]
     pub fn flatten(&mut self, val: bool) -> &mut Self {
-        self.flatten_shim(val);
+        self.set_flatten(val);
         self
     }
 }

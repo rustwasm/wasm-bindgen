@@ -10,16 +10,56 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpSocketErrorEventInit`*"]
     pub type TcpSocketErrorEventInit;
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TcpSocketErrorEventInit`*"]
+    #[wasm_bindgen(method, getter = "bubbles")]
+    pub fn get_bubbles(this: &TcpSocketErrorEventInit) -> Option<bool>;
+    #[doc = "Change the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TcpSocketErrorEventInit`*"]
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &TcpSocketErrorEventInit, val: bool);
+    pub fn set_bubbles(this: &TcpSocketErrorEventInit, val: bool);
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TcpSocketErrorEventInit`*"]
+    #[wasm_bindgen(method, getter = "cancelable")]
+    pub fn get_cancelable(this: &TcpSocketErrorEventInit) -> Option<bool>;
+    #[doc = "Change the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TcpSocketErrorEventInit`*"]
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &TcpSocketErrorEventInit, val: bool);
+    pub fn set_cancelable(this: &TcpSocketErrorEventInit, val: bool);
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TcpSocketErrorEventInit`*"]
+    #[wasm_bindgen(method, getter = "composed")]
+    pub fn get_composed(this: &TcpSocketErrorEventInit) -> Option<bool>;
+    #[doc = "Change the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TcpSocketErrorEventInit`*"]
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &TcpSocketErrorEventInit, val: bool);
+    pub fn set_composed(this: &TcpSocketErrorEventInit, val: bool);
+    #[doc = "Get the `message` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TcpSocketErrorEventInit`*"]
+    #[wasm_bindgen(method, getter = "message")]
+    pub fn get_message(this: &TcpSocketErrorEventInit) -> Option<String>;
+    #[doc = "Change the `message` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TcpSocketErrorEventInit`*"]
     #[wasm_bindgen(method, setter = "message")]
-    fn message_shim(this: &TcpSocketErrorEventInit, val: &str);
+    pub fn set_message(this: &TcpSocketErrorEventInit, val: &str);
+    #[doc = "Get the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TcpSocketErrorEventInit`*"]
+    #[wasm_bindgen(method, getter = "name")]
+    pub fn get_name(this: &TcpSocketErrorEventInit) -> Option<String>;
+    #[doc = "Change the `name` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `TcpSocketErrorEventInit`*"]
     #[wasm_bindgen(method, setter = "name")]
-    fn name_shim(this: &TcpSocketErrorEventInit, val: &str);
+    pub fn set_name(this: &TcpSocketErrorEventInit, val: &str);
 }
 impl TcpSocketErrorEventInit {
     #[doc = "Construct a new `TcpSocketErrorEventInit`."]
@@ -30,39 +70,29 @@ impl TcpSocketErrorEventInit {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `bubbles` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `TcpSocketErrorEventInit`*"]
+    #[deprecated = "Use `set_bubbles()` instead."]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles(val);
         self
     }
-    #[doc = "Change the `cancelable` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `TcpSocketErrorEventInit`*"]
+    #[deprecated = "Use `set_cancelable()` instead."]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable(val);
         self
     }
-    #[doc = "Change the `composed` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `TcpSocketErrorEventInit`*"]
+    #[deprecated = "Use `set_composed()` instead."]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed(val);
         self
     }
-    #[doc = "Change the `message` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `TcpSocketErrorEventInit`*"]
+    #[deprecated = "Use `set_message()` instead."]
     pub fn message(&mut self, val: &str) -> &mut Self {
-        self.message_shim(val);
+        self.set_message(val);
         self
     }
-    #[doc = "Change the `name` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `TcpSocketErrorEventInit`*"]
+    #[deprecated = "Use `set_name()` instead."]
     pub fn name(&mut self, val: &str) -> &mut Self {
-        self.name_shim(val);
+        self.set_name(val);
         self
     }
 }

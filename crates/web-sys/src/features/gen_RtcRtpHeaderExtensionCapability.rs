@@ -10,8 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpHeaderExtensionCapability`*"]
     pub type RtcRtpHeaderExtensionCapability;
+    #[doc = "Get the `uri` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpHeaderExtensionCapability`*"]
+    #[wasm_bindgen(method, getter = "uri")]
+    pub fn get_uri(this: &RtcRtpHeaderExtensionCapability) -> String;
+    #[doc = "Change the `uri` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpHeaderExtensionCapability`*"]
     #[wasm_bindgen(method, setter = "uri")]
-    fn uri_shim(this: &RtcRtpHeaderExtensionCapability, val: &str);
+    pub fn set_uri(this: &RtcRtpHeaderExtensionCapability, val: &str);
 }
 impl RtcRtpHeaderExtensionCapability {
     #[doc = "Construct a new `RtcRtpHeaderExtensionCapability`."]
@@ -23,11 +31,9 @@ impl RtcRtpHeaderExtensionCapability {
         ret.uri(uri);
         ret
     }
-    #[doc = "Change the `uri` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcRtpHeaderExtensionCapability`*"]
+    #[deprecated = "Use `set_uri()` instead."]
     pub fn uri(&mut self, val: &str) -> &mut Self {
-        self.uri_shim(val);
+        self.set_uri(val);
         self
     }
 }

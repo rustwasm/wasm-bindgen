@@ -10,8 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConnStatusDict`*"]
     pub type ConnStatusDict;
+    #[doc = "Get the `status` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConnStatusDict`*"]
+    #[wasm_bindgen(method, getter = "status")]
+    pub fn get_status(this: &ConnStatusDict) -> Option<String>;
+    #[doc = "Change the `status` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ConnStatusDict`*"]
     #[wasm_bindgen(method, setter = "status")]
-    fn status_shim(this: &ConnStatusDict, val: &str);
+    pub fn set_status(this: &ConnStatusDict, val: &str);
 }
 impl ConnStatusDict {
     #[doc = "Construct a new `ConnStatusDict`."]
@@ -22,11 +30,9 @@ impl ConnStatusDict {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `status` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ConnStatusDict`*"]
+    #[deprecated = "Use `set_status()` instead."]
     pub fn status(&mut self, val: &str) -> &mut Self {
-        self.status_shim(val);
+        self.set_status(val);
         self
     }
 }

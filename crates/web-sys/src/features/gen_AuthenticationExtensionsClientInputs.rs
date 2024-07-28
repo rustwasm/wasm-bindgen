@@ -10,8 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientInputs`*"]
     pub type AuthenticationExtensionsClientInputs;
+    #[doc = "Get the `appid` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientInputs`*"]
+    #[wasm_bindgen(method, getter = "appid")]
+    pub fn get_appid(this: &AuthenticationExtensionsClientInputs) -> Option<String>;
+    #[doc = "Change the `appid` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientInputs`*"]
     #[wasm_bindgen(method, setter = "appid")]
-    fn appid_shim(this: &AuthenticationExtensionsClientInputs, val: &str);
+    pub fn set_appid(this: &AuthenticationExtensionsClientInputs, val: &str);
 }
 impl AuthenticationExtensionsClientInputs {
     #[doc = "Construct a new `AuthenticationExtensionsClientInputs`."]
@@ -22,11 +30,9 @@ impl AuthenticationExtensionsClientInputs {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `appid` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientInputs`*"]
+    #[deprecated = "Use `set_appid()` instead."]
     pub fn appid(&mut self, val: &str) -> &mut Self {
-        self.appid_shim(val);
+        self.set_appid(val);
         self
     }
 }

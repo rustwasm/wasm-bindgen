@@ -10,14 +10,46 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `LifecycleCallbacks`*"]
     pub type LifecycleCallbacks;
+    #[doc = "Get the `adoptedCallback` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `LifecycleCallbacks`*"]
+    #[wasm_bindgen(method, getter = "adoptedCallback")]
+    pub fn get_adopted_callback(this: &LifecycleCallbacks) -> Option<::js_sys::Function>;
+    #[doc = "Change the `adoptedCallback` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `LifecycleCallbacks`*"]
     #[wasm_bindgen(method, setter = "adoptedCallback")]
-    fn adopted_callback_shim(this: &LifecycleCallbacks, val: &::js_sys::Function);
+    pub fn set_adopted_callback(this: &LifecycleCallbacks, val: &::js_sys::Function);
+    #[doc = "Get the `attributeChangedCallback` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `LifecycleCallbacks`*"]
+    #[wasm_bindgen(method, getter = "attributeChangedCallback")]
+    pub fn get_attribute_changed_callback(this: &LifecycleCallbacks) -> Option<::js_sys::Function>;
+    #[doc = "Change the `attributeChangedCallback` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `LifecycleCallbacks`*"]
     #[wasm_bindgen(method, setter = "attributeChangedCallback")]
-    fn attribute_changed_callback_shim(this: &LifecycleCallbacks, val: &::js_sys::Function);
+    pub fn set_attribute_changed_callback(this: &LifecycleCallbacks, val: &::js_sys::Function);
+    #[doc = "Get the `connectedCallback` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `LifecycleCallbacks`*"]
+    #[wasm_bindgen(method, getter = "connectedCallback")]
+    pub fn get_connected_callback(this: &LifecycleCallbacks) -> Option<::js_sys::Function>;
+    #[doc = "Change the `connectedCallback` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `LifecycleCallbacks`*"]
     #[wasm_bindgen(method, setter = "connectedCallback")]
-    fn connected_callback_shim(this: &LifecycleCallbacks, val: &::js_sys::Function);
+    pub fn set_connected_callback(this: &LifecycleCallbacks, val: &::js_sys::Function);
+    #[doc = "Get the `disconnectedCallback` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `LifecycleCallbacks`*"]
+    #[wasm_bindgen(method, getter = "disconnectedCallback")]
+    pub fn get_disconnected_callback(this: &LifecycleCallbacks) -> Option<::js_sys::Function>;
+    #[doc = "Change the `disconnectedCallback` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `LifecycleCallbacks`*"]
     #[wasm_bindgen(method, setter = "disconnectedCallback")]
-    fn disconnected_callback_shim(this: &LifecycleCallbacks, val: &::js_sys::Function);
+    pub fn set_disconnected_callback(this: &LifecycleCallbacks, val: &::js_sys::Function);
 }
 impl LifecycleCallbacks {
     #[doc = "Construct a new `LifecycleCallbacks`."]
@@ -28,32 +60,24 @@ impl LifecycleCallbacks {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `adoptedCallback` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `LifecycleCallbacks`*"]
+    #[deprecated = "Use `set_adopted_callback()` instead."]
     pub fn adopted_callback(&mut self, val: &::js_sys::Function) -> &mut Self {
-        self.adopted_callback_shim(val);
+        self.set_adopted_callback(val);
         self
     }
-    #[doc = "Change the `attributeChangedCallback` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `LifecycleCallbacks`*"]
+    #[deprecated = "Use `set_attribute_changed_callback()` instead."]
     pub fn attribute_changed_callback(&mut self, val: &::js_sys::Function) -> &mut Self {
-        self.attribute_changed_callback_shim(val);
+        self.set_attribute_changed_callback(val);
         self
     }
-    #[doc = "Change the `connectedCallback` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `LifecycleCallbacks`*"]
+    #[deprecated = "Use `set_connected_callback()` instead."]
     pub fn connected_callback(&mut self, val: &::js_sys::Function) -> &mut Self {
-        self.connected_callback_shim(val);
+        self.set_connected_callback(val);
         self
     }
-    #[doc = "Change the `disconnectedCallback` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `LifecycleCallbacks`*"]
+    #[deprecated = "Use `set_disconnected_callback()` instead."]
     pub fn disconnected_callback(&mut self, val: &::js_sys::Function) -> &mut Self {
-        self.disconnected_callback_shim(val);
+        self.set_disconnected_callback(val);
         self
     }
 }

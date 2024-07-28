@@ -10,8 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ReadableStreamIteratorOptions`*"]
     pub type ReadableStreamIteratorOptions;
+    #[doc = "Get the `preventCancel` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ReadableStreamIteratorOptions`*"]
+    #[wasm_bindgen(method, getter = "preventCancel")]
+    pub fn get_prevent_cancel(this: &ReadableStreamIteratorOptions) -> Option<bool>;
+    #[doc = "Change the `preventCancel` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ReadableStreamIteratorOptions`*"]
     #[wasm_bindgen(method, setter = "preventCancel")]
-    fn prevent_cancel_shim(this: &ReadableStreamIteratorOptions, val: bool);
+    pub fn set_prevent_cancel(this: &ReadableStreamIteratorOptions, val: bool);
 }
 impl ReadableStreamIteratorOptions {
     #[doc = "Construct a new `ReadableStreamIteratorOptions`."]
@@ -22,11 +30,9 @@ impl ReadableStreamIteratorOptions {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `preventCancel` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ReadableStreamIteratorOptions`*"]
+    #[deprecated = "Use `set_prevent_cancel()` instead."]
     pub fn prevent_cancel(&mut self, val: bool) -> &mut Self {
-        self.prevent_cancel_shim(val);
+        self.set_prevent_cancel(val);
         self
     }
 }

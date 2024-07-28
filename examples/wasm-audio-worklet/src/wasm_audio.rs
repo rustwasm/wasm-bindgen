@@ -41,15 +41,13 @@ pub fn wasm_audio_node(
     ctx: &AudioContext,
     process: Box<dyn FnMut(&mut [f32]) -> bool>,
 ) -> Result<AudioWorkletNode, JsValue> {
-    AudioWorkletNode::new_with_options(
-        ctx,
-        "WasmProcessor",
-        AudioWorkletNodeOptions::new().processor_options(Some(&js_sys::Array::of3(
-            &wasm_bindgen::module(),
-            &wasm_bindgen::memory(),
-            &WasmAudioProcessor(process).pack().into(),
-        ))),
-    )
+    let options = AudioWorkletNodeOptions::new();
+    options.set_processor_options(Some(&js_sys::Array::of3(
+        &wasm_bindgen::module(),
+        &wasm_bindgen::memory(),
+        &WasmAudioProcessor(process).pack().into(),
+    )));
+    AudioWorkletNode::new_with_options(ctx, "WasmProcessor", &options)
 }
 
 pub async fn prepare_wasm_audio(ctx: &AudioContext) -> Result<(), JsValue> {

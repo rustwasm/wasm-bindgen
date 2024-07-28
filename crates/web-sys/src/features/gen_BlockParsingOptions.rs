@@ -10,8 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BlockParsingOptions`*"]
     pub type BlockParsingOptions;
+    #[doc = "Get the `blockScriptCreated` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BlockParsingOptions`*"]
+    #[wasm_bindgen(method, getter = "blockScriptCreated")]
+    pub fn get_block_script_created(this: &BlockParsingOptions) -> Option<bool>;
+    #[doc = "Change the `blockScriptCreated` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BlockParsingOptions`*"]
     #[wasm_bindgen(method, setter = "blockScriptCreated")]
-    fn block_script_created_shim(this: &BlockParsingOptions, val: bool);
+    pub fn set_block_script_created(this: &BlockParsingOptions, val: bool);
 }
 impl BlockParsingOptions {
     #[doc = "Construct a new `BlockParsingOptions`."]
@@ -22,11 +30,9 @@ impl BlockParsingOptions {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `blockScriptCreated` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BlockParsingOptions`*"]
+    #[deprecated = "Use `set_block_script_created()` instead."]
     pub fn block_script_created(&mut self, val: bool) -> &mut Self {
-        self.block_script_created_shim(val);
+        self.set_block_script_created(val);
         self
     }
 }

@@ -11,11 +11,31 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `CredentialRequestOptions`*"]
     pub type CredentialRequestOptions;
     #[cfg(feature = "PublicKeyCredentialRequestOptions")]
+    #[doc = "Get the `publicKey` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CredentialRequestOptions`, `PublicKeyCredentialRequestOptions`*"]
+    #[wasm_bindgen(method, getter = "publicKey")]
+    pub fn get_public_key(
+        this: &CredentialRequestOptions,
+    ) -> Option<PublicKeyCredentialRequestOptions>;
+    #[cfg(feature = "PublicKeyCredentialRequestOptions")]
+    #[doc = "Change the `publicKey` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CredentialRequestOptions`, `PublicKeyCredentialRequestOptions`*"]
     #[wasm_bindgen(method, setter = "publicKey")]
-    fn public_key_shim(this: &CredentialRequestOptions, val: &PublicKeyCredentialRequestOptions);
+    pub fn set_public_key(this: &CredentialRequestOptions, val: &PublicKeyCredentialRequestOptions);
     #[cfg(feature = "AbortSignal")]
+    #[doc = "Get the `signal` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AbortSignal`, `CredentialRequestOptions`*"]
+    #[wasm_bindgen(method, getter = "signal")]
+    pub fn get_signal(this: &CredentialRequestOptions) -> Option<AbortSignal>;
+    #[cfg(feature = "AbortSignal")]
+    #[doc = "Change the `signal` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AbortSignal`, `CredentialRequestOptions`*"]
     #[wasm_bindgen(method, setter = "signal")]
-    fn signal_shim(this: &CredentialRequestOptions, val: &AbortSignal);
+    pub fn set_signal(this: &CredentialRequestOptions, val: &AbortSignal);
 }
 impl CredentialRequestOptions {
     #[doc = "Construct a new `CredentialRequestOptions`."]
@@ -27,19 +47,15 @@ impl CredentialRequestOptions {
         ret
     }
     #[cfg(feature = "PublicKeyCredentialRequestOptions")]
-    #[doc = "Change the `publicKey` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `CredentialRequestOptions`, `PublicKeyCredentialRequestOptions`*"]
+    #[deprecated = "Use `set_public_key()` instead."]
     pub fn public_key(&mut self, val: &PublicKeyCredentialRequestOptions) -> &mut Self {
-        self.public_key_shim(val);
+        self.set_public_key(val);
         self
     }
     #[cfg(feature = "AbortSignal")]
-    #[doc = "Change the `signal` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AbortSignal`, `CredentialRequestOptions`*"]
+    #[deprecated = "Use `set_signal()` instead."]
     pub fn signal(&mut self, val: &AbortSignal) -> &mut Self {
-        self.signal_shim(val);
+        self.set_signal(val);
         self
     }
 }

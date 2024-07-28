@@ -10,18 +10,66 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProgressEventInit`*"]
     pub type ProgressEventInit;
+    #[doc = "Get the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ProgressEventInit`*"]
+    #[wasm_bindgen(method, getter = "bubbles")]
+    pub fn get_bubbles(this: &ProgressEventInit) -> Option<bool>;
+    #[doc = "Change the `bubbles` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ProgressEventInit`*"]
     #[wasm_bindgen(method, setter = "bubbles")]
-    fn bubbles_shim(this: &ProgressEventInit, val: bool);
+    pub fn set_bubbles(this: &ProgressEventInit, val: bool);
+    #[doc = "Get the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ProgressEventInit`*"]
+    #[wasm_bindgen(method, getter = "cancelable")]
+    pub fn get_cancelable(this: &ProgressEventInit) -> Option<bool>;
+    #[doc = "Change the `cancelable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ProgressEventInit`*"]
     #[wasm_bindgen(method, setter = "cancelable")]
-    fn cancelable_shim(this: &ProgressEventInit, val: bool);
+    pub fn set_cancelable(this: &ProgressEventInit, val: bool);
+    #[doc = "Get the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ProgressEventInit`*"]
+    #[wasm_bindgen(method, getter = "composed")]
+    pub fn get_composed(this: &ProgressEventInit) -> Option<bool>;
+    #[doc = "Change the `composed` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ProgressEventInit`*"]
     #[wasm_bindgen(method, setter = "composed")]
-    fn composed_shim(this: &ProgressEventInit, val: bool);
+    pub fn set_composed(this: &ProgressEventInit, val: bool);
+    #[doc = "Get the `lengthComputable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ProgressEventInit`*"]
+    #[wasm_bindgen(method, getter = "lengthComputable")]
+    pub fn get_length_computable(this: &ProgressEventInit) -> Option<bool>;
+    #[doc = "Change the `lengthComputable` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ProgressEventInit`*"]
     #[wasm_bindgen(method, setter = "lengthComputable")]
-    fn length_computable_shim(this: &ProgressEventInit, val: bool);
+    pub fn set_length_computable(this: &ProgressEventInit, val: bool);
+    #[doc = "Get the `loaded` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ProgressEventInit`*"]
+    #[wasm_bindgen(method, getter = "loaded")]
+    pub fn get_loaded(this: &ProgressEventInit) -> Option<f64>;
+    #[doc = "Change the `loaded` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ProgressEventInit`*"]
     #[wasm_bindgen(method, setter = "loaded")]
-    fn loaded_shim(this: &ProgressEventInit, val: f64);
+    pub fn set_loaded(this: &ProgressEventInit, val: f64);
+    #[doc = "Get the `total` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ProgressEventInit`*"]
+    #[wasm_bindgen(method, getter = "total")]
+    pub fn get_total(this: &ProgressEventInit) -> Option<f64>;
+    #[doc = "Change the `total` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ProgressEventInit`*"]
     #[wasm_bindgen(method, setter = "total")]
-    fn total_shim(this: &ProgressEventInit, val: f64);
+    pub fn set_total(this: &ProgressEventInit, val: f64);
 }
 impl ProgressEventInit {
     #[doc = "Construct a new `ProgressEventInit`."]
@@ -32,46 +80,34 @@ impl ProgressEventInit {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `bubbles` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ProgressEventInit`*"]
+    #[deprecated = "Use `set_bubbles()` instead."]
     pub fn bubbles(&mut self, val: bool) -> &mut Self {
-        self.bubbles_shim(val);
+        self.set_bubbles(val);
         self
     }
-    #[doc = "Change the `cancelable` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ProgressEventInit`*"]
+    #[deprecated = "Use `set_cancelable()` instead."]
     pub fn cancelable(&mut self, val: bool) -> &mut Self {
-        self.cancelable_shim(val);
+        self.set_cancelable(val);
         self
     }
-    #[doc = "Change the `composed` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ProgressEventInit`*"]
+    #[deprecated = "Use `set_composed()` instead."]
     pub fn composed(&mut self, val: bool) -> &mut Self {
-        self.composed_shim(val);
+        self.set_composed(val);
         self
     }
-    #[doc = "Change the `lengthComputable` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ProgressEventInit`*"]
+    #[deprecated = "Use `set_length_computable()` instead."]
     pub fn length_computable(&mut self, val: bool) -> &mut Self {
-        self.length_computable_shim(val);
+        self.set_length_computable(val);
         self
     }
-    #[doc = "Change the `loaded` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ProgressEventInit`*"]
+    #[deprecated = "Use `set_loaded()` instead."]
     pub fn loaded(&mut self, val: f64) -> &mut Self {
-        self.loaded_shim(val);
+        self.set_loaded(val);
         self
     }
-    #[doc = "Change the `total` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ProgressEventInit`*"]
+    #[deprecated = "Use `set_total()` instead."]
     pub fn total(&mut self, val: f64) -> &mut Self {
-        self.total_shim(val);
+        self.set_total(val);
         self
     }
 }

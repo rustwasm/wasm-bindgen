@@ -10,10 +10,26 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IterableKeyOrValueResult`*"]
     pub type IterableKeyOrValueResult;
+    #[doc = "Get the `done` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IterableKeyOrValueResult`*"]
+    #[wasm_bindgen(method, getter = "done")]
+    pub fn get_done(this: &IterableKeyOrValueResult) -> Option<bool>;
+    #[doc = "Change the `done` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IterableKeyOrValueResult`*"]
     #[wasm_bindgen(method, setter = "done")]
-    fn done_shim(this: &IterableKeyOrValueResult, val: bool);
+    pub fn set_done(this: &IterableKeyOrValueResult, val: bool);
+    #[doc = "Get the `value` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IterableKeyOrValueResult`*"]
+    #[wasm_bindgen(method, getter = "value")]
+    pub fn get_value(this: &IterableKeyOrValueResult) -> ::wasm_bindgen::JsValue;
+    #[doc = "Change the `value` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IterableKeyOrValueResult`*"]
     #[wasm_bindgen(method, setter = "value")]
-    fn value_shim(this: &IterableKeyOrValueResult, val: &::wasm_bindgen::JsValue);
+    pub fn set_value(this: &IterableKeyOrValueResult, val: &::wasm_bindgen::JsValue);
 }
 impl IterableKeyOrValueResult {
     #[doc = "Construct a new `IterableKeyOrValueResult`."]
@@ -24,18 +40,14 @@ impl IterableKeyOrValueResult {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `done` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `IterableKeyOrValueResult`*"]
+    #[deprecated = "Use `set_done()` instead."]
     pub fn done(&mut self, val: bool) -> &mut Self {
-        self.done_shim(val);
+        self.set_done(val);
         self
     }
-    #[doc = "Change the `value` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `IterableKeyOrValueResult`*"]
+    #[deprecated = "Use `set_value()` instead."]
     pub fn value(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
-        self.value_shim(val);
+        self.set_value(val);
         self
     }
 }

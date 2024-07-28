@@ -10,8 +10,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemGetDirectoryOptions`*"]
     pub type FileSystemGetDirectoryOptions;
+    #[doc = "Get the `create` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemGetDirectoryOptions`*"]
+    #[wasm_bindgen(method, getter = "create")]
+    pub fn get_create(this: &FileSystemGetDirectoryOptions) -> Option<bool>;
+    #[doc = "Change the `create` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemGetDirectoryOptions`*"]
     #[wasm_bindgen(method, setter = "create")]
-    fn create_shim(this: &FileSystemGetDirectoryOptions, val: bool);
+    pub fn set_create(this: &FileSystemGetDirectoryOptions, val: bool);
 }
 impl FileSystemGetDirectoryOptions {
     #[doc = "Construct a new `FileSystemGetDirectoryOptions`."]
@@ -22,11 +30,9 @@ impl FileSystemGetDirectoryOptions {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `create` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FileSystemGetDirectoryOptions`*"]
+    #[deprecated = "Use `set_create()` instead."]
     pub fn create(&mut self, val: bool) -> &mut Self {
-        self.create_shim(val);
+        self.set_create(val);
         self
     }
 }

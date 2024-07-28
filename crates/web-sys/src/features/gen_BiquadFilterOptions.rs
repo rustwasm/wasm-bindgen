@@ -10,25 +10,92 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`*"]
     pub type BiquadFilterOptions;
+    #[doc = "Get the `channelCount` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`*"]
+    #[wasm_bindgen(method, getter = "channelCount")]
+    pub fn get_channel_count(this: &BiquadFilterOptions) -> Option<u32>;
+    #[doc = "Change the `channelCount` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`*"]
     #[wasm_bindgen(method, setter = "channelCount")]
-    fn channel_count_shim(this: &BiquadFilterOptions, val: u32);
+    pub fn set_channel_count(this: &BiquadFilterOptions, val: u32);
     #[cfg(feature = "ChannelCountMode")]
+    #[doc = "Get the `channelCountMode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`, `ChannelCountMode`*"]
+    #[wasm_bindgen(method, getter = "channelCountMode")]
+    pub fn get_channel_count_mode(this: &BiquadFilterOptions) -> Option<ChannelCountMode>;
+    #[cfg(feature = "ChannelCountMode")]
+    #[doc = "Change the `channelCountMode` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`, `ChannelCountMode`*"]
     #[wasm_bindgen(method, setter = "channelCountMode")]
-    fn channel_count_mode_shim(this: &BiquadFilterOptions, val: ChannelCountMode);
+    pub fn set_channel_count_mode(this: &BiquadFilterOptions, val: ChannelCountMode);
     #[cfg(feature = "ChannelInterpretation")]
+    #[doc = "Get the `channelInterpretation` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`, `ChannelInterpretation`*"]
+    #[wasm_bindgen(method, getter = "channelInterpretation")]
+    pub fn get_channel_interpretation(this: &BiquadFilterOptions) -> Option<ChannelInterpretation>;
+    #[cfg(feature = "ChannelInterpretation")]
+    #[doc = "Change the `channelInterpretation` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`, `ChannelInterpretation`*"]
     #[wasm_bindgen(method, setter = "channelInterpretation")]
-    fn channel_interpretation_shim(this: &BiquadFilterOptions, val: ChannelInterpretation);
+    pub fn set_channel_interpretation(this: &BiquadFilterOptions, val: ChannelInterpretation);
+    #[doc = "Get the `Q` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`*"]
+    #[wasm_bindgen(method, getter = "Q")]
+    pub fn get_q(this: &BiquadFilterOptions) -> Option<f32>;
+    #[doc = "Change the `Q` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`*"]
     #[wasm_bindgen(method, setter = "Q")]
-    fn q_shim(this: &BiquadFilterOptions, val: f32);
+    pub fn set_q(this: &BiquadFilterOptions, val: f32);
+    #[doc = "Get the `detune` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`*"]
+    #[wasm_bindgen(method, getter = "detune")]
+    pub fn get_detune(this: &BiquadFilterOptions) -> Option<f32>;
+    #[doc = "Change the `detune` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`*"]
     #[wasm_bindgen(method, setter = "detune")]
-    fn detune_shim(this: &BiquadFilterOptions, val: f32);
+    pub fn set_detune(this: &BiquadFilterOptions, val: f32);
+    #[doc = "Get the `frequency` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`*"]
+    #[wasm_bindgen(method, getter = "frequency")]
+    pub fn get_frequency(this: &BiquadFilterOptions) -> Option<f32>;
+    #[doc = "Change the `frequency` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`*"]
     #[wasm_bindgen(method, setter = "frequency")]
-    fn frequency_shim(this: &BiquadFilterOptions, val: f32);
+    pub fn set_frequency(this: &BiquadFilterOptions, val: f32);
+    #[doc = "Get the `gain` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`*"]
+    #[wasm_bindgen(method, getter = "gain")]
+    pub fn get_gain(this: &BiquadFilterOptions) -> Option<f32>;
+    #[doc = "Change the `gain` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`*"]
     #[wasm_bindgen(method, setter = "gain")]
-    fn gain_shim(this: &BiquadFilterOptions, val: f32);
+    pub fn set_gain(this: &BiquadFilterOptions, val: f32);
     #[cfg(feature = "BiquadFilterType")]
+    #[doc = "Get the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`, `BiquadFilterType`*"]
+    #[wasm_bindgen(method, getter = "type")]
+    pub fn get_type(this: &BiquadFilterOptions) -> Option<BiquadFilterType>;
+    #[cfg(feature = "BiquadFilterType")]
+    #[doc = "Change the `type` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`, `BiquadFilterType`*"]
     #[wasm_bindgen(method, setter = "type")]
-    fn type__shim(this: &BiquadFilterOptions, val: BiquadFilterType);
+    pub fn set_type(this: &BiquadFilterOptions, val: BiquadFilterType);
 }
 impl BiquadFilterOptions {
     #[doc = "Construct a new `BiquadFilterOptions`."]
@@ -39,63 +106,47 @@ impl BiquadFilterOptions {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[doc = "Change the `channelCount` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`*"]
+    #[deprecated = "Use `set_channel_count()` instead."]
     pub fn channel_count(&mut self, val: u32) -> &mut Self {
-        self.channel_count_shim(val);
+        self.set_channel_count(val);
         self
     }
     #[cfg(feature = "ChannelCountMode")]
-    #[doc = "Change the `channelCountMode` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`, `ChannelCountMode`*"]
+    #[deprecated = "Use `set_channel_count_mode()` instead."]
     pub fn channel_count_mode(&mut self, val: ChannelCountMode) -> &mut Self {
-        self.channel_count_mode_shim(val);
+        self.set_channel_count_mode(val);
         self
     }
     #[cfg(feature = "ChannelInterpretation")]
-    #[doc = "Change the `channelInterpretation` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`, `ChannelInterpretation`*"]
+    #[deprecated = "Use `set_channel_interpretation()` instead."]
     pub fn channel_interpretation(&mut self, val: ChannelInterpretation) -> &mut Self {
-        self.channel_interpretation_shim(val);
+        self.set_channel_interpretation(val);
         self
     }
-    #[doc = "Change the `Q` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`*"]
+    #[deprecated = "Use `set_q()` instead."]
     pub fn q(&mut self, val: f32) -> &mut Self {
-        self.q_shim(val);
+        self.set_q(val);
         self
     }
-    #[doc = "Change the `detune` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`*"]
+    #[deprecated = "Use `set_detune()` instead."]
     pub fn detune(&mut self, val: f32) -> &mut Self {
-        self.detune_shim(val);
+        self.set_detune(val);
         self
     }
-    #[doc = "Change the `frequency` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`*"]
+    #[deprecated = "Use `set_frequency()` instead."]
     pub fn frequency(&mut self, val: f32) -> &mut Self {
-        self.frequency_shim(val);
+        self.set_frequency(val);
         self
     }
-    #[doc = "Change the `gain` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`*"]
+    #[deprecated = "Use `set_gain()` instead."]
     pub fn gain(&mut self, val: f32) -> &mut Self {
-        self.gain_shim(val);
+        self.set_gain(val);
         self
     }
     #[cfg(feature = "BiquadFilterType")]
-    #[doc = "Change the `type` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterOptions`, `BiquadFilterType`*"]
+    #[deprecated = "Use `set_type()` instead."]
     pub fn type_(&mut self, val: BiquadFilterType) -> &mut Self {
-        self.type__shim(val);
+        self.set_type(val);
         self
     }
 }
