@@ -54,6 +54,9 @@
 * Add WebIDL definitions relating to `Popover API`.
   [#3977](https://github.com/rustwasm/wasm-bindgen/pull/3977)
 
+* Added the `thread_stack_size` property to the object parameter of `default()` (`init()`) and `initSync()`, making it possible to set the stack size of spawned threads. `__wbindgen_thread_destroy()` now has a third optional parameter for the stack size, the default stack size is assumed when not passing it. When calling from the thread to be destroyed, by passing no parameters, the correct stack size is determined internally.
+  [#3995](https://github.com/rustwasm/wasm-bindgen/pull/3995)
+
 ### Changed
 
 * Stabilize Web Share API.
@@ -86,6 +89,12 @@
 * Deprecate `AudioBufferSourceNode.onended` and `AudioBufferSourceNode.stop()`.
   [#4020](https://github.com/rustwasm/wasm-bindgen/pull/4020)
 
+* Increase default stack size for spawned threads from 1 to 2 MB.
+  [#3995](https://github.com/rustwasm/wasm-bindgen/pull/3995)
+
+* Deprecated parameters to `default` (`init`) and `initSync` in favor of an object.
+  [#3995](https://github.com/rustwasm/wasm-bindgen/pull/3995)
+
 ### Fixed
 
 * Copy port from headless test server when using `WASM_BINDGEN_TEST_ADDRESS`.
@@ -117,6 +126,9 @@
  
 * Fixed Deno support.
   [#3990](https://github.com/rustwasm/wasm-bindgen/pull/3990)
+
+* Fix `__wbindgen_thread_destroy()` ignoring parameters.
+  [#3995](https://github.com/rustwasm/wasm-bindgen/pull/3995)
 
 --------------------------------------------------------------------------------
 

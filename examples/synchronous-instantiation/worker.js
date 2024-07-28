@@ -7,7 +7,7 @@ self.onmessage = ({ data: bytes }) => {
    * via the default export. The synchronous method internally uses
    * `new WebAssembly.Module()` and `new WebAssembly.Instance()`.
    */
-  wasm.initSync(bytes);
+  wasm.initSync({ module: bytes });
 
   /**
    * Once initialized we can call our exported `greet()` functions.
