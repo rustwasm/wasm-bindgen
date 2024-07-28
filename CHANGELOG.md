@@ -48,6 +48,9 @@
 * Support for iterable in WebIDL. Gives `entries`, `keys`, `values` methods for regular and asynchronous, as well as `for_each` for regular, iterables.
   [#3962](https://github.com/rustwasm/wasm-bindgen/pull/3962)
 
+* Add bindings for `HTMLTableCellElement.abbr` and `scope` properties.
+  [#3972](https://github.com/rustwasm/wasm-bindgen/pull/3972)
+
 ### Changed
 
 * Stabilize Web Share API.

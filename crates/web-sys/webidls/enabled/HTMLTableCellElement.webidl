@@ -21,9 +21,9 @@ interface HTMLTableCellElement : HTMLElement {
            [CEReactions, SetterThrows]
            attribute DOMString headers;
   readonly attribute long cellIndex;
-           [CEReactions, SetterThrows]
+           [CEReactions]
            attribute DOMString abbr;
-           [CEReactions, SetterThrows]
+           [CEReactions]
            attribute DOMString scope;
 };
 
