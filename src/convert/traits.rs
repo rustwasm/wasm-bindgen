@@ -192,25 +192,23 @@ impl<T: IntoWasmAbi> ReturnWasmAbi for T {
     }
 }
 
-if_std! {
-    use core::marker::Sized;
-    use std::boxed::Box;
+use alloc::boxed::Box;
+use core::marker::Sized;
 
-    /// Trait for element types to implement IntoWasmAbi for vectors of
-    /// themselves.
-    pub trait VectorIntoWasmAbi: WasmDescribeVector + Sized {
-        type Abi: WasmAbi;
+/// Trait for element types to implement IntoWasmAbi for vectors of
+/// themselves.
+pub trait VectorIntoWasmAbi: WasmDescribeVector + Sized {
+    type Abi: WasmAbi;
 
-        fn vector_into_abi(vector: Box<[Self]>) -> Self::Abi;
-    }
+    fn vector_into_abi(vector: Box<[Self]>) -> Self::Abi;
+}
 
-    /// Trait for element types to implement FromWasmAbi for vectors of
-    /// themselves.
-    pub trait VectorFromWasmAbi: WasmDescribeVector + Sized {
-        type Abi: WasmAbi;
+/// Trait for element types to implement FromWasmAbi for vectors of
+/// themselves.
+pub trait VectorFromWasmAbi: WasmDescribeVector + Sized {
+    type Abi: WasmAbi;
 
-        unsafe fn vector_from_abi(js: Self::Abi) -> Box<[Self]>;
-    }
+    unsafe fn vector_from_abi(js: Self::Abi) -> Box<[Self]>;
 }
 
 /// A repr(C) struct containing all of the primitives of a `WasmAbi` type, in

@@ -130,6 +130,9 @@
 * Fix `__wbindgen_thread_destroy()` ignoring parameters.
   [#3995](https://github.com/rustwasm/wasm-bindgen/pull/3995)
 
+* Fix `no_std` support and therefor compiling with `default-features = false`.
+  [#4005](https://github.com/rustwasm/wasm-bindgen/pull/4005)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.92](https://github.com/rustwasm/wasm-bindgen/compare/0.2.91...0.2.92)

@@ -3,6 +3,9 @@
 
 #![doc(hidden)]
 
+use alloc::boxed::Box;
+use alloc::string::String;
+use alloc::vec::Vec;
 use core::ptr::NonNull;
 
 use crate::{Clamped, JsError, JsObject, JsValue};
@@ -145,46 +148,45 @@ impl<'a, T: WasmDescribe + ?Sized> WasmDescribe for &'a mut T {
     }
 }
 
-if_std! {
-    use std::prelude::v1::*;
+cfg_if! {
+    if #[cfg(feature = "enable-interning")] {
+        simple! {
+            String => CACHED_STRING
+        }
 
-    cfg_if! {
-        if #[cfg(feature = "enable-interning")] {
-            simple! {
-                String => CACHED_STRING
-            }
-
-        } else {
-            simple! {
-                String => STRING
-            }
+    } else {
+        simple! {
+            String => STRING
         }
     }
+}
 
-    impl WasmDescribeVector for JsValue {
-        fn describe_vector() {
-            inform(VECTOR);
-            JsValue::describe();
-        }
+impl WasmDescribeVector for JsValue {
+    fn describe_vector() {
+        inform(VECTOR);
+        JsValue::describe();
     }
+}
 
-    impl<T: JsObject> WasmDescribeVector for T {
-        fn describe_vector() {
-            inform(VECTOR);
-            T::describe();
-        }
+impl<T: JsObject> WasmDescribeVector for T {
+    fn describe_vector() {
+        inform(VECTOR);
+        T::describe();
     }
+}
 
-    impl<T: WasmDescribeVector> WasmDescribe for Box<[T]> {
-        fn describe() {
-            T::describe_vector();
-        }
+impl<T: WasmDescribeVector> WasmDescribe for Box<[T]> {
+    fn describe() {
+        T::describe_vector();
     }
+}
 
-    impl<T> WasmDescribe for Vec<T> where Box<[T]>: WasmDescribe {
-        fn describe() {
-            <Box<[T]>>::describe();
-        }
+impl<T> WasmDescribe for Vec<T>
+where
+    Box<[T]>: WasmDescribe,
+{
+    fn describe() {
+        <Box<[T]>>::describe();
     }
 }
 

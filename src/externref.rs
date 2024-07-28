@@ -1,8 +1,9 @@
 use crate::JsValue;
-use std::cell::Cell;
-use std::slice;
-use std::vec::Vec;
-use std::cmp::max;
+
+use alloc::slice;
+use alloc::vec::Vec;
+use core::cell::Cell;
+use core::cmp::max;
 
 externs! {
     #[link(wasm_import_module = "__wbindgen_externref_xform__")]
@@ -98,10 +99,19 @@ impl Slab {
 }
 
 fn internal_error(msg: &str) -> ! {
-    if cfg!(debug_assertions) {
-        super::throw_str(msg)
-    } else {
-        std::process::abort()
+    cfg_if::cfg_if! {
+        if #[cfg(debug_assertions)] {
+            super::throw_str(msg)
+        } else if #[cfg(feature = "std")] {
+            std::process::abort();
+        } else if #[cfg(all(
+            target_arch = "wasm32",
+            not(any(target_os = "emscripten", target_os = "wasi"))
+        ))] {
+            core::arch::wasm32::unreachable();
+        } else {
+            unreachable!()
+        }
     }
 }
 
@@ -160,7 +170,3 @@ pub unsafe extern "C" fn __externref_heap_live_count() -> u32 {
         })
         .unwrap_or_else(|_| internal_error("tls access failure"))
 }
-
-// see comment in module above this in `link_mem_intrinsics`
-#[inline(never)]
-pub fn link_intrinsics() {}

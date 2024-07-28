@@ -221,12 +221,6 @@ impl ToTokens for ast::Struct {
             impl #wasm_bindgen::describe::WasmDescribe for #name {
                 fn describe() {
                     use #wasm_bindgen::__wbindgen_if_not_std;
-                    __wbindgen_if_not_std! {
-                        compile_error! {
-                            "exporting a class to JS requires the `std` feature to \
-                             be enabled in the `wasm-bindgen` crate"
-                        }
-                    }
                     use #wasm_bindgen::describe::*;
                     inform(RUST_STRUCT);
                     inform(#name_len);
@@ -239,7 +233,7 @@ impl ToTokens for ast::Struct {
                 type Abi = u32;
 
                 fn into_abi(self) -> u32 {
-                    use #wasm_bindgen::__rt::std::rc::Rc;
+                    use #wasm_bindgen::__rt::alloc::rc::Rc;
                     use #wasm_bindgen::__rt::WasmRefCell;
                     Rc::into_raw(Rc::new(WasmRefCell::new(self))) as u32
                 }
@@ -250,8 +244,8 @@ impl ToTokens for ast::Struct {
                 type Abi = u32;
 
                 unsafe fn from_abi(js: u32) -> Self {
-                    use #wasm_bindgen::__rt::std::rc::Rc;
-                    use #wasm_bindgen::__rt::std::result::Result::{Ok, Err};
+                    use #wasm_bindgen::__rt::alloc::rc::Rc;
+                    use #wasm_bindgen::__rt::core::result::Result::{Ok, Err};
                     use #wasm_bindgen::__rt::{assert_not_null, WasmRefCell};
 
                     let ptr = js as *mut WasmRefCell<#name>;
@@ -299,7 +293,7 @@ impl ToTokens for ast::Struct {
                 // `allow_delayed` is whether it's ok to not actually free the `ptr` immediately
                 // if it's still borrowed.
                 pub unsafe extern "C" fn #free_fn(ptr: u32, allow_delayed: u32) {
-                    use #wasm_bindgen::__rt::std::rc::Rc;
+                    use #wasm_bindgen::__rt::alloc::rc::Rc;
 
                     if allow_delayed != 0 {
                         // Just drop the implicit `Rc` owned by JS, and then if the value is still
@@ -320,7 +314,7 @@ impl ToTokens for ast::Struct {
                 type Anchor = #wasm_bindgen::__rt::RcRef<#name>;
 
                 unsafe fn ref_from_abi(js: Self::Abi) -> Self::Anchor {
-                    use #wasm_bindgen::__rt::std::rc::Rc;
+                    use #wasm_bindgen::__rt::alloc::rc::Rc;
 
                     let js = js as *mut #wasm_bindgen::__rt::WasmRefCell<#name>;
                     #wasm_bindgen::__rt::assert_not_null(js);
@@ -337,7 +331,7 @@ impl ToTokens for ast::Struct {
                 type Anchor = #wasm_bindgen::__rt::RcRefMut<#name>;
 
                 unsafe fn ref_mut_from_abi(js: Self::Abi) -> Self::Anchor {
-                    use #wasm_bindgen::__rt::std::rc::Rc;
+                    use #wasm_bindgen::__rt::alloc::rc::Rc;
 
                     let js = js as *mut #wasm_bindgen::__rt::WasmRefCell<#name>;
                     #wasm_bindgen::__rt::assert_not_null(js);
@@ -375,7 +369,7 @@ impl ToTokens for ast::Struct {
                 type Error = #wasm_bindgen::JsValue;
 
                 fn try_from_js_value(value: #wasm_bindgen::JsValue)
-                    -> #wasm_bindgen::__rt::std::result::Result<Self, Self::Error> {
+                    -> #wasm_bindgen::__rt::core::result::Result<Self, Self::Error> {
                     let idx = #wasm_bindgen::convert::IntoWasmAbi::into_abi(&value);
 
                     #[link(wasm_import_module = "__wbindgen_placeholder__")]
@@ -391,13 +385,13 @@ impl ToTokens for ast::Struct {
 
                     let ptr = unsafe { #unwrap_fn(idx) };
                     if ptr == 0 {
-                        #wasm_bindgen::__rt::std::result::Result::Err(value)
+                        #wasm_bindgen::__rt::core::result::Result::Err(value)
                     } else {
                         // Don't run `JsValue`'s destructor, `unwrap_fn` already did that for us.
                         #[allow(clippy::mem_forget)]
-                        #wasm_bindgen::__rt::std::mem::forget(value);
+                        #wasm_bindgen::__rt::core::mem::forget(value);
                         unsafe {
-                            #wasm_bindgen::__rt::std::result::Result::Ok(
+                            #wasm_bindgen::__rt::core::result::Result::Ok(
                                 <Self as #wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr)
                             )
                         }
@@ -417,12 +411,12 @@ impl ToTokens for ast::Struct {
 
             impl #wasm_bindgen::convert::VectorIntoWasmAbi for #name {
                 type Abi = <
-                    #wasm_bindgen::__rt::std::boxed::Box<[#wasm_bindgen::JsValue]>
+                    #wasm_bindgen::__rt::alloc::boxed::Box<[#wasm_bindgen::JsValue]>
                     as #wasm_bindgen::convert::IntoWasmAbi
                 >::Abi;
 
                 fn vector_into_abi(
-                    vector: #wasm_bindgen::__rt::std::boxed::Box<[#name]>
+                    vector: #wasm_bindgen::__rt::alloc::boxed::Box<[#name]>
                 ) -> Self::Abi {
                     #wasm_bindgen::convert::js_value_vector_into_abi(vector)
                 }
@@ -430,19 +424,19 @@ impl ToTokens for ast::Struct {
 
             impl #wasm_bindgen::convert::VectorFromWasmAbi for #name {
                 type Abi = <
-                    #wasm_bindgen::__rt::std::boxed::Box<[#wasm_bindgen::JsValue]>
+                    #wasm_bindgen::__rt::alloc::boxed::Box<[#wasm_bindgen::JsValue]>
                     as #wasm_bindgen::convert::FromWasmAbi
                 >::Abi;
 
                 unsafe fn vector_from_abi(
                     js: Self::Abi
-                ) -> #wasm_bindgen::__rt::std::boxed::Box<[#name]> {
+                ) -> #wasm_bindgen::__rt::alloc::boxed::Box<[#name]> {
                     #wasm_bindgen::convert::js_value_vector_from_abi(js)
                 }
             }
 
             impl #wasm_bindgen::__rt::VectorIntoJsValue for #name {
-                fn vector_into_jsvalue(vector: #wasm_bindgen::__rt::std::boxed::Box<[#name]>) -> #wasm_bindgen::JsValue {
+                fn vector_into_jsvalue(vector: #wasm_bindgen::__rt::alloc::boxed::Box<[#name]>) -> #wasm_bindgen::JsValue {
                     #wasm_bindgen::__rt::js_value_vector_into_jsvalue(vector)
                 }
             }
@@ -597,7 +591,7 @@ impl TryToTokens for ast::Export {
                         quote!(long_ref_from_abi),
                         quote!(
                             <<#class as #wasm_bindgen::convert::LongRefFromWasmAbi>
-                                ::Anchor as #wasm_bindgen::__rt::std::borrow::Borrow<#class>>
+                                ::Anchor as #wasm_bindgen::__rt::core::borrow::Borrow<#class>>
                                 ::borrow(&me)
                         ),
                     )
@@ -1589,13 +1583,13 @@ impl ToTokens for ast::Enum {
                 type Error = #wasm_bindgen::JsValue;
 
                 fn try_from_js_value(value: #wasm_bindgen::JsValue)
-                    -> #wasm_bindgen::__rt::std::result::Result<Self, <#enum_name as #wasm_bindgen::convert::TryFromJsValue>::Error> {
+                    -> #wasm_bindgen::__rt::core::result::Result<Self, <#enum_name as #wasm_bindgen::convert::TryFromJsValue>::Error> {
                     use #wasm_bindgen::__rt::core::convert::TryFrom;
                     let js = f64::try_from(&value)? as u32;
 
-                    #wasm_bindgen::__rt::std::result::Result::Ok(
+                    #wasm_bindgen::__rt::core::result::Result::Ok(
                         #(#try_from_cast_clauses else)* {
-                            return #wasm_bindgen::__rt::std::result::Result::Err(value)
+                            return #wasm_bindgen::__rt::core::result::Result::Err(value)
                         }
                     )
                 }
@@ -1611,12 +1605,12 @@ impl ToTokens for ast::Enum {
 
             impl #wasm_bindgen::convert::VectorIntoWasmAbi for #enum_name {
                 type Abi = <
-                    #wasm_bindgen::__rt::std::boxed::Box<[#wasm_bindgen::JsValue]>
+                    #wasm_bindgen::__rt::alloc::boxed::Box<[#wasm_bindgen::JsValue]>
                     as #wasm_bindgen::convert::IntoWasmAbi
                 >::Abi;
 
                 fn vector_into_abi(
-                    vector: #wasm_bindgen::__rt::std::boxed::Box<[#enum_name]>
+                    vector: #wasm_bindgen::__rt::alloc::boxed::Box<[#enum_name]>
                 ) -> Self::Abi {
                     #wasm_bindgen::convert::js_value_vector_into_abi(vector)
                 }
@@ -1624,19 +1618,19 @@ impl ToTokens for ast::Enum {
 
             impl #wasm_bindgen::convert::VectorFromWasmAbi for #enum_name {
                 type Abi = <
-                    #wasm_bindgen::__rt::std::boxed::Box<[#wasm_bindgen::JsValue]>
+                    #wasm_bindgen::__rt::alloc::boxed::Box<[#wasm_bindgen::JsValue]>
                     as #wasm_bindgen::convert::FromWasmAbi
                 >::Abi;
 
                 unsafe fn vector_from_abi(
                     js: Self::Abi
-                ) -> #wasm_bindgen::__rt::std::boxed::Box<[#enum_name]> {
+                ) -> #wasm_bindgen::__rt::alloc::boxed::Box<[#enum_name]> {
                     #wasm_bindgen::convert::js_value_vector_from_abi(js)
                 }
             }
 
             impl #wasm_bindgen::__rt::VectorIntoJsValue for #enum_name {
-                fn vector_into_jsvalue(vector: #wasm_bindgen::__rt::std::boxed::Box<[#enum_name]>) -> #wasm_bindgen::JsValue {
+                fn vector_into_jsvalue(vector: #wasm_bindgen::__rt::alloc::boxed::Box<[#enum_name]>) -> #wasm_bindgen::JsValue {
                     #wasm_bindgen::__rt::js_value_vector_into_jsvalue(vector)
                 }
             }
