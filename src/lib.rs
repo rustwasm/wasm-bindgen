@@ -10,6 +10,8 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen/0.2")]
 
 extern crate alloc;
+#[cfg(not(feature = "alloc"))]
+compile_error!("`wasm-bindgen` requires the `alloc` feature to be enabled");
 
 use alloc::boxed::Box;
 use alloc::string::String;

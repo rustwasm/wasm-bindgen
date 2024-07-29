@@ -21,9 +21,10 @@ features = ["serde-serialize"]
 test = false
 
 [features]
-default = ["spans", "std"]
+default = ["spans", "std", "alloc"]
 spans = ["wasm-bindgen-macro/spans"]
-std = []
+std = ["alloc"]
+alloc = []
 serde-serialize = ["serde", "serde_json", "std"]
 enable-interning = ["std"]
 
