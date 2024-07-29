@@ -18,6 +18,7 @@ dictionary EventListenerOptions {
 dictionary AddEventListenerOptions : EventListenerOptions {
   boolean passive;
   boolean once = false;
+  AbortSignal signal;
 };
 
 [Constructor,
