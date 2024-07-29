@@ -417,7 +417,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs)> for &'a mut syn::ItemStruct
         let js_name = attrs
             .js_name()
             .map(|s| s.0.to_string())
-            .unwrap_or(self.ident.to_string());
+            .unwrap_or(self.ident.unraw().to_string());
         let is_inspectable = attrs.inspectable().is_some();
         let getter_with_clone = attrs.getter_with_clone();
         for (i, field) in self.fields.iter_mut().enumerate() {
@@ -921,9 +921,9 @@ fn function_from_decl(
                 && opts.method().is_none()
                 && is_js_keyword(&decl_name.to_string(), skip_keywords)
             {
-                format!("_{}", decl_name)
+                format!("_{}", decl_name.unraw())
             } else {
-                decl_name.to_string()
+                decl_name.unraw().to_string()
             };
             (name, decl_name.span(), false)
         };

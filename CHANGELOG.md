@@ -139,6 +139,9 @@
 * Fix byte order for big-endian platforms.
   [#4015](https://github.com/rustwasm/wasm-bindgen/pull/4015)
 
+* Allow ex/importing structs, functions and parameters named with raw identifiers.
+  [#4025](https://github.com/rustwasm/wasm-bindgen/pull/4025)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.92](https://github.com/rustwasm/wasm-bindgen/compare/0.2.91...0.2.92)
