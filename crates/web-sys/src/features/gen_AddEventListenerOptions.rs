@@ -40,6 +40,18 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AddEventListenerOptions`*"]
     #[wasm_bindgen(method, setter = "passive")]
     pub fn set_passive(this: &AddEventListenerOptions, val: bool);
+    #[cfg(feature = "AbortSignal")]
+    #[doc = "Get the `signal` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AbortSignal`, `AddEventListenerOptions`*"]
+    #[wasm_bindgen(method, getter = "signal")]
+    pub fn get_signal(this: &AddEventListenerOptions) -> Option<AbortSignal>;
+    #[cfg(feature = "AbortSignal")]
+    #[doc = "Change the `signal` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AbortSignal`, `AddEventListenerOptions`*"]
+    #[wasm_bindgen(method, setter = "signal")]
+    pub fn set_signal(this: &AddEventListenerOptions, val: &AbortSignal);
 }
 impl AddEventListenerOptions {
     #[doc = "Construct a new `AddEventListenerOptions`."]
@@ -63,6 +75,12 @@ impl AddEventListenerOptions {
     #[deprecated = "Use `set_passive()` instead."]
     pub fn passive(&mut self, val: bool) -> &mut Self {
         self.set_passive(val);
+        self
+    }
+    #[cfg(feature = "AbortSignal")]
+    #[deprecated = "Use `set_signal()` instead."]
+    pub fn signal(&mut self, val: &AbortSignal) -> &mut Self {
+        self.set_signal(val);
         self
     }
 }

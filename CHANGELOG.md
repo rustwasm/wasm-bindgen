@@ -98,6 +98,9 @@
 * Deprecated parameters to `default` (`init`) and `initSync` in favor of an object.
   [#3995](https://github.com/rustwasm/wasm-bindgen/pull/3995)
 
+* Update `AbortSignal` and `AbortController` according to the WHATWG specification.
+  [#4026](https://github.com/rustwasm/wasm-bindgen/pull/4026)
+
 ### Fixed
 
 * Copy port from headless test server when using `WASM_BINDGEN_TEST_ADDRESS`.

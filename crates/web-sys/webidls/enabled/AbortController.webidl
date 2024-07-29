@@ -7,9 +7,11 @@
  * https://dom.spec.whatwg.org/#abortcontroller
  */
 
-[Constructor(), Exposed=(Window,Worker,System)]
+[Exposed=*]
 interface AbortController {
-  readonly attribute AbortSignal signal;
+  constructor();
 
-  undefined abort();
+  [SameObject] readonly attribute AbortSignal signal;
+
+  undefined abort(optional any reason);
 };

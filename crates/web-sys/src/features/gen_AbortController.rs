@@ -34,4 +34,11 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AbortController`*"]
     pub fn abort(this: &AbortController);
+    # [wasm_bindgen (method , structural , js_class = "AbortController" , js_name = abort)]
+    #[doc = "The `abort()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AbortController/abort)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AbortController`*"]
+    pub fn abort_with_reason(this: &AbortController, reason: &::wasm_bindgen::JsValue);
 }
