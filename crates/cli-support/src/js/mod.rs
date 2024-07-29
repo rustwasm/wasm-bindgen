@@ -1392,7 +1392,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_pass_array_jsvalue_to_wasm(&mut self, memory: MemoryId) -> Result<MemView, Error> {
-        let mem = self.expose_uint32_memory(memory);
+        let mem = self.expose_dataview_memory(memory);
         let ret = MemView {
             name: "passArrayJsValueToWasm".into(),
             num: mem.num,
@@ -1412,7 +1412,7 @@ impl<'a> Context<'a> {
                             const ptr = malloc(array.length * 4, 4) >>> 0;
                             const mem = {}();
                             for (let i = 0; i < array.length; i++) {{
-                                mem[ptr / 4 + i] = {}(array[i]);
+                                mem.setUint32(ptr + 4 * i, {}(array[i]), true);
                             }}
                             WASM_VECTOR_LEN = array.length;
                             return ptr;
@@ -1429,7 +1429,7 @@ impl<'a> Context<'a> {
                             const ptr = malloc(array.length * 4, 4) >>> 0;
                             const mem = {}();
                             for (let i = 0; i < array.length; i++) {{
-                                mem[ptr / 4 + i] = addHeapObject(array[i]);
+                                mem.setUint32(ptr + 4 * i, addHeapObject(array[i]), true);
                             }}
                             WASM_VECTOR_LEN = array.length;
                             return ptr;
@@ -1639,7 +1639,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_get_array_js_value_from_wasm(&mut self, memory: MemoryId) -> Result<MemView, Error> {
-        let mem = self.expose_uint32_memory(memory);
+        let mem = self.expose_dataview_memory(memory);
         let ret = MemView {
             name: "getArrayJsValueFromWasm".into(),
             num: mem.num,
@@ -1656,10 +1656,9 @@ impl<'a> Context<'a> {
                     function {}(ptr, len) {{
                         ptr = ptr >>> 0;
                         const mem = {}();
-                        const slice = mem.subarray(ptr / 4, ptr / 4 + len);
                         const result = [];
-                        for (let i = 0; i < slice.length; i++) {{
-                            result.push(wasm.{}.get(slice[i]));
+                        for (let i = ptr; i < ptr + 4 * len; i += 4) {{
+                            result.push(wasm.{}.get(mem.getUint32(i, true)));
                         }}
                         wasm.{}(ptr, len);
                         return result;
@@ -1675,10 +1674,9 @@ impl<'a> Context<'a> {
                     function {}(ptr, len) {{
                         ptr = ptr >>> 0;
                         const mem = {}();
-                        const slice = mem.subarray(ptr / 4, ptr / 4 + len);
                         const result = [];
-                        for (let i = 0; i < slice.length; i++) {{
-                            result.push(takeObject(slice[i]));
+                        for (let i = ptr; i < ptr + 4 * len; i += 4) {{
+                            result.push(takeObject(mem.getUint32(i, true)));
                         }}
                         return result;
                     }}
@@ -1768,47 +1766,51 @@ impl<'a> Context<'a> {
     }
 
     fn expose_int8_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("Int8", memory)
+        self.memview("Int8Array", memory)
     }
 
     fn expose_uint8_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("Uint8", memory)
+        self.memview("Uint8Array", memory)
     }
 
     fn expose_clamped_uint8_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("Uint8Clamped", memory)
+        self.memview("Uint8ClampedArray", memory)
     }
 
     fn expose_int16_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("Int16", memory)
+        self.memview("Int16Array", memory)
     }
 
     fn expose_uint16_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("Uint16", memory)
+        self.memview("Uint16Array", memory)
     }
 
     fn expose_int32_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("Int32", memory)
+        self.memview("Int32Array", memory)
     }
 
     fn expose_uint32_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("Uint32", memory)
+        self.memview("Uint32Array", memory)
     }
 
     fn expose_int64_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("BigInt64", memory)
+        self.memview("BigInt64Array", memory)
     }
 
     fn expose_uint64_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("BigUint64", memory)
+        self.memview("BigUint64Array", memory)
     }
 
     fn expose_f32_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("Float32", memory)
+        self.memview("Float32Array", memory)
     }
 
     fn expose_f64_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("Float64", memory)
+        self.memview("Float64Array", memory)
+    }
+
+    fn expose_dataview_memory(&mut self, memory: MemoryId) -> MemView {
+        self.memview("DataView", memory)
     }
 
     fn memview(&mut self, kind: &'static str, memory: walrus::MemoryId) -> MemView {
@@ -1829,6 +1831,10 @@ impl<'a> Context<'a> {
                 cache = cache,
                 mem = mem
             )
+        } else if kind == "DataView" {
+            // `DataView`s throw when accessing detached memory, including `byteLength`.
+            // However this requires JS engine support, so we fallback to comparing the buffer.
+            format!("{cache}.buffer.detached === true || ({cache}.buffer.detached === undefined && {cache}.buffer !== wasm.{mem}.buffer)", cache = cache)
         } else {
             // Otherwise, we can do a quicker check of whether the buffer's been detached,
             // which is indicated by a length of 0.
@@ -1841,7 +1847,7 @@ impl<'a> Context<'a> {
             "
             function {name}() {{
                 if ({cache} === null || {resized_check}) {{
-                    {cache} = new {kind}Array(wasm.{mem}.buffer);
+                    {cache} = new {kind}(wasm.{mem}.buffer);
                 }}
                 return {cache};
             }}
