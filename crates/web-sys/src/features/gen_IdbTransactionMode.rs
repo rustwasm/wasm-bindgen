@@ -9,7 +9,7 @@ use wasm_bindgen::prelude::*;
 pub enum IdbTransactionMode {
     Readonly = "readonly",
     Readwrite = "readwrite",
+    Versionchange = "versionchange",
     Readwriteflush = "readwriteflush",
     Cleanup = "cleanup",
-    Versionchange = "versionchange",
 }

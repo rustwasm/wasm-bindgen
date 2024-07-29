@@ -97,6 +97,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/storage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`, `StorageType`*"]
+    #[deprecated]
     pub fn storage(this: &IdbDatabase) -> StorageType;
     # [wasm_bindgen (method , structural , js_class = "IDBDatabase" , js_name = close)]
     #[doc = "The `close()` method."]
@@ -112,6 +113,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/createMutableFile)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`, `IdbRequest`*"]
+    #[deprecated]
     pub fn create_mutable_file(this: &IdbDatabase, name: &str) -> Result<IdbRequest, JsValue>;
     #[cfg(feature = "IdbRequest")]
     # [wasm_bindgen (catch , method , structural , js_class = "IDBDatabase" , js_name = createMutableFile)]
@@ -120,6 +122,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/createMutableFile)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`, `IdbRequest`*"]
+    #[deprecated]
     pub fn create_mutable_file_with_type(
         this: &IdbDatabase,
         name: &str,
@@ -143,7 +146,7 @@ extern "C" {
     pub fn create_object_store_with_optional_parameters(
         this: &IdbDatabase,
         name: &str,
-        optional_parameters: &IdbObjectStoreParameters,
+        options: &IdbObjectStoreParameters,
     ) -> Result<IdbObjectStore, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "IDBDatabase" , js_name = deleteObjectStore)]
     #[doc = "The `deleteObjectStore()` method."]

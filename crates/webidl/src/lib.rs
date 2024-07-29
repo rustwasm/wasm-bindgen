@@ -298,7 +298,17 @@ impl<'src> FirstPassRecord<'src> {
 
         let mut fields = Vec::new();
 
-        if !self.append_dictionary_members(&js_name, &mut fields, unstable, unstable_types) {
+        let deprecated = data
+            .definition
+            .and_then(|d| get_rust_deprecated(&d.attributes));
+
+        if !self.append_dictionary_members(
+            &js_name,
+            &mut fields,
+            unstable,
+            unstable_types,
+            &deprecated,
+        ) {
             return;
         }
 
@@ -307,6 +317,7 @@ impl<'src> FirstPassRecord<'src> {
             js_name,
             fields,
             unstable,
+            deprecated,
         }
         .generate(options)
         .to_tokens(&mut program.tokens);
@@ -318,6 +329,7 @@ impl<'src> FirstPassRecord<'src> {
         dst: &mut Vec<DictionaryField>,
         unstable: bool,
         unstable_types: &HashSet<Identifier>,
+        parent_deprecated: &Option<Option<String>>,
     ) -> bool {
         let dict_data = &self.dictionaries[&dict];
         let definition = dict_data.definition.unwrap();
@@ -326,7 +338,13 @@ impl<'src> FirstPassRecord<'src> {
         // > such that inherited dictionary members are ordered before
         // > non-inherited members ...
         if let Some(parent) = &definition.inheritance {
-            if !self.append_dictionary_members(parent.identifier.0, dst, unstable, unstable_types) {
+            if !self.append_dictionary_members(
+                parent.identifier.0,
+                dst,
+                unstable,
+                unstable_types,
+                parent_deprecated,
+            ) {
                 return false;
             }
         }
@@ -345,7 +363,7 @@ impl<'src> FirstPassRecord<'src> {
                 .zip(iter::repeat(unstable || d.stability.is_unstable()))
         });
         for (member, unstable) in members.zip(iter::repeat(unstable)).chain(partials) {
-            match self.dictionary_field(member, unstable, unstable_types) {
+            match self.dictionary_field(member, unstable, unstable_types, parent_deprecated) {
                 Some(f) => dst.push(f),
                 None => {
                     log::warn!(
@@ -372,6 +390,7 @@ impl<'src> FirstPassRecord<'src> {
         field: &'src DictionaryMember<'src>,
         unstable: bool,
         unstable_types: &HashSet<Identifier>,
+        parent_deprecated: &Option<Option<String>>,
     ) -> Option<DictionaryField> {
         let unstable_override = match unstable {
             true => true,
@@ -447,7 +466,8 @@ impl<'src> FirstPassRecord<'src> {
             return_ty,
             is_js_value_ref_option_type,
             unstable: unstable_override,
-            deprecated: get_rust_deprecated(&field.attributes),
+            deprecated: get_rust_deprecated(&field.attributes)
+                .or_else(|| parent_deprecated.clone()),
         })
     }
 
@@ -821,6 +841,7 @@ impl<'src> FirstPassRecord<'src> {
             js_name,
             fields,
             unstable: false,
+            deprecated: None,
         }
         .generate(options)
         .to_tokens(&mut program.tokens);

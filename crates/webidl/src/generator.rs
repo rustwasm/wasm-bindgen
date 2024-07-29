@@ -194,6 +194,7 @@ impl Const {
         options: &Options,
         parent_name: &Ident,
         parent_js_name: &str,
+        deprecated: &Option<Option<String>>,
     ) -> TokenStream {
         let name = &self.name;
         let ty = &self.ty;
@@ -209,10 +210,16 @@ impl Const {
             &get_features_doc(options, parent_name.to_string()),
         );
 
+        let deprecated = deprecated.as_ref().map(|msg| match msg {
+            Some(msg) => quote!( #[deprecated(note = #msg)] ),
+            None => quote!( #[deprecated] ),
+        });
+
         quote! {
             #unstable_attr
             #doc_comment
             #unstable_docs
+            #deprecated
             pub const #name: #ty = #value as #ty;
         }
     }
@@ -241,6 +248,7 @@ impl InterfaceAttribute {
         parent_name: &Ident,
         parent_js_name: &str,
         parents: &[Ident],
+        parent_deprecated: &Option<Option<String>>,
     ) -> TokenStream {
         let InterfaceAttribute {
             js_name,
@@ -321,10 +329,13 @@ impl InterfaceAttribute {
         };
 
         let catch = if *catch { Some(quote!(catch,)) } else { None };
-        let deprecated = deprecated.as_ref().map(|msg| match msg {
-            Some(msg) => quote!( #[deprecated(note = #msg)] ),
-            None => quote!( #[deprecated] ),
-        });
+        let deprecated = deprecated
+            .as_ref()
+            .or(parent_deprecated.as_ref())
+            .map(|msg| match msg {
+                Some(msg) => quote!( #[deprecated(note = #msg)] ),
+                None => quote!( #[deprecated] ),
+            });
 
         let doc_comment = comment(
             format!(
@@ -385,6 +396,7 @@ impl InterfaceMethod {
         parent_name: &Ident,
         parent_js_name: String,
         parents: &[Ident],
+        parent_deprecated: &Option<Option<String>>,
     ) -> TokenStream {
         let InterfaceMethod {
             name,
@@ -472,10 +484,13 @@ impl InterfaceMethod {
 
         let doc_comment = comment(doc_comment, &required_doc_string(options, &features));
 
-        let deprecated = deprecated.as_ref().map(|msg| match msg {
-            Some(msg) => quote!( #[deprecated(note = #msg)] ),
-            None => quote!( #[deprecated] ),
-        });
+        let deprecated = deprecated
+            .as_ref()
+            .or(parent_deprecated.as_ref())
+            .map(|msg| match msg {
+                Some(msg) => quote!( #[deprecated(note = #msg)] ),
+                None => quote!( #[deprecated] ),
+            });
 
         let ret = ret_ty.as_ref().map(|ret| quote!( #ret ));
 
@@ -563,11 +578,6 @@ impl Interface {
             &get_features_doc(options, name.to_string()),
         );
 
-        let deprecated = deprecated.as_ref().map(|msg| match msg {
-            Some(msg) => quote!( #[deprecated(note = #msg)] ),
-            None => quote!( #[deprecated] ),
-        });
-
         let is_type_of = if *has_interface {
             None
         } else {
@@ -587,7 +597,7 @@ impl Interface {
 
         let consts = consts
             .iter()
-            .map(|x| x.generate(options, name, js_name))
+            .map(|x| x.generate(options, name, js_name, deprecated))
             .collect::<Vec<_>>();
 
         let consts = if consts.is_empty() {
@@ -596,21 +606,25 @@ impl Interface {
             Some(quote! {
                 #unstable_attr
                 impl #name {
-                    #(#deprecated #consts)*
+                    #(#consts)*
                 }
             })
         };
 
         let attributes = attributes
             .iter()
-            .map(|x| x.generate(options, name, js_name, parents))
+            .map(|x| x.generate(options, name, js_name, parents, deprecated))
             .collect::<Vec<_>>();
 
         let methods = methods
             .iter()
-            .map(|x| x.generate(options, name, js_name.to_string(), parents))
+            .map(|x| x.generate(options, name, js_name.to_string(), parents, deprecated))
             .collect::<Vec<_>>();
 
+        let deprecated = deprecated.as_ref().map(|msg| match msg {
+            Some(msg) => quote!( #[deprecated(note = #msg)] ),
+            None => quote!( #[deprecated] ),
+        });
         let js_ident = raw_ident(js_name);
 
         quote! {
@@ -636,8 +650,8 @@ impl Interface {
                 #deprecated
                 pub type #name;
 
-                #(#deprecated #attributes)*
-                #(#deprecated #methods)*
+                #(#attributes)*
+                #(#methods)*
             }
 
             #consts
@@ -781,6 +795,7 @@ pub struct Dictionary {
     pub js_name: String,
     pub fields: Vec<DictionaryField>,
     pub unstable: bool,
+    pub deprecated: Option<Option<String>>,
 }
 
 impl Dictionary {
@@ -790,10 +805,15 @@ impl Dictionary {
             js_name,
             fields,
             unstable,
+            deprecated,
         } = self;
 
         let unstable_attr = maybe_unstable_attr(*unstable);
         let unstable_docs = maybe_unstable_docs(*unstable);
+        let deprecated = deprecated.as_ref().map(|msg| match msg {
+            Some(msg) => quote!( #[deprecated(note = #msg)] ),
+            None => quote!( #[deprecated] ),
+        });
 
         let js_name = raw_ident(js_name);
 
@@ -859,6 +879,7 @@ impl Dictionary {
                 #[derive(Debug, Clone, PartialEq, Eq)]
                 #doc_comment
                 #unstable_docs
+                #deprecated
                 pub type #name;
 
                 #(#field_shims)*
@@ -869,6 +890,7 @@ impl Dictionary {
                 #cfg_features
                 #ctor_doc_comment
                 #unstable_docs
+                #deprecated
                 pub fn new(#(#required_args),*) -> Self {
                     #[allow(unused_mut)]
                     let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
@@ -1027,7 +1049,7 @@ impl Namespace {
 
         let consts = consts
             .iter()
-            .map(|x| x.generate(options, name, js_name))
+            .map(|x| x.generate(options, name, js_name, &None))
             .collect::<Vec<_>>();
 
         quote! {

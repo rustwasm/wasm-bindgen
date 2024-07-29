@@ -56,13 +56,6 @@ partial interface mixin WindowOrWorkerGlobalScope {
   readonly attribute boolean isSecureContext;
 };
 
-// http://w3c.github.io/IndexedDB/#factory-interface
-partial interface mixin WindowOrWorkerGlobalScope {
-   // readonly attribute IDBFactory indexedDB;
-   [Throws]
-   readonly attribute IDBFactory? indexedDB;
-};
-
 // https://w3c.github.io/ServiceWorker/#self-caches
 partial interface mixin WindowOrWorkerGlobalScope {
   [Throws, Func="mozilla::dom::DOMPrefs::DOMCachesEnabled", SameObject]

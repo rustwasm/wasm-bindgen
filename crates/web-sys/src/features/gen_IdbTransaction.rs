@@ -12,6 +12,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbTransaction`*"]
     pub type IdbTransaction;
+    #[cfg(feature = "DomStringList")]
+    # [wasm_bindgen (structural , method , getter , js_class = "IDBTransaction" , js_name = objectStoreNames)]
+    #[doc = "Getter for the `objectStoreNames` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/objectStoreNames)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DomStringList`, `IdbTransaction`*"]
+    pub fn object_store_names(this: &IdbTransaction) -> DomStringList;
     #[cfg(feature = "IdbTransactionMode")]
     # [wasm_bindgen (structural , catch , method , getter , js_class = "IDBTransaction" , js_name = mode)]
     #[doc = "Getter for the `mode` field of this object."]
@@ -78,14 +86,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbTransaction`*"]
     pub fn set_onerror(this: &IdbTransaction, value: Option<&::js_sys::Function>);
-    #[cfg(feature = "DomStringList")]
-    # [wasm_bindgen (structural , method , getter , js_class = "IDBTransaction" , js_name = objectStoreNames)]
-    #[doc = "Getter for the `objectStoreNames` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/objectStoreNames)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DomStringList`, `IdbTransaction`*"]
-    pub fn object_store_names(this: &IdbTransaction) -> DomStringList;
     # [wasm_bindgen (catch , method , structural , js_class = "IDBTransaction" , js_name = abort)]
     #[doc = "The `abort()` method."]
     #[doc = ""]
@@ -99,6 +99,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/commit)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbTransaction`*"]
+    #[deprecated]
     pub fn commit(this: &IdbTransaction) -> Result<(), JsValue>;
     #[cfg(feature = "IdbObjectStore")]
     # [wasm_bindgen (catch , method , structural , js_class = "IDBTransaction" , js_name = objectStore)]

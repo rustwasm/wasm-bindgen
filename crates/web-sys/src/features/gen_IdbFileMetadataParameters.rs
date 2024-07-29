@@ -9,25 +9,30 @@ extern "C" {
     #[doc = "The `IdbFileMetadataParameters` dictionary."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbFileMetadataParameters`*"]
+    #[deprecated]
     pub type IdbFileMetadataParameters;
     #[doc = "Get the `lastModified` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbFileMetadataParameters`*"]
+    #[deprecated]
     #[wasm_bindgen(method, getter = "lastModified")]
     pub fn get_last_modified(this: &IdbFileMetadataParameters) -> Option<bool>;
     #[doc = "Change the `lastModified` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbFileMetadataParameters`*"]
+    #[deprecated]
     #[wasm_bindgen(method, setter = "lastModified")]
     pub fn set_last_modified(this: &IdbFileMetadataParameters, val: bool);
     #[doc = "Get the `size` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbFileMetadataParameters`*"]
+    #[deprecated]
     #[wasm_bindgen(method, getter = "size")]
     pub fn get_size(this: &IdbFileMetadataParameters) -> Option<bool>;
     #[doc = "Change the `size` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbFileMetadataParameters`*"]
+    #[deprecated]
     #[wasm_bindgen(method, setter = "size")]
     pub fn set_size(this: &IdbFileMetadataParameters, val: bool);
 }
@@ -35,6 +40,7 @@ impl IdbFileMetadataParameters {
     #[doc = "Construct a new `IdbFileMetadataParameters`."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbFileMetadataParameters`*"]
+    #[deprecated]
     pub fn new() -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());

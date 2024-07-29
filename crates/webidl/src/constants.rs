@@ -165,6 +165,71 @@ pub(crate) static FIXED_INTERFACES: Lazy<
                 ),
             ]),
         ),
+        (
+            "IdbFactory",
+            BTreeMap::from_iter([("open_with_options", "open_with_idb_open_db_options")]),
+        ),
+        (
+            "IdbDatabase",
+            BTreeMap::from_iter([(
+                "create_object_store_with_options",
+                "create_object_store_with_optional_parameters",
+            )]),
+        ),
+        (
+            "IdbObjectStore",
+            BTreeMap::from_iter([
+                ("count_with_query", "count_with_key"),
+                (
+                    "create_index_with_str_and_options",
+                    "create_index_with_str_and_optional_parameters",
+                ),
+                (
+                    "create_index_with_str_sequence_and_options",
+                    "create_index_with_str_sequence_and_optional_parameters",
+                ),
+                ("open_cursor_with_query", "open_cursor_with_range"),
+                (
+                    "open_cursor_with_query_and_direction",
+                    "open_cursor_with_range_and_direction",
+                ),
+                ("open_key_cursor_with_query", "open_key_cursor_with_range"),
+                (
+                    "open_key_cursor_with_query_and_direction",
+                    "open_key_cursor_with_range_and_direction",
+                ),
+                ("get_all_with_query", "get_all_with_key"),
+                ("get_all_with_query_and_count", "get_all_with_key_and_limit"),
+                ("get_all_keys_with_query", "get_all_keys_with_key"),
+                (
+                    "get_all_keys_with_query_and_count",
+                    "get_all_keys_with_key_and_limit",
+                ),
+            ]),
+        ),
+        (
+            "IdbIndex",
+            BTreeMap::from_iter([
+                ("count_with_query", "count_with_key"),
+                ("open_cursor_with_query", "open_cursor_with_range"),
+                (
+                    "open_cursor_with_query_and_direction",
+                    "open_cursor_with_range_and_direction",
+                ),
+                ("open_key_cursor_with_query", "open_key_cursor_with_range"),
+                (
+                    "open_key_cursor_with_query_and_direction",
+                    "open_key_cursor_with_range_and_direction",
+                ),
+                ("get_all_with_query", "get_all_with_key"),
+                ("get_all_with_query_and_count", "get_all_with_key_and_limit"),
+                ("get_all_keys_with_query", "get_all_keys_with_key"),
+                (
+                    "get_all_keys_with_query_and_count",
+                    "get_all_keys_with_key_and_limit",
+                ),
+            ]),
+        ),
     ])
 });
 
