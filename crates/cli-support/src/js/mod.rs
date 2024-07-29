@@ -1766,47 +1766,47 @@ impl<'a> Context<'a> {
     }
 
     fn expose_int8_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("Int8", memory)
+        self.memview("Int8Array", memory)
     }
 
     fn expose_uint8_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("Uint8", memory)
+        self.memview("Uint8Array", memory)
     }
 
     fn expose_clamped_uint8_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("Uint8Clamped", memory)
+        self.memview("Uint8ClampedArray", memory)
     }
 
     fn expose_int16_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("Int16", memory)
+        self.memview("Int16Array", memory)
     }
 
     fn expose_uint16_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("Uint16", memory)
+        self.memview("Uint16Array", memory)
     }
 
     fn expose_int32_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("Int32", memory)
+        self.memview("Int32Array", memory)
     }
 
     fn expose_uint32_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("Uint32", memory)
+        self.memview("Uint32Array", memory)
     }
 
     fn expose_int64_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("BigInt64", memory)
+        self.memview("BigInt64Array", memory)
     }
 
     fn expose_uint64_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("BigUint64", memory)
+        self.memview("BigUint64Array", memory)
     }
 
     fn expose_f32_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("Float32", memory)
+        self.memview("Float32Array", memory)
     }
 
     fn expose_f64_memory(&mut self, memory: MemoryId) -> MemView {
-        self.memview("Float64", memory)
+        self.memview("Float64Array", memory)
     }
 
     fn expose_dataview_memory(&mut self, memory: MemoryId) -> MemView {
@@ -1820,10 +1820,8 @@ impl<'a> Context<'a> {
         }
         let mem = self.export_name_of(memory);
 
-        let is_dataview = kind == "DataView";
-
         let cache = format!("cached{}Memory{}", kind, view.num);
-        let resized_check = if self.module.memories.get(memory).shared || is_dataview {
+        let resized_check = if self.module.memories.get(memory).shared {
             // When it's backed by a `SharedArrayBuffer`, growing the wasm module's memory
             // doesn't detach old references; instead, it just leaves them pointing to a
             // slice of the up-to-date memory. So in order to check if it's been grown, we
@@ -1833,6 +1831,10 @@ impl<'a> Context<'a> {
                 cache = cache,
                 mem = mem
             )
+        } else if kind == "DataView" {
+            // `DataView`s throw when accessing detached memory, including `byteLength`.
+            // However this requires JS engine support, so we fallback to comparing the buffer.
+            format!("{cache}.buffer.detached === true || ({cache}.buffer.detached === undefined && {cache}.buffer !== wasm.{mem}.buffer)", cache = cache)
         } else {
             // Otherwise, we can do a quicker check of whether the buffer's been detached,
             // which is indicated by a length of 0.
@@ -1840,12 +1842,6 @@ impl<'a> Context<'a> {
         };
 
         self.global(&format!("let {cache} = null;\n"));
-
-        let kind = if is_dataview {
-            kind
-        } else {
-            &format!("{}Array", kind)
-        };
 
         self.global(&format!(
             "
