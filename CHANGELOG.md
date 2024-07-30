@@ -60,6 +60,9 @@
 * Added bindings to the Device Memory API.
   [#4011](https://github.com/rustwasm/wasm-bindgen/pull/4011)
 
+* Added support for WebIDL records. This added new methods to various APIs, notably `ClipboardItem()`, `GPUDeviceDescriptor.requiredLimits` and `Header()`.
+  [#4030](https://github.com/rustwasm/wasm-bindgen/pull/4030)
+
 ### Changed
 
 * Stabilize Web Share API.

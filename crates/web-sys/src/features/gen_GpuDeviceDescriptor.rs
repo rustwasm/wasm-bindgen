@@ -70,6 +70,24 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "requiredFeatures")]
     pub fn set_required_features(this: &GpuDeviceDescriptor, val: &::wasm_bindgen::JsValue);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `requiredLimits` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuDeviceDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "requiredLimits")]
+    pub fn get_required_limits(this: &GpuDeviceDescriptor) -> Option<::js_sys::Object>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `requiredLimits` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuDeviceDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, setter = "requiredLimits")]
+    pub fn set_required_limits(this: &GpuDeviceDescriptor, val: &::js_sys::Object);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuDeviceDescriptor {
@@ -101,6 +119,12 @@ impl GpuDeviceDescriptor {
     #[deprecated = "Use `set_required_features()` instead."]
     pub fn required_features(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_required_features(val);
+        self
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[deprecated = "Use `set_required_limits()` instead."]
+    pub fn required_limits(&mut self, val: &::js_sys::Object) -> &mut Self {
+        self.set_required_limits(val);
         self
     }
 }

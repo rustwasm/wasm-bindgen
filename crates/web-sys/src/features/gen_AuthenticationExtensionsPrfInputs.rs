@@ -39,6 +39,26 @@ extern "C" {
         this: &AuthenticationExtensionsPrfInputs,
         val: &AuthenticationExtensionsPrfValues,
     );
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `evalByCredential` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsPrfInputs`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "evalByCredential")]
+    pub fn get_eval_by_credential(
+        this: &AuthenticationExtensionsPrfInputs,
+    ) -> Option<::js_sys::Object>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `evalByCredential` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsPrfInputs`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, setter = "evalByCredential")]
+    pub fn set_eval_by_credential(this: &AuthenticationExtensionsPrfInputs, val: &::js_sys::Object);
 }
 #[cfg(web_sys_unstable_apis)]
 impl AuthenticationExtensionsPrfInputs {
@@ -58,6 +78,12 @@ impl AuthenticationExtensionsPrfInputs {
     #[deprecated = "Use `set_eval()` instead."]
     pub fn eval(&mut self, val: &AuthenticationExtensionsPrfValues) -> &mut Self {
         self.set_eval(val);
+        self
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[deprecated = "Use `set_eval_by_credential()` instead."]
+    pub fn eval_by_credential(&mut self, val: &::js_sys::Object) -> &mut Self {
+        self.set_eval_by_credential(val);
         self
     }
 }

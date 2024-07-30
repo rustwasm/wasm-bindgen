@@ -30,6 +30,16 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
     #[wasm_bindgen(method, setter = "style")]
     pub fn set_style(this: &DisplayNameResult, val: &str);
+    #[doc = "Get the `values` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
+    #[wasm_bindgen(method, getter = "values")]
+    pub fn get_values(this: &DisplayNameResult) -> Option<::js_sys::Object>;
+    #[doc = "Change the `values` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
+    #[wasm_bindgen(method, setter = "values")]
+    pub fn set_values(this: &DisplayNameResult, val: &::js_sys::Object);
 }
 impl DisplayNameResult {
     #[doc = "Construct a new `DisplayNameResult`."]
@@ -48,6 +58,11 @@ impl DisplayNameResult {
     #[deprecated = "Use `set_style()` instead."]
     pub fn style(&mut self, val: &str) -> &mut Self {
         self.set_style(val);
+        self
+    }
+    #[deprecated = "Use `set_values()` instead."]
+    pub fn values(&mut self, val: &::js_sys::Object) -> &mut Self {
+        self.set_values(val);
         self
     }
 }

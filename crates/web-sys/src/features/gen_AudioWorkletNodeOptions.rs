@@ -76,6 +76,16 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `AudioWorkletNodeOptions`*"]
     #[wasm_bindgen(method, setter = "outputChannelCount")]
     pub fn set_output_channel_count(this: &AudioWorkletNodeOptions, val: &::wasm_bindgen::JsValue);
+    #[doc = "Get the `parameterData` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioWorkletNodeOptions`*"]
+    #[wasm_bindgen(method, getter = "parameterData")]
+    pub fn get_parameter_data(this: &AudioWorkletNodeOptions) -> Option<::js_sys::Object>;
+    #[doc = "Change the `parameterData` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioWorkletNodeOptions`*"]
+    #[wasm_bindgen(method, setter = "parameterData")]
+    pub fn set_parameter_data(this: &AudioWorkletNodeOptions, val: &::js_sys::Object);
     #[doc = "Get the `processorOptions` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioWorkletNodeOptions`*"]
@@ -126,6 +136,11 @@ impl AudioWorkletNodeOptions {
     #[deprecated = "Use `set_output_channel_count()` instead."]
     pub fn output_channel_count(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_output_channel_count(val);
+        self
+    }
+    #[deprecated = "Use `set_parameter_data()` instead."]
+    pub fn parameter_data(&mut self, val: &::js_sys::Object) -> &mut Self {
+        self.set_parameter_data(val);
         self
     }
     #[deprecated = "Use `set_processor_options()` instead."]
