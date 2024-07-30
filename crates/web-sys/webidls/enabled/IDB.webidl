@@ -52,12 +52,6 @@ interface IDBFactory {
 
   [Throws]
   short cmp(any first, any second);
-
-
-  [RustDeprecated, Throws, NewObject]
-  IDBOpenDBRequest open(DOMString name, IDBOpenDBOptions options);
-  [RustDeprecated, Throws, NewObject]
-  IDBOpenDBRequest deleteDatabase(DOMString name, IDBOpenDBOptions options);
 };
 
 [Exposed=(Window,Worker)]
@@ -122,9 +116,6 @@ interface IDBObjectStore {
 dictionary IDBIndexParameters {
   boolean unique = false;
   boolean multiEntry = false;
-
-
-  [RustDeprecated] DOMString? locale = null;
 };
 
 [Exposed=(Window,Worker)]
@@ -147,10 +138,6 @@ interface IDBIndex {
                                     optional IDBCursorDirection direction = "next");
   [Throws, NewObject] IDBRequest openKeyCursor(optional any query,
                                        optional IDBCursorDirection direction = "next");
-
-
-  [RustDeprecated] readonly attribute DOMString? locale;
-  [RustDeprecated] readonly attribute boolean isAutoLocale;
 };
 
 [Exposed=(Window,Worker)]
@@ -185,9 +172,6 @@ interface IDBCursor {
 
   [Throws, NewObject] IDBRequest update(any value);
   [Throws, NewObject] IDBRequest delete();
-
-
-  [RustDeprecated] readonly attribute IDBRequest request;
 };
 
 enum IDBCursorDirection {
@@ -217,9 +201,6 @@ interface IDBTransaction : EventTarget {
   attribute EventHandler onabort;
   attribute EventHandler oncomplete;
   attribute EventHandler onerror;
-
-
-  [RustDeprecated, Throws] undefined commit();
 };
 
 enum IDBTransactionMode {
@@ -235,6 +216,30 @@ enum IDBTransactionMode {
 /*
 ** DEPRECATED
 */
+
+partial interface IDBFactory {
+  [RustDeprecated, Throws, NewObject]
+  IDBOpenDBRequest open(DOMString name, optional  IDBOpenDBOptions options = {});
+  [RustDeprecated, Throws, NewObject]
+  IDBOpenDBRequest deleteDatabase(DOMString name, optional IDBOpenDBOptions options = {});
+};
+
+partial dictionary IDBIndexParameters {
+  [RustDeprecated] DOMString? locale = null;
+};
+
+partial interface IDBIndex {
+  [RustDeprecated] readonly attribute DOMString? locale;
+  [RustDeprecated] readonly attribute boolean isAutoLocale;
+};
+
+partial interface IDBCursor {
+  [RustDeprecated] readonly attribute IDBRequest request;
+};
+
+partial interface IDBTransaction {
+  [RustDeprecated, Throws] undefined commit();
+};
 
 partial interface IDBDatabase {
   [RustDeprecated] readonly attribute StorageType storage;

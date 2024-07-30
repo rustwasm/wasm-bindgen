@@ -8,6 +8,7 @@ use wasm_bindgen_backend::util::leading_colon_path_ty;
 use wasm_bindgen_backend::util::{raw_ident, rust_ident};
 
 use crate::constants::{BUILTIN_IDENTS, POLYFILL_INTERFACES};
+use crate::idl_type::IdlType;
 use crate::traverse::TraverseType;
 use crate::util::shared_ref;
 use crate::util::{get_cfg_features, mdn_doc, required_doc_string, snake_case_ident};
@@ -63,11 +64,14 @@ fn maybe_unstable_docs(unstable: bool) -> Option<proc_macro2::TokenStream> {
     }
 }
 
-fn generate_arguments(arguments: &[(Ident, Type)], variadic: bool) -> Vec<TokenStream> {
+fn generate_arguments(
+    arguments: &[(Ident, IdlType<'_>, Type)],
+    variadic: bool,
+) -> Vec<TokenStream> {
     arguments
         .iter()
         .enumerate()
-        .map(|(i, (name, ty))| {
+        .map(|(i, (name, _, ty))| {
             if variadic && i + 1 == arguments.len() {
                 quote!( #name: &::js_sys::Array )
             } else {
@@ -375,11 +379,12 @@ pub enum InterfaceMethodKind {
     IndexingDeleter,
 }
 
-pub struct InterfaceMethod {
+pub struct InterfaceMethod<'a> {
     pub name: Ident,
     pub js_name: String,
     pub deprecated: Option<Option<String>>,
-    pub arguments: Vec<(Ident, Type)>,
+    pub arguments: Vec<(Ident, IdlType<'a>, Type)>,
+    pub variadic_type: Option<IdlType<'a>>,
     pub ret_ty: Option<Type>,
     pub kind: InterfaceMethodKind,
     pub is_static: bool,
@@ -389,7 +394,7 @@ pub struct InterfaceMethod {
     pub unstable: bool,
 }
 
-impl InterfaceMethod {
+impl InterfaceMethod<'_> {
     fn generate(
         &self,
         options: &Options,
@@ -403,6 +408,7 @@ impl InterfaceMethod {
             js_name,
             deprecated,
             arguments,
+            variadic_type: _,
             ret_ty,
             kind,
             is_static,
@@ -464,7 +470,7 @@ impl InterfaceMethod {
 
         let mut features = BTreeSet::new();
 
-        for (_, ty) in arguments.iter() {
+        for (_, _, ty) in arguments.iter() {
             add_features(&mut features, ty);
         }
 
@@ -544,7 +550,7 @@ impl InterfaceMethod {
     }
 }
 
-pub struct Interface {
+pub struct Interface<'a> {
     pub name: Ident,
     pub js_name: String,
     pub deprecated: Option<Option<String>>,
@@ -552,11 +558,11 @@ pub struct Interface {
     pub parents: Vec<Ident>,
     pub consts: Vec<Const>,
     pub attributes: Vec<InterfaceAttribute>,
-    pub methods: Vec<InterfaceMethod>,
+    pub methods: Vec<InterfaceMethod<'a>>,
     pub unstable: bool,
 }
 
-impl Interface {
+impl Interface<'_> {
     pub fn generate(&self, options: &Options) -> TokenStream {
         let Interface {
             name,
@@ -919,17 +925,17 @@ impl Dictionary {
     }
 }
 
-pub struct Function {
+pub struct Function<'a> {
     pub name: Ident,
     pub js_name: String,
-    pub arguments: Vec<(Ident, Type)>,
+    pub arguments: Vec<(Ident, IdlType<'a>, Type)>,
     pub ret_ty: Option<Type>,
     pub catch: bool,
     pub variadic: bool,
     pub unstable: bool,
 }
 
-impl Function {
+impl Function<'_> {
     fn generate(
         &self,
         options: &Options,
@@ -960,7 +966,7 @@ impl Function {
 
         let mut features = BTreeSet::new();
 
-        for (_, ty) in arguments.iter() {
+        for (_, _, ty) in arguments.iter() {
             add_features(&mut features, ty);
         }
 
@@ -1010,15 +1016,15 @@ impl Function {
     }
 }
 
-pub struct Namespace {
+pub struct Namespace<'a> {
     pub name: Ident,
     pub js_name: String,
     pub consts: Vec<Const>,
-    pub functions: Vec<Function>,
+    pub functions: Vec<Function<'a>>,
     pub unstable: bool,
 }
 
-impl Namespace {
+impl Namespace<'_> {
     pub fn generate(&self, options: &Options) -> TokenStream {
         let Namespace {
             name,

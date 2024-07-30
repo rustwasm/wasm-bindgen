@@ -31,7 +31,7 @@ use crate::util::{
 };
 use anyhow::Context;
 use anyhow::Result;
-use idl_type::IdlType;
+use idl_type::{IdentifierType, IdlType};
 use proc_macro2::{Ident, TokenStream};
 use quote::ToTokens;
 use sourcefile::SourceFile;
@@ -403,9 +403,15 @@ impl<'src> FirstPassRecord<'src> {
             idl_type::IdlType::Nullable(ty) => match **ty {
                 idl_type::IdlType::Any => true,
                 IdlType::FrozenArray(ref _idl_type) | IdlType::Sequence(ref _idl_type) => true,
-                idl_type::IdlType::Union(ref types) => !types
-                    .iter()
-                    .all(|idl_type| matches!(idl_type, IdlType::Interface(..))),
+                idl_type::IdlType::Union(ref types) => !types.iter().all(|idl_type| {
+                    matches!(
+                        idl_type,
+                        IdlType::Identifier {
+                            ty: IdentifierType::Interface(..),
+                            ..
+                        }
+                    )
+                }),
                 _ => false,
             },
             _ => false,
@@ -528,11 +534,11 @@ impl<'src> FirstPassRecord<'src> {
     }
 
     fn append_ns_operation(
-        &self,
-        functions: &mut Vec<Function>,
-        js_name: &'src str,
-        id: &OperationId<'src>,
-        data: &OperationData<'src>,
+        &'src self,
+        functions: &mut Vec<Function<'src>>,
+        js_name: &str,
+        id: &'src OperationId<'src>,
+        data: &'src OperationData<'src>,
     ) {
         match id {
             OperationId::Operation(Some(_)) => {}
@@ -764,12 +770,12 @@ impl<'src> FirstPassRecord<'src> {
     }
 
     fn member_operation(
-        &self,
+        &'src self,
         type_name: &str,
-        methods: &mut Vec<InterfaceMethod>,
+        methods: &mut Vec<InterfaceMethod<'src>>,
         data: &InterfaceData<'src>,
-        id: &OperationId<'src>,
-        op_data: &OperationData<'src>,
+        id: &'src OperationId<'src>,
+        op_data: &'src OperationData<'src>,
         unstable_types: &HashSet<Identifier>,
     ) {
         let attrs = data.definition_attributes;
@@ -783,7 +789,18 @@ impl<'src> FirstPassRecord<'src> {
             unstable,
             unstable_types,
         ) {
-            methods.push(method);
+            if !methods.iter().any(|old_method| {
+                old_method.variadic == method.variadic
+                    && old_method.js_name == method.js_name
+                    && old_method.variadic_type == method.variadic_type
+                    && old_method
+                        .arguments
+                        .iter()
+                        .map(|(_, idl, wb)| (idl.orig(), wb))
+                        .eq(method.arguments.iter().map(|(_, idl, wb)| (idl.orig(), wb)))
+            }) {
+                methods.push(method);
+            }
         }
     }
 
@@ -812,12 +829,12 @@ impl<'src> FirstPassRecord<'src> {
                         required: false,
                         name: snake_case_ident(identifier),
                         js_name: identifier.to_string(),
-                        ty: idl_type::IdlType::Callback
+                        ty: idl_type::IdentifierType::Callback
                             .to_syn_type(pos)
                             .unwrap()
                             .unwrap(),
                         return_ty: optional_return_ty(
-                            idl_type::IdlType::Callback
+                            idl_type::IdentifierType::Callback
                                 .to_syn_type(TypePosition::Return)
                                 .unwrap()
                                 .unwrap(),

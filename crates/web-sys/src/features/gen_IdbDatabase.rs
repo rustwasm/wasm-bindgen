@@ -201,4 +201,46 @@ extern "C" {
         store_names: &::wasm_bindgen::JsValue,
         mode: IdbTransactionMode,
     ) -> Result<IdbTransaction, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(all(
+        feature = "IdbTransaction",
+        feature = "IdbTransactionMode",
+        feature = "IdbTransactionOptions",
+    ))]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBDatabase" , js_name = transaction)]
+    #[doc = "The `transaction()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/transaction)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`, `IdbTransaction`, `IdbTransactionMode`, `IdbTransactionOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn transaction_with_str_and_mode_and_options(
+        this: &IdbDatabase,
+        store_names: &str,
+        mode: IdbTransactionMode,
+        options: &IdbTransactionOptions,
+    ) -> Result<IdbTransaction, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(all(
+        feature = "IdbTransaction",
+        feature = "IdbTransactionMode",
+        feature = "IdbTransactionOptions",
+    ))]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBDatabase" , js_name = transaction)]
+    #[doc = "The `transaction()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/transaction)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`, `IdbTransaction`, `IdbTransactionMode`, `IdbTransactionOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn transaction_with_str_sequence_and_mode_and_options(
+        this: &IdbDatabase,
+        store_names: &::wasm_bindgen::JsValue,
+        mode: IdbTransactionMode,
+        options: &IdbTransactionOptions,
+    ) -> Result<IdbTransaction, JsValue>;
 }

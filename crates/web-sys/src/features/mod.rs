@@ -4828,12 +4828,26 @@ mod gen_IdbTransaction;
 #[allow(unused_imports)]
 pub use gen_IdbTransaction::*;
 
+#[cfg(feature = "IdbTransactionDurability")]
+#[allow(non_snake_case)]
+mod gen_IdbTransactionDurability;
+#[cfg(feature = "IdbTransactionDurability")]
+#[allow(unused_imports)]
+pub use gen_IdbTransactionDurability::*;
+
 #[cfg(feature = "IdbTransactionMode")]
 #[allow(non_snake_case)]
 mod gen_IdbTransactionMode;
 #[cfg(feature = "IdbTransactionMode")]
 #[allow(unused_imports)]
 pub use gen_IdbTransactionMode::*;
+
+#[cfg(feature = "IdbTransactionOptions")]
+#[allow(non_snake_case)]
+mod gen_IdbTransactionOptions;
+#[cfg(feature = "IdbTransactionOptions")]
+#[allow(unused_imports)]
+pub use gen_IdbTransactionOptions::*;
 
 #[cfg(feature = "IdbVersionChangeEvent")]
 #[allow(non_snake_case)]

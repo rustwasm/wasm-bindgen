@@ -21,7 +21,7 @@ use crate::constants::{
 };
 use crate::first_pass::{FirstPassRecord, OperationData, OperationId, Signature};
 use crate::generator::{ConstValue, InterfaceMethod, InterfaceMethodKind};
-use crate::idl_type::{IdlType, ToIdlType};
+use crate::idl_type::{IdentifierType, IdlType, ToIdlType};
 use crate::Options;
 
 /// For variadic operations an overload with a `js_sys::Array` argument is generated alongside with
@@ -220,8 +220,8 @@ impl<'src> FirstPassRecord<'src> {
         &self,
         type_name: Option<&str>,
         container_attrs: Option<&ExtendedAttributeList<'src>>,
-        id: &OperationId<'src>,
-        data: &OperationData<'src>,
+        id: &'src OperationId<'src>,
+        data: &'src OperationData<'src>,
         unstable: bool,
         unstable_types: &HashSet<Identifier>,
     ) -> Vec<InterfaceMethod> {
@@ -308,7 +308,7 @@ impl<'src> FirstPassRecord<'src> {
             }
         }
 
-        let (name, kind, force_structural, force_throws) = match id {
+        let (js_name, kind, force_structural, force_throws) = match id {
             // Constructors aren't annotated with `[Throws]` extended attributes
             // (how could they be, since they themselves are extended
             // attributes?) so we must conservatively assume that they can
@@ -355,7 +355,7 @@ impl<'src> FirstPassRecord<'src> {
             //       possible.
             let ret_ty = signature.orig.ret.to_idl_type(self);
 
-            let mut rust_name = snake_case_ident(name);
+            let mut rust_name = snake_case_ident(js_name);
             let mut first = true;
             for (i, arg) in signature.args.iter().enumerate() {
                 // Find out if any other known signature either has the same
@@ -435,9 +435,9 @@ impl<'src> FirstPassRecord<'src> {
                     .map(|arg| arg.variadic)
                     .unwrap_or(false);
 
-            fn idl_arguments<'a>(
-                args: impl Iterator<Item = (String, &'a IdlType<'a>)>,
-            ) -> Option<Vec<(Ident, syn::Type)>> {
+            fn idl_arguments<'a: 'b, 'b>(
+                args: impl Iterator<Item = (String, &'b IdlType<'a>)>,
+            ) -> Option<Vec<(Ident, IdlType<'a>, syn::Type)>> {
                 let mut output = vec![];
 
                 for (name, idl_type) in args {
@@ -448,7 +448,11 @@ impl<'src> FirstPassRecord<'src> {
                         }
                     };
 
-                    output.push((rust_ident(&snake_case_ident(&name[..])), ty));
+                    output.push((
+                        rust_ident(&snake_case_ident(&name[..])),
+                        idl_type.clone(),
+                        ty,
+                    ));
                 }
 
                 Some(output)
@@ -474,11 +478,22 @@ impl<'src> FirstPassRecord<'src> {
 
             if let Some(arguments) = arguments {
                 if let Ok(ret_ty) = ret_ty.to_syn_type(TypePosition::Return) {
+                    let mut rust_name = rust_name.clone();
+
+                    if let Some(map) =
+                        type_name.and_then(|type_name| FIXED_INTERFACES.get(type_name))
+                    {
+                        if let Some(fixed) = map.get(rust_name.as_str()) {
+                            rust_name = fixed.to_string();
+                        }
+                    }
+
                     ret.push(InterfaceMethod {
                         name: rust_ident(&rust_name),
-                        js_name: name.to_string(),
+                        js_name: js_name.to_string(),
                         deprecated: deprecated.clone(),
                         arguments,
+                        variadic_type: None,
                         ret_ty,
                         kind: kind.clone(),
                         is_static,
@@ -506,11 +521,22 @@ impl<'src> FirstPassRecord<'src> {
 
                 if let Some(arguments) = arguments {
                     if let Ok(ret_ty) = ret_ty.to_syn_type(TypePosition::Return) {
+                        let mut rust_name = format!("{}_{}", &rust_name, i);
+
+                        if let Some(map) =
+                            type_name.and_then(|type_name| FIXED_INTERFACES.get(type_name))
+                        {
+                            if let Some(fixed) = map.get(rust_name.as_str()) {
+                                rust_name = fixed.to_string();
+                            }
+                        }
+
                         ret.push(InterfaceMethod {
-                            name: rust_ident(&format!("{}_{}", rust_name, i)),
-                            js_name: name.to_string(),
+                            name: rust_ident(&rust_name),
+                            js_name: js_name.to_string(),
                             deprecated: deprecated.clone(),
                             arguments,
+                            variadic_type: Some(last_idl_type.clone()),
                             kind: kind.clone(),
                             ret_ty,
                             is_static,
@@ -520,14 +546,6 @@ impl<'src> FirstPassRecord<'src> {
                             unstable,
                         });
                     }
-                }
-            }
-        }
-
-        for interface in &mut ret {
-            if let Some(map) = type_name.and_then(|type_name| FIXED_INTERFACES.get(type_name)) {
-                if let Some(fixed) = map.get(&interface.name.to_string().as_ref()) {
-                    interface.name = rust_ident(fixed);
                 }
             }
         }
@@ -572,9 +590,10 @@ pub fn is_type_unstable(ty: &weedle::types::Type, unstable_types: &HashSet<Ident
 
 fn is_idl_type_unstable(ty: &IdlType, unstable_types: &HashSet<Identifier>) -> bool {
     match ty {
-        IdlType::Dictionary(name) | IdlType::Interface(name) => {
-            unstable_types.contains(&Identifier(name))
-        }
+        IdlType::Identifier {
+            ty: IdentifierType::Dictionary(name) | IdentifierType::Interface(name),
+            ..
+        } => unstable_types.contains(&Identifier(name)),
         _ => false,
     }
 }
