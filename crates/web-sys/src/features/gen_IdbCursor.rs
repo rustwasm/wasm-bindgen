@@ -48,6 +48,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBCursor/request)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbCursor`, `IdbRequest`*"]
+    #[deprecated]
     pub fn request(this: &IdbCursor) -> IdbRequest;
     # [wasm_bindgen (catch , method , structural , js_class = "IDBCursor" , js_name = advance)]
     #[doc = "The `advance()` method."]

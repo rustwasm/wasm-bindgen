@@ -85,6 +85,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Crypto`, `WorkerGlobalScope`*"]
     pub fn crypto(this: &WorkerGlobalScope) -> Result<Crypto, JsValue>;
+    #[cfg(feature = "IdbFactory")]
+    # [wasm_bindgen (structural , catch , method , getter , js_class = "WorkerGlobalScope" , js_name = indexedDB)]
+    #[doc = "Getter for the `indexedDB` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/indexedDB)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbFactory`, `WorkerGlobalScope`*"]
+    pub fn indexed_db(this: &WorkerGlobalScope) -> Result<Option<IdbFactory>, JsValue>;
     #[cfg(feature = "Performance")]
     # [wasm_bindgen (structural , method , getter , js_class = "WorkerGlobalScope" , js_name = performance)]
     #[doc = "Getter for the `performance` field of this object."]
@@ -107,14 +115,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
     pub fn is_secure_context(this: &WorkerGlobalScope) -> bool;
-    #[cfg(feature = "IdbFactory")]
-    # [wasm_bindgen (structural , catch , method , getter , js_class = "WorkerGlobalScope" , js_name = indexedDB)]
-    #[doc = "Getter for the `indexedDB` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/indexedDB)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `IdbFactory`, `WorkerGlobalScope`*"]
-    pub fn indexed_db(this: &WorkerGlobalScope) -> Result<Option<IdbFactory>, JsValue>;
     #[cfg(feature = "CacheStorage")]
     # [wasm_bindgen (structural , catch , method , getter , js_class = "WorkerGlobalScope" , js_name = caches)]
     #[doc = "Getter for the `caches` field of this object."]

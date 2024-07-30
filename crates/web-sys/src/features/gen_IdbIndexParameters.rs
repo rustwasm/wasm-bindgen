@@ -13,11 +13,13 @@ extern "C" {
     #[doc = "Get the `locale` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
+    #[deprecated]
     #[wasm_bindgen(method, getter = "locale")]
     pub fn get_locale(this: &IdbIndexParameters) -> Option<String>;
     #[doc = "Change the `locale` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
+    #[deprecated]
     #[wasm_bindgen(method, setter = "locale")]
     pub fn set_locale(this: &IdbIndexParameters, val: Option<&str>);
     #[doc = "Get the `multiEntry` field of this object."]

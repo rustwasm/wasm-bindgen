@@ -38,11 +38,20 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBFactory/deleteDatabase)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbFactory`, `IdbOpenDbOptions`, `IdbOpenDbRequest`*"]
+    #[deprecated]
     pub fn delete_database_with_options(
         this: &IdbFactory,
         name: &str,
         options: &IdbOpenDbOptions,
     ) -> Result<IdbOpenDbRequest, JsValue>;
+    #[cfg(feature = "IdbOpenDbRequest")]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBFactory" , js_name = open)]
+    #[doc = "The `open()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBFactory/open)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbFactory`, `IdbOpenDbRequest`*"]
+    pub fn open(this: &IdbFactory, name: &str) -> Result<IdbOpenDbRequest, JsValue>;
     #[cfg(feature = "IdbOpenDbRequest")]
     # [wasm_bindgen (catch , method , structural , js_class = "IDBFactory" , js_name = open)]
     #[doc = "The `open()` method."]
@@ -67,14 +76,6 @@ extern "C" {
         name: &str,
         version: f64,
     ) -> Result<IdbOpenDbRequest, JsValue>;
-    #[cfg(feature = "IdbOpenDbRequest")]
-    # [wasm_bindgen (catch , method , structural , js_class = "IDBFactory" , js_name = open)]
-    #[doc = "The `open()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBFactory/open)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `IdbFactory`, `IdbOpenDbRequest`*"]
-    pub fn open(this: &IdbFactory, name: &str) -> Result<IdbOpenDbRequest, JsValue>;
     #[cfg(all(feature = "IdbOpenDbOptions", feature = "IdbOpenDbRequest",))]
     # [wasm_bindgen (catch , method , structural , js_class = "IDBFactory" , js_name = open)]
     #[doc = "The `open()` method."]
@@ -82,6 +83,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBFactory/open)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbFactory`, `IdbOpenDbOptions`, `IdbOpenDbRequest`*"]
+    #[deprecated]
     pub fn open_with_idb_open_db_options(
         this: &IdbFactory,
         name: &str,

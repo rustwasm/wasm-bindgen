@@ -8,6 +8,7 @@ use wasm_bindgen_backend::util::leading_colon_path_ty;
 use wasm_bindgen_backend::util::{raw_ident, rust_ident};
 
 use crate::constants::{BUILTIN_IDENTS, POLYFILL_INTERFACES};
+use crate::idl_type::IdlType;
 use crate::traverse::TraverseType;
 use crate::util::shared_ref;
 use crate::util::{get_cfg_features, mdn_doc, required_doc_string, snake_case_ident};
@@ -63,11 +64,14 @@ fn maybe_unstable_docs(unstable: bool) -> Option<proc_macro2::TokenStream> {
     }
 }
 
-fn generate_arguments(arguments: &[(Ident, Type)], variadic: bool) -> Vec<TokenStream> {
+fn generate_arguments(
+    arguments: &[(Ident, IdlType<'_>, Type)],
+    variadic: bool,
+) -> Vec<TokenStream> {
     arguments
         .iter()
         .enumerate()
-        .map(|(i, (name, ty))| {
+        .map(|(i, (name, _, ty))| {
             if variadic && i + 1 == arguments.len() {
                 quote!( #name: &::js_sys::Array )
             } else {
@@ -194,6 +198,7 @@ impl Const {
         options: &Options,
         parent_name: &Ident,
         parent_js_name: &str,
+        deprecated: &Option<Option<String>>,
     ) -> TokenStream {
         let name = &self.name;
         let ty = &self.ty;
@@ -209,10 +214,16 @@ impl Const {
             &get_features_doc(options, parent_name.to_string()),
         );
 
+        let deprecated = deprecated.as_ref().map(|msg| match msg {
+            Some(msg) => quote!( #[deprecated(note = #msg)] ),
+            None => quote!( #[deprecated] ),
+        });
+
         quote! {
             #unstable_attr
             #doc_comment
             #unstable_docs
+            #deprecated
             pub const #name: #ty = #value as #ty;
         }
     }
@@ -241,6 +252,7 @@ impl InterfaceAttribute {
         parent_name: &Ident,
         parent_js_name: &str,
         parents: &[Ident],
+        parent_deprecated: &Option<Option<String>>,
     ) -> TokenStream {
         let InterfaceAttribute {
             js_name,
@@ -321,10 +333,13 @@ impl InterfaceAttribute {
         };
 
         let catch = if *catch { Some(quote!(catch,)) } else { None };
-        let deprecated = deprecated.as_ref().map(|msg| match msg {
-            Some(msg) => quote!( #[deprecated(note = #msg)] ),
-            None => quote!( #[deprecated] ),
-        });
+        let deprecated = deprecated
+            .as_ref()
+            .or(parent_deprecated.as_ref())
+            .map(|msg| match msg {
+                Some(msg) => quote!( #[deprecated(note = #msg)] ),
+                None => quote!( #[deprecated] ),
+            });
 
         let doc_comment = comment(
             format!(
@@ -364,11 +379,12 @@ pub enum InterfaceMethodKind {
     IndexingDeleter,
 }
 
-pub struct InterfaceMethod {
+pub struct InterfaceMethod<'a> {
     pub name: Ident,
     pub js_name: String,
     pub deprecated: Option<Option<String>>,
-    pub arguments: Vec<(Ident, Type)>,
+    pub arguments: Vec<(Ident, IdlType<'a>, Type)>,
+    pub variadic_type: Option<IdlType<'a>>,
     pub ret_ty: Option<Type>,
     pub kind: InterfaceMethodKind,
     pub is_static: bool,
@@ -378,19 +394,21 @@ pub struct InterfaceMethod {
     pub unstable: bool,
 }
 
-impl InterfaceMethod {
+impl InterfaceMethod<'_> {
     fn generate(
         &self,
         options: &Options,
         parent_name: &Ident,
         parent_js_name: String,
         parents: &[Ident],
+        parent_deprecated: &Option<Option<String>>,
     ) -> TokenStream {
         let InterfaceMethod {
             name,
             js_name,
             deprecated,
             arguments,
+            variadic_type: _,
             ret_ty,
             kind,
             is_static,
@@ -452,7 +470,7 @@ impl InterfaceMethod {
 
         let mut features = BTreeSet::new();
 
-        for (_, ty) in arguments.iter() {
+        for (_, _, ty) in arguments.iter() {
             add_features(&mut features, ty);
         }
 
@@ -472,10 +490,13 @@ impl InterfaceMethod {
 
         let doc_comment = comment(doc_comment, &required_doc_string(options, &features));
 
-        let deprecated = deprecated.as_ref().map(|msg| match msg {
-            Some(msg) => quote!( #[deprecated(note = #msg)] ),
-            None => quote!( #[deprecated] ),
-        });
+        let deprecated = deprecated
+            .as_ref()
+            .or(parent_deprecated.as_ref())
+            .map(|msg| match msg {
+                Some(msg) => quote!( #[deprecated(note = #msg)] ),
+                None => quote!( #[deprecated] ),
+            });
 
         let ret = ret_ty.as_ref().map(|ret| quote!( #ret ));
 
@@ -529,7 +550,7 @@ impl InterfaceMethod {
     }
 }
 
-pub struct Interface {
+pub struct Interface<'a> {
     pub name: Ident,
     pub js_name: String,
     pub deprecated: Option<Option<String>>,
@@ -537,11 +558,11 @@ pub struct Interface {
     pub parents: Vec<Ident>,
     pub consts: Vec<Const>,
     pub attributes: Vec<InterfaceAttribute>,
-    pub methods: Vec<InterfaceMethod>,
+    pub methods: Vec<InterfaceMethod<'a>>,
     pub unstable: bool,
 }
 
-impl Interface {
+impl Interface<'_> {
     pub fn generate(&self, options: &Options) -> TokenStream {
         let Interface {
             name,
@@ -563,11 +584,6 @@ impl Interface {
             &get_features_doc(options, name.to_string()),
         );
 
-        let deprecated = deprecated.as_ref().map(|msg| match msg {
-            Some(msg) => quote!( #[deprecated(note = #msg)] ),
-            None => quote!( #[deprecated] ),
-        });
-
         let is_type_of = if *has_interface {
             None
         } else {
@@ -587,7 +603,7 @@ impl Interface {
 
         let consts = consts
             .iter()
-            .map(|x| x.generate(options, name, js_name))
+            .map(|x| x.generate(options, name, js_name, deprecated))
             .collect::<Vec<_>>();
 
         let consts = if consts.is_empty() {
@@ -596,21 +612,25 @@ impl Interface {
             Some(quote! {
                 #unstable_attr
                 impl #name {
-                    #(#deprecated #consts)*
+                    #(#consts)*
                 }
             })
         };
 
         let attributes = attributes
             .iter()
-            .map(|x| x.generate(options, name, js_name, parents))
+            .map(|x| x.generate(options, name, js_name, parents, deprecated))
             .collect::<Vec<_>>();
 
         let methods = methods
             .iter()
-            .map(|x| x.generate(options, name, js_name.to_string(), parents))
+            .map(|x| x.generate(options, name, js_name.to_string(), parents, deprecated))
             .collect::<Vec<_>>();
 
+        let deprecated = deprecated.as_ref().map(|msg| match msg {
+            Some(msg) => quote!( #[deprecated(note = #msg)] ),
+            None => quote!( #[deprecated] ),
+        });
         let js_ident = raw_ident(js_name);
 
         quote! {
@@ -636,8 +656,8 @@ impl Interface {
                 #deprecated
                 pub type #name;
 
-                #(#deprecated #attributes)*
-                #(#deprecated #methods)*
+                #(#attributes)*
+                #(#methods)*
             }
 
             #consts
@@ -781,6 +801,7 @@ pub struct Dictionary {
     pub js_name: String,
     pub fields: Vec<DictionaryField>,
     pub unstable: bool,
+    pub deprecated: Option<Option<String>>,
 }
 
 impl Dictionary {
@@ -790,10 +811,15 @@ impl Dictionary {
             js_name,
             fields,
             unstable,
+            deprecated,
         } = self;
 
         let unstable_attr = maybe_unstable_attr(*unstable);
         let unstable_docs = maybe_unstable_docs(*unstable);
+        let deprecated = deprecated.as_ref().map(|msg| match msg {
+            Some(msg) => quote!( #[deprecated(note = #msg)] ),
+            None => quote!( #[deprecated] ),
+        });
 
         let js_name = raw_ident(js_name);
 
@@ -859,6 +885,7 @@ impl Dictionary {
                 #[derive(Debug, Clone, PartialEq, Eq)]
                 #doc_comment
                 #unstable_docs
+                #deprecated
                 pub type #name;
 
                 #(#field_shims)*
@@ -869,6 +896,7 @@ impl Dictionary {
                 #cfg_features
                 #ctor_doc_comment
                 #unstable_docs
+                #deprecated
                 pub fn new(#(#required_args),*) -> Self {
                     #[allow(unused_mut)]
                     let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
@@ -897,17 +925,17 @@ impl Dictionary {
     }
 }
 
-pub struct Function {
+pub struct Function<'a> {
     pub name: Ident,
     pub js_name: String,
-    pub arguments: Vec<(Ident, Type)>,
+    pub arguments: Vec<(Ident, IdlType<'a>, Type)>,
     pub ret_ty: Option<Type>,
     pub catch: bool,
     pub variadic: bool,
     pub unstable: bool,
 }
 
-impl Function {
+impl Function<'_> {
     fn generate(
         &self,
         options: &Options,
@@ -938,7 +966,7 @@ impl Function {
 
         let mut features = BTreeSet::new();
 
-        for (_, ty) in arguments.iter() {
+        for (_, _, ty) in arguments.iter() {
             add_features(&mut features, ty);
         }
 
@@ -988,15 +1016,15 @@ impl Function {
     }
 }
 
-pub struct Namespace {
+pub struct Namespace<'a> {
     pub name: Ident,
     pub js_name: String,
     pub consts: Vec<Const>,
-    pub functions: Vec<Function>,
+    pub functions: Vec<Function<'a>>,
     pub unstable: bool,
 }
 
-impl Namespace {
+impl Namespace<'_> {
     pub fn generate(&self, options: &Options) -> TokenStream {
         let Namespace {
             name,
@@ -1027,7 +1055,7 @@ impl Namespace {
 
         let consts = consts
             .iter()
-            .map(|x| x.generate(options, name, js_name))
+            .map(|x| x.generate(options, name, js_name, &None))
             .collect::<Vec<_>>();
 
         quote! {

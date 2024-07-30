@@ -1922,6 +1922,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Storage`, `Window`*"]
     pub fn local_storage(this: &Window) -> Result<Option<Storage>, JsValue>;
+    #[cfg(feature = "IdbFactory")]
+    # [wasm_bindgen (structural , catch , method , getter , js_class = "Window" , js_name = indexedDB)]
+    #[doc = "Getter for the `indexedDB` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/indexedDB)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbFactory`, `Window`*"]
+    pub fn indexed_db(this: &Window) -> Result<Option<IdbFactory>, JsValue>;
     #[cfg(feature = "Performance")]
     # [wasm_bindgen (structural , method , getter , js_class = "Window" , js_name = performance)]
     #[doc = "Getter for the `performance` field of this object."]
@@ -1944,14 +1952,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
     pub fn is_secure_context(this: &Window) -> bool;
-    #[cfg(feature = "IdbFactory")]
-    # [wasm_bindgen (structural , catch , method , getter , js_class = "Window" , js_name = indexedDB)]
-    #[doc = "Getter for the `indexedDB` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/indexedDB)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `IdbFactory`, `Window`*"]
-    pub fn indexed_db(this: &Window) -> Result<Option<IdbFactory>, JsValue>;
     #[cfg(feature = "CacheStorage")]
     # [wasm_bindgen (structural , catch , method , getter , js_class = "Window" , js_name = caches)]
     #[doc = "Getter for the `caches` field of this object."]

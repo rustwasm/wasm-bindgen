@@ -101,6 +101,9 @@
 * Update `AbortSignal` and `AbortController` according to the WHATWG specification.
   [#4026](https://github.com/rustwasm/wasm-bindgen/pull/4026)
 
+* Update the Indexed DB API.
+  [#4027](https://github.com/rustwasm/wasm-bindgen/pull/4027)
+
 ### Fixed
 
 * Copy port from headless test server when using `WASM_BINDGEN_TEST_ADDRESS`.

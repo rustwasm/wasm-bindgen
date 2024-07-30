@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use proc_macro2::{Ident, Span};
 use wasm_bindgen_backend::util::{ident_ty, leading_colon_path_ty, raw_ident, rust_ident};
 use weedle::attribute::{ExtendedAttribute, ExtendedAttributeList};
@@ -29,9 +31,6 @@ pub(crate) enum IdlType<'a> {
     Object,
     Symbol,
     Error,
-    Callback,
-    Iterator,
-    AsyncIterator,
 
     ArrayBuffer,
     DataView,
@@ -69,14 +68,6 @@ pub(crate) enum IdlType<'a> {
         immutable: bool,
     },
 
-    Interface(&'a str),
-    Dictionary(&'a str),
-    Enum(&'a str),
-    CallbackInterface {
-        name: &'a str,
-        single_function: bool,
-    },
-
     Nullable(Box<IdlType<'a>>),
     FrozenArray(Box<IdlType<'a>>),
     Sequence(Box<IdlType<'a>>),
@@ -87,7 +78,28 @@ pub(crate) enum IdlType<'a> {
     Any,
     Undefined,
 
-    UnknownInterface(&'a str),
+    UnknownIdentifier(&'a str),
+
+    Identifier {
+        name: &'a str,
+        ty: IdentifierType<'a>,
+    },
+}
+
+#[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Debug)]
+pub(crate) enum IdentifierType<'a> {
+    Callback,
+    Iterator,
+    AsyncIterator,
+    Interface(&'a str),
+    Dictionary(&'a str),
+    Enum(&'a str),
+    CallbackInterface {
+        name: &'a str,
+        single_function: bool,
+    },
+    // DOMTimeStamp
+    UnsignedLongLong,
 }
 
 pub(crate) trait ToIdlType<'a> {
@@ -321,25 +333,25 @@ impl<'a> ToIdlType<'a> for AttributedNonAnyType<'a> {
 
 impl<'a> ToIdlType<'a> for Identifier<'a> {
     fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a> {
-        if self.0 == "DOMTimeStamp" {
+        let ty = if self.0 == "DOMTimeStamp" {
             // https://heycam.github.io/webidl/#DOMTimeStamp
-            IdlType::UnsignedLongLong
+            IdentifierType::UnsignedLongLong
         } else if let Some(idl_type) = record.typedefs.get(&self.0) {
-            idl_type.to_idl_type(record)
+            return idl_type.to_idl_type(record);
         } else if record.interfaces.contains_key(self.0) {
-            IdlType::Interface(self.0)
+            IdentifierType::Interface(self.0)
         } else if record.dictionaries.contains_key(self.0) {
-            IdlType::Dictionary(self.0)
+            IdentifierType::Dictionary(self.0)
         } else if record.enums.contains_key(self.0) {
-            IdlType::Enum(self.0)
+            IdentifierType::Enum(self.0)
         } else if record.callbacks.contains(self.0) {
-            IdlType::Callback
+            IdentifierType::Callback
         } else if record.iterators.contains(self.0) {
-            IdlType::Iterator
+            IdentifierType::Iterator
         } else if record.async_iterators.contains(self.0) {
-            IdlType::AsyncIterator
+            IdentifierType::AsyncIterator
         } else if let Some(data) = record.callback_interfaces.get(self.0) {
-            IdlType::CallbackInterface {
+            IdentifierType::CallbackInterface {
                 name: self.0,
                 single_function: data.single_function,
             }
@@ -350,11 +362,13 @@ impl<'a> ToIdlType<'a> for Identifier<'a> {
             //
             // namely this seems to be "legalese" for "this is a `Window`", so
             // let's translate it as such.
-            IdlType::Interface("Window")
+            IdentifierType::Interface("Window")
         } else {
             log::warn!("Unrecognized type: {}", self.0);
-            IdlType::UnknownInterface(self.0)
-        }
+            return IdlType::UnknownIdentifier(self.0);
+        };
+
+        IdlType::id(self.0, ty)
     }
 }
 
@@ -421,6 +435,10 @@ pub enum TypeError {
 }
 
 impl<'a> IdlType<'a> {
+    fn id(name: &'a str, ty: IdentifierType<'a>) -> Self {
+        IdlType::Identifier { name, ty }
+    }
+
     /// Generates a snake case type name.
     pub(crate) fn push_snake_case_name(&self, dst: &mut String) {
         match self {
@@ -439,9 +457,6 @@ impl<'a> IdlType<'a> {
             IdlType::Object => dst.push_str("object"),
             IdlType::Symbol => dst.push_str("symbol"),
             IdlType::Error => dst.push_str("error"),
-            IdlType::Callback => dst.push_str("callback"),
-            IdlType::Iterator => dst.push_str("iterator"),
-            IdlType::AsyncIterator => dst.push_str("async_iterator"),
 
             IdlType::ArrayBuffer => dst.push_str("array_buffer"),
             IdlType::DataView => dst.push_str("data_view"),
@@ -457,11 +472,7 @@ impl<'a> IdlType<'a> {
             IdlType::ArrayBufferView { .. } => dst.push_str("array_buffer_view"),
             IdlType::BufferSource { .. } => dst.push_str("buffer_source"),
 
-            IdlType::Interface(name) => dst.push_str(&snake_case_ident(name)),
-            IdlType::UnknownInterface(name) => dst.push_str(&snake_case_ident(name)),
-            IdlType::Dictionary(name) => dst.push_str(&snake_case_ident(name)),
-            IdlType::Enum(name) => dst.push_str(&snake_case_ident(name)),
-            IdlType::CallbackInterface { name, .. } => dst.push_str(&snake_case_ident(name)),
+            IdlType::UnknownIdentifier(name) => dst.push_str(&snake_case_ident(name)),
 
             IdlType::Nullable(idl_type) => {
                 dst.push_str("opt_");
@@ -500,6 +511,21 @@ impl<'a> IdlType<'a> {
 
             IdlType::Any => dst.push_str("any"),
             IdlType::Undefined => dst.push_str("undefined"),
+
+            IdlType::Identifier { ty, .. } => match ty {
+                IdentifierType::Callback => dst.push_str("callback"),
+                IdentifierType::Iterator => dst.push_str("iterator"),
+                IdentifierType::AsyncIterator => dst.push_str("async_iterator"),
+                IdentifierType::Interface(name) => dst.push_str(&snake_case_ident(name)),
+                IdentifierType::Dictionary(name) => dst.push_str(&snake_case_ident(name)),
+                IdentifierType::Enum(name) => dst.push_str(&snake_case_ident(name)),
+                IdentifierType::CallbackInterface { name, .. } => {
+                    dst.push_str(&snake_case_ident(name))
+                }
+                IdentifierType::UnsignedLongLong => {
+                    IdlType::UnsignedLongLong.push_snake_case_name(dst)
+                }
+            },
         }
     }
 
@@ -570,13 +596,6 @@ impl<'a> IdlType<'a> {
             IdlType::Float64Array { immutable } => Ok(Some(array("f64", pos, *immutable))),
 
             IdlType::ArrayBufferView { .. } | IdlType::BufferSource { .. } => Ok(js_sys("Object")),
-            IdlType::Interface(name)
-            | IdlType::Dictionary(name)
-            | IdlType::CallbackInterface { name, .. } => {
-                let ty = ident_ty(rust_ident(camel_case_ident(name).as_str()));
-                Ok(externref(ty))
-            }
-            IdlType::Enum(name) => Ok(Some(ident_ty(rust_ident(camel_case_ident(name).as_str())))),
 
             IdlType::Nullable(idl_type) => {
                 let inner = idl_type.to_syn_type(pos)?;
@@ -640,10 +659,15 @@ impl<'a> IdlType<'a> {
                 //    Such an enum, however, might have a relatively high
                 //    overhead in creating it from a JS value, but would be
                 //    cheap to convert from a variant back to a JS value.
-                if idl_types
-                    .iter()
-                    .all(|idl_type| matches!(idl_type, IdlType::Interface(..)))
-                {
+                if idl_types.iter().all(|idl_type| {
+                    matches!(
+                        idl_type,
+                        IdlType::Identifier {
+                            ty: IdentifierType::Interface(..),
+                            ..
+                        }
+                    )
+                }) {
                     IdlType::Object.to_syn_type(pos)
                 } else {
                     IdlType::Any.to_syn_type(pos)
@@ -652,10 +676,8 @@ impl<'a> IdlType<'a> {
 
             IdlType::Any => Ok(js_value),
             IdlType::Undefined => Ok(None),
-            IdlType::Callback => Ok(js_sys("Function")),
-            IdlType::Iterator => Ok(js_sys("Iterator")),
-            IdlType::AsyncIterator => Ok(js_sys("AsyncIterator")),
-            IdlType::UnknownInterface(_) => Err(TypeError::CannotConvert),
+            IdlType::Identifier { ty, .. } => ty.to_syn_type(pos),
+            IdlType::UnknownIdentifier(_) => Err(TypeError::CannotConvert),
         }
     }
 
@@ -739,9 +761,13 @@ impl<'a> IdlType<'a> {
             ],
             IdlType::LongLong => vec![IdlType::Long, IdlType::Double],
             IdlType::UnsignedLongLong => vec![IdlType::UnsignedLong, IdlType::Double],
-            IdlType::CallbackInterface {
-                name,
-                single_function: true,
+            IdlType::Identifier {
+                name: identifier,
+                ty:
+                    IdentifierType::CallbackInterface {
+                        name,
+                        single_function: true,
+                    },
             } => {
                 // According to the webidl spec [1] single-function callback
                 // interfaces can also be replaced in arguments with simply a
@@ -749,44 +775,94 @@ impl<'a> IdlType<'a> {
                 //
                 // [1]: https://heycam.github.io/webidl/#es-user-objects
                 vec![
-                    IdlType::Callback,
-                    IdlType::CallbackInterface {
-                        name,
-                        single_function: false,
-                    },
+                    IdlType::id(identifier, IdentifierType::Callback),
+                    IdlType::id(
+                        identifier,
+                        IdentifierType::CallbackInterface {
+                            name,
+                            single_function: false,
+                        },
+                    ),
                 ]
             }
             idl_type => vec![idl_type.clone()],
+        }
+    }
+
+    pub(crate) fn orig(&self) -> Cow<'_, Self> {
+        if let Self::Identifier { name, .. } = self {
+            Cow::Owned(Self::UnknownIdentifier(name))
+        } else {
+            Cow::Borrowed(self)
+        }
+    }
+}
+
+impl<'a> IdentifierType<'a> {
+    /// Converts to syn type if possible.
+    pub(crate) fn to_syn_type(&self, pos: TypePosition) -> Result<Option<syn::Type>, TypeError> {
+        let externref = |ty| {
+            Some(match pos {
+                TypePosition::Argument => shared_ref(ty, false),
+                TypePosition::Return => ty,
+            })
+        };
+        let js_sys = |name: &str| {
+            let path = vec![rust_ident("js_sys"), rust_ident(name)];
+            let ty = leading_colon_path_ty(path);
+            externref(ty)
+        };
+        match self {
+            IdentifierType::Callback => Ok(js_sys("Function")),
+            IdentifierType::Iterator => Ok(js_sys("Iterator")),
+            IdentifierType::AsyncIterator => Ok(js_sys("AsyncIterator")),
+            IdentifierType::Interface(name)
+            | IdentifierType::Dictionary(name)
+            | IdentifierType::CallbackInterface { name, .. } => {
+                let ty = ident_ty(rust_ident(camel_case_ident(name).as_str()));
+                Ok(externref(ty))
+            }
+            IdentifierType::Enum(name) => {
+                Ok(Some(ident_ty(rust_ident(camel_case_ident(name).as_str()))))
+            }
+            IdentifierType::UnsignedLongLong => IdlType::UnsignedLongLong.to_syn_type(pos),
         }
     }
 }
 
 #[test]
 fn idl_type_flatten_test() {
+    use self::IdentifierType::*;
     use self::IdlType::*;
 
     assert_eq!(
         Union(vec![
-            Interface("Node"),
-            Union(vec![Sequence(Box::new(Long),), Interface("Event"),]),
+            IdlType::id("Node", Interface("Node")),
+            Union(vec![
+                Sequence(Box::new(Long),),
+                IdlType::id("Event", Interface("Event"))
+            ]),
             Nullable(Box::new(Union(vec![
-                Interface("XMLHttpRequest"),
+                IdlType::id("XMLHttpRequest", Interface("XMLHttpRequest")),
                 DomString,
             ])),),
             Sequence(Box::new(Union(vec![
                 Sequence(Box::new(Double),),
-                Interface("NodeList"),
+                IdlType::id("NodeList", Interface("NodeList")),
             ])),),
         ])
         .flatten(None),
         vec![
-            Interface("Node"),
+            IdlType::id("Node", Interface("Node")),
             Sequence(Box::new(Long)),
-            Interface("Event"),
-            Nullable(Box::new(Interface("XMLHttpRequest"))),
+            IdlType::id("Event", Interface("Event")),
+            Nullable(Box::new(IdlType::id(
+                "XMLHttpRequest",
+                Interface("XMLHttpRequest")
+            ))),
             Nullable(Box::new(DomString)),
             Sequence(Box::new(Sequence(Box::new(Double)))),
-            Sequence(Box::new(Interface("NodeList"))),
+            Sequence(Box::new(IdlType::id("NodeList", Interface("NodeList")))),
         ],
     );
 }
