@@ -27,6 +27,46 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ClipboardItem`*"]
     pub fn types(this: &ClipboardItem) -> ::js_sys::Array;
+    #[wasm_bindgen(catch, constructor, js_class = "ClipboardItem")]
+    #[doc = "The `new ClipboardItem(..)` constructor, creating a new instance of `ClipboardItem`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ClipboardItem/ClipboardItem)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ClipboardItem`*"]
+    pub fn new_with_record_from_str_to_str_promise(
+        items: &::js_sys::Object,
+    ) -> Result<ClipboardItem, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "ClipboardItem")]
+    #[doc = "The `new ClipboardItem(..)` constructor, creating a new instance of `ClipboardItem`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ClipboardItem/ClipboardItem)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ClipboardItem`*"]
+    pub fn new_with_record_from_str_to_blob_promise(
+        items: &::js_sys::Object,
+    ) -> Result<ClipboardItem, JsValue>;
+    #[cfg(feature = "ClipboardItemOptions")]
+    #[wasm_bindgen(catch, constructor, js_class = "ClipboardItem")]
+    #[doc = "The `new ClipboardItem(..)` constructor, creating a new instance of `ClipboardItem`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ClipboardItem/ClipboardItem)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ClipboardItem`, `ClipboardItemOptions`*"]
+    pub fn new_with_record_from_str_to_str_promise_and_options(
+        items: &::js_sys::Object,
+        options: &ClipboardItemOptions,
+    ) -> Result<ClipboardItem, JsValue>;
+    #[cfg(feature = "ClipboardItemOptions")]
+    #[wasm_bindgen(catch, constructor, js_class = "ClipboardItem")]
+    #[doc = "The `new ClipboardItem(..)` constructor, creating a new instance of `ClipboardItem`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ClipboardItem/ClipboardItem)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ClipboardItem`, `ClipboardItemOptions`*"]
+    pub fn new_with_record_from_str_to_blob_promise_and_options(
+        items: &::js_sys::Object,
+        options: &ClipboardItemOptions,
+    ) -> Result<ClipboardItem, JsValue>;
     # [wasm_bindgen (method , structural , js_class = "ClipboardItem" , js_name = getType)]
     #[doc = "The `getType()` method."]
     #[doc = ""]

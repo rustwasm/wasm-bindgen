@@ -634,7 +634,7 @@ impl<'a> IdlType<'a> {
                 TypePosition::Return => Ok(js_sys("Array")),
             },
             IdlType::Promise(_idl_type) => Ok(js_sys("Promise")),
-            IdlType::Record(_idl_type_from, _idl_type_to) => Err(TypeError::CannotConvert),
+            IdlType::Record(_idl_type_from, _idl_type_to) => Ok(js_sys("Object")),
             IdlType::Union(idl_types) => {
                 // Note that most union types have already been expanded to
                 // their components via `flatten`. Unions in a return position

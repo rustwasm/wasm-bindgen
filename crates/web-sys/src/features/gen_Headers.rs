@@ -35,6 +35,13 @@ extern "C" {
     pub fn new_with_str_sequence_sequence(
         init: &::wasm_bindgen::JsValue,
     ) -> Result<Headers, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "Headers")]
+    #[doc = "The `new Headers(..)` constructor, creating a new instance of `Headers`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Headers/Headers)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Headers`*"]
+    pub fn new_with_record_from_str_to_str(init: &::js_sys::Object) -> Result<Headers, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "Headers" , js_name = append)]
     #[doc = "The `append()` method."]
     #[doc = ""]

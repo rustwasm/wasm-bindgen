@@ -15,6 +15,24 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuProgrammableStage;
     #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `constants` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuProgrammableStage`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "constants")]
+    pub fn get_constants(this: &GpuProgrammableStage) -> Option<::js_sys::Object>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `constants` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuProgrammableStage`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, setter = "constants")]
+    pub fn set_constants(this: &GpuProgrammableStage, val: &::js_sys::Object);
+    #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `entryPoint` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuProgrammableStage`*"]
@@ -67,6 +85,12 @@ impl GpuProgrammableStage {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret.module(module);
         ret
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[deprecated = "Use `set_constants()` instead."]
+    pub fn constants(&mut self, val: &::js_sys::Object) -> &mut Self {
+        self.set_constants(val);
+        self
     }
     #[cfg(web_sys_unstable_apis)]
     #[deprecated = "Use `set_entry_point()` instead."]
