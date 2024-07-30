@@ -142,9 +142,7 @@ impl<'a> Context<'a> {
             self.globals.push_str(c);
         }
         let global = match self.config.mode {
-            OutputMode::Node {
-                experimental_modules: false,
-            } => {
+            OutputMode::Node { module: false } => {
                 if contents.starts_with("class") {
                     format!("{}\nmodule.exports.{1} = {1};\n", contents, export_name)
                 } else {
@@ -159,9 +157,7 @@ impl<'a> Context<'a> {
                 }
             }
             OutputMode::Bundler { .. }
-            | OutputMode::Node {
-                experimental_modules: true,
-            }
+            | OutputMode::Node { module: true }
             | OutputMode::Web
             | OutputMode::Deno => {
                 if let Some(body) = contents.strip_prefix("function") {
@@ -219,7 +215,7 @@ impl<'a> Context<'a> {
 
         shim.push_str("let imports = {};\n");
 
-        if self.config.mode.nodejs_experimental_modules() {
+        if self.config.mode.uses_es_modules() {
             for (i, module) in imports.iter().enumerate() {
                 if module.as_str() != PLACEHOLDER_MODULE {
                     shim.push_str(&format!("import * as import{} from '{}';\n", i, module));
@@ -233,7 +229,7 @@ impl<'a> Context<'a> {
                     "imports['{0}'] = module.exports;\n",
                     PLACEHOLDER_MODULE
                 ));
-            } else if self.config.mode.nodejs_experimental_modules() {
+            } else if self.config.mode.uses_es_modules() {
                 shim.push_str(&format!("imports['{}'] = import{};\n", module, i));
             } else {
                 shim.push_str(&format!("imports['{0}'] = require('{0}');\n", module));
@@ -246,7 +242,7 @@ impl<'a> Context<'a> {
     fn generate_node_wasm_loading(&self, path: &Path) -> String {
         let mut shim = String::new();
 
-        if self.config.mode.nodejs_experimental_modules() {
+        if self.config.mode.uses_es_modules() {
             // On windows skip the leading `/` which comes out when we parse a
             // url to use `C:\...` instead of `\C:\...`
             shim.push_str(&format!(
@@ -400,9 +396,7 @@ impl<'a> Context<'a> {
 
             // With normal CommonJS node we need to defer requiring the wasm
             // until the end so most of our own exports are hooked up
-            OutputMode::Node {
-                experimental_modules: false,
-            } => {
+            OutputMode::Node { module: false } => {
                 js.push_str(&self.generate_node_imports());
 
                 js.push_str("let wasm;\n");
@@ -442,13 +436,10 @@ impl<'a> Context<'a> {
                 }
             }
 
-            // With Bundlers and modern ES6 support in Node we can simply import
-            // the wasm file as if it were an ES module and let the
-            // bundler/runtime take care of it.
-            OutputMode::Bundler { .. }
-            | OutputMode::Node {
-                experimental_modules: true,
-            } => {
+            // With Bundlers we can simply import the wasm file as if it were an ES module
+            // and let the bundler/runtime take care of it.
+            // With Node we manually read the wasm file from the filesystem and instantiate it.
+            OutputMode::Bundler { .. } | OutputMode::Node { module: true } => {
                 for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}_bg.js", module_name);
@@ -556,9 +547,7 @@ impl<'a> Context<'a> {
                 }
             }
 
-            OutputMode::Node {
-                experimental_modules: false,
-            } => {
+            OutputMode::Node { module: false } => {
                 for (module, items) in crate::sorted_iter(&self.js_imports) {
                     imports.push_str("const { ");
                     for (i, (item, rename)) in items.iter().enumerate() {
@@ -582,9 +571,7 @@ impl<'a> Context<'a> {
             }
 
             OutputMode::Bundler { .. }
-            | OutputMode::Node {
-                experimental_modules: true,
-            }
+            | OutputMode::Node { module: true }
             | OutputMode::Web
             | OutputMode::Deno => {
                 for (module, items) in crate::sorted_iter(&self.js_imports) {
@@ -3216,12 +3203,10 @@ impl<'a> Context<'a> {
                         OutputMode::Web
                         | OutputMode::Bundler { .. }
                         | OutputMode::Deno
-                        | OutputMode::Node {
-                            experimental_modules: true,
-                        } => "import.meta.url",
-                        OutputMode::Node {
-                            experimental_modules: false,
-                        } => "require('url').pathToFileURL(__filename)",
+                        | OutputMode::Node { module: true } => "import.meta.url",
+                        OutputMode::Node { module: false } => {
+                            "require('url').pathToFileURL(__filename)"
+                        }
                         OutputMode::NoModules { .. } => {
                             prelude.push_str(
                                 "if (script_src === undefined) {

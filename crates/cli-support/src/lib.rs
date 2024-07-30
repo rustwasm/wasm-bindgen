@@ -66,7 +66,7 @@ enum OutputMode {
     Bundler { browser_only: bool },
     Web,
     NoModules { global: String },
-    Node { experimental_modules: bool },
+    Node { module: bool },
     Deno,
 }
 
@@ -154,24 +154,14 @@ impl Bindgen {
 
     pub fn nodejs(&mut self, node: bool) -> Result<&mut Bindgen, Error> {
         if node {
-            self.switch_mode(
-                OutputMode::Node {
-                    experimental_modules: false,
-                },
-                "--target nodejs",
-            )?;
+            self.switch_mode(OutputMode::Node { module: false }, "--target nodejs")?;
         }
         Ok(self)
     }
 
-    pub fn nodejs_experimental_modules(&mut self, node: bool) -> Result<&mut Bindgen, Error> {
+    pub fn nodejs_module(&mut self, node: bool) -> Result<&mut Bindgen, Error> {
         if node {
-            self.switch_mode(
-                OutputMode::Node {
-                    experimental_modules: true,
-                },
-                "--nodejs-experimental-modules",
-            )?;
+            self.switch_mode(OutputMode::Node { module: true }, "--target nodejs-module")?;
         }
         Ok(self)
     }
@@ -548,20 +538,9 @@ impl OutputMode {
             self,
             OutputMode::Bundler { .. }
                 | OutputMode::Web
-                | OutputMode::Node {
-                    experimental_modules: true,
-                }
+                | OutputMode::Node { module: true }
                 | OutputMode::Deno
         )
-    }
-
-    fn nodejs_experimental_modules(&self) -> bool {
-        match self {
-            OutputMode::Node {
-                experimental_modules,
-            } => *experimental_modules,
-            _ => false,
-        }
     }
 
     fn nodejs(&self) -> bool {
@@ -579,10 +558,7 @@ impl OutputMode {
     fn esm_integration(&self) -> bool {
         matches!(
             self,
-            OutputMode::Bundler { .. }
-                | OutputMode::Node {
-                    experimental_modules: true,
-                }
+            OutputMode::Bundler { .. } | OutputMode::Node { module: true }
         )
     }
 }
@@ -687,7 +663,7 @@ impl Output {
 
         // And now that we've got all our JS and TypeScript, actually write it
         // out to the filesystem.
-        let extension = if gen.mode.nodejs_experimental_modules() {
+        let extension = if gen.mode.uses_es_modules() {
             "mjs"
         } else {
             "js"
