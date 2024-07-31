@@ -499,7 +499,9 @@ impl<'a> Context<'a> {
         // Emit all the JS for importing all our functionality
         assert!(
             !self.config.mode.uses_es_modules() || js.is_empty(),
-            "ES modules require imports to be at the start of the file"
+            "ES modules require imports to be at the start of the file, but we \
+             generated some JS before the imports: {}",
+            js
         );
 
         let mut push_with_newline = |s| {
