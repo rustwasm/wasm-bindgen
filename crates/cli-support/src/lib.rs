@@ -663,11 +663,7 @@ impl Output {
 
         // And now that we've got all our JS and TypeScript, actually write it
         // out to the filesystem.
-        let extension = if gen.mode.uses_es_modules() {
-            "mjs"
-        } else {
-            "js"
-        };
+        let extension = "js";
 
         fn write<P, C>(path: P, contents: C) -> Result<(), anyhow::Error>
         where
