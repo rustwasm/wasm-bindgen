@@ -247,9 +247,9 @@ impl<'a> Context<'a> {
             // url to use `C:\...` instead of `\C:\...`
             shim.push_str(&format!(
                 "
-                import * as path from 'path';
-                import * as fs from 'fs';
-                import * as process from 'process';
+                import * as path from 'node:path';
+                import * as fs from 'node:fs';
+                import * as process from 'node:process';
 
                 let file = path.dirname(new URL(import.meta.url).pathname);
                 if (process.platform === 'win32') {{
