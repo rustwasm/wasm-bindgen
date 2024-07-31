@@ -249,10 +249,9 @@ impl<'a> Context<'a> {
                 "
                 import * as path from 'path';
                 import * as fs from 'fs';
-                import * as url from 'url';
                 import * as process from 'process';
 
-                let file = path.dirname(url.parse(import.meta.url).pathname);
+                let file = path.dirname(new URL(import.meta.url).pathname);
                 if (process.platform === 'win32') {{
                     file = file.substring(1);
                 }}
