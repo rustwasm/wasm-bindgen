@@ -685,17 +685,28 @@ impl Output {
 
             let start = gen.start.as_deref().unwrap_or("");
 
-            write(
-                &js_path,
-                format!(
-                    "import * as wasm from \"./{wasm_name}.wasm\";
+            if matches!(gen.mode, OutputMode::Node { .. }) {
+                write(
+                    &js_path,
+                    format!(
+                        "
+export * from \"./{js_name}\";
+{start}",
+                    ),
+                )?;
+            } else {
+                write(
+                    &js_path,
+                    format!(
+                        "
+import * as wasm from \"./{wasm_name}.wasm\";
 import {{ __wbg_set_wasm }} from \"./{js_name}\";
 __wbg_set_wasm(wasm);
 export * from \"./{js_name}\";
 {start}"
-                ),
-            )?;
-
+                    ),
+                )?;
+            }
             write(out_dir.join(&js_name), reset_indentation(&gen.js))?;
         } else {
             write(&js_path, reset_indentation(&gen.js))?;

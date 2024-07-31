@@ -213,7 +213,7 @@ impl<'a> Context<'a> {
 
         let mut shim = String::new();
 
-        shim.push_str("let imports = {};\n");
+        shim.push_str("\nlet imports = {};\n");
 
         if self.config.mode.uses_es_modules() {
             for (i, module) in imports.iter().enumerate() {
@@ -221,18 +221,21 @@ impl<'a> Context<'a> {
                     shim.push_str(&format!("import * as import{} from '{}';\n", i, module));
                 }
             }
-        }
-
-        for (i, module) in imports.iter().enumerate() {
-            if module.as_str() == PLACEHOLDER_MODULE {
-                shim.push_str(&format!(
-                    "imports['{0}'] = module.exports;\n",
-                    PLACEHOLDER_MODULE
-                ));
-            } else if self.config.mode.uses_es_modules() {
-                shim.push_str(&format!("imports['{}'] = import{};\n", module, i));
-            } else {
-                shim.push_str(&format!("imports['{0}'] = require('{0}');\n", module));
+            for (i, module) in imports.iter().enumerate() {
+                if module.as_str() != PLACEHOLDER_MODULE {
+                    shim.push_str(&format!("imports['{}'] = import{};\n", module, i));
+                }
+            }
+        } else {
+            for module in imports.iter() {
+                if module.as_str() == PLACEHOLDER_MODULE {
+                    shim.push_str(&format!(
+                        "imports['{0}'] = module.exports;\n",
+                        PLACEHOLDER_MODULE
+                    ));
+                } else {
+                    shim.push_str(&format!("imports['{0}'] = require('{0}');\n", module));
+                }
             }
         }
 
@@ -259,6 +262,14 @@ impl<'a> Context<'a> {
             ",
                 path.file_name().unwrap().to_str().unwrap()
             ));
+            shim.push_str(
+                "
+                const wasmModule = new WebAssembly.Module(bytes);
+                const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
+                const wasm = wasmInstance.exports;
+                export const __wasm = wasm;
+            ",
+            );
         } else {
             shim.push_str(&format!(
                 "
@@ -267,16 +278,15 @@ impl<'a> Context<'a> {
             ",
                 path.file_name().unwrap().to_str().unwrap()
             ));
+            shim.push_str(
+                "
+                const wasmModule = new WebAssembly.Module(bytes);
+                const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
+                wasm = wasmInstance.exports;
+                module.exports.__wasm = wasm;
+            ",
+            );
         }
-
-        shim.push_str(
-            "
-            const wasmModule = new WebAssembly.Module(bytes);
-            const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
-            wasm = wasmInstance.exports;
-            module.exports.__wasm = wasm;
-        ",
-        );
 
         reset_indentation(&shim)
     }
@@ -456,6 +466,15 @@ impl<'a> Context<'a> {
                     }
                 }
 
+                let mut _start = String::new();
+
+                if matches!(self.config.mode, OutputMode::Node { module: true }) {
+                    _start.push_str(&self.generate_node_imports());
+                    _start.push_str(&self.generate_node_wasm_loading(Path::new(&format!(
+                        "./{}_bg.wasm",
+                        module_name
+                    ))));
+                }
                 self.imports_post.push_str(
                     "\
                     let wasm;
@@ -466,7 +485,10 @@ impl<'a> Context<'a> {
                 );
 
                 if needs_manual_start {
-                    start = Some("\nwasm.__wbindgen_start();\n".to_string());
+                    _start.push_str("\nwasm.__wbindgen_start();\n");
+                }
+                if !_start.is_empty() {
+                    start = Some(_start);
                 }
             }
 
