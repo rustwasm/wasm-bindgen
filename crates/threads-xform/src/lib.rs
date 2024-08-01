@@ -153,8 +153,8 @@ impl Config {
         assert!(self.thread_stack_size % PAGE_SIZE == 0);
 
         let stack = Stack {
-            pointer: wasm_conventions::get_shadow_stack_pointer(module)
-                .ok_or_else(|| anyhow!("failed to find shadow stack pointer"))?,
+            pointer: wasm_conventions::get_stack_pointer(module)
+                .ok_or_else(|| anyhow!("failed to find stack pointer"))?,
             temp: temp_stack as i32,
             temp_lock: thread_counter_addr + 4,
             alloc: stack_alloc,

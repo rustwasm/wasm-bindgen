@@ -154,6 +154,9 @@
 * Allow ex/importing structs, functions and parameters named with raw identifiers.
   [#4025](https://github.com/rustwasm/wasm-bindgen/pull/4025)
 
+* Implement a more reliable way to detect the stack pointer.
+  [#4036](https://github.com/rustwasm/wasm-bindgen/pull/4036)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.92](https://github.com/rustwasm/wasm-bindgen/compare/0.2.91...0.2.92)
