@@ -487,7 +487,7 @@ impl<'a> Context<'a> {
             OutputMode::Web => {
                 self.imports_post.push_str("let wasm;\n");
                 init = self.gen_init(needs_manual_start, Some(&mut imports))?;
-                footer.push_str("export { initSync }\n");
+                footer.push_str("export { initSync };\n");
                 footer.push_str("export default __wbg_init;");
             }
         }
