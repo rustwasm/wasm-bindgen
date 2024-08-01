@@ -161,7 +161,10 @@ impl Bindgen {
 
     pub fn nodejs_module(&mut self, node: bool) -> Result<&mut Bindgen, Error> {
         if node {
-            self.switch_mode(OutputMode::Node { module: true }, "--target nodejs-module")?;
+            self.switch_mode(
+                OutputMode::Node { module: true },
+                "--target experimental-nodejs-module",
+            )?;
         }
         Ok(self)
     }
