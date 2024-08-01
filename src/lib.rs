@@ -1382,6 +1382,32 @@ where
     E: core::fmt::Debug,
 {
     #[cfg_attr(debug_assertions, track_caller)]
+    fn unwrap_throw(self) -> T {
+        if cfg!(all(
+            target_arch = "wasm32",
+            not(any(target_os = "emscripten", target_os = "wasi"))
+        )) {
+            match self {
+                Ok(val) => val,
+                Err(err) => {
+                    let loc = core::panic::Location::caller();
+                    let msg = alloc::format!(
+                        "`unwrap_throw` failed ({}:{}:{}): {:?}",
+                        loc.file(),
+                        loc.line(),
+                        loc.column(),
+                        err
+                    );
+
+                    throw_str(&msg)
+                }
+            }
+        } else {
+            self.unwrap()
+        }
+    }
+
+    #[cfg_attr(debug_assertions, track_caller)]
     fn expect_throw(self, message: &str) -> T {
         if cfg!(all(
             target_arch = "wasm32",
