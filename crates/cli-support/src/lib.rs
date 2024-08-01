@@ -686,8 +686,10 @@ impl Output {
                     &js_path,
                     format!(
                         "
-export * from \"./{js_name}\";
-{start}",
+import {{ __wbg_set_wasm }} from \"./{js_name}\";
+{start}
+__wbg_set_wasm(wasm);
+export * from \"./{js_name}\";",
                     ),
                 )?;
             } else {
