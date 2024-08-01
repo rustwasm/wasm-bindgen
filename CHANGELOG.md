@@ -107,6 +107,9 @@
 * Update the Indexed DB API.
   [#4027](https://github.com/rustwasm/wasm-bindgen/pull/4027)
 
+* `UnwrapThrowExt for Result` now makes use of the required `Debug` bound to display the error as well.
+  [#4035](https://github.com/rustwasm/wasm-bindgen/pull/4035)
+
 ### Fixed
 
 * Copy port from headless test server when using `WASM_BINDGEN_TEST_ADDRESS`.
