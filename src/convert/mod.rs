@@ -1,5 +1,7 @@
-//! This is mostly an internal module, no stability guarantees are provided. Use
-//! at your own risk.
+//! # ⚠️ Unstable
+//!
+//! This is an internal module, no stability guarantees are provided. Use at
+//! your own risk.
 
 mod closures;
 mod impls;

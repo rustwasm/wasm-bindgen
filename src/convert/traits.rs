@@ -8,6 +8,12 @@ use crate::JsValue;
 /// wasm ABI directly, eg `u32` or `f64`.
 ///
 /// This is the opposite operation as `FromWasmAbi` and `Ref[Mut]FromWasmAbi`.
+///
+/// # ⚠️ Unstable
+///
+/// This is part of the internal [`convert`](crate::convert) module, **no
+/// stability guarantees** are provided. Use at your own risk. See its
+/// documentation for more details.
 pub trait IntoWasmAbi: WasmDescribe {
     /// The wasm ABI type that this converts into when crossing the ABI
     /// boundary.
@@ -22,6 +28,12 @@ pub trait IntoWasmAbi: WasmDescribe {
 /// boundary, eg a Rust `u8` can be recovered from the wasm ABI `u32` type.
 ///
 /// This is the by-value variant of the opposite operation as `IntoWasmAbi`.
+///
+/// # ⚠️ Unstable
+///
+/// This is part of the internal [`convert`](crate::convert) module, **no
+/// stability guarantees** are provided. Use at your own risk. See its
+/// documentation for more details.
 pub trait FromWasmAbi: WasmDescribe {
     /// The wasm ABI type that this converts from when coming back out from the
     /// ABI boundary.
@@ -42,6 +54,12 @@ pub trait FromWasmAbi: WasmDescribe {
 ///
 /// This is the shared reference variant of the opposite operation as
 /// `IntoWasmAbi`.
+///
+/// # ⚠️ Unstable
+///
+/// This is part of the internal [`convert`](crate::convert) module, **no
+/// stability guarantees** are provided. Use at your own risk. See its
+/// documentation for more details.
 pub trait RefFromWasmAbi: WasmDescribe {
     /// The wasm ABI type references to `Self` are recovered from.
     type Abi: WasmAbi;
@@ -75,6 +93,12 @@ pub trait RefFromWasmAbi: WasmDescribe {
 /// call.
 ///
 /// 'long ref' is short for 'long-lived reference'.
+///
+/// # ⚠️ Unstable
+///
+/// This is part of the internal [`convert`](crate::convert) module, **no
+/// stability guarantees** are provided. Use at your own risk. See its
+/// documentation for more details.
 pub trait LongRefFromWasmAbi: WasmDescribe {
     /// Same as `RefFromWasmAbi::Abi`
     type Abi: WasmAbi;
@@ -87,6 +111,12 @@ pub trait LongRefFromWasmAbi: WasmDescribe {
 }
 
 /// Dual of the `RefFromWasmAbi` trait, except for mutable references.
+///
+/// # ⚠️ Unstable
+///
+/// This is part of the internal [`convert`](crate::convert) module, **no
+/// stability guarantees** are provided. Use at your own risk. See its
+/// documentation for more details.
 pub trait RefMutFromWasmAbi: WasmDescribe {
     /// Same as `RefFromWasmAbi::Abi`
     type Abi: WasmAbi;
@@ -99,6 +129,12 @@ pub trait RefMutFromWasmAbi: WasmDescribe {
 /// Indicates that this type can be passed to JS as `Option<Self>`.
 ///
 /// This trait is used when implementing `IntoWasmAbi for Option<T>`.
+///
+/// # ⚠️ Unstable
+///
+/// This is part of the internal [`convert`](crate::convert) module, **no
+/// stability guarantees** are provided. Use at your own risk. See its
+/// documentation for more details.
 pub trait OptionIntoWasmAbi: IntoWasmAbi {
     /// Returns an ABI instance indicating "none", which JS will interpret as
     /// the `None` branch of this option.
@@ -111,6 +147,12 @@ pub trait OptionIntoWasmAbi: IntoWasmAbi {
 /// Indicates that this type can be received from JS as `Option<Self>`.
 ///
 /// This trait is used when implementing `FromWasmAbi for Option<T>`.
+///
+/// # ⚠️ Unstable
+///
+/// This is part of the internal [`convert`](crate::convert) module, **no
+/// stability guarantees** are provided. Use at your own risk. See its
+/// documentation for more details.
 pub trait OptionFromWasmAbi: FromWasmAbi {
     /// Tests whether the argument is a "none" instance. If so it will be
     /// deserialized as `None`, and otherwise it will be passed to
@@ -128,6 +170,12 @@ pub trait OptionFromWasmAbi: FromWasmAbi {
 ///
 /// This is an unsafe trait to implement as there's no guarantee the type
 /// actually maps to a primitive type.
+///
+/// # ⚠️ Unstable
+///
+/// This is part of the internal [`convert`](crate::convert) module, **no
+/// stability guarantees** are provided. Use at your own risk. See its
+/// documentation for more details.
 pub unsafe trait WasmPrimitive: Default {}
 
 unsafe impl WasmPrimitive for u32 {}
@@ -154,6 +202,12 @@ unsafe impl WasmPrimitive for () {}
 /// There's already one type that uses 3 primitives: `&mut [T]`. However, it
 /// can't be returned anyway, so it doesn't matter that
 /// `Result<&mut [T], JsValue>` wouldn't work.
+///
+/// # ⚠️ Unstable
+///
+/// This is part of the internal [`convert`](crate::convert) module, **no
+/// stability guarantees** are provided. Use at your own risk. See its
+/// documentation for more details.
 pub trait WasmAbi {
     type Prim1: WasmPrimitive;
     type Prim2: WasmPrimitive;
@@ -174,6 +228,12 @@ pub trait WasmAbi {
 /// implementation for all implementors of the `IntoWasmAbi`. The primary use
 /// case of this trait is to enable functions to return `Result`, interpreting
 /// an error as "rethrow this to JS"
+///
+/// # ⚠️ Unstable
+///
+/// This is part of the internal [`convert`](crate::convert) module, **no
+/// stability guarantees** are provided. Use at your own risk. See its
+/// documentation for more details.
 pub trait ReturnWasmAbi: WasmDescribe {
     /// Same as `IntoWasmAbi::Abi`
     type Abi: WasmAbi;
@@ -197,6 +257,12 @@ use core::marker::Sized;
 
 /// Trait for element types to implement IntoWasmAbi for vectors of
 /// themselves.
+///
+/// # ⚠️ Unstable
+///
+/// This is part of the internal [`convert`](crate::convert) module, **no
+/// stability guarantees** are provided. Use at your own risk. See its
+/// documentation for more details.
 pub trait VectorIntoWasmAbi: WasmDescribeVector + Sized {
     type Abi: WasmAbi;
 
@@ -205,6 +271,12 @@ pub trait VectorIntoWasmAbi: WasmDescribeVector + Sized {
 
 /// Trait for element types to implement FromWasmAbi for vectors of
 /// themselves.
+///
+/// # ⚠️ Unstable
+///
+/// This is part of the internal [`convert`](crate::convert) module, **no
+/// stability guarantees** are provided. Use at your own risk. See its
+/// documentation for more details.
 pub trait VectorFromWasmAbi: WasmDescribeVector + Sized {
     type Abi: WasmAbi;
 
@@ -220,6 +292,12 @@ pub trait VectorFromWasmAbi: WasmDescribeVector + Sized {
 ///
 /// If all but one of the primitives is `()`, this corresponds to returning the
 /// remaining primitive directly, otherwise a return pointer is used.
+///
+/// # ⚠️ Unstable
+///
+/// This is part of the internal [`convert`](crate::convert) module, **no
+/// stability guarantees** are provided. Use at your own risk. See its
+/// documentation for more details.
 #[repr(C)]
 pub struct WasmRet<T: WasmAbi> {
     prim1: T::Prim1,
@@ -256,6 +334,12 @@ impl<T: WasmAbi> WasmRet<T> {
 /// Types implementing this trait must specify their conversion logic from
 /// [`JsValue`] to the Rust type, handling any potential errors that may occur
 /// during the conversion process.
+///
+/// # ⚠️ Unstable
+///
+/// This is part of the internal [`convert`](crate::convert) module, **no
+/// stability guarantees** are provided. Use at your own risk. See its
+/// documentation for more details.
 pub trait TryFromJsValue: Sized {
     /// The type returned in the event of a conversion error.
     type Error;
