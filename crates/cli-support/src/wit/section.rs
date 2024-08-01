@@ -50,7 +50,7 @@ pub fn add(module: &mut Module) -> Result<(), Error> {
         externref_drop: _,
         externref_drop_slice: _,
         exn_store: _,
-        shadow_stack_pointer: _,
+        stack_pointer: _,
         function_table: _,
         thread_destroy: _,
     } = *aux;

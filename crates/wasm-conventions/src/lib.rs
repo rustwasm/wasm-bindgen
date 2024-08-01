@@ -3,8 +3,8 @@
 //!
 //! Examples conventions include:
 //!
-//! * The shadow stack pointer
-//! * The canonical linear memory that contains the shadow stack
+//! * The stack pointer
+//! * The canonical linear memory that contains the stack
 
 use std::io::Cursor;
 
@@ -33,8 +33,16 @@ pub fn get_memory(module: &Module) -> Result<MemoryId> {
     })
 }
 
-/// Get the `__shadow_stack_pointer`.
-pub fn get_shadow_stack_pointer(module: &Module) -> Option<GlobalId> {
+/// Get the `__stack_pointer`.
+pub fn get_stack_pointer(module: &Module) -> Option<GlobalId> {
+    if let Some(g) = module
+        .globals
+        .iter()
+        .find(|g| matches!(g.name.as_deref(), Some("__stack_pointer")))
+    {
+        return Some(g.id());
+    }
+
     let candidates = module
         .globals
         .iter()
@@ -51,8 +59,11 @@ pub fn get_shadow_stack_pointer(module: &Module) -> Option<GlobalId> {
 
     match candidates.len() {
         0 => None,
-        // TODO: have an actual check here.
-        1 | 2 => Some(candidates[0].id()),
+        1 => Some(candidates[0].id()),
+        2 => {
+            log::warn!("Unable to accurately determine the location of `__stack_pointer`");
+            Some(candidates[0].id())
+        }
         _ => None,
     }
 }

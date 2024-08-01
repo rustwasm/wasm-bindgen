@@ -58,33 +58,33 @@
 //!
 //! (func $pairWrapper (param i32 i32) (result i32 i32)
 //!   ;; Our return pointer that points to the scratch space we are allocating
-//!   ;; on the shadow stack for calling `$pair`.
+//!   ;; on the stack for calling `$pair`.
 //!   (local i32)
 //!
-//!   ;; Allocate space on the shadow stack for the result.
-//!   global.get $shadowStackPointer
+//!   ;; Allocate space on the stack for the result.
+//!   global.get $stackPointer
 //!   i32.const 8
 //!   i32.sub
 //!   local.tee 2
-//!   global.set $shadowStackPointer
+//!   global.set $stackPointer
 //!
-//!   ;; Call `$pair` with our allocated shadow stack space for its results.
+//!   ;; Call `$pair` with our allocated stack space for its results.
 //!   local.get 2
 //!   local.get 0
 //!   local.get 1
 //!   call $pair
 //!
-//!   ;; Copy the return values from the shadow stack to the wasm stack.
+//!   ;; Copy the return values from the stack to the wasm stack.
 //!   local.get 2
 //!   i32.load
 //!   local.get 2 offset=4
 //!   i32.load
 //!
-//!   ;; Finally, restore the shadow stack pointer.
+//!   ;; Finally, restore the stack pointer.
 //!   local.get 2
 //!   i32.const 8
 //!   i32.add
-//!   global.set $shadowStackPointer)
+//!   global.set $stackPointer)
 //! ```
 //!
 //! This `$pairWrapper` function is what we actually end up exporting instead of
@@ -98,12 +98,11 @@ use anyhow::Context;
 ///
 /// See the module-level docs for details on the transformation.
 ///
-/// * `memory` is the module's memory that has the shadow stack where return
+/// * `memory` is the module's memory that has the stack where return
 ///   pointers are allocated within.
 ///
-/// * `shadow_stack_pointer` is the global that is being used as the stack
-///   pointer for the shadow stack. With LLVM, this is typically the first
-///   global.
+/// * `__stack_pointer` is the global that is being used as the stack
+///   pointer. With LLVM, this is typically the first global.
 ///
 /// * `to_xform` is the set of exported functions we want to transform and
 ///   information required to transform them. The `usize` is the index of the
@@ -116,7 +115,7 @@ use anyhow::Context;
 pub fn run(
     module: &mut walrus::Module,
     memory: walrus::MemoryId,
-    shadow_stack_pointer: walrus::GlobalId,
+    stack_pointer: walrus::GlobalId,
     to_xform: &[(walrus::FunctionId, usize, Vec<walrus::ValType>)],
 ) -> Result<Vec<walrus::FunctionId>, anyhow::Error> {
     // Insert multi-value to the target features section.
@@ -128,7 +127,7 @@ pub fn run(
         wrappers.push(xform_one(
             module,
             memory,
-            shadow_stack_pointer,
+            stack_pointer,
             *func,
             *return_pointer_index,
             results,
@@ -146,13 +145,13 @@ fn round_up_to_alignment(n: u32, align: u32) -> u32 {
 fn xform_one(
     module: &mut walrus::Module,
     memory: walrus::MemoryId,
-    shadow_stack_pointer: walrus::GlobalId,
+    stack_pointer: walrus::GlobalId,
     func: walrus::FunctionId,
     return_pointer_index: usize,
     results: &[walrus::ValType],
 ) -> Result<walrus::FunctionId, anyhow::Error> {
-    if module.globals.get(shadow_stack_pointer).ty != walrus::ValType::I32 {
-        anyhow::bail!("shadow stack pointer global does not have type `i32`");
+    if module.globals.get(stack_pointer).ty != walrus::ValType::I32 {
+        anyhow::bail!("stack pointer global does not have type `i32`");
     }
 
     // Compute the total size of all results, potentially with padding to ensure
@@ -210,18 +209,18 @@ fn xform_one(
     // The locals for the function parameters.
     let params: Vec<_> = new_params.iter().map(|ty| module.locals.add(*ty)).collect();
 
-    // A local to hold our shadow stack-allocated return pointer.
+    // A local to hold our stack-allocated return pointer.
     let return_pointer = module.locals.add(walrus::ValType::I32);
 
     let mut wrapper = walrus::FunctionBuilder::new(&mut module.types, &new_params, results);
     let mut body = wrapper.func_body();
 
-    // Allocate space in the shadow stack for the call.
-    body.global_get(shadow_stack_pointer)
+    // Allocate space in the stack for the call.
+    body.global_get(stack_pointer)
         .i32_const(results_size as i32)
         .binop(walrus::ir::BinaryOp::I32Sub)
         .local_tee(return_pointer)
-        .global_set(shadow_stack_pointer);
+        .global_set(stack_pointer);
 
     // Push the parameters for calling our wrapped function -- including the
     // return pointer! -- on to the stack.
@@ -238,8 +237,7 @@ fn xform_one(
     // Call our wrapped function.
     body.call(func);
 
-    // Copy the return values from our shadow stack-allocated space and onto the
-    // Wasm stack.
+    // Copy the return values from our stack-allocated space and onto the Wasm stack.
     let mut offset = 0;
     for ty in results {
         debug_assert!(offset < results_size);
@@ -294,11 +292,11 @@ fn xform_one(
         }
     }
 
-    // Finally, restore the shadow stack pointer.
+    // Finally, restore the stack pointer.
     body.local_get(return_pointer)
         .i32_const(results_size as i32)
         .binop(walrus::ir::BinaryOp::I32Add)
-        .global_set(shadow_stack_pointer);
+        .global_set(stack_pointer);
 
     let wrapper = wrapper.finish(params, &mut module.funcs);
     if let Some(name) = &module.funcs.get(func).name {

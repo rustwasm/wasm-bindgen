@@ -3963,13 +3963,13 @@ impl<'a> Context<'a> {
         if self.stack_pointer_shim_injected {
             return Ok(());
         }
-        let stack_pointer = match self.aux.shadow_stack_pointer {
+        let stack_pointer = match self.aux.stack_pointer {
             Some(s) => s,
             // In theory this shouldn't happen since malloc is included in
             // most wasm binaries (and may be gc'd out) and that almost
             // always pulls in a stack pointer. We can try to synthesize
             // something here later if necessary.
-            None => bail!("failed to find shadow stack pointer"),
+            None => bail!("failed to find stack pointer"),
         };
 
         use walrus::ir::*;

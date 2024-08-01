@@ -18,21 +18,21 @@ pub fn run(module: &mut Module) -> Result<(), Error> {
         extract_xform(module, adapter, &mut to_xform, &mut slots);
     }
     if to_xform.is_empty() {
-        // Early exit to avoid failing if we don't have a memory or shadow stack
+        // Early exit to avoid failing if we don't have a memory or stack
         // pointer because this is a minimal module that doesn't use linear
         // memory.
         module.customs.add(*adapters);
         return Ok(());
     }
 
-    let shadow_stack_pointer = module
+    let stack_pointer = module
         .customs
         .get_typed::<WasmBindgenAux>()
         .expect("aux section should be present")
-        .shadow_stack_pointer
-        .ok_or_else(|| anyhow!("failed to find shadow stack pointer in wasm module"))?;
+        .stack_pointer
+        .ok_or_else(|| anyhow!("failed to find stack pointer in wasm module"))?;
     let memory = wasm_conventions::get_memory(module)?;
-    let wrappers = multi_value_xform::run(module, memory, shadow_stack_pointer, &to_xform)?;
+    let wrappers = multi_value_xform::run(module, memory, stack_pointer, &to_xform)?;
 
     for (slot, id) in slots.into_iter().zip(wrappers) {
         match slot {
