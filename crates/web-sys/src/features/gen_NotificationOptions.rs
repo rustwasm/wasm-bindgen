@@ -142,6 +142,16 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
     #[wasm_bindgen(method, setter = "timestamp")]
     pub fn set_timestamp(this: &NotificationOptions, val: f64);
+    #[doc = "Get the `vibrate` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
+    #[wasm_bindgen(method, getter = "vibrate")]
+    pub fn get_vibrate(this: &NotificationOptions) -> Option<::js_sys::Array>;
+    #[doc = "Change the `vibrate` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
+    #[wasm_bindgen(method, setter = "vibrate")]
+    pub fn set_vibrate(this: &NotificationOptions, val: f64);
 }
 impl NotificationOptions {
     #[doc = "Construct a new `NotificationOptions`."]

@@ -41,6 +41,7 @@ dictionary NotificationOptions {
   USVString image;
   USVString icon;
   USVString badge;
+  sequence<unsigned long> vibrate = [];
   unsigned long long timestamp;
   boolean renotify = false;
   boolean? silent = null;
