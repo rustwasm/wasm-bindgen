@@ -5,7 +5,8 @@ use crate::wit::{AdapterKind, Instruction, NonstandardWitSection};
 use crate::wit::{AdapterType, InstructionData, StackChange, WasmBindgenAux};
 use anyhow::Result;
 use std::collections::HashMap;
-use walrus::{ir::Value, ElementKind, InitExpr, Module};
+use walrus::ElementItems;
+use walrus::{ir::Value, ConstExpr, ElementKind, Module};
 use wasm_bindgen_externref_xform::Context;
 
 pub fn process(module: &mut Module) -> Result<()> {
@@ -397,11 +398,22 @@ pub fn force_contiguous_elements(module: &mut Module) -> Result<()> {
     // Here we take a look at all element segments in the module to see if we
     // need to split them.
     for segment in module.elements.iter_mut() {
-        // If this segment has all-`Some` members then it's already contiguous
-        // and we can skip it.
-        if segment.members.iter().all(|m| m.is_some()) {
-            continue;
-        }
+        let (ty, items) = match &mut segment.items {
+            ElementItems::Expressions(ty, items) => {
+                // If this segment has no null reference members then it's already
+                // contiguous and we can skip it.
+                if items
+                    .iter()
+                    .all(|item| !matches!(item, ConstExpr::RefNull(_)))
+                {
+                    continue;
+                }
+
+                (*ty, items)
+            }
+            // Function index segments don't have holes.
+            ElementItems::Functions(_) => continue,
+        };
 
         // For now active segments are all we're interested in since
         // passive/declared have no hope of being MVP-compatible anyway.
@@ -410,7 +422,7 @@ pub fn force_contiguous_elements(module: &mut Module) -> Result<()> {
         let (table, offset) = match &segment.kind {
             ElementKind::Active {
                 table,
-                offset: InitExpr::Value(Value::I32(n)),
+                offset: ConstExpr::Value(Value::I32(n)),
             } => (*table, *n),
             _ => continue,
         };
@@ -425,16 +437,13 @@ pub fn force_contiguous_elements(module: &mut Module) -> Result<()> {
         // offset.
         let mut commit = |last_idx: usize, block: Vec<_>| {
             let new_offset = offset + (last_idx - block.len()) as i32;
-            let new_offset = InitExpr::Value(Value::I32(new_offset));
-            new_segments.push((table, new_offset, segment.ty, block));
+            let new_offset = ConstExpr::Value(Value::I32(new_offset));
+            new_segments.push((table, new_offset, ty, block));
         };
-        for (i, id) in segment.members.iter().enumerate() {
-            match id {
-                // If we find a function, then we either start a new block or
-                // push it onto the existing block.
-                Some(id) => block.get_or_insert(Vec::new()).push(Some(*id)),
-                None => {
-                    let block = match block.take() {
+        for (i, expr) in items.iter().enumerate() {
+            match expr {
+                ConstExpr::RefNull(_) => {
+                    let block: Vec<_> = match block.take() {
                         Some(b) => b,
                         None => continue,
                     };
@@ -449,21 +458,25 @@ pub fn force_contiguous_elements(module: &mut Module) -> Result<()> {
                         commit(i, block);
                     }
                 }
+                // If we find a function, then we either start a new block or
+                // push it onto the existing block.
+                _ => block.get_or_insert(Vec::new()).push(*expr),
             }
         }
 
         // If there's no trailing empty slots then we commit the last block onto
         // the new segment list.
         if let Some(block) = block {
-            commit(segment.members.len(), block);
+            commit(items.len(), block);
         }
-        segment.members.truncate(truncate);
+        items.truncate(truncate);
     }
 
     for (table, offset, ty, members) in new_segments {
-        let id = module
-            .elements
-            .add(ElementKind::Active { table, offset }, ty, members);
+        let id = module.elements.add(
+            ElementKind::Active { table, offset },
+            ElementItems::Expressions(ty, members),
+        );
         module.tables.get_mut(table).elem_segments.insert(id);
     }
     Ok(())

@@ -11,7 +11,7 @@
 (module
   (type (;0;) (func (result i32 f32 f64 i64)))
   (type (;1;) (func (param i32)))
-  (func $#func0<foo_multivalue_shim> (@name "foo multivalue shim") (;0;) (type 0) (result i32 f32 f64 i64)
+  (func $"foo multivalue shim" (;0;) (type 0) (result i32 f32 f64 i64)
     (local i32)
     global.get 0
     i32.const 32
@@ -36,6 +36,7 @@
   (func $foo (;1;) (type 1) (param i32))
   (memory (;0;) 1)
   (global (;0;) (mut i32) i32.const 0)
-  (export "foo" (func $#func0<foo_multivalue_shim>))
+  (export "foo" (func $"foo multivalue shim"))
+  (@custom "target_features" (after code) "\01+\0amultivalue")
 )
 ;)

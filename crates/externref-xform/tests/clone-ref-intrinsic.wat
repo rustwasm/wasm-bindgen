@@ -17,7 +17,7 @@
   (type (;1;) (func (param i32)))
   (type (;2;) (func (param i32) (result i32)))
   (type (;3;) (func (param externref) (result externref)))
-  (func $#func0<foo_externref_shim> (@name "foo externref shim") (;0;) (type 3) (param externref) (result externref)
+  (func $"foo externref shim" (;0;) (type 3) (param externref) (result externref)
     (local i32)
     call $alloc
     local.tee 1
@@ -48,6 +48,7 @@
   )
   (func $dealloc (;4;) (type 1) (param i32))
   (table (;0;) 128 externref)
-  (export "foo" (func $#func0<foo_externref_shim>))
+  (export "foo" (func $"foo externref shim"))
+  (@custom "target_features" (after code) "\01+\0freference-types")
 )
 ;)

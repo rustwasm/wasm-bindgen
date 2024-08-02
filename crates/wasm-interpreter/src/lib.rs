@@ -18,7 +18,7 @@
 
 #![deny(missing_docs)]
 
-use std::collections::{BTreeMap, HashMap, HashSet};
+use std::collections::{BTreeMap, BTreeSet, HashMap};
 use walrus::ir::Instr;
 use walrus::{ElementId, FunctionId, LocalId, Module, TableId};
 
@@ -157,7 +157,7 @@ impl Interpreter {
         &mut self,
         id: FunctionId,
         module: &Module,
-        entry_removal_list: &mut HashSet<(ElementId, usize)>,
+        entry_removal_list: &mut HashMap<ElementId, BTreeSet<usize>>,
     ) -> Option<&[u32]> {
         // Call the `id` function. This is an internal `#[inline(never)]`
         // whose code is completely controlled by the `wasm-bindgen` crate, so
@@ -194,7 +194,10 @@ impl Interpreter {
             wasm_bindgen_wasm_conventions::get_function_table_entry(module, descriptor_table_idx)
                 .expect("failed to find entry in function table");
         let descriptor_id = entry.func.expect("element segment slot wasn't set");
-        entry_removal_list.insert((entry.element, entry.idx));
+        entry_removal_list
+            .entry(entry.element)
+            .or_default()
+            .insert(entry.idx);
 
         // And now execute the descriptor!
         self.interpret_descriptor(descriptor_id, module)

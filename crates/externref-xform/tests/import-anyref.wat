@@ -16,16 +16,17 @@
   (type (;1;) (func (param i32)))
   (type (;2;) (func (param externref)))
   (import "" "a" (func $a (;0;) (type 2)))
-  (func $#func1<a_externref_shim> (@name "a externref shim") (;1;) (type 1) (param i32)
+  (func $"a externref shim" (;1;) (type 1) (param i32)
     local.get 0
     table.get 0
     call $a
   )
   (func (;2;) (type 0)
     i32.const 0
-    call $#func1<a_externref_shim>
+    call $"a externref shim"
   )
   (table (;0;) 128 externref)
   (export "foo" (func 2))
+  (@custom "target_features" (after code) "\01+\0freference-types")
 )
 ;)

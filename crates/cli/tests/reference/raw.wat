@@ -11,4 +11,6 @@
   (export "__wbg_test_free" (func $__wbg_test_free))
   (export "test_test1" (func $test_test1))
   (export "test_test2" (func $test_test2))
+  (@custom "target_features" (after code) "\02+\0fmutable-globals+\08sign-ext")
 )
+

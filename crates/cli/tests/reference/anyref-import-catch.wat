@@ -19,4 +19,6 @@
   (export "__wbindgen_add_to_stack_pointer" (func $__wbindgen_add_to_stack_pointer))
   (export "__externref_table_dealloc" (func $__externref_table_dealloc))
   (export "__wbindgen_start" (func 0))
+  (@custom "target_features" (after code) "\03+\0fmutable-globals+\08sign-ext+\0freference-types")
 )
+

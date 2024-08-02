@@ -140,9 +140,6 @@ impl Test {
                     pattern.push_str(line);
                     pattern.push('\n');
                 }
-                while pattern.ends_with('\n') {
-                    pattern.pop();
-                }
                 if iter.next().is_some() {
                     bail!("CHECK-ALL must be at the end of the file");
                 }

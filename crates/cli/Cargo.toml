@@ -33,7 +33,7 @@ ureq = { version = "2.7", default-features = false, features = [
     "brotli",
     "gzip",
 ] }
-walrus = { version = "0.20.2", features = ['parallel'] }
+walrus = { version = "0.21", features = ['parallel'] }
 wasm-bindgen-cli-support = { path = "../cli-support", version = "=0.2.92" }
 wasm-bindgen-shared = { path = "../shared", version = "=0.2.92" }
 
@@ -43,8 +43,8 @@ diff = "0.1"
 predicates = "1.0.0"
 rayon = "1.0"
 tempfile = "3.0"
-wasmparser = "0.102.0"
-wasmprinter = "0.2.54"
+wasmparser = "0.212"
+wasmprinter = "0.212"
 
 [[test]]
 name = "reference"
