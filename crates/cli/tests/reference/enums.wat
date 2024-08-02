@@ -6,4 +6,6 @@
   (export "memory" (memory 0))
   (export "enum_echo" (func $enum_echo))
   (export "option_enum_echo" (func $option_enum_echo))
+  (@custom "target_features" (after code) "\02+\0fmutable-globals+\08sign-ext")
 )
+

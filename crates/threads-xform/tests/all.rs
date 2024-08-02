@@ -28,14 +28,9 @@ fn runtest(test: &Test) -> Result<String> {
     config.run(&mut module)?;
     walrus::passes::gc::run(&mut module);
 
-    let features = wasmparser::WasmFeatures {
-        threads: true,
-        ..Default::default()
-    };
+    let features = wasmparser::WasmFeatures::default() | wasmparser::WasmFeatures::THREADS;
 
-    wasmparser::Validator::new()
-        .wasm_features(features)
-        .validate_all(&module.emit_wasm())?;
+    wasmparser::Validator::new_with_features(features).validate_all(&module.emit_wasm())?;
 
     let printed = wasmprinter::print_bytes(module.emit_wasm())?;
 
@@ -125,9 +120,6 @@ impl Test {
                     }
                     pattern.push_str(line);
                     pattern.push('\n');
-                }
-                while pattern.ends_with('\n') {
-                    pattern.pop();
                 }
                 if iter.next().is_some() {
                     bail!("CHECK-ALL must be at the end of the file");

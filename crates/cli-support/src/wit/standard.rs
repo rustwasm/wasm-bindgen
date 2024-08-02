@@ -2,7 +2,7 @@ use crate::descriptor::VectorKind;
 use crate::wit::{AuxImport, WasmBindgenAux};
 use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
-use walrus::{FunctionId, ImportId, TypedCustomSectionId};
+use walrus::{FunctionId, ImportId, RefType, TypedCustomSectionId};
 
 #[derive(Default, Debug)]
 pub struct NonstandardWitSection {
@@ -344,8 +344,8 @@ impl AdapterType {
             walrus::ValType::I64 => AdapterType::I64,
             walrus::ValType::F32 => AdapterType::F32,
             walrus::ValType::F64 => AdapterType::F64,
-            walrus::ValType::Externref => AdapterType::Externref,
-            walrus::ValType::Funcref | walrus::ValType::V128 => return None,
+            walrus::ValType::Ref(RefType::Externref) => AdapterType::Externref,
+            walrus::ValType::Ref(_) | walrus::ValType::V128 => return None,
         })
     }
 
@@ -356,7 +356,9 @@ impl AdapterType {
             AdapterType::F32 => walrus::ValType::F32,
             AdapterType::F64 => walrus::ValType::F64,
             AdapterType::Enum(_) => walrus::ValType::I32,
-            AdapterType::Externref | AdapterType::NamedExternref(_) => walrus::ValType::Externref,
+            AdapterType::Externref | AdapterType::NamedExternref(_) => {
+                walrus::ValType::Ref(RefType::Externref)
+            }
             _ => return None,
         })
     }

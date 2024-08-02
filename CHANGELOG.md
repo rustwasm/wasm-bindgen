@@ -110,6 +110,9 @@
 * `UnwrapThrowExt for Result` now makes use of the required `Debug` bound to display the error as well.
   [#4035](https://github.com/rustwasm/wasm-bindgen/pull/4035)
 
+* MSRV of CLI tools bumped to v1.76. This does not affect libraries like `wasm-bindgen`, `js-sys` and `web-sys`!
+  [#4037](https://github.com/rustwasm/wasm-bindgen/pull/4037)
+
 ### Fixed
 
 * Copy port from headless test server when using `WASM_BINDGEN_TEST_ADDRESS`.

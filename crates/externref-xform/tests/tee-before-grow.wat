@@ -29,7 +29,7 @@
     table.grow 0
     drop
   )
-  (func $#func1<foo_externref_shim> (@name "foo externref shim") (;1;) (type 2) (param externref)
+  (func $"foo externref shim" (;1;) (type 2) (param externref)
     (local i32)
     call $alloc
     local.tee 1
@@ -42,6 +42,7 @@
     i32.const 0
   )
   (table (;0;) 128 externref)
-  (export "foo" (func $#func1<foo_externref_shim>))
+  (export "foo" (func $"foo externref shim"))
+  (@custom "target_features" (after code) "\01+\0freference-types")
 )
 ;)

@@ -6,4 +6,6 @@
   (export "memory" (memory 0))
   (export "add_u32" (func $add_u32))
   (export "add_i32" (func $add_i32))
+  (@custom "target_features" (after code) "\02+\0fmutable-globals+\08sign-ext")
 )
+

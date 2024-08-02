@@ -12,8 +12,8 @@ rust-version = "1.57"
 
 [dependencies]
 leb128 = "0.2"
-walrus = "0.20.2"
+walrus = "0.21"
 # Matching the version `walrus` depends on.
-wasmparser = "0.80"
+wasmparser = "0.212"
 anyhow = "1.0"
 log = "0.4"

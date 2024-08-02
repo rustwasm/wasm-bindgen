@@ -10,10 +10,10 @@ use std::io::Cursor;
 
 use anyhow::{anyhow, bail, Context, Result};
 use walrus::{
-    ir::Value, ElementId, FunctionBuilder, FunctionId, FunctionKind, GlobalId, GlobalKind,
-    InitExpr, MemoryId, Module, RawCustomSection, ValType,
+    ir::Value, ConstExpr, ElementId, ElementItems, FunctionBuilder, FunctionId, FunctionKind,
+    GlobalId, GlobalKind, MemoryId, Module, RawCustomSection, ValType,
 };
-use wasmparser::BinaryReader;
+use wasmparser::{BinaryReader, WasmFeatures};
 
 /// Get a Wasm module's canonical linear memory.
 pub fn get_memory(module: &Module) -> Result<MemoryId> {
@@ -52,7 +52,7 @@ pub fn get_stack_pointer(module: &Module) -> Option<GlobalId> {
         // guaranteed to have an i32 initializer, so find globals which are
         // locally defined, are an i32, and have a nonzero initializer
         .filter(|g| match g.kind {
-            GlobalKind::Local(InitExpr::Value(Value::I32(n))) => n != 0,
+            GlobalKind::Local(ConstExpr::Value(Value::I32(n))) => n != 0,
             _ => false,
         })
         .collect::<Vec<_>>();
@@ -108,18 +108,30 @@ pub fn get_function_table_entry(module: &Module, idx: u32) -> Result<FunctionTab
         let segment = module.elements.get(segment);
         let offset = match &segment.kind {
             walrus::ElementKind::Active {
-                offset: InitExpr::Value(Value::I32(n)),
+                offset: ConstExpr::Value(Value::I32(n)),
                 ..
             } => *n as u32,
             _ => continue,
         };
         let idx = (idx - offset) as usize;
-        match segment.members.get(idx) {
+
+        let slot = match &segment.items {
+            ElementItems::Functions(items) => items.get(idx).map(Some),
+            ElementItems::Expressions(_, items) => items.get(idx).map(|item| {
+                if let ConstExpr::RefFunc(target) = item {
+                    Some(target)
+                } else {
+                    None
+                }
+            }),
+        };
+
+        match slot {
             Some(slot) => {
                 return Ok(FunctionTableEntry {
                     element: segment.id(),
                     idx,
-                    func: *slot,
+                    func: slot.cloned(),
                 })
             }
             None => continue,
@@ -181,7 +193,7 @@ pub fn insert_target_feature(module: &mut Module, new_feature: &str) -> Result<(
             .as_any_mut()
             .downcast_mut()
             .context("failed to read section")?;
-        let mut reader = BinaryReader::new(&section.data);
+        let mut reader = BinaryReader::new(&section.data, 0, WasmFeatures::default());
         // The first integer contains the target feature count.
         let count = reader.read_var_u32()?;
 
@@ -189,7 +201,7 @@ pub fn insert_target_feature(module: &mut Module, new_feature: &str) -> Result<(
         for _ in 0..count {
             // First byte is the prefix.
             let prefix_index = reader.current_position();
-            let prefix = reader.read_u8()? as u8;
+            let prefix = reader.read_u8()?;
             // Read the feature.
             let length = reader.read_var_u32()?;
             let feature = reader.read_bytes(length as usize)?;

@@ -11,10 +11,10 @@
 //! functions.
 
 use crate::descriptor::{Closure, Descriptor};
-use anyhow::Error;
+use anyhow::{bail, Error};
 use std::borrow::Cow;
-use std::collections::{HashMap, HashSet};
-use walrus::ImportId;
+use std::collections::HashMap;
+use walrus::{ConstExpr, ElementItems, ElementKind, ImportId, RefType};
 use walrus::{CustomSection, FunctionId, Module, TypedCustomSectionId};
 use wasm_bindgen_wasm_interpreter::Interpreter;
 
@@ -87,7 +87,7 @@ impl WasmBindgenDescriptorsSection {
         // Find all functions which call `wbindgen_describe_closure`. These are
         // specially codegen'd so we know the rough structure of them. For each
         // one we delegate to the interpreter to figure out the actual result.
-        let mut element_removal_list = HashSet::new();
+        let mut element_removal_list = HashMap::new();
         let mut func_to_descriptor = HashMap::new();
         for (id, local) in module.funcs.iter_local() {
             let mut find = FindDescribeClosure {
@@ -106,9 +106,55 @@ impl WasmBindgenDescriptorsSection {
         // For all indirect functions that were closure descriptors, delete them
         // from the function table since we've executed them and they're not
         // necessary in the final binary.
-        for (segment, idx) in element_removal_list {
-            log::trace!("delete element {}", idx);
-            module.elements.get_mut(segment).members[idx] = None;
+        for (segment, idxs) in element_removal_list {
+            let segment = module.elements.get_mut(segment);
+
+            let items = match &mut segment.items {
+                ElementItems::Functions(items) => items,
+                ElementItems::Expressions(_, items) => {
+                    for idx in idxs {
+                        log::trace!("delete element {}", idx);
+                        items[idx] = ConstExpr::RefNull(RefType::Funcref)
+                    }
+
+                    continue;
+                }
+            };
+
+            let (table, offset) = match &segment.kind {
+                ElementKind::Active {
+                    table,
+                    offset: ConstExpr::Value(Value::I32(n)),
+                } => (*table, *n),
+                _ => bail!("somehow found a closure in an unexpected element segment"),
+            };
+
+            let mut to_insert = Vec::new();
+
+            for idx in idxs.into_iter().rev() {
+                log::trace!("delete element {}", idx);
+
+                items.remove(idx);
+
+                // Last item, no need to do anything fancy.
+                if items.len() == idx {
+                    continue;
+                }
+
+                let block = items.split_off(idx);
+                let offset = offset + idx as i32 + 1;
+                let offset = ConstExpr::Value(Value::I32(offset));
+
+                to_insert.push((offset, block));
+            }
+
+            for (offset, block) in to_insert.into_iter().rev() {
+                let id = module.elements.add(
+                    ElementKind::Active { table, offset },
+                    ElementItems::Functions(block),
+                );
+                module.tables.get_mut(table).elem_segments.insert(id);
+            }
         }
 
         // And finally replace all calls of `wbindgen_describe_closure` with a

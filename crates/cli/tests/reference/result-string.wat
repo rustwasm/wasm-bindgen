@@ -10,4 +10,6 @@
   (export "exported" (func $exported))
   (export "__wbindgen_add_to_stack_pointer" (func $__wbindgen_add_to_stack_pointer))
   (export "__wbindgen_free" (func $__wbindgen_free))
+  (@custom "target_features" (after code) "\02+\0fmutable-globals+\08sign-ext")
 )
+

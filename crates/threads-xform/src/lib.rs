@@ -4,7 +4,7 @@ use std::env;
 use walrus::ir::Value;
 use walrus::FunctionBuilder;
 use walrus::{
-    ir::MemArg, ExportItem, FunctionId, GlobalId, GlobalKind, InitExpr, InstrSeqBuilder, MemoryId,
+    ir::MemArg, ConstExpr, ExportItem, FunctionId, GlobalId, GlobalKind, InstrSeqBuilder, MemoryId,
     Module, ValType,
 };
 use wasm_bindgen_wasm_conventions as wasm_conventions;
@@ -129,7 +129,10 @@ impl Config {
         assert!(mem.shared);
         let prev_max = mem.maximum.unwrap();
         assert!(mem.import.is_some());
-        mem.maximum = Some(cmp::max(self.maximum_memory / PAGE_SIZE, prev_max));
+        mem.maximum = Some(cmp::max(
+            u64::from(self.maximum_memory / PAGE_SIZE),
+            prev_max,
+        ));
         assert!(mem.data_segments.is_empty());
 
         let tls = Tls {
@@ -145,7 +148,7 @@ impl Config {
         let stack_alloc =
             module
                 .globals
-                .add_local(ValType::I32, true, InitExpr::Value(Value::I32(0)));
+                .add_local(ValType::I32, true, false, ConstExpr::Value(Value::I32(0)));
 
         // Make sure the temporary stack is aligned down
         let temp_stack = (base + static_data_pages * PAGE_SIZE) & !(static_data_align - 1);
@@ -161,7 +164,8 @@ impl Config {
             size: module.globals.add_local(
                 ValType::I32,
                 true,
-                InitExpr::Value(Value::I32(self.thread_stack_size as i32)),
+                false,
+                ConstExpr::Value(Value::I32(self.thread_stack_size as i32)),
             ),
         };
 
@@ -222,7 +226,7 @@ fn delete_synthetic_global(module: &mut Module, name: &str) -> Result<u32, Error
         walrus::GlobalKind::Import(_) => bail!("`{}` must not be an imported global", name),
     };
     match g {
-        InitExpr::Value(Value::I32(v)) => Ok(v as u32),
+        ConstExpr::Value(Value::I32(v)) => Ok(v as u32),
         _ => bail!("`{}` was not an `i32` constant", name),
     }
 }
@@ -278,7 +282,7 @@ fn allocate_static_data(
             bail!("the `__heap_base` global is unexpectedly mutable");
         }
         let offset = match &mut global.kind {
-            GlobalKind::Local(InitExpr::Value(Value::I32(n))) => n,
+            GlobalKind::Local(ConstExpr::Value(Value::I32(n))) => n,
             _ => bail!("`__heap_base` not a locally defined `i32`"),
         };
 
@@ -291,7 +295,7 @@ fn allocate_static_data(
     };
 
     let memory = module.memories.get_mut(memory);
-    memory.initial += pages;
+    memory.initial += u64::from(pages);
     memory.maximum = memory.maximum.map(|m| cmp::max(m, memory.initial));
 
     Ok((base as u32, address))
