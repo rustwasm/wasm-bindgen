@@ -101,6 +101,7 @@ members = [
   "examples/synchronous-instantiation",
   "tests/no-std",
 ]
+exclude = ["crates/msrv"]
 resolver = "2"
 
 [patch.crates-io]
