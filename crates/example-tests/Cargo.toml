@@ -7,13 +7,14 @@ edition = "2018"
 [dependencies]
 anyhow = "1.0.75"
 futures-util = { version = "0.3.28", features = ["sink"] }
-http = "0.2.9"
-hyper = { version = "0.14.27", features = ["server", "tcp", "http1"] }
-mozprofile = "0.8.0"
-mozrunner = "0.14.0"
+http = "1"
+hyper = "1"
+hyper-util = { version = "0.1.6", features = ["http1", "service", "server", "tokio"] }
+mozprofile = "0.9"
+mozrunner = "0.15"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-tokio = { version = "1.29.1", features = ["macros", "time"] }
-tokio-tungstenite = "0.17.2"
+tokio = { version = "1.29.1", features = ["macros", "net", "time"] }
+tokio-tungstenite = "0.23"
 tower = { version = "0.4.13", features = ["make"] }
-tower-http = { version = "0.3.5", features = ["fs", "util", "set-header"] }
+tower-http = { version = "0.5", features = ["fs", "util", "set-header"] }

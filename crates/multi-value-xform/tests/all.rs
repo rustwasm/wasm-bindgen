@@ -203,7 +203,7 @@ fn update_output(path: &Path, output: &str) -> Result<()> {
 
 impl<'a> Parse<'a> for Directive {
     fn parse(parser: Parser<'a>) -> wast::parser::Result<Self> {
-        use wast::{kw, ValType};
+        use wast::{core::ValType, kw};
 
         parser.parse::<kw::export>()?;
         let name = parser.parse()?;

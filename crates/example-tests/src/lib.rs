@@ -9,6 +9,9 @@ use std::{env, str};
 use anyhow::{bail, Context};
 use futures_util::{future, SinkExt, StreamExt};
 use http::{HeaderName, HeaderValue};
+use hyper_util::rt::{TokioExecutor, TokioIo};
+use hyper_util::server::conn::auto::Builder;
+use hyper_util::service::TowerToHyperService;
 use mozprofile::profile::Profile;
 use mozrunner::firefox_default_path;
 use mozrunner::runner::{FirefoxProcess, FirefoxRunner, Runner, RunnerProcess};
@@ -20,7 +23,6 @@ use tokio::sync::oneshot;
 use tokio::time::timeout;
 use tokio_tungstenite::tungstenite::{self, Message};
 use tokio_tungstenite::{MaybeTlsStream, WebSocketStream};
-use tower::make::Shared;
 use tower::ServiceBuilder;
 use tower_http::services::ServeDir;
 use tower_http::ServiceBuilderExt;
@@ -146,7 +148,7 @@ impl WebDriver {
         // For the moment, we're only supporting Firefox here.
         let mut builder = FirefoxRunner::new(
             &firefox_default_path().context("failed to find Firefox installation")?,
-            Some(Profile::new()?),
+            Some(Profile::new(None)?),
         );
         builder
             .arg("--remote-debugging-port")
@@ -326,27 +328,41 @@ pub async fn test_example(
     let mut driver = WebDriver::new().await?;
 
     // Serve the path.
-    let service = ServiceBuilder::new()
-        .override_response_header(
-            HeaderName::from_static("cross-origin-opener-policy"),
-            HeaderValue::from_static("same-origin"),
-        )
-        .override_response_header(
-            HeaderName::from_static("cross-origin-embedder-policy"),
-            HeaderValue::from_static("require-corp"),
-        )
-        .service(ServeDir::new(path));
-    let server =
-        hyper::Server::try_bind(&"127.0.0.1:0".parse().unwrap())?.serve(Shared::new(service));
+    let service = TowerToHyperService::new(
+        ServiceBuilder::new()
+            .override_response_header(
+                HeaderName::from_static("cross-origin-opener-policy"),
+                HeaderValue::from_static("same-origin"),
+            )
+            .override_response_header(
+                HeaderName::from_static("cross-origin-embedder-policy"),
+                HeaderValue::from_static("require-corp"),
+            )
+            .service(ServeDir::new(path)),
+    );
 
-    let addr = server.local_addr();
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await?;
+    let addr = listener.local_addr()?;
+    let builder = Builder::new(TokioExecutor::new()).http1_only();
 
     let (tx, rx) = oneshot::channel();
 
     let (server_result, result) = future::join(
-        server.with_graceful_shutdown(async move {
-            let _ = rx.await;
-        }),
+        async move {
+            let (stream, _) = listener.accept().await?;
+
+            let conn = builder.serve_connection(TokioIo::new(stream), &service);
+            tokio::pin!(conn);
+
+            tokio::select! {
+                res = conn.as_mut() => {
+                    res.map_err(|e| anyhow::Error::msg(e.to_string()))
+                }
+                _ = rx => {
+                    Ok(())
+                }
+            }
+        },
         async {
             #[derive(Deserialize)]
             struct BrowsingContextCreateResult {

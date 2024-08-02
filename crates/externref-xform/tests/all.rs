@@ -220,10 +220,10 @@ impl<'a> Parse<'a> for Directive {
         wast::custom_keyword!(externref_borrowed);
         wast::custom_keyword!(other);
 
-        let kind = if parser.peek::<kw::import>() {
+        let kind = if parser.peek::<kw::import>()? {
             parser.parse::<kw::import>()?;
             DirectiveKind::Import(parser.parse()?, parser.parse()?)
-        } else if parser.peek::<kw::export>() {
+        } else if parser.peek::<kw::export>()? {
             parser.parse::<kw::export>()?;
             DirectiveKind::Export(parser.parse()?)
         } else {
@@ -234,10 +234,10 @@ impl<'a> Parse<'a> for Directive {
         parser.parens(|p| {
             let mut i = 0;
             while !p.is_empty() {
-                if parser.peek::<externref_owned>() {
+                if parser.peek::<externref_owned>()? {
                     parser.parse::<externref_owned>()?;
                     args.push((i, true));
-                } else if parser.peek::<externref_borrowed>() {
+                } else if parser.peek::<externref_borrowed>()? {
                     parser.parse::<externref_borrowed>()?;
                     args.push((i, false));
                 } else {
