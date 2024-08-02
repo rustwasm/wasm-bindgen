@@ -1,0 +1,19 @@
+[package]
+name = "msrv-library-test"
+version = "0.0.0"
+edition = "2018"
+publish = false
+
+[dependencies]
+js-sys = { path = "../../js-sys" }
+wasm-bindgen = { path = "../../../" }
+wasm-bindgen-futures = { path = "../../futures" }
+wasm-bindgen-test = { path = "../../test" }
+web-sys = { path = "../../web-sys" }
+
+bumpalo = "=3.12.0"
+log = "=0.4.18"
+scoped-tls = "=1.0.0"
+
+[patch.crates-io]
+wasm-bindgen = { path = "../../../" }

@@ -6,7 +6,6 @@ authors = ["Ayush <ayushmishra2005@gmail.com>"]
 categories = ["wasm"]
 readme = "README.md"
 edition = "2018"
-rust-version = "1.57"
 
 [lib]
 crate-type = ["cdylib"]

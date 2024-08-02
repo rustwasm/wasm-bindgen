@@ -2637,7 +2637,7 @@ impl<'a> Context<'a> {
                 assert!(!catch);
                 assert!(!log_error);
 
-                let ts_sig = export.generate_typescript.then(|| ts_sig.as_str());
+                let ts_sig = export.generate_typescript.then_some(ts_sig.as_str());
 
                 let js_docs = format_doc_comments(&export.comments, Some(js_doc));
                 let ts_docs = format_doc_comments(&export.comments, None);

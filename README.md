@@ -108,6 +108,12 @@ You can find general documentation about using Rust and WebAssembly together
 - [web-sys](https://docs.rs/web-sys)
 - [wasm-bindgen-futures](https://docs.rs/wasm-bindgen-futures)
 
+## MSRV Policy
+
+Libraries that are released on [crates.io](https://crates.io) have a MSRV of v1.57. Changes to the MSRV will be accompanied by a minor version bump.
+
+CLI tools and their corresponding support libraries have a MSRV of v1.76. Changes to the MSRV will be accompanied by a patch version bump.
+
 ## License
 
 This project is licensed under either of

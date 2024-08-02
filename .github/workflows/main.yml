@@ -438,6 +438,28 @@ jobs:
         name: doc_api
         path: docs.tar.gz
 
+  msrv-lib:
+    name: Check MSRV for libraries
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: crates/msrv/lib
+    steps:
+    - uses: actions/checkout@v4
+    - run: rustup update --no-self-update 1.57 && rustup default 1.57
+    - run: cargo build
+      
+  msrv-cli:
+    name: Check MSRV for CLI tools
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: crates/msrv/cli
+    steps:
+    - uses: actions/checkout@v4
+    - run: rustup update --no-self-update 1.76 && rustup default 1.76
+    - run: cargo build
+      
 
   deploy:
     permissions:

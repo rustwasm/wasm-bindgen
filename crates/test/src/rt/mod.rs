@@ -216,7 +216,7 @@ impl Display for TestResult {
             TestResult::Ok => write!(f, "ok"),
             TestResult::Err(_) => write!(f, "FAIL"),
             TestResult::Ignored(None) => write!(f, "ignored"),
-            TestResult::Ignored(Some(reason)) => write!(f, "ignored, {reason}"),
+            TestResult::Ignored(Some(reason)) => write!(f, "ignored, {}", reason),
         }
     }
 }
