@@ -470,6 +470,11 @@ impl IntoWasmAbi for JsError {
     }
 }
 
+/// # ⚠️ Unstable
+///
+/// This is part of the internal [`convert`](crate::convert) module, **no
+/// stability guarantees** are provided. Use at your own risk. See its
+/// documentation for more details.
 // Note: this can't take `&[T]` because the `Into<JsValue>` impl needs
 // ownership of `T`.
 pub fn js_value_vector_into_abi<T: Into<JsValue>>(
@@ -480,6 +485,11 @@ pub fn js_value_vector_into_abi<T: Into<JsValue>>(
     js_vals.into_abi()
 }
 
+/// # ⚠️ Unstable
+///
+/// This is part of the internal [`convert`](crate::convert) module, **no
+/// stability guarantees** are provided. Use at your own risk. See its
+/// documentation for more details.
 pub unsafe fn js_value_vector_from_abi<T: TryFromJsValue>(
     js: <Box<[JsValue]> as FromWasmAbi>::Abi,
 ) -> Box<[T]>

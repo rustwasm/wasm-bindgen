@@ -20,6 +20,11 @@ use crate::JsValue;
 
 use cfg_if::cfg_if;
 
+/// # ⚠️ Unstable
+///
+/// This is part of the internal [`convert`](crate::convert) module, **no
+/// stability guarantees** are provided. Use at your own risk. See its
+/// documentation for more details.
 // note: `WasmAbi` types do not need to be FFI-safe themselves, it's just more
 // convenient to directly write `WasmSlice` in some of the manually-written FFI
 // functions in `lib.rs` rather than `WasmRet<WasmSlice>`.
