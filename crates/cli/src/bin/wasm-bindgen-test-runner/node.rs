@@ -43,11 +43,12 @@ pub fn execute(
     tmpdir: &Path,
     args: &[OsString],
     tests: &[String],
+    module_format: bool,
 ) -> Result<(), Error> {
     let mut js_to_execute = format!(
         r#"
-        const {{ exit }} = require('process');
-        const wasm = require("./{0}");
+        {exit};
+        {wasm};
 
         {console_override}
 
@@ -67,7 +68,16 @@ pub fn execute(
 
         const tests = [];
     "#,
-        module,
+        wasm = if !module_format {
+            format!(r"const wasm = require('./{0}')", module)
+        } else {
+            format!(r"import * as wasm from './{0}'", module)
+        },
+        exit = if !module_format {
+            r"const { exit } = require('node:process')".to_string()
+        } else {
+            r"import { exit } from 'node:process'".to_string()
+        },
         console_override = SHARED_SETUP,
     );
 

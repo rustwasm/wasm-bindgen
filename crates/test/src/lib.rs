@@ -76,6 +76,12 @@ macro_rules! wasm_bindgen_test_configure {
         pub static __WBG_TEST_RUN_IN_SERVICE_WORKER: [u8; 1] = [0x04];
         $crate::wasm_bindgen_test_configure!($($others)*);
     );
+    (run_in_node $($others:tt)*) => (
+        #[link_section = "__wasm_bindgen_test_unstable"]
+        #[cfg(target_arch = "wasm32")]
+        pub static __WBG_TEST_RUN_IN_NODE: [u8; 1] = [0x05];
+        $crate::wasm_bindgen_test_configure!($($others)*);
+    );
     () => ()
 }
 
