@@ -10,7 +10,7 @@ description = """
 Bindings for all Web APIs, a procedurally generated crate from WebIDL
 """
 license = "MIT OR Apache-2.0"
-edition = "2018"
+edition = "2021"
 rust-version = "1.57"
 
 [package.metadata.docs.rs]

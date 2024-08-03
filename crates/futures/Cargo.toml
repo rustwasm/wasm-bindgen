@@ -8,7 +8,7 @@ name = "wasm-bindgen-futures"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/futures"
 readme = "./README.md"
 version = "0.4.42"
-edition = "2018"
+edition = "2021"
 rust-version = "1.57"
 
 [package.metadata.docs.rs]

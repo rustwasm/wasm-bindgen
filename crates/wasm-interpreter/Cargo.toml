@@ -9,7 +9,7 @@ documentation = "https://docs.rs/wasm-bindgen-wasm-interpreter"
 description = """
 Micro-interpreter optimized for wasm-bindgen's use case
 """
-edition = '2018'
+edition = "2021"
 rust-version = "1.76"
 
 [dependencies]

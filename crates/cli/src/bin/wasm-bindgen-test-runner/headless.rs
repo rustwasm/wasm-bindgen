@@ -71,7 +71,10 @@ pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error
             let mut cmd = Command::new(path);
             cmd.args(args).arg(format!("--port={}", driver_addr.port()));
             let mut child = BackgroundChild::spawn(path, &mut cmd, shell)?;
-            drop_log = Box::new(move || child.print_stdio_on_drop = false);
+            drop_log = Box::new(move || {
+                let _ = &child;
+                child.print_stdio_on_drop = false;
+            });
 
             // Wait for the driver to come online and bind its port before we try to
             // connect to it.

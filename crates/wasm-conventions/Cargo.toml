@@ -7,7 +7,7 @@ repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/wasm-c
 homepage = "https://rustwasm.github.io/wasm-bindgen/"
 documentation = "https://docs.rs/wasm-bindgen-wasm-conventions"
 description = "Utilities for working with Wasm codegen conventions (usually established by LLVM/lld)"
-edition = "2018"
+edition = "2021"
 rust-version = "1.76"
 
 [dependencies]
