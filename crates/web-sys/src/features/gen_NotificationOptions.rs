@@ -142,6 +142,16 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
     #[wasm_bindgen(method, setter = "timestamp")]
     pub fn set_timestamp(this: &NotificationOptions, val: f64);
+    #[doc = "Get the `vibrate` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
+    #[wasm_bindgen(method, getter = "vibrate")]
+    pub fn get_vibrate(this: &NotificationOptions) -> ::wasm_bindgen::JsValue;
+    #[doc = "Change the `vibrate` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
+    #[wasm_bindgen(method, setter = "vibrate")]
+    pub fn set_vibrate(this: &NotificationOptions, val: &::wasm_bindgen::JsValue);
 }
 impl NotificationOptions {
     #[doc = "Construct a new `NotificationOptions`."]
@@ -216,6 +226,11 @@ impl NotificationOptions {
     #[deprecated = "Use `set_timestamp()` instead."]
     pub fn timestamp(&mut self, val: f64) -> &mut Self {
         self.set_timestamp(val);
+        self
+    }
+    #[deprecated = "Use `set_vibrate()` instead."]
+    pub fn vibrate(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
+        self.set_vibrate(val);
         self
     }
 }

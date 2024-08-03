@@ -66,6 +66,9 @@
 * Added an official MSRV policy. Library MSRV changes will be accompanied by a minor version bump. CLI tool MSRV can change with any version bump.
   [#4038](https://github.com/rustwasm/wasm-bindgen/pull/4038)
 
+* Added bindings to `NavigatorOptions.vibrate`.
+  [#4041](https://github.com/rustwasm/wasm-bindgen/pull/4041)
+
 ### Changed
 
 * Stabilize Web Share API.
