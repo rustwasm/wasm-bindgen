@@ -6,3 +6,9 @@ publish = false
 
 [dependencies]
 wasm-bindgen-cli = { path = "../../cli" }
+wasm-bindgen-cli-support = { path = "../../cli-support" }
+wasm-bindgen-wasm-interpreter = { path = "../../wasm-interpreter" }
+wasm-bindgen-threads-xform = { path = "../../threads-xform" }
+wasm-bindgen-multi-value-xform = { path = "../../multi-value-xform" }
+wasm-bindgen-externref-xform = { path = "../../externref-xform" }
+wasm-bindgen-wasm-conventions = { path = "../../wasm-conventions" }

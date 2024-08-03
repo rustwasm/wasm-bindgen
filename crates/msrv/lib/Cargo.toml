@@ -5,11 +5,16 @@ edition = "2018"
 publish = false
 
 [dependencies]
-js-sys = { path = "../../js-sys" }
 wasm-bindgen = { path = "../../../" }
+js-sys = { path = "../../js-sys" }
+web-sys = { path = "../../web-sys" }
 wasm-bindgen-futures = { path = "../../futures" }
 wasm-bindgen-test = { path = "../../test" }
-web-sys = { path = "../../web-sys" }
+wasm-bindgen-macro = { path = "../../macro" }
+wasm-bindgen-test-macro = { path = "../../test-macro" }
+wasm-bindgen-macro-support = { path = "../../macro-support" }
+wasm-bindgen-backend = { path = "../../backend" }
+wasm-bindgen-shared = { path = "../../shared" }
 
 bumpalo = "=3.12.0"
 log = "=0.4.18"
