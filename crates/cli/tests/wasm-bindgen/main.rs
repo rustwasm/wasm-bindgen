@@ -79,7 +79,7 @@ impl Project {
                         name = \"{}\"
                         authors = []
                         version = \"1.0.0\"
-                        edition = '2018'
+                        edition = '2021'
 
                         [dependencies]
                         wasm-bindgen = {{ path = '{}' }}
@@ -207,7 +207,7 @@ fn bin_crate_works() {
                     name = \"bin_crate_works\"
                     authors = []
                     version = \"1.0.0\"
-                    edition = '2018'
+                    edition = '2021'
 
                     [dependencies]
                     wasm-bindgen = {{ path = '{}' }}
@@ -254,7 +254,7 @@ fn bin_crate_works_without_name_section() {
                     name = \"bin_crate_works_without_name_section\"
                     authors = []
                     version = \"1.0.0\"
-                    edition = '2018'
+                    edition = '2021'
 
                     [dependencies]
                     wasm-bindgen = {{ path = '{}' }}

@@ -9,7 +9,7 @@ documentation = "https://docs.rs/wasm-bindgen-cli-support"
 description = """
 Shared support for the wasm-bindgen-cli package, an internal dependency
 """
-edition = '2018'
+edition = "2021"
 rust-version = "1.76"
 
 [dependencies]

@@ -9,7 +9,7 @@ documentation = "https://docs.rs/wasm-bindgen"
 description = """
 Definition of the `#[wasm_bindgen]` attribute, an internal dependency
 """
-edition = "2018"
+edition = "2021"
 rust-version = "1.57"
 
 [lib]

@@ -9,7 +9,7 @@ documentation = "https://docs.rs/wasm-bindgen-threads-xform"
 description = """
 Support for threading-related transformations in wasm-bindgen
 """
-edition = "2018"
+edition = "2021"
 rust-version = "1.76"
 
 [dependencies]

@@ -9,7 +9,7 @@ documentation = "https://docs.rs/wasm-bindgen-externref-xform"
 description = """
 Internal externref transformations for wasm-bindgen
 """
-edition = '2018'
+edition = "2021"
 rust-version = "1.76"
 
 [dependencies]

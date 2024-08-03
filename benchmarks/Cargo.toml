@@ -2,7 +2,7 @@
 name = "wasm-bindgen-benchmark"
 version = "0.1.0"
 authors = ["The wasm-bindgen Developers"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 wasm-bindgen = { path = '../' }

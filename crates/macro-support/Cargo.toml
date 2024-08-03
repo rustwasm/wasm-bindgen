@@ -9,7 +9,7 @@ documentation = "https://docs.rs/wasm-bindgen"
 description = """
 The part of the implementation of the `#[wasm_bindgen]` attribute that is not in the shared backend crate
 """
-edition = '2018'
+edition = "2021"
 rust-version = "1.57"
 
 [features]

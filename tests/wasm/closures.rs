@@ -433,7 +433,7 @@ fn drop_drops() {
     }
     let a = A;
     let x: Closure<dyn Fn()> = Closure::new(move || {
-        let _ = a;
+        let _ = &a;
     });
     drop(x);
     unsafe {

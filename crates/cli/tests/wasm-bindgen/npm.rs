@@ -77,7 +77,7 @@ fn npm_conflict_rejected() {
                 name = "npm_conflict_rejected"
                 authors = []
                 version = "1.0.0"
-                edition = '2018'
+                edition = '2021'
 
                 [dependencies]
                 wasm-bindgen = {{ path = '{}' }}
@@ -124,7 +124,7 @@ fn npm_conflict_rejected() {
                 name = "bar"
                 authors = []
                 version = "1.0.0"
-                edition = '2018'
+                edition = '2021'
 
                 [dependencies]
                 wasm-bindgen = {{ path = '{}' }}

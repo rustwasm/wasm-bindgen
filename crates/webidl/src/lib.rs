@@ -950,7 +950,7 @@ pub fn generate(from: &Path, to: &Path, options: Options) -> Result<String> {
         // run rustfmt on the generated file - really handy for debugging
         let result = Command::new("rustfmt")
             .arg("--edition")
-            .arg("2018")
+            .arg("2021")
             .args(paths)
             .status()
             .context("rustfmt failed")?;
