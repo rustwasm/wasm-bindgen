@@ -1337,9 +1337,24 @@ pub fn anyref_heap_live_count() -> u32 {
 pub trait UnwrapThrowExt<T>: Sized {
     /// Unwrap this `Option` or `Result`, but instead of panicking on failure,
     /// throw an exception to JavaScript.
-    #[cfg_attr(debug_assertions, track_caller)]
+    #[cfg_attr(
+        any(
+            debug_assertions,
+            not(all(
+                target_arch = "wasm32",
+                not(any(target_os = "emscripten", target_os = "wasi"))
+            ))
+        ),
+        track_caller
+    )]
     fn unwrap_throw(self) -> T {
-        if cfg!(all(debug_assertions, feature = "std")) {
+        if cfg!(all(
+            debug_assertions,
+            all(
+                target_arch = "wasm32",
+                not(any(target_os = "emscripten", target_os = "wasi"))
+            )
+        )) {
             let loc = core::panic::Location::caller();
             let msg = alloc::format!(
                 "`unwrap_throw` failed ({}:{}:{})",
@@ -1356,12 +1371,20 @@ pub trait UnwrapThrowExt<T>: Sized {
     /// Unwrap this container's `T` value, or throw an error to JS with the
     /// given message if the `T` value is unavailable (e.g. an `Option<T>` is
     /// `None`).
-    #[cfg_attr(debug_assertions, track_caller)]
+    #[cfg_attr(
+        any(
+            debug_assertions,
+            not(all(
+                target_arch = "wasm32",
+                not(any(target_os = "emscripten", target_os = "wasi"))
+            ))
+        ),
+        track_caller
+    )]
     fn expect_throw(self, message: &str) -> T;
 }
 
 impl<T> UnwrapThrowExt<T> for Option<T> {
-    #[cfg_attr(debug_assertions, track_caller)]
     fn expect_throw(self, message: &str) -> T {
         if cfg!(all(
             target_arch = "wasm32",
@@ -1381,9 +1404,9 @@ impl<T, E> UnwrapThrowExt<T> for Result<T, E>
 where
     E: core::fmt::Debug,
 {
-    #[cfg_attr(debug_assertions, track_caller)]
     fn unwrap_throw(self) -> T {
         if cfg!(all(
+            debug_assertions,
             target_arch = "wasm32",
             not(any(target_os = "emscripten", target_os = "wasi"))
         )) {
@@ -1403,11 +1426,10 @@ where
                 }
             }
         } else {
-            self.unwrap()
+            self.expect("`unwrap_throw` failed")
         }
     }
 
-    #[cfg_attr(debug_assertions, track_caller)]
     fn expect_throw(self, message: &str) -> T {
         if cfg!(all(
             target_arch = "wasm32",
