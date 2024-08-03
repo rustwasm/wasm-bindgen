@@ -32,14 +32,14 @@ macro_rules! if_std {
 
 macro_rules! externs {
     ($(#[$attr:meta])* extern "C" { $(fn $name:ident($($args:tt)*) -> $ret:ty;)* }) => (
-        #[cfg(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi"))))]
+        #[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
         $(#[$attr])*
         extern "C" {
             $(fn $name($($args)*) -> $ret;)*
         }
 
         $(
-            #[cfg(not(all(target_arch = "wasm32", not(any(target_os = "emscripten", target_os = "wasi")))))]
+            #[cfg(not(all(target_arch = "wasm32", target_os = "unknown")))]
             #[allow(unused_variables)]
             unsafe extern fn $name($($args)*) -> $ret {
                 panic!("function not implemented on non-wasm32 targets")
@@ -1340,20 +1340,14 @@ pub trait UnwrapThrowExt<T>: Sized {
     #[cfg_attr(
         any(
             debug_assertions,
-            not(all(
-                target_arch = "wasm32",
-                not(any(target_os = "emscripten", target_os = "wasi"))
-            ))
+            not(all(target_arch = "wasm32", target_os = "unknown"))
         ),
         track_caller
     )]
     fn unwrap_throw(self) -> T {
         if cfg!(all(
             debug_assertions,
-            all(
-                target_arch = "wasm32",
-                not(any(target_os = "emscripten", target_os = "wasi"))
-            )
+            all(target_arch = "wasm32", target_os = "unknown")
         )) {
             let loc = core::panic::Location::caller();
             let msg = alloc::format!(
@@ -1374,10 +1368,7 @@ pub trait UnwrapThrowExt<T>: Sized {
     #[cfg_attr(
         any(
             debug_assertions,
-            not(all(
-                target_arch = "wasm32",
-                not(any(target_os = "emscripten", target_os = "wasi"))
-            ))
+            not(all(target_arch = "wasm32", target_os = "unknown"))
         ),
         track_caller
     )]
@@ -1386,10 +1377,7 @@ pub trait UnwrapThrowExt<T>: Sized {
 
 impl<T> UnwrapThrowExt<T> for Option<T> {
     fn expect_throw(self, message: &str) -> T {
-        if cfg!(all(
-            target_arch = "wasm32",
-            not(any(target_os = "emscripten", target_os = "wasi"))
-        )) {
+        if cfg!(all(target_arch = "wasm32", target_os = "unknown")) {
             match self {
                 Some(val) => val,
                 None => throw_str(message),
@@ -1408,7 +1396,7 @@ where
         if cfg!(all(
             debug_assertions,
             target_arch = "wasm32",
-            not(any(target_os = "emscripten", target_os = "wasi"))
+            target_os = "unknown"
         )) {
             match self {
                 Ok(val) => val,
@@ -1431,10 +1419,7 @@ where
     }
 
     fn expect_throw(self, message: &str) -> T {
-        if cfg!(all(
-            target_arch = "wasm32",
-            not(any(target_os = "emscripten", target_os = "wasi"))
-        )) {
+        if cfg!(all(target_arch = "wasm32", target_os = "unknown")) {
             match self {
                 Ok(val) => val,
                 Err(_) => throw_str(message),
@@ -1792,7 +1777,7 @@ pub mod __rt {
                 std::process::abort();
             } else if #[cfg(all(
                 target_arch = "wasm32",
-                not(any(target_os = "emscripten", target_os = "wasi"))
+                target_os = "unknown"
             ))] {
                 core::arch::wasm32::unreachable();
             } else {
