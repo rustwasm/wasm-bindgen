@@ -1,25 +1,26 @@
 [package]
 name = "raytrace-parallel"
-version = "0.1.0"
+version = "0.0.0"
 authors = ["The wasm-bindgen Developers"]
 edition = "2021"
+publish = false
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
 console_error_panic_hook = "0.1"
-js-sys = "0.3.69"
+js-sys = { path = "../../crates/js-sys" }
 rayon = "1.1.0"
 rayon-core = "1.5.0"
 raytracer = { git = 'https://github.com/alexcrichton/raytracer', branch = 'update-deps' }
 serde-wasm-bindgen = "0.6"
 futures-channel-preview = "0.3.0-alpha.18"
-wasm-bindgen = "0.2.92"
-wasm-bindgen-futures = "0.4.42"
+wasm-bindgen = { path = "../../" }
+wasm-bindgen-futures = { path = "../../crates/futures" }
 
 [dependencies.web-sys]
-version = "0.3.23"
+path = "../../crates/web-sys"
 features = [
   'CanvasRenderingContext2d',
   'ErrorEvent',

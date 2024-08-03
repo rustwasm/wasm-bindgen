@@ -1,8 +1,9 @@
 [package]
 name = "example-tests"
-version = "0.1.0"
+version = "0.0.0"
 authors = ["The wasm-bindgen Developers"]
 edition = "2021"
+publish = false
 
 [dependencies]
 anyhow = "1.0.75"

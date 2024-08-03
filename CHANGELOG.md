@@ -119,6 +119,9 @@
 * MSRV of CLI tools bumped to v1.76. This does not affect libraries like `wasm-bindgen`, `js-sys` and `web-sys`!
   [#4037](https://github.com/rustwasm/wasm-bindgen/pull/4037)
 
+* Filtered files in published crates, significantly reducing the package size and notably excluding any bash files.
+  [#4046](https://github.com/rustwasm/wasm-bindgen/pull/4046)
+
 ### Fixed
 
 * Copy port from headless test server when using `WASM_BINDGEN_TEST_ADDRESS`.

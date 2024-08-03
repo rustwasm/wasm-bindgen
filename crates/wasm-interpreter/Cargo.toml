@@ -11,6 +11,7 @@ Micro-interpreter optimized for wasm-bindgen's use case
 """
 edition = "2021"
 rust-version = "1.76"
+include = ["/LICENSE-*", "/src"]
 
 [dependencies]
 anyhow = "1.0"

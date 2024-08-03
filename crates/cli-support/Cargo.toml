@@ -11,6 +11,7 @@ Shared support for the wasm-bindgen-cli package, an internal dependency
 """
 edition = "2021"
 rust-version = "1.76"
+include = ["/LICENSE-*", "/src"]
 
 [dependencies]
 anyhow = "1.0"

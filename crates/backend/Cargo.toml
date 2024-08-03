@@ -11,6 +11,7 @@ Backend code generation of the wasm-bindgen tool
 """
 edition = "2021"
 rust-version = "1.57"
+include = ["/LICENSE-*", "/src"]
 
 [features]
 spans = []

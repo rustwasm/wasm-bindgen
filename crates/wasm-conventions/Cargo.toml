@@ -9,6 +9,7 @@ documentation = "https://docs.rs/wasm-bindgen-wasm-conventions"
 description = "Utilities for working with Wasm codegen conventions (usually established by LLVM/lld)"
 edition = "2021"
 rust-version = "1.76"
+include = ["/LICENSE-*", "/src"]
 
 [dependencies]
 leb128 = "0.2"

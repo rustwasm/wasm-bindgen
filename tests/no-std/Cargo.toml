@@ -1,10 +1,9 @@
 [package]
 name = "no-std"
-version = "0.1.0"
+version = "0.0.0"
 authors = ["The wasm-bindgen Developers"]
-
-[lib]
-path = "test.rs"
+edition = "2021"
+publish = false
 
 [dependencies]
 wasm-bindgen = { path = '../..', default-features = false }
