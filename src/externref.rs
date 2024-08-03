@@ -106,7 +106,7 @@ fn internal_error(msg: &str) -> ! {
             std::process::abort();
         } else if #[cfg(all(
             target_arch = "wasm32",
-            not(any(target_os = "emscripten", target_os = "wasi"))
+            target_os = "unknown"
         ))] {
             core::arch::wasm32::unreachable();
         } else {
