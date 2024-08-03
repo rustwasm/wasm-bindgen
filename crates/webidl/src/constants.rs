@@ -230,6 +230,13 @@ pub(crate) static FIXED_INTERFACES: Lazy<
                 ),
             ]),
         ),
+        (
+            "Navigator",
+            BTreeMap::from_iter([
+                ("vibrate_with_u32", "vibrate_with_duration"),
+                ("vibrate_with_u32_sequence", "vibrate_with_pattern"),
+            ]),
+        ),
     ])
 });
 

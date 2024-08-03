@@ -533,7 +533,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/vibrate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Navigator`*"]
-    pub fn vibrate_with_duration(this: &Navigator, duration: u32) -> bool;
+    pub fn vibrate_with_duration(this: &Navigator, pattern: u32) -> bool;
     # [wasm_bindgen (method , structural , js_class = "Navigator" , js_name = vibrate)]
     #[doc = "The `vibrate()` method."]
     #[doc = ""]
