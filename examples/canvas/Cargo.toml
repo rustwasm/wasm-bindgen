@@ -1,18 +1,19 @@
 [package]
 name = "canvas"
-version = "0.1.0"
+version = "0.0.0"
 authors = ["The wasm-bindgen Developers"]
 edition = "2021"
+publish = false
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
-js-sys = "0.3.69"
-wasm-bindgen = "0.2.92"
+js-sys = { path = "../../crates/js-sys" }
+wasm-bindgen = { path = "../../" }
 
 [dependencies.web-sys]
-version = "0.3.4"
+path = "../../crates/web-sys"
 features = [
   'CanvasRenderingContext2d',
   'Document',

@@ -11,6 +11,7 @@ Support for threading-related transformations in wasm-bindgen
 """
 edition = "2021"
 rust-version = "1.76"
+include = ["/LICENSE-*", "/src"]
 
 [dependencies]
 anyhow = "1.0"

@@ -14,6 +14,7 @@ Node.js and browsers, built on `#[wasm_bindgen]` using the `wasm-bindgen` crate.
 license = "MIT OR Apache-2.0"
 edition = "2021"
 rust-version = "1.57"
+include = ["/LICENSE-*", "/src"]
 
 [lib]
 test = false
@@ -23,9 +24,9 @@ doctest = false
 wasm-bindgen = { path = "../..", version = "0.2.92" }
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
-wasm-bindgen-test = { path = '../test', version = '=0.3.42' }
-wasm-bindgen-futures = { path = '../futures', version = '0.4.42' }
-web-sys = { path = "../web-sys", version = "0.3.69", features = ["Headers", "Response", "ResponseInit"] }
+wasm-bindgen-test = { path = '../test' }
+wasm-bindgen-futures = { path = '../futures' }
+web-sys = { path = "../web-sys", features = ["Headers", "Response", "ResponseInit"] }
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(js_sys_unstable_apis)'] }

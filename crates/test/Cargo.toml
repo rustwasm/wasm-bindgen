@@ -7,6 +7,7 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/rustwasm/wasm-bindgen"
 edition = "2021"
 rust-version = "1.57"
+include = ["/LICENSE-*", "/src"]
 
 [dependencies]
 console_error_panic_hook = '0.1'

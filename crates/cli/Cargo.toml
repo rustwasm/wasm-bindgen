@@ -14,6 +14,7 @@ information see https://github.com/rustwasm/wasm-bindgen.
 edition = "2021"
 default-run = 'wasm-bindgen'
 rust-version = "1.76"
+include = ["/LICENSE-*", "/src"]
 
 [package.metadata.binstall]
 pkg-url = "https://github.com/rustwasm/wasm-bindgen/releases/download/{ version }/wasm-bindgen-{ version }-{ target }{ archive-suffix }"

@@ -11,6 +11,7 @@ The part of the implementation of the `#[wasm_bindgen]` attribute that is not in
 """
 edition = "2021"
 rust-version = "1.57"
+include = ["/LICENSE-*", "/src"]
 
 [features]
 spans = ["wasm-bindgen-backend/spans"]
