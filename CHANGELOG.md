@@ -163,6 +163,9 @@
 * Implement a more reliable way to detect the stack pointer.
   [#4036](https://github.com/rustwasm/wasm-bindgen/pull/4036)
 
+* `#[track_caller]` is now always applied on `UnwrapThrowExt` methods when not targetting `wasm32-unknown-unknown`.
+  [#4042](https://github.com/rustwasm/wasm-bindgen/pull/4042)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.92](https://github.com/rustwasm/wasm-bindgen/compare/0.2.91...0.2.92)
