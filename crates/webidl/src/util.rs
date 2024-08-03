@@ -4,7 +4,7 @@ use std::iter::FromIterator;
 use std::path::{Path, PathBuf};
 use std::ptr;
 
-use heck::{CamelCase, ShoutySnakeCase, SnakeCase};
+use heck::{ToShoutySnakeCase, ToSnakeCase, ToUpperCamelCase};
 use proc_macro2::{Ident, TokenStream};
 use quote::quote;
 use wasm_bindgen_backend::util::{ident_ty, raw_ident, rust_ident};
@@ -71,7 +71,7 @@ fn fix_ident(identifier: &str) -> String {
 
 /// Convert an identifier to camel case
 pub fn camel_case_ident(identifier: &str) -> String {
-    fix_ident(identifier).to_camel_case()
+    fix_ident(identifier).to_upper_camel_case()
 }
 
 /// Convert an identifier to shouty snake case

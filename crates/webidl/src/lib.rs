@@ -938,7 +938,7 @@ pub fn generate(from: &Path, to: &Path, options: Options) -> Result<String> {
             if path.extension() != Some(OsStr::new("webidl")) {
                 continue;
             }
-            source = source
+            source
                 .add_file(&path)
                 .with_context(|| format!("reading contents of file \"{}\"", path.display()))?;
         }

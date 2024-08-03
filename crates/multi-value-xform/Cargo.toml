@@ -20,7 +20,7 @@ wasm-bindgen-wasm-conventions = { path = "../wasm-conventions", version = "=0.2.
 [dev-dependencies]
 rayon = "1.0"
 wasmprinter = "0.212"
-wast = "21.0"
+wast = "212"
 wat = "1.0"
 
 [[test]]

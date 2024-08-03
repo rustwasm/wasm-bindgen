@@ -38,9 +38,9 @@ wasm-bindgen-cli-support = { path = "../cli-support", version = "=0.2.92" }
 wasm-bindgen-shared = { path = "../shared", version = "=0.2.92" }
 
 [dev-dependencies]
-assert_cmd = "1.0"
+assert_cmd = "2"
 diff = "0.1"
-predicates = "1.0.0"
+predicates = "3"
 rayon = "1.0"
 tempfile = "3.0"
 wasmparser = "0.212"

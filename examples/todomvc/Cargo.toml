@@ -8,12 +8,12 @@ edition = "2018"
 crate-type = ["cdylib"]
 
 [build-dependencies]
-askama = "0.10.0"
+askama = "0.12"
 
 [dependencies]
 js-sys = "0.3.69"
 wasm-bindgen = "0.2.92"
-askama = "0.10.0"
+askama = "0.12"
 console_error_panic_hook = "0.1.5"
 
 [dependencies.web-sys]
