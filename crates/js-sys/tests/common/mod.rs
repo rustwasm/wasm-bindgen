@@ -1,16 +1,8 @@
-#![cfg(target_arch = "wasm32")]
-
-extern crate js_sys;
-extern crate wasm_bindgen;
-extern crate wasm_bindgen_test;
-
 use js_sys::Array;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 
-wasm_bindgen_test_configure!(run_in_node);
-
-#[wasm_bindgen(module = "/tests/headless.js")]
+#[wasm_bindgen(module = "/tests/common/headless.js")]
 extern "C" {
     fn is_array_values_supported() -> bool;
 }

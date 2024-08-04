@@ -466,15 +466,6 @@ impl<'a> Context<'a> {
                     }
                 }
 
-                let mut _start = String::new();
-
-                if matches!(self.config.mode, OutputMode::Node { module: true }) {
-                    _start.push_str(&self.generate_node_imports());
-                    _start.push_str(&self.generate_node_wasm_loading(Path::new(&format!(
-                        "./{}_bg.wasm",
-                        module_name
-                    ))));
-                }
                 self.imports_post.push_str(
                     "\
                     let wasm;
@@ -484,11 +475,18 @@ impl<'a> Context<'a> {
                     ",
                 );
 
-                if needs_manual_start {
-                    _start.push_str("\nwasm.__wbindgen_start();\n");
+                if matches!(self.config.mode, OutputMode::Node { module: true }) {
+                    let start = start.get_or_insert_with(String::new);
+                    start.push_str(&self.generate_node_imports());
+                    start.push_str(&self.generate_node_wasm_loading(Path::new(&format!(
+                        "./{}_bg.wasm",
+                        module_name
+                    ))));
                 }
-                if !_start.is_empty() {
-                    start = Some(_start);
+                if needs_manual_start {
+                    start
+                        .get_or_insert_with(String::new)
+                        .push_str("\nwasm.__wbindgen_start();\n");
                 }
             }
 
