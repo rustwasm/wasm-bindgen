@@ -99,6 +99,9 @@ pub fn execute(
     );
 
     let js_path = if module_format {
+        // fixme: this is a hack to make node understand modules
+        let package_json = tmpdir.join("package.json");
+        fs::write(&package_json, r#"{"type": "module"}"#).unwrap();
         tmpdir.join("run.mjs")
     } else {
         tmpdir.join("run.cjs")
