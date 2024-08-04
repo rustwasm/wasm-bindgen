@@ -98,7 +98,11 @@ pub fn execute(
     ",
     );
 
-    let js_path = tmpdir.join("run.js");
+    let js_path = if module_format {
+        tmpdir.join("run.mjs")
+    } else {
+        tmpdir.join("run.cjs")
+    };
     fs::write(&js_path, js_to_execute).context("failed to write JS file")?;
 
     // Augment `NODE_PATH` so things like `require("tests/my-custom.js")` work
