@@ -1,0 +1,15 @@
+---
+source: crates/cli-support/tests/test_native_add.rs
+expression: output.js()
+---
+let imports = {};
+imports['env'] = require('env');
+let wasm;
+
+const path = require('path').join(__dirname, 'native_add_bg.wasm');
+const bytes = require('fs').readFileSync(path);
+
+const wasmModule = new WebAssembly.Module(bytes);
+const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
+wasm = wasmInstance.exports;
+module.exports.__wasm = wasm;
