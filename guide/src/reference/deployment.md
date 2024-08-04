@@ -12,9 +12,10 @@ The methods of deployment and integration here are primarily tied to the
 |-----------------|------------------------------------------------------------|
 | [`bundler`]     | Suitable for loading in bundlers like Webpack              |
 | [`web`]         | Directly loadable in a web browser                         |
-| [`nodejs`]      | Loadable via `require` as a Node.js module                 |
+| [`nodejs`]      | Loadable via `require` as a Node.js CommonJS module        |
 | [`deno`]        | Loadable using imports from Deno modules                   |
 | [`no-modules`]  | Like `web`, but older and doesn't use ES modules           |
+| [`experimental-nodejs-module`]  | Loadable via `import` as a Node.js ESM module. |
 
 [`bundler`]: #bundlers
 [`web`]: #without-a-bundler
@@ -86,6 +87,22 @@ as it has a JS shim generated as well).
 
 Note that this method requires a version of Node.js with WebAssembly support,
 which is currently Node 8 and above.
+
+## Node.js Module
+
+**`--target experemintal-nodejs-module`**
+
+If you're deploying WebAssembly into Node.js as a JavaScript module,
+then you'll want to pass the `--target experimental-nodejs-module` flag to `wasm-bindgen`.
+
+Like the "node" strategy, this method of deployment does not
+require any further postprocessing. The generated JS shims can be `import`ed
+just like any other Node module.
+
+Note that this method requires a version of Node.js with WebAssembly and module support,
+which is currently Node 12 and above.
+
+**Currently experimental. Target is expected to be changed before stabilization.**
 
 ## Deno
 
