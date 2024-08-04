@@ -1351,14 +1351,15 @@ pub trait UnwrapThrowExt<T>: Sized {
         )) {
             let loc = core::panic::Location::caller();
             let msg = alloc::format!(
-                "`unwrap_throw` failed ({}:{}:{})",
+                "called `{}::unwrap_throw()` ({}:{}:{})",
+                core::any::type_name::<Self>(),
                 loc.file(),
                 loc.line(),
                 loc.column()
             );
             self.expect_throw(&msg)
         } else {
-            self.expect_throw("`unwrap_throw` failed")
+            self.expect_throw("called `unwrap_throw()`")
         }
     }
 
@@ -1376,11 +1377,43 @@ pub trait UnwrapThrowExt<T>: Sized {
 }
 
 impl<T> UnwrapThrowExt<T> for Option<T> {
+    fn unwrap_throw(self) -> T {
+        const MSG: &str = "called `Option::unwrap_throw()` on a `None` value";
+
+        if cfg!(all(target_arch = "wasm32", target_os = "unknown")) {
+            if let Some(val) = self {
+                val
+            } else if cfg!(debug_assertions) {
+                let loc = core::panic::Location::caller();
+                let msg =
+                    alloc::format!("{} ({}:{}:{})", MSG, loc.file(), loc.line(), loc.column(),);
+
+                throw_str(&msg)
+            } else {
+                throw_str(MSG)
+            }
+        } else {
+            self.expect(MSG)
+        }
+    }
+
     fn expect_throw(self, message: &str) -> T {
         if cfg!(all(target_arch = "wasm32", target_os = "unknown")) {
-            match self {
-                Some(val) => val,
-                None => throw_str(message),
+            if let Some(val) = self {
+                val
+            } else if cfg!(debug_assertions) {
+                let loc = core::panic::Location::caller();
+                let msg = alloc::format!(
+                    "{} ({}:{}:{})",
+                    message,
+                    loc.file(),
+                    loc.line(),
+                    loc.column(),
+                );
+
+                throw_str(&msg)
+            } else {
+                throw_str(message)
             }
         } else {
             self.expect(message)
@@ -1393,28 +1426,31 @@ where
     E: core::fmt::Debug,
 {
     fn unwrap_throw(self) -> T {
-        if cfg!(all(
-            debug_assertions,
-            target_arch = "wasm32",
-            target_os = "unknown"
-        )) {
+        const MSG: &str = "called `Result::unwrap_throw()` on an `Err` value";
+
+        if cfg!(all(target_arch = "wasm32", target_os = "unknown")) {
             match self {
                 Ok(val) => val,
                 Err(err) => {
-                    let loc = core::panic::Location::caller();
-                    let msg = alloc::format!(
-                        "`unwrap_throw` failed ({}:{}:{}): {:?}",
-                        loc.file(),
-                        loc.line(),
-                        loc.column(),
-                        err
-                    );
+                    if cfg!(debug_assertions) {
+                        let loc = core::panic::Location::caller();
+                        let msg = alloc::format!(
+                            "{} ({}:{}:{}): {:?}",
+                            MSG,
+                            loc.file(),
+                            loc.line(),
+                            loc.column(),
+                            err
+                        );
 
-                    throw_str(&msg)
+                        throw_str(&msg)
+                    } else {
+                        throw_str(MSG)
+                    }
                 }
             }
         } else {
-            self.expect("`unwrap_throw` failed")
+            self.expect(MSG)
         }
     }
 
@@ -1422,7 +1458,23 @@ where
         if cfg!(all(target_arch = "wasm32", target_os = "unknown")) {
             match self {
                 Ok(val) => val,
-                Err(_) => throw_str(message),
+                Err(err) => {
+                    if cfg!(debug_assertions) {
+                        let loc = core::panic::Location::caller();
+                        let msg = alloc::format!(
+                            "{} ({}:{}:{}): {:?}",
+                            message,
+                            loc.file(),
+                            loc.line(),
+                            loc.column(),
+                            err
+                        );
+
+                        throw_str(&msg)
+                    } else {
+                        throw_str(message)
+                    }
+                }
             }
         } else {
             self.expect(message)
