@@ -43,11 +43,12 @@ pub fn execute(
     tmpdir: &Path,
     args: &[OsString],
     tests: &[String],
+    module_format: bool,
 ) -> Result<(), Error> {
     let mut js_to_execute = format!(
         r#"
-        const {{ exit }} = require('process');
-        const wasm = require("./{0}");
+        {exit};
+        {wasm};
 
         {console_override}
 
@@ -67,7 +68,16 @@ pub fn execute(
 
         const tests = [];
     "#,
-        module,
+        wasm = if !module_format {
+            format!(r"const wasm = require('./{0}.js')", module)
+        } else {
+            format!(r"import * as wasm from './{0}.js'", module)
+        },
+        exit = if !module_format {
+            r"const { exit } = require('node:process')".to_string()
+        } else {
+            r"import { exit } from 'node:process'".to_string()
+        },
         console_override = SHARED_SETUP,
     );
 
@@ -88,7 +98,14 @@ pub fn execute(
     ",
     );
 
-    let js_path = tmpdir.join("run.js");
+    let js_path = if module_format {
+        // fixme: this is a hack to make node understand modules
+        let package_json = tmpdir.join("package.json");
+        fs::write(&package_json, r#"{"type": "module"}"#).unwrap();
+        tmpdir.join("run.mjs")
+    } else {
+        tmpdir.join("run.cjs")
+    };
     fs::write(&js_path, js_to_execute).context("failed to write JS file")?;
 
     // Augment `NODE_PATH` so things like `require("tests/my-custom.js")` work

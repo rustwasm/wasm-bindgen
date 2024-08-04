@@ -142,9 +142,7 @@ impl<'a> Context<'a> {
             self.globals.push_str(c);
         }
         let global = match self.config.mode {
-            OutputMode::Node {
-                experimental_modules: false,
-            } => {
+            OutputMode::Node { module: false } => {
                 if contents.starts_with("class") {
                     format!("{}\nmodule.exports.{1} = {1};\n", contents, export_name)
                 } else {
@@ -159,9 +157,7 @@ impl<'a> Context<'a> {
                 }
             }
             OutputMode::Bundler { .. }
-            | OutputMode::Node {
-                experimental_modules: true,
-            }
+            | OutputMode::Node { module: true }
             | OutputMode::Web
             | OutputMode::Deno => {
                 if let Some(body) = contents.strip_prefix("function") {
@@ -217,26 +213,29 @@ impl<'a> Context<'a> {
 
         let mut shim = String::new();
 
-        shim.push_str("let imports = {};\n");
+        shim.push_str("\nlet imports = {};\n");
 
-        if self.config.mode.nodejs_experimental_modules() {
+        if self.config.mode.uses_es_modules() {
             for (i, module) in imports.iter().enumerate() {
                 if module.as_str() != PLACEHOLDER_MODULE {
                     shim.push_str(&format!("import * as import{} from '{}';\n", i, module));
                 }
             }
-        }
-
-        for (i, module) in imports.iter().enumerate() {
-            if module.as_str() == PLACEHOLDER_MODULE {
-                shim.push_str(&format!(
-                    "imports['{0}'] = module.exports;\n",
-                    PLACEHOLDER_MODULE
-                ));
-            } else if self.config.mode.nodejs_experimental_modules() {
-                shim.push_str(&format!("imports['{}'] = import{};\n", module, i));
-            } else {
-                shim.push_str(&format!("imports['{0}'] = require('{0}');\n", module));
+            for (i, module) in imports.iter().enumerate() {
+                if module.as_str() != PLACEHOLDER_MODULE {
+                    shim.push_str(&format!("imports['{}'] = import{};\n", module, i));
+                }
+            }
+        } else {
+            for module in imports.iter() {
+                if module.as_str() == PLACEHOLDER_MODULE {
+                    shim.push_str(&format!(
+                        "imports['{0}'] = module.exports;\n",
+                        PLACEHOLDER_MODULE
+                    ));
+                } else {
+                    shim.push_str(&format!("imports['{0}'] = require('{0}');\n", module));
+                }
             }
         }
 
@@ -246,17 +245,16 @@ impl<'a> Context<'a> {
     fn generate_node_wasm_loading(&self, path: &Path) -> String {
         let mut shim = String::new();
 
-        if self.config.mode.nodejs_experimental_modules() {
+        if self.config.mode.uses_es_modules() {
             // On windows skip the leading `/` which comes out when we parse a
             // url to use `C:\...` instead of `\C:\...`
             shim.push_str(&format!(
                 "
-                import * as path from 'path';
-                import * as fs from 'fs';
-                import * as url from 'url';
-                import * as process from 'process';
+                import * as path from 'node:path';
+                import * as fs from 'node:fs';
+                import * as process from 'node:process';
 
-                let file = path.dirname(url.parse(import.meta.url).pathname);
+                let file = path.dirname(new URL(import.meta.url).pathname);
                 if (process.platform === 'win32') {{
                     file = file.substring(1);
                 }}
@@ -264,6 +262,14 @@ impl<'a> Context<'a> {
             ",
                 path.file_name().unwrap().to_str().unwrap()
             ));
+            shim.push_str(
+                "
+                const wasmModule = new WebAssembly.Module(bytes);
+                const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
+                const wasm = wasmInstance.exports;
+                export const __wasm = wasm;
+            ",
+            );
         } else {
             shim.push_str(&format!(
                 "
@@ -272,16 +278,15 @@ impl<'a> Context<'a> {
             ",
                 path.file_name().unwrap().to_str().unwrap()
             ));
+            shim.push_str(
+                "
+                const wasmModule = new WebAssembly.Module(bytes);
+                const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
+                wasm = wasmInstance.exports;
+                module.exports.__wasm = wasm;
+            ",
+            );
         }
-
-        shim.push_str(
-            "
-            const wasmModule = new WebAssembly.Module(bytes);
-            const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
-            wasm = wasmInstance.exports;
-            module.exports.__wasm = wasm;
-        ",
-        );
 
         reset_indentation(&shim)
     }
@@ -400,9 +405,7 @@ impl<'a> Context<'a> {
 
             // With normal CommonJS node we need to defer requiring the wasm
             // until the end so most of our own exports are hooked up
-            OutputMode::Node {
-                experimental_modules: false,
-            } => {
+            OutputMode::Node { module: false } => {
                 js.push_str(&self.generate_node_imports());
 
                 js.push_str("let wasm;\n");
@@ -442,13 +445,10 @@ impl<'a> Context<'a> {
                 }
             }
 
-            // With Bundlers and modern ES6 support in Node we can simply import
-            // the wasm file as if it were an ES module and let the
-            // bundler/runtime take care of it.
-            OutputMode::Bundler { .. }
-            | OutputMode::Node {
-                experimental_modules: true,
-            } => {
+            // With Bundlers we can simply import the wasm file as if it were an ES module
+            // and let the bundler/runtime take care of it.
+            // With Node we manually read the wasm file from the filesystem and instantiate it.
+            OutputMode::Bundler { .. } | OutputMode::Node { module: true } => {
                 for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}_bg.js", module_name);
@@ -475,8 +475,18 @@ impl<'a> Context<'a> {
                     ",
                 );
 
+                if matches!(self.config.mode, OutputMode::Node { module: true }) {
+                    let start = start.get_or_insert_with(String::new);
+                    start.push_str(&self.generate_node_imports());
+                    start.push_str(&self.generate_node_wasm_loading(Path::new(&format!(
+                        "./{}_bg.wasm",
+                        module_name
+                    ))));
+                }
                 if needs_manual_start {
-                    start = Some("\nwasm.__wbindgen_start();\n".to_string());
+                    start
+                        .get_or_insert_with(String::new)
+                        .push_str("\nwasm.__wbindgen_start();\n");
                 }
             }
 
@@ -509,7 +519,9 @@ impl<'a> Context<'a> {
         // Emit all the JS for importing all our functionality
         assert!(
             !self.config.mode.uses_es_modules() || js.is_empty(),
-            "ES modules require imports to be at the start of the file"
+            "ES modules require imports to be at the start of the file, but we \
+             generated some JS before the imports: {}",
+            js
         );
 
         let mut push_with_newline = |s| {
@@ -556,9 +568,7 @@ impl<'a> Context<'a> {
                 }
             }
 
-            OutputMode::Node {
-                experimental_modules: false,
-            } => {
+            OutputMode::Node { module: false } => {
                 for (module, items) in crate::sorted_iter(&self.js_imports) {
                     imports.push_str("const { ");
                     for (i, (item, rename)) in items.iter().enumerate() {
@@ -582,9 +592,7 @@ impl<'a> Context<'a> {
             }
 
             OutputMode::Bundler { .. }
-            | OutputMode::Node {
-                experimental_modules: true,
-            }
+            | OutputMode::Node { module: true }
             | OutputMode::Web
             | OutputMode::Deno => {
                 for (module, items) in crate::sorted_iter(&self.js_imports) {
@@ -3216,12 +3224,10 @@ impl<'a> Context<'a> {
                         OutputMode::Web
                         | OutputMode::Bundler { .. }
                         | OutputMode::Deno
-                        | OutputMode::Node {
-                            experimental_modules: true,
-                        } => "import.meta.url",
-                        OutputMode::Node {
-                            experimental_modules: false,
-                        } => "require('url').pathToFileURL(__filename)",
+                        | OutputMode::Node { module: true } => "import.meta.url",
+                        OutputMode::Node { module: false } => {
+                            "require('url').pathToFileURL(__filename)"
+                        }
                         OutputMode::NoModules { .. } => {
                             prelude.push_str(
                                 "if (script_src === undefined) {

@@ -23,6 +23,8 @@ wasm_bindgen_test_configure!(run_in_dedicated_worker);
 wasm_bindgen_test_configure!(run_in_shared_worker);
 // Or run in service worker.
 wasm_bindgen_test_configure!(run_in_service_worker);
+// Or run in Node.js but as an ES module.
+wasm_bindgen_test_configure!(run_in_node_experimental);
 ```
 
 Note that although a particular test crate must target either headless browsers
@@ -33,6 +35,7 @@ project by using multiple test crates. For example:
 $MY_CRATE/
 `-- tests
     |-- node.rs              # The tests in this suite use the default Node.js.
+    |-- node_module.rs       # The tests in this suite are configured for Node.js but as an ES module.
     |-- dedicated_worker.rs  # The tests in this suite are configured for dedicated workers.
     |-- shared_worker.rs     # The tests in this suite are configured for shared workers.
     |-- service_worker.rs    # The tests in this suite are configured for service workers.
