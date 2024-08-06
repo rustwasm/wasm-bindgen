@@ -49,6 +49,7 @@ macro_rules! shared_api {
         enum ImportKind<'a> {
             Function(ImportFunction<'a>),
             Static(ImportStatic<'a>),
+            String(ImportString<'a>),
             Type(ImportType<'a>),
             Enum(StringEnum),
         }
@@ -90,6 +91,11 @@ macro_rules! shared_api {
         struct ImportStatic<'a> {
             name: &'a str,
             shim: &'a str,
+        }
+
+        struct ImportString<'a> {
+            shim: &'a str,
+            string: &'a str,
         }
 
         struct ImportType<'a> {

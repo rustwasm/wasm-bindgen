@@ -9,6 +9,7 @@ use quote::quote_spanned;
 use quote::{quote, ToTokens};
 use std::collections::{HashMap, HashSet};
 use std::sync::Mutex;
+use syn::parse_quote;
 use syn::spanned::Spanned;
 use wasm_bindgen_shared as shared;
 
@@ -846,6 +847,7 @@ impl TryToTokens for ast::ImportKind {
         match *self {
             ast::ImportKind::Function(ref f) => f.try_to_tokens(tokens)?,
             ast::ImportKind::Static(ref s) => s.to_tokens(tokens),
+            ast::ImportKind::String(ref s) => s.to_tokens(tokens),
             ast::ImportKind::Type(ref t) => t.to_tokens(tokens),
             ast::ImportKind::Enum(ref e) => e.to_tokens(tokens),
         }
@@ -1477,6 +1479,7 @@ impl<'a> ToTokens for DescribeImport<'a> {
         let f = match *self.kind {
             ast::ImportKind::Function(ref f) => f,
             ast::ImportKind::Static(_) => return,
+            ast::ImportKind::String(_) => return,
             ast::ImportKind::Type(_) => return,
             ast::ImportKind::Enum(_) => return,
         };
@@ -1641,44 +1644,19 @@ impl ToTokens for ast::Enum {
 
 impl ToTokens for ast::ImportStatic {
     fn to_tokens(&self, into: &mut TokenStream) {
-        let name = &self.rust_name;
         let ty = &self.ty;
-        let shim_name = &self.shim;
-        let vis = &self.vis;
-        let wasm_bindgen = &self.wasm_bindgen;
-
-        let abi_ret = quote! {
-            #wasm_bindgen::convert::WasmRet<<#ty as #wasm_bindgen::convert::FromWasmAbi>::Abi>
-        };
-        (quote! {
-            #[automatically_derived]
-            #vis static #name: #wasm_bindgen::JsStatic<#ty> = {
-                fn init() -> #ty {
-                    #[link(wasm_import_module = "__wbindgen_placeholder__")]
-                    #[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
-                    extern "C" {
-                        fn #shim_name() -> #abi_ret;
-                    }
-
-                    #[cfg(not(all(target_arch = "wasm32", target_os = "unknown")))]
-                    unsafe fn #shim_name() -> #abi_ret {
-                        panic!("cannot access imported statics on non-wasm targets")
-                    }
-
-                    unsafe {
-                        <#ty as #wasm_bindgen::convert::FromWasmAbi>::from_abi(#shim_name().join())
-                    }
-                }
-                thread_local!(static _VAL: #ty = init(););
-                #wasm_bindgen::JsStatic {
-                    __inner: &_VAL,
-                }
-            };
-        })
+        static_import(
+            &self.vis,
+            &self.rust_name,
+            &self.wasm_bindgen,
+            ty,
+            ty,
+            &self.shim,
+        )
         .to_tokens(into);
 
         Descriptor {
-            ident: shim_name,
+            ident: &self.shim,
             inner: quote! {
                 <#ty as WasmDescribe>::describe();
             },
@@ -1686,6 +1664,61 @@ impl ToTokens for ast::ImportStatic {
             wasm_bindgen: &self.wasm_bindgen,
         }
         .to_tokens(into);
+    }
+}
+
+impl ToTokens for ast::ImportString {
+    fn to_tokens(&self, into: &mut TokenStream) {
+        let js_sys = &self.js_sys;
+        let actual_ty: syn::Type = parse_quote!(#js_sys::JsString);
+
+        static_import(
+            &self.vis,
+            &self.rust_name,
+            &self.wasm_bindgen,
+            &actual_ty,
+            &self.ty,
+            &self.shim,
+        )
+        .to_tokens(into);
+    }
+}
+
+fn static_import(
+    vis: &syn::Visibility,
+    name: &Ident,
+    wasm_bindgen: &syn::Path,
+    actual_ty: &syn::Type,
+    ty: &syn::Type,
+    shim_name: &Ident,
+) -> TokenStream {
+    let abi_ret = quote! {
+        #wasm_bindgen::convert::WasmRet<<#ty as #wasm_bindgen::convert::FromWasmAbi>::Abi>
+    };
+    quote! {
+        #[automatically_derived]
+        #vis static #name: #wasm_bindgen::JsStatic<#actual_ty> = {
+            fn init() -> #ty {
+                #[link(wasm_import_module = "__wbindgen_placeholder__")]
+                #[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+                extern "C" {
+                    fn #shim_name() -> #abi_ret;
+                }
+
+                #[cfg(not(all(target_arch = "wasm32", target_os = "unknown")))]
+                unsafe fn #shim_name() -> #abi_ret {
+                    panic!("cannot access imported statics on non-wasm targets")
+                }
+
+                unsafe {
+                    <#ty as #wasm_bindgen::convert::FromWasmAbi>::from_abi(#shim_name().join())
+                }
+            }
+            thread_local!(static _VAL: #ty = init(););
+            #wasm_bindgen::JsStatic {
+                __inner: &_VAL,
+            }
+        };
     }
 }
 

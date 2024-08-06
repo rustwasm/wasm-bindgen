@@ -297,6 +297,7 @@ fn shared_import_kind<'a>(
     Ok(match i {
         ast::ImportKind::Function(f) => ImportKind::Function(shared_import_function(f, intern)?),
         ast::ImportKind::Static(f) => ImportKind::Static(shared_import_static(f, intern)),
+        ast::ImportKind::String(f) => ImportKind::String(shared_import_string(f, intern)),
         ast::ImportKind::Type(f) => ImportKind::Type(shared_import_type(f, intern)),
         ast::ImportKind::Enum(f) => ImportKind::Enum(shared_import_enum(f, intern)),
     })
@@ -329,6 +330,13 @@ fn shared_import_static<'a>(i: &'a ast::ImportStatic, intern: &'a Interner) -> I
     ImportStatic {
         name: &i.js_name,
         shim: intern.intern(&i.shim),
+    }
+}
+
+fn shared_import_string<'a>(i: &'a ast::ImportString, intern: &'a Interner) -> ImportString<'a> {
+    ImportString {
+        shim: intern.intern(&i.shim),
+        string: &i.string,
     }
 }
 

@@ -3067,6 +3067,19 @@ impl<'a> Context<'a> {
                 self.import_name(js)
             }
 
+            AuxImport::String(string) => {
+                assert!(kind == AdapterJsImportKind::Normal);
+                assert!(!variadic);
+                assert_eq!(args.len(), 0);
+
+                let mut escaped = String::with_capacity(string.len());
+                string.chars().for_each(|c| match c {
+                    '`' | '\\' | '$' => escaped.extend(['\\', c]),
+                    _ => escaped.extend([c]),
+                });
+                Ok(format!("`{escaped}`"))
+            }
+
             AuxImport::Closure {
                 dtor,
                 mutable,
