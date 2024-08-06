@@ -275,6 +275,8 @@ pub struct ImportStatic {
     pub js_name: String,
     /// Path to wasm_bindgen
     pub wasm_bindgen: Path,
+    /// [`true`] if using the new `thread_local` representation.
+    pub thread_local: bool,
 }
 
 /// The type of a static string being imported

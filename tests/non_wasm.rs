@@ -31,13 +31,14 @@ pub fn foo(x: bool) {
 #[wasm_bindgen]
 extern "C" {
     fn some_import();
+    #[wasm_bindgen(thread_local)]
     static A: JsValue;
 }
 
 #[wasm_bindgen]
 pub fn bar(_: &str) -> JsValue {
     some_import();
-    A.clone()
+    A.with(JsValue::clone)
 }
 
 #[wasm_bindgen]

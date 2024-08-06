@@ -5,13 +5,13 @@ use wasm_bindgen_test::*;
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_name = max, js_namespace = Math)]
+    #[wasm_bindgen(thread_local, js_name = max, js_namespace = Math)]
     static MAX: Function;
 
     type ArrayPrototype;
     #[wasm_bindgen(method, getter, structural)]
     pub fn push(this: &ArrayPrototype) -> Function;
-    #[wasm_bindgen(js_name = prototype, js_namespace = Array)]
+    #[wasm_bindgen(thread_local, js_name = prototype, js_namespace = Array)]
     static ARRAY_PROTOTYPE2: ArrayPrototype;
 }
 
@@ -21,12 +21,19 @@ fn apply() {
     args.push(&1.into());
     args.push(&2.into());
     args.push(&3.into());
-    assert_eq!(MAX.apply(&JsValue::undefined(), &args).unwrap(), 3);
+    assert_eq!(
+        MAX.with(|max| max.apply(&JsValue::undefined(), &args))
+            .unwrap(),
+        3
+    );
 
     let arr = JsValue::from(Array::new());
     let args = Array::new();
     args.push(&1.into());
-    ARRAY_PROTOTYPE2.push().apply(&arr, &args).unwrap();
+    ARRAY_PROTOTYPE2
+        .with(ArrayPrototype::push)
+        .apply(&arr, &args)
+        .unwrap();
     assert_eq!(Array::from(&arr).length(), 1);
 }
 
@@ -111,24 +118,29 @@ fn bind3() {
 
 #[wasm_bindgen_test]
 fn length() {
-    assert_eq!(MAX.length(), 2);
-    assert_eq!(ARRAY_PROTOTYPE2.push().length(), 1);
+    assert_eq!(MAX.with(Function::length), 2);
+    assert_eq!(ARRAY_PROTOTYPE2.with(ArrayPrototype::push).length(), 1);
 }
 
 #[wasm_bindgen_test]
 fn name() {
-    assert_eq!(JsValue::from(MAX.name()), "max");
-    assert_eq!(JsValue::from(ARRAY_PROTOTYPE2.push().name()), "push");
+    assert_eq!(JsValue::from(MAX.with(Function::name)), "max");
+    assert_eq!(
+        JsValue::from(ARRAY_PROTOTYPE2.with(ArrayPrototype::push).name()),
+        "push"
+    );
 }
 
 #[wasm_bindgen_test]
 fn to_string() {
-    assert!(MAX.to_string().length() > 0);
+    assert!(MAX.with(Function::to_string).length() > 0);
 }
 
 #[wasm_bindgen_test]
 fn function_inheritance() {
-    assert!(MAX.is_instance_of::<Function>());
-    assert!(MAX.is_instance_of::<Object>());
-    let _: &Object = MAX.as_ref();
+    assert!(MAX.with(Function::is_instance_of::<Function>));
+    assert!(MAX.with(Function::is_instance_of::<Object>));
+    MAX.with(|max| {
+        let _: &Object = max.as_ref();
+    });
 }

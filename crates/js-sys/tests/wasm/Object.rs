@@ -9,9 +9,9 @@ extern "C" {
     #[wasm_bindgen(method, setter, structural)]
     fn set_foo(this: &Foo42, val: JsValue);
 
-    #[wasm_bindgen(js_name = prototype, js_namespace = Object)]
+    #[wasm_bindgen(thread_local, js_name = prototype, js_namespace = Object)]
     static OBJECT_PROTOTYPE: JsValue;
-    #[wasm_bindgen(js_name = prototype, js_namespace = Array)]
+    #[wasm_bindgen(thread_local, js_name = prototype, js_namespace = Array)]
     static ARRAY_PROTOTYPE: JsValue;
 
     type DefinePropertyAttrs;
@@ -32,9 +32,9 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     fn new() -> Foo;
 
-    #[wasm_bindgen(js_name = prototype, js_namespace = Foo)]
+    #[wasm_bindgen(thread_local, js_name = prototype, js_namespace = Foo)]
     static FOO_PROTOTYPE: Object;
-    #[wasm_bindgen(js_name = prototype, js_namespace = Bar)]
+    #[wasm_bindgen(thread_local, js_name = prototype, js_namespace = Bar)]
     static BAR_PROTOTYPE: Object;
 }
 
@@ -178,9 +178,9 @@ fn get_own_property_symbols() {
 #[wasm_bindgen_test]
 fn get_prototype_of() {
     let proto = JsValue::from(Object::get_prototype_of(&Object::new().into()));
-    assert_eq!(proto, *OBJECT_PROTOTYPE);
+    OBJECT_PROTOTYPE.with(|op| assert_eq!(proto, *op));
     let proto = JsValue::from(Object::get_prototype_of(&Array::new().into()));
-    assert_eq!(proto, *ARRAY_PROTOTYPE);
+    ARRAY_PROTOTYPE.with(|ap| assert_eq!(proto, *ap));
 }
 
 #[wasm_bindgen_test]
@@ -249,8 +249,8 @@ fn is_sealed() {
 #[wasm_bindgen_test]
 fn is_prototype_of() {
     let foo = JsValue::from(Foo::new());
-    assert!(FOO_PROTOTYPE.is_prototype_of(&foo));
-    assert!(!BAR_PROTOTYPE.is_prototype_of(&foo));
+    assert!(FOO_PROTOTYPE.with(|fp| fp.is_prototype_of(&foo)));
+    assert!(!BAR_PROTOTYPE.with(|bp| bp.is_prototype_of(&foo)));
 }
 
 #[wasm_bindgen_test]

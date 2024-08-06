@@ -93,6 +93,7 @@ macro_rules! attrgen {
             (typescript_type, TypeScriptType(Span, String, Span)),
             (getter_with_clone, GetterWithClone(Span)),
             (static_string, StaticString(Span)),
+            (thread_local, ThreadLocal(Span)),
 
             // For testing purposes only.
             (assert_no_shim, AssertNoShim(Span)),
@@ -753,6 +754,13 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             bail_span!(self.mutability, "cannot import mutable globals yet")
         }
 
+        if let Some(span) = opts.static_string() {
+            return Err(Diagnostic::span_error(
+                *span,
+                "static strings require a string literal",
+            ));
+        }
+
         let default_name = self.ident.to_string();
         let js_name = opts
             .js_name()
@@ -764,6 +772,8 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             self.ident,
             ShortHash((&js_name, module, &self.ident)),
         );
+        let thread_local = opts.thread_local().is_some();
+
         opts.check_used();
         Ok(ast::ImportKind::Static(ast::ImportStatic {
             ty: *self.ty,
@@ -772,6 +782,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             js_name,
             shim: Ident::new(&shim, Span::call_site()),
             wasm_bindgen: program.wasm_bindgen.clone(),
+            thread_local,
         }))
     }
 }
@@ -805,7 +816,14 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
         if opts.static_string().is_none() {
             bail_span!(
                 self,
-                "statics strings require `#[wasm_bindgen(static_string)]`"
+                "static strings require `#[wasm_bindgen(static_string)]`"
+            )
+        }
+
+        if opts.thread_local().is_none() {
+            bail_span!(
+                self,
+                "static strings require `#[wasm_bindgen(thread_local)]`"
             )
         }
 

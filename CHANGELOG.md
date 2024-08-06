@@ -72,7 +72,7 @@
 * Added an experimental Node.JS ES module target, in comparison the current `node` target uses CommonJS, with `--target experimental-nodejs-module` or when testing with `wasm_bindgen_test_configure!(run_in_node_experimental)`.
   [#4027](https://github.com/rustwasm/wasm-bindgen/pull/4027)
 
-* Added importing strings as `JsString` through `#[wasm_bindgen(static_string)] static STRING: JsString = "a string literal";`.
+* Added importing strings as `JsString` through `#[wasm_bindgen(thread_local, static_string)] static STRING: JsString = "a string literal";`.
   [#4055](https://github.com/rustwasm/wasm-bindgen/pull/4055)
 
 ### Changed
@@ -128,6 +128,12 @@
 
 * Filtered files in published crates, significantly reducing the package size and notably excluding any bash files.
   [#4046](https://github.com/rustwasm/wasm-bindgen/pull/4046)
+
+* Deprecated `JsStatic` in favor of `#[wasm_bindgen(thread_local)]`, which creates a `std::thread::LocalKey`. The syntax is otherwise the same.
+  [#4057](https://github.com/rustwasm/wasm-bindgen/pull/4057)
+
+* Removed `impl Deref for JsStatic` when compiling with `cfg(target_feature = "atomics")`, which was unsound.
+  [#4057](https://github.com/rustwasm/wasm-bindgen/pull/4057)
 
 ### Fixed
 

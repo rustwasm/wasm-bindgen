@@ -15,7 +15,7 @@ fn string_roundtrip() {
 
     assert_eq!("\u{feff}bar", &identity("\u{feff}bar"));
 
-    assert_eq!(String::from(&*STRING), "foo")
+    assert_eq!(STRING.with(|s| String::from(s)), "foo");
 }
 
 #[wasm_bindgen]
@@ -23,6 +23,6 @@ fn string_roundtrip() {
 // See <https://github.com/rust-lang/rustfmt/issues/6267>.
 #[rustfmt::skip]
 extern "C" {
-    #[wasm_bindgen(static_string)]
+    #[wasm_bindgen(thread_local, static_string)]
     static STRING: JsString = "foo";
 }
