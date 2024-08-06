@@ -72,6 +72,9 @@
 * Added an experimental Node.JS ES module target, in comparison the current `node` target uses CommonJS, with `--target experimental-nodejs-module` or when testing with `wasm_bindgen_test_configure!(run_in_node_experimental)`.
   [#4027](https://github.com/rustwasm/wasm-bindgen/pull/4027)
 
+* Added importing strings as `JsString` through `#[wasm_bindgen(static_string)] static STRING: JsString = "a string literal";`.
+  [#4055](https://github.com/rustwasm/wasm-bindgen/pull/4055)
+
 ### Changed
 
 * Stabilize Web Share API.

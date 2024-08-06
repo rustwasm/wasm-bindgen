@@ -62,3 +62,15 @@ extern "C" {
     fn new() -> SomeType;
 }
 ```
+
+## Static strings
+
+Strings can be imported to avoid going through `TextDecoder/Encoder` when requiring just a `JsString`. This can be useful when dealing with environments where `TextDecoder/Encoder` is not available, like in audio worklets.
+
+```rust
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(static_string)]
+    static STRING: JsString = "a string literal";
+}
+```

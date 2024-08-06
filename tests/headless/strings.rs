@@ -1,3 +1,4 @@
+use js_sys::JsString;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 
@@ -13,4 +14,15 @@ fn string_roundtrip() {
     test_string_roundtrip(&Closure::wrap(Box::new(|s| s)));
 
     assert_eq!("\u{feff}bar", &identity("\u{feff}bar"));
+
+    assert_eq!(String::from(&*STRING), "foo")
+}
+
+#[wasm_bindgen]
+// Currently Rustfmt simply removes the value on this static.
+// See <https://github.com/rust-lang/rustfmt/issues/6267>.
+#[rustfmt::skip]
+extern "C" {
+    #[wasm_bindgen(static_string)]
+    static STRING: JsString = "foo";
 }

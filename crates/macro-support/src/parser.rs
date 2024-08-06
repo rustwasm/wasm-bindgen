@@ -87,10 +87,12 @@ macro_rules! attrgen {
             (main, Main(Span)),
             (start, Start(Span)),
             (wasm_bindgen, WasmBindgen(Span, syn::Path)),
+            (js_sys, JsSys(Span, syn::Path)),
             (wasm_bindgen_futures, WasmBindgenFutures(Span, syn::Path)),
             (skip, Skip(Span)),
             (typescript_type, TypeScriptType(Span, String, Span)),
             (getter_with_clone, GetterWithClone(Span)),
+            (static_string, StaticString(Span)),
 
             // For testing purposes only.
             (assert_no_shim, AssertNoShim(Span)),
@@ -774,6 +776,57 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
     }
 }
 
+impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule>)>
+    for syn::ItemStatic
+{
+    type Target = ast::ImportKind;
+
+    fn convert(
+        self,
+        (program, opts, module): (&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule>),
+    ) -> Result<Self::Target, Diagnostic> {
+        if let syn::StaticMutability::Mut(_) = self.mutability {
+            bail_span!(self.mutability, "cannot import mutable globals yet")
+        }
+
+        let string = if let syn::Expr::Lit(syn::ExprLit {
+            lit: syn::Lit::Str(string),
+            ..
+        }) = *self.expr.clone()
+        {
+            string.value()
+        } else {
+            bail_span!(
+                self.expr,
+                "statics with a value can only be string literals"
+            )
+        };
+
+        if opts.static_string().is_none() {
+            bail_span!(
+                self,
+                "statics strings require `#[wasm_bindgen(static_string)]`"
+            )
+        }
+
+        let shim = format!(
+            "__wbg_string_{}_{}",
+            self.ident,
+            ShortHash((&module, &self.ident)),
+        );
+        opts.check_used();
+        Ok(ast::ImportKind::String(ast::ImportString {
+            ty: *self.ty,
+            vis: self.vis,
+            rust_name: self.ident.clone(),
+            shim: Ident::new(&shim, Span::call_site()),
+            wasm_bindgen: program.wasm_bindgen.clone(),
+            js_sys: program.js_sys.clone(),
+            string,
+        }))
+    }
+}
+
 impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
     type Target = ast::Function;
 
@@ -965,6 +1018,9 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 let opts = opts.unwrap_or_default();
                 if let Some(path) = opts.wasm_bindgen() {
                     program.wasm_bindgen = path.clone();
+                }
+                if let Some(path) = opts.js_sys() {
+                    program.js_sys = path.clone();
                 }
                 if let Some(path) = opts.wasm_bindgen_futures() {
                     program.wasm_bindgen_futures = path.clone();
@@ -1466,6 +1522,20 @@ impl MacroParse<ForeignItemCtx> for syn::ForeignItem {
                 syn::ForeignItem::Fn(ref mut f) => &mut f.attrs,
                 syn::ForeignItem::Type(ref mut t) => &mut t.attrs,
                 syn::ForeignItem::Static(ref mut s) => &mut s.attrs,
+                syn::ForeignItem::Verbatim(v) => {
+                    let mut item: syn::ItemStatic =
+                        syn::parse(v.into()).expect("only foreign functions/types allowed for now");
+                    let item_opts = BindgenAttrs::find(&mut item.attrs)?;
+                    let kind = item.convert((program, item_opts, &ctx.module))?;
+
+                    program.imports.push(ast::Import {
+                        module: None,
+                        js_namespace: None,
+                        kind,
+                    });
+
+                    return Ok(());
+                }
                 _ => panic!("only foreign functions/types allowed for now"),
             };
             BindgenAttrs::find(attrs)?
@@ -1500,6 +1570,10 @@ pub fn module_from_opts(
 ) -> Result<Option<ast::ImportModule>, Diagnostic> {
     if let Some(path) = opts.wasm_bindgen() {
         program.wasm_bindgen = path.clone();
+    }
+
+    if let Some(path) = opts.js_sys() {
+        program.js_sys = path.clone();
     }
 
     if let Some(path) = opts.wasm_bindgen_futures() {

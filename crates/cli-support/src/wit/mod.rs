@@ -567,6 +567,7 @@ impl<'a> Context<'a> {
         match &import.kind {
             decode::ImportKind::Function(f) => self.import_function(&import, f),
             decode::ImportKind::Static(s) => self.import_static(&import, s),
+            decode::ImportKind::String(s) => self.import_string(s),
             decode::ImportKind::Type(t) => self.import_type(&import, t),
             decode::ImportKind::Enum(_) => Ok(()),
         }
@@ -800,6 +801,32 @@ impl<'a> Context<'a> {
         // imported item.
         let import = self.determine_import(import, static_.name)?;
         self.aux.import_map.insert(id, AuxImport::Static(import));
+        Ok(())
+    }
+
+    fn import_string(&mut self, string: &decode::ImportString<'_>) -> Result<(), Error> {
+        let (import_id, _id) = match self.function_imports.get(string.shim) {
+            Some(pair) => *pair,
+            None => return Ok(()),
+        };
+
+        // Register the signature of this imported shim
+        let id = self.import_adapter(
+            import_id,
+            Function {
+                arguments: Vec::new(),
+                shim_idx: 0,
+                ret: Descriptor::Externref,
+                inner_ret: None,
+            },
+            AdapterJsImportKind::Normal,
+        )?;
+
+        // And then save off that this function is is an instanceof shim for an
+        // imported item.
+        self.aux
+            .import_map
+            .insert(id, AuxImport::String(string.string.to_owned()));
         Ok(())
     }
 

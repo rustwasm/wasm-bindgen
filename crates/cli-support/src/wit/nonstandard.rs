@@ -220,6 +220,9 @@ pub enum AuxImport {
     /// `JsImport`.
     Static(JsImport),
 
+    /// This import is expected to be a shim that returns an exported `JsString`.
+    String(String),
+
     /// This import is intended to manufacture a JS closure with the given
     /// signature and then return that back to Rust.
     Closure {
