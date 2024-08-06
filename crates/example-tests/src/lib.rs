@@ -354,14 +354,17 @@ pub async fn test_example(
             let conn = builder.serve_connection(TokioIo::new(stream), &service);
             tokio::pin!(conn);
 
-            tokio::select! {
+            let ret = tokio::select! {
                 res = conn.as_mut() => {
                     res.map_err(|e| anyhow::Error::msg(e.to_string()))
                 }
                 _ = rx => {
                     Ok(())
                 }
-            }
+            };
+
+            conn.graceful_shutdown();
+            ret
         },
         async {
             #[derive(Deserialize)]
