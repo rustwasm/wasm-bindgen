@@ -23,6 +23,7 @@ extern "C" {
 
     fn assert_valid_error(val: JsValue);
 
+    #[wasm_bindgen(thread_local)]
     static IMPORT: JsValue;
 
     #[wasm_bindgen(js_name = return_three)]
@@ -35,7 +36,7 @@ extern "C" {
 
     #[allow(non_camel_case_types)]
     type bar;
-    #[wasm_bindgen(js_namespace = bar, js_name = foo)]
+    #[wasm_bindgen(thread_local, js_namespace = bar, js_name = foo)]
     static FOO: JsValue;
 
     fn take_custom_type(f: CustomType) -> CustomType;
@@ -46,7 +47,7 @@ extern "C" {
 
     #[wasm_bindgen(js_name = "baz$")]
     fn renamed_with_dollar_sign();
-    #[wasm_bindgen(js_name = "$foo")]
+    #[wasm_bindgen(thread_local, js_name = "$foo")]
     static RENAMED: JsValue;
 
     fn unused_import();
@@ -57,6 +58,7 @@ extern "C" {
     #[wasm_bindgen(static_method_of = StaticMethodCheck)]
     fn static_method_of_right_this();
 
+    #[wasm_bindgen(thread_local)]
     static STATIC_STRING: String;
 
     #[derive(Clone)]
@@ -170,7 +172,7 @@ fn free_imports() {
 
 #[wasm_bindgen_test]
 fn import_a_field() {
-    assert_eq!(IMPORT.as_f64(), Some(1.0));
+    assert_eq!(IMPORT.with(JsValue::as_f64), Some(1.0));
 }
 
 #[wasm_bindgen_test]
@@ -190,7 +192,7 @@ fn rust_keyword() {
 
 #[wasm_bindgen_test]
 fn rust_keyword2() {
-    assert_eq!(FOO.as_f64(), Some(3.0));
+    assert_eq!(FOO.with(JsValue::as_f64), Some(3.0));
 }
 
 #[wasm_bindgen_test]
@@ -222,7 +224,7 @@ fn rename_with_string() {
 
 #[wasm_bindgen_test]
 fn rename_static_with_string() {
-    assert_eq!(RENAMED.as_f64(), Some(1.0));
+    assert_eq!(RENAMED.with(JsValue::as_f64), Some(1.0));
 }
 
 #[wasm_bindgen_test]
@@ -285,7 +287,7 @@ fn undefined_function_is_ok() {
 
 #[wasm_bindgen_test]
 fn static_string_ok() {
-    assert_eq!(*STATIC_STRING, "x");
+    STATIC_STRING.with(|s| assert_eq!(*s, "x"));
 }
 
 #[wasm_bindgen_test]

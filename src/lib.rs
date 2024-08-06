@@ -1185,23 +1185,18 @@ impl Default for JsValue {
 /// This type implements `Deref` to the inner type so it's typically used as if
 /// it were `&T`.
 #[cfg(feature = "std")]
+#[deprecated = "use with `#[wasm_bindgen(thread_local)]` instead"]
 pub struct JsStatic<T: 'static> {
     #[doc(hidden)]
     pub __inner: &'static std::thread::LocalKey<T>,
 }
 
 #[cfg(feature = "std")]
+#[allow(deprecated)]
+#[cfg(not(target_feature = "atomics"))]
 impl<T: FromWasmAbi + 'static> Deref for JsStatic<T> {
     type Target = T;
     fn deref(&self) -> &T {
-        // We know that our tls key is never overwritten after initialization,
-        // so it should be safe (on that axis at least) to hand out a reference
-        // that lives longer than the closure below.
-        //
-        // FIXME: this is not sound if we ever implement thread exit hooks on
-        // wasm, as the pointer will eventually be invalidated but you can get
-        // `&'static T` from this interface. We... probably need to deprecate
-        // and/or remove this interface nowadays.
         unsafe { self.__inner.with(|ptr| &*(ptr as *const T)) }
     }
 }

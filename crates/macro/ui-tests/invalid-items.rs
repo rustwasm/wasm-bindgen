@@ -10,15 +10,26 @@ pub const fn foo2() {}
 struct Foo<T>(T);
 
 #[wasm_bindgen]
+#[rustfmt::skip]
 extern "C" {
     static mut FOO: u32;
+
+    #[wasm_bindgen(static_string)]
+    static FOO2: JsString;
+
+    #[wasm_bindgen(thread_local, static_string)]
+    static FOO3: JsString;
+
+    static FOO4: JsString = "test";
+
+    #[wasm_bindgen(static_string)]
+    static FOO5: JsString = "test";
 
     pub fn foo3(x: i32, ...);
 }
 
 #[wasm_bindgen]
-extern "system" {
-}
+extern "system" {}
 
 #[wasm_bindgen]
 pub fn foo4<T>() {}

@@ -17,43 +17,67 @@ error: structs with #[wasm_bindgen] cannot have lifetime or type parameters curr
    |           ^^^
 
 error: cannot import mutable globals yet
-  --> $DIR/invalid-items.rs:14:12
+  --> $DIR/invalid-items.rs:15:12
    |
-14 |     static mut FOO: u32;
+15 |     static mut FOO: u32;
    |            ^^^
 
-error: can't #[wasm_bindgen] variadic functions
-  --> $DIR/invalid-items.rs:16:25
+error: static strings require a string literal
+  --> $DIR/invalid-items.rs:17:20
    |
-16 |     pub fn foo3(x: i32, ...);
+17 |     #[wasm_bindgen(static_string)]
+   |                    ^^^^^^^^^^^^^
+
+error: static strings require a string literal
+  --> $DIR/invalid-items.rs:20:34
+   |
+20 |     #[wasm_bindgen(thread_local, static_string)]
+   |                                  ^^^^^^^^^^^^^
+
+error: static strings require `#[wasm_bindgen(static_string)]`
+  --> $DIR/invalid-items.rs:23:5
+   |
+23 |     static FOO4: JsString = "test";
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: static strings require `#[wasm_bindgen(thread_local)]`
+  --> $DIR/invalid-items.rs:26:5
+   |
+26 |     static FOO5: JsString = "test";
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: can't #[wasm_bindgen] variadic functions
+  --> $DIR/invalid-items.rs:28:25
+   |
+28 |     pub fn foo3(x: i32, ...);
    |                         ^^^
 
 error: only foreign mods with the `C` ABI are allowed
-  --> $DIR/invalid-items.rs:20:8
+  --> $DIR/invalid-items.rs:32:8
    |
-20 | extern "system" {
+32 | extern "system" {}
    |        ^^^^^^^^
 
 error: can't #[wasm_bindgen] functions with lifetime or type parameters
-  --> $DIR/invalid-items.rs:24:12
+  --> $DIR/invalid-items.rs:35:12
    |
-24 | pub fn foo4<T>() {}
+35 | pub fn foo4<T>() {}
    |            ^^^
 
 error: can't #[wasm_bindgen] functions with lifetime or type parameters
-  --> $DIR/invalid-items.rs:26:12
+  --> $DIR/invalid-items.rs:37:12
    |
-26 | pub fn foo5<'a>() {}
+37 | pub fn foo5<'a>() {}
    |            ^^^^
 
 error: can't #[wasm_bindgen] functions with lifetime or type parameters
-  --> $DIR/invalid-items.rs:28:12
+  --> $DIR/invalid-items.rs:39:12
    |
-28 | pub fn foo6<'a, T>() {}
+39 | pub fn foo6<'a, T>() {}
    |            ^^^^^^^
 
 error: #[wasm_bindgen] can only be applied to a function, struct, enum, impl, or extern block
-  --> $DIR/invalid-items.rs:31:1
+  --> $DIR/invalid-items.rs:42:1
    |
-31 | trait X {}
+42 | trait X {}
    | ^^^^^^^^^^

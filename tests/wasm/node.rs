@@ -4,6 +4,7 @@ use wasm_bindgen_test::*;
 #[wasm_bindgen(module = "tests/wasm/node.js")]
 extern "C" {
     fn test_works();
+    #[wasm_bindgen(thread_local)]
     static FOO: JsValue;
     fn hit();
 }
@@ -11,7 +12,7 @@ extern "C" {
 #[wasm_bindgen_test]
 fn works() {
     hit();
-    assert_eq!(FOO.as_f64(), Some(1.0));
+    assert_eq!(FOO.with(JsValue::as_f64), Some(1.0));
     test_works();
 }
 

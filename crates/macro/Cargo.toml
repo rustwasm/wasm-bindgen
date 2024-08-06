@@ -26,6 +26,7 @@ wasm-bindgen-macro-support = { path = "../macro-support", version = "=0.2.92" }
 quote = "1.0"
 
 [dev-dependencies]
+js-sys = { path = "../js-sys" }
 trybuild = "1.0"
 wasm-bindgen = { path = "../.." }
 wasm-bindgen-futures = { path = "../futures" }

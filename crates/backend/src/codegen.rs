@@ -1645,15 +1645,42 @@ impl ToTokens for ast::Enum {
 impl ToTokens for ast::ImportStatic {
     fn to_tokens(&self, into: &mut TokenStream) {
         let ty = &self.ty;
-        static_import(
-            &self.vis,
-            &self.rust_name,
-            &self.wasm_bindgen,
-            ty,
-            ty,
-            &self.shim,
-        )
-        .to_tokens(into);
+
+        if self.thread_local {
+            thread_local_import(
+                &self.vis,
+                &self.rust_name,
+                &self.wasm_bindgen,
+                ty,
+                ty,
+                &self.shim,
+            )
+            .to_tokens(into)
+        } else {
+            let vis = &self.vis;
+            let name = &self.rust_name;
+            let wasm_bindgen = &self.wasm_bindgen;
+            let ty = &self.ty;
+            let shim_name = &self.shim;
+            let init = static_init(wasm_bindgen, ty, shim_name);
+
+            into.extend(quote! {
+                #[automatically_derived]
+                #[deprecated = "use with `#[wasm_bindgen(thread_local)]` instead"]
+            });
+            into.extend(
+                quote_spanned! { name.span() => #vis static #name: #wasm_bindgen::JsStatic<#ty> = {
+                        fn init() -> #ty {
+                            #init
+                        }
+                        thread_local!(static _VAL: #ty = init(););
+                        #wasm_bindgen::JsStatic {
+                            __inner: &_VAL,
+                        }
+                    };
+                },
+            );
+        }
 
         Descriptor {
             ident: &self.shim,
@@ -1672,7 +1699,7 @@ impl ToTokens for ast::ImportString {
         let js_sys = &self.js_sys;
         let actual_ty: syn::Type = parse_quote!(#js_sys::JsString);
 
-        static_import(
+        thread_local_import(
             &self.vis,
             &self.rust_name,
             &self.wasm_bindgen,
@@ -1684,7 +1711,7 @@ impl ToTokens for ast::ImportString {
     }
 }
 
-fn static_import(
+fn thread_local_import(
     vis: &syn::Visibility,
     name: &Ident,
     wasm_bindgen: &syn::Path,
@@ -1692,33 +1719,37 @@ fn static_import(
     ty: &syn::Type,
     shim_name: &Ident,
 ) -> TokenStream {
+    let init = static_init(wasm_bindgen, ty, shim_name);
+
+    quote! {
+        thread_local! {
+            #[automatically_derived]
+            #vis static #name: #actual_ty = {
+                #init
+            };
+        }
+    }
+}
+
+fn static_init(wasm_bindgen: &syn::Path, ty: &syn::Type, shim_name: &Ident) -> TokenStream {
     let abi_ret = quote! {
         #wasm_bindgen::convert::WasmRet<<#ty as #wasm_bindgen::convert::FromWasmAbi>::Abi>
     };
     quote! {
-        #[automatically_derived]
-        #vis static #name: #wasm_bindgen::JsStatic<#actual_ty> = {
-            fn init() -> #ty {
-                #[link(wasm_import_module = "__wbindgen_placeholder__")]
-                #[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
-                extern "C" {
-                    fn #shim_name() -> #abi_ret;
-                }
+        #[link(wasm_import_module = "__wbindgen_placeholder__")]
+        #[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+        extern "C" {
+            fn #shim_name() -> #abi_ret;
+        }
 
-                #[cfg(not(all(target_arch = "wasm32", target_os = "unknown")))]
-                unsafe fn #shim_name() -> #abi_ret {
-                    panic!("cannot access imported statics on non-wasm targets")
-                }
+        #[cfg(not(all(target_arch = "wasm32", target_os = "unknown")))]
+        unsafe fn #shim_name() -> #abi_ret {
+            panic!("cannot access imported statics on non-wasm targets")
+        }
 
-                unsafe {
-                    <#ty as #wasm_bindgen::convert::FromWasmAbi>::from_abi(#shim_name().join())
-                }
-            }
-            thread_local!(static _VAL: #ty = init(););
-            #wasm_bindgen::JsStatic {
-                __inner: &_VAL,
-            }
-        };
+        unsafe {
+            <#ty as #wasm_bindgen::convert::FromWasmAbi>::from_abi(#shim_name().join())
+        }
     }
 }
 

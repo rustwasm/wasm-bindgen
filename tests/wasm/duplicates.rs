@@ -6,7 +6,8 @@ pub mod same_function_different_locations_a {
     #[wasm_bindgen(module = "tests/wasm/duplicates_a.js")]
     extern "C" {
         pub fn foo();
-        pub static bar: JsValue;
+        #[wasm_bindgen(thread_local, js_name = bar)]
+        pub static BAR: JsValue;
     }
 }
 
@@ -16,7 +17,8 @@ pub mod same_function_different_locations_b {
     #[wasm_bindgen(module = "tests/wasm/duplicates_a.js")]
     extern "C" {
         pub fn foo();
-        pub static bar: JsValue;
+        #[wasm_bindgen(thread_local, js_name = bar)]
+        pub static BAR: JsValue;
     }
 }
 
@@ -24,8 +26,8 @@ pub mod same_function_different_locations_b {
 fn same_function_different_locations() {
     same_function_different_locations_a::foo();
     same_function_different_locations_b::foo();
-    assert_eq!(*same_function_different_locations_a::bar, 3);
-    assert_eq!(*same_function_different_locations_a::bar, 3);
+    same_function_different_locations_a::BAR.with(|bar| assert_eq!(*bar, 3));
+    same_function_different_locations_a::BAR.with(|bar| assert_eq!(*bar, 3));
 }
 
 pub mod same_function_different_modules_a {
@@ -34,7 +36,8 @@ pub mod same_function_different_modules_a {
     #[wasm_bindgen(module = "tests/wasm/duplicates_b.js")]
     extern "C" {
         pub fn foo() -> bool;
-        pub static bar: JsValue;
+        #[wasm_bindgen(thread_local, js_name = bar)]
+        pub static BAR: JsValue;
     }
 }
 
@@ -44,7 +47,8 @@ pub mod same_function_different_modules_b {
     #[wasm_bindgen(module = "tests/wasm/duplicates_c.js")]
     extern "C" {
         pub fn foo() -> bool;
-        pub static bar: JsValue;
+        #[wasm_bindgen(thread_local, js_name = bar)]
+        pub static BAR: JsValue;
     }
 }
 
@@ -52,6 +56,6 @@ pub mod same_function_different_modules_b {
 fn same_function_different_modules() {
     assert!(same_function_different_modules_a::foo());
     assert!(!same_function_different_modules_b::foo());
-    assert_eq!(*same_function_different_modules_a::bar, 4);
-    assert_eq!(*same_function_different_modules_b::bar, 5);
+    same_function_different_modules_a::BAR.with(|bar| assert_eq!(*bar, 4));
+    same_function_different_modules_b::BAR.with(|bar| assert_eq!(*bar, 5));
 }

@@ -60,7 +60,8 @@ on methods:
 #[wasm_bindgen]
 extern "C" {
     type Foo;
-    static foo: Foo;
+    #[wasm_bindgen(thread_local)]
+    static FOO: Foo;
 
     #[wasm_bindgen(method, structural, indexing_getter)]
     fn get(this: &Foo, prop: &str) -> u32;
@@ -72,11 +73,13 @@ extern "C" {
     fn delete(this: &Foo, prop: &str);
 }
 
-assert_eq!(foo.get("ten"), 3);
+FOO.with(|foo| {
+    assert_eq!(foo.get("ten"), 3);
 
-foo.set("ten", 10);
-assert_eq!(foo.get("ten"), 10);
+    foo.set("ten", 10);
+    assert_eq!(foo.get("ten"), 10);
 
-foo.delete("ten");
-assert_eq!(foo.get("ten"), 3);
+    foo.delete("ten");
+    assert_eq!(foo.get("ten"), 3);
+});
 ```
