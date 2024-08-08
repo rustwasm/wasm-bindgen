@@ -123,6 +123,7 @@ impl<T> DerefMut for MutSlice<T> {
 macro_rules! vectors {
     ($($t:ident)*) => ($(
         impl WasmDescribeVector for $t {
+            #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
             fn describe_vector() {
                 inform(VECTOR);
                 $t::describe();
@@ -225,6 +226,7 @@ vectors! {
 }
 
 impl WasmDescribeVector for String {
+    #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
     fn describe_vector() {
         inform(VECTOR);
         inform(NAMED_EXTERNREF);

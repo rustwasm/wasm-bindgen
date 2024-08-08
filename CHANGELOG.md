@@ -75,6 +75,9 @@
 * Added importing strings as `JsString` through `#[wasm_bindgen(thread_local, static_string)] static STRING: JsString = "a string literal";`.
   [#4055](https://github.com/rustwasm/wasm-bindgen/pull/4055)
 
+* Added experimental test coverage support for `wasm-bindgen-test-runner`, see the guide for more information.
+  [#4060](https://github.com/rustwasm/wasm-bindgen/pull/4060)
+
 ### Changed
 
 * Stabilize Web Share API.

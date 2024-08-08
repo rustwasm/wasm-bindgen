@@ -1,8 +1,9 @@
 use std::borrow::Cow;
 use std::ffi::OsString;
 use std::fs;
+use std::io::{Read, Write};
 use std::net::SocketAddr;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use anyhow::{anyhow, Context, Error};
 use rouille::{Request, Response, Server};
@@ -18,8 +19,23 @@ pub(crate) fn spawn(
     tests: &[String],
     test_mode: TestMode,
     isolate_origin: bool,
+    coverage: PathBuf,
 ) -> Result<Server<impl Fn(&Request) -> Response + Send + Sync>, Error> {
     let mut js_to_execute = String::new();
+
+    let cov_import = if test_mode.no_modules() {
+        "let __wbgtest_cov_dump = wasm_bindgen.__wbgtest_cov_dump;"
+    } else {
+        "__wbgtest_cov_dump,"
+    };
+    let cov_dump = r#"
+        // Dump the coverage data collected during the tests
+        const coverage = __wbgtest_cov_dump();
+        await fetch("/__wasm_bindgen/coverage", {
+            method: "POST",
+            body: coverage
+        });
+    "#;
 
     let wbg_import_script = if test_mode.no_modules() {
         String::from(
@@ -30,6 +46,7 @@ pub(crate) fn spawn(
             let __wbgtest_console_info = wasm_bindgen.__wbgtest_console_info;
             let __wbgtest_console_warn = wasm_bindgen.__wbgtest_console_warn;
             let __wbgtest_console_error = wasm_bindgen.__wbgtest_console_error;
+            {cov_import}
             let init = wasm_bindgen;
             "#,
         )
@@ -43,6 +60,7 @@ pub(crate) fn spawn(
                 __wbgtest_console_info,
                 __wbgtest_console_warn,
                 __wbgtest_console_error,
+                {cov_import}
                 default as init,
             }} from './{}';
             "#,
@@ -116,6 +134,7 @@ pub(crate) fn spawn(
 
                 cx.args({1:?});
                 await cx.run(tests.map(s => wasm[s]));
+                {cov_dump}
             }}
 
             port.onmessage = function(e) {{
@@ -250,6 +269,7 @@ pub(crate) fn spawn(
                 cx.args({1:?});
 
                 await cx.run(test.map(s => wasm[s]));
+                {cov_dump}
             }}
 
             const tests = [];
@@ -300,6 +320,16 @@ pub(crate) fn spawn(
             }
 
             return response;
+        } else if request.url() == "/__wasm_bindgen/coverage" {
+            return if let Err(e) = handle_coverage_dump(&coverage, request) {
+                let s: &str = &format!("Failed to dump coverage: {e}");
+                log::error!("{s}");
+                let mut ret = Response::text(s);
+                ret.status_code = 500;
+                ret
+            } else {
+                Response::empty_204()
+            };
         }
 
         // Otherwise we need to find the asset here. It may either be in our
@@ -349,6 +379,21 @@ pub(crate) fn spawn(
         }
         response
     }
+}
+
+fn handle_coverage_dump(profraw_path: &Path, request: &Request) -> anyhow::Result<()> {
+    // This is run after all tests are done and dumps the data received in the request
+    // into a single profraw file
+    let mut profraw = std::fs::File::create(profraw_path)?;
+    let mut data = Vec::new();
+    if let Some(mut r_data) = request.data() {
+        r_data.read_to_end(&mut data)?;
+    }
+    // Warnings about empty data should have already been handled by
+    // the client
+
+    profraw.write_all(&data)?;
+    Ok(())
 }
 
 /*

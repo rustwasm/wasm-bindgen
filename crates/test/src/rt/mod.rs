@@ -239,14 +239,23 @@ extern "C" {
     #[doc(hidden)]
     pub fn js_console_log(s: &str);
 
+    #[wasm_bindgen(js_namespace = console, js_name = error)]
+    #[doc(hidden)]
+    pub fn js_console_error(s: &str);
+
     // General-purpose conversion into a `String`.
     #[wasm_bindgen(js_name = String)]
     fn stringify(val: &JsValue) -> String;
 }
 
 /// Internal implementation detail of the `console_log!` macro.
-pub fn log(args: &fmt::Arguments) {
+pub fn console_log(args: &fmt::Arguments) {
     js_console_log(&args.to_string());
+}
+
+/// Internal implementation detail of the `console_error!` macro.
+pub fn console_error(args: &fmt::Arguments) {
+    js_console_error(&args.to_string());
 }
 
 #[wasm_bindgen(js_class = WasmBindgenTestContext)]

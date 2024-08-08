@@ -20,3 +20,8 @@ syn = { version = "2.0", default-features = false, features = [ "parsing", "proc
 [dev-dependencies]
 wasm-bindgen-test = { path = "../test" }
 trybuild = "1.0"
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = [
+    'cfg(wasm_bindgen_unstable_test_coverage)',
+] }
