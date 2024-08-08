@@ -221,10 +221,10 @@ jobs:
         runs:
           - name: "web-sys"
             run: |
-              run: cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown
-              run: cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features Node
-              run: cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features Element
-              run: cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features Window
+              cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown
+              cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features Node
+              cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features Element
+              cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features Window
           - name: "js-sys (all features)"
             run: cargo test --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --all-features
           - name: "js-sys (unstable, all features)"
