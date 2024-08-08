@@ -299,7 +299,8 @@ jobs:
     - run: |
         cargo build -p wasm-bindgen-cli
         ln -snf `pwd`/target/debug/wasm-bindgen $(dirname `which cargo`)/wasm-bindgen
-    - run: mv _package.json package.json && corepack pnpm install && rm package.json
+    - run: echo 'packages:\n  - "examples/*"' > pnpm-workspace.yaml && sed -i -e 's/\\n/\n/g' pnpm-workspace.yaml
+    - run: mv _package.json package.json && corepack pnpm install -r && rm package.json
     - run: |
         function build() {
           (cd examples/$1 &&
