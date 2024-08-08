@@ -154,7 +154,7 @@ jobs:
       env:
         WASM_BINDGEN_NO_DEBUG: 1
 
-  test_wasm_bindgen_envs:
+  test_wasm_bindgen_externref:
     name: "Run wasm-bindgen crate tests with various environment variables"
     runs-on: ubuntu-latest
     env:
@@ -169,12 +169,25 @@ jobs:
     - run: cargo test --target wasm32-unknown-unknown
       env:
         WASM_BINDGEN_EXTERNREF: 1
+
+  test_wasm_bindgen_multi_value:
+    name: "Run wasm-bindgen crate tests with various environment variables"
+    runs-on: ubuntu-latest
+    env:
+      WASM_BINDGEN_SPLIT_LINKED_MODULES: 1
+    steps:
+    - uses: actions/checkout@v4
+    - run: rustup update --no-self-update stable && rustup default stable
+    - run: rustup target add wasm32-unknown-unknown
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
     - run: cargo test --target wasm32-unknown-unknown
       env:
         WASM_BINDGEN_MULTI_VALUE: 1
 
   test_threads:
-    name: "Run wasm-bindgen crate tests with multithreading enabled"
+    name: "Run wasm-bindgen crate tests with multithreading"
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
