@@ -401,7 +401,6 @@ jobs:
   test_examples:
     needs:
     - build_examples
-    - build_nightly
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -409,12 +408,23 @@ jobs:
       with:
         name: examples1
         path: exbuild
+    - run: rustup update --no-self-update stable && rustup default stable
+    - run: cargo test -p example-tests
+      env:
+        EXBUILD: ${{ github.workspace }}/exbuild
+
+  test_nightly:
+    needs:
+    - build_nightly
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
     - uses: actions/download-artifact@v4
       with:
         name: examples2
         path: exbuild
     - run: rustup update --no-self-update stable && rustup default stable
-    - run: cargo test -p example-tests
+    - run: cargo test -p example-tests --no-default-features --features nightly
       env:
         EXBUILD: ${{ github.workspace }}/exbuild
 
