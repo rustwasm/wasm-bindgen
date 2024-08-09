@@ -40,9 +40,9 @@ shell_tests! {
     #[cfg(feature = "stable")]
     synchronous_instantiation = "synchronous-instantiation",
     #[cfg(feature = "stable")]
-    #["RUSTUP_TOOLCHAIN" = "nightly"]
     wasm2js = "wasm2js",
     #[cfg(feature = "nightly")]
+    #["RUSTUP_TOOLCHAIN" = "nightly"]
     wasm_audio_worklet = "wasm-audio-worklet",
     #[cfg(feature = "stable")]
     wasm_in_web_worker = "wasm-in-web-worker",
