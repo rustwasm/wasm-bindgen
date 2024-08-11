@@ -31,10 +31,13 @@ pub(crate) fn spawn(
     let cov_dump = r#"
         // Dump the coverage data collected during the tests
         const coverage = __wbgtest_cov_dump();
-        await fetch("/__wasm_bindgen/coverage", {
-            method: "POST",
-            body: coverage
-        });
+
+        if (coverage !== undefined) {
+            await fetch("/__wasm_bindgen/coverage", {
+                method: "POST",
+                body: coverage
+            });
+        }
     "#;
 
     let wbg_import_script = if test_mode.no_modules() {
