@@ -48,6 +48,7 @@ async fn test_webpack_example(name: &str) -> anyhow::Result<()> {
     .await
 }
 
+#[allow(unused_macros)]
 macro_rules! webpack_tests {
     ($(
         $(#[$attr:meta])*
@@ -63,6 +64,7 @@ macro_rules! webpack_tests {
     };
 }
 
+#[cfg(feature = "stable")]
 webpack_tests! {
     add = "add",
     canvas = "canvas",
