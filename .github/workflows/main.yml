@@ -310,7 +310,10 @@ jobs:
         ln -snf `pwd`/target/debug/wasm-bindgen $(dirname `which cargo`)/wasm-bindgen
     # crete a workspace of all examples and install their dependencies at once
     # sed is used to convert the literal "\n" to a newline character
-    - run: echo 'packages:\n  - "examples/*"' > pnpm-workspace.yaml && sed -i -e 's/\\n/\n/g' pnpm-workspace.yaml
+    - run: |
+        [ -f pnpm-workspace.yaml ] || (echo 'packages:\n  - "examples/*"' > pnpm-workspace.yaml && sed -i -e 's/\\n/\n/g' pnpm-workspace.yaml)
+    - run: |
+        [ -f package.json ] || (echo '{}' > package.json)
     - run: corepack pnpm install -r
     - run: |
         function build() {
