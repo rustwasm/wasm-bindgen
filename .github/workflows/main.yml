@@ -93,7 +93,18 @@ jobs:
     - run: for i in examples/*/; do cd "$i"; cargo +stable clippy --no-deps --all-features --target wasm32-unknown-unknown -- -D warnings || exit 1; cd ../..; done
 
   test_wasm_bindgen:
-    name: "Run wasm-bindgen crate tests (unix)"
+    strategy:
+      matrix:
+        runs:
+          - name: "wasm-bindgen"
+            run: |
+              cargo test --target wasm32-unknown-unknown
+              cargo test --target wasm32-unknown-unknown -p wasm-bindgen-futures
+          - name: "wasm-bindgen (serde-serialize)"
+            run: cargo test --target wasm32-unknown-unknown --features serde-serialize
+          - name: "wasm-bindgen (enable-interning)"
+            run: cargo test --target wasm32-unknown-unknown --features enable-interning
+    name: "Run wasm-bindgen crate tests (${{ matrix.runs.name }})"
     runs-on: ubuntu-latest
     env:
       WASM_BINDGEN_SPLIT_LINKED_MODULES: 1
@@ -105,24 +116,7 @@ jobs:
       with:
         node-version: '20'
     - uses: ./.github/actions/setup-geckodriver
-    - run: cargo test --target wasm32-unknown-unknown
-    - run: cargo test --target wasm32-unknown-unknown -p wasm-bindgen-futures
-
-  test_wasm_bindgen_features:
-    name: "Run wasm-bindgen crate tests with different features"
-    runs-on: ubuntu-latest
-    env:
-      WASM_BINDGEN_SPLIT_LINKED_MODULES: 1
-    steps:
-    - uses: actions/checkout@v4
-    - run: rustup update --no-self-update stable && rustup default stable
-    - run: rustup target add wasm32-unknown-unknown
-    - uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-    - uses: ./.github/actions/setup-geckodriver
-    - run: cargo test --target wasm32-unknown-unknown --features serde-serialize
-    - run: cargo test --target wasm32-unknown-unknown --features enable-interning
+    - run: ${{ matrix.runs.run }}
 
   test_wasm_bindgen_wasm:
     name: "Run wasm-bindgen wasm test"
@@ -141,10 +135,21 @@ jobs:
         WASM_BINDGEN_NO_DEBUG: 1
 
   test_wasm_bindgen_envs:
-    name: "Run wasm-bindgen crate tests with various environment variables"
+    strategy:
+      matrix:
+        envs:
+          - name: "externref"
+            env:
+              WASM_BINDGEN_EXTERNREF: 1
+          - name: "multi-value"
+            env:
+              WASM_BINDGEN_MULTI_VALUE: 1
+    name: "Run wasm-bindgen crate tests with ${{ matrix.envs.name }} feature"
     runs-on: ubuntu-latest
     env:
       WASM_BINDGEN_SPLIT_LINKED_MODULES: 1
+      WASM_BINDGEN_EXTERNREF: ${{ matrix.envs.WASM_BINDGEN_EXTERNREF }}
+      WASM_BINDGEN_MULTI_VALUE: ${{ matrix.envs.WASM_BINDGEN_MULTI_VALUE }}
     steps:
     - uses: actions/checkout@v4
     - run: rustup update --no-self-update stable && rustup default stable
@@ -153,14 +158,9 @@ jobs:
       with:
         node-version: '20'
     - run: cargo test --target wasm32-unknown-unknown
-      env:
-        WASM_BINDGEN_EXTERNREF: 1
-    - run: cargo test --target wasm32-unknown-unknown
-      env:
-        WASM_BINDGEN_MULTI_VALUE: 1
 
   test_threads:
-    name: "Run wasm-bindgen crate tests with multithreading enabled"
+    name: "Run wasm-bindgen crate tests with multithreading"
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -215,8 +215,44 @@ jobs:
     - run: cargo test -p wasm-bindgen-futures
     - run: cargo test -p wasm-bindgen-shared
 
-  test_web_sys:
-    name: "Run web-sys crate tests"
+  test_with_geckodriver:
+    strategy:
+      matrix:
+        runs:
+          - name: "web-sys"
+            run: |
+              cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown
+              cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features Node
+              cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features Element
+              cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features Window
+          - name: "web-sys (all features)"
+            run: cargo test --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --all-features
+          - name: "web-sys (unstable, all features)"
+            run: cargo test --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --all-features
+            env:
+              RUSTFLAGS: --cfg=web_sys_unstable_apis
+          - name: "js-sys"
+            run: cargo test -p js-sys --target wasm32-unknown-unknown
+          - name: "js-sys (unstable)"
+            run: cargo test -p js-sys --target wasm32-unknown-unknown
+            env:
+              RUSTFLAGS: --cfg=js_sys_unstable_apis
+          - name: "wasm-bindgen-webidl"
+            run: cargo test -p wasm-bindgen-webidl
+          - name: "webidl-tests"
+            run: cargo test -p webidl-tests --target wasm32-unknown-unknown
+            env:
+              WBINDGEN_I_PROMISE_JS_SYNTAX_WORKS_IN_NODE: 1
+          - name: "webidl-tests (unstable)"
+            run: cargo test -p webidl-tests --target wasm32-unknown-unknown
+            env:
+              RUSTFLAGS: --cfg=web_sys_unstable_apis
+          - name: "typescript-tests"
+            run: cd crates/typescript-tests && ./run.sh
+    name: "Run ${{ matrix.runs.name }} tests (with geckodriver)"
+    env:
+      RUSTFLAGS: ${{ matrix.runs.env.RUSTFLAGS }}
+      WBINDGEN_I_PROMISE_JS_SYNTAX_WORKS_IN_NODE: ${{ matrix.runs.env.WBINDGEN_I_PROMISE_JS_SYNTAX_WORKS_IN_NODE }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -226,93 +262,7 @@ jobs:
       with:
         node-version: '20'
     - uses: ./.github/actions/setup-geckodriver
-    - run: cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown
-    - run: cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features Node
-    - run: cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features Element
-    - run: cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features Window
-
-  test_web_sys_all_features:
-    name: "Run web-sys crate tests with all features"
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - run: rustup update --no-self-update stable && rustup default stable
-    - run: rustup target add wasm32-unknown-unknown
-    - uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-    - uses: ./.github/actions/setup-geckodriver
-    - run: cargo test --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --all-features
-
-  test_web_sys_all_features_unstable:
-    name: "Run web-sys crate tests with all features and unstable APIs"
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - run: rustup update --no-self-update stable && rustup default stable
-    - run: rustup target add wasm32-unknown-unknown
-    - uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-    - uses: ./.github/actions/setup-geckodriver
-    - run: cargo test --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --all-features
-      env:
-        RUSTFLAGS: --cfg=web_sys_unstable_apis
-
-  check_web_sys:
-    name: "Verify that web-sys is compiled correctly"
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - run: rustup update --no-self-update stable && rustup default stable
-    - run: cd crates/web-sys && cargo run --release --package wasm-bindgen-webidl -- webidls src/features ./Cargo.toml
-    - run: git diff --exit-code
-
-  test_js_sys:
-    name: "Run js-sys crate tests"
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - run: rustup update --no-self-update stable && rustup default stable
-    - run: rustup target add wasm32-unknown-unknown
-    - uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-    - uses: ./.github/actions/setup-geckodriver
-    - run: cargo test -p js-sys --target wasm32-unknown-unknown
-    - run: cargo test -p js-sys --target wasm32-unknown-unknown
-      env:
-        RUSTFLAGS: --cfg=js_sys_unstable_apis
-
-  test_webidl:
-    name: "Run wasm-bindgen-webidl crate tests"
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - run: rustup update --no-self-update stable && rustup default stable
-    - run: rustup target add wasm32-unknown-unknown
-    - uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-    - run: cargo test -p wasm-bindgen-webidl
-    - run: cargo test -p webidl-tests --target wasm32-unknown-unknown
-      env:
-        WBINDGEN_I_PROMISE_JS_SYNTAX_WORKS_IN_NODE: 1
-    - run: cargo test -p webidl-tests --target wasm32-unknown-unknown
-      env:
-        RUSTFLAGS: --cfg=web_sys_unstable_apis
-
-  test_typescript_output:
-    name: "Test TypeScript output of wasm-bindgen"
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - run: rustup update --no-self-update stable && rustup default stable
-    - run: rustup target add wasm32-unknown-unknown
-    - uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-    - run: cd crates/typescript-tests && ./run.sh
+    - run: ${{ matrix.runs.run }}
 
   test_deno:
     name: "Build and test the deno example"
@@ -335,6 +285,15 @@ jobs:
     - run: cargo test -p wasm-bindgen-macro
     - run: cargo test -p wasm-bindgen-test-macro
 
+  build_webidl:
+    name: "Verify that web-sys is compiled correctly"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - run: rustup update --no-self-update stable && rustup default stable
+    - run: cd crates/web-sys && cargo run --release --package wasm-bindgen-webidl -- webidls src/features ./Cargo.toml
+    - run: git diff --exit-code
+
   build_examples:
     runs-on: ubuntu-latest
     steps:
@@ -349,14 +308,22 @@ jobs:
     - run: |
         cargo build -p wasm-bindgen-cli
         ln -snf `pwd`/target/debug/wasm-bindgen $(dirname `which cargo`)/wasm-bindgen
-    - run: mv _package.json package.json && npm install && rm package.json
+    # crete a workspace of all examples and install their dependencies at once
+    # sed is used to convert the literal "\n" to a newline character
     - run: |
-        for dir in `ls examples | grep -v README | grep -v raytrace | grep -v deno | grep -v wasm-audio-worklet`; do
-          (cd examples/$dir &&
-            (npm run build -- --output-path ../../exbuild/$dir ||
-              (./build.sh && mkdir -p ../../exbuild/$dir && cp -r ./* ../../exbuild/$dir && rm ../../exbuild/$dir/**/.gitignore))
+        [ -f pnpm-workspace.yaml ] || (echo 'packages:\n  - "examples/*"' > pnpm-workspace.yaml && sed -i -e 's/\\n/\n/g' pnpm-workspace.yaml)
+    - run: |
+        [ -f package.json ] || (echo '{}' > package.json)
+    - run: corepack pnpm install -r
+    - run: |
+        function build() {
+          (cd examples/$1 &&
+            (corepack pnpm run build -- --output-path ../../exbuild/$1 ||
+              (./build.sh && mkdir -p ../../exbuild/$1 && cp -r ./* ../../exbuild/$1 && rm ../../exbuild/$1/**/.gitignore))
           ) || exit 1;
-        done
+        }
+        export -f build
+        ls examples | grep -v README | grep -v raytrace | grep -v deno | grep -v wasm-audio-worklet | parallel -j4 build
       env:
         RUSTFLAGS: --cfg=web_sys_unstable_apis
     - uses: actions/upload-artifact@v4
@@ -385,7 +352,6 @@ jobs:
   test_examples:
     needs:
     - build_examples
-    - build_nightly
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -393,12 +359,23 @@ jobs:
       with:
         name: examples1
         path: exbuild
+    - run: rustup update --no-self-update stable && rustup default stable
+    - run: cargo test -p example-tests
+      env:
+        EXBUILD: ${{ github.workspace }}/exbuild
+
+  test_nightly:
+    needs:
+    - build_nightly
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
     - uses: actions/download-artifact@v4
       with:
         name: examples2
         path: exbuild
     - run: rustup update --no-self-update stable && rustup default stable
-    - run: cargo test -p example-tests
+    - run: cargo test -p example-tests --no-default-features --features nightly
       env:
         EXBUILD: ${{ github.workspace }}/exbuild
 

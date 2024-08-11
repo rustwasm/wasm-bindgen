@@ -34,14 +34,22 @@ macro_rules! shell_tests {
 }
 
 shell_tests! {
+    #[cfg(feature = "nightly")]
     #["RUSTUP_TOOLCHAIN" = "nightly"]
     raytrace_parallel = "raytrace-parallel",
+    #[cfg(feature = "stable")]
     synchronous_instantiation = "synchronous-instantiation",
+    #[cfg(feature = "stable")]
     wasm2js = "wasm2js",
+    #[cfg(feature = "nightly")]
     #["RUSTUP_TOOLCHAIN" = "nightly"]
     wasm_audio_worklet = "wasm-audio-worklet",
+    #[cfg(feature = "stable")]
     wasm_in_web_worker = "wasm-in-web-worker",
+    #[cfg(feature = "stable")]
     websockets = "websockets",
+    #[cfg(feature = "stable")]
     without_a_bundler = "without-a-bundler",
+    #[cfg(feature = "stable")]
     without_a_bundler_no_modules = "without-a-bundler-no-modules",
 }
