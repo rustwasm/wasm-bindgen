@@ -170,7 +170,7 @@ extern "C" {
     );
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBindGroup")]
-    # [wasm_bindgen (method , structural , js_class = "GPUComputePassEncoder" , js_name = setBindGroup)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUComputePassEncoder" , js_name = setBindGroup)]
     #[doc = "The `setBindGroup()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUComputePassEncoder/setBindGroup)"]
@@ -186,10 +186,10 @@ extern "C" {
         dynamic_offsets_data: &[u32],
         dynamic_offsets_data_start: u32,
         dynamic_offsets_data_length: u32,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBindGroup")]
-    # [wasm_bindgen (method , structural , js_class = "GPUComputePassEncoder" , js_name = setBindGroup)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUComputePassEncoder" , js_name = setBindGroup)]
     #[doc = "The `setBindGroup()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUComputePassEncoder/setBindGroup)"]
@@ -205,7 +205,7 @@ extern "C" {
         dynamic_offsets_data: &[u32],
         dynamic_offsets_data_start: f64,
         dynamic_offsets_data_length: u32,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (method , structural , js_class = "GPUComputePassEncoder" , js_name = insertDebugMarker)]
     #[doc = "The `insertDebugMarker()` method."]

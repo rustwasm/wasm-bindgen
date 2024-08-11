@@ -24,4 +24,8 @@ pub enum GpuBlendFactor {
     SrcAlphaSaturated = "src-alpha-saturated",
     Constant = "constant",
     OneMinusConstant = "one-minus-constant",
+    Src1 = "src1",
+    OneMinusSrc1 = "one-minus-src1",
+    Src1Alpha = "src1-alpha",
+    OneMinusSrc1Alpha = "one-minus-src1-alpha",
 }

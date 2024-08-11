@@ -3211,6 +3211,20 @@ mod gen_GpuCanvasContext;
 #[allow(unused_imports)]
 pub use gen_GpuCanvasContext::*;
 
+#[cfg(feature = "GpuCanvasToneMapping")]
+#[allow(non_snake_case)]
+mod gen_GpuCanvasToneMapping;
+#[cfg(feature = "GpuCanvasToneMapping")]
+#[allow(unused_imports)]
+pub use gen_GpuCanvasToneMapping::*;
+
+#[cfg(feature = "GpuCanvasToneMappingMode")]
+#[allow(non_snake_case)]
+mod gen_GpuCanvasToneMappingMode;
+#[cfg(feature = "GpuCanvasToneMappingMode")]
+#[allow(unused_imports)]
+pub use gen_GpuCanvasToneMappingMode::*;
+
 #[cfg(feature = "GpuColorDict")]
 #[allow(non_snake_case)]
 mod gen_GpuColorDict;
