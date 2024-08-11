@@ -323,7 +323,7 @@ jobs:
           ) || exit 1;
         }
         export -f build
-        ls examples | grep -v README | grep -v raytrace | grep -v deno | grep -v wasm-audio-worklet | parallel -j2 build
+        ls examples | grep -v README | grep -v raytrace | grep -v deno | grep -v wasm-audio-worklet | parallel -j6 build
       env:
         RUSTFLAGS: --cfg=web_sys_unstable_apis
     - uses: actions/upload-artifact@v4
