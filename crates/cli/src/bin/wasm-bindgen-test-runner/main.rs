@@ -15,6 +15,7 @@ use anyhow::{anyhow, bail, Context};
 use log::error;
 use std::env;
 use std::fs;
+use std::path::Path;
 use std::path::PathBuf;
 use std::thread;
 use wasm_bindgen_cli_support::Bindgen;
@@ -222,6 +223,8 @@ fn main() -> anyhow::Result<()> {
         b.split_linked_modules(true);
     }
 
+    let coverage = coverage_args(&tmpdir);
+
     b.debug(debug)
         .input_module(module, wasm)
         .keep_debug(false)
@@ -256,6 +259,7 @@ fn main() -> anyhow::Result<()> {
                 &tests,
                 test_mode,
                 std::env::var("WASM_BINDGEN_TEST_NO_ORIGIN_ISOLATION").is_err(),
+                coverage,
             )
             .context("failed to spawn server")?;
             let addr = srv.server_addr();
@@ -281,4 +285,29 @@ fn main() -> anyhow::Result<()> {
         }
     }
     Ok(())
+}
+
+fn coverage_args(tmpdir: &Path) -> PathBuf {
+    fn generated(tmpdir: &Path, prefix: &str) -> String {
+        let res = format!(
+            "{prefix}{}.profraw",
+            tmpdir.file_name().and_then(|s| s.to_str()).unwrap()
+        );
+        res
+    }
+
+    let prefix = env::var_os("WASM_BINDGEN_UNSTABLE_TEST_PROFRAW_PREFIX")
+        .map(|s| s.to_str().unwrap().to_string())
+        .unwrap_or_default();
+
+    match env::var_os("WASM_BINDGEN_UNSTABLE_TEST_PROFRAW_OUT") {
+        Some(s) => {
+            let mut buf = PathBuf::from(s);
+            if buf.is_dir() {
+                buf.push(generated(tmpdir, &prefix));
+            }
+            buf
+        }
+        None => PathBuf::from(generated(tmpdir, &prefix)),
+    }
 }

@@ -1,6 +1,12 @@
 //! See the README for `wasm-bindgen-test` for a bit more info about what's
 //! going on here.
 
+#![cfg_attr(
+    wasm_bindgen_unstable_test_coverage,
+    feature(allow_internal_unstable),
+    allow(internal_features)
+)]
+
 extern crate proc_macro;
 
 use proc_macro2::*;
@@ -12,6 +18,10 @@ use std::sync::atomic::*;
 static CNT: AtomicUsize = AtomicUsize::new(0);
 
 #[proc_macro_attribute]
+#[cfg_attr(
+    wasm_bindgen_unstable_test_coverage,
+    allow_internal_unstable(coverage_attribute)
+)]
 pub fn wasm_bindgen_test(
     attr: proc_macro::TokenStream,
     body: proc_macro::TokenStream,
@@ -102,6 +112,7 @@ pub fn wasm_bindgen_test(
     tokens.extend(
         quote! {
             #[no_mangle]
+            #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
             pub extern "C" fn #name(cx: &#wasm_bindgen_path::__rt::Context) {
                 let test_name = ::core::concat!(::core::module_path!(), "::", ::core::stringify!(#ident));
                 #test_body

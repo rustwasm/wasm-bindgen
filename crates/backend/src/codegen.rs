@@ -220,6 +220,7 @@ impl ToTokens for ast::Struct {
         (quote! {
             #[automatically_derived]
             impl #wasm_bindgen::describe::WasmDescribe for #name {
+                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
                 fn describe() {
                     use #wasm_bindgen::__wbindgen_if_not_std;
                     use #wasm_bindgen::describe::*;
@@ -293,6 +294,7 @@ impl ToTokens for ast::Struct {
                 #[doc(hidden)]
                 // `allow_delayed` is whether it's ok to not actually free the `ptr` immediately
                 // if it's still borrowed.
+                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
                 pub unsafe extern "C" fn #free_fn(ptr: u32, allow_delayed: u32) {
                     use #wasm_bindgen::__rt::alloc::rc::Rc;
 
@@ -401,6 +403,7 @@ impl ToTokens for ast::Struct {
             }
 
             impl #wasm_bindgen::describe::WasmDescribeVector for #name {
+                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
                 fn describe_vector() {
                     use #wasm_bindgen::describe::*;
                     inform(VECTOR);
@@ -484,6 +487,7 @@ impl ToTokens for ast::StructField {
             const _: () = {
                 #[cfg_attr(all(target_arch = "wasm32", target_os = "unknown"), no_mangle)]
                 #[doc(hidden)]
+                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
                 pub unsafe extern "C" fn #getter(js: u32)
                     -> #wasm_bindgen::convert::WasmRet<<#ty as #wasm_bindgen::convert::IntoWasmAbi>::Abi>
                 {
@@ -525,6 +529,7 @@ impl ToTokens for ast::StructField {
             const _: () = {
                 #[no_mangle]
                 #[doc(hidden)]
+                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
                 pub unsafe extern "C" fn #setter(
                     js: u32,
                     #(#args,)*
@@ -781,6 +786,7 @@ impl TryToTokens for ast::Export {
                     all(target_arch = "wasm32", target_os = "unknown"),
                     export_name = #export_name,
                 )]
+                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
                 pub unsafe extern "C" fn #generated_name(#(#args),*) -> #wasm_bindgen::convert::WasmRet<#projection::Abi> {
                     #start_check
 
@@ -932,6 +938,7 @@ impl ToTokens for ast::ImportType {
                 use #wasm_bindgen::__rt::core;
 
                 impl WasmDescribe for #rust_name {
+                    #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
                     fn describe() {
                         #description
                     }
@@ -1222,6 +1229,7 @@ impl ToTokens for ast::StringEnum {
 
             #[automatically_derived]
             impl #wasm_bindgen::describe::WasmDescribe for #enum_name {
+                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
                 fn describe() {
                     use #wasm_bindgen::describe::*;
                     inform(STRING_ENUM);
@@ -1563,6 +1571,7 @@ impl ToTokens for ast::Enum {
 
             #[automatically_derived]
             impl #wasm_bindgen::describe::WasmDescribe for #enum_name {
+                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
                 fn describe() {
                     use #wasm_bindgen::describe::*;
                     inform(ENUM);
@@ -1599,6 +1608,7 @@ impl ToTokens for ast::Enum {
             }
 
             impl #wasm_bindgen::describe::WasmDescribeVector for #enum_name {
+                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
                 fn describe_vector() {
                     use #wasm_bindgen::describe::*;
                     inform(VECTOR);
@@ -1795,6 +1805,7 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
                 #(#attrs)*
                 #[no_mangle]
                 #[doc(hidden)]
+                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
                 pub extern "C" fn #name() {
                     use #wasm_bindgen::describe::*;
                     // See definition of `link_mem_intrinsics` for what this is doing
