@@ -134,7 +134,7 @@ jobs:
       env:
         WASM_BINDGEN_NO_DEBUG: 1
 
-  test_wasm_bindgen_features:
+  test_wasm_bindgen_envs:
     strategy:
       matrix:
         envs:
@@ -215,7 +215,7 @@ jobs:
     - run: cargo test -p wasm-bindgen-futures
     - run: cargo test -p wasm-bindgen-shared
 
-  test_node:
+  test_with_geckodriver:
     strategy:
       matrix:
         runs:
@@ -225,9 +225,9 @@ jobs:
               cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features Node
               cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features Element
               cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features Window
-          - name: "js-sys (all features)"
+          - name: "web-sys (all features)"
             run: cargo test --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --all-features
-          - name: "js-sys (unstable, all features)"
+          - name: "web-sys (unstable, all features)"
             run: cargo test --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --all-features
             env:
               RUSTFLAGS: --cfg=web_sys_unstable_apis
@@ -249,7 +249,7 @@ jobs:
               RUSTFLAGS: --cfg=web_sys_unstable_apis
           - name: "typescript-tests"
             run: cd crates/typescript-tests && ./run.sh
-    name: "Run ${{ matrix.runs.name }} tests"
+    name: "Run ${{ matrix.runs.name }} tests (with geckodriver)"
     env:
       RUSTFLAGS: ${{ matrix.runs.env.RUSTFLAGS }}
       WBINDGEN_I_PROMISE_JS_SYNTAX_WORKS_IN_NODE: ${{ matrix.runs.env.WBINDGEN_I_PROMISE_JS_SYNTAX_WORKS_IN_NODE }}
@@ -285,6 +285,15 @@ jobs:
     - run: cargo test -p wasm-bindgen-macro
     - run: cargo test -p wasm-bindgen-test-macro
 
+  build_webidl:
+    name: "Verify that web-sys is compiled correctly"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - run: rustup update --no-self-update stable && rustup default stable
+    - run: cd crates/web-sys && cargo run --release --package wasm-bindgen-webidl -- webidls src/features ./Cargo.toml
+    - run: git diff --exit-code
+
   build_examples:
     runs-on: ubuntu-latest
     steps:
@@ -299,6 +308,8 @@ jobs:
     - run: |
         cargo build -p wasm-bindgen-cli
         ln -snf `pwd`/target/debug/wasm-bindgen $(dirname `which cargo`)/wasm-bindgen
+    # crete a workspace of all examples and install their dependencies at once
+    # sed is used to convert the literal "\n" to a newline character
     - run: echo 'packages:\n  - "examples/*"' > pnpm-workspace.yaml && sed -i -e 's/\\n/\n/g' pnpm-workspace.yaml
     - run: corepack pnpm install -r
     - run: |
