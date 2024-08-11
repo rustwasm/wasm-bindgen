@@ -100,6 +100,10 @@ pub(crate) enum IdentifierType<'a> {
     },
     // DOMTimeStamp
     UnsignedLongLong,
+    // AllowSharedBufferSource
+    BufferSource {
+        immutable: bool,
+    },
 }
 
 pub(crate) trait ToIdlType<'a> {
@@ -336,6 +340,8 @@ impl<'a> ToIdlType<'a> for Identifier<'a> {
         let ty = if self.0 == "DOMTimeStamp" {
             // https://heycam.github.io/webidl/#DOMTimeStamp
             IdentifierType::UnsignedLongLong
+        } else if self.0 == "AllowSharedBufferSource" {
+            IdentifierType::BufferSource { immutable: false }
         } else if let Some(idl_type) = record.typedefs.get(&self.0) {
             return idl_type.to_idl_type(record);
         } else if record.interfaces.contains_key(self.0) {
@@ -525,6 +531,10 @@ impl<'a> IdlType<'a> {
                 IdentifierType::UnsignedLongLong => {
                     IdlType::UnsignedLongLong.push_snake_case_name(dst)
                 }
+                IdentifierType::BufferSource { immutable } => IdlType::BufferSource {
+                    immutable: *immutable,
+                }
+                .push_snake_case_name(dst),
             },
         }
     }
@@ -761,29 +771,38 @@ impl<'a> IdlType<'a> {
             ],
             IdlType::LongLong => vec![IdlType::Long, IdlType::Double],
             IdlType::UnsignedLongLong => vec![IdlType::UnsignedLong, IdlType::Double],
-            IdlType::Identifier {
+            idl_type @ IdlType::Identifier {
                 name: identifier,
-                ty:
+                ty,
+            } => {
+                match ty {
                     IdentifierType::CallbackInterface {
                         name,
                         single_function: true,
-                    },
-            } => {
-                // According to the webidl spec [1] single-function callback
-                // interfaces can also be replaced in arguments with simply a
-                // single callable function, which we map to a `Callback`.
-                //
-                // [1]: https://heycam.github.io/webidl/#es-user-objects
-                vec![
-                    IdlType::id(identifier, IdentifierType::Callback),
-                    IdlType::id(
-                        identifier,
-                        IdentifierType::CallbackInterface {
-                            name,
-                            single_function: false,
-                        },
-                    ),
-                ]
+                    } => {
+                        // According to the webidl spec [1] single-function callback
+                        // interfaces can also be replaced in arguments with simply a
+                        // single callable function, which we map to a `Callback`.
+                        //
+                        // [1]: https://heycam.github.io/webidl/#es-user-objects
+                        vec![
+                            IdlType::id(identifier, IdentifierType::Callback),
+                            IdlType::id(
+                                identifier,
+                                IdentifierType::CallbackInterface {
+                                    name,
+                                    single_function: false,
+                                },
+                            ),
+                        ]
+                    }
+                    IdentifierType::UnsignedLongLong => IdlType::UnsignedLongLong.flatten(attrs),
+                    IdentifierType::BufferSource { immutable } => IdlType::BufferSource {
+                        immutable: *immutable,
+                    }
+                    .flatten(attrs),
+                    _ => vec![idl_type.clone()],
+                }
             }
             idl_type => vec![idl_type.clone()],
         }
@@ -826,6 +845,10 @@ impl<'a> IdentifierType<'a> {
                 Ok(Some(ident_ty(rust_ident(camel_case_ident(name).as_str()))))
             }
             IdentifierType::UnsignedLongLong => IdlType::UnsignedLongLong.to_syn_type(pos),
+            IdentifierType::BufferSource { immutable } => IdlType::BufferSource {
+                immutable: *immutable,
+            }
+            .to_syn_type(pos),
         }
     }
 }

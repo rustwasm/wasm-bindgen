@@ -237,24 +237,36 @@ impl<'src> FirstPassRecord<'src> {
         // undefined.
         let mut signatures = Vec::new();
         for signature in data.signatures.iter() {
-            let mut idl_args = Vec::with_capacity(signature.args.len());
-            for (i, arg) in signature.args.iter().enumerate() {
-                if arg.optional {
-                    assert!(
-                        signature.args[i..]
+            fn pass<'src>(
+                this: &FirstPassRecord<'src>,
+                id: &'src OperationId<'_>,
+                signatures: &mut Vec<(&Signature<'src>, Vec<Option<IdlType<'src>>>)>,
+                signature: &'src Signature<'_>,
+                mut idl_args: Vec<Option<IdlType<'src>>>,
+            ) {
+                for (i, arg) in signature.args.iter().enumerate().skip(idl_args.len()) {
+                    if arg.optional {
+                        if signature.args[i..]
                             .iter()
-                            .all(|arg| arg.optional || arg.variadic),
-                        "Not optional or variadic argument after optional argument: {:?}",
-                        signature.args,
-                    );
-                    signatures.push((signature, idl_args.clone()));
-                }
+                            .all(|arg| arg.optional || arg.variadic)
+                        {
+                            signatures.push((signature, idl_args.clone()));
+                        } else if signature.args.get(i + 1).is_some() {
+                            let mut idl_args = idl_args.clone();
+                            idl_args.push(None);
+                            pass(this, id, signatures, signature, idl_args)
+                        }
+                    }
 
-                let idl_type = arg.ty.to_idl_type(self);
-                let idl_type = self.maybe_adjust(idl_type, id);
-                idl_args.push(idl_type);
+                    let idl_type = arg.ty.to_idl_type(this);
+                    let idl_type = this.maybe_adjust(idl_type, id);
+                    idl_args.push(Some(idl_type));
+                }
+                signatures.push((signature, idl_args));
             }
-            signatures.push((signature, idl_args));
+
+            let idl_args = Vec::with_capacity(signature.args.len());
+            pass(self, id, &mut signatures, signature, idl_args);
         }
 
         // Next expand all the signatures in `data` into all signatures that
@@ -263,7 +275,7 @@ impl<'src> FirstPassRecord<'src> {
         #[derive(Clone)]
         struct ExpandedSig<'a> {
             orig: &'a Signature<'a>,
-            args: Vec<IdlType<'a>>,
+            args: Vec<Option<IdlType<'a>>>,
         }
 
         let mut actual_signatures = Vec::new();
@@ -280,29 +292,33 @@ impl<'src> FirstPassRecord<'src> {
             for (i, idl_type) in idl_args.iter().enumerate() {
                 // small sanity check
                 assert!(start < actual_signatures.len());
-                for sig in actual_signatures[start..].iter() {
-                    assert_eq!(sig.args.len(), i);
-                }
 
                 // The first element of the flattened type gets pushed directly
                 // in-place, but all other flattened types will cause new
                 // signatures to be created.
                 let cur = actual_signatures.len();
-                for (j, idl_type) in idl_type
-                    .flatten(signature.attrs.as_ref())
-                    .into_iter()
-                    .enumerate()
-                {
-                    for k in start..cur {
-                        if j == 0 {
-                            actual_signatures[k].args.push(idl_type.clone());
-                        } else {
-                            let mut sig = actual_signatures[k].clone();
-                            assert_eq!(sig.args.len(), i + 1);
-                            sig.args.truncate(i);
-                            sig.args.push(idl_type.clone());
-                            actual_signatures.push(sig);
+
+                if let Some(idl_type) = idl_type {
+                    for (j, idl_type) in idl_type
+                        .flatten(signature.attrs.as_ref())
+                        .into_iter()
+                        .enumerate()
+                    {
+                        for k in start..cur {
+                            if j == 0 {
+                                actual_signatures[k].args.push(Some(idl_type.clone()));
+                            } else {
+                                let mut sig = actual_signatures[k].clone();
+                                assert_eq!(sig.args.len(), i + 1);
+                                sig.args.truncate(i);
+                                sig.args.push(Some(idl_type.clone()));
+                                actual_signatures.push(sig);
+                            }
                         }
+                    }
+                } else {
+                    for signature in actual_signatures.iter_mut().take(cur).skip(start) {
+                        signature.args.push(None);
                     }
                 }
             }
@@ -357,7 +373,12 @@ impl<'src> FirstPassRecord<'src> {
 
             let mut rust_name = snake_case_ident(js_name);
             let mut first = true;
-            for (i, arg) in signature.args.iter().enumerate() {
+            for (i, arg) in signature
+                .args
+                .iter()
+                .enumerate()
+                .filter_map(|(i, ty)| ty.as_ref().map(|ty| (i, ty)))
+            {
                 // Find out if any other known signature either has the same
                 // name for this argument or a different type for this argument.
                 let mut any_same_name = false;
@@ -370,7 +391,7 @@ impl<'src> FirstPassRecord<'src> {
                     {
                         any_same_name = true;
                     }
-                    if let Some(other) = other.args.get(i) {
+                    if let Some(Some(other)) = other.args.get(i) {
                         if other != arg {
                             any_different_type = true;
                             any_different = true;
@@ -458,21 +479,22 @@ impl<'src> FirstPassRecord<'src> {
                 Some(output)
             }
 
-            let arguments = idl_arguments(
-                signature
-                    .args
-                    .iter()
-                    .zip(&signature.orig.args)
-                    .map(|(idl_type, orig_arg)| (orig_arg.name.to_string(), idl_type)),
-            );
+            let arguments =
+                idl_arguments(signature.args.iter().zip(&signature.orig.args).filter_map(
+                    |(idl_type, orig_arg)| {
+                        idl_type
+                            .as_ref()
+                            .map(|idl_type| (orig_arg.name.to_string(), idl_type))
+                    },
+                ));
 
             // Stable types can have methods that have unstable argument types.
             // If any of the arguments types are `unstable` then this method is downgraded
             // to be unstable.
-            let has_unstable_args = signature
-                .args
-                .iter()
-                .any(|arg| is_idl_type_unstable(arg, unstable_types));
+            let has_unstable_args = signature.args.iter().any(|arg| {
+                arg.as_ref()
+                    .is_some_and(|arg| is_idl_type_unstable(arg, unstable_types))
+            });
 
             let unstable = unstable || data.stability.is_unstable() || has_unstable_args;
 
@@ -508,14 +530,18 @@ impl<'src> FirstPassRecord<'src> {
             if !variadic {
                 continue;
             }
-            let last_idl_type = &signature.args[signature.args.len() - 1];
+            let last_idl_type = signature.args[signature.args.len() - 1].as_ref().unwrap();
             let last_name = signature.orig.args[signature.args.len() - 1].name;
             for i in 0..=MAX_VARIADIC_ARGUMENTS_COUNT {
                 let arguments = idl_arguments(
                     signature.args[..signature.args.len() - 1]
                         .iter()
                         .zip(&signature.orig.args)
-                        .map(|(idl_type, orig_arg)| (orig_arg.name.to_string(), idl_type))
+                        .filter_map(|(idl_type, orig_arg)| {
+                            idl_type
+                                .as_ref()
+                                .map(|idl_type| (orig_arg.name.to_string(), idl_type))
+                        })
                         .chain((1..=i).map(|j| (format!("{}_{}", last_name, j), last_idl_type))),
                 );
 
@@ -715,7 +741,11 @@ fn flag_slices_immutable(ty: &mut IdlType) {
         | IdlType::Float32Array { immutable }
         | IdlType::Float64Array { immutable }
         | IdlType::ArrayBufferView { immutable }
-        | IdlType::BufferSource { immutable } => *immutable = true,
+        | IdlType::BufferSource { immutable }
+        | IdlType::Identifier {
+            ty: IdentifierType::BufferSource { immutable },
+            ..
+        } => *immutable = true,
         IdlType::Nullable(item) => flag_slices_immutable(item),
         IdlType::FrozenArray(item) => flag_slices_immutable(item),
         IdlType::Sequence(item) => flag_slices_immutable(item),

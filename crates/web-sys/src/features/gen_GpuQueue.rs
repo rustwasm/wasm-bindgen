@@ -43,7 +43,7 @@ extern "C" {
         feature = "GpuImageCopyExternalImage",
         feature = "GpuImageCopyTextureTagged",
     ))]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = copyExternalImageToTexture)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = copyExternalImageToTexture)]
     #[doc = "The `copyExternalImageToTexture()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/copyExternalImageToTexture)"]
@@ -57,14 +57,14 @@ extern "C" {
         source: &GpuImageCopyExternalImage,
         destination: &GpuImageCopyTextureTagged,
         copy_size: &::wasm_bindgen::JsValue,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(
         feature = "GpuExtent3dDict",
         feature = "GpuImageCopyExternalImage",
         feature = "GpuImageCopyTextureTagged",
     ))]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = copyExternalImageToTexture)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = copyExternalImageToTexture)]
     #[doc = "The `copyExternalImageToTexture()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/copyExternalImageToTexture)"]
@@ -78,7 +78,7 @@ extern "C" {
         source: &GpuImageCopyExternalImage,
         destination: &GpuImageCopyTextureTagged,
         copy_size: &GpuExtent3dDict,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = onSubmittedWorkDone)]
     #[doc = "The `onSubmittedWorkDone()` method."]
@@ -103,7 +103,7 @@ extern "C" {
     pub fn submit(this: &GpuQueue, command_buffers: &::wasm_bindgen::JsValue);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -117,10 +117,10 @@ extern "C" {
         buffer: &GpuBuffer,
         buffer_offset: u32,
         data: &::js_sys::Object,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -134,10 +134,10 @@ extern "C" {
         buffer: &GpuBuffer,
         buffer_offset: f64,
         data: &::js_sys::Object,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -151,10 +151,10 @@ extern "C" {
         buffer: &GpuBuffer,
         buffer_offset: u32,
         data: &[u8],
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -168,10 +168,10 @@ extern "C" {
         buffer: &GpuBuffer,
         buffer_offset: f64,
         data: &[u8],
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -186,10 +186,10 @@ extern "C" {
         buffer_offset: u32,
         data: &::js_sys::Object,
         data_offset: u32,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -204,10 +204,10 @@ extern "C" {
         buffer_offset: f64,
         data: &::js_sys::Object,
         data_offset: u32,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -222,10 +222,10 @@ extern "C" {
         buffer_offset: u32,
         data: &[u8],
         data_offset: u32,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -240,10 +240,10 @@ extern "C" {
         buffer_offset: f64,
         data: &[u8],
         data_offset: u32,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -258,10 +258,10 @@ extern "C" {
         buffer_offset: u32,
         data: &::js_sys::Object,
         data_offset: f64,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -276,10 +276,10 @@ extern "C" {
         buffer_offset: f64,
         data: &::js_sys::Object,
         data_offset: f64,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -294,10 +294,10 @@ extern "C" {
         buffer_offset: u32,
         data: &[u8],
         data_offset: f64,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -312,10 +312,10 @@ extern "C" {
         buffer_offset: f64,
         data: &[u8],
         data_offset: f64,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -331,10 +331,10 @@ extern "C" {
         data: &::js_sys::Object,
         data_offset: u32,
         size: u32,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -350,10 +350,10 @@ extern "C" {
         data: &::js_sys::Object,
         data_offset: u32,
         size: u32,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -369,10 +369,10 @@ extern "C" {
         data: &[u8],
         data_offset: u32,
         size: u32,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -388,10 +388,10 @@ extern "C" {
         data: &[u8],
         data_offset: u32,
         size: u32,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -407,10 +407,10 @@ extern "C" {
         data: &::js_sys::Object,
         data_offset: f64,
         size: u32,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -426,10 +426,10 @@ extern "C" {
         data: &::js_sys::Object,
         data_offset: f64,
         size: u32,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -445,10 +445,10 @@ extern "C" {
         data: &[u8],
         data_offset: f64,
         size: u32,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -464,10 +464,10 @@ extern "C" {
         data: &[u8],
         data_offset: f64,
         size: u32,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -483,10 +483,10 @@ extern "C" {
         data: &::js_sys::Object,
         data_offset: u32,
         size: f64,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -502,10 +502,10 @@ extern "C" {
         data: &::js_sys::Object,
         data_offset: u32,
         size: f64,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -521,10 +521,10 @@ extern "C" {
         data: &[u8],
         data_offset: u32,
         size: f64,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -540,10 +540,10 @@ extern "C" {
         data: &[u8],
         data_offset: u32,
         size: f64,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -559,10 +559,10 @@ extern "C" {
         data: &::js_sys::Object,
         data_offset: f64,
         size: f64,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -578,10 +578,10 @@ extern "C" {
         data: &::js_sys::Object,
         data_offset: f64,
         size: f64,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -597,10 +597,10 @@ extern "C" {
         data: &[u8],
         data_offset: f64,
         size: f64,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuBuffer")]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
@@ -616,10 +616,10 @@ extern "C" {
         data: &[u8],
         data_offset: f64,
         size: f64,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(feature = "GpuImageCopyTexture", feature = "GpuImageDataLayout",))]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeTexture)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeTexture)]
     #[doc = "The `writeTexture()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeTexture)"]
@@ -634,10 +634,10 @@ extern "C" {
         data: &::js_sys::Object,
         data_layout: &GpuImageDataLayout,
         size: &::wasm_bindgen::JsValue,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(feature = "GpuImageCopyTexture", feature = "GpuImageDataLayout",))]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeTexture)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeTexture)]
     #[doc = "The `writeTexture()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeTexture)"]
@@ -652,14 +652,14 @@ extern "C" {
         data: &[u8],
         data_layout: &GpuImageDataLayout,
         size: &::wasm_bindgen::JsValue,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(
         feature = "GpuExtent3dDict",
         feature = "GpuImageCopyTexture",
         feature = "GpuImageDataLayout",
     ))]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeTexture)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeTexture)]
     #[doc = "The `writeTexture()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeTexture)"]
@@ -674,14 +674,14 @@ extern "C" {
         data: &::js_sys::Object,
         data_layout: &GpuImageDataLayout,
         size: &GpuExtent3dDict,
-    );
+    ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(
         feature = "GpuExtent3dDict",
         feature = "GpuImageCopyTexture",
         feature = "GpuImageDataLayout",
     ))]
-    # [wasm_bindgen (method , structural , js_class = "GPUQueue" , js_name = writeTexture)]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeTexture)]
     #[doc = "The `writeTexture()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeTexture)"]
@@ -696,5 +696,5 @@ extern "C" {
         data: &[u8],
         data_layout: &GpuImageDataLayout,
         size: &GpuExtent3dDict,
-    );
+    ) -> Result<(), JsValue>;
 }

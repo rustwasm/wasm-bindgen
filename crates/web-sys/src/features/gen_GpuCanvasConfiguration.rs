@@ -75,6 +75,26 @@ extern "C" {
     #[wasm_bindgen(method, setter = "format")]
     pub fn set_format(this: &GpuCanvasConfiguration, val: GpuTextureFormat);
     #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuCanvasToneMapping")]
+    #[doc = "Get the `toneMapping` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCanvasConfiguration`, `GpuCanvasToneMapping`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "toneMapping")]
+    pub fn get_tone_mapping(this: &GpuCanvasConfiguration) -> Option<GpuCanvasToneMapping>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuCanvasToneMapping")]
+    #[doc = "Change the `toneMapping` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCanvasConfiguration`, `GpuCanvasToneMapping`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, setter = "toneMapping")]
+    pub fn set_tone_mapping(this: &GpuCanvasConfiguration, val: &GpuCanvasToneMapping);
+    #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `usage` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuCanvasConfiguration`*"]
@@ -146,6 +166,13 @@ impl GpuCanvasConfiguration {
     #[deprecated = "Use `set_format()` instead."]
     pub fn format(&mut self, val: GpuTextureFormat) -> &mut Self {
         self.set_format(val);
+        self
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "GpuCanvasToneMapping")]
+    #[deprecated = "Use `set_tone_mapping()` instead."]
+    pub fn tone_mapping(&mut self, val: &GpuCanvasToneMapping) -> &mut Self {
+        self.set_tone_mapping(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]

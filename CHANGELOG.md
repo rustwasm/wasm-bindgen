@@ -135,6 +135,9 @@
 * Removed `impl Deref for JsStatic` when compiling with `cfg(target_feature = "atomics")`, which was unsound.
   [#4057](https://github.com/rustwasm/wasm-bindgen/pull/4057)
 
+* Updated the WebGPU WebIDL to the current draft as of 2024-08-05.
+  [#4062](https://github.com/rustwasm/wasm-bindgen/pull/4062)
+
 ### Fixed
 
 * Copy port from headless test server when using `WASM_BINDGEN_TEST_ADDRESS`.
