@@ -2,7 +2,7 @@ use wasm_bindgen::prelude::wasm_bindgen;
 
 #[cfg(wasm_bindgen_unstable_test_coverage)]
 #[wasm_bindgen]
-pub fn __wbgtest_cov_dump() -> Vec<u8> {
+pub fn __wbgtest_cov_dump() -> Option<Vec<u8>> {
     let mut coverage = Vec::new();
     // SAFETY: this function is not thread-safe, but our whole test runner is running single-threaded.
     unsafe {
@@ -14,11 +14,11 @@ pub fn __wbgtest_cov_dump() -> Vec<u8> {
         RUSTFLAGS=\"-Cinstrument-coverage -Zno-profile-runtime --emit=llvm-ir\"",
         );
     }
-    coverage
+    Some(coverage)
 }
 
 #[cfg(not(wasm_bindgen_unstable_test_coverage))]
 #[wasm_bindgen]
-pub fn __wbgtest_cov_dump() -> Vec<u8> {
-    Vec::new()
+pub fn __wbgtest_cov_dump() -> Option<Vec<u8>> {
+    None
 }
