@@ -534,8 +534,8 @@ jobs:
       - dist_macos_x86_64
       - dist_macos_aarch64
       - dist_windows
-      - build_examples
-      - build_nightly
+      - test_examples
+      - test_nightly
       - build_benchmarks
     runs-on: ubuntu-latest
     steps:
