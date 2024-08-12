@@ -156,7 +156,7 @@ impl<'a> Context<'a> {
             self.globals.push_str(c);
         }
         let global = match self.config.mode {
-            OutputMode::Node { module: false } => {
+            OutputMode::InlineNodeJs | OutputMode::Node { module: false } => {
                 if contents.starts_with("class") {
                     format!("{}\nmodule.exports.{1} = {1};\n", contents, export_name)
                 } else {
@@ -301,6 +301,31 @@ impl<'a> Context<'a> {
             ",
             );
         }
+
+        reset_indentation(&shim)
+    }
+
+    fn generate_inline_wasm_loading(&mut self) -> String {
+        let mut shim = String::new();
+
+        let buf = self.module.emit_wasm();
+
+        let mut serialized = "const bytes = Buffer.from([".to_string();
+        let (last, bytes) = buf.split_last().unwrap();
+        for byte in bytes {
+            serialized.push_str(&format!("{},", byte));
+        }
+        serialized.push_str(&format!("{}", last));
+        serialized.push_str("]);");
+        shim.push_str(&serialized);
+        shim.push_str(
+            "
+                const wasmModule = new WebAssembly.Module(bytes);
+                const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
+                wasm = wasmInstance.exports;
+                module.exports.__wasm = wasm;
+            ",
+        );
 
         reset_indentation(&shim)
     }
@@ -533,6 +558,27 @@ __wbg_set_wasm(wasm);"
                 footer.push_str("export { initSync };\n");
                 footer.push_str("export default __wbg_init;");
             }
+
+            OutputMode::InlineNodeJs => {
+                js.push_str(&self.generate_node_imports());
+
+                js.push_str("let wasm;\n");
+
+                for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
+                    let import = self.module.imports.get_mut(*id);
+                    footer.push_str("\nmodule.exports.");
+                    footer.push_str(&import.name);
+                    footer.push_str(" = ");
+                    footer.push_str(js.trim());
+                    footer.push_str(";\n");
+                }
+
+                footer.push_str(&self.generate_inline_wasm_loading());
+
+                if needs_manual_start {
+                    footer.push_str("\nwasm.__wbindgen_start();\n");
+                }
+            }
         }
 
         // Before putting the static init code declaration info, put all existing typescript into a `wasm_bindgen` namespace declaration.
@@ -601,7 +647,7 @@ __wbg_set_wasm(wasm);"
                 }
             }
 
-            OutputMode::Node { module: false } => {
+            OutputMode::InlineNodeJs | OutputMode::Node { module: false } => {
                 for (module, items) in crate::sorted_iter(&self.js_imports) {
                     imports.push_str("const { ");
                     for (i, (item, rename)) in items.iter().enumerate() {
@@ -1076,7 +1122,7 @@ __wbg_set_wasm(wasm);"
             */\n  toString(): string;\n",
             );
 
-            if self.config.mode.nodejs() {
+            if self.config.mode.nodejs() || self.config.mode.inline_nodejs() {
                 // `util.inspect` must be imported in Node.js to define [inspect.custom]
                 let module_name = self.import_name(&JsImport {
                     name: JsImportName::Module {
@@ -1573,7 +1619,8 @@ __wbg_set_wasm(wasm);"
         init: Option<&str>,
     ) -> Result<(), Error> {
         match &self.config.mode {
-            OutputMode::Node { .. } => {
+
+            OutputMode::InlineNodeJs | OutputMode::Node { .. } => {
                 let name = self.import_name(&JsImport {
                     name: JsImportName::Module {
                         module: "util".to_string(),
@@ -1606,6 +1653,7 @@ __wbg_set_wasm(wasm);"
         if let Some(init) = init {
             match &self.config.mode {
                 OutputMode::Node { .. }
+                | OutputMode::InlineNodeJs
                 | OutputMode::Bundler {
                     browser_only: false,
                 } => self.global(init),
@@ -3290,7 +3338,7 @@ __wbg_set_wasm(wasm);"
                         | OutputMode::Bundler { .. }
                         | OutputMode::Deno
                         | OutputMode::Node { module: true } => "import.meta.url",
-                        OutputMode::Node { module: false } => {
+                        OutputMode::InlineNodeJs | OutputMode::Node { module: false } => {
                             "require('url').pathToFileURL(__filename)"
                         }
                         OutputMode::NoModules { .. } => {

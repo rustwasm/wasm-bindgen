@@ -69,6 +69,7 @@ enum OutputMode {
     NoModules { global: String },
     Node { module: bool },
     Deno,
+    InlineNodeJs,
 }
 
 enum Input {
@@ -167,6 +168,16 @@ impl Bindgen {
             self.switch_mode(
                 OutputMode::Node { module: true },
                 "--target experimental-nodejs-module",
+            )?;
+        }
+        Ok(self)
+    }
+
+    pub fn inline_nodejs(&mut self, inline_nodejs: bool) -> Result<&mut Bindgen, Error> {
+        if inline_nodejs {
+            self.switch_mode(
+                OutputMode::InlineNodeJs,
+                "--target experimental-inline-nodejs",
             )?;
         }
         Ok(self)
@@ -563,6 +574,10 @@ impl OutputMode {
 
     fn nodejs(&self) -> bool {
         matches!(self, OutputMode::Node { .. })
+    }
+
+    fn inline_nodejs(&self) -> bool {
+        matches!(self, OutputMode::InlineNodeJs)
     }
 
     fn no_modules(&self) -> bool {
