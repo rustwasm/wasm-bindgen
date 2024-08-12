@@ -1,21 +1,21 @@
 [package]
-name = "rust-webassembly-weather-reports"
-version = "0.0.0"
 authors = ["Ayush <ayushmishra2005@gmail.com>"]
 edition = "2021"
+name = "rust-webassembly-weather-reports"
 publish = false
+version = "0.0.0"
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
 chrono = "0.4.11"
-reqwest = "0.12"
-wasm-bindgen-futures = { path = "../../crates/futures" }
-json= "0.12"
-wasm-bindgen = { path = "../../" }
 gloo = "0.11"
+json = "0.12"
+reqwest = "0.12"
+wasm-bindgen = { path = "../../" }
+wasm-bindgen-futures = { path = "../../crates/futures" }
 
 [dependencies.web-sys]
-path = "../../crates/web-sys"
 features = ["Document", "Element", "HtmlElement", "Window"]
+path = "../../crates/web-sys"

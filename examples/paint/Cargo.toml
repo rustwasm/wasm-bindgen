@@ -1,9 +1,9 @@
 [package]
-name = "wasm-bindgen-paint"
-version = "0.0.0"
 authors = ["The wasm-bindgen Developers"]
 edition = "2021"
+name = "wasm-bindgen-paint"
 publish = false
+version = "0.0.0"
 
 [lib]
 crate-type = ["cdylib"]
@@ -13,7 +13,6 @@ js-sys = { path = "../../crates/js-sys" }
 wasm-bindgen = { path = "../../" }
 
 [dependencies.web-sys]
-path = "../../crates/web-sys"
 features = [
   'CanvasRenderingContext2d',
   'CssStyleDeclaration',
@@ -26,3 +25,4 @@ features = [
   'Node',
   'Window',
 ]
+path = "../../crates/web-sys"

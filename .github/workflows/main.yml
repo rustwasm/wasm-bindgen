@@ -29,6 +29,19 @@ jobs:
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup component add rustfmt
     - run: cargo fmt --all -- --check
+  
+  # Check TOML style by using Taplo.
+  taplo:
+    name: Taplo
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: taplo-cli
+      - run: taplo fmt --check
 
   # Run `cargo check` over everything
   check:

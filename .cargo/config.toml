@@ -3,13 +3,13 @@ runner = 'cargo run -p wasm-bindgen-cli --bin wasm-bindgen-test-runner --'
 
 [target.'cfg(all())']
 rustflags = [
-    "-Adead_code",
-    "-Anon_upper_case_globals",
-    "-Aunused_doc_comments",
-    "-Aclippy::large_enum_variant",
-    "-Aclippy::missing_safety_doc",
-    "-Aclippy::new_without_default",
-    "-Aclippy::overly_complex_bool_expr",
-    "-Aclippy::too_many_arguments",
-    "-Aclippy::type_complexity"
+  "-Adead_code",
+  "-Anon_upper_case_globals",
+  "-Aunused_doc_comments",
+  "-Aclippy::large_enum_variant",
+  "-Aclippy::missing_safety_doc",
+  "-Aclippy::new_without_default",
+  "-Aclippy::overly_complex_bool_expr",
+  "-Aclippy::too_many_arguments",
+  "-Aclippy::type_complexity",
 ]

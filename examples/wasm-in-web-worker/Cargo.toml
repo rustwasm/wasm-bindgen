@@ -1,25 +1,25 @@
 [package]
-name = "wasm-in-web-worker"
-version = "0.0.0"
 authors = ["The wasm-bindgen Developers"]
 edition = "2021"
+name = "wasm-in-web-worker"
 publish = false
+version = "0.0.0"
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
-wasm-bindgen = { path = "../../" }
 console_error_panic_hook = { version = "0.1.6", optional = true }
+wasm-bindgen = { path = "../../" }
 
 [dependencies.web-sys]
-path = "../../crates/web-sys"
 features = [
-    'console',
-    'Document',
-    'HtmlElement',
-    'HtmlInputElement',
-    'MessageEvent',
-    'Window',
-    'Worker',
+  'console',
+  'Document',
+  'HtmlElement',
+  'HtmlInputElement',
+  'MessageEvent',
+  'Window',
+  'Worker',
 ]
+path = "../../crates/web-sys"

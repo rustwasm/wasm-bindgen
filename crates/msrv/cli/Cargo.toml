@@ -1,14 +1,14 @@
 [package]
-name = "msrv-cli-test"
-version = "0.0.0"
 edition = "2021"
+name = "msrv-cli-test"
 publish = false
+version = "0.0.0"
 
 [dependencies]
 wasm-bindgen-cli = { path = "../../cli" }
 wasm-bindgen-cli-support = { path = "../../cli-support" }
-wasm-bindgen-wasm-interpreter = { path = "../../wasm-interpreter" }
-wasm-bindgen-threads-xform = { path = "../../threads-xform" }
-wasm-bindgen-multi-value-xform = { path = "../../multi-value-xform" }
 wasm-bindgen-externref-xform = { path = "../../externref-xform" }
+wasm-bindgen-multi-value-xform = { path = "../../multi-value-xform" }
+wasm-bindgen-threads-xform = { path = "../../threads-xform" }
 wasm-bindgen-wasm-conventions = { path = "../../wasm-conventions" }
+wasm-bindgen-wasm-interpreter = { path = "../../wasm-interpreter" }

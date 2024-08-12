@@ -1,20 +1,20 @@
 [package]
-name = "wasm-bindgen-wasm-conventions"
-version = "0.2.92"
 authors = ["The wasm-bindgen developers"]
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/wasm-conventions"
-homepage = "https://rustwasm.github.io/wasm-bindgen/"
-documentation = "https://docs.rs/wasm-bindgen-wasm-conventions"
 description = "Utilities for working with Wasm codegen conventions (usually established by LLVM/lld)"
+documentation = "https://docs.rs/wasm-bindgen-wasm-conventions"
 edition = "2021"
-rust-version = "1.76"
+homepage = "https://rustwasm.github.io/wasm-bindgen/"
 include = ["/LICENSE-*", "/src"]
+license = "MIT OR Apache-2.0"
+name = "wasm-bindgen-wasm-conventions"
+repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/wasm-conventions"
+rust-version = "1.76"
+version = "0.2.92"
 
 [dependencies]
 leb128 = "0.2"
 walrus = "0.21"
 # Matching the version `walrus` depends on.
-wasmparser = "0.212"
 anyhow = "1.0"
 log = "0.4"
+wasmparser = "0.212"

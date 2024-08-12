@@ -1,9 +1,9 @@
 [package]
-name = "wasm-audio-worklet"
-version = "0.0.0"
 authors = ["The wasm-bindgen Developers"]
 edition = "2021"
+name = "wasm-audio-worklet"
 publish = false
+version = "0.0.0"
 
 [lib]
 crate-type = ["cdylib"]
@@ -15,7 +15,6 @@ wasm-bindgen = { path = "../../" }
 wasm-bindgen-futures = { path = "../../crates/futures" }
 
 [dependencies.web-sys]
-path = "../../crates/web-sys"
 features = [
   "AudioContext",
   "AudioDestinationNode",
@@ -31,3 +30,4 @@ features = [
   "Url",
   "Window",
 ]
+path = "../../crates/web-sys"

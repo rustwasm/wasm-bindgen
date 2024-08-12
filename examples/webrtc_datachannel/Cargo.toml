@@ -1,20 +1,19 @@
 [package]
-name = "webrtc_datachannel"
-version = "0.0.0"
 authors = ["The wasm-bindgen Developers"]
 edition = "2021"
+name = "webrtc_datachannel"
 publish = false
+version = "0.0.0"
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
-wasm-bindgen = { path = "../../" }
 js-sys = { path = "../../crates/js-sys" }
+wasm-bindgen = { path = "../../" }
 wasm-bindgen-futures = { path = "../../crates/futures" }
 
 [dependencies.web-sys]
-path = "../../crates/web-sys"
 features = [
   "MessageEvent",
   "RtcPeerConnection",
@@ -26,3 +25,4 @@ features = [
   "RtcDataChannel",
   "RtcDataChannelEvent",
 ]
+path = "../../crates/web-sys"

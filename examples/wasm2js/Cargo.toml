@@ -1,9 +1,9 @@
 [package]
-name = "wasm2js"
-version = "0.0.0"
 authors = ["The wasm-bindgen Developers"]
 edition = "2021"
+name = "wasm2js"
 publish = false
+version = "0.0.0"
 
 [lib]
 crate-type = ["cdylib"]

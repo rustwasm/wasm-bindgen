@@ -1,17 +1,17 @@
 [package]
-name = "wasm-bindgen-externref-xform"
-version = "0.2.92"
 authors = ["The wasm-bindgen Developers"]
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/externref-xform"
-homepage = "https://rustwasm.github.io/wasm-bindgen/"
-documentation = "https://docs.rs/wasm-bindgen-externref-xform"
 description = """
 Internal externref transformations for wasm-bindgen
 """
+documentation = "https://docs.rs/wasm-bindgen-externref-xform"
 edition = "2021"
-rust-version = "1.76"
+homepage = "https://rustwasm.github.io/wasm-bindgen/"
 include = ["/LICENSE-*", "/src"]
+license = "MIT OR Apache-2.0"
+name = "wasm-bindgen-externref-xform"
+repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/externref-xform"
+rust-version = "1.76"
+version = "0.2.92"
 
 [dependencies]
 anyhow = "1.0"
@@ -25,5 +25,5 @@ wast = "212"
 wat = "1.0"
 
 [[test]]
-name = "all"
 harness = false
+name = "all"

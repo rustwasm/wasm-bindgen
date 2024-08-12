@@ -1,19 +1,18 @@
 [package]
-name = "websockets"
-version = "0.0.0"
 authors = ["The wasm-bindgen Developers"]
 edition = "2021"
+name = "websockets"
 publish = false
+version = "0.0.0"
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
-wasm-bindgen = { path = "../../" }
 js-sys = { path = "../../crates/js-sys" }
+wasm-bindgen = { path = "../../" }
 
 [dependencies.web-sys]
-path = "../../crates/web-sys"
 features = [
   "BinaryType",
   "Blob",
@@ -23,3 +22,4 @@ features = [
   "ProgressEvent",
   "WebSocket",
 ]
+path = "../../crates/web-sys"

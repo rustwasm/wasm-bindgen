@@ -1,9 +1,9 @@
 [package]
-name = "synchronous-instantiation"
-version = "0.0.0"
 authors = ["The wasm-bindgen Developers"]
 edition = "2021"
+name = "synchronous-instantiation"
 publish = false
+version = "0.0.0"
 
 [lib]
 crate-type = ["cdylib"]

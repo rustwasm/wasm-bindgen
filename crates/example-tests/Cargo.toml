@@ -1,26 +1,21 @@
 [package]
-name = "example-tests"
-version = "0.0.0"
 authors = ["The wasm-bindgen Developers"]
 edition = "2021"
+name = "example-tests"
 publish = false
+version = "0.0.0"
 
 [features]
 default = ["stable"]
-stable = []
 nightly = []
+stable = []
 
 [dependencies]
 anyhow = "1.0.75"
 futures-util = { version = "0.3.28", features = ["sink"] }
 http = "1"
 hyper = "1"
-hyper-util = { version = "0.1.6", features = [
-  "http1",
-  "service",
-  "server",
-  "tokio",
-] }
+hyper-util = { version = "0.1.6", features = ["http1", "service", "server", "tokio"] }
 mozprofile = "0.9"
 mozrunner = "0.15"
 serde = { version = "1.0", features = ["derive"] }

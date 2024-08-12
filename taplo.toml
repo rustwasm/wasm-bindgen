@@ -1,0 +1,9 @@
+[formatting]
+allowed_blank_lines = 1
+column_width = 100
+reorder_keys = true
+
+[[rule]]
+formatting = { array_auto_expand = false }
+include = ["crates/web-sys/Cargo.toml"]
+keys = ["features"]
