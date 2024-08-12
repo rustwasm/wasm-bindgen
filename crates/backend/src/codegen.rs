@@ -190,16 +190,18 @@ impl TryToTokens for ast::LinkToModule {
         let link_function_name = self.0.link_function_name(0);
         let name = Ident::new(&link_function_name, Span::call_site());
         let wasm_bindgen = &self.0.wasm_bindgen;
-        let abi_ret = quote! { #wasm_bindgen::convert::WasmRet<<std::string::String as #wasm_bindgen::convert::FromWasmAbi>::Abi> };
+        let abi_ret = quote! { #wasm_bindgen::convert::WasmRet<<#wasm_bindgen::__rt::alloc::string::String as #wasm_bindgen::convert::FromWasmAbi>::Abi> };
         let extern_fn = extern_fn(&name, &[], &[], &[], abi_ret);
         (quote! {
             {
                 #program
                 #extern_fn
 
-                unsafe {
-                    <std::string::String as #wasm_bindgen::convert::FromWasmAbi>::from_abi(#name().join())
-                }
+                static __VAL: #wasm_bindgen::__rt::Lazy<String> = #wasm_bindgen::__rt::Lazy::new(|| unsafe {
+                    <#wasm_bindgen::__rt::alloc::string::String as #wasm_bindgen::convert::FromWasmAbi>::from_abi(#name().join())
+                });
+
+                #wasm_bindgen::__rt::alloc::string::String::clone(&__VAL)
             }
         })
         .to_tokens(tokens);

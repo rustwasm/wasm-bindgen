@@ -1518,6 +1518,7 @@ pub mod __rt {
     use alloc::alloc::{alloc, dealloc, realloc, Layout};
     use alloc::boxed::Box;
     use alloc::rc::Rc;
+    pub use once_cell::sync::Lazy;
 
     #[macro_export]
     #[doc(hidden)]

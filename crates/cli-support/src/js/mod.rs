@@ -3262,9 +3262,11 @@ impl<'a> Context<'a> {
                         '`' | '\\' | '$' => escaped.extend(['\\', c]),
                         _ => escaped.extend([c]),
                     });
-                    Ok(format!(
-                        "\"data:application/javascript,\" + encodeURIComponent(`{escaped}`)"
-                    ))
+                    prelude.push_str(&format!("const val = `{escaped}`;\n"));
+                    Ok("typeof URL.createObjectURL === 'undefined' ? \
+                        \"data:application/javascript,\" + encodeURIComponent(val) : \
+                        URL.createObjectURL(new Blob([val], { type: \"text/javascript\" }))"
+                        .to_owned())
                 } else {
                     Err(anyhow!("wasm-bindgen needs to be invoked with `--split-linked-modules`, because \"{}\" cannot be embedded.\n\
                         See https://rustwasm.github.io/wasm-bindgen/reference/cli.html#--split-linked-modules for details.", path))
