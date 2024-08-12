@@ -47,6 +47,8 @@ const CRATES_TO_AVOID_PUBLISH: &[&str] = &[
     "typescript-tests",
     "wasm-bindgen-webidl",
     "example-tests",
+    "msrv-cli-test",
+    "msrv-library-test",
 ];
 
 struct Crate {

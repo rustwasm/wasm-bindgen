@@ -11,12 +11,12 @@ license = "MIT OR Apache-2.0"
 name = "wasm-bindgen-externref-xform"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/externref-xform"
 rust-version = "1.76"
-version = "0.2.92"
+version = "0.2.93"
 
 [dependencies]
 anyhow = "1.0"
 walrus = "0.21"
-wasm-bindgen-wasm-conventions = { path = "../wasm-conventions", version = "=0.2.92" }
+wasm-bindgen-wasm-conventions = { path = "../wasm-conventions", version = "=0.2.93" }
 
 [dev-dependencies]
 rayon = "1.0"
