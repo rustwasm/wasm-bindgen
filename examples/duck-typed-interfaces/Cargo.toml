@@ -1,9 +1,9 @@
 [package]
-name = "rust-duck-typed-interfaces"
-version = "0.0.0"
 authors = ["The wasm-bindgen Developers"]
 edition = "2021"
+name = "rust-duck-typed-interfaces"
 publish = false
+version = "0.0.0"
 
 [lib]
 crate-type = ["cdylib"]

@@ -1,20 +1,20 @@
 [package]
-name = "msrv-library-test"
-version = "0.0.0"
 edition = "2021"
+name = "msrv-library-test"
 publish = false
+version = "0.0.0"
 
 [dependencies]
-wasm-bindgen = { path = "../../../" }
 js-sys = { path = "../../js-sys" }
-web-sys = { path = "../../web-sys" }
-wasm-bindgen-futures = { path = "../../futures" }
-wasm-bindgen-test = { path = "../../test" }
-wasm-bindgen-macro = { path = "../../macro" }
-wasm-bindgen-test-macro = { path = "../../test-macro" }
-wasm-bindgen-macro-support = { path = "../../macro-support" }
+wasm-bindgen = { path = "../../../" }
 wasm-bindgen-backend = { path = "../../backend" }
+wasm-bindgen-futures = { path = "../../futures" }
+wasm-bindgen-macro = { path = "../../macro" }
+wasm-bindgen-macro-support = { path = "../../macro-support" }
 wasm-bindgen-shared = { path = "../../shared" }
+wasm-bindgen-test = { path = "../../test" }
+wasm-bindgen-test-macro = { path = "../../test-macro" }
+web-sys = { path = "../../web-sys" }
 
 bumpalo = "=3.12.0"
 log = "=0.4.18"

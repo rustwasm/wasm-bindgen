@@ -1,13 +1,13 @@
 [package]
-name = "guide-supported-types-examples"
-version = "0.0.0"
 authors = ["The wasm-bindgen Developers"]
 edition = "2021"
+name = "guide-supported-types-examples"
 publish = false
+version = "0.0.0"
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
-wasm-bindgen = { path = "../../" }
 js-sys = { path = "../../crates/js-sys" }
+wasm-bindgen = { path = "../../" }

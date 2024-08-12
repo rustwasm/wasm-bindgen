@@ -1,9 +1,9 @@
 [package]
-name = "julia_set"
-version = "0.0.0"
 authors = ["The wasm-bindgen Developers"]
 edition = "2021"
+name = "julia_set"
 publish = false
+version = "0.0.0"
 
 [lib]
 crate-type = ["cdylib"]
@@ -12,8 +12,5 @@ crate-type = ["cdylib"]
 wasm-bindgen = { path = "../../" }
 
 [dependencies.web-sys]
+features = ['ImageData', 'CanvasRenderingContext2d']
 path = "../../crates/web-sys"
-features = [
-  'ImageData',
-  'CanvasRenderingContext2d',
-]

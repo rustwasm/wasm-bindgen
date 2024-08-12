@@ -1,9 +1,9 @@
 [package]
-name = "wasm-bindgen-test-crate-b"
-version = "0.0.0"
 authors = ["The wasm-bindgen Developers"]
 edition = "2021"
+name = "wasm-bindgen-test-crate-b"
 publish = false
+version = "0.0.0"
 
 [dependencies]
 wasm-bindgen = { path = '../../..' }

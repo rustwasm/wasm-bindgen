@@ -1,19 +1,19 @@
 [package]
-name = "webidl-tests"
-version = "0.0.0"
 authors = ["The wasm-bindgen Developers"]
 edition = "2021"
+name = "webidl-tests"
 publish = false
+version = "0.0.0"
 
 [lib]
-test = false
 doctest = false
 path = 'lib.rs'
+test = false
 
 [dependencies]
 js-sys = { path = '../js-sys' }
-wasm-bindgen-futures = { path = '../futures' }
 wasm-bindgen = { path = '../..' }
+wasm-bindgen-futures = { path = '../futures' }
 
 [build-dependencies]
 wasm-bindgen-webidl = { path = "../webidl" }

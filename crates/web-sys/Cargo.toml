@@ -1,18 +1,18 @@
 [package]
-name = "web-sys"
-version = "0.3.69"
 authors = ["The wasm-bindgen Developers"]
-readme = "./README.md"
-homepage = "https://rustwasm.github.io/wasm-bindgen/web-sys/index.html"
-documentation = "https://rustwasm.github.io/wasm-bindgen/api/web_sys/"
-repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/web-sys"
 description = """
 Bindings for all Web APIs, a procedurally generated crate from WebIDL
 """
-license = "MIT OR Apache-2.0"
+documentation = "https://rustwasm.github.io/wasm-bindgen/api/web_sys/"
 edition = "2021"
-rust-version = "1.57"
+homepage = "https://rustwasm.github.io/wasm-bindgen/web-sys/index.html"
 include = ["/LICENSE-*", "/src"]
+license = "MIT OR Apache-2.0"
+name = "web-sys"
+readme = "./README.md"
+repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/web-sys"
+rust-version = "1.57"
+version = "0.3.69"
 
 [package.metadata.docs.rs]
 all-features = true
@@ -23,13 +23,13 @@ doctest = false
 test = false
 
 [dependencies]
-wasm-bindgen = { path = "../..", version = "0.2.92" }
 js-sys = { path = '../js-sys', version = '0.3.69' }
+wasm-bindgen = { path = "../..", version = "0.2.92" }
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
-wasm-bindgen-test = { path = '../test' }
-wasm-bindgen-futures = { path = '../futures', features = [ "futures-core-03-stream" ] }
 futures = "0.3"
+wasm-bindgen-futures = { path = '../futures', features = ["futures-core-03-stream"] }
+wasm-bindgen-test = { path = '../test' }
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(web_sys_unstable_apis)'] }

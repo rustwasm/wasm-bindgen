@@ -1,9 +1,9 @@
 [package]
-name = "webgl"
-version = "0.0.0"
 authors = ["The wasm-bindgen Developers"]
 edition = "2021"
+name = "webgl"
 publish = false
+version = "0.0.0"
 
 [lib]
 crate-type = ["cdylib"]
@@ -13,7 +13,6 @@ js-sys = { path = "../../crates/js-sys" }
 wasm-bindgen = { path = "../../" }
 
 [dependencies.web-sys]
-path = "../../crates/web-sys"
 features = [
   'Document',
   'Element',
@@ -25,3 +24,4 @@ features = [
   'WebGlShader',
   'Window',
 ]
+path = "../../crates/web-sys"

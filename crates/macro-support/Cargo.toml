@@ -1,26 +1,26 @@
 [package]
-name = "wasm-bindgen-macro-support"
-version = "0.2.92"
 authors = ["The wasm-bindgen Developers"]
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/macro-support"
-homepage = "https://rustwasm.github.io/wasm-bindgen/"
-documentation = "https://docs.rs/wasm-bindgen"
 description = """
 The part of the implementation of the `#[wasm_bindgen]` attribute that is not in the shared backend crate
 """
+documentation = "https://docs.rs/wasm-bindgen"
 edition = "2021"
-rust-version = "1.57"
+homepage = "https://rustwasm.github.io/wasm-bindgen/"
 include = ["/LICENSE-*", "/src"]
+license = "MIT OR Apache-2.0"
+name = "wasm-bindgen-macro-support"
+repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/macro-support"
+rust-version = "1.57"
+version = "0.2.92"
 
 [features]
-spans = ["wasm-bindgen-backend/spans"]
 extra-traits = ["syn/extra-traits"]
+spans = ["wasm-bindgen-backend/spans"]
 strict-macro = []
 
 [dependencies]
-syn = { version = '2.0', features = ['visit', 'full'] }
-quote = '1.0'
 proc-macro2 = "1.0"
+quote = '1.0'
+syn = { version = '2.0', features = ['visit', 'full'] }
 wasm-bindgen-backend = { path = "../backend", version = "=0.2.92" }
 wasm-bindgen-shared = { path = "../shared", version = "=0.2.92" }

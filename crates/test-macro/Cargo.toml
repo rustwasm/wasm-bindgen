@@ -1,13 +1,13 @@
 [package]
-name = "wasm-bindgen-test-macro"
-version = "0.3.42"
 authors = ["The wasm-bindgen Developers"]
 description = "Internal testing macro for wasm-bindgen"
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/rustwasm/wasm-bindgen"
 edition = "2021"
-rust-version = "1.57"
 include = ["/LICENSE-*", "/src"]
+license = "MIT OR Apache-2.0"
+name = "wasm-bindgen-test-macro"
+repository = "https://github.com/rustwasm/wasm-bindgen"
+rust-version = "1.57"
+version = "0.3.42"
 
 [lib]
 proc-macro = true
@@ -15,13 +15,16 @@ proc-macro = true
 [dependencies]
 proc-macro2 = "1.0"
 quote = "1.0"
-syn = { version = "2.0", default-features = false, features = [ "parsing", "proc-macro", "derive", "printing" ] }
+syn = { version = "2.0", default-features = false, features = [
+  "parsing",
+  "proc-macro",
+  "derive",
+  "printing",
+] }
 
 [dev-dependencies]
-wasm-bindgen-test = { path = "../test" }
 trybuild = "1.0"
+wasm-bindgen-test = { path = "../test" }
 
 [lints.rust]
-unexpected_cfgs = { level = "warn", check-cfg = [
-    'cfg(wasm_bindgen_unstable_test_coverage)',
-] }
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(wasm_bindgen_unstable_test_coverage)'] }

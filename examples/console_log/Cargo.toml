@@ -1,9 +1,9 @@
 [package]
-name = "console_log"
-version = "0.0.0"
 authors = ["The wasm-bindgen Developers"]
 edition = "2021"
+name = "console_log"
 publish = false
+version = "0.0.0"
 
 [lib]
 crate-type = ["cdylib"]

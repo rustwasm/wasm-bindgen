@@ -1,9 +1,9 @@
 [package]
-name = "todomvc"
-version = "0.0.0"
 authors = ["The wasm-bindgen Developers"]
 edition = "2021"
+name = "todomvc"
 publish = false
+version = "0.0.0"
 
 [lib]
 crate-type = ["cdylib"]
@@ -12,13 +12,12 @@ crate-type = ["cdylib"]
 askama = "0.12"
 
 [dependencies]
-js-sys = { path = "../../crates/js-sys" }
-wasm-bindgen = { path = "../../" }
 askama = "0.12"
 console_error_panic_hook = "0.1.5"
+js-sys = { path = "../../crates/js-sys" }
+wasm-bindgen = { path = "../../" }
 
 [dependencies.web-sys]
-path = "../../crates/web-sys"
 features = [
   'console',
   'CssStyleDeclaration',
@@ -38,3 +37,4 @@ features = [
   'Storage',
   'Window',
 ]
+path = "../../crates/web-sys"
