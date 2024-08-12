@@ -1,1 +1,2 @@
 *.webidl linguist-vendored
+*.snap linguist-generated

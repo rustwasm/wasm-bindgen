@@ -1,0 +1,29 @@
+---
+source: crates/cli-support/tests/test_native_add.rs
+expression: output.js()
+---
+import * as import0 from 'env'
+
+const imports = {
+  __wbindgen_placeholder__: {
+	},
+  'env': import0,
+};
+
+const wasm_url = new URL('native_add_bg.wasm', import.meta.url);
+            let wasmCode = '';
+            switch (wasm_url.protocol) {
+                case 'file:':
+                    wasmCode = await Deno.readFile(wasm_url);
+                    break
+                case 'https:':
+                case 'http:':
+                    wasmCode = await (await fetch(wasm_url)).arrayBuffer();
+                    break
+                default:
+                    throw new Error(`Unsupported protocol: ${wasm_url.protocol}`);
+            }
+
+            const wasmInstance = (await WebAssembly.instantiate(wasmCode, imports)).instance;
+            const wasm = wasmInstance.exports;
+            export const __wasm = wasm;

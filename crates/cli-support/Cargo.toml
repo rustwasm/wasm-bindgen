@@ -28,3 +28,6 @@ wasm-bindgen-threads-xform = { path = '../threads-xform', version = '=0.2.92' }
 wasm-bindgen-wasm-conventions = { path = '../wasm-conventions', version = '=0.2.92' }
 wasm-bindgen-wasm-interpreter = { path = "../wasm-interpreter", version = '=0.2.92' }
 unicode-ident = "1.0.5"
+
+[dev-dependencies]
+insta = "1.39.0"

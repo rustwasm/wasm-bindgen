@@ -1,0 +1,8 @@
+---
+source: crates/cli-support/tests/test_add.rs
+expression: output.js()
+---
+let wasm;
+                    export function __wbg_set_wasm(val) {
+                        wasm = val;
+                    }
