@@ -2,7 +2,7 @@ use crate::decode::LocalModule;
 use crate::descriptor::{Descriptor, Function};
 use crate::descriptors::WasmBindgenDescriptorsSection;
 use crate::intrinsic::Intrinsic;
-use crate::{decode, PLACEHOLDER_MODULE};
+use crate::{decode, Bindgen, PLACEHOLDER_MODULE};
 use anyhow::{anyhow, bail, Error};
 use std::collections::{HashMap, HashSet};
 use std::str;
@@ -36,6 +36,7 @@ struct Context<'a> {
     externref_enabled: bool,
     thread_count: Option<ThreadCount>,
     support_start: bool,
+    linked_modules: bool,
 }
 
 struct InstructionBuilder<'a, 'b> {
@@ -47,11 +48,10 @@ struct InstructionBuilder<'a, 'b> {
 }
 
 pub fn process(
+    bindgen: &mut Bindgen,
     module: &mut Module,
     programs: Vec<decode::Program>,
-    externref_enabled: bool,
     thread_count: Option<ThreadCount>,
-    support_start: bool,
 ) -> Result<(NonstandardWitSectionId, WasmBindgenAuxId), Error> {
     let mut cx = Context {
         adapters: Default::default(),
@@ -65,9 +65,10 @@ pub fn process(
         memory: wasm_bindgen_wasm_conventions::get_memory(module).ok(),
         module,
         start_found: false,
-        externref_enabled,
+        externref_enabled: bindgen.externref,
         thread_count,
-        support_start,
+        support_start: bindgen.emit_start,
+        linked_modules: bindgen.split_linked_modules,
     };
     cx.init()?;
 
@@ -392,7 +393,10 @@ impl<'a> Context<'a> {
             linked_modules,
         } = program;
 
-        for module in &local_modules {
+        for module in local_modules
+            .iter()
+            .filter(|module| self.linked_modules || !module.linked_module)
+        {
             // All local modules we find should be unique, but the same module
             // may have showed up in a few different blocks. If that's the case
             // all the same identifiers should have the same contents.

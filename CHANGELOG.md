@@ -196,6 +196,9 @@ Released 2024-08-13
 * `#[track_caller]` is now always applied on `UnwrapThrowExt` methods when not targetting `wasm32-unknown-unknown`.
   [#4042](https://github.com/rustwasm/wasm-bindgen/pull/4042)
 
+* Fixed linked modules emitting snippet files when not using `--split-linked-modules`.
+  [#4066](https://github.com/rustwasm/wasm-bindgen/pull/4066)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.92](https://github.com/rustwasm/wasm-bindgen/compare/0.2.91...0.2.92)

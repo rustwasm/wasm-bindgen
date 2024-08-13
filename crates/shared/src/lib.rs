@@ -156,6 +156,7 @@ macro_rules! shared_api {
         struct LocalModule<'a> {
             identifier: &'a str,
             contents: &'a str,
+            linked_module: bool,
         }
         }
     }; // end of mac case

@@ -368,13 +368,7 @@ impl Bindgen {
         // auxiliary section for all sorts of miscellaneous information and
         // features #[wasm_bindgen] supports that aren't covered by wasm
         // interface types.
-        wit::process(
-            &mut module,
-            programs,
-            self.externref,
-            thread_count,
-            self.emit_start,
-        )?;
+        wit::process(self, &mut module, programs, thread_count)?;
 
         // Now that we've got type information from the webidl processing pass,
         // touch up the output of rustc to insert externref shims where necessary.
@@ -599,14 +593,6 @@ impl Output {
 
     pub fn start(&self) -> Option<&String> {
         self.generated.start.as_ref()
-    }
-
-    pub fn snippets(&self) -> &HashMap<String, Vec<String>> {
-        &self.generated.snippets
-    }
-
-    pub fn local_modules(&self) -> &HashMap<String, String> {
-        &self.generated.local_modules
     }
 
     pub fn npm_dependencies(&self) -> &HashMap<String, (PathBuf, String)> {
