@@ -1,6 +1,18 @@
 # `wasm-bindgen` Change Log
 --------------------------------------------------------------------------------
 
+## Unreleased
+
+### Fixed
+
+* Fixed linked modules emitting snippet files when not using `--split-linked-modules`.
+  [#4066](https://github.com/rustwasm/wasm-bindgen/pull/4066)
+
+* Fixed incorrect deprecation warning when passing no parameter into `default()` (`init()`) or `initSync()`.
+  [#4074](https://github.com/rustwasm/wasm-bindgen/pull/4074)
+
+--------------------------------------------------------------------------------
+
 ## [0.2.93](https://github.com/rustwasm/wasm-bindgen/compare/0.2.92...0.2.93)
 
 Released 2024-08-13
