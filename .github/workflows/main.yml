@@ -443,28 +443,28 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - run: rustup update --no-self-update stable && rustup default stable
-    - run: cargo build --manifest-path crates/cli/Cargo.toml --release
+    - run: rustup target add x86_64-apple-darwin
+    - run: cargo build --manifest-path crates/cli/Cargo.toml --target x86_64-apple-darwin --release
       env:
         MACOSX_DEPLOYMENT_TARGET: 10.7
     - uses: actions/upload-artifact@v4
       with:
         name: dist_macos_x86_64
-        path: "target/release/wasm*"
+        path: "target/x86_64-apple-darwin/release/wasm*"
 
   dist_macos_aarch64:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
     - run: rustup update --no-self-update stable && rustup default stable
-    - run: rustup target add aarch64-apple-darwin
     - run: |
-        cargo build --manifest-path crates/cli/Cargo.toml --target aarch64-apple-darwin --release
+        cargo build --manifest-path crates/cli/Cargo.toml --release
       env:
         MACOSX_DEPLOYMENT_TARGET: 10.7
     - uses: actions/upload-artifact@v4
       with:
         name: dist_macos_aarch64
-        path: "target/aarch64-apple-darwin/release/wasm*"
+        path: "target/release/wasm*"
 
   dist_windows:
     runs-on: windows-latest
