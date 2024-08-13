@@ -336,10 +336,13 @@ async function __wbg_init(module_or_path) {
     if (wasm !== undefined) return wasm;
 
 
-    if (typeof module_or_path !== 'undefined' && Object.getPrototypeOf(module_or_path) === Object.prototype)
-    ({module_or_path} = module_or_path)
-    else
-    console.warn('using deprecated parameters for the initialization function; pass a single object instead')
+    if (typeof module_or_path !== 'undefined') {
+        if (Object.getPrototypeOf(module_or_path) === Object.prototype) {
+            ({module_or_path} = module_or_path)
+        } else {
+            console.warn('using deprecated parameters for the initialization function; pass a single object instead')
+        }
+    }
 
     if (typeof module_or_path === 'undefined') {
         module_or_path = new URL('default_module_path_target_web_bg.wasm', import.meta.url);
@@ -371,10 +374,13 @@ fn default_module_path_target_no_modules() {
         if (wasm !== undefined) return wasm;
 
 
-        if (typeof module_or_path !== 'undefined' && Object.getPrototypeOf(module_or_path) === Object.prototype)
-        ({module_or_path} = module_or_path)
-        else
-        console.warn('using deprecated parameters for the initialization function; pass a single object instead')
+        if (typeof module_or_path !== 'undefined') {
+            if (Object.getPrototypeOf(module_or_path) === Object.prototype) {
+                ({module_or_path} = module_or_path)
+            } else {
+                console.warn('using deprecated parameters for the initialization function; pass a single object instead')
+            }
+        }
 
         if (typeof module_or_path === 'undefined' && typeof script_src !== 'undefined') {
             module_or_path = script_src.replace(/\\.js$/, '_bg.wasm');
@@ -400,10 +406,13 @@ async function __wbg_init(module_or_path) {
     if (wasm !== undefined) return wasm;
 
 
-    if (typeof module_or_path !== 'undefined' && Object.getPrototypeOf(module_or_path) === Object.prototype)
-    ({module_or_path} = module_or_path)
-    else
-    console.warn('using deprecated parameters for the initialization function; pass a single object instead')
+    if (typeof module_or_path !== 'undefined') {
+        if (Object.getPrototypeOf(module_or_path) === Object.prototype) {
+            ({module_or_path} = module_or_path)
+        } else {
+            console.warn('using deprecated parameters for the initialization function; pass a single object instead')
+        }
+    }
 
 
     const imports = __wbg_get_imports();",
@@ -428,10 +437,13 @@ fn omit_default_module_path_target_no_modules() {
         if (wasm !== undefined) return wasm;
 
 
-        if (typeof module_or_path !== 'undefined' && Object.getPrototypeOf(module_or_path) === Object.prototype)
-        ({module_or_path} = module_or_path)
-        else
-        console.warn('using deprecated parameters for the initialization function; pass a single object instead')
+        if (typeof module_or_path !== 'undefined') {
+            if (Object.getPrototypeOf(module_or_path) === Object.prototype) {
+                ({module_or_path} = module_or_path)
+            } else {
+                console.warn('using deprecated parameters for the initialization function; pass a single object instead')
+            }
+        }
 
 
         const imports = __wbg_get_imports();",
