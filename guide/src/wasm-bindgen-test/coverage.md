@@ -68,21 +68,24 @@ crate_name=name_of_the_tested_crate_in_snake_case
 objects=()
 IFS=$'\n'
 for file in $(
-  CARGO_HOST_RUSTFLAGS=--cfg=wasm_bindgen_unstable_test_coverage \
-  RUSTFLAGS="-Cinstrument-coverage -Zno-profiler-runtime --emit=llvm-ir --cfg=wasm_bindgen_unstable_test_coverage" \
-  cargo +nightly test -Ztarget-applies-to-host -Zhost-config --tests --no-run --message-format=json | \
-  jq -r "select(.reason == \"compiler-artifact\") | (select(.target.kind == [\"test\"]) // select(.target.name == \"$crate_name\")) | .filenames[0]"
+    CARGO_HOST_RUSTFLAGS=--cfg=wasm_bindgen_unstable_test_coverage \
+    RUSTFLAGS="-Cinstrument-coverage -Zno-profiler-runtime --emit=llvm-ir --cfg=wasm_bindgen_unstable_test_coverage" \
+    cargo +nightly test -Ztarget-applies-to-host -Zhost-config --tests --no-run --message-format=json | \
+    jq -r "select(.reason == \"compiler-artifact\") | (select(.target.kind == [\"test\"]) // select(.target.name == \"$crate_name\")) | .filenames[0]"
 )
 do
-  if [[ ${file##*.} == "rlib" ]]; then
-      base=$(basename $file .rlib)
-      file=$(dirname $file)/${base#"lib"}.ll
-  else
-      file=$(dirname $file)/$(basename $file .wasm).ll
-  fi
+    if [[ ${file##*.} == "rlib" ]]; then
+        base=$(basename $file .rlib)
+        file=$(dirname $file)/${base#"lib"}.ll
+    else
+        file=$(dirname $file)/$(basename $file .wasm).ll
+    fi
 
-  perl -i -p0e 's/(^define.*?$).*?^}/$1\nstart:\n  unreachable\n}/gms' $file
-  perl -i -p0e 's/(^define( [^ ]+)*) range\(.*?\)/$1/gm' $file
+    perl -i -p0e 's/(^define.*?$).*?^}/$1\nstart:\n  unreachable\n}/gms' $file
+    counter=1
+    while (( counter != 0 )); do
+        counter=$(perl -i -p0e '$c+= s/(^(define|declare)(,? [^\n ]+)*),? range\(.*?\)/$1/gm; END{print "$c"}' $file)
+    done
 
   output = $(basename $file .ll).o
   clang-18 $input -Wno-override-module -c -o $output
