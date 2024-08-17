@@ -8,7 +8,7 @@ use std::{env, str};
 
 use anyhow::{bail, Context};
 use futures_util::{future, SinkExt, StreamExt};
-use http::{HeaderName, HeaderValue};
+use http::{HeaderName, HeaderValue, Response};
 use hyper_util::rt::{TokioExecutor, TokioIo};
 use hyper_util::server::conn::auto::Builder;
 use hyper_util::service::TowerToHyperService;
@@ -24,8 +24,8 @@ use tokio::time::timeout;
 use tokio_tungstenite::tungstenite::{self, Message};
 use tokio_tungstenite::{MaybeTlsStream, WebSocketStream};
 use tower::ServiceBuilder;
+use tower_http::services::fs::ServeFileSystemResponseBody;
 use tower_http::services::ServeDir;
-use tower_http::ServiceBuilderExt;
 
 /// A command sent from the client to the server.
 #[derive(Serialize)]
@@ -330,14 +330,17 @@ pub async fn test_example(
     // Serve the path.
     let service = TowerToHyperService::new(
         ServiceBuilder::new()
-            .override_response_header(
-                HeaderName::from_static("cross-origin-opener-policy"),
-                HeaderValue::from_static("same-origin"),
-            )
-            .override_response_header(
-                HeaderName::from_static("cross-origin-embedder-policy"),
-                HeaderValue::from_static("require-corp"),
-            )
+            .map_response(|mut response: Response<ServeFileSystemResponseBody>| {
+                response.headers_mut().insert(
+                    HeaderName::from_static("cross-origin-opener-policy"),
+                    HeaderValue::from_static("same-origin"),
+                );
+                response.headers_mut().insert(
+                    HeaderName::from_static("cross-origin-embedder-policy"),
+                    HeaderValue::from_static("require-corp"),
+                );
+                response
+            })
             .service(ServeDir::new(path)),
     );
 
