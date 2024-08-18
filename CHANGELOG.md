@@ -11,6 +11,9 @@
 * Fixed incorrect deprecation warning when passing no parameter into `default()` (`init()`) or `initSync()`.
   [#4074](https://github.com/rustwasm/wasm-bindgen/pull/4074)
 
+* Fixed many proc-macro generated `impl` blocks missing `#[automatically_derived]`, affecting test coverage.
+  [#4078](https://github.com/rustwasm/wasm-bindgen/pull/4078)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.93](https://github.com/rustwasm/wasm-bindgen/compare/0.2.92...0.2.93)
