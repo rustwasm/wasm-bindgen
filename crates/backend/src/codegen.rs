@@ -222,7 +222,6 @@ impl ToTokens for ast::Struct {
         (quote! {
             #[automatically_derived]
             impl #wasm_bindgen::describe::WasmDescribe for #name {
-                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
                 fn describe() {
                     use #wasm_bindgen::__wbindgen_if_not_std;
                     use #wasm_bindgen::describe::*;
@@ -369,7 +368,7 @@ impl ToTokens for ast::Struct {
                 fn is_none(abi: &Self::Abi) -> bool { *abi == 0 }
             }
 
-            #[allow(clippy::all)]
+            #[automatically_derived]
             impl #wasm_bindgen::convert::TryFromJsValue for #name {
                 type Error = #wasm_bindgen::JsValue;
 
@@ -404,8 +403,8 @@ impl ToTokens for ast::Struct {
                 }
             }
 
+            #[automatically_derived]
             impl #wasm_bindgen::describe::WasmDescribeVector for #name {
-                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
                 fn describe_vector() {
                     use #wasm_bindgen::describe::*;
                     inform(VECTOR);
@@ -415,6 +414,7 @@ impl ToTokens for ast::Struct {
                 }
             }
 
+            #[automatically_derived]
             impl #wasm_bindgen::convert::VectorIntoWasmAbi for #name {
                 type Abi = <
                     #wasm_bindgen::__rt::alloc::boxed::Box<[#wasm_bindgen::JsValue]>
@@ -428,6 +428,7 @@ impl ToTokens for ast::Struct {
                 }
             }
 
+            #[automatically_derived]
             impl #wasm_bindgen::convert::VectorFromWasmAbi for #name {
                 type Abi = <
                     #wasm_bindgen::__rt::alloc::boxed::Box<[#wasm_bindgen::JsValue]>
@@ -441,6 +442,7 @@ impl ToTokens for ast::Struct {
                 }
             }
 
+            #[automatically_derived]
             impl #wasm_bindgen::__rt::VectorIntoJsValue for #name {
                 fn vector_into_jsvalue(vector: #wasm_bindgen::__rt::alloc::boxed::Box<[#name]>) -> #wasm_bindgen::JsValue {
                     #wasm_bindgen::__rt::js_value_vector_into_jsvalue(vector)
@@ -939,13 +941,14 @@ impl ToTokens for ast::ImportType {
                 use #wasm_bindgen::{JsValue, JsCast, JsObject};
                 use #wasm_bindgen::__rt::core;
 
+                #[automatically_derived]
                 impl WasmDescribe for #rust_name {
-                    #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
                     fn describe() {
                         #description
                     }
                 }
 
+                #[automatically_derived]
                 impl IntoWasmAbi for #rust_name {
                     type Abi = <JsValue as IntoWasmAbi>::Abi;
 
@@ -955,6 +958,7 @@ impl ToTokens for ast::ImportType {
                     }
                 }
 
+                #[automatically_derived]
                 impl OptionIntoWasmAbi for #rust_name {
                     #[inline]
                     fn none() -> Self::Abi {
@@ -962,6 +966,7 @@ impl ToTokens for ast::ImportType {
                     }
                 }
 
+                #[automatically_derived]
                 impl<'a> OptionIntoWasmAbi for &'a #rust_name {
                     #[inline]
                     fn none() -> Self::Abi {
@@ -969,6 +974,7 @@ impl ToTokens for ast::ImportType {
                     }
                 }
 
+                #[automatically_derived]
                 impl FromWasmAbi for #rust_name {
                     type Abi = <JsValue as FromWasmAbi>::Abi;
 
@@ -980,11 +986,13 @@ impl ToTokens for ast::ImportType {
                     }
                 }
 
+                #[automatically_derived]
                 impl OptionFromWasmAbi for #rust_name {
                     #[inline]
                     fn is_none(abi: &Self::Abi) -> bool { *abi == 0 }
                 }
 
+                #[automatically_derived]
                 impl<'a> IntoWasmAbi for &'a #rust_name {
                     type Abi = <&'a JsValue as IntoWasmAbi>::Abi;
 
@@ -994,6 +1002,7 @@ impl ToTokens for ast::ImportType {
                     }
                 }
 
+                #[automatically_derived]
                 impl RefFromWasmAbi for #rust_name {
                     type Abi = <JsValue as RefFromWasmAbi>::Abi;
                     type Anchor = core::mem::ManuallyDrop<#rust_name>;
@@ -1007,6 +1016,7 @@ impl ToTokens for ast::ImportType {
                     }
                 }
 
+                #[automatically_derived]
                 impl LongRefFromWasmAbi for #rust_name {
                     type Abi = <JsValue as LongRefFromWasmAbi>::Abi;
                     type Anchor = #rust_name;
@@ -1019,6 +1029,7 @@ impl ToTokens for ast::ImportType {
                 }
 
                 // TODO: remove this on the next major version
+                #[automatically_derived]
                 impl From<JsValue> for #rust_name {
                     #[inline]
                     fn from(obj: JsValue) -> #rust_name {
@@ -1026,17 +1037,20 @@ impl ToTokens for ast::ImportType {
                     }
                 }
 
+                #[automatically_derived]
                 impl AsRef<JsValue> for #rust_name {
                     #[inline]
                     fn as_ref(&self) -> &JsValue { self.obj.as_ref() }
                 }
 
+                #[automatically_derived]
                 impl AsRef<#rust_name> for #rust_name {
                     #[inline]
                     fn as_ref(&self) -> &#rust_name { self }
                 }
 
 
+                #[automatically_derived]
                 impl From<#rust_name> for JsValue {
                     #[inline]
                     fn from(obj: #rust_name) -> JsValue {
@@ -1044,6 +1058,7 @@ impl ToTokens for ast::ImportType {
                     }
                 }
 
+                #[automatically_derived]
                 impl JsCast for #rust_name {
                     fn instanceof(val: &JsValue) -> bool {
                         #[link(wasm_import_module = "__wbindgen_placeholder__")]
@@ -1592,7 +1607,7 @@ impl ToTokens for ast::Enum {
                 }
             }
 
-            #[allow(clippy::all)]
+            #[automatically_derived]
             impl #wasm_bindgen::convert::TryFromJsValue for #enum_name {
                 type Error = #wasm_bindgen::JsValue;
 
@@ -1609,8 +1624,8 @@ impl ToTokens for ast::Enum {
                 }
             }
 
+            #[automatically_derived]
             impl #wasm_bindgen::describe::WasmDescribeVector for #enum_name {
-                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
                 fn describe_vector() {
                     use #wasm_bindgen::describe::*;
                     inform(VECTOR);
@@ -1618,6 +1633,7 @@ impl ToTokens for ast::Enum {
                 }
             }
 
+            #[automatically_derived]
             impl #wasm_bindgen::convert::VectorIntoWasmAbi for #enum_name {
                 type Abi = <
                     #wasm_bindgen::__rt::alloc::boxed::Box<[#wasm_bindgen::JsValue]>
@@ -1631,6 +1647,7 @@ impl ToTokens for ast::Enum {
                 }
             }
 
+            #[automatically_derived]
             impl #wasm_bindgen::convert::VectorFromWasmAbi for #enum_name {
                 type Abi = <
                     #wasm_bindgen::__rt::alloc::boxed::Box<[#wasm_bindgen::JsValue]>
@@ -1644,6 +1661,7 @@ impl ToTokens for ast::Enum {
                 }
             }
 
+            #[automatically_derived]
             impl #wasm_bindgen::__rt::VectorIntoJsValue for #enum_name {
                 fn vector_into_jsvalue(vector: #wasm_bindgen::__rt::alloc::boxed::Box<[#enum_name]>) -> #wasm_bindgen::JsValue {
                     #wasm_bindgen::__rt::js_value_vector_into_jsvalue(vector)
