@@ -1387,6 +1387,15 @@ impl BigInt {
             .pow(JsValue::as_ref(rhs))
             .unchecked_into()
     }
+
+    /// Returns the absolute value of this BigInt value.
+    fn abs(&self) -> Self {
+        if self >= &BigInt::from(0) {
+            self.clone()
+        } else {
+            -self
+        }
+    }
 }
 
 macro_rules! bigint_from {
@@ -1493,21 +1502,33 @@ impl fmt::Debug for BigInt {
 impl fmt::Display for BigInt {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.pad_integral(self >= &BigInt::from(0), "", &self.to_string_unchecked(10))
+        f.pad_integral(
+            self >= &BigInt::from(0),
+            "",
+            &self.abs().to_string_unchecked(10),
+        )
     }
 }
 
 impl fmt::Binary for BigInt {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.pad_integral(self >= &BigInt::from(0), "0b", &self.to_string_unchecked(2))
+        f.pad_integral(
+            self >= &BigInt::from(0),
+            "0b",
+            &self.abs().to_string_unchecked(2),
+        )
     }
 }
 
 impl fmt::Octal for BigInt {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.pad_integral(self >= &BigInt::from(0), "0o", &self.to_string_unchecked(8))
+        f.pad_integral(
+            self >= &BigInt::from(0),
+            "0o",
+            &self.abs().to_string_unchecked(8),
+        )
     }
 }
 
@@ -1517,7 +1538,7 @@ impl fmt::LowerHex for BigInt {
         f.pad_integral(
             self >= &BigInt::from(0),
             "0x",
-            &self.to_string_unchecked(16),
+            &self.abs().to_string_unchecked(16),
         )
     }
 }
@@ -1525,7 +1546,7 @@ impl fmt::LowerHex for BigInt {
 impl fmt::UpperHex for BigInt {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let mut s: String = self.to_string_unchecked(16);
+        let mut s: String = self.abs().to_string_unchecked(16);
         s.make_ascii_uppercase();
         f.pad_integral(self >= &BigInt::from(0), "0x", &s)
     }
