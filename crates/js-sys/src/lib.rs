@@ -1388,7 +1388,8 @@ impl BigInt {
             .unchecked_into()
     }
 
-    /// Returns a tuple of this BigInt's absolute value along with a boolean indicating whether the BigInt was negative.
+    /// Returns a tuple of this [`BigInt`]'s absolute value along with a
+    /// [`bool`] indicating whether the [`BigInt`] was negative.
     fn abs(&self) -> (Self, bool) {
         if self >= &BigInt::from(0) {
             (self.clone(), false)
