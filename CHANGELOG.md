@@ -14,6 +14,9 @@
 * Fixed many proc-macro generated `impl` blocks missing `#[automatically_derived]`, affecting test coverage.
   [#4078](https://github.com/rustwasm/wasm-bindgen/pull/4078)
 
+* Fixed negative `BigInt` values being incorrectly formatted with two minus signs.
+  [#4082](https://github.com/rustwasm/wasm-bindgen/pull/4082)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.93](https://github.com/rustwasm/wasm-bindgen/compare/0.2.92...0.2.93)
