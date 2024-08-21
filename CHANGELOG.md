@@ -16,6 +16,7 @@
 
 * Fixed negative `BigInt` values being incorrectly formatted with two minus signs.
   [#4082](https://github.com/rustwasm/wasm-bindgen/pull/4082)
+  [#4088](https://github.com/rustwasm/wasm-bindgen/pull/4088)
 
 --------------------------------------------------------------------------------
 
