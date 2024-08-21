@@ -1388,12 +1388,12 @@ impl BigInt {
             .unchecked_into()
     }
 
-    /// Returns the absolute value of this BigInt value.
-    fn abs(&self) -> Self {
+    /// Returns a tuple of this BigInt's absolute value along with a boolean indicating whether the BigInt was negative.
+    fn abs(&self) -> (Self, bool) {
         if self >= &BigInt::from(0) {
-            self.clone()
+            (self.clone(), false)
         } else {
-            -self
+            (-self, true)
         }
     }
 }
@@ -1502,53 +1502,42 @@ impl fmt::Debug for BigInt {
 impl fmt::Display for BigInt {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.pad_integral(
-            self >= &BigInt::from(0),
-            "",
-            &self.abs().to_string_unchecked(10),
-        )
+        let (abs, is_neg) = self.abs();
+        f.pad_integral(is_neg, "", &abs.to_string_unchecked(10))
     }
 }
 
 impl fmt::Binary for BigInt {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.pad_integral(
-            self >= &BigInt::from(0),
-            "0b",
-            &self.abs().to_string_unchecked(2),
-        )
+        let (abs, is_neg) = self.abs();
+        f.pad_integral(is_neg, "0b", &abs.to_string_unchecked(2))
     }
 }
 
 impl fmt::Octal for BigInt {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.pad_integral(
-            self >= &BigInt::from(0),
-            "0o",
-            &self.abs().to_string_unchecked(8),
-        )
+        let (abs, is_neg) = self.abs();
+        f.pad_integral(is_neg, "0o", &abs.to_string_unchecked(8))
     }
 }
 
 impl fmt::LowerHex for BigInt {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.pad_integral(
-            self >= &BigInt::from(0),
-            "0x",
-            &self.abs().to_string_unchecked(16),
-        )
+        let (abs, is_neg) = self.abs();
+        f.pad_integral(is_neg, "0x", &abs.to_string_unchecked(16))
     }
 }
 
 impl fmt::UpperHex for BigInt {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let mut s: String = self.abs().to_string_unchecked(16);
+        let (abs, is_neg) = self.abs();
+        let mut s: String = abs.to_string_unchecked(16);
         s.make_ascii_uppercase();
-        f.pad_integral(self >= &BigInt::from(0), "0x", &s)
+        f.pad_integral(is_neg, "0x", &s)
     }
 }
 
