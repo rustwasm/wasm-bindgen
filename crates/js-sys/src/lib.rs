@@ -1391,10 +1391,10 @@ impl BigInt {
     /// Returns a tuple of this [`BigInt`]'s absolute value along with a
     /// [`bool`] indicating whether the [`BigInt`] was negative.
     fn abs(&self) -> (Self, bool) {
-        if self >= &BigInt::from(0) {
-            (self.clone(), false)
-        } else {
+        if self < &BigInt::from(0) {
             (-self, true)
+        } else {
+            (self.clone(), false)
         }
     }
 }
@@ -1504,7 +1504,7 @@ impl fmt::Display for BigInt {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let (abs, is_neg) = self.abs();
-        f.pad_integral(is_neg, "", &abs.to_string_unchecked(10))
+        f.pad_integral(!is_neg, "", &abs.to_string_unchecked(10))
     }
 }
 
@@ -1512,7 +1512,7 @@ impl fmt::Binary for BigInt {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let (abs, is_neg) = self.abs();
-        f.pad_integral(is_neg, "0b", &abs.to_string_unchecked(2))
+        f.pad_integral(!is_neg, "0b", &abs.to_string_unchecked(2))
     }
 }
 
@@ -1520,7 +1520,7 @@ impl fmt::Octal for BigInt {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let (abs, is_neg) = self.abs();
-        f.pad_integral(is_neg, "0o", &abs.to_string_unchecked(8))
+        f.pad_integral(!is_neg, "0o", &abs.to_string_unchecked(8))
     }
 }
 
@@ -1528,7 +1528,7 @@ impl fmt::LowerHex for BigInt {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let (abs, is_neg) = self.abs();
-        f.pad_integral(is_neg, "0x", &abs.to_string_unchecked(16))
+        f.pad_integral(!is_neg, "0x", &abs.to_string_unchecked(16))
     }
 }
 
@@ -1538,7 +1538,7 @@ impl fmt::UpperHex for BigInt {
         let (abs, is_neg) = self.abs();
         let mut s: String = abs.to_string_unchecked(16);
         s.make_ascii_uppercase();
-        f.pad_integral(is_neg, "0x", &s)
+        f.pad_integral(!is_neg, "0x", &s)
     }
 }
 
