@@ -76,6 +76,9 @@
 * Fixed error when importing very large JS files.
   [#4146](https://github.com/rustwasm/wasm-bindgen/pull/4146)
 
+* Specify `"type": "module"` when deploying to nodejs-module
+  [#4092](https://github.com/rustwasm/wasm-bindgen/pull/4092)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.93](https://github.com/rustwasm/wasm-bindgen/compare/0.2.92...0.2.93)
