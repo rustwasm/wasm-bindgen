@@ -483,6 +483,25 @@ impl<'a> Context<'a> {
                         module_name
                     ))));
                 }
+
+                match self.config.mode {
+                    OutputMode::Bundler { .. } => {
+                        start.get_or_insert_with(String::new).push_str(&format!(
+                            "\
+import {{ __wbg_set_wasm }} from \"./{module_name}_bg.js\";
+__wbg_set_wasm(wasm);"
+                        ));
+                    }
+
+                    OutputMode::Node { module: true } => {
+                        start.get_or_insert_with(String::new).push_str(&format!(
+                            "imports[\"./{module_name}_bg.js\"].__wbg_set_wasm(wasm);"
+                        ));
+                    }
+
+                    _ => {}
+                }
+
                 if needs_manual_start {
                     start
                         .get_or_insert_with(String::new)
