@@ -34,7 +34,7 @@ provides the support for:
 * Catching JS exceptions so tests can continue to run after a test fails
 * Driving execution of all tests
 
-This is the crate which you actually link to in your wasm test and through which
+This is the crate which you actually link to in your Wasm test and through which
 you import the `#[wasm_bindgen_test]` macro. Otherwise this crate provides a
 `console_log!` macro that's a utility like `println!` only using `console.log`.
 
@@ -46,7 +46,7 @@ bare bones!
 This is where the secret sauce comes into play. We configured Cargo to execute
 this binary *instead* of directly executing the `*.wasm` file (which Cargo would
 otherwise try to do). This means that whenever a test is executed it executes
-this binary with the wasm file as an argument, allowing it to take full control
+this binary with the Wasm file as an argument, allowing it to take full control
 over the test process!
 
 The test runner is currently pretty simple, executing a few steps:
@@ -59,8 +59,8 @@ The test runner is currently pretty simple, executing a few steps:
   tests.
 
 In essence what happens is that this test runner automatically executes
-`wasm-bindgen` and then uses Node to actually execute the wasm file, meaning
-that your wasm code currently runs in a Node environment.
+`wasm-bindgen` and then uses Node to actually execute the Wasm file, meaning
+that your Wasm code currently runs in a Node environment.
 
 ## Future Work
 
@@ -68,5 +68,5 @@ Things that'd be awesome to support in the future:
 
 * Arguments to `wasm-bindgen-test-runner` which are the same as `wasm-bindgen`,
   for example `--debug` to affect the generated output.
-* Running each test in its own wasm instance to avoid poisoning the environment
+* Running each test in its own Wasm instance to avoid poisoning the environment
   on panic

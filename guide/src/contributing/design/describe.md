@@ -8,7 +8,7 @@ reads.
 
 To accomplish this a slightly unconventional approach is taken. Static
 information about the structure of the Rust code is serialized via JSON
-(currently) to a custom section of the wasm executable. Other information, like
+(currently) to a custom section of the Wasm executable. Other information, like
 what the types actually are, unfortunately isn't known until later in the
 compiler due to things like associated type projections and typedefs. It also
 turns out that we want to convey "rich" types like `FnMut(String, Foo,
@@ -54,4 +54,4 @@ which fully describes a type.
 
 All in all this is a bit roundabout but shouldn't have any impact on the
 generated code or runtime at all. All these descriptor functions are pruned from
-the emitted wasm file.
+the emitted Wasm file.

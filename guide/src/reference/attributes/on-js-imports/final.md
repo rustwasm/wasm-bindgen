@@ -140,10 +140,10 @@ export const __wbg_bar_a81456386e6b526f = Foo.prototype.bar;
 
 and voila! We, with [reference types][reference-types] and [component
 model][component-model], now have no JS function shim at all necessary to call
-the imported function. Additionally future wasm proposals to the ES module
+the imported function. Additionally future Wasm proposals to the ES module
 system may also mean that don't even need the `export const ...` here too.
 
-It's also worth pointing out that with all these wasm proposals implemented the
+It's also worth pointing out that with all these Wasm proposals implemented the
 default way to import the `bar` function (aka `structural`) would generate a JS
 function shim that looks like:
 

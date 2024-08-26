@@ -55,9 +55,9 @@ impl Config {
         }
     }
 
-    /// Specify the maximum amount of memory the wasm module can ever have.
+    /// Specify the maximum amount of memory the Wasm module can ever have.
     ///
-    /// We'll be specifying that the memory for this wasm module is shared, and
+    /// We'll be specifying that the memory for this Wasm module is shared, and
     /// all shared memories must have their maximum limit specified (whereas
     /// by default Rust/LLVM/LLD don't specify a maximum).
     ///
@@ -87,7 +87,7 @@ impl Config {
         self
     }
 
-    /// Execute the transformation on the parsed wasm module specified.
+    /// Execute the transformation on the parsed Wasm module specified.
     ///
     /// This function will prepare `Module` to be run on multiple threads,
     /// performing steps such as:

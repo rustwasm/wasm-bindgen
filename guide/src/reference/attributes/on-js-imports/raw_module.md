@@ -14,6 +14,6 @@ extern "C" {
 Note that if you use this attribute with a relative or absolute path, it's
 likely up to the final bundler or project to assign meaning to that path. This
 typically means that the JS file or module will be resolved relative to the
-final location of the wasm file itself. That means that `raw_module` is likely
+final location of the Wasm file itself. That means that `raw_module` is likely
 unsuitable for libraries on crates.io, but may be usable within end-user
 applications.

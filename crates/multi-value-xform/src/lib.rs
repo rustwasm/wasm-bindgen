@@ -74,7 +74,7 @@
 //!   local.get 1
 //!   call $pair
 //!
-//!   ;; Copy the return values from the stack to the wasm stack.
+//!   ;; Copy the return values from the stack to the Wasm stack.
 //!   local.get 2
 //!   i32.load
 //!   local.get 2 offset=4

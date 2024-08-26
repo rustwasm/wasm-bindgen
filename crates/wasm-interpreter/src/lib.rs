@@ -1,8 +1,8 @@
-//! A tiny and incomplete wasm interpreter
+//! A tiny and incomplete Wasm interpreter
 //!
-//! This module contains a tiny and incomplete wasm interpreter built on top of
+//! This module contains a tiny and incomplete Wasm interpreter built on top of
 //! `walrus`'s module structure. Each `Interpreter` contains some state
-//! about the execution of a wasm instance. The "incomplete" part here is
+//! about the execution of a Wasm instance. The "incomplete" part here is
 //! related to the fact that this is *only* used to execute the various
 //! descriptor functions for wasm-bindgen.
 //!
@@ -23,11 +23,11 @@ use std::collections::{BTreeMap, BTreeSet, HashMap};
 use walrus::ir::Instr;
 use walrus::{ElementId, FunctionId, LocalId, Module, TableId};
 
-/// A ready-to-go interpreter of a wasm module.
+/// A ready-to-go interpreter of a Wasm module.
 ///
 /// An interpreter currently represents effectively cached state. It is reused
 /// between calls to `interpret` and is precomputed from a `Module`. It houses
-/// state like the wasm stack, wasm memory, etc.
+/// state like the Wasm stack, Wasm memory, etc.
 #[derive(Default)]
 pub struct Interpreter {
     // Function index of the `__wbindgen_describe` and
@@ -43,7 +43,7 @@ pub struct Interpreter {
     // functions.
     name_map: HashMap<String, FunctionId>,
 
-    // The current stack pointer (global 0) and wasm memory (the stack). Only
+    // The current stack pointer (global 0) and Wasm memory (the stack). Only
     // used in a limited capacity.
     sp: i32,
     mem: Vec<i32>,
@@ -70,7 +70,7 @@ impl Interpreter {
         let mut ret = Interpreter::default();
 
         // Give ourselves some memory and set the stack pointer
-        // (the LLVM call stack, now the wasm stack, global 0) to the top.
+        // (the LLVM call stack, now the Wasm stack, global 0) to the top.
         ret.mem = vec![0; 0x8000];
         ret.sp = ret.mem.len() as i32;
 
@@ -130,7 +130,7 @@ impl Interpreter {
     pub fn interpret_descriptor(&mut self, id: FunctionId, module: &Module) -> Option<&[u32]> {
         self.descriptor.truncate(0);
 
-        // We should have a blank wasm and LLVM stack at both the start and end
+        // We should have a blank Wasm and LLVM stack at both the start and end
         // of the call.
         assert_eq!(self.sp, self.mem.len() as i32);
         self.call(id, module, &[]);

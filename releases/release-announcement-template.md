@@ -1,6 +1,6 @@
 # Announcing `wasm-bindgen` $TODO_VERSION
 
-`wasm-bindgen` facilitates high-level interactions between wasm modules and
+`wasm-bindgen` facilitates high-level interactions between Wasm modules and
 JavaScript.
 
 * [GitHub][]

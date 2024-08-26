@@ -160,7 +160,7 @@ function executeBenchmark(name, bm) {
   });
 }
 
-// Load wasm files and when they're done (plus the DOM) then we initialize
+// Load Wasm files and when they're done (plus the DOM) then we initialize
 // everything
 const wasms = [];
 wasms.push(wbindgen_init('./pkg/wasm_bindgen_benchmark_bg.wasm'));

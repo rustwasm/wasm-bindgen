@@ -1,8 +1,8 @@
 # `start`
 
 When attached to a function this attribute will configure the `start`
-section of the wasm executable to be emitted, executing the tagged function as
-soon as the wasm module is instantiated.
+section of the Wasm executable to be emitted, executing the tagged function as
+soon as the Wasm module is instantiated.
 
 ```rust
 #[wasm_bindgen(start)]
@@ -11,7 +11,7 @@ fn start() {
 }
 ```
 
-The `start` section of the wasm executable will be configured to execute the
+The `start` section of the Wasm executable will be configured to execute the
 `start` function here as soon as it can. Note that due to various practical
 limitations today the start section of the executable may not literally point to
 `start`, but the `start` function here should be started up automatically when the

@@ -5,7 +5,7 @@ use crate::describe::*;
 use crate::JsValue;
 
 /// A trait for anything that can be converted into a type that can cross the
-/// wasm ABI directly, eg `u32` or `f64`.
+/// Wasm ABI directly, eg `u32` or `f64`.
 ///
 /// This is the opposite operation as `FromWasmAbi` and `Ref[Mut]FromWasmAbi`.
 ///
@@ -15,7 +15,7 @@ use crate::JsValue;
 /// stability guarantees** are provided. Use at your own risk. See its
 /// documentation for more details.
 pub trait IntoWasmAbi: WasmDescribe {
-    /// The wasm ABI type that this converts into when crossing the ABI
+    /// The Wasm ABI type that this converts into when crossing the ABI
     /// boundary.
     type Abi: WasmAbi;
 
@@ -24,8 +24,8 @@ pub trait IntoWasmAbi: WasmDescribe {
     fn into_abi(self) -> Self::Abi;
 }
 
-/// A trait for anything that can be recovered by-value from the wasm ABI
-/// boundary, eg a Rust `u8` can be recovered from the wasm ABI `u32` type.
+/// A trait for anything that can be recovered by-value from the Wasm ABI
+/// boundary, eg a Rust `u8` can be recovered from the Wasm ABI `u32` type.
 ///
 /// This is the by-value variant of the opposite operation as `IntoWasmAbi`.
 ///
@@ -35,7 +35,7 @@ pub trait IntoWasmAbi: WasmDescribe {
 /// stability guarantees** are provided. Use at your own risk. See its
 /// documentation for more details.
 pub trait FromWasmAbi: WasmDescribe {
-    /// The wasm ABI type that this converts from when coming back out from the
+    /// The Wasm ABI type that this converts from when coming back out from the
     /// ABI boundary.
     type Abi: WasmAbi;
 
@@ -50,7 +50,7 @@ pub trait FromWasmAbi: WasmDescribe {
 }
 
 /// A trait for anything that can be recovered as some sort of shared reference
-/// from the wasm ABI boundary.
+/// from the Wasm ABI boundary.
 ///
 /// This is the shared reference variant of the opposite operation as
 /// `IntoWasmAbi`.
@@ -61,7 +61,7 @@ pub trait FromWasmAbi: WasmDescribe {
 /// stability guarantees** are provided. Use at your own risk. See its
 /// documentation for more details.
 pub trait RefFromWasmAbi: WasmDescribe {
-    /// The wasm ABI type references to `Self` are recovered from.
+    /// The Wasm ABI type references to `Self` are recovered from.
     type Abi: WasmAbi;
 
     /// The type that holds the reference to `Self` for the duration of the
@@ -222,7 +222,7 @@ pub trait WasmAbi {
 }
 
 /// A trait representing how to interpret the return value of a function for
-/// the wasm ABI.
+/// the Wasm ABI.
 ///
 /// This is very similar to the `IntoWasmAbi` trait and in fact has a blanket
 /// implementation for all implementors of the `IntoWasmAbi`. The primary use

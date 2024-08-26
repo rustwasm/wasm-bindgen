@@ -1,5 +1,5 @@
 //! A representation of the Abstract Syntax Tree of a Rust program,
-//! with all the added metadata necessary to generate WASM bindings
+//! with all the added metadata necessary to generate Wasm bindings
 //! for it.
 
 use crate::{util::ShortHash, Diagnostic};
@@ -100,7 +100,7 @@ pub struct Export {
     pub rust_class: Option<Ident>,
     /// The name of the rust function/method on the rust side.
     pub rust_name: Ident,
-    /// Whether or not this function should be flagged as the wasm start
+    /// Whether or not this function should be flagged as the Wasm start
     /// function.
     pub start: bool,
     /// Path to wasm_bindgen

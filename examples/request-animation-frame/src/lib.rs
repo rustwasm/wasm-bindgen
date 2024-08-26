@@ -22,7 +22,7 @@ fn body() -> web_sys::HtmlElement {
     document().body().expect("document should have a body")
 }
 
-// This function is automatically invoked after the wasm module is instantiated.
+// This function is automatically invoked after the Wasm module is instantiated.
 #[wasm_bindgen(start)]
 fn run() -> Result<(), JsValue> {
     // Here we want to call `requestAnimationFrame` in a loop, but only a fixed

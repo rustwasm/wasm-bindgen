@@ -9,7 +9,7 @@ pub struct NonstandardWitSection {
     /// A list of adapter functions, keyed by their id.
     pub adapters: HashMap<AdapterId, Adapter>,
 
-    /// A list of pairs for adapter functions that implement core wasm imports.
+    /// A list of pairs for adapter functions that implement core Wasm imports.
     pub implements: Vec<(ImportId, FunctionId, AdapterId)>,
 
     /// A list of adapter functions and the names they're exported under.
@@ -130,18 +130,18 @@ pub enum Instruction {
         size: u32,
     },
 
-    /// Pops a typed integer (`u8`, `s16`, etc.) and pushes a plain wasm `i32` or `i64` equivalent.
+    /// Pops a typed integer (`u8`, `s16`, etc.) and pushes a plain Wasm `i32` or `i64` equivalent.
     IntToWasm {
         input: AdapterType,
         output: walrus::ValType,
     },
-    /// Pops a wasm `i32` or `i64` and pushes a typed integer (`u8`, `s16`, etc.) equivalent.
+    /// Pops a Wasm `i32` or `i64` and pushes a typed integer (`u8`, `s16`, etc.) equivalent.
     WasmToInt {
         input: walrus::ValType,
         output: AdapterType,
     },
 
-    /// Pops a wasm `i32` and pushes the enum variant as a string
+    /// Pops a Wasm `i32` and pushes the enum variant as a string
     WasmToStringEnum {
         variant_values: Vec<String>,
     },
@@ -170,7 +170,7 @@ pub enum Instruction {
     /// Pops an `externref` from the stack, allocates space in the externref table,
     /// returns the index it was stored at.
     I32FromExternrefOwned,
-    /// Pops an `externref` from the stack, pushes it onto the externref wasm table
+    /// Pops an `externref` from the stack, pushes it onto the externref Wasm table
     /// stack, and returns the index it was stored at.
     I32FromExternrefBorrow,
     /// Pops an `externref` from the stack, assumes it's a Rust class given, and
@@ -190,7 +190,7 @@ pub enum Instruction {
         class: String,
     },
     /// Pops an `externref` from the stack, pushes either 0 if it's "none" or and
-    /// index into the owned wasm table it was stored at if it's "some"
+    /// index into the owned Wasm table it was stored at if it's "some"
     I32FromOptionExternref {
         /// Set to `Some` by the externref pass of where to put it in the wasm
         /// module, otherwise it's shoved into the JS shim.

@@ -4406,7 +4406,7 @@ pub mod WebAssembly {
         /// The `WebAssembly.instantiateStreaming()` function compiles and
         /// instantiates a WebAssembly module directly from a streamed
         /// underlying source. This is the most efficient, optimized way to load
-        /// wasm code.
+        /// Wasm code.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/instantiateStreaming)
         #[wasm_bindgen(js_namespace = WebAssembly, js_name = instantiateStreaming)]
@@ -4414,7 +4414,7 @@ pub mod WebAssembly {
 
         /// The `WebAssembly.validate()` function validates a given typed
         /// array of WebAssembly binary code, returning whether the bytes
-        /// form a valid wasm module (`true`) or not (`false`).
+        /// form a valid Wasm module (`true`) or not (`false`).
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/validate)
         #[wasm_bindgen(js_namespace = WebAssembly, catch)]
@@ -6283,7 +6283,7 @@ macro_rules! arrays {
             /// Rust pointer.
             ///
             /// This function will efficiently copy the memory from a typed
-            /// array into this wasm module's own linear memory, initializing
+            /// array into this Wasm module's own linear memory, initializing
             /// the memory destination provided.
             ///
             /// # Unsafety
@@ -6302,7 +6302,7 @@ macro_rules! arrays {
             /// Rust slice.
             ///
             /// This function will efficiently copy the memory from a typed
-            /// array into this wasm module's own linear memory, initializing
+            /// array into this Wasm module's own linear memory, initializing
             /// the memory destination provided.
             ///
             /// # Panics
@@ -6318,7 +6318,7 @@ macro_rules! arrays {
             /// JS typed array.
             ///
             /// This function will efficiently copy the memory from within
-            /// the wasm module's own linear memory to this typed array.
+            /// the Wasm module's own linear memory to this typed array.
             ///
             /// # Panics
             ///

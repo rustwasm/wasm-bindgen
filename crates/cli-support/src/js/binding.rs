@@ -54,7 +54,7 @@ pub struct JsBuilder<'a, 'b> {
     /// use to translate the `arg.get` instruction.
     args: Vec<String>,
 
-    /// The wasm interface types "stack". The expressions pushed onto this stack
+    /// The Wasm interface types "stack". The expressions pushed onto this stack
     /// are intended to be *pure*, and if they're not, they should be pushed
     /// into the `prelude`, assigned to a variable, and the variable should be
     /// pushed to the stack. We're not super principled about this though, so
@@ -164,7 +164,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         // We don't actually manage a literal stack at runtime, but instead we
         // act as more of a compiler to generate straight-line code to make it
         // more JIT-friendly. The generated code should be equivalent to the
-        // wasm interface types stack machine, however.
+        // Wasm interface types stack machine, however.
         for instr in instructions {
             instruction(
                 &mut js,
@@ -1103,8 +1103,8 @@ fn instruction(
             // Then pass it the pointer and the length of where we copied it.
             js.push(format!("ptr{}", i));
             js.push(format!("len{}", i));
-            // Then we give wasm a reference to the original typed array, so that it can
-            // update it with modifications made on the wasm side before returning.
+            // Then we give Wasm a reference to the original typed array, so that it can
+            // update it with modifications made on the Wasm side before returning.
             js.push(val);
         }
 

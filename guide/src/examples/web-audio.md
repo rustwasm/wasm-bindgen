@@ -31,7 +31,7 @@ The Rust code implements the FM oscillator.
 ## `index.js`
 
 A small bit of JavaScript glues the rust module to input widgets and translates
-events into calls into wasm code.
+events into calls into Wasm code.
 
 ```js
 {{#include ../../../examples/webaudio/index.js}}

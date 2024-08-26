@@ -1,6 +1,6 @@
 use wasm_bindgen::prelude::*;
 
-// Called when the wasm module is instantiated
+// Called when the Wasm module is instantiated
 #[wasm_bindgen(start)]
 fn main() -> Result<(), JsValue> {
     // Use `web_sys`'s global `window` function to get a handle on the global

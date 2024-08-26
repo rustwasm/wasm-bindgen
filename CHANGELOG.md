@@ -468,7 +468,7 @@ Released 2023-11-01
   [#3537](https://github.com/rustwasm/wasm-bindgen/pull/3537)
 
 * Changed behavior when compiling to `wasm32-wasi` to match `wasm32-emscripten` and
-  non-WASM targets, generating a stub that panics when called rather than a wasm-
+  non-Wasm targets, generating a stub that panics when called rather than a wasm-
   bindgen placeholder.
   [#3233](https://github.com/rustwasm/wasm-bindgen/pull/3233)
 
@@ -936,7 +936,7 @@ Released 2020-04-29.
   [#2099](https://github.com/rustwasm/wasm-bindgen/pull/2099)
 
 * The output of `wasm-bindgen` is now compatible with Webpack 5 and the updated
-  version of the wasm ESM integration specification.
+  version of the Wasm ESM integration specification.
   [#2110](https://github.com/rustwasm/wasm-bindgen/pull/2099)
 
 --------------------------------------------------------------------------------
@@ -1119,7 +1119,7 @@ Released 2019-11-19.
 * Running `wasm-bindgen` over empty anyref modules now works again.
   [#1861](https://github.com/rustwasm/wasm-bindgen/pull/1861)
 
-* Support for multi-value JS engines has been fixed as a wasm interface types
+* Support for multi-value JS engines has been fixed as a Wasm interface types
   polyfill.
   [#1863](https://github.com/rustwasm/wasm-bindgen/pull/1863)
 
@@ -1342,8 +1342,8 @@ Released 2019-07-11.
   slices.
   [#1639](https://github.com/rustwasm/wasm-bindgen/pull/1639)
 
-* When using the `bundler` target the import of the wasm file now uses the
-  `.wasm` extension to ensure a wasm file is loaded.
+* When using the `bundler` target the import of the Wasm file now uses the
+  `.wasm` extension to ensure a Wasm file is loaded.
   [#1646](https://github.com/rustwasm/wasm-bindgen/pull/1646)
 
 * The old internal `Stack` trait has been removed since it is no longer used.
@@ -1471,7 +1471,7 @@ Released 2019-05-16.
 * A utility for counting the size of the `anyref` heap has been added.
   [#1521](https://github.com/rustwasm/wasm-bindgen/pull/1521)
 
-* Passing ASCII-only strings to WASM should now be significantly faster.
+* Passing ASCII-only strings to Wasm should now be significantly faster.
   [#1470](https://github.com/rustwasm/wasm-bindgen/pull/1470)
 
 * The `selectionStart` and `selectionEnd` APIs of text areas have been enabled.
@@ -1611,7 +1611,7 @@ Released 2019-04-10.
   [#1416](https://github.com/rustwasm/wasm-bindgen/pull/1416)
 
 * A `wasm_bindgen::function_table()` function has been added to expose the
-  `WebAssembly.Table` and get access to it in wasm code.
+  `WebAssembly.Table` and get access to it in Wasm code.
   [#1431](https://github.com/rustwasm/wasm-bindgen/pull/1431)
 
 ### Fixed
@@ -1774,7 +1774,7 @@ Released 2019-02-15.
   [#1225](https://github.com/rustwasm/wasm-bindgen/pull/1225).
 
 * A `--remove-producers-section` flag has been added to the CLI tool to, well,
-  remove the `producers` section from the final wasm file.
+  remove the `producers` section from the final Wasm file.
   [#1256](https://github.com/rustwasm/wasm-bindgen/pull/1256).
 
 ### Fixed
@@ -1812,7 +1812,7 @@ Released 2019-02-12.
 ### Changed
 
 * `wasm-bindgen` now internally uses the `walrus` crate to perform its
-  transformations of the wasm that rustc/LLVM emits. See
+  transformations of the Wasm that rustc/LLVM emits. See
   [#1237](https://github.com/rustwasm/wasm-bindgen/pull/1237).
 
 ### Fixed
@@ -1964,17 +1964,17 @@ Released 2018-12-04.
 ### Added
 
 * Add a `#[wasm_bindgen(start)]` attribute to customize the `start` section of
-  the wasm module.
+  the Wasm module.
   [#1057](https://github.com/rustwasm/wasm-bindgen/pull/1057)
 
-* Add support for producing the new "producers" section of wasm binaries
+* Add support for producing the new "producers" section of Wasm binaries
   [#1041](https://github.com/rustwasm/wasm-bindgen/pull/1041)
 
 * Add support a `typescript_custom_section` attribute for producing custom
   typescript abstractions
   [#1048](https://github.com/rustwasm/wasm-bindgen/pull/1048)
 
-* Generate `*.d.ts` files for wasm files in addition to the JS bindings
+* Generate `*.d.ts` files for Wasm files in addition to the JS bindings
   [#1053](https://github.com/rustwasm/wasm-bindgen/pull/1053)
 
 * Add a feature to assert that all attributes in `#[wasm_bindgen]` are used to
@@ -2251,7 +2251,7 @@ Released 2018-09-07
 
 ### Fixed
 
-* The "names" section of the wasm binary is now correctly preserved by
+* The "names" section of the Wasm binary is now correctly preserved by
   wasm-bindgen.
 
 --------------------------------------------------------------------------------

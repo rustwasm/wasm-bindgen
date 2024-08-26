@@ -1,4 +1,4 @@
-# Small wasm files
+# Small Wasm files
 
 [View full source code][code] or [view the compiled example online][online]
 
@@ -15,7 +15,7 @@ Currently this code...
 {{#include ../../../examples/add/src/lib.rs}}
 ```
 
-generates a 710 byte wasm binary:
+generates a 710 byte Wasm binary:
 
 ```
 $ ls -l add_bg.wasm

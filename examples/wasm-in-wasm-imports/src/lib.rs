@@ -23,7 +23,7 @@ macro_rules! console_error {
 const WASM: &[u8] = include_bytes!("native_add.wasm");
 
 async fn run_async() -> Result<(), JsValue> {
-    console_log!("instantiating a new wasm module directly");
+    console_log!("instantiating a new Wasm module directly");
 
     let imports = make_imports()?;
     let a = JsFuture::from(WebAssembly::instantiate_buffer(WASM, &imports)).await?;

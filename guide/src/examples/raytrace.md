@@ -9,7 +9,7 @@ This is an example of using threads with WebAssembly, Rust, and `wasm-bindgen`,
 culminating in a parallel raytracer demo. There's a number of moving pieces to
 this demo and it's unfortunately not the easiest thing to wrangle, but it's
 hoped that this'll give you a bit of a taste of what it's like to use threads
-and wasm with Rust on the web.
+and Wasm with Rust on the web.
 
 ### Building the demo
 
@@ -68,7 +68,7 @@ post its memory object to all other threads to get instantiated with.
 
 ### Caveats
 
-Unfortunately at this time running wasm on the web with threads has a number of
+Unfortunately at this time running Wasm on the web with threads has a number of
 caveats, although some are specific to just `wasm-bindgen`. These are some
 pieces to consider and watch out for, although we're always looking for
 improvements to be made so if you have an idea please file an issue!
@@ -76,7 +76,7 @@ improvements to be made so if you have an idea please file an issue!
 * The main thread in a browser cannot block. This means that if you run
   WebAssembly code on the main thread you can *never* block, meaning you can't
   do so much as acquire a mutex. This is an extremely difficult limitation to
-  work with on the web, although one workaround is to run wasm exclusively in
+  work with on the web, although one workaround is to run Wasm exclusively in
   web workers and run JS on the main thread. It is possible to run the same wasm
   across all threads, but you need to be extremely vigilant about
   synchronization with the main thread.
@@ -85,19 +85,19 @@ improvements to be made so if you have an idea please file an issue!
   today. For example `--target bundler` is unsupported and very specific shims
   are required on both the main thread and worker threads. These are possible to
   work with but are somewhat brittle since there's no standard way to spin up
-  web workers as wasm threads.
+  web workers as Wasm threads.
 
 * There is no standard notion of a "thread". For example the standard library
   has no viable route to implement the `std::thread` module. As a consequence
   there is no concept of thread exit and TLS destructors will never run.
   We do expose a helper, `__wbindgen_thread_destroy`, that deallocates
   the thread stack and TLS. If you invoke it, it *must* be the last function
-  you invoke from the wasm module for a given thread.
+  you invoke from the Wasm module for a given thread.
 
 * Any thread launched after the first one _might attempt to block_ implicitly
   in its initialization routine. This is a constraint introduced by the way
   we set up the space for thread stacks and TLS. This means that if you attempt
-  to run a wasm module in the main thread _after_ you are already running it
+  to run a Wasm module in the main thread _after_ you are already running it
   in a worker, it might fail.
 
 * Web Workers executing WebAssembly code cannot receive events from JS. A Web

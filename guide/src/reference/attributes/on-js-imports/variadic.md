@@ -23,7 +23,7 @@ function sum(...rest) {
 ```
 
 This function doesn't translate directly into rust, since we don't currently support variadic
-arguments on the wasm target. To bind to it, we use a slice as the last argument, and annotate the
+arguments on the Wasm target. To bind to it, we use a slice as the last argument, and annotate the
 function as variadic:
 
 ```rust

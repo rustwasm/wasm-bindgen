@@ -88,7 +88,7 @@ if_std! {
 ///
 /// A `JsValue` doesn't actually live in Rust right now but actually in a table
 /// owned by the `wasm-bindgen` generated JS glue code. Eventually the ownership
-/// will transfer into wasm directly and this will likely become more efficient,
+/// will transfer into Wasm directly and this will likely become more efficient,
 /// but for now it may be slightly slow.
 pub struct JsValue {
     idx: u32,
@@ -276,7 +276,7 @@ impl JsValue {
     }
 
     /// If this JS value is a string value, this function copies the JS string
-    /// value into wasm linear memory, encoded as UTF-8, and returns it as a
+    /// value into Wasm linear memory, encoded as UTF-8, and returns it as a
     /// Rust `String`.
     ///
     /// To avoid the copying and re-encoding, consider the
@@ -1213,7 +1213,7 @@ pub fn throw(s: &str) -> ! {
 /// Throws a JS exception.
 ///
 /// This function will throw a JS exception with the message provided. The
-/// function will not return as the wasm stack will be popped when the exception
+/// function will not return as the Wasm stack will be popped when the exception
 /// is thrown.
 ///
 /// Note that it is very easy to leak memory with this function because this
@@ -1231,8 +1231,8 @@ pub fn throw_str(s: &str) -> ! {
 /// Rethrow a JS exception
 ///
 /// This function will throw a JS exception with the JS value provided. This
-/// function will not return and the wasm stack will be popped until the point
-/// of entry of wasm itself.
+/// function will not return and the Wasm stack will be popped until the point
+/// of entry of Wasm itself.
 ///
 /// Note that it is very easy to leak memory with this function because this
 /// function, unlike `panic!` on other platforms, **will not run destructors**.
@@ -1306,7 +1306,7 @@ pub fn anyref_heap_live_count() -> u32 {
 ///
 /// These methods should have a smaller code size footprint than the normal
 /// `Option::unwrap` and `Option::expect` methods, but they are specific to
-/// working with wasm and JS.
+/// working with Wasm and JS.
 ///
 /// On non-wasm32 targets, defaults to the normal unwrap/expect calls.
 ///
@@ -1485,17 +1485,17 @@ pub fn module() -> JsValue {
     unsafe { JsValue::_new(__wbindgen_module()) }
 }
 
-/// Returns a handle to this wasm instance's `WebAssembly.Instance.prototype.exports`
+/// Returns a handle to this Wasm instance's `WebAssembly.Instance.prototype.exports`
 pub fn exports() -> JsValue {
     unsafe { JsValue::_new(__wbindgen_exports()) }
 }
 
-/// Returns a handle to this wasm instance's `WebAssembly.Memory`
+/// Returns a handle to this Wasm instance's `WebAssembly.Memory`
 pub fn memory() -> JsValue {
     unsafe { JsValue::_new(__wbindgen_memory()) }
 }
 
-/// Returns a handle to this wasm instance's `WebAssembly.Table` which is the
+/// Returns a handle to this Wasm instance's `WebAssembly.Table` which is the
 /// indirect function table used by Rust
 pub fn function_table() -> JsValue {
     unsafe { JsValue::_new(__wbindgen_function_table()) }

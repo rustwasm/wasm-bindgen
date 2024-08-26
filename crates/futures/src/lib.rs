@@ -204,13 +204,13 @@ impl Future for JsFuture {
 ///
 /// # Panics
 ///
-/// Note that in wasm panics are currently translated to aborts, but "abort" in
-/// this case means that a JavaScript exception is thrown. The wasm module is
+/// Note that in Wasm panics are currently translated to aborts, but "abort" in
+/// this case means that a JavaScript exception is thrown. The Wasm module is
 /// still usable (likely erroneously) after Rust panics.
 ///
 /// If the `future` provided panics then the returned `Promise` **will not
 /// resolve**. Instead it will be a leaked promise. This is an unfortunate
-/// limitation of wasm currently that's hoped to be fixed one day!
+/// limitation of Wasm currently that's hoped to be fixed one day!
 pub fn future_to_promise<F>(future: F) -> Promise
 where
     F: Future<Output = Result<JsValue, JsValue>> + 'static,

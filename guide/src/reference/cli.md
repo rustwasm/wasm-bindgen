@@ -60,7 +60,7 @@ where the imports are instead handled through a separate preload script.
 
 ### `--debug`
 
-Generates a bit more JS and wasm in "debug mode" to help catch programmer
+Generates a bit more JS and Wasm in "debug mode" to help catch programmer
 errors, but this output isn't intended to be shipped to production.
 
 ### `--no-demangle`

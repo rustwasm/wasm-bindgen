@@ -1,8 +1,8 @@
-//! Definition of how to convert Rust types (`Description`) into wasm types
+//! Definition of how to convert Rust types (`Description`) into Wasm types
 //! through adapter functions.
 //!
 //! Note that many Rust types use "nonstandard" instructions which only work in
-//! the JS output, not for the "pure wasm interface types" output.
+//! the JS output, not for the "pure Wasm interface types" output.
 //!
 //! Note that the mirror operation, going from WebAssembly to JS, is found in
 //! the `outgoing.rs` module.
@@ -23,7 +23,7 @@ impl InstructionBuilder<'_, '_> {
         }
         // This is a wrapper around `_incoming` to have a number of sanity checks
         // that we don't forget things. We should always produce at least one
-        // wasm arge and exactly one webidl arg. Additionally the number of
+        // Wasm arge and exactly one webidl arg. Additionally the number of
         // bindings should always match the number of webidl types for now.
         let input_before = self.input.len();
         let output_before = self.output.len();

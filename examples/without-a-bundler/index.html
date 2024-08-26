@@ -15,14 +15,14 @@
       import init, { add } from './pkg/without_a_bundler.js';
 
       async function run() {
-        // First up we need to actually load the wasm file, so we use the
-        // default export to inform it where the wasm file is located on the
+        // First up we need to actually load the Wasm file, so we use the
+        // default export to inform it where the Wasm file is located on the
         // server, and then we wait on the returned promise to wait for the
-        // wasm to be loaded.
+        // Wasm to be loaded.
         //
         // It may look like this: `await init('./pkg/without_a_bundler_bg.wasm');`,
         // but there is also a handy default inside `init` function, which uses
-        // `import.meta` to locate the wasm file relatively to js file.
+        // `import.meta` to locate the Wasm file relatively to js file.
         //
         // Note that instead of a string you can also pass in any of the
         // following things:
@@ -38,7 +38,7 @@
         // This gives you complete control over how the module is loaded
         // and compiled.
         //
-        // Also note that the promise, when resolved, yields the wasm module's
+        // Also note that the promise, when resolved, yields the Wasm module's
         // exports which is the same as importing the `*_bg` module in other
         // modes
         await init();

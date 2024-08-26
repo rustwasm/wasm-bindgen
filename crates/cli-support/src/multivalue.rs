@@ -30,7 +30,7 @@ pub fn run(module: &mut Module) -> Result<(), Error> {
         .get_typed::<WasmBindgenAux>()
         .expect("aux section should be present")
         .stack_pointer
-        .ok_or_else(|| anyhow!("failed to find stack pointer in wasm module"))?;
+        .ok_or_else(|| anyhow!("failed to find stack pointer in Wasm module"))?;
     let memory = wasm_conventions::get_memory(module)?;
     let wrappers = multi_value_xform::run(module, memory, stack_pointer, &to_xform)?;
 

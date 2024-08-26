@@ -87,7 +87,7 @@ greet("World!");
 
 * **Designed with the ["Web IDL bindings" proposal][webidl-bindings] in mind.**
   Eventually, there won't be any JavaScript shims between Rust-generated wasm
-  functions and native DOM methods. Because the wasm functions are statically
+  functions and native DOM methods. Because the Wasm functions are statically
   type checked, some of those native methods' dynamic type checks should become
   unnecessary, promising to unlock even-faster-than-JavaScript DOM access.
 

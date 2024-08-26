@@ -4,7 +4,7 @@ One of the main goals of `wasm-bindgen` is to allow working with and passing
 around JS objects in wasm, but that's not allowed today! While indeed true,
 that's where the polyfill comes in.
 
-The question here is how we shoehorn JS objects into a `u32` for wasm to use.
+The question here is how we shoehorn JS objects into a `u32` for Wasm to use.
 The current strategy for this approach is to maintain a module-local variable
 in the generated `foo.js` file: a `heap`.
 
@@ -18,7 +18,7 @@ pushed.
 
 JS objects are then only removed from the bottom of the stack as well. Removal
 is simply storing null then incrementing a counter.  Because of the "stack-y"
-nature of this scheme it only works for when wasm doesn't hold onto a JS object
+nature of this scheme it only works for when Wasm doesn't hold onto a JS object
 (aka it only gets a "reference" in Rust parlance).
 
 Let's take a look at an example.
@@ -72,13 +72,13 @@ export function foo(arg0) {
 
 Here we can see a few notable points of action:
 
-* The wasm file was renamed to `foo_bg.wasm`, and we can see how the JS module
-  generated here is importing from the wasm file.
+* The Wasm file was renamed to `foo_bg.wasm`, and we can see how the JS module
+  generated here is importing from the Wasm file.
 * Next we can see our `heap` module variable which is to store all JS values
   reference-able from wasm.
 * Our exported function `foo`, takes an arbitrary argument, `arg0`, which is
   converted to an index with the `addBorrowedObject` object function. The index
-  is then passed to wasm so wasm can operate with it.
+  is then passed to Wasm so Wasm can operate with it.
 * Finally, we have a `finally` which frees the stack slot as it's no longer
   used, popping the value that was pushed at the start of the function.
 
@@ -105,7 +105,7 @@ And as with the JS, the notable points here are:
 
 * The original function, `foo`, is unmodified in the output
 * A generated function here (with a unique name) is the one that's actually
-  exported from the wasm module
+  exported from the Wasm module
 * Our generated function takes an integer argument (our index) and then wraps it
   in a `JsValue`. There's some trickery here that's not worth going into just
   yet, but we'll see in a bit what's happening under the hood.
@@ -118,8 +118,8 @@ dynamic lifetime or otherwise need to be stored on Rust's heap. To cope with
 this there's a second half of management of JS objects, naturally corresponding
 to the other side of the JS `heap` array.
 
-JS Objects passed to wasm that are not references are assumed to have a dynamic
-lifetime inside of the wasm module. As a result the strict push/pop of the stack
+JS Objects passed to Wasm that are not references are assumed to have a dynamic
+lifetime inside of the Wasm module. As a result the strict push/pop of the stack
 won't work and we need more permanent storage for the JS objects. To cope with
 this we build our own "slab allocator" of sorts.
 
@@ -140,7 +140,7 @@ module interface is the same as before, but the ownership mechanics are slightly
 different. Let's see the generated JS's slab in action:
 
 ```js
-import * as wasm from './foo_bg'; // imports from wasm file
+import * as wasm from './foo_bg'; // imports from Wasm file
 
 const heap = new Array(32);
 heap.push(undefined, null, true, false);

@@ -82,7 +82,7 @@ pub fn execute(
     );
 
     // Note that we're collecting *JS objects* that represent the functions to
-    // execute, and then those objects are passed into wasm for it to execute
+    // execute, and then those objects are passed into Wasm for it to execute
     // when it sees fit.
     for test in tests {
         js_to_execute.push_str(&format!("tests.push('{}')\n", test));

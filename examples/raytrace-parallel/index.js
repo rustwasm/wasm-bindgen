@@ -22,7 +22,7 @@ function loadWasm() {
   const buf = new Uint8Array([0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00,
     0x05, 0x03, 0x01, 0x00, 0x01, 0x0b, 0x03, 0x01, 0x01, 0x00]);
   if (!WebAssembly.validate(buf)) {
-    alert('this browser does not support passive wasm memory, demo does not work' + '\n\n' + msg);
+    alert('this browser does not support passive Wasm memory, demo does not work' + '\n\n' + msg);
     return
   }
 

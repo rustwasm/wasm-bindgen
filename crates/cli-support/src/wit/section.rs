@@ -1,20 +1,20 @@
-//! Support for generating a standard wasm interface types
+//! Support for generating a standard Wasm interface types
 //!
 //! This module has all the necessary support for generating a full-fledged
-//! standard wasm interface types section as defined by the `wit_walrus`
+//! standard Wasm interface types section as defined by the `wit_walrus`
 //! crate. This module also critically assumes that the WebAssembly module
 //! being generated **must be standalone**. In this mode all sorts of features
 //! supported by `#[wasm_bindgen]` aren't actually supported, such as closures,
 //! imports of global js names, js getters/setters, exporting structs, etc.
 //! These features may all eventually come to the standard bindings proposal,
 //! but it will likely take some time. In the meantime this module simply focuses
-//! on taking what's already a valid wasm module and letting it through with a
+//! on taking what's already a valid Wasm module and letting it through with a
 //! standard WebIDL custom section. All other modules generate an error during
 //! this binding process.
 //!
 //! Note that when this function is called and used we're also not actually
 //! generating any JS glue. Any JS glue currently generated is also invalid if
-//! the module contains the wasm bindings section and it's actually respected.
+//! the module contains the Wasm bindings section and it's actually respected.
 
 use crate::wit::AuxExport;
 use crate::wit::{AdapterId, AdapterJsImportKind, AdapterType, AuxExportedMethodKind, Instruction};
@@ -145,7 +145,7 @@ pub fn add(module: &mut Module) -> Result<(), Error> {
         bail!(
             "generating a bindings section is currently incompatible with \
              local JS modules being specified as well, `{}` cannot be used \
-             since a standalone wasm file is being generated",
+             since a standalone Wasm file is being generated",
             name,
         );
     }
@@ -154,7 +154,7 @@ pub fn add(module: &mut Module) -> Result<(), Error> {
         bail!(
             "generating a bindings section is currently incompatible with \
              local JS snippets being specified as well, `{}` cannot be used \
-             since a standalone wasm file is being generated",
+             since a standalone Wasm file is being generated",
             name,
         );
     }
@@ -163,7 +163,7 @@ pub fn add(module: &mut Module) -> Result<(), Error> {
         bail!(
             "generating a bindings section is currently incompatible with \
              package.json being consumed as well, `{}` cannot be used \
-             since a standalone wasm file is being generated",
+             since a standalone Wasm file is being generated",
             path.display(),
         );
     }
@@ -187,7 +187,7 @@ pub fn add(module: &mut Module) -> Result<(), Error> {
     if let Some(enum_) = enums.iter().next() {
         bail!(
             "generating a bindings section is currently incompatible with \
-             exporting an `enum` from the wasm file, cannot export `{}`",
+             exporting an `enum` from the Wasm file, cannot export `{}`",
             enum_.name,
         );
     }
@@ -195,7 +195,7 @@ pub fn add(module: &mut Module) -> Result<(), Error> {
     if let Some(struct_) = structs.iter().next() {
         bail!(
             "generating a bindings section is currently incompatible with \
-             exporting a `struct` from the wasm file, cannot export `{}`",
+             exporting a `struct` from the Wasm file, cannot export `{}`",
             struct_.name,
         );
     }

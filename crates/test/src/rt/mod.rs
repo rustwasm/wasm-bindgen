@@ -6,8 +6,8 @@
 // # Architecture of `wasm_bindgen_test`
 //
 // This module can seem a bit funky, but it's intended to be the runtime support
-// of the `#[wasm_bindgen_test]` macro and be amenable to executing wasm test
-// suites. The general idea is that for a wasm test binary there will be a set
+// of the `#[wasm_bindgen_test]` macro and be amenable to executing Wasm test
+// suites. The general idea is that for a Wasm test binary there will be a set
 // of functions tagged `#[wasm_bindgen_test]`. It's the job of the runtime
 // support to execute all of these functions, collecting and collating the
 // results.
@@ -22,11 +22,11 @@
 //
 // * First, the user runs `cargo test --target wasm32-unknown-unknown`
 //
-// * Cargo then compiles all the test suites (aka `tests/*.rs`) as wasm binaries
+// * Cargo then compiles all the test suites (aka `tests/*.rs`) as Wasm binaries
 //   (the `bin` crate type). These binaries all have entry points that are
 //   `main` functions, but it's actually not used. The binaries are also
 //   compiled with `--test`, which means they're linked to the standard `test`
-//   crate, but this crate doesn't work on wasm and so we bypass it entirely.
+//   crate, but this crate doesn't work on Wasm and so we bypass it entirely.
 //
 // * Instead of using `#[test]`, which doesn't work, users wrote tests with
 //   `#[wasm_bindgen_test]`. This macro expands to a bunch of `#[no_mangle]`
@@ -44,7 +44,7 @@
 //
 // * The `wasm-bindgen-test-runner` binary generates a JS entry point. This
 //   entry point creates a `Context` below. The runner binary also parses the
-//   wasm file and finds all functions that are named `__wbg_test_*`. The
+//   Wasm file and finds all functions that are named `__wbg_test_*`. The
 //   generate file gathers up all these functions into an array and then passes
 //   them to `Context` below. Note that these functions are passed as *JS
 //   values*.
@@ -61,7 +61,7 @@
 //   This is used for test filters today.
 //
 // * The `Context::run` function is called. Again, the generated JS has gathered
-//   all wasm tests to be executed into a list, and it's passed in here.
+//   all Wasm tests to be executed into a list, and it's passed in here.
 //
 // * Next, `Context::run` returns a `Promise` representing the eventual
 //   execution of all the tests. The Rust `Future` that's returned will work
@@ -351,7 +351,7 @@ impl Context {
             .writeln(&format!("running {} {}", tests.len(), noun));
         self.state.formatter.writeln("");
 
-        // Execute all our test functions through their wasm shims (unclear how
+        // Execute all our test functions through their Wasm shims (unclear how
         // to pass native function pointers around here). Each test will
         // execute one of the `execute_*` tests below which will push a
         // future onto our `remaining` list, which we'll process later.
@@ -726,7 +726,7 @@ impl State {
 ///   variable to capture output for the current test. That way at least when
 ///   we've got Rust code running we'll be able to capture output.
 ///
-/// * Next, this "catches panics". Right now all wasm code is configured as
+/// * Next, this "catches panics". Right now all Wasm code is configured as
 ///   panic=abort, but it's more like an exception in JS. It's pretty sketchy
 ///   to actually continue executing Rust code after an "abort", but we don't
 ///   have much of a choice for now.
