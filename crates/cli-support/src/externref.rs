@@ -86,7 +86,7 @@ pub fn process(module: &mut Module) -> Result<()> {
         for instr in instrs {
             match instr.instr {
                 // Calls to the heap live count intrinsic are now routed to the
-                // actual wasm function which keeps track of this.
+                // actual Wasm function which keeps track of this.
                 Instruction::CallAdapter(adapter) => {
                     let id = match meta.live_count {
                         Some(id) => id,
@@ -103,7 +103,7 @@ pub fn process(module: &mut Module) -> Result<()> {
                     instr.instr = Instruction::CallCore(id);
                 }
 
-                // Optional externref values are now managed in the wasm module, so
+                // Optional externref values are now managed in the Wasm module, so
                 // we need to store where they're managed.
                 Instruction::I32FromOptionExternref {
                     ref mut table_and_alloc,
@@ -333,7 +333,7 @@ fn export_xform(cx: &mut Context, export: Export, instrs: &mut Vec<InstructionDa
     }
 
     // Delete all unnecessary externref management instructions. We're going to
-    // sink these instructions into the wasm module itself.
+    // sink these instructions into the Wasm module itself.
     for idx in to_delete.into_iter().rev() {
         instrs.remove(idx);
     }
@@ -344,7 +344,7 @@ fn module_needs_externref_metadata(aux: &WasmBindgenAux, section: &NonstandardWi
     use Instruction::*;
 
     // our `handleError` intrinsic uses a few pieces of metadata to store
-    // indices directly into the wasm module.
+    // indices directly into the Wasm module.
     if !aux.imports_with_catch.is_empty() {
         return true;
     }
@@ -387,7 +387,7 @@ fn module_needs_externref_metadata(aux: &WasmBindgenAux, section: &NonstandardWi
     })
 }
 
-/// In MVP wasm all element segments must be contiguous lists of function
+/// In MVP Wasm all element segments must be contiguous lists of function
 /// indices. Post-MVP with reference types element segments can have holes.
 /// While `walrus` will select the encoding that fits, this function forces the
 /// listing of segments to be MVP-compatible.

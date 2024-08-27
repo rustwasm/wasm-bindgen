@@ -5,7 +5,7 @@ use std::fs;
 use std::path::PathBuf;
 
 const USAGE: &str = "
-Converts a wasm file to an ES6 JS module
+Converts a Wasm file to an ES6 JS module
 
 Usage:
     wasm2es6js [options] <input>
@@ -16,7 +16,7 @@ Options:
     -o --output FILE        File to place output in
     --out-dir DIR           Directory to place output in
     --typescript            Output a `*.d.ts` file next to the JS output
-    --base64                Inline the wasm module using base64 encoding
+    --base64                Inline the Wasm module using base64 encoding
     --fetch PATH            Load module by passing the PATH argument to `fetch()`
 
 Note that this is not intended to produce a production-ready output module

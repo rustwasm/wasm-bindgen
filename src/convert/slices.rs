@@ -230,7 +230,7 @@ impl WasmDescribeVector for String {
     fn describe_vector() {
         inform(VECTOR);
         inform(NAMED_EXTERNREF);
-        // Trying to use an actual loop for this breaks the wasm interpreter.
+        // Trying to use an actual loop for this breaks the Wasm interpreter.
         inform(6);
         inform('s' as u32);
         inform('t' as u32);

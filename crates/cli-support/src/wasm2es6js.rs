@@ -205,7 +205,7 @@ impl Output {
         // This ends up helping out in situations such as:
         //
         // * The start function calls an imported function
-        // * That imported function in turn tries to access the wasm module
+        // * That imported function in turn tries to access the Wasm module
         //
         // If we don't do this then the second step won't work because the start
         // function is automatically executed before the promise of

@@ -23,9 +23,9 @@ struct Context<'a> {
     module: &'a mut Module,
     adapters: NonstandardWitSection,
     aux: WasmBindgenAux,
-    /// All of the wasm module's exported functions.
+    /// All of the Wasm module's exported functions.
     function_exports: HashMap<String, (ExportId, FunctionId)>,
-    /// All of the wasm module's imported functions.
+    /// All of the Wasm module's imported functions.
     function_imports: HashMap<String, (ImportId, FunctionId)>,
     /// A map from the signature of a function in the function table to its adapter, if we've already created it.
     table_adapters: HashMap<Function, AdapterId>,
@@ -1093,7 +1093,7 @@ impl<'a> Context<'a> {
     /// Perform a small verification pass over the module to perform some
     /// internal sanity checks.
     fn verify(&self) -> Result<(), Error> {
-        // First up verify that all imports in the wasm module from our
+        // First up verify that all imports in the Wasm module from our
         // `$PLACEHOLDER_MODULE` are connected to an adapter via the
         // `implements` section.
         let mut implemented = HashMap::new();
@@ -1182,7 +1182,7 @@ impl<'a> Context<'a> {
         };
 
         // Process the returned type first to see if it needs an out-pointer. This
-        // happens if the results of the incoming arguments translated to wasm take
+        // happens if the results of the incoming arguments translated to Wasm take
         // up more than one type.
         let mut ret = self.instruction_builder(true);
         ret.incoming(&signature.ret)?;
@@ -1200,7 +1200,7 @@ impl<'a> Context<'a> {
         }
 
         // Build up the list of instructions for our adapter function. We start out
-        // with all the outgoing instructions which convert all wasm params to the
+        // with all the outgoing instructions which convert all Wasm params to the
         // desired types to call our import...
         let mut instructions = args.instructions;
 
@@ -1226,7 +1226,7 @@ impl<'a> Context<'a> {
         instructions.extend(ret.instructions);
 
         // ... and if a return pointer is in use then we need to store the types on
-        // the stack into the wasm return pointer. Note that we iterate in reverse
+        // the stack into the Wasm return pointer. Note that we iterate in reverse
         // here because the last result is the top value on the stack.
         let results = if uses_retptr {
             let mem = args.cx.memory()?;
@@ -1342,10 +1342,10 @@ impl<'a> Context<'a> {
         let uses_retptr = ret.input.len() > 1;
 
         // Our instruction stream starts out with the return pointer as the first
-        // argument to the wasm function, if one is in use. Then we convert
-        // everything to wasm types.
+        // argument to the Wasm function, if one is in use. Then we convert
+        // everything to Wasm types.
         //
-        // After calling the core wasm function we need to load all the return
+        // After calling the core Wasm function we need to load all the return
         // pointer arguments if there were any, otherwise we simply convert
         // everything into the outgoing arguments.
         let mut instructions = Vec::new();
@@ -1530,7 +1530,7 @@ pub fn extract_programs<'a>(
 
     while let Some(raw) = module.customs.remove_raw("__wasm_bindgen_unstable") {
         log::debug!(
-            "custom section '{}' looks like a wasm bindgen section",
+            "custom section '{}' looks like a Wasm bindgen section",
             raw.name
         );
         program_storage.push(raw.data);
@@ -1542,7 +1542,7 @@ pub fn extract_programs<'a>(
         while let Some(data) = get_remaining(&mut payload) {
             // Historical versions of wasm-bindgen have used JSON as the custom
             // data section format. Newer versions, however, are using a custom
-            // serialization protocol that looks much more like the wasm spec.
+            // serialization protocol that looks much more like the Wasm spec.
             //
             // We, however, want a sanity check to ensure that if we're running
             // against the wrong wasm-bindgen we get a nicer error than an
@@ -1559,10 +1559,10 @@ pub fn extract_programs<'a>(
                 bail!(
                     "
 
-it looks like the Rust project used to create this wasm file was linked against
+it looks like the Rust project used to create this Wasm file was linked against
 version of wasm-bindgen that uses a different bindgen format than this binary:
 
-  rust wasm file schema version: {their_version}
+  rust Wasm file schema version: {their_version}
      this binary schema version: {my_version}
 
 Currently the bindgen format is unstable enough that these two schema versions
@@ -1573,7 +1573,7 @@ You should be able to update the wasm-bindgen dependency with:
 
     cargo update -p wasm-bindgen --precise {my_version}
 
-don't forget to recompile your wasm file! Alternatively, you can update the
+don't forget to recompile your Wasm file! Alternatively, you can update the
 binary with:
 
     cargo install -f wasm-bindgen-cli --version {their_version}

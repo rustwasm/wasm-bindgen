@@ -1059,7 +1059,7 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 }
                 let comments = extract_doc_comments(&f.attrs);
                 // If the function isn't used for anything other than being exported to JS,
-                // it'll be unused when not building for the wasm target and produce a
+                // it'll be unused when not building for the Wasm target and produce a
                 // `dead_code` warning. So, add `#[allow(dead_code)]` before it to avoid that.
                 tokens.extend(quote::quote! { #[allow(dead_code)] });
                 f.to_tokens(tokens);

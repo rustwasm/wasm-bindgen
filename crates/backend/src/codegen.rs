@@ -86,7 +86,7 @@ impl TryToTokens for ast::Program {
         Diagnostic::from_vec(errors)?;
 
         // Generate a static which will eventually be what lives in a custom section
-        // of the wasm executable. For now it's just a plain old static, but we'll
+        // of the Wasm executable. For now it's just a plain old static, but we'll
         // eventually have it actually in its own section.
 
         // See comments in `crates/cli-support/src/lib.rs` about what this
@@ -278,7 +278,7 @@ impl ToTokens for ast::Struct {
 
                     #[cfg(not(all(target_arch = "wasm32", target_os = "unknown")))]
                     unsafe fn #new_fn(_: u32) -> u32 {
-                        panic!("cannot convert to JsValue outside of the wasm target")
+                        panic!("cannot convert to JsValue outside of the Wasm target")
                     }
 
                     unsafe {
@@ -384,7 +384,7 @@ impl ToTokens for ast::Struct {
 
                     #[cfg(not(all(target_arch = "wasm32", target_os = "unknown")))]
                     unsafe fn #unwrap_fn(_: u32) -> u32 {
-                        panic!("cannot convert from JsValue outside of the wasm target")
+                        panic!("cannot convert from JsValue outside of the Wasm target")
                     }
 
                     let ptr = unsafe { #unwrap_fn(idx) };

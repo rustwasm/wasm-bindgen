@@ -149,7 +149,7 @@ fn image_data(base: usize, len: usize, width: u32, height: u32) -> ImageData {
     //
     // FIXME: that this may or may not be UB based on Rust's rules. For example
     // threads may be doing unsynchronized writes to pixel data as we read it
-    // off here. In the context of wasm this may or may not be UB, we're
+    // off here. In the context of Wasm this may or may not be UB, we're
     // unclear! In any case for now it seems to work and produces a nifty
     // progressive rendering. A more production-ready application may prefer to
     // instead use some form of signaling here to request an update from the

@@ -35,7 +35,7 @@ pub struct Bindgen {
     remove_producers_section: bool,
     omit_default_module_path: bool,
     emit_start: bool,
-    // Support for the wasm threads proposal, transforms the wasm module to be
+    // Support for the Wasm threads proposal, transforms the Wasm module to be
     // "ready to be instantiated on any thread"
     threads: wasm_bindgen_threads_xform::Config,
     externref: bool,
@@ -364,7 +364,7 @@ impl Bindgen {
         descriptors::execute(&mut module)?;
 
         // Process the custom section we extracted earlier. In its stead insert
-        // a forward-compatible wasm interface types section as well as an
+        // a forward-compatible Wasm interface types section as well as an
         // auxiliary section for all sorts of miscellaneous information and
         // features #[wasm_bindgen] supports that aren't covered by wasm
         // interface types.
@@ -405,7 +405,7 @@ impl Bindgen {
                 .context("failed to transform return pointers into multi-value Wasm")?;
         }
 
-        // We've done a whole bunch of transformations to the wasm module, many
+        // We've done a whole bunch of transformations to the Wasm module, many
         // of which leave "garbage" lying around, so let's prune out all our
         // unnecessary things here.
         gc_module_and_adapters(&mut module);
@@ -724,8 +724,8 @@ export * from \"./{js_name}\";
 
 fn gc_module_and_adapters(module: &mut Module) {
     loop {
-        // Fist up, cleanup the native wasm module. Note that roots can come
-        // from custom sections, namely our wasm interface types custom section
+        // Fist up, cleanup the native Wasm module. Note that roots can come
+        // from custom sections, namely our Wasm interface types custom section
         // as well as the aux section.
         walrus::passes::gc::run(module);
 

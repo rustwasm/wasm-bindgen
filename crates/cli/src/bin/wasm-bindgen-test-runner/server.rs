@@ -167,8 +167,8 @@ pub(crate) fn spawn(
             r#"
             // Now that we've gotten to the point where JS is executing, update our
             // status text as at this point we should be asynchronously fetching the
-            // wasm module.
-            document.getElementById('output').textContent = "Loading wasm module...";
+            // Wasm module.
+            document.getElementById('output').textContent = "Loading Wasm module...";
             {}
 
             port.addEventListener("message", function(e) {{
@@ -252,8 +252,8 @@ pub(crate) fn spawn(
             r#"
             // Now that we've gotten to the point where JS is executing, update our
             // status text as at this point we should be asynchronously fetching the
-            // wasm module.
-            document.getElementById('output').textContent = "Loading wasm module...";
+            // Wasm module.
+            document.getElementById('output').textContent = "Loading Wasm module...";
 
             async function main(test) {{
                 const wasm = await init('./{0}_bg.wasm');

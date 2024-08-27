@@ -6,10 +6,10 @@ use walrus::ValType;
 
 impl InstructionBuilder<'_, '_> {
     /// Processes one more `Descriptor` as an argument to a JS function that
-    /// wasm is calling.
+    /// Wasm is calling.
     ///
     /// This will internally skip `Unit` and otherwise build up the `bindings`
-    /// map and ensure that it's correctly mapped from wasm to JS.
+    /// map and ensure that it's correctly mapped from Wasm to JS.
     pub fn outgoing(&mut self, arg: &Descriptor) -> Result<(), Error> {
         if let Descriptor::Unit = arg {
             return Ok(());
@@ -213,7 +213,7 @@ impl InstructionBuilder<'_, '_> {
 
             Descriptor::Function(descriptor) => {
                 // synthesize the a/b arguments that aren't present in the
-                // signature from wasm-bindgen but are present in the wasm file.
+                // signature from wasm-bindgen but are present in the Wasm file.
                 let mut descriptor = (**descriptor).clone();
                 let nargs = descriptor.arguments.len();
                 descriptor.arguments.insert(0, Descriptor::I32);

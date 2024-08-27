@@ -2,7 +2,7 @@
 //! module.
 //!
 //! This crate is in charge of enabling code using `wasm-bindgen` to use the
-//! `externref` type inside of the wasm module. This transformation pass primarily
+//! `externref` type inside of the Wasm module. This transformation pass primarily
 //! wraps exports and imports in shims which use `externref`, but quickly turn them
 //! into `i32` value types. This is all largely a stopgap until Rust has
 //! first-class support for the `externref` type, but that's thought to be in the
@@ -11,9 +11,9 @@
 //!
 //! The pass here works by collecting information during binding generation
 //! about imports and exports. Afterwards this pass runs in one go against a
-//! wasm module, updating exports, imports, calls to these functions, etc. The
-//! goal at least is to have valid wasm modules coming in that don't use
-//! `externref` and valid wasm modules going out which use `externref` at the fringes.
+//! Wasm module, updating exports, imports, calls to these functions, etc. The
+//! goal at least is to have valid Wasm modules coming in that don't use
+//! `externref` and valid Wasm modules going out which use `externref` at the fringes.
 
 use anyhow::{anyhow, bail, Context as _, Error};
 use std::cmp;
@@ -97,7 +97,7 @@ enum Intrinsic {
 }
 
 impl Context {
-    /// Executed first very early over a wasm module, used to learn about how
+    /// Executed first very early over a Wasm module, used to learn about how
     /// large the function table is so we know what indexes to hand out when
     /// we're appending entries.
     pub fn prepare(&mut self, module: &mut Module) -> Result<(), Error> {
@@ -669,7 +669,7 @@ impl Transform<'_> {
         //
         // Note that we pave over all our stack slots with `ref.null` to ensure
         // that the table doesn't accidentally hold a strong reference to items
-        // no longer in use by our wasm instance.
+        // no longer in use by our Wasm instance.
         if externref_stack > 0 {
             body.local_get(fp)
                 .ref_null(RefType::Externref)

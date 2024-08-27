@@ -9,18 +9,18 @@ answer questions and/or update this!
 
 The first thing to know about `wasm-bindgen` is that it's fundamentally built on
 the idea of ES Modules. In other words this tool takes an opinionated stance
-that wasm files *should be viewed as ES modules*. This means that you can
-`import` from a wasm file, use its `export`-ed functionality, etc, from normal
+that Wasm files *should be viewed as ES modules*. This means that you can
+`import` from a Wasm file, use its `export`-ed functionality, etc, from normal
 JS files.
 
-Now unfortunately at the time of this writing the interface of wasm interop
+Now unfortunately at the time of this writing the interface of Wasm interop
 isn't very rich. Wasm modules can only call functions or export functions that
 deal exclusively with `i32`, `i64`, `f32`, and `f64`. Bummer!
 
 That's where this project comes in. The goal of `wasm-bindgen` is to enhance the
-"ABI" of wasm modules with richer types like classes, JS objects, Rust structs,
+"ABI" of Wasm modules with richer types like classes, JS objects, Rust structs,
 strings, etc. Keep in mind, though, that everything is based on ES Modules! This
-means that the compiler is actually producing a "broken" wasm file of sorts. The
+means that the compiler is actually producing a "broken" Wasm file of sorts. The
 wasm file emitted by rustc, for example, does not have the interface we would
 like to have. Instead it requires the `wasm-bindgen` tool to postprocess the
 file, generating a `foo.js` and `foo_bg.wasm` file. The `foo.js` file is the

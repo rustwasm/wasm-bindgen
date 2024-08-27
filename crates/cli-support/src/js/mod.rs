@@ -36,7 +36,7 @@ pub struct Context<'a> {
     /// renames for each identifier.
     js_imports: HashMap<String, Vec<(String, Option<String>)>>,
 
-    /// A map of each wasm import and what JS to hook up to it.
+    /// A map of each Wasm import and what JS to hook up to it.
     wasm_import_definitions: HashMap<ImportId, String>,
 
     /// A map from an import to the name we've locally imported it as.
@@ -377,7 +377,7 @@ impl<'a> Context<'a> {
         }
 
         // Depending on the output mode, generate necessary glue to actually
-        // import the wasm file in one way or another.
+        // import the Wasm file in one way or another.
         let mut init = (String::new(), String::new());
         let mut footer = String::new();
         let mut imports = self.js_import_header()?;
@@ -445,9 +445,9 @@ impl<'a> Context<'a> {
                 }
             }
 
-            // With Bundlers we can simply import the wasm file as if it were an ES module
+            // With Bundlers we can simply import the Wasm file as if it were an ES module
             // and let the bundler/runtime take care of it.
-            // With Node we manually read the wasm file from the filesystem and instantiate it.
+            // With Node we manually read the Wasm file from the filesystem and instantiate it.
             OutputMode::Bundler { .. } | OutputMode::Node { module: true } => {
                 for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
@@ -491,7 +491,7 @@ impl<'a> Context<'a> {
             }
 
             // With a browser-native output we're generating an ES module, but
-            // browsers don't support natively importing wasm right now so we
+            // browsers don't support natively importing Wasm right now so we
             // expose the same initialization function as `--target no-modules`
             // as the default export of the module.
             OutputMode::Web => {
@@ -821,7 +821,7 @@ impl<'a> Context<'a> {
                             }} catch (e) {{
                                 if (module.headers.get('Content-Type') != 'application/wasm') {{
                                     console.warn(\"`WebAssembly.instantiateStreaming` failed \
-                                                    because your server does not serve wasm with \
+                                                    because your server does not serve Wasm with \
                                                     `application/wasm` MIME type. Falling back to \
                                                     `WebAssembly.instantiate` which is slower. Original \
                                                     error:\\n\", e);
@@ -1307,7 +1307,7 @@ impl<'a> Context<'a> {
             }
         }
 
-        // A fast path that directly writes char codes into WASM memory as long
+        // A fast path that directly writes char codes into Wasm memory as long
         // as it finds only ASCII characters.
         //
         // This is much faster for common ASCII strings because it can avoid
@@ -1836,7 +1836,7 @@ impl<'a> Context<'a> {
 
         let cache = format!("cached{}Memory{}", kind, view.num);
         let resized_check = if self.module.memories.get(memory).shared {
-            // When it's backed by a `SharedArrayBuffer`, growing the wasm module's memory
+            // When it's backed by a `SharedArrayBuffer`, growing the Wasm module's memory
             // doesn't detach old references; instead, it just leaves them pointing to a
             // slice of the up-to-date memory. So in order to check if it's been grown, we
             // have to compare it to the up-to-date buffer.
@@ -2393,7 +2393,7 @@ impl<'a> Context<'a> {
     }
 
     /// If a start function is present, it removes it from the `start` section
-    /// of the wasm module and then moves it to an exported function, named
+    /// of the Wasm module and then moves it to an exported function, named
     /// `__wbindgen_start`.
     fn unstart_start_function(&mut self) -> bool {
         let start = match self.module.start.take() {
@@ -2780,7 +2780,7 @@ impl<'a> Context<'a> {
         }
     }
 
-    /// Attempts to directly hook up the `id` import in the wasm module with
+    /// Attempts to directly hook up the `id` import in the Wasm module with
     /// the `instrs` specified.
     ///
     /// If this succeeds it returns `Ok(true)`, otherwise if it cannot be
@@ -2845,15 +2845,15 @@ impl<'a> Context<'a> {
 
         // If there's no field projection happening here and this is a direct
         // import from an ES-looking module, then we can actually just hook this
-        // up directly in the wasm file itself. Note that this is covered in the
+        // up directly in the Wasm file itself. Note that this is covered in the
         // various output formats as well:
         //
-        // * `bundler` - they think wasm is an ES module anyway
+        // * `bundler` - they think Wasm is an ES module anyway
         // * `web` - we're sure to emit more `import` directives during
         //   `gen_init` and we update the import object accordingly.
-        // * `nodejs` - the polyfill we have for requiring a wasm file as a node
+        // * `nodejs` - the polyfill we have for requiring a Wasm file as a node
         //   module will naturally emit `require` directives for the module
-        //   listed on each wasm import.
+        //   listed on each Wasm import.
         // * `no-modules` - imports aren't allowed here anyway from other
         //   modules and an error is generated.
         if js.fields.is_empty() {
@@ -2928,11 +2928,11 @@ impl<'a> Context<'a> {
                 // needed.
                 CallAdapter(_) => saw_call = true,
 
-                // Conversions to wasm integers are always supported since
+                // Conversions to Wasm integers are always supported since
                 // they're coerced into i32/f32/f64 appropriately.
                 IntToWasm { .. } => {}
 
-                // Converts from wasm to JS, however, only supports most
+                // Converts from Wasm to JS, however, only supports most
                 // integers. Converting into a u32 isn't supported because we
                 // need to generate glue to change the sign.
                 WasmToInt {
@@ -3993,7 +3993,7 @@ impl<'a> Context<'a> {
         let stack_pointer = match self.aux.stack_pointer {
             Some(s) => s,
             // In theory this shouldn't happen since malloc is included in
-            // most wasm binaries (and may be gc'd out) and that almost
+            // most Wasm binaries (and may be gc'd out) and that almost
             // always pulls in a stack pointer. We can try to synthesize
             // something here later if necessary.
             None => bail!("failed to find stack pointer"),

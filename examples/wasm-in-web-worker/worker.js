@@ -10,7 +10,7 @@ console.log('Initializing worker')
 const {NumberEval} = wasm_bindgen;
 
 async function init_wasm_in_worker() {
-    // Load the wasm file by awaiting the Promise returned by `wasm_bindgen`.
+    // Load the Wasm file by awaiting the Promise returned by `wasm_bindgen`.
     await wasm_bindgen('./pkg/wasm_in_web_worker_bg.wasm');
 
     // Create a new object of the `NumberEval` struct.

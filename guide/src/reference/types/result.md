@@ -11,7 +11,7 @@ it's converted to JS and handed off, and whenever `Err(error)` is encountered
 an exception is thrown in JS with `error`.
 
 You can use `Result` to enable handling of JS exceptions with `?` in Rust,
-naturally propagating it upwards to the wasm boundary. Furthermore you can also
+naturally propagating it upwards to the Wasm boundary. Furthermore you can also
 return custom types in Rust so long as they're all convertible to `JsValue`.
 
 Note that if you import a JS function with `Result` you need

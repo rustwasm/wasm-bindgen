@@ -59,7 +59,7 @@ impl WorkerPool {
     /// Unconditionally spawns a new worker
     ///
     /// The worker isn't registered with this `WorkerPool` but is capable of
-    /// executing work for this wasm module.
+    /// executing work for this Wasm module.
     ///
     /// # Errors
     ///
@@ -76,8 +76,8 @@ impl WorkerPool {
         let worker = Worker::new("./worker.js")?;
 
         // With a worker spun up send it the module/memory so it can start
-        // instantiating the wasm module. Later it might receive further
-        // messages about code to run on the wasm module.
+        // instantiating the Wasm module. Later it might receive further
+        // messages about code to run on the Wasm module.
         let array = js_sys::Array::new();
         array.push(&wasm_bindgen::module());
         array.push(&wasm_bindgen::memory());

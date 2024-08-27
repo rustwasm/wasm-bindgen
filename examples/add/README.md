@@ -1,4 +1,4 @@
-# Adding numbers (small wasm files)
+# Adding numbers (small Wasm files)
 
 [View documentation for this example online][dox] or [View compiled example
 online][compiled]

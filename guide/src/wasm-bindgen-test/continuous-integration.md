@@ -21,7 +21,7 @@ install:
 
 script:
 
-  # this will test the non wasm targets if your crate has those, otherwise remove this line.
+  # this will test the non Wasm targets if your crate has those, otherwise remove this line.
   #
   - cargo test
 

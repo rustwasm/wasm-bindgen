@@ -1,8 +1,8 @@
-//! A test suite to check the reference JS and wasm output of the `wasm-bindgen`
+//! A test suite to check the reference JS and Wasm output of the `wasm-bindgen`
 //! library.
 //!
 //! This is intended as an end-to-end integration test where we can track
-//! changes to the JS and wasm output.
+//! changes to the JS and Wasm output.
 //!
 //! Tests are located in `reference/*.rs` files and are accompanied with sibling
 //! `*.js` files and `*.wat` files with the expected output of the `*.rs`
@@ -127,7 +127,7 @@ fn assert_same(output: &str, expected: &Path) -> Result<()> {
 }
 
 fn sanitize_wasm(wasm: &Path) -> Result<String> {
-    // Clean up the wasm module by removing all function
+    // Clean up the Wasm module by removing all function
     // implementations/instructions, data sections, etc. This'll help us largely
     // only deal with exports/imports which is all we're really interested in.
     let mut module = ModuleConfig::new()

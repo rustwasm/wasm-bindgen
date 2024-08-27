@@ -6,7 +6,7 @@ use std::process;
 use wasm_bindgen_cli_support::{Bindgen, EncodeInto};
 
 const USAGE: &str = "
-Generating JS bindings for a wasm file
+Generating JS bindings for a Wasm file
 
 Usage:
     wasm-bindgen [options] <input>
@@ -28,7 +28,7 @@ Options:
     --debug                      Include otherwise-extraneous debug checks in output
     --no-demangle                Don't demangle Rust symbol names
     --keep-lld-exports           Keep exports synthesized by LLD
-    --keep-debug                 Keep debug sections in wasm files
+    --keep-debug                 Keep debug sections in Wasm files
     --remove-name-section        Remove the debugging `name` section of the file
     --remove-producers-section   Remove the telemetry `producers` section
     --omit-default-module-path   Don't add WebAssembly fallback imports in generated JavaScript

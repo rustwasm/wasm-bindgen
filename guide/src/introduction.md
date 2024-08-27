@@ -1,7 +1,7 @@
 # Introduction
 
 This book is about `wasm-bindgen`, a Rust library and CLI tool that facilitate
-high-level interactions between wasm modules and JavaScript. The `wasm-bindgen`
+high-level interactions between Wasm modules and JavaScript. The `wasm-bindgen`
 tool and crate are only one part of the [Rust and WebAssembly
 ecosystem][rustwasm]. If you're not familiar already with `wasm-bindgen` it's
 recommended to start by reading the [Game of Life tutorial][gol]. If you're

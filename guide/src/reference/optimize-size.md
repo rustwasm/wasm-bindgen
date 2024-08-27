@@ -1,7 +1,7 @@
 # Optimizing for Size with `wasm-bindgen`
 
 The Rust and WebAssembly Working Group's [Game of Life tutorial][gol] has an
-excellent section on [shrinking wasm code size][size], but there's a few
+excellent section on [shrinking Wasm code size][size], but there's a few
 `wasm-bindgen`-specific items to mention as well!
 
 First and foremost, `wasm-bindgen` is designed to be lightweight and a "pay only
@@ -40,7 +40,7 @@ This leaves us with two primary generated files to measure the size of:
 ### Example
 
 As an example, the `wasm-bindgen` repository [contains an example][example]
-about generating small wasm binaries and shows off how to generate a small wasm
+about generating small Wasm binaries and shows off how to generate a small wasm
 file for adding two numbers.
 
 [gol]: https://rustwasm.github.io/book/game-of-life/introduction.html

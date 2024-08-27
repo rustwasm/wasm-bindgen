@@ -7,7 +7,7 @@
 - [Examples](./examples/index.md)
   - [Hello, World!](./examples/hello-world.md)
   - [Using `console.log`](./examples/console-log.md)
-  - [Small wasm files](./examples/add.md)
+  - [Small Wasm files](./examples/add.md)
   - [Without a Bundler](./examples/without-a-bundler.md)
   - [Synchronous Instantiation](./examples/synchronous-instantiation.md)
   - [Converting WebAssembly to JS](./examples/wasm2js.md)

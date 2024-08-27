@@ -1,7 +1,7 @@
-//! A "wrapper binary" used to execute wasm files as tests
+//! A "wrapper binary" used to execute Wasm files as tests
 //!
-//! This binary is intended to be used as a "test runner" for wasm binaries,
-//! being compatible with `cargo test` for the wasm target. It will
+//! This binary is intended to be used as a "test runner" for Wasm binaries,
+//! being compatible with `cargo test` for the Wasm target. It will
 //! automatically execute `wasm-bindgen` (or the equivalent thereof) and then
 //! execute either Node.js over the tests or start a server which a browser can
 //! be used to run against to execute tests. In a browser mode if `CI` is in the
@@ -72,7 +72,7 @@ fn main() -> anyhow::Result<()> {
     let shell = shell::Shell::new();
 
     // Currently no flags are supported, and assume there's only one argument
-    // which is the wasm file to test. This'll want to improve over time!
+    // which is the Wasm file to test. This'll want to improve over time!
     let wasm_file_to_test = match args.next() {
         Some(file) => PathBuf::from(file),
         None => bail!("must have a file to test as first argument"),
@@ -112,9 +112,9 @@ fn main() -> anyhow::Result<()> {
     // Collect all tests that the test harness is supposed to run. We assume
     // that any exported function with the prefix `__wbg_test` is a test we need
     // to execute.
-    let wasm = fs::read(&wasm_file_to_test).context("failed to read wasm file")?;
+    let wasm = fs::read(&wasm_file_to_test).context("failed to read Wasm file")?;
     let mut wasm =
-        walrus::Module::from_buffer(&wasm).context("failed to deserialize wasm module")?;
+        walrus::Module::from_buffer(&wasm).context("failed to deserialize Wasm module")?;
     let mut tests = Vec::new();
 
     for export in wasm.exports.iter() {
@@ -230,7 +230,7 @@ fn main() -> anyhow::Result<()> {
         .keep_debug(false)
         .emit_start(false)
         .generate(&tmpdir)
-        .context("executing `wasm-bindgen` over the wasm file")?;
+        .context("executing `wasm-bindgen` over the Wasm file")?;
     shell.clear();
 
     let args: Vec<_> = args.collect();

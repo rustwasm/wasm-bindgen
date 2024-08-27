@@ -508,7 +508,7 @@ where
         //
         // This is only a problem in debug mode. Since this is the browser's error stack
         // we're talking about, it can only see functions that actually make it to the
-        // final wasm binary (i.e., not inlined functions). All of those internal
+        // final Wasm binary (i.e., not inlined functions). All of those internal
         // iterator functions get inlined in release mode, and so they don't show up.
         result.push(
             T::try_from_js_value(value).expect_throw("array contains a value of the wrong type"),

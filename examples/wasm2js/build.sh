@@ -2,7 +2,7 @@
 
 set -ex
 
-# Compile our wasm module and run `wasm-bindgen`
+# Compile our Wasm module and run `wasm-bindgen`
 wasm-pack build
 
 # Run the `wasm2js` tool from `binaryen`

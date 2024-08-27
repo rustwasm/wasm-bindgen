@@ -37,7 +37,7 @@ fn bare_bones() {
 }
 
 // Next let's define a macro that's like `println!`, only it works for
-// `console.log`. Note that `println!` doesn't actually work on the wasm target
+// `console.log`. Note that `println!` doesn't actually work on the Wasm target
 // because the standard library currently just eats all output. To get
 // `println!`-like behavior in your app you'll likely want a macro like this.
 

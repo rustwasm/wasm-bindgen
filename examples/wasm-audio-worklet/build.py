@@ -31,7 +31,7 @@ subprocess.run(
 ).check_returncode()
 
 # Note the usage of `--target no-modules` here which is required for passing
-# the memory import to each wasm module.
+# the memory import to each Wasm module.
 subprocess.run(
     [
         "cargo",

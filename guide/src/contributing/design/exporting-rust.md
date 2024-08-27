@@ -5,8 +5,8 @@ let's take a look at another feature of `wasm-bindgen`: exporting functionality
 with types that are richer than just numbers.
 
 The basic idea around exporting functionality with more flavorful types is that
-the wasm exports won't actually be called directly. Instead the generated
-`foo.js` module will have shims for all exported functions in the wasm module.
+the Wasm exports won't actually be called directly. Instead the generated
+`foo.js` module will have shims for all exported functions in the Wasm module.
 
 The most interesting conversion here happens with strings so let's take a look
 at that.
@@ -64,14 +64,14 @@ export function greet(arg0) {
 Phew, that's quite a lot! We can sort of see though if we look closely what's
 happening:
 
-* Strings are passed to wasm via two arguments, a pointer and a length. Right
-  now we have to copy the string onto the wasm heap which means we'll be using
+* Strings are passed to Wasm via two arguments, a pointer and a length. Right
+  now we have to copy the string onto the Wasm heap which means we'll be using
   `TextEncoder` to actually do the encoding. Once this is done we use an
   internal function in `wasm-bindgen` to allocate space for the string to go,
-  and then we'll pass that ptr/length to wasm later on.
+  and then we'll pass that ptr/length to Wasm later on.
 
-* Returning strings from wasm is a little tricky as we need to return a ptr/len
-  pair, but wasm currently only supports one return value (multiple return values
+* Returning strings from Wasm is a little tricky as we need to return a ptr/len
+  pair, but Wasm currently only supports one return value (multiple return values
   [is being standardized](https://github.com/WebAssembly/design/issues/1146)).
   To work around this in the meantime, we're actually returning a pointer to a
   ptr/len pair, and then using functions to access the various fields.
@@ -111,7 +111,7 @@ string slice, while the return value is boxed up into just a pointer and is
 then returned up to was for reading via the `__wbindgen_boxed_str_*` functions.
 
 So in general exporting a function involves a shim both in JS and in Rust with
-each side translating to or from wasm arguments to the native types of each
+each side translating to or from Wasm arguments to the native types of each
 language. The `wasm-bindgen` tool manages hooking up all these shims while the
 `#[wasm_bindgen]` macro takes care of the Rust shim as well.
 
