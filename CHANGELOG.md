@@ -18,6 +18,9 @@
   [#4082](https://github.com/rustwasm/wasm-bindgen/pull/4082)
   [#4088](https://github.com/rustwasm/wasm-bindgen/pull/4088)
 
+* Fixed emitted `package.json` structure to correctly specify its dependencies
+  [#4091](https://github.com/rustwasm/wasm-bindgen/pull/4091)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.93](https://github.com/rustwasm/wasm-bindgen/compare/0.2.92...0.2.93)

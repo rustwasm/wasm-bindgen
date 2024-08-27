@@ -641,12 +641,18 @@ impl Output {
         }
 
         if !gen.npm_dependencies.is_empty() {
-            let map = gen
-                .npm_dependencies
-                .iter()
-                .map(|(k, v)| (k, &v.1))
-                .collect::<BTreeMap<_, _>>();
-            let json = serde_json::to_string_pretty(&map)?;
+            #[derive(serde::Serialize)]
+            struct PackageJson<'a> {
+                dependencies: BTreeMap<&'a str, &'a str>,
+            }
+            let pj = PackageJson {
+                dependencies: gen
+                    .npm_dependencies
+                    .iter()
+                    .map(|(k, v)| (k.as_str(), v.1.as_str()))
+                    .collect(),
+            };
+            let json = serde_json::to_string_pretty(&pj)?;
             fs::write(out_dir.join("package.json"), json)?;
         }
 
