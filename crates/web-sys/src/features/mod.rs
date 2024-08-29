@@ -2959,6 +2959,13 @@ mod gen_GamepadButtonEventInit;
 #[allow(unused_imports)]
 pub use gen_GamepadButtonEventInit::*;
 
+#[cfg(feature = "GamepadEffectParameters")]
+#[allow(non_snake_case)]
+mod gen_GamepadEffectParameters;
+#[cfg(feature = "GamepadEffectParameters")]
+#[allow(unused_imports)]
+pub use gen_GamepadEffectParameters::*;
+
 #[cfg(feature = "GamepadEvent")]
 #[allow(non_snake_case)]
 mod gen_GamepadEvent;
@@ -2993,6 +3000,20 @@ mod gen_GamepadHapticActuatorType;
 #[cfg(feature = "GamepadHapticActuatorType")]
 #[allow(unused_imports)]
 pub use gen_GamepadHapticActuatorType::*;
+
+#[cfg(feature = "GamepadHapticEffectType")]
+#[allow(non_snake_case)]
+mod gen_GamepadHapticEffectType;
+#[cfg(feature = "GamepadHapticEffectType")]
+#[allow(unused_imports)]
+pub use gen_GamepadHapticEffectType::*;
+
+#[cfg(feature = "GamepadHapticsResult")]
+#[allow(non_snake_case)]
+mod gen_GamepadHapticsResult;
+#[cfg(feature = "GamepadHapticsResult")]
+#[allow(unused_imports)]
+pub use gen_GamepadHapticsResult::*;
 
 #[cfg(feature = "GamepadMappingType")]
 #[allow(non_snake_case)]

@@ -94,6 +94,12 @@ interface Gamepad {
    * The current haptic actuator of the device, an array of
    * GamepadHapticActuator.
    */
-  [Constant, Cached, Frozen, Pref="dom.gamepad.extensions.enabled"]
+  [Constant, Cached, Frozen, RustDeprecated, Pref="dom.gamepad.extensions.enabled"]
   readonly attribute sequence<GamepadHapticActuator> hapticActuators;
+
+  /**
+   * The vibration actuator of the device.
+   */
+  [Constant, Cached, Frozen, Pref="dom.gamepad.extensions.enabled"]
+	readonly attribute GamepadHapticActuator vibrationActuator;
 };

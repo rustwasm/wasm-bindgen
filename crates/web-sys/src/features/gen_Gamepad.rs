@@ -91,5 +91,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad/hapticActuators)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Gamepad`*"]
+    #[deprecated]
     pub fn haptic_actuators(this: &Gamepad) -> ::js_sys::Array;
+    #[cfg(feature = "GamepadHapticActuator")]
+    # [wasm_bindgen (structural , method , getter , js_class = "Gamepad" , js_name = vibrationActuator)]
+    #[doc = "Getter for the `vibrationActuator` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad/vibrationActuator)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Gamepad`, `GamepadHapticActuator`*"]
+    pub fn vibration_actuator(this: &Gamepad) -> GamepadHapticActuator;
 }
