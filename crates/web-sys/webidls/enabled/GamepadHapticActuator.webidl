@@ -41,7 +41,7 @@ interface GamepadHapticActuator
   [Throws, NewObject, RustDeprecated]
   Promise<boolean> pulse(double value, double duration);
 
-	readonly attribute FrozenArray<GamepadHapticEffectType> effects;
+  readonly attribute FrozenArray<GamepadHapticEffectType> effects;
   Promise<GamepadHapticsResult> playEffect(
       GamepadHapticEffectType type,
       optional GamepadEffectParameters params = {}
