@@ -32,8 +32,12 @@ must be `JsValue` or no return at all:
 ```rust
 #[wasm_bindgen]
 extern "C" {
-    async fn async_func_1() -> JsValue;
+    async fn async_func_1_ret_number() -> JsValue;
     async fn async_func_2();
+}
+
+async fn get_from_js() -> f64 {
+    async_func_1_ret_number().await.as_f64().unwrap_or(0.0)
 }
 ```
 
