@@ -8,6 +8,14 @@
 * Add bindings to `RTCRtpTransceiverDirection.stopped`.
   [#4102](https://github.com/rustwasm/wasm-bindgen/pull/4102)
 
+* Added support for the `vibrationActuator` API in `Gamepad`.
+  [#4098](https://github.com/rustwasm/wasm-bindgen/pull/4098)
+
+### Changed
+
+* Deprecated `hapticActuators` API in `Gamepad`.
+  [#4098](https://github.com/rustwasm/wasm-bindgen/pull/4098)
+
 ### Fixed
 
 * Fixed linked modules emitting snippet files when not using `--split-linked-modules`.
