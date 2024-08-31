@@ -44,7 +44,7 @@ You can use `.as_ref()` to explicitly get a reference to any parent class from
 from a type in `web_sys`. Note that because of the number of `AsRef`
 implementations you'll likely need to have type inference guidance as well.
 
-### Accessing child clases using `JsCast`
+### Accessing child classes using `JsCast`
 
 Finally the `wasm_bindgen::JsCast` trait can be used to implement all manner of
 casts between types. It supports static unchecked casts between types as well as
