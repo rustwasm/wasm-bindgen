@@ -659,10 +659,11 @@ impl Output {
         let wasm_name = format!("{}_bg", self.stem);
         let wasm_path = out_dir.join(&wasm_name).with_extension("wasm");
         fs::create_dir_all(out_dir)?;
-        let wasm_bytes = self.module.emit_wasm();
-        fs::write(&wasm_path, wasm_bytes)
-            .with_context(|| format!("failed to write `{}`", wasm_path.display()))?;
-
+        if !self.generated.mode.inline_nodejs() {
+            let wasm_bytes = self.module.emit_wasm();
+            fs::write(&wasm_path, wasm_bytes)
+                .with_context(|| format!("failed to write `{}`", wasm_path.display()))?;
+        }
         let gen = &self.generated;
 
         // Write out all local JS snippets to the final destination now that
