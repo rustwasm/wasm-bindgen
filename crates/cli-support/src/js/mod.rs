@@ -310,7 +310,7 @@ impl<'a> Context<'a> {
 
         let buf = self.module.emit_wasm();
 
-        let mut serialized = "const bytes = Buffer.from([".to_string();
+        let mut serialized = "const bytes = new Uint8Array([".to_string();
         let (last, bytes) = buf.split_last().unwrap();
         for byte in bytes {
             serialized.push_str(&format!("{},", byte));
@@ -320,7 +320,7 @@ impl<'a> Context<'a> {
         shim.push_str(&serialized);
         shim.push_str(
             "
-                const wasmModule = new WebAssembly.Module(bytes);
+                const wasmModule = new WebAssembly.Module(bytes.buffer);
                 const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
                 wasm = wasmInstance.exports;
                 module.exports.__wasm = wasm;
