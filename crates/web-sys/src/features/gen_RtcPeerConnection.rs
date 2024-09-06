@@ -775,6 +775,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`, `RtcRtpSender`*"]
     pub fn remove_track(this: &RtcPeerConnection, sender: &RtcRtpSender);
+    # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = setConfiguration)]
+    #[doc = "The `setConfiguration()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/setConfiguration)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
+    pub fn set_configuration(this: &RtcPeerConnection);
+    #[cfg(feature = "RtcConfiguration")]
+    # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = setConfiguration)]
+    #[doc = "The `setConfiguration()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/setConfiguration)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcConfiguration`, `RtcPeerConnection`*"]
+    pub fn set_configuration_with_configuration(
+        this: &RtcPeerConnection,
+        configuration: &RtcConfiguration,
+    );
     # [wasm_bindgen (method , structural , js_class = "RTCPeerConnection" , js_name = setIdentityProvider)]
     #[doc = "The `setIdentityProvider()` method."]
     #[doc = ""]

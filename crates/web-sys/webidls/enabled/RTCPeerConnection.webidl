@@ -107,7 +107,8 @@ interface RTCPeerConnection : EventTarget  {
   [ChromeOnly]
   attribute DOMString id;
 
-  RTCConfiguration      getConfiguration ();
+  undefined setConfiguration(optional RTCConfiguration configuration);
+  RTCConfiguration getConfiguration ();
   [Deprecated="RTCPeerConnectionGetStreams"]
   sequence<MediaStream> getLocalStreams ();
   [Deprecated="RTCPeerConnectionGetStreams"]
