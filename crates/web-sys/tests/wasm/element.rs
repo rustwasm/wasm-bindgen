@@ -228,7 +228,7 @@ fn element() {
     assert_eq!(
         element.get_elements_by_class_name("foo").length(),
         0,
-        "Element should not have childs with class foo"
+        "Element should not have children with class foo"
     );
     child.class_list().add_1("foo").unwrap();
     assert_eq!(

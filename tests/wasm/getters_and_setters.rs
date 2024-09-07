@@ -20,7 +20,7 @@ extern "C" {
     fn _12_js(rules: Rules) -> Rules;
     fn _13_js(rules: Rules) -> Rules;
 
-    fn raw_identifer(rules: RulesWithRawField) -> RulesWithRawField;
+    fn raw_identifier(rules: RulesWithRawField) -> RulesWithRawField;
 
     fn test_getter_compute(x: GetterCompute);
     fn test_setter_compute(x: SetterCompute);

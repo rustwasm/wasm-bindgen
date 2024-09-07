@@ -420,7 +420,7 @@ pub async fn test_example(
                     "log.entryAdded" => handle_log_event(event.params)?,
                     "network.responseCompleted" => {
                         #[derive(Deserialize)]
-                        struct NetworkReponseCompletedParameters {
+                        struct NetworkResponseCompletedParameters {
                             navigation: Option<String>,
                             response: NetworkResponseData,
                         }
@@ -432,7 +432,7 @@ pub async fn test_example(
                             status_text: String,
                         }
 
-                        let params: NetworkReponseCompletedParameters =
+                        let params: NetworkResponseCompletedParameters =
                             serde_json::from_value(event.params)?;
                         if params.navigation.as_ref() == Some(&navigation) {
                             if !(200..300).contains(&params.response.status) {
