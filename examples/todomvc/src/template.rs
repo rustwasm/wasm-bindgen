@@ -46,10 +46,6 @@ impl Template {
     /// Returns the contents for an "items left" indicator
     pub fn item_counter(active_todos: usize) -> String {
         let items_left = ItemsLeftTemplate { active_todos };
-        if let Ok(res) = items_left.render() {
-            res
-        } else {
-            String::new()
-        }
+        items_left.render().unwrap_or_default()
     }
 }
