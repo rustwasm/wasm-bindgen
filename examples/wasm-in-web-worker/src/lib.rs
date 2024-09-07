@@ -7,7 +7,7 @@ use web_sys::{console, HtmlElement, HtmlInputElement, MessageEvent, Worker};
 ///
 /// This struct will be the main object which responds to messages passed to the
 /// worker. It stores the last number which it was passed to have a state. The
-/// statefulness is not is not required in this example but should show how
+/// statefulness is not required in this example but should show how
 /// larger, more complex scenarios with statefulness can be set up.
 #[wasm_bindgen]
 pub struct NumberEval {
