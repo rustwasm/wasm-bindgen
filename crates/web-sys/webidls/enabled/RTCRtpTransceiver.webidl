@@ -11,7 +11,8 @@ enum RTCRtpTransceiverDirection {
     "sendrecv",
     "sendonly",
     "recvonly",
-    "inactive"
+    "inactive",
+    "stopped"
 };
 
 dictionary RTCRtpTransceiverInit {

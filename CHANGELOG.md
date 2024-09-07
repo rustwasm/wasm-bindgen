@@ -3,6 +3,11 @@
 
 ## Unreleased
 
+### Added
+
+* Add bindings to `RTCRtpTransceiverDirection.stopped`.
+  [#4102](https://github.com/rustwasm/wasm-bindgen/pull/4102)
+
 ### Fixed
 
 * Fixed linked modules emitting snippet files when not using `--split-linked-modules`.
