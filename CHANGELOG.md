@@ -3,6 +3,11 @@
 
 ## Unreleased
 
+### Added
+
+* Add bindings for `RTCPeerConnection.setConfiguration(RTCConfiguration)` method.
+  [#4105](https://github.com/rustwasm/wasm-bindgen/pull/4105)
+
 ### Fixed
 
 * Fixed linked modules emitting snippet files when not using `--split-linked-modules`.
