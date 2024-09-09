@@ -108,7 +108,7 @@ interface RTCPeerConnection : EventTarget  {
   attribute DOMString id;
 
   [Throws]
-  undefined setConfiguration(optional RTCConfiguration configuration);
+  undefined setConfiguration(optional RTCConfiguration configuration = {});
   RTCConfiguration getConfiguration ();
   [Deprecated="RTCPeerConnectionGetStreams"]
   sequence<MediaStream> getLocalStreams ();
