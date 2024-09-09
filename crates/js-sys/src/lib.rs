@@ -2773,7 +2773,7 @@ impl Number {
     /// (without actually being zero).
     ///
     /// [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MIN_VALUE)
-    // Cannot use f64::MIN_POSITIVE since that is the smallest **normal** postitive number.
+    // Cannot use f64::MIN_POSITIVE since that is the smallest **normal** positive number.
     pub const MIN_VALUE: f64 = 5E-324;
     /// Special "Not a Number" value.
     ///

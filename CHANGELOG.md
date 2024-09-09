@@ -8,6 +8,9 @@
 * Add bindings for `RTCPeerConnection.setConfiguration(RTCConfiguration)` method.
   [#4105](https://github.com/rustwasm/wasm-bindgen/pull/4105)
 
+* Add bindings to `RTCRtpTransceiverDirection.stopped`.
+  [#4102](https://github.com/rustwasm/wasm-bindgen/pull/4102)
+
 ### Fixed
 
 * Fixed linked modules emitting snippet files when not using `--split-linked-modules`.
@@ -220,7 +223,7 @@ Released 2024-08-13
 * Implement a more reliable way to detect the stack pointer.
   [#4036](https://github.com/rustwasm/wasm-bindgen/pull/4036)
 
-* `#[track_caller]` is now always applied on `UnwrapThrowExt` methods when not targetting `wasm32-unknown-unknown`.
+* `#[track_caller]` is now always applied on `UnwrapThrowExt` methods when not targeting `wasm32-unknown-unknown`.
   [#4042](https://github.com/rustwasm/wasm-bindgen/pull/4042)
 
 * Fixed linked modules emitting snippet files when not using `--split-linked-modules`.
@@ -298,7 +301,7 @@ Released 2024-02-06
 * Updated the WebGPU WebIDL to the current draft as of 2024-01-30. Note that this retains the previous update's workaround for `GPUPipelineError`, and holds back an update to the `buffer` argument of the `GPUQueue.{writeBuffer,writeTexture}` methods.
   [#3816](https://github.com/rustwasm/wasm-bindgen/pull/3816)
 
-* Depreate `--weak-refs` and `WASM_BINDGEN_WEAKREF` in favor of automatic run-time detection.
+* Deprecate `--weak-refs` and `WASM_BINDGEN_WEAKREF` in favor of automatic run-time detection.
   [#3822](https://github.com/rustwasm/wasm-bindgen/pull/3822)
 
 ### Fixed
@@ -312,7 +315,7 @@ Released 2024-02-06
 * Fixed using `#[wasm_bindgen(js_name = default)]` with `#[wasm_bindgen(module = ...)]`.
   [#3823](https://github.com/rustwasm/wasm-bindgen/pull/3823)
 
-* Fixed nighly build of `wasm-bindgen-futures`.
+* Fixed nightly build of `wasm-bindgen-futures`.
   [#3827](https://github.com/rustwasm/wasm-bindgen/pull/3827)
 
 --------------------------------------------------------------------------------
