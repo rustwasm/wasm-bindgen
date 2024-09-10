@@ -338,13 +338,14 @@ impl Frame<'_> {
                 stack.pop().unwrap();
             }
 
-            Instr::Call(e) => {
+            Instr::Call(Call { func }) | Instr::ReturnCall(ReturnCall { func }) => {
+                let func = *func;
                 // If this function is calling the `__wbindgen_describe`
                 // function, which we've precomputed the id for, then
                 // it's telling us about the next `u32` element in the
                 // descriptor to return. We "call" the imported function
                 // here by directly inlining it.
-                if Some(e.func) == self.interp.describe_id {
+                if Some(func) == self.interp.describe_id {
                     let val = stack.pop().unwrap();
                     log::debug!("__wbindgen_describe({})", val);
                     self.interp.descriptor.push(val as u32);
@@ -354,7 +355,7 @@ impl Frame<'_> {
                 // slightly different signature. Note that we don't eval the
                 // previous arguments because they shouldn't have any side
                 // effects we're interested in.
-                } else if Some(e.func) == self.interp.describe_closure_id {
+                } else if Some(func) == self.interp.describe_closure_id {
                     let val = stack.pop().unwrap();
                     stack.pop();
                     stack.pop();
@@ -368,7 +369,7 @@ impl Frame<'_> {
                     if self
                         .module
                         .funcs
-                        .get(e.func)
+                        .get(func)
                         .name
                         .as_ref()
                         .is_some_and(|name| {
@@ -380,12 +381,17 @@ impl Frame<'_> {
                         return Ok(());
                     }
 
-                    let ty = self.module.types.get(self.module.funcs.get(e.func).ty());
+                    let ty = self.module.types.get(self.module.funcs.get(func).ty());
                     let args = (0..ty.params().len())
                         .map(|_| stack.pop().unwrap())
                         .collect::<Vec<_>>();
 
-                    self.interp.call(e.func, self.module, &args);
+                    self.interp.call(func, self.module, &args);
+                }
+
+                if let Instr::ReturnCall(_) = instr {
+                    log::debug!("return_call");
+                    self.done = true;
                 }
             }
 

@@ -722,18 +722,19 @@ impl Transform<'_> {
         impl VisitorMut for Rewrite<'_, '_> {
             fn start_instr_seq_mut(&mut self, seq: &mut InstrSeq) {
                 for i in (0..seq.instrs.len()).rev() {
-                    let call = match &mut seq.instrs[i].0 {
-                        Instr::Call(call) => call,
+                    let func = match &mut seq.instrs[i].0 {
+                        Instr::Call(Call { func }) => func,
+                        Instr::ReturnCall(ReturnCall { func }) => func,
                         _ => continue,
                     };
-                    let intrinsic = match self.xform.intrinsic_map.get(&call.func) {
+                    let intrinsic = match self.xform.intrinsic_map.get(func) {
                         Some(f) => f,
                         None => {
                             // If this wasn't a call of an intrinsic, but it was a
                             // call of one of our old import functions then we
                             // switch the functions we're calling here.
-                            if let Some(f) = self.xform.import_map.get(&call.func) {
-                                call.func = *f;
+                            if let Some(f) = self.xform.import_map.get(func) {
+                                *func = *f;
                             }
                             continue;
                         }
@@ -776,8 +777,8 @@ impl Transform<'_> {
                             seq.instrs
                                 .insert(i, (RefNull { ty }.into(), InstrLocId::default()));
                         }
-                        Intrinsic::DropRef => call.func = self.heap_dealloc,
-                        Intrinsic::CloneRef => call.func = self.clone_ref,
+                        Intrinsic::DropRef => *func = self.heap_dealloc,
+                        Intrinsic::CloneRef => *func = self.clone_ref,
                     }
                 }
             }

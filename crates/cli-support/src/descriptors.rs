@@ -199,6 +199,12 @@ impl WasmBindgenDescriptorsSection {
                     self.found = true;
                 }
             }
+
+            fn visit_return_call(&mut self, instr: &walrus::ir::ReturnCall) {
+                if instr.func == self.wbindgen_describe_closure {
+                    self.found = true;
+                }
+            }
         }
 
         struct UpdateDescribeClosure {
@@ -210,6 +216,12 @@ impl WasmBindgenDescriptorsSection {
             fn visit_call_mut(&mut self, call: &mut Call) {
                 if call.func == self.wbindgen_describe_closure {
                     call.func = self.replacement;
+                }
+            }
+
+            fn visit_return_call_mut(&mut self, instr: &mut walrus::ir::ReturnCall) {
+                if instr.func == self.wbindgen_describe_closure {
+                    instr.func = self.replacement;
                 }
             }
         }

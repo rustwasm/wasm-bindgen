@@ -5,6 +5,9 @@
 
 ### Added
 
+* Added support for the WebAssembly `Tail Call` proposal.
+  [#4111](https://github.com/rustwasm/wasm-bindgen/pull/4111)
+
 * Add bindings for `RTCPeerConnection.setConfiguration(RTCConfiguration)` method.
   [#4105](https://github.com/rustwasm/wasm-bindgen/pull/4105)
 
@@ -204,7 +207,7 @@ Released 2024-08-13
 
 * Fix MDN links to static interface methods.
   [#4010](https://github.com/rustwasm/wasm-bindgen/pull/4010)
- 
+
 * Fixed Deno support.
   [#3990](https://github.com/rustwasm/wasm-bindgen/pull/3990)
 
