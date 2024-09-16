@@ -5,6 +5,9 @@
 
 ### Added
 
+* Add bindings for `RTCPeerConnection.setConfiguration(RTCConfiguration)` method.
+  [#4105](https://github.com/rustwasm/wasm-bindgen/pull/4105)
+
 * Add bindings to `RTCRtpTransceiverDirection.stopped`.
   [#4102](https://github.com/rustwasm/wasm-bindgen/pull/4102)
 
