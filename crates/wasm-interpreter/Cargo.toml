@@ -16,7 +16,7 @@ version = "0.2.93"
 [dependencies]
 anyhow = "1.0"
 log = "0.4"
-walrus = "0.21"
+walrus = "0.21.2"
 wasm-bindgen-wasm-conventions = { path = "../wasm-conventions", version = "0.2.93" }
 
 [dev-dependencies]

@@ -13,7 +13,7 @@ version = "0.2.93"
 
 [dependencies]
 leb128 = "0.2"
-walrus = "0.21"
+walrus = "0.21.2"
 # Matching the version `walrus` depends on.
 anyhow = "1.0"
 log = "0.4"
