@@ -4,6 +4,7 @@
 */
 export class ClassBuilder {
   free(): void;
+  [Symbol.dispose](): void;
 /**
 * @returns {ClassBuilder}
 */
