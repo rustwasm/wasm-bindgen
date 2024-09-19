@@ -35,10 +35,8 @@ the application developer does not need to maintain custom JS code.
 
 ### Browser Requirements
 
-This demo should work in the latest Chrome and Safari versions at this time.
-Firefox [does not support][firefox-worklet-import] imports in worklet modules,
-which are difficult to avoid in this example, as `importScripts` is unavailable
-in worklets. Note that this example requires HTTP headers to be set like in
+This demo should work in the latest Chrome, Firefox and Safari versions at this time.
+Note that this example requires HTTP headers to be set like in
 [parallel-raytrace][headers].
 
 [firefox-worklet-import]: https://bugzilla.mozilla.org/show_bug.cgi?id=1572644
