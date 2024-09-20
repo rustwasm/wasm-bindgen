@@ -9,7 +9,6 @@ export function test1(test: number): number;
 */
 export class Test {
   free(): void;
-  [Symbol.dispose](): void;
 /**
 * @param {number} test
 * @returns {Test}

@@ -26,8 +26,6 @@ function getStringFromWasm0(ptr, len) {
     return cachedTextDecoder.decode(getUint8ArrayMemory0().subarray(ptr, ptr + len));
 }
 
-if(!Symbol.dispose) { Symbol.dispose = Symbol('Symbol.dispose'); }
-
 const heap = new Array(128).fill(undefined);
 
 heap.push(undefined, null, true, false);
@@ -90,10 +88,6 @@ export class Test {
     free() {
         const ptr = this.__destroy_into_raw();
         wasm.__wbg_test_free(ptr, 0);
-    }
-
-    [Symbol.dispose]() {
-        this.free();
     }
     /**
     * @param {number} test

@@ -4,8 +4,6 @@ export function __wbg_set_wasm(val) {
 }
 
 
-if(!Symbol.dispose) { Symbol.dispose = Symbol('Symbol.dispose'); }
-
 const lTextDecoder = typeof TextDecoder === 'undefined' ? (0, module.require)('util').TextDecoder : TextDecoder;
 
 let cachedTextDecoder = new lTextDecoder('utf-8', { ignoreBOM: true, fatal: true });
@@ -51,10 +49,6 @@ export class ClassBuilder {
     free() {
         const ptr = this.__destroy_into_raw();
         wasm.__wbg_classbuilder_free(ptr, 0);
-    }
-
-    [Symbol.dispose]() {
-        this.free();
     }
     /**
     * @returns {ClassBuilder}
