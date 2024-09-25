@@ -17,6 +17,9 @@
 * Added experimental support for `Symbol.dispose` via `WASM_BINDGEN_EXPERIMENTAL_SYMBOL_DISPOSE`.
   [#4118](https://github.com/rustwasm/wasm-bindgen/pull/4118)
 
+* Added bindings for the draft [WebRTC Encoded Transform](https://www.w3.org/TR/webrtc-encoded-transform) spec.
+  [#4125](https://github.com/rustwasm/wasm-bindgen/pull/4125)
+
 ### Fixed
 
 * Fixed linked modules emitting snippet files when not using `--split-linked-modules`.
