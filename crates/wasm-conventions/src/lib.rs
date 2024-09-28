@@ -177,6 +177,50 @@ pub fn get_or_insert_start_builder(module: &mut Module) -> &mut FunctionBuilder 
         .builder_mut()
 }
 
+pub fn target_feature(module: &Module, feature: &str) -> Result<bool> {
+    // Taken from <https://github.com/bytecodealliance/wasm-tools/blob/f1898f46bb9d96f0f09682415cb6ccfd6a4dca79/crates/wasmparser/src/limits.rs#L27>.
+    anyhow::ensure!(feature.len() <= 100_000, "feature name too long");
+
+    // Try to find an existing section.
+    let section = module
+        .customs
+        .iter()
+        .find(|(_, custom)| custom.name() == "target_features");
+
+    if let Some((_, section)) = section {
+        let section: &RawCustomSection = section
+            .as_any()
+            .downcast_ref()
+            .context("failed to read section")?;
+        let mut reader = BinaryReader::new(&section.data, 0, WasmFeatures::default());
+        // The first integer contains the target feature count.
+        let count = reader.read_var_u32()?;
+
+        // Try to find if the target feature is already present.
+        for _ in 0..count {
+            // First byte is the prefix.
+            let prefix = reader.read_u8()?;
+            // Read the feature.
+            let length = reader.read_var_u32()?;
+            let this_feature = reader.read_bytes(length as usize)?;
+
+            // If we found the target feature, we are done here.
+            if this_feature == feature.as_bytes() {
+                // Make sure we set any existing prefix to "enabled".
+                if prefix == b'-' {
+                    return Ok(false);
+                }
+
+                return Ok(true);
+            }
+        }
+
+        Ok(false)
+    } else {
+        Ok(false)
+    }
+}
+
 pub fn insert_target_feature(module: &mut Module, new_feature: &str) -> Result<()> {
     // Taken from <https://github.com/bytecodealliance/wasm-tools/blob/f1898f46bb9d96f0f09682415cb6ccfd6a4dca79/crates/wasmparser/src/limits.rs#L27>.
     anyhow::ensure!(new_feature.len() <= 100_000, "feature name too long");
