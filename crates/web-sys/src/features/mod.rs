@@ -2924,20 +2924,6 @@ mod gen_Gamepad;
 #[allow(unused_imports)]
 pub use gen_Gamepad::*;
 
-#[cfg(feature = "GamepadAxisMoveEvent")]
-#[allow(non_snake_case)]
-mod gen_GamepadAxisMoveEvent;
-#[cfg(feature = "GamepadAxisMoveEvent")]
-#[allow(unused_imports)]
-pub use gen_GamepadAxisMoveEvent::*;
-
-#[cfg(feature = "GamepadAxisMoveEventInit")]
-#[allow(non_snake_case)]
-mod gen_GamepadAxisMoveEventInit;
-#[cfg(feature = "GamepadAxisMoveEventInit")]
-#[allow(unused_imports)]
-pub use gen_GamepadAxisMoveEventInit::*;
-
 #[cfg(feature = "GamepadButton")]
 #[allow(non_snake_case)]
 mod gen_GamepadButton;
@@ -2945,19 +2931,12 @@ mod gen_GamepadButton;
 #[allow(unused_imports)]
 pub use gen_GamepadButton::*;
 
-#[cfg(feature = "GamepadButtonEvent")]
+#[cfg(feature = "GamepadEffectParameters")]
 #[allow(non_snake_case)]
-mod gen_GamepadButtonEvent;
-#[cfg(feature = "GamepadButtonEvent")]
+mod gen_GamepadEffectParameters;
+#[cfg(feature = "GamepadEffectParameters")]
 #[allow(unused_imports)]
-pub use gen_GamepadButtonEvent::*;
-
-#[cfg(feature = "GamepadButtonEventInit")]
-#[allow(non_snake_case)]
-mod gen_GamepadButtonEventInit;
-#[cfg(feature = "GamepadButtonEventInit")]
-#[allow(unused_imports)]
-pub use gen_GamepadButtonEventInit::*;
+pub use gen_GamepadEffectParameters::*;
 
 #[cfg(feature = "GamepadEvent")]
 #[allow(non_snake_case)]
@@ -2994,6 +2973,20 @@ mod gen_GamepadHapticActuatorType;
 #[allow(unused_imports)]
 pub use gen_GamepadHapticActuatorType::*;
 
+#[cfg(feature = "GamepadHapticEffectType")]
+#[allow(non_snake_case)]
+mod gen_GamepadHapticEffectType;
+#[cfg(feature = "GamepadHapticEffectType")]
+#[allow(unused_imports)]
+pub use gen_GamepadHapticEffectType::*;
+
+#[cfg(feature = "GamepadHapticsResult")]
+#[allow(non_snake_case)]
+mod gen_GamepadHapticsResult;
+#[cfg(feature = "GamepadHapticsResult")]
+#[allow(unused_imports)]
+pub use gen_GamepadHapticsResult::*;
+
 #[cfg(feature = "GamepadMappingType")]
 #[allow(non_snake_case)]
 mod gen_GamepadMappingType;
@@ -3008,12 +3001,12 @@ mod gen_GamepadPose;
 #[allow(unused_imports)]
 pub use gen_GamepadPose::*;
 
-#[cfg(feature = "GamepadServiceTest")]
+#[cfg(feature = "GamepadTouch")]
 #[allow(non_snake_case)]
-mod gen_GamepadServiceTest;
-#[cfg(feature = "GamepadServiceTest")]
+mod gen_GamepadTouch;
+#[cfg(feature = "GamepadTouch")]
 #[allow(unused_imports)]
-pub use gen_GamepadServiceTest::*;
+pub use gen_GamepadTouch::*;
 
 #[cfg(feature = "Geolocation")]
 #[allow(non_snake_case)]

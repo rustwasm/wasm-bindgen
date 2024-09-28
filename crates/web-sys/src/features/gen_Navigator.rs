@@ -379,14 +379,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Navigator`*"]
     pub fn get_vr_displays(this: &Navigator) -> Result<::js_sys::Promise, JsValue>;
-    #[cfg(feature = "GamepadServiceTest")]
-    # [wasm_bindgen (method , structural , js_class = "Navigator" , js_name = requestGamepadServiceTest)]
-    #[doc = "The `requestGamepadServiceTest()` method."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/requestGamepadServiceTest)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GamepadServiceTest`, `Navigator`*"]
-    pub fn request_gamepad_service_test(this: &Navigator) -> GamepadServiceTest;
     # [wasm_bindgen (catch , method , structural , js_class = "Navigator" , js_name = requestMIDIAccess)]
     #[doc = "The `requestMIDIAccess()` method."]
     #[doc = ""]
