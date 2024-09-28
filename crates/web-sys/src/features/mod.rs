@@ -5122,6 +5122,13 @@ mod gen_KeyEvent;
 #[allow(unused_imports)]
 pub use gen_KeyEvent::*;
 
+#[cfg(feature = "KeyFrameRequestEvent")]
+#[allow(non_snake_case)]
+mod gen_KeyFrameRequestEvent;
+#[cfg(feature = "KeyFrameRequestEvent")]
+#[allow(unused_imports)]
+pub use gen_KeyFrameRequestEvent::*;
+
 #[cfg(feature = "KeyIdsInitData")]
 #[allow(non_snake_case)]
 mod gen_KeyIdsInitData;
@@ -7544,6 +7551,55 @@ mod gen_RtcDegradationPreference;
 #[allow(unused_imports)]
 pub use gen_RtcDegradationPreference::*;
 
+#[cfg(feature = "RtcEncodedAudioFrame")]
+#[allow(non_snake_case)]
+mod gen_RtcEncodedAudioFrame;
+#[cfg(feature = "RtcEncodedAudioFrame")]
+#[allow(unused_imports)]
+pub use gen_RtcEncodedAudioFrame::*;
+
+#[cfg(feature = "RtcEncodedAudioFrameMetadata")]
+#[allow(non_snake_case)]
+mod gen_RtcEncodedAudioFrameMetadata;
+#[cfg(feature = "RtcEncodedAudioFrameMetadata")]
+#[allow(unused_imports)]
+pub use gen_RtcEncodedAudioFrameMetadata::*;
+
+#[cfg(feature = "RtcEncodedAudioFrameOptions")]
+#[allow(non_snake_case)]
+mod gen_RtcEncodedAudioFrameOptions;
+#[cfg(feature = "RtcEncodedAudioFrameOptions")]
+#[allow(unused_imports)]
+pub use gen_RtcEncodedAudioFrameOptions::*;
+
+#[cfg(feature = "RtcEncodedVideoFrame")]
+#[allow(non_snake_case)]
+mod gen_RtcEncodedVideoFrame;
+#[cfg(feature = "RtcEncodedVideoFrame")]
+#[allow(unused_imports)]
+pub use gen_RtcEncodedVideoFrame::*;
+
+#[cfg(feature = "RtcEncodedVideoFrameMetadata")]
+#[allow(non_snake_case)]
+mod gen_RtcEncodedVideoFrameMetadata;
+#[cfg(feature = "RtcEncodedVideoFrameMetadata")]
+#[allow(unused_imports)]
+pub use gen_RtcEncodedVideoFrameMetadata::*;
+
+#[cfg(feature = "RtcEncodedVideoFrameOptions")]
+#[allow(non_snake_case)]
+mod gen_RtcEncodedVideoFrameOptions;
+#[cfg(feature = "RtcEncodedVideoFrameOptions")]
+#[allow(unused_imports)]
+pub use gen_RtcEncodedVideoFrameOptions::*;
+
+#[cfg(feature = "RtcEncodedVideoFrameType")]
+#[allow(non_snake_case)]
+mod gen_RtcEncodedVideoFrameType;
+#[cfg(feature = "RtcEncodedVideoFrameType")]
+#[allow(unused_imports)]
+pub use gen_RtcEncodedVideoFrameType::*;
+
 #[cfg(feature = "RtcFecParameters")]
 #[allow(non_snake_case)]
 mod gen_RtcFecParameters;
@@ -7824,6 +7880,20 @@ mod gen_RtcRtpReceiver;
 #[allow(unused_imports)]
 pub use gen_RtcRtpReceiver::*;
 
+#[cfg(feature = "RtcRtpScriptTransform")]
+#[allow(non_snake_case)]
+mod gen_RtcRtpScriptTransform;
+#[cfg(feature = "RtcRtpScriptTransform")]
+#[allow(unused_imports)]
+pub use gen_RtcRtpScriptTransform::*;
+
+#[cfg(feature = "RtcRtpScriptTransformer")]
+#[allow(non_snake_case)]
+mod gen_RtcRtpScriptTransformer;
+#[cfg(feature = "RtcRtpScriptTransformer")]
+#[allow(unused_imports)]
+pub use gen_RtcRtpScriptTransformer::*;
+
 #[cfg(feature = "RtcRtpSender")]
 #[allow(non_snake_case)]
 mod gen_RtcRtpSender;
@@ -7964,6 +8034,13 @@ mod gen_RtcTrackEventInit;
 #[allow(unused_imports)]
 pub use gen_RtcTrackEventInit::*;
 
+#[cfg(feature = "RtcTransformEvent")]
+#[allow(non_snake_case)]
+mod gen_RtcTransformEvent;
+#[cfg(feature = "RtcTransformEvent")]
+#[allow(unused_imports)]
+pub use gen_RtcTransformEvent::*;
+
 #[cfg(feature = "RtcTransportStats")]
 #[allow(non_snake_case)]
 mod gen_RtcTransportStats;
@@ -8005,6 +8082,48 @@ mod gen_RtcrtpStreamStats;
 #[cfg(feature = "RtcrtpStreamStats")]
 #[allow(unused_imports)]
 pub use gen_RtcrtpStreamStats::*;
+
+#[cfg(feature = "SFrameTransform")]
+#[allow(non_snake_case)]
+mod gen_SFrameTransform;
+#[cfg(feature = "SFrameTransform")]
+#[allow(unused_imports)]
+pub use gen_SFrameTransform::*;
+
+#[cfg(feature = "SFrameTransformErrorEvent")]
+#[allow(non_snake_case)]
+mod gen_SFrameTransformErrorEvent;
+#[cfg(feature = "SFrameTransformErrorEvent")]
+#[allow(unused_imports)]
+pub use gen_SFrameTransformErrorEvent::*;
+
+#[cfg(feature = "SFrameTransformErrorEventInit")]
+#[allow(non_snake_case)]
+mod gen_SFrameTransformErrorEventInit;
+#[cfg(feature = "SFrameTransformErrorEventInit")]
+#[allow(unused_imports)]
+pub use gen_SFrameTransformErrorEventInit::*;
+
+#[cfg(feature = "SFrameTransformErrorEventType")]
+#[allow(non_snake_case)]
+mod gen_SFrameTransformErrorEventType;
+#[cfg(feature = "SFrameTransformErrorEventType")]
+#[allow(unused_imports)]
+pub use gen_SFrameTransformErrorEventType::*;
+
+#[cfg(feature = "SFrameTransformOptions")]
+#[allow(non_snake_case)]
+mod gen_SFrameTransformOptions;
+#[cfg(feature = "SFrameTransformOptions")]
+#[allow(unused_imports)]
+pub use gen_SFrameTransformOptions::*;
+
+#[cfg(feature = "SFrameTransformRole")]
+#[allow(non_snake_case)]
+mod gen_SFrameTransformRole;
+#[cfg(feature = "SFrameTransformRole")]
+#[allow(unused_imports)]
+pub use gen_SFrameTransformRole::*;
 
 #[cfg(feature = "SaveFilePickerOptions")]
 #[allow(non_snake_case)]
