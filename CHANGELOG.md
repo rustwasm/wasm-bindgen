@@ -20,6 +20,11 @@
 * Added bindings for the draft [WebRTC Encoded Transform](https://www.w3.org/TR/webrtc-encoded-transform) spec.
   [#4125](https://github.com/rustwasm/wasm-bindgen/pull/4125)
 
+### Changed
+
+* Implicitly enable reference type and multivalue transformations if the module already makes use of the corresponding target features.
+  [#4133](https://github.com/rustwasm/wasm-bindgen/pull/4133)
+
 ### Fixed
 
 * Fixed linked modules emitting snippet files when not using `--split-linked-modules`.

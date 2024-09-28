@@ -323,6 +323,17 @@ impl Bindgen {
                 .context("failed getting Wasm module")?,
         };
 
+        // Enable reference type transformations if the module is already using it.
+        if let Ok(true) = wasm_bindgen_wasm_conventions::target_feature(&module, "reference-types")
+        {
+            self.externref = true;
+        }
+
+        // Enable multivalue transformations if the module is already using it.
+        if let Ok(true) = wasm_bindgen_wasm_conventions::target_feature(&module, "multivalue") {
+            self.multi_value = true;
+        }
+
         // Check that no exported symbol is called "default" if we target web.
         if matches!(self.mode, OutputMode::Web)
             && module.exports.iter().any(|export| export.name == "default")
