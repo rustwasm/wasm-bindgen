@@ -1084,6 +1084,16 @@ impl<'a> Context<'a> {
             wasm_bindgen_shared::free_function(name),
         ));
         ts_dst.push_str("  free(): void;\n");
+        if self.config.symbol_dispose {
+            dst.push_str(
+                "
+                [Symbol.dispose]() {{
+                    this.free();
+                }}
+                ",
+            );
+            ts_dst.push_str("  [Symbol.dispose](): void;\n");
+        }
         dst.push_str(&class.contents);
         ts_dst.push_str(&class.typescript);
 
@@ -1484,6 +1494,14 @@ impl<'a> Context<'a> {
             size = size
         ));
         Ok(ret)
+    }
+
+    fn expose_symbol_dispose(&mut self) -> Result<(), Error> {
+        if !self.should_write_global("symbol_dispose") {
+            return Ok(());
+        }
+        self.global("if(!Symbol.dispose) { Symbol.dispose = Symbol('Symbol.dispose'); }");
+        Ok(())
     }
 
     fn expose_text_encoder(&mut self) -> Result<(), Error> {
@@ -2476,6 +2494,10 @@ impl<'a> Context<'a> {
 
     pub fn generate(&mut self) -> Result<(), Error> {
         self.prestore_global_import_identifiers()?;
+        // conditionally override Symbol.dispose
+        if self.config.symbol_dispose && !self.aux.structs.is_empty() {
+            self.expose_symbol_dispose()?;
+        }
         for (id, adapter) in crate::sorted_iter(&self.wit.adapters) {
             let instrs = match &adapter.kind {
                 AdapterKind::Import { .. } => continue,

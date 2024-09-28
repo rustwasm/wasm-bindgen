@@ -14,6 +14,9 @@
 * Add bindings to `RTCRtpTransceiverDirection.stopped`.
   [#4102](https://github.com/rustwasm/wasm-bindgen/pull/4102)
 
+* Added experimental support for `Symbol.dispose` via `WASM_BINDGEN_EXPERIMENTAL_SYMBOL_DISPOSE`.
+  [#4118](https://github.com/rustwasm/wasm-bindgen/pull/4118)
+
 ### Fixed
 
 * Fixed linked modules emitting snippet files when not using `--split-linked-modules`.
