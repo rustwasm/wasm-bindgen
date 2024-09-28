@@ -25,6 +25,15 @@
 * Implicitly enable reference type and multivalue transformations if the module already makes use of the corresponding target features.
   [#4133](https://github.com/rustwasm/wasm-bindgen/pull/4133)
 
+* Updated Gamepad API.
+  [#4134](https://github.com/rustwasm/wasm-bindgen/pull/4134)
+
+* Deprecated `Gamepad::display_id` and `GamepadHapticActuator::type_`.
+  [#4134](https://github.com/rustwasm/wasm-bindgen/pull/4134)
+
+* Removed `GamepadAxisMoveEvent`, `GamepadAxisMoveEventInit`, `GamepadButtonEvent`, `GamepadButtonEventInit` and `GamepadServiceTest`, which were seemingly never implemented by any JS environment.
+  [#4134](https://github.com/rustwasm/wasm-bindgen/pull/4134)
+
 ### Fixed
 
 * Fixed linked modules emitting snippet files when not using `--split-linked-modules`.

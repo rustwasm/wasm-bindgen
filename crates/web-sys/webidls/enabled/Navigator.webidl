@@ -153,16 +153,6 @@ partial interface Navigator {
   readonly attribute NetworkInformation connection;
 };
 
-// https://dvcs.w3.org/hg/gamepad/raw-file/default/gamepad.html#navigator-interface-extension
-partial interface Navigator {
-  [Throws, Pref="dom.gamepad.enabled"]
-  sequence<Gamepad?> getGamepads();
-};
-partial interface Navigator {
-  [Pref="dom.gamepad.test.enabled"]
-  GamepadServiceTest requestGamepadServiceTest();
-};
-
 partial interface Navigator {
   [Throws, Pref="dom.vr.enabled"]
   Promise<sequence<VRDisplay>> getVRDisplays();
