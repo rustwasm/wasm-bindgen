@@ -4231,7 +4231,7 @@ impl ExportedClass {
                 for line in docs.lines() {
                     self.typescript.push_str("  ");
                     self.typescript.push_str(line);
-                    self.typescript.push_str("\n");
+                    self.typescript.push('\n');
                 }
             }
             self.typescript.push_str("  ");
