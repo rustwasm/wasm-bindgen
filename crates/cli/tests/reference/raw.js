@@ -46,9 +46,9 @@ function getStringFromWasm0(ptr, len) {
     return cachedTextDecoder.decode(getUint8ArrayMemory0().subarray(ptr, ptr + len));
 }
 /**
-* @param {number} test
-* @returns {number}
-*/
+ * @param {number} test
+ * @returns {number}
+ */
 export function test1(test) {
     const ret = wasm.test1(test);
     return ret >>> 0;
@@ -66,8 +66,7 @@ function addHeapObject(obj) {
 const TestFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_test_free(ptr >>> 0, 1));
-/**
-*/
+
 export class Test {
 
     static __wrap(ptr) {
@@ -90,16 +89,16 @@ export class Test {
         wasm.__wbg_test_free(ptr, 0);
     }
     /**
-    * @param {number} test
-    * @returns {Test}
-    */
+     * @param {number} test
+     * @returns {Test}
+     */
     static test1(test) {
         const ret = wasm.test_test1(test);
         return Test.__wrap(ret);
     }
     /**
-    * @param {number} test
-    */
+     * @param {number} test
+     */
     test2(test) {
         wasm.test_test2(this.__wbg_ptr, test);
     }

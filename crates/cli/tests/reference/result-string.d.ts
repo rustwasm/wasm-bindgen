@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
-* @returns {string}
-*/
+ * @returns {string}
+ */
 export function exported(): string;

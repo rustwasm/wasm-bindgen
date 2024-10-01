@@ -4126,18 +4126,23 @@ fn check_duplicated_getter_and_setter_names(
 
 fn format_doc_comments(comments: &str, js_doc_comments: Option<String>) -> String {
     let body: String = comments.lines().fold(String::new(), |mut output, c| {
-        let _ = writeln!(output, "*{}", c);
+        let _ = writeln!(output, " *{}", c);
         output
     });
     let doc = if let Some(docs) = js_doc_comments {
         docs.lines().fold(String::new(), |mut output: String, l| {
-            let _ = writeln!(output, "* {}", l);
+            let _ = writeln!(output, " * {}", l);
             output
         })
     } else {
         String::new()
     };
-    format!("/**\n{}{}*/\n", body, doc)
+    if body.is_empty() && doc.is_empty() {
+        // don't emit empty doc comments
+        String::new()
+    } else {
+        format!("/**\n{}{} */\n", body, doc)
+    }
 }
 
 fn require_class<'a>(
@@ -4222,7 +4227,13 @@ impl ExportedClass {
         self.contents.push_str(js);
         self.contents.push('\n');
         if let Some(ts) = ts {
-            self.typescript.push_str(docs);
+            if !docs.is_empty() {
+                for line in docs.lines() {
+                    self.typescript.push_str("  ");
+                    self.typescript.push_str(line);
+                    self.typescript.push_str("\n");
+                }
+            }
             self.typescript.push_str("  ");
             self.typescript.push_str(function_prefix);
             self.typescript.push_str(function_name);

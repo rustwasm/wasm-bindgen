@@ -53,8 +53,7 @@ function takeFromExternrefTable0(idx) {
     wasm.__externref_table_dealloc(idx);
     return value;
 }
-/**
-*/
+
 export function exported() {
     try {
         const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
