@@ -11,6 +11,16 @@ export function enum_echo(color: Color): Color;
 */
 export function option_enum_echo(color?: Color): Color | undefined;
 /**
+* @param {Color} color
+* @returns {ColorName}
+*/
+export function get_name(color: Color): ColorName;
+/**
+* @param {ColorName | undefined} [color]
+* @returns {ColorName}
+*/
+export function option_string_enum_echo(color?: ColorName): ColorName;
+/**
 */
 export enum Color {
   Green = 0,
