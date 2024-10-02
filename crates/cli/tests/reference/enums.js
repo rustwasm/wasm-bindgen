@@ -55,7 +55,7 @@ export function get_name(color) {
 
 /**
 * @param {ColorName | undefined} [color]
-* @returns {ColorName}
+* @returns {ColorName | undefined}
 */
 export function option_string_enum_echo(color) {
     const ret = wasm.option_string_enum_echo(color == undefined ? 4 : ((["green","yellow","red",].indexOf(color) + 1 || 4) - 1));
