@@ -1,6 +1,6 @@
 use anyhow::{bail, Error};
 use base64::{prelude::BASE64_STANDARD, Engine as _};
-use std::collections::HashSet;
+use std::collections::{BTreeSet, HashSet};
 use std::fmt::Write;
 use walrus::Module;
 
@@ -170,7 +170,7 @@ impl Output {
         let mut set_exports = String::new();
         let mut imports = String::new();
 
-        let mut set = HashSet::new();
+        let mut set = BTreeSet::new();
         for entry in self.module.imports.iter() {
             if !set.insert(&entry.module) {
                 continue;

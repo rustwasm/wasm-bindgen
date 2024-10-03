@@ -183,7 +183,7 @@ impl<'a> Context<'a> {
             // Finally we store all this metadata in the import map which we've
             // learned so when a binding for the import is generated we can
             // generate all the appropriate shims.
-            for (id, descriptor) in crate::sorted_iter(&closure_imports) {
+            for (id, descriptor) in (&closure_imports) {
                 let signature = Function {
                     shim_idx: 0,
                     arguments: vec![Descriptor::I32; 3],

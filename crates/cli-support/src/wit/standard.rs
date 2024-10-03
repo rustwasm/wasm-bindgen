@@ -1,7 +1,7 @@
 use crate::descriptor::VectorKind;
 use crate::wit::{AuxImport, WasmBindgenAux};
 use std::borrow::Cow;
-use std::collections::{HashMap, HashSet,BTreeMap};
+use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use walrus::{FunctionId, ImportId, RefType, TypedCustomSectionId};
 
 #[derive(Default, Debug)]
@@ -398,7 +398,7 @@ impl NonstandardWitSection {
     pub fn gc(&mut self, aux: &WasmBindgenAux) -> bool {
         // Populate the live set with the exports, implements directives, and
         // anything transitively referenced by those adapters.
-        let mut live = HashSet::new();
+        let mut live = BTreeSet::new();
         for (_, id) in self.exports.iter() {
             self.add_live(*id, &mut live);
         }
@@ -418,7 +418,7 @@ impl NonstandardWitSection {
         before != self.adapters.len()
     }
 
-    fn add_live(&self, id: AdapterId, live: &mut HashSet<AdapterId>) {
+    fn add_live(&self, id: AdapterId, live: &mut BTreeSet<AdapterId>) {
         if !live.insert(id) {
             return;
         }

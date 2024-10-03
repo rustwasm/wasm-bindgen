@@ -13,15 +13,15 @@
 use crate::descriptor::{Closure, Descriptor};
 use anyhow::{bail, Error};
 use std::borrow::Cow;
-use std::collections::HashMap;
+use std::collections::{HashMap,BTreeMap};
 use walrus::{ConstExpr, ElementItems, ElementKind, ImportId, RefType};
 use walrus::{CustomSection, FunctionId, Module, TypedCustomSectionId};
 use wasm_bindgen_wasm_interpreter::Interpreter;
 
 #[derive(Default, Debug)]
 pub struct WasmBindgenDescriptorsSection {
-    pub descriptors: HashMap<String, Descriptor>,
-    pub closure_imports: HashMap<ImportId, Closure>,
+    pub descriptors: BTreeMap<String, Descriptor>,
+    pub closure_imports: BTreeMap<ImportId, Closure>,
 }
 
 pub type WasmBindgenDescriptorsSectionId = TypedCustomSectionId<WasmBindgenDescriptorsSection>;
