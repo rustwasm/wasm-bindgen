@@ -2510,7 +2510,7 @@ impl<'a> Context<'a> {
         pairs.sort_by_key(|(k, _)| *k);
         check_duplicated_getter_and_setter_names(&pairs)?;
 
-        for (_, e) in self.aux.enums.iter() {
+        for (_, e) in crate::sorted_iter(&self.aux.enums) {
             self.generate_enum(e)?;
         }
 
@@ -2549,7 +2549,7 @@ impl<'a> Context<'a> {
     /// This function will iterate through the import map up-front and generate
     /// a cache entry for each import name which is a `Global`.
     fn prestore_global_import_identifiers(&mut self) -> Result<(), Error> {
-        for import in self.aux.import_map.values() {
+        for import in crate::sorted_iter(&self.aux.import_map).map(|(_, i)| i) {
             let js = match import {
                 AuxImport::Value(AuxValue::Bare(js))
                 | AuxImport::Value(AuxValue::ClassGetter(js, ..))
