@@ -7,7 +7,8 @@ use proc_macro2::{Ident, Span, TokenStream};
 use quote::format_ident;
 use quote::quote_spanned;
 use quote::{quote, ToTokens};
-use std::collections::{HashMap, HashSet};
+use std::collections::BTreeSet;
+use std::collections::{BTreeMap};
 use std::sync::Mutex;
 use syn::parse_quote;
 use syn::spanned::Spanned;
@@ -39,7 +40,7 @@ impl TryToTokens for ast::Program {
         for s in self.structs.iter() {
             s.to_tokens(tokens);
         }
-        let mut types = HashMap::new();
+        let mut types = BTreeMap::new();
         for i in self.imports.iter() {
             if let ast::ImportKind::Type(t) = &i.kind {
                 types.insert(t.rust_name.to_string(), t.rust_name.clone());
@@ -1802,7 +1803,7 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
         // It's up to the descriptors themselves to ensure they have unique
         // names for unique items imported, currently done via `ShortHash` and
         // hashing appropriate data into the symbol name.
-        static DESCRIPTORS_EMITTED: Lazy<Mutex<HashSet<String>>> = Lazy::new(Default::default);
+        static DESCRIPTORS_EMITTED: Lazy<Mutex<BTreeSet<String>>> = Lazy::new(Default::default);
 
         let ident = self.ident;
 

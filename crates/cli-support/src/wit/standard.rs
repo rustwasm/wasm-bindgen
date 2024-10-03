@@ -1,7 +1,7 @@
 use crate::descriptor::VectorKind;
 use crate::wit::{AuxImport, WasmBindgenAux};
 use std::borrow::Cow;
-use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
+use std::collections::{BTreeMap, BTreeSet};
 use walrus::{FunctionId, ImportId, RefType, TypedCustomSectionId};
 
 #[derive(Default, Debug)]

@@ -35,7 +35,7 @@ use idl_type::{IdentifierType, IdlType};
 use proc_macro2::{Ident, TokenStream};
 use quote::ToTokens;
 use sourcefile::SourceFile;
-use std::collections::{BTreeMap, BTreeSet, HashSet};
+use std::collections::{BTreeMap, BTreeSet};
 use std::ffi::OsStr;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -132,7 +132,7 @@ fn parse(
 
     // Gather unstable type Identifiers so that stable APIs can be downgraded
     // to unstable if they accept one of these types
-    let unstable_types: HashSet<Identifier> = unstable_definitions
+    let unstable_types: BTreeSet<Identifier> = unstable_definitions
         .iter()
         .flat_map(|definition| {
             use weedle::Definition::*;
@@ -285,7 +285,7 @@ impl<'src> FirstPassRecord<'src> {
         name: Ident,
         js_name: String,
         data: &first_pass::DictionaryData<'src>,
-        unstable_types: &HashSet<Identifier>,
+        unstable_types: &BTreeSet<Identifier>,
     ) {
         let def = match data.definition {
             Some(def) => def,
@@ -328,7 +328,7 @@ impl<'src> FirstPassRecord<'src> {
         dict: &'src str,
         dst: &mut Vec<DictionaryField>,
         unstable: bool,
-        unstable_types: &HashSet<Identifier>,
+        unstable_types: &BTreeSet<Identifier>,
         parent_deprecated: &Option<Option<String>>,
     ) -> bool {
         let dict_data = &self.dictionaries[&dict];
@@ -389,7 +389,7 @@ impl<'src> FirstPassRecord<'src> {
         &self,
         field: &'src DictionaryMember<'src>,
         unstable: bool,
-        unstable_types: &HashSet<Identifier>,
+        unstable_types: &BTreeSet<Identifier>,
         parent_deprecated: &Option<Option<String>>,
     ) -> Option<DictionaryField> {
         let unstable_override = match unstable {
@@ -553,7 +553,7 @@ impl<'src> FirstPassRecord<'src> {
             }
         }
 
-        for x in self.create_imports(None, None, id, data, false, &HashSet::new()) {
+        for x in self.create_imports(None, None, id, data, false, &BTreeSet::new()) {
             functions.push(Function {
                 name: x.name,
                 js_name: x.js_name,
@@ -594,7 +594,7 @@ impl<'src> FirstPassRecord<'src> {
         program: &mut Program,
         name: Ident,
         js_name: String,
-        unstable_types: &HashSet<Identifier>,
+        unstable_types: &BTreeSet<Identifier>,
         data: &InterfaceData<'src>,
     ) {
         let unstable = data.stability.is_unstable();
@@ -776,7 +776,7 @@ impl<'src> FirstPassRecord<'src> {
         data: &InterfaceData<'src>,
         id: &'src OperationId<'src>,
         op_data: &'src OperationData<'src>,
-        unstable_types: &HashSet<Identifier>,
+        unstable_types: &BTreeSet<Identifier>,
     ) {
         let attrs = data.definition_attributes;
         let unstable = data.stability.is_unstable();

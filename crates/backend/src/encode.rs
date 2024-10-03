@@ -1,7 +1,7 @@
 use crate::util::ShortHash;
 use proc_macro2::{Ident, Span};
 use std::cell::{Cell, RefCell};
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::env;
 use std::fs;
 use std::path::PathBuf;
@@ -42,7 +42,7 @@ pub fn encode(program: &ast::Program) -> Result<EncodeResult, Diagnostic> {
 
 struct Interner {
     bump: bumpalo::Bump,
-    files: RefCell<HashMap<String, LocalFile>>,
+    files: RefCell<BTreeMap<String, LocalFile>>,
     root: PathBuf,
     crate_name: String,
     has_package_json: Cell<bool>,
@@ -63,7 +63,7 @@ impl Interner {
         let crate_name = env::var("CARGO_PKG_NAME").expect("should have CARGO_PKG_NAME env var");
         Interner {
             bump: bumpalo::Bump::new(),
-            files: RefCell::new(HashMap::new()),
+            files: RefCell::new(BTreeMap::new()),
             root,
             crate_name,
             has_package_json: Cell::new(false),

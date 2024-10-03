@@ -10,7 +10,7 @@ use crate::wit::{JsImport, JsImportName, NonstandardWitSection, WasmBindgenAux};
 use crate::{reset_indentation, Bindgen, EncodeInto, OutputMode, PLACEHOLDER_MODULE};
 use anyhow::{anyhow, bail, Context as _, Error};
 use std::borrow::Cow;
-use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
+use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
 use std::fmt::Write;
 use std::fs;

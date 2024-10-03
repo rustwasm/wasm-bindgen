@@ -13,7 +13,7 @@
 use crate::descriptor::{Closure, Descriptor};
 use anyhow::{bail, Error};
 use std::borrow::Cow;
-use std::collections::{HashMap,BTreeMap};
+use std::collections::{BTreeMap};
 use walrus::{ConstExpr, ElementItems, ElementKind, ImportId, RefType};
 use walrus::{CustomSection, FunctionId, Module, TypedCustomSectionId};
 use wasm_bindgen_wasm_interpreter::Interpreter;
@@ -87,8 +87,8 @@ impl WasmBindgenDescriptorsSection {
         // Find all functions which call `wbindgen_describe_closure`. These are
         // specially codegen'd so we know the rough structure of them. For each
         // one we delegate to the interpreter to figure out the actual result.
-        let mut element_removal_list = HashMap::new();
-        let mut func_to_descriptor = HashMap::new();
+        let mut element_removal_list = BTreeMap::new();
+        let mut func_to_descriptor = BTreeMap::new();
         for (id, local) in module.funcs.iter_local() {
             let mut find = FindDescribeClosure {
                 wbindgen_describe_closure,

@@ -7,16 +7,16 @@ cfg_if! {
         use std::string::String;
         use std::borrow::ToOwned;
         use std::cell::RefCell;
-        use std::collections::HashMap;
+        use std::collections::BTreeMap;
         use crate::JsValue;
 
         struct Cache {
-            entries: RefCell<HashMap<String, JsValue>>,
+            entries: RefCell<BTreeMap<String, JsValue>>,
         }
 
         thread_local! {
             static CACHE: Cache = Cache {
-                entries: RefCell::new(HashMap::new()),
+                entries: RefCell::new(BTreeMap::new()),
             };
         }
 

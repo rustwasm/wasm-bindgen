@@ -1,7 +1,7 @@
 use crate::intrinsic::Intrinsic;
 use crate::wit::AdapterId;
 use std::borrow::Cow;
-use std::collections::{HashMap, HashSet,BTreeMap,BTreeSet};
+use std::collections::{BTreeMap, BTreeSet};
 use std::path::PathBuf;
 use walrus::TypedCustomSectionId;
 

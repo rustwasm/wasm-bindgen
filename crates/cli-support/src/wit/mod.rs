@@ -4,7 +4,7 @@ use crate::descriptors::WasmBindgenDescriptorsSection;
 use crate::intrinsic::Intrinsic;
 use crate::{decode, Bindgen, PLACEHOLDER_MODULE};
 use anyhow::{anyhow, bail, Error};
-use std::collections::{HashMap, HashSet,BTreeMap,BTreeSet};
+use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::str;
 use walrus::MemoryId;
 use walrus::{ExportId, FunctionId, ImportId, Module};

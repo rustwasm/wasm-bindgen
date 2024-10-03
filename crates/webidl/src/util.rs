@@ -1,4 +1,4 @@
-use std::collections::{BTreeSet, HashSet};
+use std::collections::{BTreeSet};
 use std::fs;
 use std::iter::FromIterator;
 use std::path::{Path, PathBuf};
@@ -223,7 +223,7 @@ impl<'src> FirstPassRecord<'src> {
         id: &'src OperationId<'src>,
         data: &'src OperationData<'src>,
         unstable: bool,
-        unstable_types: &HashSet<Identifier>,
+        unstable_types: &BTreeSet<Identifier>,
     ) -> Vec<InterfaceMethod> {
         let is_static = data.is_static;
 
@@ -604,7 +604,7 @@ impl<'src> FirstPassRecord<'src> {
     }
 }
 
-pub fn is_type_unstable(ty: &weedle::types::Type, unstable_types: &HashSet<Identifier>) -> bool {
+pub fn is_type_unstable(ty: &weedle::types::Type, unstable_types: &BTreeSet<Identifier>) -> bool {
     match ty {
         weedle::types::Type::Single(SingleType::NonAny(NonAnyType::Identifier(i))) => {
             // Check if the type in the unstable type list
@@ -614,7 +614,7 @@ pub fn is_type_unstable(ty: &weedle::types::Type, unstable_types: &HashSet<Ident
     }
 }
 
-fn is_idl_type_unstable(ty: &IdlType, unstable_types: &HashSet<Identifier>) -> bool {
+fn is_idl_type_unstable(ty: &IdlType, unstable_types: &BTreeSet<Identifier>) -> bool {
     match ty {
         IdlType::Identifier {
             ty: IdentifierType::Dictionary(name) | IdentifierType::Interface(name),

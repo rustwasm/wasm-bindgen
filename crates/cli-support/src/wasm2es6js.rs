@@ -1,6 +1,6 @@
 use anyhow::{bail, Error};
 use base64::{prelude::BASE64_STANDARD, Engine as _};
-use std::collections::{BTreeSet, HashSet};
+use std::collections::{BTreeSet, };
 use std::fmt::Write;
 use walrus::Module;
 

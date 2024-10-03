@@ -19,7 +19,7 @@
 #![deny(missing_docs)]
 
 use anyhow::{bail, ensure};
-use std::collections::{BTreeMap, BTreeSet, HashMap};
+use std::collections::{BTreeMap, BTreeSet};
 use walrus::ir::Instr;
 use walrus::{ElementId, FunctionId, LocalId, Module, TableId};
 
@@ -41,7 +41,7 @@ pub struct Interpreter {
 
     // A mapping of string names to the function index, filled with all exported
     // functions.
-    name_map: HashMap<String, FunctionId>,
+    name_map: BTreeMap<String, FunctionId>,
 
     // The current stack pointer (global 0) and Wasm memory (the stack). Only
     // used in a limited capacity.
@@ -158,7 +158,7 @@ impl Interpreter {
         &mut self,
         id: FunctionId,
         module: &Module,
-        entry_removal_list: &mut HashMap<ElementId, BTreeSet<usize>>,
+        entry_removal_list: &mut BTreeMap<ElementId, BTreeSet<usize>>,
     ) -> Option<&[u32]> {
         // Call the `id` function. This is an internal `#[inline(never)]`
         // whose code is completely controlled by the `wasm-bindgen` crate, so

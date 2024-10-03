@@ -17,7 +17,7 @@
 
 use anyhow::{anyhow, bail, Context as _, Error};
 use std::cmp;
-use std::collections::{BTreeMap, HashMap, HashSet};
+use std::collections::{BTreeMap, BTreeSet};
 use std::mem;
 
 use walrus::{ir::*, ElementItems, RefType};
@@ -34,8 +34,8 @@ pub struct Context {
     // Functions within the module that we're gonna be wrapping, organized by
     // type. The `Function` contains information about what arguments/return
     // values in the function signature should turn into externref.
-    imports: HashMap<ImportId, Function>,
-    exports: HashMap<ExportId, Function>,
+    imports: BTreeMap<ImportId, Function>,
+    exports: BTreeMap<ExportId, Function>,
 
     // List of functions we're transforming that are present in the function
     // table. Each index here is an index into the function table, and the
@@ -66,12 +66,12 @@ struct Transform<'a> {
     cx: &'a mut Context,
 
     // A map of functions to intrinsics that they represent
-    intrinsic_map: HashMap<FunctionId, Intrinsic>,
+    intrinsic_map: BTreeMap<FunctionId, Intrinsic>,
     // A map of old import functions to the new internally-defined shims which
     // call the correct new import functions
-    import_map: HashMap<FunctionId, FunctionId>,
+    import_map: BTreeMap<FunctionId, FunctionId>,
     // A set of all shims we've created
-    shims: HashSet<FunctionId>,
+    shims: BTreeSet<FunctionId>,
 
     // Indices of items that we have injected or found. This state is maintained
     // during the pass execution.
@@ -85,7 +85,7 @@ struct Transform<'a> {
 struct Function {
     // A map of argument index to whether it's an owned or borrowed externref
     // (owned = true)
-    args: HashMap<usize, bool>,
+    args: BTreeMap<usize, bool>,
     ret_externref: bool,
 }
 
@@ -259,9 +259,9 @@ impl Context {
         // And run the transformation!
         Transform {
             cx: self,
-            intrinsic_map: HashMap::new(),
-            import_map: HashMap::new(),
-            shims: HashSet::new(),
+            intrinsic_map: BTreeMap::new(),
+            import_map: BTreeMap::new(),
+            shims: BTreeSet::new(),
             table,
             clone_ref,
             heap_alloc,
