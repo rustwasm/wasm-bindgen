@@ -23,7 +23,7 @@ pub struct Context<'a> {
     globals: String,
     imports_post: String,
     typescript: String,
-    exposed_globals: Option<HashSet<Cow<'static, str>>>,
+    exposed_globals: Option<BTreeSet<Cow<'static, str>>>,
     next_export_idx: usize,
     config: &'a Bindgen,
     pub module: &'a mut Module,
@@ -34,24 +34,24 @@ pub struct Context<'a> {
     /// glue. The key is the module we're importing from and the value is the
     /// list of identifier we're importing from the module, with optional
     /// renames for each identifier.
-    js_imports: HashMap<String, Vec<(String, Option<String>)>>,
+    js_imports: BTreeMap<String, Vec<(String, Option<String>)>>,
 
     /// A map of each Wasm import and what JS to hook up to it.
-    wasm_import_definitions: HashMap<ImportId, String>,
+    wasm_import_definitions: BTreeMap<ImportId, String>,
 
     /// A map from an import to the name we've locally imported it as.
-    imported_names: HashMap<JsImportName, String>,
+    imported_names: BTreeMap<JsImportName, String>,
 
     /// A set of all defined identifiers through either exports or imports to
     /// the number of times they've been used, used to generate new
     /// identifiers.
-    defined_identifiers: HashMap<String, usize>,
+    defined_identifiers: BTreeMap<String, usize>,
 
     exported_classes: Option<BTreeMap<String, ExportedClass>>,
 
     /// A map of the name of npm dependencies we've loaded so far to the path
     /// they're defined in as well as their version specification.
-    pub npm_dependencies: HashMap<String, (PathBuf, String)>,
+    pub npm_dependencies: BTreeMap<String, (PathBuf, String)>,
 
     /// A mapping from the memory IDs as we see them to an index for that memory,
     /// used in function names, as well as all the kinds of views we've created
@@ -59,7 +59,7 @@ pub struct Context<'a> {
     ///
     /// `BTreeMap` and `BTreeSet` are used to make the ordering deterministic.
     memories: BTreeMap<MemoryId, (usize, BTreeSet<&'static str>)>,
-    table_indices: HashMap<TableId, usize>,
+    table_indices: BTreeMap<TableId, usize>,
 
     /// A flag to track if the stack pointer setter shim has been injected.
     stack_pointer_shim_injected: bool,
@@ -85,7 +85,7 @@ pub struct ExportedClass {
     readable_properties: Vec<String>,
     /// Map from field name to type as a string, docs plus whether it has a setter,
     /// whether it's optional and whether it's static.
-    typescript_fields: HashMap<String, (String, String, bool, bool, bool)>,
+    typescript_fields: BTreeMap<String, (String, String, bool, bool, bool)>,
 }
 
 const INITIAL_HEAP_VALUES: &[&str] = &["undefined", "null", "true", "false"];
@@ -311,7 +311,7 @@ impl<'a> Context<'a> {
 
         wasm_import_object.push_str(&format!("  {}: {{\n", crate::PLACEHOLDER_MODULE));
 
-        for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
+        for (id, js) in (&self.wasm_import_definitions) {
             let import = self.module.imports.get(*id);
             wasm_import_object.push_str(&format!("{}: {},\n", &import.name, js.trim()));
         }
@@ -410,7 +410,7 @@ impl<'a> Context<'a> {
 
                 js.push_str("let wasm;\n");
 
-                for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
+                for (id, js) in (&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
                     footer.push_str("\nmodule.exports.");
                     footer.push_str(&import.name);
@@ -449,7 +449,7 @@ impl<'a> Context<'a> {
             // and let the bundler/runtime take care of it.
             // With Node we manually read the Wasm file from the filesystem and instantiate it.
             OutputMode::Bundler { .. } | OutputMode::Node { module: true } => {
-                for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
+                for (id, js) in (&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}_bg.js", module_name);
                     if let Some(body) = js.strip_prefix("function") {
@@ -569,7 +569,7 @@ impl<'a> Context<'a> {
             }
 
             OutputMode::Node { module: false } => {
-                for (module, items) in crate::sorted_iter(&self.js_imports) {
+                for (module, items) in (&self.js_imports) {
                     imports.push_str("const { ");
                     for (i, (item, rename)) in items.iter().enumerate() {
                         if i > 0 {
@@ -595,7 +595,7 @@ impl<'a> Context<'a> {
             | OutputMode::Node { module: true }
             | OutputMode::Web
             | OutputMode::Deno => {
-                for (module, items) in crate::sorted_iter(&self.js_imports) {
+                for (module, items) in (&self.js_imports) {
                     imports.push_str("import { ");
                     for (i, (item, rename)) in items.iter().enumerate() {
                         if i > 0 {
@@ -758,7 +758,7 @@ impl<'a> Context<'a> {
         imports_init.push_str(module_name);
         imports_init.push_str(" = {};\n");
 
-        for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
+        for (id, js) in (&self.wasm_import_definitions) {
             let import = self.module.imports.get_mut(*id);
             import.module = module_name.to_string();
             imports_init.push_str("imports.");
@@ -2498,7 +2498,7 @@ impl<'a> Context<'a> {
         if self.config.symbol_dispose && !self.aux.structs.is_empty() {
             self.expose_symbol_dispose()?;
         }
-        for (id, adapter) in crate::sorted_iter(&self.wit.adapters) {
+        for (id, adapter) in (&self.wit.adapters) {
             let instrs = match &adapter.kind {
                 AdapterKind::Import { .. } => continue,
                 AdapterKind::Local { instructions } => instructions,
@@ -2510,7 +2510,7 @@ impl<'a> Context<'a> {
         pairs.sort_by_key(|(k, _)| *k);
         check_duplicated_getter_and_setter_names(&pairs)?;
 
-        for (_, e) in crate::sorted_iter(&self.aux.enums) {
+        for (_, e) in (&self.aux.enums) {
             self.generate_enum(e)?;
         }
 
@@ -2549,7 +2549,7 @@ impl<'a> Context<'a> {
     /// This function will iterate through the import map up-front and generate
     /// a cache entry for each import name which is a `Global`.
     fn prestore_global_import_identifiers(&mut self) -> Result<(), Error> {
-        for import in crate::sorted_iter(&self.aux.import_map).map(|(_, i)| i) {
+        for import in self.aux.import_map.values() {
             let js = match import {
                 AuxImport::Value(AuxValue::Bare(js))
                 | AuxImport::Value(AuxValue::ClassGetter(js, ..))

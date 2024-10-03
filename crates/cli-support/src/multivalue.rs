@@ -14,7 +14,7 @@ pub fn run(module: &mut Module) -> Result<(), Error> {
     let mut to_xform = Vec::new();
     let mut slots = Vec::new();
 
-    for (_, adapter) in crate::sorted_iter_mut(&mut adapters.adapters) {
+    for (_, adapter) in (&mut adapters.adapters) {
         extract_xform(module, adapter, &mut to_xform, &mut slots);
     }
     if to_xform.is_empty() {

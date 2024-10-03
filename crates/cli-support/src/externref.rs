@@ -4,7 +4,7 @@ use crate::wit::AuxImport;
 use crate::wit::{AdapterKind, Instruction, NonstandardWitSection};
 use crate::wit::{AdapterType, InstructionData, StackChange, WasmBindgenAux};
 use anyhow::Result;
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use walrus::ElementItems;
 use walrus::{ir::Value, ConstExpr, ElementKind, Module};
 use wasm_bindgen_externref_xform::Context;
@@ -22,11 +22,11 @@ pub fn process(module: &mut Module) -> Result<()> {
         .iter()
         .cloned()
         .map(|(core, _, adapter)| (adapter, core))
-        .collect::<HashMap<_, _>>();
+        .collect::<BTreeMap<_, _>>();
 
     // Transform all exported functions in the module, using the bindings listed
     // for each exported function.
-    for (id, adapter) in crate::sorted_iter_mut(&mut section.adapters) {
+    for (id, adapter) in (&mut section.adapters) {
         let instructions = match &mut adapter.kind {
             AdapterKind::Local { instructions } => instructions,
             AdapterKind::Import { .. } => continue,
@@ -78,7 +78,7 @@ pub fn process(module: &mut Module) -> Result<()> {
     // Additionally we may need to update some adapter instructions other than
     // those found for the externref pass. These are some general "fringe support"
     // things necessary to get absolutely everything working.
-    for (_, adapter) in crate::sorted_iter_mut(&mut section.adapters) {
+    for (_, adapter) in (&mut section.adapters) {
         let instrs = match &mut adapter.kind {
             AdapterKind::Local { instructions } => instructions,
             AdapterKind::Import { .. } => continue,

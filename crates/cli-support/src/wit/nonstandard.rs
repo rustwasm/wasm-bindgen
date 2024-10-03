@@ -1,7 +1,7 @@
 use crate::intrinsic::Intrinsic;
 use crate::wit::AdapterId;
 use std::borrow::Cow;
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap, HashSet,BTreeMap,BTreeSet};
 use std::path::PathBuf;
 use walrus::TypedCustomSectionId;
 
@@ -17,31 +17,31 @@ pub struct WasmBindgenAux {
 
     /// A map from identifier to the contents of each local module defined via
     /// the `#[wasm_bindgen(module = "/foo.js")]` import options.
-    pub local_modules: HashMap<String, String>,
+    pub local_modules: BTreeMap<String, String>,
 
     /// A map from unique crate identifier to the list of inline JS snippets for
     /// that crate identifier.
-    pub snippets: HashMap<String, Vec<String>>,
+    pub snippets: BTreeMap<String, Vec<String>>,
 
     /// A list of all `package.json` files that are intended to be included in
     /// the final build.
-    pub package_jsons: HashSet<PathBuf>,
+    pub package_jsons: BTreeSet<PathBuf>,
 
     /// A map from exported function id to where it's expected to be exported
     /// to.
-    pub export_map: HashMap<AdapterId, AuxExport>,
+    pub export_map: BTreeMap<AdapterId, AuxExport>,
 
     /// A map from imported function id to what it's expected to import.
-    pub import_map: HashMap<AdapterId, AuxImport>,
+    pub import_map: BTreeMap<AdapterId, AuxImport>,
 
     /// Small bits of metadata about imports.
-    pub imports_with_catch: HashSet<AdapterId>,
-    pub imports_with_variadic: HashSet<AdapterId>,
-    pub imports_with_assert_no_shim: HashSet<AdapterId>,
+    pub imports_with_catch: BTreeSet<AdapterId>,
+    pub imports_with_variadic: BTreeSet<AdapterId>,
+    pub imports_with_assert_no_shim: BTreeSet<AdapterId>,
 
     /// Auxiliary information to go into JS/TypeScript bindings describing the
     /// exported enums from Rust.
-    pub enums: HashMap<String, AuxEnum>,
+    pub enums: BTreeMap<String, AuxEnum>,
 
     /// Auxiliary information to go into JS/TypeScript bindings describing the
     /// exported structs from Rust and their fields they've got exported.
@@ -385,7 +385,7 @@ pub struct JsImport {
 /// Return value of `determine_import` which is where we look at an imported
 /// function AST and figure out where it's actually being imported from
 /// (performing some validation checks and whatnot).
-#[derive(Debug, Hash, Eq, PartialEq, Clone)]
+#[derive(Debug, Hash, Eq, PartialEq, Clone, PartialOrd, Ord)]
 pub enum JsImportName {
     /// An item is imported from the global scope. The `name` is what's
     /// imported.

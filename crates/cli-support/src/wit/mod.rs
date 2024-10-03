@@ -4,7 +4,7 @@ use crate::descriptors::WasmBindgenDescriptorsSection;
 use crate::intrinsic::Intrinsic;
 use crate::{decode, Bindgen, PLACEHOLDER_MODULE};
 use anyhow::{anyhow, bail, Error};
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap, HashSet,BTreeMap,BTreeSet};
 use std::str;
 use walrus::MemoryId;
 use walrus::{ExportId, FunctionId, ImportId, Module};
@@ -24,15 +24,15 @@ struct Context<'a> {
     adapters: NonstandardWitSection,
     aux: WasmBindgenAux,
     /// All of the Wasm module's exported functions.
-    function_exports: HashMap<String, (ExportId, FunctionId)>,
+    function_exports: BTreeMap<String, (ExportId, FunctionId)>,
     /// All of the Wasm module's imported functions.
-    function_imports: HashMap<String, (ImportId, FunctionId)>,
+    function_imports: BTreeMap<String, (ImportId, FunctionId)>,
     /// A map from the signature of a function in the function table to its adapter, if we've already created it.
     table_adapters: HashMap<Function, AdapterId>,
     memory: Option<MemoryId>,
-    vendor_prefixes: HashMap<String, Vec<String>>,
+    vendor_prefixes: BTreeMap<String, Vec<String>>,
     unique_crate_identifier: &'a str,
-    descriptors: HashMap<String, Descriptor>,
+    descriptors: BTreeMap<String, Descriptor>,
     externref_enabled: bool,
     thread_count: Option<ThreadCount>,
     support_start: bool,
@@ -105,8 +105,8 @@ impl<'a> Context<'a> {
         // placeholder module name which we'll want to be sure that we've got a
         // location listed of what to import there for each item.
         let mut intrinsics = Vec::new();
-        let mut duplicate_import_map = HashMap::new();
-        let mut imports_to_delete = HashSet::new();
+        let mut duplicate_import_map = BTreeMap::new();
+        let mut imports_to_delete = BTreeSet::new();
         for import in self.module.imports.iter() {
             if import.module != PLACEHOLDER_MODULE {
                 continue;
@@ -230,9 +230,9 @@ impl<'a> Context<'a> {
     ///
     /// The map provided here is a map where the key is a function id to replace
     /// and the value is what to replace it with.
-    fn handle_duplicate_imports(&mut self, map: &HashMap<FunctionId, FunctionId>) {
+    fn handle_duplicate_imports(&mut self, map: &BTreeMap<FunctionId, FunctionId>) {
         struct Replace<'a> {
-            map: &'a HashMap<FunctionId, FunctionId>,
+            map: &'a BTreeMap<FunctionId, FunctionId>,
         }
         impl walrus::ir::VisitorMut for Replace<'_> {
             fn visit_function_id_mut(&mut self, function: &mut FunctionId) {
@@ -1096,7 +1096,7 @@ impl<'a> Context<'a> {
         // First up verify that all imports in the Wasm module from our
         // `$PLACEHOLDER_MODULE` are connected to an adapter via the
         // `implements` section.
-        let mut implemented = HashMap::new();
+        let mut implemented = BTreeMap::new();
         for (core, _, adapter) in self.adapters.implements.iter() {
             implemented.insert(core, adapter);
         }

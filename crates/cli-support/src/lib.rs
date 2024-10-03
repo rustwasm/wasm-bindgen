@@ -1,7 +1,7 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-cli-support/0.2")]
 
 use anyhow::{bail, Context, Error};
-use std::collections::{BTreeMap, HashMap, HashSet};
+use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::env;
 use std::fs;
 use std::mem;
@@ -56,9 +56,9 @@ struct Generated {
     js: String,
     ts: String,
     start: Option<String>,
-    snippets: HashMap<String, Vec<String>>,
-    local_modules: HashMap<String, String>,
-    npm_dependencies: HashMap<String, (PathBuf, String)>,
+    snippets: BTreeMap<String, Vec<String>>,
+    local_modules: BTreeMap<String, String>,
+    npm_dependencies: BTreeMap<String, (PathBuf, String)>,
     typescript: bool,
 }
 
@@ -609,7 +609,7 @@ impl Output {
         self.generated.start.as_ref()
     }
 
-    pub fn npm_dependencies(&self) -> &HashMap<String, (PathBuf, String)> {
+    pub fn npm_dependencies(&self) -> &BTreeMap<String, (PathBuf, String)> {
         &self.generated.npm_dependencies
     }
 
@@ -749,7 +749,7 @@ fn gc_module_and_adapters(module: &mut Module) {
             .imports
             .iter()
             .map(|i| i.id())
-            .collect::<HashSet<_>>();
+            .collect::<BTreeSet<_>>();
         let mut section = module
             .customs
             .delete_typed::<wit::NonstandardWitSection>()
