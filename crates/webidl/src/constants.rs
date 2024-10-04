@@ -102,6 +102,8 @@ pub(crate) static IMMUTABLE_SLICE_WHITELIST: Lazy<BTreeSet<&'static str>> = Lazy
         "sign",
         "unwrapKey",
         "verify",
+        // TextDecoder
+        "decode",
     ])
 });
 
