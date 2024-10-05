@@ -54,20 +54,6 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
     pub fn set_autocomplete(this: &HtmlInputElement, value: &str);
-    # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = autofocus)]
-    #[doc = "Getter for the `autofocus` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/autofocus)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn autofocus(this: &HtmlInputElement) -> bool;
-    # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = autofocus)]
-    #[doc = "Setter for the `autofocus` field of this object."]
-    #[doc = ""]
-    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/autofocus)"]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
-    pub fn set_autofocus(this: &HtmlInputElement, value: bool);
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = defaultChecked)]
     #[doc = "Getter for the `defaultChecked` field of this object."]
     #[doc = ""]

@@ -263,3 +263,18 @@ partial interface Element {
   [NeedsCallerType]
   undefined requestPointerLock();
 };
+
+interface mixin HTMLOrForeignElement {
+  [SameObject] readonly attribute DOMStringMap dataset;
+
+  [CEReactions, SetterThrows, Pure] attribute boolean autofocus;
+  [CEReactions, SetterThrows, Pure] attribute long tabIndex;
+  [Throws, NeedsCallerType] undefined focus(optional FocusOptions options = {});
+  [Throws] undefined blur();
+};
+
+// https://drafts.csswg.org/cssom/#the-elementcssinlinestyle-mixin
+interface mixin ElementCSSInlineStyle {
+  [SameObject, PutForwards=cssText]
+  readonly attribute CSSStyleDeclaration style;
+};

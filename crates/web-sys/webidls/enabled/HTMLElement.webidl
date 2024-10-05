@@ -26,8 +26,6 @@ interface HTMLElement : Element {
   //         attribute boolean translate;
   [CEReactions, SetterThrows, Pure]
            attribute DOMString dir;
-  [Constant]
-  readonly attribute DOMStringMap dataset;
 
   [CEReactions, GetterThrows, Pure, TreatNullAs=EmptyString]
            attribute DOMString innerText;
@@ -39,8 +37,6 @@ interface HTMLElement : Element {
            attribute boolean inert;
   [NeedsCallerType]
   undefined click();
-  [CEReactions, SetterThrows, Pure]
-           attribute long tabIndex;
   [Throws]
   undefined focus(optional FocusOptions options = {});
   [Throws]
@@ -79,10 +75,6 @@ interface HTMLElement : Element {
   undefined hidePopover();
   [Throws, Pref="dom.element.popover.enabled"]
   boolean togglePopover(optional boolean force);
-
-  // styling
-  [PutForwards=cssText, Constant]
-  readonly attribute CSSStyleDeclaration style;
 };
 
 // http://dev.w3.org/csswg/cssom-view/#extensions-to-the-htmlelement-interface
@@ -106,6 +98,8 @@ interface mixin TouchEventHandlers {
            attribute EventHandler ontouchcancel;
 };
 
+HTMLElement includes HTMLOrForeignElement;
+HTMLElement includes ElementCSSInlineStyle;
 HTMLElement includes GlobalEventHandlers;
 HTMLElement includes DocumentAndElementEventHandlers;
 HTMLElement includes TouchEventHandlers;

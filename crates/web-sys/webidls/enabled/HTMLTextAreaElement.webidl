@@ -20,8 +20,6 @@ interface HTMLTextAreaElement : HTMLElement {
   [CEReactions, SetterThrows, Pure]
            attribute DOMString autocomplete;
   [CEReactions, SetterThrows, Pure]
-           attribute boolean autofocus;
-  [CEReactions, SetterThrows, Pure]
            attribute unsigned long cols;
            // attribute DOMString dirName;
   [CEReactions, SetterThrows, Pure]
