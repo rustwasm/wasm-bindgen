@@ -2160,7 +2160,7 @@ impl<T> DerefMut for Clamped<T> {
 /// }
 ///
 /// ```
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct JsError {
     value: JsValue,
 }
