@@ -20,6 +20,9 @@
 * Added bindings for the draft [WebRTC Encoded Transform](https://www.w3.org/TR/webrtc-encoded-transform) spec.
   [#4125](https://github.com/rustwasm/wasm-bindgen/pull/4125)
 
+* Added `Debug` implementation to `JsError`.
+  [#4136](https://github.com/rustwasm/wasm-bindgen/pull/4136)
+
 ### Changed
 
 * Implicitly enable reference type and multivalue transformations if the module already makes use of the corresponding target features.
