@@ -34,6 +34,9 @@
 * Removed `GamepadAxisMoveEvent`, `GamepadAxisMoveEventInit`, `GamepadButtonEvent`, `GamepadButtonEventInit` and `GamepadServiceTest`, which were seemingly never implemented by any JS environment.
   [#4134](https://github.com/rustwasm/wasm-bindgen/pull/4134)
 
+* Changed `TextDecoder.decode()` `input` parameter type from `&mut [u8]` to `&[u8]`.
+  [#4141](https://github.com/rustwasm/wasm-bindgen/pull/4141)
+
 ### Fixed
 
 * Fixed linked modules emitting snippet files when not using `--split-linked-modules`.
