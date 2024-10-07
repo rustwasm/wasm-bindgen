@@ -55,6 +55,12 @@
 * Fixed emitted `package.json` structure to correctly specify its dependencies
   [#4091](https://github.com/rustwasm/wasm-bindgen/pull/4091)
 
+* Fixed returning `Option<Enum>` now correctly has the `| undefined` type in TS bindings.
+  [#4137](https://github.com/rustwasm/wasm-bindgen/pull/4137)
+
+* Fixed enum variant name collisions with object prototype fields.
+  [#4137](https://github.com/rustwasm/wasm-bindgen/pull/4137)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.93](https://github.com/rustwasm/wasm-bindgen/compare/0.2.92...0.2.93)
