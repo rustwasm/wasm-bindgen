@@ -45,6 +45,24 @@ export function option_enum_echo(color) {
 }
 
 /**
+* @param {Color} color
+* @returns {ColorName}
+*/
+export function get_name(color) {
+    const ret = wasm.get_name(color);
+    return ["green","yellow","red",][ret];
+}
+
+/**
+* @param {ColorName | undefined} [color]
+* @returns {ColorName | undefined}
+*/
+export function option_string_enum_echo(color) {
+    const ret = wasm.option_string_enum_echo(color == undefined ? 4 : ((["green","yellow","red",].indexOf(color) + 1 || 4) - 1));
+    return ["green","yellow","red",][ret];
+}
+
+/**
 */
 export const Color = Object.freeze({ Green:0,"0":"Green",Yellow:1,"1":"Yellow",Red:2,"2":"Red", });
 
