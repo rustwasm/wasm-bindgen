@@ -27,8 +27,7 @@ function getStringFromWasm0(ptr, len) {
 const ClassConstructorFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_classconstructor_free(ptr >>> 0, 1));
-/**
-*/
+
 export class ClassConstructor {
 
     __destroy_into_raw() {
@@ -42,8 +41,6 @@ export class ClassConstructor {
         const ptr = this.__destroy_into_raw();
         wasm.__wbg_classconstructor_free(ptr, 0);
     }
-    /**
-    */
     constructor() {
         const ret = wasm.classconstructor_new();
         this.__wbg_ptr = ret >>> 0;

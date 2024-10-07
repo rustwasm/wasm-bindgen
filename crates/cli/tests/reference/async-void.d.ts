@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
-* @returns {Promise<void>}
-*/
+ * @returns {Promise<void>}
+ */
 export function foo(): Promise<void>;

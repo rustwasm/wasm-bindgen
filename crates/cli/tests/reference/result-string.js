@@ -62,8 +62,8 @@ function getStringFromWasm0(ptr, len) {
     return cachedTextDecoder.decode(getUint8ArrayMemory0().subarray(ptr, ptr + len));
 }
 /**
-* @returns {string}
-*/
+ * @returns {string}
+ */
 export function exported() {
     let deferred2_0;
     let deferred2_1;
