@@ -70,7 +70,7 @@
 * Fixed multiline doc comment alignment and remove empty ones entirely.
   [#4135](https://github.com/rustwasm/wasm-bindgen/pull/4135)
 
-* Fix `__wbg_set_wasm` call order on nodejs-module
+* Fixed `experimental-nodejs-module` target when used with `#[wasm_bindgen(start)]`.
   [#4093](https://github.com/rustwasm/wasm-bindgen/pull/4093)
 
 --------------------------------------------------------------------------------
