@@ -23,6 +23,9 @@
 * Added `Debug` implementation to `JsError`.
   [#4136](https://github.com/rustwasm/wasm-bindgen/pull/4136)
 
+* Added support for `js_name` and `skip_typescript` attributes for string enums.
+  [#4147](https://github.com/rustwasm/wasm-bindgen/pull/4147)
+
 ### Changed
 
 * Implicitly enable reference type and multivalue transformations if the module already makes use of the corresponding target features.
@@ -75,6 +78,9 @@
 
 * Fixed error when importing very large JS files.
   [#4146](https://github.com/rustwasm/wasm-bindgen/pull/4146)
+
+* Fixed string enums not generating TypeScript types.
+  [#4147](https://github.com/rustwasm/wasm-bindgen/pull/4147)
 
 --------------------------------------------------------------------------------
 
