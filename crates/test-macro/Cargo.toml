@@ -23,7 +23,7 @@ syn = { version = "2.0", default-features = false, features = [
 ] }
 
 [dev-dependencies]
-tokio = { version = "1", features = ["macros"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 trybuild = "1.0"
 wasm-bindgen-test = { path = "../test" }
 

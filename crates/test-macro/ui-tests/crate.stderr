@@ -1,10 +1,5 @@
-error[E0433]: failed to resolve: use of undeclared crate or module `foo`
-  --> ui-tests/crate.rs:17:29
+error: expected `=`
+  --> ui-tests/crate.rs:17:26
    |
-17 | #[wasm_bindgen_test(crate = foo)]
-   |                             ^^^ use of undeclared crate or module `foo`
-   |
-help: consider importing this module
-   |
-5  + use wasm_bindgen_test::__rt;
-   |
+17 | #[wasm_bindgen_test(crate(foo))]
+   |                          ^
