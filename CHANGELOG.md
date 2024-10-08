@@ -40,6 +40,9 @@
 * Changed `TextDecoder.decode()` `input` parameter type from `&mut [u8]` to `&[u8]`.
   [#4141](https://github.com/rustwasm/wasm-bindgen/pull/4141)
 
+* Updated the WebGPU API to the current draft as of 2024-10-07.
+  [#4145](https://github.com/rustwasm/wasm-bindgen/pull/4145)
+
 ### Fixed
 
 * Fixed linked modules emitting snippet files when not using `--split-linked-modules`.

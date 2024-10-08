@@ -15,6 +15,24 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub type GpuRequestAdapterOptions;
     #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `featureLevel` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRequestAdapterOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "featureLevel")]
+    pub fn get_feature_level(this: &GpuRequestAdapterOptions) -> Option<String>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `featureLevel` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRequestAdapterOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, setter = "featureLevel")]
+    pub fn set_feature_level(this: &GpuRequestAdapterOptions, val: &str);
+    #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `forceFallbackAdapter` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GpuRequestAdapterOptions`*"]
@@ -65,6 +83,12 @@ impl GpuRequestAdapterOptions {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[deprecated = "Use `set_feature_level()` instead."]
+    pub fn feature_level(&mut self, val: &str) -> &mut Self {
+        self.set_feature_level(val);
+        self
     }
     #[cfg(web_sys_unstable_apis)]
     #[deprecated = "Use `set_force_fallback_adapter()` instead."]

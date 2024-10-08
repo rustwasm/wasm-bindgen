@@ -68,24 +68,6 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "compilationHints")]
     pub fn set_compilation_hints(this: &GpuShaderModuleDescriptor, val: &::wasm_bindgen::JsValue);
-    #[cfg(web_sys_unstable_apis)]
-    #[doc = "Get the `sourceMap` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuShaderModuleDescriptor`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    #[wasm_bindgen(method, getter = "sourceMap")]
-    pub fn get_source_map(this: &GpuShaderModuleDescriptor) -> Option<::js_sys::Object>;
-    #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `sourceMap` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuShaderModuleDescriptor`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    #[wasm_bindgen(method, setter = "sourceMap")]
-    pub fn set_source_map(this: &GpuShaderModuleDescriptor, val: &::js_sys::Object);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuShaderModuleDescriptor {
@@ -117,12 +99,6 @@ impl GpuShaderModuleDescriptor {
     #[deprecated = "Use `set_compilation_hints()` instead."]
     pub fn compilation_hints(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_compilation_hints(val);
-        self
-    }
-    #[cfg(web_sys_unstable_apis)]
-    #[deprecated = "Use `set_source_map()` instead."]
-    pub fn source_map(&mut self, val: &::js_sys::Object) -> &mut Self {
-        self.set_source_map(val);
         self
     }
 }
