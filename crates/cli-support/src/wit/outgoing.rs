@@ -74,12 +74,7 @@ impl InstructionBuilder<'_, '_> {
                 self.output.push(AdapterType::F64);
             }
             Descriptor::Enum { name, .. } => self.outgoing_i32(AdapterType::Enum(name.clone())),
-            Descriptor::StringEnum {
-                name,
-                variant_values,
-                invalid: _,
-                hole: _,
-            } => self.outgoing_string_enum(name, variant_values),
+            Descriptor::StringEnum { name, .. } => self.outgoing_string_enum(name),
 
             Descriptor::Char => {
                 self.instruction(
@@ -293,16 +288,11 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::Enum(name.clone()).option()],
                 );
             }
-            Descriptor::StringEnum {
-                name,
-                invalid: _,
-                hole,
-                variant_values,
-            } => {
+            Descriptor::StringEnum { name, hole, .. } => {
                 self.instruction(
                     &[AdapterType::I32],
                     Instruction::OptionWasmToStringEnum {
-                        variant_values: variant_values.to_vec(),
+                        name: name.clone(),
                         hole: *hole,
                     },
                     &[AdapterType::StringEnum(String::from(name)).option()],
@@ -542,11 +532,11 @@ impl InstructionBuilder<'_, '_> {
         self.instruction(&[AdapterType::I32], instr, &[output]);
     }
 
-    fn outgoing_string_enum(&mut self, name: &str, variant_values: &[String]) {
+    fn outgoing_string_enum(&mut self, name: &str) {
         self.instruction(
             &[AdapterType::I32],
             Instruction::WasmToStringEnum {
-                variant_values: variant_values.to_vec(),
+                name: name.to_string(),
             },
             &[AdapterType::StringEnum(String::from(name))],
         );

@@ -1140,7 +1140,7 @@ impl ToTokens for ast::StringEnum {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         let vis = &self.vis;
         let enum_name = &self.name;
-        let name_str = enum_name.to_string();
+        let name_str = self.js_name.to_string();
         let name_len = name_str.len() as u32;
         let name_chars = name_str.chars().map(u32::from);
         let variants = &self.variants;
@@ -1167,15 +1167,6 @@ impl ToTokens for ast::StringEnum {
         let variant_paths_ref = &variant_paths;
 
         let wasm_bindgen = &self.wasm_bindgen;
-
-        let describe_variants = self.variant_values.iter().map(|variant_value| {
-            let length = variant_value.len() as u32;
-            let chars = variant_value.chars().map(u32::from);
-            quote! {
-                inform(#length);
-                #(inform(#chars);)*
-            }
-        });
 
         (quote! {
             #(#attrs)*
@@ -1253,7 +1244,6 @@ impl ToTokens for ast::StringEnum {
                     inform(#name_len);
                     #(inform(#name_chars);)*
                     inform(#variant_count);
-                    #(#describe_variants)*
                 }
             }
 

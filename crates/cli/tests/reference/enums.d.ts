@@ -20,8 +20,19 @@ export function get_name(color: Color): ColorName;
  * @returns {ColorName | undefined}
  */
 export function option_string_enum_echo(color?: ColorName): ColorName | undefined;
+/**
+ * A color.
+ */
 export enum Color {
   Green = 0,
   Yellow = 1,
   Red = 2,
 }
+/**
+ * The name of a color.
+ */
+export type ColorName = "green" | "yellow" | "red";
+/**
+ * An unused string enum.
+ */
+export type FooBar = "foo" | "bar";

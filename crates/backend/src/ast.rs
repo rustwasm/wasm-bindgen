@@ -337,12 +337,18 @@ pub struct StringEnum {
     pub vis: syn::Visibility,
     /// The Rust enum's identifiers
     pub name: Ident,
+    /// The name of this string enum in JS/TS code
+    pub js_name: String,
     /// The Rust identifiers for the variants
     pub variants: Vec<Ident>,
     /// The JS string values of the variants
     pub variant_values: Vec<String>,
+    /// The doc comments on this enum, if any
+    pub comments: Vec<String>,
     /// Attributes to apply to the Rust enum
     pub rust_attrs: Vec<syn::Attribute>,
+    /// Whether to generate a typescript definition for this enum
+    pub generate_typescript: bool,
     /// Path to wasm_bindgen
     pub wasm_bindgen: Path,
 }

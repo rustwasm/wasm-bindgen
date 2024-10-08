@@ -1303,7 +1303,13 @@ impl<'a> MacroParse<&ClassMarker> for &'a mut syn::ImplItemFn {
     }
 }
 
-fn string_enum(enum_: syn::ItemEnum, program: &mut ast::Program) -> Result<(), Diagnostic> {
+fn string_enum(
+    enum_: syn::ItemEnum,
+    program: &mut ast::Program,
+    js_name: String,
+    generate_typescript: bool,
+    comments: Vec<String>,
+) -> Result<(), Diagnostic> {
     let mut variants = vec![];
     let mut variant_values = vec![];
 
@@ -1340,9 +1346,12 @@ fn string_enum(enum_: syn::ItemEnum, program: &mut ast::Program) -> Result<(), D
         kind: ast::ImportKind::Enum(ast::StringEnum {
             vis: enum_.vis,
             name: enum_.ident,
+            js_name,
             variants,
             variant_values,
+            comments,
             rust_attrs: enum_.attrs,
+            generate_typescript,
             wasm_bindgen: program.wasm_bindgen.clone(),
         }),
     });
@@ -1360,6 +1369,13 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
             bail_span!(self, "cannot export empty enums to JS");
         }
         let generate_typescript = opts.skip_typescript().is_none();
+        let js_name = opts
+            .js_name()
+            .map(|s| s.0)
+            .map_or_else(|| self.ident.to_string(), |s| s.to_string());
+        let comments = extract_doc_comments(&self.attrs);
+
+        opts.check_used();
 
         // Check if the first value is a string literal
         if let Some((_, expr)) = &self.variants[0].discriminant {
@@ -1368,15 +1384,9 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
                 ..
             }) = get_expr(expr)
             {
-                opts.check_used();
-                return string_enum(self, program);
+                return string_enum(self, program, js_name, generate_typescript, comments);
             }
         }
-        let js_name = opts
-            .js_name()
-            .map(|s| s.0)
-            .map_or_else(|| self.ident.to_string(), |s| s.to_string());
-        opts.check_used();
 
         let has_discriminant = self.variants[0].discriminant.is_some();
 
@@ -1453,8 +1463,6 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
         for value in values {
             assert!(hole != value);
         }
-
-        let comments = extract_doc_comments(&self.attrs);
 
         self.to_tokens(tokens);
 
