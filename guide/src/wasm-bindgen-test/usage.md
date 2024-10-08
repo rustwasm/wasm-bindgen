@@ -27,6 +27,13 @@ fn pass() {
 fn fail() {
     assert_eq!(1, 2);
 }
+
+// On a target other then `wasm32-unknown-unknown`, the `#[test]` attribute
+// will be used instead, allowing this test to run on any target.
+#[wasm_bindgen_test(unsupported = test)]
+fn all_targets() {
+    assert_eq!(1, 2);
+}
 ```
 
 Writing tests is the same as normal Rust `#[test]`s, except we are using the

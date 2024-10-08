@@ -47,11 +47,13 @@ serde = { version = "1.0", optional = true }
 serde_json = { version = "1.0", optional = true }
 wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.93" }
 
+[dev-dependencies]
+wasm-bindgen-test = { path = 'crates/test' }
+
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
 js-sys = { path = 'crates/js-sys' }
 serde_derive = "1.0"
 wasm-bindgen-futures = { path = 'crates/futures' }
-wasm-bindgen-test = { path = 'crates/test' }
 wasm-bindgen-test-crate-a = { path = 'tests/crates/a' }
 wasm-bindgen-test-crate-b = { path = 'tests/crates/b' }
 
