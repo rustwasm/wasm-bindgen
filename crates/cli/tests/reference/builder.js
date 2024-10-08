@@ -27,8 +27,7 @@ function getStringFromWasm0(ptr, len) {
 const ClassBuilderFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_classbuilder_free(ptr >>> 0, 1));
-/**
-*/
+
 export class ClassBuilder {
 
     static __wrap(ptr) {
@@ -51,8 +50,8 @@ export class ClassBuilder {
         wasm.__wbg_classbuilder_free(ptr, 0);
     }
     /**
-    * @returns {ClassBuilder}
-    */
+     * @returns {ClassBuilder}
+     */
     static builder() {
         const ret = wasm.classbuilder_builder();
         return ClassBuilder.__wrap(ret);

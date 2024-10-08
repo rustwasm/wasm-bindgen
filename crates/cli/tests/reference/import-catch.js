@@ -49,8 +49,7 @@ function takeObject(idx) {
     dropObject(idx);
     return ret;
 }
-/**
-*/
+
 export function exported() {
     try {
         const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);

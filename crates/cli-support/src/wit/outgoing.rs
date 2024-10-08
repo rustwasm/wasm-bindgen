@@ -305,7 +305,7 @@ impl InstructionBuilder<'_, '_> {
                         variant_values: variant_values.to_vec(),
                         hole: *hole,
                     },
-                    &[AdapterType::StringEnum(String::from(name))],
+                    &[AdapterType::StringEnum(String::from(name)).option()],
                 );
             }
             Descriptor::RustStruct(name) => {

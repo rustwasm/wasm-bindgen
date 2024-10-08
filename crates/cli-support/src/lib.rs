@@ -492,9 +492,13 @@ fn reset_indentation(s: &str) -> String {
     let mut indent: u32 = 0;
     let mut dst = String::new();
 
+    fn is_doc_comment(line: &str) -> bool {
+        line.starts_with("*")
+    }
+
     for line in s.lines() {
         let line = line.trim();
-        if line.starts_with('}') || (line.ends_with('}') && !line.starts_with('*')) {
+        if line.starts_with('}') || (line.ends_with('}') && !is_doc_comment(line)) {
             indent = indent.saturating_sub(1);
         }
         let extra = if line.starts_with(':') || line.starts_with('?') {
@@ -506,11 +510,14 @@ fn reset_indentation(s: &str) -> String {
             for _ in 0..indent + extra {
                 dst.push_str("    ");
             }
+            if is_doc_comment(line) {
+                dst.push(' ');
+            }
             dst.push_str(line);
         }
         dst.push('\n');
         // Ignore { inside of comments and if it's an exported enum
-        if line.ends_with('{') && !line.starts_with('*') && !line.ends_with("Object.freeze({") {
+        if line.ends_with('{') && !is_doc_comment(line) && !line.ends_with("Object.freeze({") {
             indent += 1;
         }
     }

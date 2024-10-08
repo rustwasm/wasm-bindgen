@@ -20,6 +20,9 @@
 * Added bindings for the draft [WebRTC Encoded Transform](https://www.w3.org/TR/webrtc-encoded-transform) spec.
   [#4125](https://github.com/rustwasm/wasm-bindgen/pull/4125)
 
+* Added `Debug` implementation to `JsError`.
+  [#4136](https://github.com/rustwasm/wasm-bindgen/pull/4136)
+
 ### Changed
 
 * Implicitly enable reference type and multivalue transformations if the module already makes use of the corresponding target features.
@@ -33,6 +36,9 @@
 
 * Removed `GamepadAxisMoveEvent`, `GamepadAxisMoveEventInit`, `GamepadButtonEvent`, `GamepadButtonEventInit` and `GamepadServiceTest`, which were seemingly never implemented by any JS environment.
   [#4134](https://github.com/rustwasm/wasm-bindgen/pull/4134)
+
+* Changed `TextDecoder.decode()` `input` parameter type from `&mut [u8]` to `&[u8]`.
+  [#4141](https://github.com/rustwasm/wasm-bindgen/pull/4141)
 
 ### Fixed
 
@@ -51,6 +57,15 @@
 
 * Fixed emitted `package.json` structure to correctly specify its dependencies
   [#4091](https://github.com/rustwasm/wasm-bindgen/pull/4091)
+
+* Fixed returning `Option<Enum>` now correctly has the `| undefined` type in TS bindings.
+  [#4137](https://github.com/rustwasm/wasm-bindgen/pull/4137)
+
+* Fixed enum variant name collisions with object prototype fields.
+  [#4137](https://github.com/rustwasm/wasm-bindgen/pull/4137)
+
+* Fixed multiline doc comment alignment and remove empty ones entirely.
+  [#4135](https://github.com/rustwasm/wasm-bindgen/pull/4135)
 
 --------------------------------------------------------------------------------
 

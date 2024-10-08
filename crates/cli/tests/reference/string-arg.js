@@ -82,8 +82,8 @@ function passStringToWasm0(arg, malloc, realloc) {
     return ptr;
 }
 /**
-* @param {string} a
-*/
+ * @param {string} a
+ */
 export function foo(a) {
     const ptr0 = passStringToWasm0(a, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
