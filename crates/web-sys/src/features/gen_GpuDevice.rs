@@ -320,7 +320,7 @@ extern "C" {
     ) -> GpuSampler;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(feature = "GpuShaderModule", feature = "GpuShaderModuleDescriptor",))]
-    # [wasm_bindgen (catch , method , structural , js_class = "GPUDevice" , js_name = createShaderModule)]
+    # [wasm_bindgen (method , structural , js_class = "GPUDevice" , js_name = createShaderModule)]
     #[doc = "The `createShaderModule()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createShaderModule)"]
@@ -332,7 +332,7 @@ extern "C" {
     pub fn create_shader_module(
         this: &GpuDevice,
         descriptor: &GpuShaderModuleDescriptor,
-    ) -> Result<GpuShaderModule, JsValue>;
+    ) -> GpuShaderModule;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(feature = "GpuTexture", feature = "GpuTextureDescriptor",))]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUDevice" , js_name = createTexture)]

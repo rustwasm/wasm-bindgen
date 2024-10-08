@@ -104,16 +104,16 @@ export class Test {
     }
 }
 
-export function __wbindgen_object_drop_ref(arg0) {
-    takeObject(arg0);
+export function __wbg_test2_39fe629b9aa739cf() {
+    const ret = test2();
+    return addHeapObject(ret);
 };
 
 export function __wbindgen_throw(arg0, arg1) {
     throw new Error(getStringFromWasm0(arg0, arg1));
 };
 
-export function __wbg_test2_39fe629b9aa739cf() {
-    const ret = test2();
-    return addHeapObject(ret);
+export function __wbindgen_object_drop_ref(arg0) {
+    takeObject(arg0);
 };
 

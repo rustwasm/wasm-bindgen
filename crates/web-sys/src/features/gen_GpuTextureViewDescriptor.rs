@@ -164,6 +164,24 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "mipLevelCount")]
     pub fn set_mip_level_count(this: &GpuTextureViewDescriptor, val: u32);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `usage` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuTextureViewDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "usage")]
+    pub fn get_usage(this: &GpuTextureViewDescriptor) -> Option<u32>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `usage` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuTextureViewDescriptor`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, setter = "usage")]
+    pub fn set_usage(this: &GpuTextureViewDescriptor, val: u32);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuTextureViewDescriptor {
@@ -227,6 +245,12 @@ impl GpuTextureViewDescriptor {
     #[deprecated = "Use `set_mip_level_count()` instead."]
     pub fn mip_level_count(&mut self, val: u32) -> &mut Self {
         self.set_mip_level_count(val);
+        self
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[deprecated = "Use `set_usage()` instead."]
+    pub fn usage(&mut self, val: u32) -> &mut Self {
+        self.set_usage(val);
         self
     }
 }
