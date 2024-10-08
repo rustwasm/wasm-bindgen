@@ -661,12 +661,16 @@ impl Output {
                 .with_context(|| format!("failed to write `{}`", path.display()))?;
         }
 
-        if !gen.npm_dependencies.is_empty() {
+        let is_genmode_nodemodule = matches!(gen.mode, OutputMode::Node { module: true });
+        if !gen.npm_dependencies.is_empty() || is_genmode_nodemodule {
             #[derive(serde::Serialize)]
             struct PackageJson<'a> {
+                #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
+                ty: Option<&'static str>,
                 dependencies: BTreeMap<&'a str, &'a str>,
             }
             let pj = PackageJson {
+                ty: is_genmode_nodemodule.then_some("module"),
                 dependencies: gen
                     .npm_dependencies
                     .iter()

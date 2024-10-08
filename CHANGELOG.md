@@ -79,6 +79,9 @@
 * Fixed error when importing very large JS files.
   [#4146](https://github.com/rustwasm/wasm-bindgen/pull/4146)
 
+* Specify `"type": "module"` when deploying to nodejs-module
+  [#4092](https://github.com/rustwasm/wasm-bindgen/pull/4092)
+
 * Fixed string enums not generating TypeScript types.
   [#4147](https://github.com/rustwasm/wasm-bindgen/pull/4147)
 
