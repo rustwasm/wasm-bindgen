@@ -576,20 +576,11 @@ fn instruction(
     log_error: &mut bool,
     constructor: &Option<String>,
 ) -> Result<(), Error> {
-    fn wasm_to_string_enum(variant_values: &[String], index: &str) -> String {
+    fn wasm_to_string_enum(name: &str, index: &str) -> String {
         // e.g. ["a","b","c"][someIndex]
-        let mut enum_val_expr = String::new();
-        enum_val_expr.push('[');
-        for variant in variant_values {
-            enum_val_expr.push_str(&format!("\"{variant}\","));
-        }
-        enum_val_expr.push(']');
-        enum_val_expr.push('[');
-        enum_val_expr.push_str(index);
-        enum_val_expr.push(']');
-        enum_val_expr
+        format!("__wbindgen_enum_{name}[{index}]")
     }
-    fn string_enum_to_wasm(variant_values: &[String], invalid: u32, enum_val: &str) -> String {
+    fn string_enum_to_wasm(name: &str, invalid: u32, enum_val: &str) -> String {
         // e.g. (["a","b","c"].indexOf(someEnumVal) + 1 || 4) - 1
         //                                                 |
         //                                           invalid + 1
@@ -598,16 +589,10 @@ fn instruction(
         // and with +1 we get 0 which is falsey, so we can use || to
         // substitute invalid+1. Finally, we just do -1 to get the correct
         // values for everything.
-        let mut enum_val_expr = String::new();
-        enum_val_expr.push_str("([");
-        for variant in variant_values.iter() {
-            enum_val_expr.push_str(&format!("\"{variant}\","));
-        }
-        enum_val_expr.push_str(&format!(
-            "].indexOf({enum_val}) + 1 || {invalid}) - 1",
+        format!(
+            "(__wbindgen_enum_{name}.indexOf({enum_val}) + 1 || {invalid}) - 1",
             invalid = invalid + 1
-        ));
-        enum_val_expr
+        )
     }
 
     match instr {
@@ -702,34 +687,31 @@ fn instruction(
             }
         }
 
-        Instruction::WasmToStringEnum { variant_values } => {
+        Instruction::WasmToStringEnum { name } => {
             let index = js.pop();
-            js.push(wasm_to_string_enum(variant_values, &index))
+            js.push(wasm_to_string_enum(name, &index))
         }
 
-        Instruction::OptionWasmToStringEnum { variant_values, .. } => {
+        Instruction::OptionWasmToStringEnum { name, .. } => {
             // Since hole is currently variant_count+1 and the lookup is
             // ["a","b","c"][index], the lookup will implicitly return map
             // the hole to undefined, because OOB indexes will return undefined.
             let index = js.pop();
-            js.push(wasm_to_string_enum(variant_values, &index))
+            js.push(wasm_to_string_enum(name, &index))
         }
 
-        Instruction::StringEnumToWasm {
-            variant_values,
-            invalid,
-        } => {
+        Instruction::StringEnumToWasm { name, invalid } => {
             let enum_val = js.pop();
-            js.push(string_enum_to_wasm(variant_values, *invalid, &enum_val))
+            js.push(string_enum_to_wasm(name, *invalid, &enum_val))
         }
 
         Instruction::OptionStringEnumToWasm {
-            variant_values,
+            name,
             invalid,
             hole,
         } => {
             let enum_val = js.pop();
-            let enum_val_expr = string_enum_to_wasm(variant_values, *invalid, &enum_val);
+            let enum_val_expr = string_enum_to_wasm(name, *invalid, &enum_val);
 
             // e.g. someEnumVal == undefined ? 4 : (string_enum_to_wasm(someEnumVal))
             //                  |

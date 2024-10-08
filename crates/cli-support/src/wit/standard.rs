@@ -143,22 +143,22 @@ pub enum Instruction {
 
     /// Pops a Wasm `i32` and pushes the enum variant as a string
     WasmToStringEnum {
-        variant_values: Vec<String>,
+        name: String,
     },
 
     OptionWasmToStringEnum {
-        variant_values: Vec<String>,
+        name: String,
         hole: u32,
     },
 
     /// pops a string and pushes the enum variant as an `i32`
     StringEnumToWasm {
-        variant_values: Vec<String>,
+        name: String,
         invalid: u32,
     },
 
     OptionStringEnumToWasm {
-        variant_values: Vec<String>,
+        name: String,
         invalid: u32,
         hole: u32,
     },

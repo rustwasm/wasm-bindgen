@@ -573,7 +573,7 @@ impl<'a> Context<'a> {
             decode::ImportKind::Static(s) => self.import_static(&import, s),
             decode::ImportKind::String(s) => self.import_string(s),
             decode::ImportKind::Type(t) => self.import_type(&import, t),
-            decode::ImportKind::Enum(_) => Ok(()),
+            decode::ImportKind::Enum(e) => self.string_enum(e),
         }
     }
 
@@ -863,6 +863,33 @@ impl<'a> Context<'a> {
             .import_map
             .insert(id, AuxImport::Instanceof(import));
         Ok(())
+    }
+
+    fn string_enum(&mut self, string_enum: &decode::StringEnum<'_>) -> Result<(), Error> {
+        let aux = AuxStringEnum {
+            name: string_enum.name.to_string(),
+            public: string_enum.public,
+            comments: concatenate_comments(&string_enum.comments),
+            variant_values: string_enum
+                .variant_values
+                .iter()
+                .map(|v| v.to_string())
+                .collect(),
+            generate_typescript: string_enum.generate_typescript,
+        };
+        let mut result = Ok(());
+        self.aux
+            .string_enums
+            .entry(aux.name.clone())
+            .and_modify(|existing| {
+                result = Err(anyhow!(
+                    "duplicate string enums:\n{:?}\n{:?}",
+                    existing,
+                    aux
+                ));
+            })
+            .or_insert(aux);
+        result
     }
 
     fn enum_(&mut self, enum_: decode::Enum<'_>) -> Result<(), Error> {

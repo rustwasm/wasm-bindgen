@@ -1,5 +1,6 @@
 use wasm_bindgen::prelude::*;
 
+/// A color.
 #[wasm_bindgen]
 #[derive(PartialEq, Debug)]
 pub enum Color {
@@ -18,6 +19,7 @@ pub fn option_enum_echo(color: Option<Color>) -> Option<Color> {
     color
 }
 
+/// The name of a color.
 #[wasm_bindgen]
 #[derive(PartialEq, Debug)]
 pub enum ColorName {
@@ -38,4 +40,19 @@ pub fn get_name(color: Color) -> ColorName {
 #[wasm_bindgen]
 pub fn option_string_enum_echo(color: Option<ColorName>) -> Option<ColorName> {
     color
+}
+
+/// An unused string enum.
+#[wasm_bindgen(js_name = "FooBar")]
+#[derive(PartialEq, Debug)]
+pub enum UnusedStringEnum {
+    Foo = "foo",
+    Bar = "bar",
+}
+
+#[wasm_bindgen]
+#[derive(PartialEq, Debug)]
+enum PrivateStringEnum {
+    Foo = "foo",
+    Bar = "bar",
 }

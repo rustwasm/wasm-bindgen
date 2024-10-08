@@ -76,7 +76,6 @@ pub enum Descriptor {
         name: String,
         invalid: u32,
         hole: u32,
-        variant_values: Vec<String>,
     },
     RustStruct(String),
     Char,
@@ -171,12 +170,10 @@ impl Descriptor {
                 let variant_count = get(data);
                 let invalid = variant_count;
                 let hole = variant_count + 1;
-                let variant_values = (0..variant_count).map(|_| get_string(data)).collect();
                 Descriptor::StringEnum {
                     name,
                     invalid,
                     hole,
-                    variant_values,
                 }
             }
             RUST_STRUCT => {

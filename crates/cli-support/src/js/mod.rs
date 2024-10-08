@@ -2,7 +2,7 @@ use crate::descriptor::VectorKind;
 use crate::intrinsic::Intrinsic;
 use crate::wit::{
     Adapter, AdapterId, AdapterJsImportKind, AdapterType, AuxExportedMethodKind, AuxReceiverKind,
-    AuxValue,
+    AuxStringEnum, AuxValue,
 };
 use crate::wit::{AdapterKind, Instruction, InstructionData};
 use crate::wit::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
@@ -2529,8 +2529,11 @@ __wbg_set_wasm(wasm);"
         pairs.sort_by_key(|(k, _)| *k);
         check_duplicated_getter_and_setter_names(&pairs)?;
 
-        for (_, e) in self.aux.enums.iter() {
+        for (_, e) in crate::sorted_iter(&self.aux.enums) {
             self.generate_enum(e)?;
+        }
+        for (_, e) in crate::sorted_iter(&self.aux.string_enums) {
+            self.generate_string_enum(e)?;
         }
 
         for s in self.aux.structs.iter() {
@@ -3804,6 +3807,42 @@ __wbg_set_wasm(wasm);"
             &format!("Object.freeze({{ {} }})", variants),
             Some(&docs),
         )?;
+
+        Ok(())
+    }
+
+    fn generate_string_enum(&mut self, string_enum: &AuxStringEnum) -> Result<(), Error> {
+        let docs = format_doc_comments(&string_enum.comments, None);
+
+        let variants: Vec<_> = string_enum
+            .variant_values
+            .iter()
+            .map(|v| format!("\"{v}\""))
+            .collect();
+
+        if string_enum.generate_typescript {
+            self.typescript.push_str(&docs);
+            if string_enum.public {
+                self.typescript.push_str("export ");
+            }
+            self.typescript.push_str("type ");
+            self.typescript.push_str(&string_enum.name);
+            self.typescript.push_str(" = ");
+
+            if variants.is_empty() {
+                self.typescript.push_str("never");
+            } else {
+                self.typescript.push_str(&variants.join(" | "));
+            }
+
+            self.typescript.push_str(";\n");
+        }
+
+        self.global(&format!(
+            "const __wbindgen_enum_{name} = [{values}];\n",
+            name = string_enum.name,
+            values = variants.join(", ")
+        ));
 
         Ok(())
     }

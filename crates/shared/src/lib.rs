@@ -51,7 +51,7 @@ macro_rules! shared_api {
             Static(ImportStatic<'a>),
             String(ImportString<'a>),
             Type(ImportType<'a>),
-            Enum(StringEnum),
+            Enum(StringEnum<'a>),
         }
 
         struct ImportFunction<'a> {
@@ -104,7 +104,13 @@ macro_rules! shared_api {
             vendor_prefixes: Vec<&'a str>,
         }
 
-        struct StringEnum {}
+        struct StringEnum<'a> {
+            name: &'a str,
+            public: bool,
+            variant_values: Vec<&'a str>,
+            comments: Vec<&'a str>,
+            generate_typescript: bool,
+        }
 
         struct Export<'a> {
             class: Option<&'a str>,
