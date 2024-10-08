@@ -70,6 +70,9 @@
 * Fixed multiline doc comment alignment and remove empty ones entirely.
   [#4135](https://github.com/rustwasm/wasm-bindgen/pull/4135)
 
+* Fixed `experimental-nodejs-module` target when used with `#[wasm_bindgen(start)]`.
+  [#4093](https://github.com/rustwasm/wasm-bindgen/pull/4093)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.93](https://github.com/rustwasm/wasm-bindgen/compare/0.2.92...0.2.93)
