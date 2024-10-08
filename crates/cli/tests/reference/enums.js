@@ -50,7 +50,7 @@ export function option_enum_echo(color) {
  */
 export function get_name(color) {
     const ret = wasm.get_name(color);
-    return _ColorName_values[ret];
+    return __wbindgen_enum_ColorName[ret];
 }
 
 /**
@@ -58,8 +58,8 @@ export function get_name(color) {
  * @returns {ColorName | undefined}
  */
 export function option_string_enum_echo(color) {
-    const ret = wasm.option_string_enum_echo(color == undefined ? 4 : ((_ColorName_values.indexOf(color) + 1 || 4) - 1));
-    return _ColorName_values[ret];
+    const ret = wasm.option_string_enum_echo(color == undefined ? 4 : ((__wbindgen_enum_ColorName.indexOf(color) + 1 || 4) - 1));
+    return __wbindgen_enum_ColorName[ret];
 }
 
 /**
@@ -67,11 +67,11 @@ export function option_string_enum_echo(color) {
  */
 export const Color = Object.freeze({ Green:0,"0":"Green",Yellow:1,"1":"Yellow",Red:2,"2":"Red", });
 
-const _ColorName_values = ["green", "yellow", "red"];
+const __wbindgen_enum_ColorName = ["green", "yellow", "red"];
 
-const _FooBar_values = ["foo", "bar"];
+const __wbindgen_enum_FooBar = ["foo", "bar"];
 
-const _PrivateStringEnum_values = ["foo", "bar"];
+const __wbindgen_enum_PrivateStringEnum = ["foo", "bar"];
 
 export function __wbindgen_throw(arg0, arg1) {
     throw new Error(getStringFromWasm0(arg0, arg1));

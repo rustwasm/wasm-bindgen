@@ -578,7 +578,7 @@ fn instruction(
 ) -> Result<(), Error> {
     fn wasm_to_string_enum(name: &str, index: &str) -> String {
         // e.g. ["a","b","c"][someIndex]
-        format!("_{name}_values[{index}]")
+        format!("__wbindgen_enum_{name}[{index}]")
     }
     fn string_enum_to_wasm(name: &str, invalid: u32, enum_val: &str) -> String {
         // e.g. (["a","b","c"].indexOf(someEnumVal) + 1 || 4) - 1
@@ -590,7 +590,7 @@ fn instruction(
         // substitute invalid+1. Finally, we just do -1 to get the correct
         // values for everything.
         format!(
-            "(_{name}_values.indexOf({enum_val}) + 1 || {invalid}) - 1",
+            "(__wbindgen_enum_{name}.indexOf({enum_val}) + 1 || {invalid}) - 1",
             invalid = invalid + 1
         )
     }

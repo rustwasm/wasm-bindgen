@@ -3839,7 +3839,7 @@ __wbg_set_wasm(wasm);"
         }
 
         self.global(&format!(
-            "const _{name}_values = [{values}];\n",
+            "const __wbindgen_enum_{name} = [{values}];\n",
             name = string_enum.name,
             values = variants.join(", ")
         ));
