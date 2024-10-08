@@ -14,10 +14,7 @@ fn success_1() {}
 #[wasm_bindgen_test(crate = crate::wasm::test)]
 fn success_2() {}
 
-#[wasm_bindgen_test(crate = foo)]
+#[wasm_bindgen_test(crate(foo))]
 fn failure_1() {}
-
-#[wasm_bindgen_test(unsupported = tokio::test(flavor = "multi_thread", worker_threads = 1))]
-fn success_3() {}
 
 fn main() {}
