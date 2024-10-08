@@ -1,3 +1,5 @@
+// https://www.w3.org/TR/2024/WD-webgpu-20241007
+
 interface mixin GPUObjectBase {
     attribute USVString label;
 };
@@ -30,7 +32,6 @@ interface GPUSupportedLimits {
     readonly attribute unsigned long long maxBufferSize;
     readonly attribute unsigned long maxVertexAttributes;
     readonly attribute unsigned long maxVertexBufferArrayStride;
-    readonly attribute unsigned long maxInterStageShaderComponents;
     readonly attribute unsigned long maxInterStageShaderVariables;
     readonly attribute unsigned long maxColorAttachments;
     readonly attribute unsigned long maxColorAttachmentBytesPerSample;
@@ -74,6 +75,7 @@ interface GPU {
 };
 
 dictionary GPURequestAdapterOptions {
+    DOMString featureLevel;
     GPUPowerPreference powerPreference;
     boolean forceFallbackAdapter = false;
 };
@@ -91,14 +93,12 @@ interface GPUAdapter {
     readonly attribute boolean isFallbackAdapter;
 
     Promise<GPUDevice> requestDevice(optional GPUDeviceDescriptor descriptor = {});
-    [RustDeprecated]
-    Promise<GPUAdapterInfo> requestAdapterInfo();
 };
 
 dictionary GPUDeviceDescriptor
          : GPUObjectDescriptorBase {
     sequence<GPUFeatureName> requiredFeatures = [];
-    record<DOMString, GPUSize64> requiredLimits = {};
+    record<DOMString, (GPUSize64 or undefined)> requiredLimits = {};
     GPUQueueDescriptor defaultQueue = {};
 };
 
@@ -109,6 +109,7 @@ enum GPUFeatureName {
     "texture-compression-bc-sliced-3d",
     "texture-compression-etc2",
     "texture-compression-astc",
+    "texture-compression-astc-sliced-3d",
     "timestamp-query",
     "indirect-first-instance",
     "shader-f16",
@@ -141,7 +142,6 @@ interface GPUDevice : EventTarget {
     GPUPipelineLayout createPipelineLayout(GPUPipelineLayoutDescriptor descriptor);
     GPUBindGroup createBindGroup(GPUBindGroupDescriptor descriptor);
 
-    [Throws]
     GPUShaderModule createShaderModule(GPUShaderModuleDescriptor descriptor);
     GPUComputePipeline createComputePipeline(GPUComputePipelineDescriptor descriptor);
     [Throws]
@@ -263,6 +263,7 @@ dictionary GPUTextureViewDescriptor
          : GPUObjectDescriptorBase {
     GPUTextureFormat format;
     GPUTextureViewDimension dimension;
+    GPUTextureUsageFlags usage = 0;
     GPUTextureAspect aspect = "all";
     GPUIntegerCoordinate baseMipLevel = 0;
     GPUIntegerCoordinate mipLevelCount;
@@ -586,7 +587,6 @@ GPUShaderModule includes GPUObjectBase;
 dictionary GPUShaderModuleDescriptor
          : GPUObjectDescriptorBase {
     required USVString code;
-    object sourceMap;
     sequence<GPUShaderModuleCompilationHint> compilationHints = [];
 };
 
@@ -647,7 +647,7 @@ interface mixin GPUPipelineBase {
 dictionary GPUProgrammableStage {
     required GPUShaderModule module;
     USVString entryPoint;
-    record<USVString, GPUPipelineConstantValue> constants;
+    record<USVString, GPUPipelineConstantValue> constants = {};
 };
 
 typedef double GPUPipelineConstantValue; // May represent WGSL's bool, f32, i32, u32, and f16 if enabled.
@@ -1199,6 +1199,7 @@ interface GPUCanvasContext {
     undefined configure(GPUCanvasConfiguration configuration);
     undefined unconfigure();
 
+    GPUCanvasConfiguration? getConfiguration();
     [Throws]
     GPUTexture getCurrentTexture();
 };

@@ -17,6 +17,7 @@ pub enum GpuFeatureName {
     TextureCompressionBcSliced3d = "texture-compression-bc-sliced-3d",
     TextureCompressionEtc2 = "texture-compression-etc2",
     TextureCompressionAstc = "texture-compression-astc",
+    TextureCompressionAstcSliced3d = "texture-compression-astc-sliced-3d",
     TimestampQuery = "timestamp-query",
     IndirectFirstInstance = "indirect-first-instance",
     ShaderF16 = "shader-f16",
