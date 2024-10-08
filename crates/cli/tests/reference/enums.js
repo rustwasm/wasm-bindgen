@@ -71,6 +71,8 @@ const _ColorName_values = ["green", "yellow", "red"];
 
 const _FooBar_values = ["foo", "bar"];
 
+const _PrivateStringEnum_values = ["foo", "bar"];
+
 export function __wbindgen_throw(arg0, arg1) {
     throw new Error(getStringFromWasm0(arg0, arg1));
 };

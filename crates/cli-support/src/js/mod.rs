@@ -3822,8 +3822,12 @@ __wbg_set_wasm(wasm);"
 
         if string_enum.generate_typescript {
             self.typescript.push_str(&docs);
-            self.typescript
-                .push_str(&format!("export type {} = ", string_enum.name));
+            if string_enum.public {
+                self.typescript.push_str("export ");
+            }
+            self.typescript.push_str("type ");
+            self.typescript.push_str(&string_enum.name);
+            self.typescript.push_str(" = ");
 
             if variants.is_empty() {
                 self.typescript.push_str("never");

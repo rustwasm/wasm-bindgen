@@ -106,6 +106,7 @@ macro_rules! shared_api {
 
         struct StringEnum<'a> {
             name: &'a str,
+            public: bool,
             variant_values: Vec<&'a str>,
             comments: Vec<&'a str>,
             generate_typescript: bool,

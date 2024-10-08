@@ -49,3 +49,10 @@ pub enum UnusedStringEnum {
     Foo = "foo",
     Bar = "bar",
 }
+
+#[wasm_bindgen]
+#[derive(PartialEq, Debug)]
+enum PrivateStringEnum {
+    Foo = "foo",
+    Bar = "bar",
+}
