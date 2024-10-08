@@ -120,6 +120,10 @@ pub fn wasm_bindgen_test(
         },
     );
 
+    if let Some(path) = attributes.unsupported {
+        tokens.extend(quote! { #[#path] });
+    }
+
     tokens.extend(leading_tokens);
     tokens.push(ident.into());
     tokens.extend(body);
@@ -281,6 +285,7 @@ fn compile_error(span: Span, msg: &str) -> proc_macro::TokenStream {
 struct Attributes {
     r#async: bool,
     wasm_bindgen_path: syn::Path,
+    unsupported: Option<syn::Meta>,
 }
 
 impl Default for Attributes {
@@ -288,6 +293,7 @@ impl Default for Attributes {
         Self {
             r#async: false,
             wasm_bindgen_path: syn::parse_quote!(::wasm_bindgen_test),
+            unsupported: None,
         }
     }
 }
@@ -298,6 +304,8 @@ impl Attributes {
             self.r#async = true;
         } else if meta.path.is_ident("crate") {
             self.wasm_bindgen_path = meta.value()?.parse::<syn::Path>()?;
+        } else if meta.path.is_ident("unsupported") {
+            self.unsupported = Some(meta.value()?.parse::<syn::Meta>()?);
         } else {
             return Err(meta.error("unknown attribute"));
         }
