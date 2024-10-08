@@ -73,6 +73,9 @@
 * Fixed `experimental-nodejs-module` target when used with `#[wasm_bindgen(start)]`.
   [#4093](https://github.com/rustwasm/wasm-bindgen/pull/4093)
 
+* Fixed error when importing very large JS files.
+  [#4146](https://github.com/rustwasm/wasm-bindgen/pull/4146)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.93](https://github.com/rustwasm/wasm-bindgen/compare/0.2.92...0.2.93)

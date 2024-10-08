@@ -133,11 +133,14 @@ impl TryToTokens for ast::Program {
             const _CHUNK_SLICES: [&[u8]; #chunk_len] = [
                 #(#encoded_chunks,)*
             ];
+            #[allow(long_running_const_eval)]
             const _CHUNK_LEN: usize = flat_len(_CHUNK_SLICES);
+            #[allow(long_running_const_eval)]
             const _CHUNKS: [u8; _CHUNK_LEN] = flat_byte_slices(_CHUNK_SLICES);
 
             const _LEN_BYTES: [u8; 4] = (_CHUNK_LEN as u32).to_le_bytes();
             const _ENCODED_BYTES_LEN: usize = _CHUNK_LEN + 4;
+            #[allow(long_running_const_eval)]
             const _ENCODED_BYTES: [u8; _ENCODED_BYTES_LEN] = flat_byte_slices([&_LEN_BYTES, &_CHUNKS]);
             &_ENCODED_BYTES
         });
@@ -174,6 +177,7 @@ impl TryToTokens for ast::Program {
                 const _LEN: usize = _PREFIX_JSON_BYTES_LEN + _ENCODED_BYTES_LEN;
 
                 #[link_section = "__wasm_bindgen_unstable"]
+                #[allow(long_running_const_eval)]
                 static _GENERATED: [u8; _LEN] = flat_byte_slices([_PREFIX_JSON_BYTES, _ENCODED_BYTES]);
             };
         })
