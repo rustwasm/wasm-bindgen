@@ -1385,9 +1385,21 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
             _ => bail_span!(self, "only public enums are allowed with #[wasm_bindgen]"),
         }
 
+        fn skip(attrs: &mut Vec<syn::Attribute>) -> bool {
+            let Ok(attrs) = BindgenAttrs::find(attrs) else {
+                return false;
+            };
+
+            let result = attrs.skip().is_some();
+            attrs.check_used();
+
+            result
+        }
+
         let variants = self
             .variants
             .iter()
+            .filter(|v| !skip(&mut (v.attrs).clone()))
             .enumerate()
             .map(|(i, v)| {
                 match v.fields {
