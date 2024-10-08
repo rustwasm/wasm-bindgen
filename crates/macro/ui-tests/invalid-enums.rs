@@ -18,4 +18,23 @@ pub enum D {
     X = 4294967296,
 }
 
+#[wasm_bindgen]
+pub enum E {
+    A = 1,
+    B = "foo",
+}
+
+#[wasm_bindgen]
+pub enum F {
+    A = "foo",
+    B = 1,
+}
+
+#[wasm_bindgen]
+enum G {
+    A = "foo",
+    B = "bar",
+    C,
+}
+
 fn main() {}

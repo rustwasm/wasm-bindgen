@@ -1314,15 +1314,10 @@ fn string_enum(
     let mut variant_values = vec![];
 
     for v in enum_.variants.iter() {
-        match v.fields {
-            syn::Fields::Unit => (),
-            _ => bail_span!(v.fields, "only C-Style enums allowed with #[wasm_bindgen]"),
-        }
-
         let (_, expr) = match &v.discriminant {
             Some(pair) => pair,
             None => {
-                bail_span!(v, "all variants must have a value");
+                bail_span!(v, "all variants of a string enum must have a string value");
             }
         };
         match get_expr(expr) {
@@ -1368,6 +1363,16 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
         if self.variants.is_empty() {
             bail_span!(self, "cannot export empty enums to JS");
         }
+        for variant in self.variants.iter() {
+            match variant.fields {
+                syn::Fields::Unit => (),
+                _ => bail_span!(
+                    variant.fields,
+                    "enum variants with associated data are not supported with #[wasm_bindgen]"
+                ),
+            }
+        }
+
         let generate_typescript = opts.skip_typescript().is_none();
         let js_name = opts
             .js_name()
@@ -1377,15 +1382,21 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
 
         opts.check_used();
 
-        // Check if the first value is a string literal
-        if let Some((_, expr)) = &self.variants[0].discriminant {
-            if let syn::Expr::Lit(syn::ExprLit {
-                lit: syn::Lit::Str(_),
-                ..
-            }) = get_expr(expr)
-            {
-                return string_enum(self, program, js_name, generate_typescript, comments);
+        // Check if the enum is a string enum, by checking whether any variant has a string discriminant.
+        let is_string_enum = self.variants.iter().any(|v| {
+            if let Some((_, expr)) = &v.discriminant {
+                if let syn::Expr::Lit(syn::ExprLit {
+                    lit: syn::Lit::Str(_),
+                    ..
+                }) = get_expr(expr)
+                {
+                    return true;
+                }
             }
+            false
+        });
+        if is_string_enum {
+            return string_enum(self, program, js_name, generate_typescript, comments);
         }
 
         let has_discriminant = self.variants[0].discriminant.is_some();
@@ -1400,11 +1411,6 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
             .iter()
             .enumerate()
             .map(|(i, v)| {
-                match v.fields {
-                    syn::Fields::Unit => (),
-                    _ => bail_span!(v.fields, "only C-Style enums allowed with #[wasm_bindgen]"),
-                }
-
                 // Require that everything either has a discriminant or doesn't.
                 // We don't really want to get in the business of emulating how
                 // rustc assigns values to enums.
@@ -1425,14 +1431,14 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
                             Err(_) => {
                                 bail_span!(
                                     int_lit,
-                                    "enums with #[wasm_bindgen] can only support \
+                                    "C-style enums with #[wasm_bindgen] can only support \
                                  numbers that can be represented as u32"
                                 );
                             }
                         },
                         expr => bail_span!(
                             expr,
-                            "enums with #[wasm_bindgen] may only have \
+                            "C-style enums with #[wasm_bindgen] may only have \
                              number literal values",
                         ),
                     },
