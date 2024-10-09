@@ -42,24 +42,22 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RsaHashedKeyAlgorithm`*"]
     #[wasm_bindgen(method, setter = "modulusLength")]
     pub fn set_modulus_length(this: &RsaHashedKeyAlgorithm, val: u16);
-    #[cfg(feature = "Uint8Array")]
     #[doc = "Get the `publicExponent` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RsaHashedKeyAlgorithm`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `RsaHashedKeyAlgorithm`*"]
     #[wasm_bindgen(method, getter = "publicExponent")]
     pub fn get_public_exponent(this: &RsaHashedKeyAlgorithm) -> Vec<u8>;
-    #[cfg(feature = "Uint8Array")]
     #[doc = "Change the `publicExponent` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RsaHashedKeyAlgorithm`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `RsaHashedKeyAlgorithm`*"]
     #[wasm_bindgen(method, setter = "publicExponent")]
     pub fn set_public_exponent(this: &RsaHashedKeyAlgorithm, val: &::js_sys::Uint8Array);
 }
 impl RsaHashedKeyAlgorithm {
-    #[cfg(all(feature = "KeyAlgorithm", feature = "Uint8Array",))]
+    #[cfg(feature = "KeyAlgorithm")]
     #[doc = "Construct a new `RsaHashedKeyAlgorithm`."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `KeyAlgorithm`, `RsaHashedKeyAlgorithm`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `KeyAlgorithm`, `RsaHashedKeyAlgorithm`*"]
     pub fn new(
         name: &str,
         hash: &KeyAlgorithm,
@@ -90,7 +88,6 @@ impl RsaHashedKeyAlgorithm {
         self.set_modulus_length(val);
         self
     }
-    #[cfg(feature = "Uint8Array")]
     #[deprecated = "Use `set_public_exponent()` instead."]
     pub fn public_exponent(&mut self, val: &::js_sys::Uint8Array) -> &mut Self {
         self.set_public_exponent(val);

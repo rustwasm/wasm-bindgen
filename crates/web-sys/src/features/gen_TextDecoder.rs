@@ -75,13 +75,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextDecoder`*"]
     pub fn decode_with_u8_array(this: &TextDecoder, input: &[u8]) -> Result<String, JsValue>;
-    #[cfg(feature = "Uint8Array")]
     # [wasm_bindgen (catch , method , structural , js_class = "TextDecoder" , js_name = decode)]
     #[doc = "The `decode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder/decode)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `TextDecoder`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `TextDecoder`*"]
     pub fn decode_with_js_u8_array(
         this: &TextDecoder,
         input: &::js_sys::Uint8Array,
@@ -110,13 +109,13 @@ extern "C" {
         input: &[u8],
         options: &TextDecodeOptions,
     ) -> Result<String, JsValue>;
-    #[cfg(all(feature = "TextDecodeOptions", feature = "Uint8Array",))]
+    #[cfg(feature = "TextDecodeOptions")]
     # [wasm_bindgen (catch , method , structural , js_class = "TextDecoder" , js_name = decode)]
     #[doc = "The `decode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder/decode)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `TextDecodeOptions`, `TextDecoder`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `TextDecodeOptions`, `TextDecoder`*"]
     pub fn decode_with_js_u8_array_and_options(
         this: &TextDecoder,
         input: &::js_sys::Uint8Array,

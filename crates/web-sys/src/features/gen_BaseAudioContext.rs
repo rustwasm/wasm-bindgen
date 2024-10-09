@@ -241,37 +241,37 @@ extern "C" {
         real: &mut [f32],
         imag: &mut [f32],
     ) -> Result<PeriodicWave, JsValue>;
-    #[cfg(all(feature = "Float32Array", feature = "PeriodicWave",))]
+    #[cfg(feature = "PeriodicWave")]
     # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createPeriodicWave)]
     #[doc = "The `createPeriodicWave()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createPeriodicWave)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `Float32Array`, `PeriodicWave`*"]
+    #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `PeriodicWave`*"]
     pub fn create_periodic_wave_with_f32_array_and_f32_slice(
         this: &BaseAudioContext,
         real: &::js_sys::Float32Array,
         imag: &mut [f32],
     ) -> Result<PeriodicWave, JsValue>;
-    #[cfg(all(feature = "Float32Array", feature = "PeriodicWave",))]
+    #[cfg(feature = "PeriodicWave")]
     # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createPeriodicWave)]
     #[doc = "The `createPeriodicWave()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createPeriodicWave)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `Float32Array`, `PeriodicWave`*"]
+    #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `PeriodicWave`*"]
     pub fn create_periodic_wave_with_f32_slice_and_f32_array(
         this: &BaseAudioContext,
         real: &mut [f32],
         imag: &::js_sys::Float32Array,
     ) -> Result<PeriodicWave, JsValue>;
-    #[cfg(all(feature = "Float32Array", feature = "PeriodicWave",))]
+    #[cfg(feature = "PeriodicWave")]
     # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createPeriodicWave)]
     #[doc = "The `createPeriodicWave()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createPeriodicWave)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `Float32Array`, `PeriodicWave`*"]
+    #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `PeriodicWave`*"]
     pub fn create_periodic_wave_with_f32_array_and_f32_array(
         this: &BaseAudioContext,
         real: &::js_sys::Float32Array,
@@ -290,51 +290,39 @@ extern "C" {
         imag: &mut [f32],
         constraints: &PeriodicWaveConstraints,
     ) -> Result<PeriodicWave, JsValue>;
-    #[cfg(all(
-        feature = "Float32Array",
-        feature = "PeriodicWave",
-        feature = "PeriodicWaveConstraints",
-    ))]
+    #[cfg(all(feature = "PeriodicWave", feature = "PeriodicWaveConstraints",))]
     # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createPeriodicWave)]
     #[doc = "The `createPeriodicWave()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createPeriodicWave)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `Float32Array`, `PeriodicWave`, `PeriodicWaveConstraints`*"]
+    #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `PeriodicWave`, `PeriodicWaveConstraints`*"]
     pub fn create_periodic_wave_with_f32_array_and_f32_slice_and_constraints(
         this: &BaseAudioContext,
         real: &::js_sys::Float32Array,
         imag: &mut [f32],
         constraints: &PeriodicWaveConstraints,
     ) -> Result<PeriodicWave, JsValue>;
-    #[cfg(all(
-        feature = "Float32Array",
-        feature = "PeriodicWave",
-        feature = "PeriodicWaveConstraints",
-    ))]
+    #[cfg(all(feature = "PeriodicWave", feature = "PeriodicWaveConstraints",))]
     # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createPeriodicWave)]
     #[doc = "The `createPeriodicWave()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createPeriodicWave)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `Float32Array`, `PeriodicWave`, `PeriodicWaveConstraints`*"]
+    #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `PeriodicWave`, `PeriodicWaveConstraints`*"]
     pub fn create_periodic_wave_with_f32_slice_and_f32_array_and_constraints(
         this: &BaseAudioContext,
         real: &mut [f32],
         imag: &::js_sys::Float32Array,
         constraints: &PeriodicWaveConstraints,
     ) -> Result<PeriodicWave, JsValue>;
-    #[cfg(all(
-        feature = "Float32Array",
-        feature = "PeriodicWave",
-        feature = "PeriodicWaveConstraints",
-    ))]
+    #[cfg(all(feature = "PeriodicWave", feature = "PeriodicWaveConstraints",))]
     # [wasm_bindgen (catch , method , structural , js_class = "BaseAudioContext" , js_name = createPeriodicWave)]
     #[doc = "The `createPeriodicWave()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createPeriodicWave)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `Float32Array`, `PeriodicWave`, `PeriodicWaveConstraints`*"]
+    #[doc = "*This API requires the following crate features to be activated: `BaseAudioContext`, `PeriodicWave`, `PeriodicWaveConstraints`*"]
     pub fn create_periodic_wave_with_f32_array_and_f32_array_and_constraints(
         this: &BaseAudioContext,
         real: &::js_sys::Float32Array,

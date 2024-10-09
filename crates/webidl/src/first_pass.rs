@@ -202,7 +202,13 @@ impl<'a> From<&'a Argument<'a>> for Arg<'a> {
                 single.optional.is_some(),
                 false,
             ),
-            Argument::Variadic(variadic) => (&variadic.attributes, variadic.identifier.0, &variadic.type_, false, true),
+            Argument::Variadic(variadic) => (
+                &variadic.attributes,
+                variadic.identifier.0,
+                &variadic.type_,
+                false,
+                true,
+            ),
         };
 
         Self {

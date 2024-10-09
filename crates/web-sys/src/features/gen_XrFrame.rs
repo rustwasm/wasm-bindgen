@@ -55,13 +55,12 @@ extern "C" {
         radii: &mut [f32],
     ) -> bool;
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (catch , method , structural , js_class = "XRFrame" , js_name = fillJointRadii)]
     #[doc = "The `fillJointRadii()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRFrame/fillJointRadii)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `XrFrame`*"]
+    #[doc = "*This API requires the following crate features to be activated: `XrFrame`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -88,13 +87,13 @@ extern "C" {
         transforms: &mut [f32],
     ) -> bool;
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(feature = "Float32Array", feature = "XrSpace",))]
+    #[cfg(feature = "XrSpace")]
     # [wasm_bindgen (catch , method , structural , js_class = "XRFrame" , js_name = fillPoses)]
     #[doc = "The `fillPoses()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XRFrame/fillPoses)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `XrFrame`, `XrSpace`*"]
+    #[doc = "*This API requires the following crate features to be activated: `XrFrame`, `XrSpace`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]

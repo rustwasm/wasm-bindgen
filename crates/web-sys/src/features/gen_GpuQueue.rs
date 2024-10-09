@@ -170,13 +170,13 @@ extern "C" {
         data: &[u8],
     ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(feature = "GpuBuffer", feature = "Uint8Array",))]
+    #[cfg(feature = "GpuBuffer")]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -187,13 +187,13 @@ extern "C" {
         data: &::js_sys::Uint8Array,
     ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(feature = "GpuBuffer", feature = "Uint8Array",))]
+    #[cfg(feature = "GpuBuffer")]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -276,13 +276,13 @@ extern "C" {
         data_offset: u32,
     ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(feature = "GpuBuffer", feature = "Uint8Array",))]
+    #[cfg(feature = "GpuBuffer")]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -294,13 +294,13 @@ extern "C" {
         data_offset: u32,
     ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(feature = "GpuBuffer", feature = "Uint8Array",))]
+    #[cfg(feature = "GpuBuffer")]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -384,13 +384,13 @@ extern "C" {
         data_offset: f64,
     ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(feature = "GpuBuffer", feature = "Uint8Array",))]
+    #[cfg(feature = "GpuBuffer")]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -402,13 +402,13 @@ extern "C" {
         data_offset: f64,
     ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(feature = "GpuBuffer", feature = "Uint8Array",))]
+    #[cfg(feature = "GpuBuffer")]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -496,13 +496,13 @@ extern "C" {
         size: u32,
     ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(feature = "GpuBuffer", feature = "Uint8Array",))]
+    #[cfg(feature = "GpuBuffer")]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -515,13 +515,13 @@ extern "C" {
         size: u32,
     ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(feature = "GpuBuffer", feature = "Uint8Array",))]
+    #[cfg(feature = "GpuBuffer")]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -610,13 +610,13 @@ extern "C" {
         size: u32,
     ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(feature = "GpuBuffer", feature = "Uint8Array",))]
+    #[cfg(feature = "GpuBuffer")]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -629,13 +629,13 @@ extern "C" {
         size: u32,
     ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(feature = "GpuBuffer", feature = "Uint8Array",))]
+    #[cfg(feature = "GpuBuffer")]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -724,13 +724,13 @@ extern "C" {
         size: f64,
     ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(feature = "GpuBuffer", feature = "Uint8Array",))]
+    #[cfg(feature = "GpuBuffer")]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -743,13 +743,13 @@ extern "C" {
         size: f64,
     ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(feature = "GpuBuffer", feature = "Uint8Array",))]
+    #[cfg(feature = "GpuBuffer")]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -838,13 +838,13 @@ extern "C" {
         size: f64,
     ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(feature = "GpuBuffer", feature = "Uint8Array",))]
+    #[cfg(feature = "GpuBuffer")]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -857,13 +857,13 @@ extern "C" {
         size: f64,
     ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(feature = "GpuBuffer", feature = "Uint8Array",))]
+    #[cfg(feature = "GpuBuffer")]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeBuffer)]
     #[doc = "The `writeBuffer()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeBuffer)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBuffer`, `GpuQueue`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -912,17 +912,13 @@ extern "C" {
         size: &::wasm_bindgen::JsValue,
     ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(
-        feature = "GpuImageCopyTexture",
-        feature = "GpuImageDataLayout",
-        feature = "Uint8Array",
-    ))]
+    #[cfg(all(feature = "GpuImageCopyTexture", feature = "GpuImageDataLayout",))]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeTexture)]
     #[doc = "The `writeTexture()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeTexture)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyTexture`, `GpuImageDataLayout`, `GpuQueue`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyTexture`, `GpuImageDataLayout`, `GpuQueue`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -982,14 +978,13 @@ extern "C" {
         feature = "GpuExtent3dDict",
         feature = "GpuImageCopyTexture",
         feature = "GpuImageDataLayout",
-        feature = "Uint8Array",
     ))]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeTexture)]
     #[doc = "The `writeTexture()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeTexture)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuExtent3dDict`, `GpuImageCopyTexture`, `GpuImageDataLayout`, `GpuQueue`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuExtent3dDict`, `GpuImageCopyTexture`, `GpuImageDataLayout`, `GpuQueue`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]

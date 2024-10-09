@@ -59,13 +59,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -75,13 +74,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -91,13 +89,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -107,13 +104,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -123,13 +119,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -139,13 +134,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_array_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -155,13 +149,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_array_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -171,13 +164,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -187,13 +179,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -203,13 +194,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -219,13 +209,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -235,13 +224,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -251,13 +239,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -267,13 +254,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_array_and_opt_f32_array_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -283,13 +269,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_array_and_opt_f32_array_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -299,13 +284,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -315,13 +299,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -331,13 +314,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -347,13 +329,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -363,13 +344,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -379,13 +359,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -395,13 +374,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_array_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -411,13 +389,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_array_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -427,13 +404,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_array_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -443,13 +419,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_array_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -459,13 +434,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_array_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -475,13 +449,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_array_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -491,13 +464,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_array_and_opt_f32_array_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -507,13 +479,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_array_and_opt_f32_array_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -523,13 +494,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_array_and_opt_f32_array_and_opt_f32_array_and_opt_f32_array_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -539,13 +509,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_array_and_opt_f32_array_and_opt_f32_array_and_opt_f32_array_and_opt_f32_slice(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -555,13 +524,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&mut [f32]>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -571,13 +539,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -587,13 +554,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -603,13 +569,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -619,13 +584,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -635,13 +599,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -651,13 +614,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_array_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -667,13 +629,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_array_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -683,13 +644,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -699,13 +659,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -715,13 +674,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -731,13 +689,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -747,13 +704,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -763,13 +719,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -779,13 +734,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_array_and_opt_f32_array_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -795,13 +749,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_array_and_opt_f32_array_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -811,13 +764,12 @@ extern "C" {
         angular_velocity: Option<&mut [f32]>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -827,13 +779,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -843,13 +794,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -859,13 +809,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -875,13 +824,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -891,13 +839,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -907,13 +854,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_array_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -923,13 +869,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_array_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -939,13 +884,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_array_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -955,13 +899,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_array_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -971,13 +914,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_array_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -987,13 +929,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_array_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_array_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -1003,13 +944,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_array_and_opt_f32_array_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -1019,13 +959,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_slice_and_opt_f32_array_and_opt_f32_array_and_opt_f32_array_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,
@@ -1035,13 +974,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_slice_and_opt_f32_array_and_opt_f32_array_and_opt_f32_array_and_opt_f32_array_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
@@ -1051,13 +989,12 @@ extern "C" {
         angular_velocity: Option<&::js_sys::Float32Array>,
         angular_acceleration: Option<&::js_sys::Float32Array>,
     );
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (method , structural , js_class = "VRMockDisplay" , js_name = setPose)]
     #[doc = "The `setPose()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `VrMockDisplay`*"]
+    #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
     pub fn set_pose_with_opt_f32_array_and_opt_f32_array_and_opt_f32_array_and_opt_f32_array_and_opt_f32_array_and_opt_f32_array(
         this: &VrMockDisplay,
         position: Option<&::js_sys::Float32Array>,

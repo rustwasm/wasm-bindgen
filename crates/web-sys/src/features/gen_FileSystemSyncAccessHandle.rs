@@ -53,13 +53,12 @@ extern "C" {
         this: &FileSystemSyncAccessHandle,
         buffer: &mut [u8],
     ) -> Result<f64, JsValue>;
-    #[cfg(feature = "Uint8Array")]
     # [wasm_bindgen (catch , method , structural , js_class = "FileSystemSyncAccessHandle" , js_name = read)]
     #[doc = "The `read()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemSyncAccessHandle/read)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FileSystemSyncAccessHandle`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemSyncAccessHandle`*"]
     pub fn read_with_js_u8_array(
         this: &FileSystemSyncAccessHandle,
         buffer: &::js_sys::Uint8Array,
@@ -88,13 +87,13 @@ extern "C" {
         buffer: &mut [u8],
         options: &FileSystemReadWriteOptions,
     ) -> Result<f64, JsValue>;
-    #[cfg(all(feature = "FileSystemReadWriteOptions", feature = "Uint8Array",))]
+    #[cfg(feature = "FileSystemReadWriteOptions")]
     # [wasm_bindgen (catch , method , structural , js_class = "FileSystemSyncAccessHandle" , js_name = read)]
     #[doc = "The `read()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemSyncAccessHandle/read)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FileSystemReadWriteOptions`, `FileSystemSyncAccessHandle`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemReadWriteOptions`, `FileSystemSyncAccessHandle`*"]
     pub fn read_with_js_u8_array_and_options(
         this: &FileSystemSyncAccessHandle,
         buffer: &::js_sys::Uint8Array,
@@ -140,13 +139,12 @@ extern "C" {
         this: &FileSystemSyncAccessHandle,
         buffer: &[u8],
     ) -> Result<f64, JsValue>;
-    #[cfg(feature = "Uint8Array")]
     # [wasm_bindgen (catch , method , structural , js_class = "FileSystemSyncAccessHandle" , js_name = write)]
     #[doc = "The `write()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemSyncAccessHandle/write)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FileSystemSyncAccessHandle`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemSyncAccessHandle`*"]
     pub fn write_with_js_u8_array(
         this: &FileSystemSyncAccessHandle,
         buffer: &::js_sys::Uint8Array,
@@ -175,13 +173,13 @@ extern "C" {
         buffer: &[u8],
         options: &FileSystemReadWriteOptions,
     ) -> Result<f64, JsValue>;
-    #[cfg(all(feature = "FileSystemReadWriteOptions", feature = "Uint8Array",))]
+    #[cfg(feature = "FileSystemReadWriteOptions")]
     # [wasm_bindgen (catch , method , structural , js_class = "FileSystemSyncAccessHandle" , js_name = write)]
     #[doc = "The `write()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemSyncAccessHandle/write)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FileSystemReadWriteOptions`, `FileSystemSyncAccessHandle`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemReadWriteOptions`, `FileSystemSyncAccessHandle`*"]
     pub fn write_with_js_u8_array_and_options(
         this: &FileSystemSyncAccessHandle,
         buffer: &::js_sys::Uint8Array,

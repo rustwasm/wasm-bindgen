@@ -54,13 +54,12 @@ extern "C" {
         this: &MediaKeyStatusMap,
         key_id: &mut [u8],
     ) -> Result<::wasm_bindgen::JsValue, JsValue>;
-    #[cfg(feature = "Uint8Array")]
     # [wasm_bindgen (catch , method , structural , js_class = "MediaKeyStatusMap" , js_name = get)]
     #[doc = "The `get()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeyStatusMap/get)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaKeyStatusMap`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeyStatusMap`*"]
     pub fn get_with_js_u8_array(
         this: &MediaKeyStatusMap,
         key_id: &::js_sys::Uint8Array,
@@ -79,13 +78,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeyStatusMap`*"]
     pub fn has_with_u8_array(this: &MediaKeyStatusMap, key_id: &mut [u8]) -> bool;
-    #[cfg(feature = "Uint8Array")]
     # [wasm_bindgen (method , structural , js_class = "MediaKeyStatusMap" , js_name = has)]
     #[doc = "The `has()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeyStatusMap/has)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `MediaKeyStatusMap`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeyStatusMap`*"]
     pub fn has_with_js_u8_array(this: &MediaKeyStatusMap, key_id: &::js_sys::Uint8Array) -> bool;
     # [wasm_bindgen (method , structural , js_class = "MediaKeyStatusMap" , js_name = keys)]
     #[doc = "The `keys()` method."]

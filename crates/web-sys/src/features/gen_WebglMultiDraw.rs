@@ -29,13 +29,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawArraysInstancedWEBGL)]
     #[doc = "The `multiDrawArraysInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawArraysInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_arrays_instanced_webgl_with_i32_array_and_i32_slice_and_i32_slice(
         this: &WebglMultiDraw,
         mode: u32,
@@ -64,13 +63,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawArraysInstancedWEBGL)]
     #[doc = "The `multiDrawArraysInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawArraysInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_arrays_instanced_webgl_with_i32_slice_and_i32_array_and_i32_slice(
         this: &WebglMultiDraw,
         mode: u32,
@@ -82,13 +80,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawArraysInstancedWEBGL)]
     #[doc = "The `multiDrawArraysInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawArraysInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_arrays_instanced_webgl_with_i32_array_and_i32_array_and_i32_slice(
         this: &WebglMultiDraw,
         mode: u32,
@@ -100,13 +97,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawArraysInstancedWEBGL)]
     #[doc = "The `multiDrawArraysInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawArraysInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_arrays_instanced_webgl_with_i32_sequence_and_i32_array_and_i32_slice(
         this: &WebglMultiDraw,
         mode: u32,
@@ -135,13 +131,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawArraysInstancedWEBGL)]
     #[doc = "The `multiDrawArraysInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawArraysInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_arrays_instanced_webgl_with_i32_array_and_i32_sequence_and_i32_slice(
         this: &WebglMultiDraw,
         mode: u32,
@@ -170,13 +165,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawArraysInstancedWEBGL)]
     #[doc = "The `multiDrawArraysInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawArraysInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_arrays_instanced_webgl_with_i32_slice_and_i32_slice_and_i32_array(
         this: &WebglMultiDraw,
         mode: u32,
@@ -188,13 +182,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawArraysInstancedWEBGL)]
     #[doc = "The `multiDrawArraysInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawArraysInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_arrays_instanced_webgl_with_i32_array_and_i32_slice_and_i32_array(
         this: &WebglMultiDraw,
         mode: u32,
@@ -206,13 +199,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawArraysInstancedWEBGL)]
     #[doc = "The `multiDrawArraysInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawArraysInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_arrays_instanced_webgl_with_i32_sequence_and_i32_slice_and_i32_array(
         this: &WebglMultiDraw,
         mode: u32,
@@ -224,13 +216,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawArraysInstancedWEBGL)]
     #[doc = "The `multiDrawArraysInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawArraysInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_arrays_instanced_webgl_with_i32_slice_and_i32_array_and_i32_array(
         this: &WebglMultiDraw,
         mode: u32,
@@ -242,13 +233,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawArraysInstancedWEBGL)]
     #[doc = "The `multiDrawArraysInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawArraysInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_arrays_instanced_webgl_with_js_i32_array_and_js_i32_array_and_js_i32_array(
         this: &WebglMultiDraw,
         mode: u32,
@@ -260,13 +250,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawArraysInstancedWEBGL)]
     #[doc = "The `multiDrawArraysInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawArraysInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_arrays_instanced_webgl_with_i32_sequence_and_js_i32_array_and_js_i32_array(
         this: &WebglMultiDraw,
         mode: u32,
@@ -278,13 +267,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawArraysInstancedWEBGL)]
     #[doc = "The `multiDrawArraysInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawArraysInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_arrays_instanced_webgl_with_i32_slice_and_i32_sequence_and_i32_array(
         this: &WebglMultiDraw,
         mode: u32,
@@ -296,13 +284,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawArraysInstancedWEBGL)]
     #[doc = "The `multiDrawArraysInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawArraysInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_arrays_instanced_webgl_with_js_i32_array_and_i32_sequence_and_js_i32_array(
         this: &WebglMultiDraw,
         mode: u32,
@@ -314,13 +301,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawArraysInstancedWEBGL)]
     #[doc = "The `multiDrawArraysInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawArraysInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_arrays_instanced_webgl_with_i32_sequence_and_i32_sequence_and_js_i32_array(
         this: &WebglMultiDraw,
         mode: u32,
@@ -349,13 +335,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawArraysInstancedWEBGL)]
     #[doc = "The `multiDrawArraysInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawArraysInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_arrays_instanced_webgl_with_i32_array_and_i32_slice_and_i32_sequence(
         this: &WebglMultiDraw,
         mode: u32,
@@ -384,13 +369,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawArraysInstancedWEBGL)]
     #[doc = "The `multiDrawArraysInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawArraysInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_arrays_instanced_webgl_with_i32_slice_and_i32_array_and_i32_sequence(
         this: &WebglMultiDraw,
         mode: u32,
@@ -402,13 +386,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawArraysInstancedWEBGL)]
     #[doc = "The `multiDrawArraysInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawArraysInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_arrays_instanced_webgl_with_js_i32_array_and_js_i32_array_and_i32_sequence(
         this: &WebglMultiDraw,
         mode: u32,
@@ -420,13 +403,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawArraysInstancedWEBGL)]
     #[doc = "The `multiDrawArraysInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawArraysInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_arrays_instanced_webgl_with_i32_sequence_and_js_i32_array_and_i32_sequence(
         this: &WebglMultiDraw,
         mode: u32,
@@ -455,13 +437,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawArraysInstancedWEBGL)]
     #[doc = "The `multiDrawArraysInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawArraysInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_arrays_instanced_webgl_with_js_i32_array_and_i32_sequence_and_i32_sequence(
         this: &WebglMultiDraw,
         mode: u32,
@@ -505,13 +486,12 @@ extern "C" {
         counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawArraysWEBGL)]
     #[doc = "The `multiDrawArraysWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawArraysWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_arrays_webgl_with_i32_array_and_i32_slice(
         this: &WebglMultiDraw,
         mode: u32,
@@ -536,13 +516,12 @@ extern "C" {
         counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawArraysWEBGL)]
     #[doc = "The `multiDrawArraysWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawArraysWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_arrays_webgl_with_i32_slice_and_i32_array(
         this: &WebglMultiDraw,
         mode: u32,
@@ -552,13 +531,12 @@ extern "C" {
         counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawArraysWEBGL)]
     #[doc = "The `multiDrawArraysWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawArraysWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_arrays_webgl_with_js_i32_array_and_js_i32_array(
         this: &WebglMultiDraw,
         mode: u32,
@@ -568,13 +546,12 @@ extern "C" {
         counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawArraysWEBGL)]
     #[doc = "The `multiDrawArraysWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawArraysWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_arrays_webgl_with_i32_sequence_and_js_i32_array(
         this: &WebglMultiDraw,
         mode: u32,
@@ -599,13 +576,12 @@ extern "C" {
         counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawArraysWEBGL)]
     #[doc = "The `multiDrawArraysWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawArraysWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_arrays_webgl_with_js_i32_array_and_i32_sequence(
         this: &WebglMultiDraw,
         mode: u32,
@@ -648,13 +624,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawElementsInstancedWEBGL)]
     #[doc = "The `multiDrawElementsInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawElementsInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_elements_instanced_webgl_with_i32_array_and_i32_slice_and_i32_slice(
         this: &WebglMultiDraw,
         mode: u32,
@@ -685,13 +660,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawElementsInstancedWEBGL)]
     #[doc = "The `multiDrawElementsInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawElementsInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_elements_instanced_webgl_with_i32_slice_and_i32_array_and_i32_slice(
         this: &WebglMultiDraw,
         mode: u32,
@@ -704,13 +678,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawElementsInstancedWEBGL)]
     #[doc = "The `multiDrawElementsInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawElementsInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_elements_instanced_webgl_with_i32_array_and_i32_array_and_i32_slice(
         this: &WebglMultiDraw,
         mode: u32,
@@ -723,13 +696,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawElementsInstancedWEBGL)]
     #[doc = "The `multiDrawElementsInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawElementsInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_elements_instanced_webgl_with_i32_sequence_and_i32_array_and_i32_slice(
         this: &WebglMultiDraw,
         mode: u32,
@@ -760,13 +732,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawElementsInstancedWEBGL)]
     #[doc = "The `multiDrawElementsInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawElementsInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_elements_instanced_webgl_with_i32_array_and_i32_sequence_and_i32_slice(
         this: &WebglMultiDraw,
         mode: u32,
@@ -797,13 +768,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawElementsInstancedWEBGL)]
     #[doc = "The `multiDrawElementsInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawElementsInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_elements_instanced_webgl_with_i32_slice_and_i32_slice_and_i32_array(
         this: &WebglMultiDraw,
         mode: u32,
@@ -816,13 +786,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawElementsInstancedWEBGL)]
     #[doc = "The `multiDrawElementsInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawElementsInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_elements_instanced_webgl_with_i32_array_and_i32_slice_and_i32_array(
         this: &WebglMultiDraw,
         mode: u32,
@@ -835,13 +804,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawElementsInstancedWEBGL)]
     #[doc = "The `multiDrawElementsInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawElementsInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_elements_instanced_webgl_with_i32_sequence_and_i32_slice_and_i32_array(
         this: &WebglMultiDraw,
         mode: u32,
@@ -854,13 +822,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawElementsInstancedWEBGL)]
     #[doc = "The `multiDrawElementsInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawElementsInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_elements_instanced_webgl_with_i32_slice_and_i32_array_and_i32_array(
         this: &WebglMultiDraw,
         mode: u32,
@@ -873,13 +840,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawElementsInstancedWEBGL)]
     #[doc = "The `multiDrawElementsInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawElementsInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_elements_instanced_webgl_with_js_i32_array_and_js_i32_array_and_js_i32_array(
         this: &WebglMultiDraw,
         mode: u32,
@@ -892,13 +858,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawElementsInstancedWEBGL)]
     #[doc = "The `multiDrawElementsInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawElementsInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_elements_instanced_webgl_with_i32_sequence_and_js_i32_array_and_js_i32_array(
         this: &WebglMultiDraw,
         mode: u32,
@@ -911,13 +876,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawElementsInstancedWEBGL)]
     #[doc = "The `multiDrawElementsInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawElementsInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_elements_instanced_webgl_with_i32_slice_and_i32_sequence_and_i32_array(
         this: &WebglMultiDraw,
         mode: u32,
@@ -930,13 +894,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawElementsInstancedWEBGL)]
     #[doc = "The `multiDrawElementsInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawElementsInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_elements_instanced_webgl_with_js_i32_array_and_i32_sequence_and_js_i32_array(
         this: &WebglMultiDraw,
         mode: u32,
@@ -949,13 +912,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawElementsInstancedWEBGL)]
     #[doc = "The `multiDrawElementsInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawElementsInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_elements_instanced_webgl_with_i32_sequence_and_i32_sequence_and_js_i32_array(
         this: &WebglMultiDraw,
         mode: u32,
@@ -986,13 +948,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawElementsInstancedWEBGL)]
     #[doc = "The `multiDrawElementsInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawElementsInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_elements_instanced_webgl_with_i32_array_and_i32_slice_and_i32_sequence(
         this: &WebglMultiDraw,
         mode: u32,
@@ -1023,13 +984,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawElementsInstancedWEBGL)]
     #[doc = "The `multiDrawElementsInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawElementsInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_elements_instanced_webgl_with_i32_slice_and_i32_array_and_i32_sequence(
         this: &WebglMultiDraw,
         mode: u32,
@@ -1042,13 +1002,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawElementsInstancedWEBGL)]
     #[doc = "The `multiDrawElementsInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawElementsInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_elements_instanced_webgl_with_js_i32_array_and_js_i32_array_and_i32_sequence(
         this: &WebglMultiDraw,
         mode: u32,
@@ -1061,13 +1020,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawElementsInstancedWEBGL)]
     #[doc = "The `multiDrawElementsInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawElementsInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_elements_instanced_webgl_with_i32_sequence_and_js_i32_array_and_i32_sequence(
         this: &WebglMultiDraw,
         mode: u32,
@@ -1098,13 +1056,12 @@ extern "C" {
         instance_counts_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawElementsInstancedWEBGL)]
     #[doc = "The `multiDrawElementsInstancedWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawElementsInstancedWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_elements_instanced_webgl_with_js_i32_array_and_i32_sequence_and_i32_sequence(
         this: &WebglMultiDraw,
         mode: u32,
@@ -1151,13 +1108,12 @@ extern "C" {
         offsets_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawElementsWEBGL)]
     #[doc = "The `multiDrawElementsWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawElementsWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_elements_webgl_with_i32_array_and_i32_slice(
         this: &WebglMultiDraw,
         mode: u32,
@@ -1184,13 +1140,12 @@ extern "C" {
         offsets_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawElementsWEBGL)]
     #[doc = "The `multiDrawElementsWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawElementsWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_elements_webgl_with_i32_slice_and_i32_array(
         this: &WebglMultiDraw,
         mode: u32,
@@ -1201,13 +1156,12 @@ extern "C" {
         offsets_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawElementsWEBGL)]
     #[doc = "The `multiDrawElementsWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawElementsWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_elements_webgl_with_js_i32_array_and_js_i32_array(
         this: &WebglMultiDraw,
         mode: u32,
@@ -1218,13 +1172,12 @@ extern "C" {
         offsets_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawElementsWEBGL)]
     #[doc = "The `multiDrawElementsWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawElementsWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_elements_webgl_with_i32_sequence_and_js_i32_array(
         this: &WebglMultiDraw,
         mode: u32,
@@ -1251,13 +1204,12 @@ extern "C" {
         offsets_offset: u32,
         drawcount: i32,
     );
-    #[cfg(feature = "Int32Array")]
     # [wasm_bindgen (method , structural , js_class = "WEBGL_multi_draw" , js_name = multiDrawElementsWEBGL)]
     #[doc = "The `multiDrawElementsWEBGL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_multi_draw/multiDrawElementsWEBGL)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebglMultiDraw`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WebglMultiDraw`*"]
     pub fn multi_draw_elements_webgl_with_js_i32_array_and_i32_sequence(
         this: &WebglMultiDraw,
         mode: u32,

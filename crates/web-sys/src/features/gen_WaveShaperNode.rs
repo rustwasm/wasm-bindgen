@@ -19,13 +19,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WaveShaperNode`*"]
     pub fn curve(this: &WaveShaperNode) -> Option<Vec<f32>>;
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (structural , method , setter , js_class = "WaveShaperNode" , js_name = curve)]
     #[doc = "Setter for the `curve` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode/curve)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WaveShaperNode`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WaveShaperNode`*"]
     #[deprecated]
     pub fn set_curve(this: &WaveShaperNode, value: Option<&::js_sys::Float32Array>);
     # [wasm_bindgen (structural , catch , method , setter , js_class = "WaveShaperNode" , js_name = curveOptF32Slice)]
@@ -38,13 +37,12 @@ extern "C" {
         this: &WaveShaperNode,
         value: Option<&mut [f32]>,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (structural , catch , method , setter , js_class = "WaveShaperNode" , js_name = curveOptF32Array)]
     #[doc = "Setter for the `curveOptF32Array` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode/curveOptF32Array)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WaveShaperNode`*"]
+    #[doc = "*This API requires the following crate features to be activated: `WaveShaperNode`*"]
     pub fn set_curve_opt_f32_array(
         this: &WaveShaperNode,
         value: Option<&::js_sys::Float32Array>,

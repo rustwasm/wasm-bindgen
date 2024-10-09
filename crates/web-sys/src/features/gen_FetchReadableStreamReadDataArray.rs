@@ -10,16 +10,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FetchReadableStreamReadDataArray`*"]
     pub type FetchReadableStreamReadDataArray;
-    #[cfg(feature = "Uint8Array")]
     #[doc = "Get the `value` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FetchReadableStreamReadDataArray`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `FetchReadableStreamReadDataArray`*"]
     #[wasm_bindgen(method, getter = "value")]
     pub fn get_value(this: &FetchReadableStreamReadDataArray) -> Option<Vec<u8>>;
-    #[cfg(feature = "Uint8Array")]
     #[doc = "Change the `value` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `FetchReadableStreamReadDataArray`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `FetchReadableStreamReadDataArray`*"]
     #[wasm_bindgen(method, setter = "value")]
     pub fn set_value(this: &FetchReadableStreamReadDataArray, val: &::js_sys::Uint8Array);
 }
@@ -32,7 +30,6 @@ impl FetchReadableStreamReadDataArray {
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
         ret
     }
-    #[cfg(feature = "Uint8Array")]
     #[deprecated = "Use `set_value()` instead."]
     pub fn value(&mut self, val: &::js_sys::Uint8Array) -> &mut Self {
         self.set_value(val);

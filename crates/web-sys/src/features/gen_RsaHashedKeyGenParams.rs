@@ -40,24 +40,21 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `RsaHashedKeyGenParams`*"]
     #[wasm_bindgen(method, setter = "modulusLength")]
     pub fn set_modulus_length(this: &RsaHashedKeyGenParams, val: u32);
-    #[cfg(feature = "Uint8Array")]
     #[doc = "Get the `publicExponent` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RsaHashedKeyGenParams`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `RsaHashedKeyGenParams`*"]
     #[wasm_bindgen(method, getter = "publicExponent")]
     pub fn get_public_exponent(this: &RsaHashedKeyGenParams) -> Vec<u8>;
-    #[cfg(feature = "Uint8Array")]
     #[doc = "Change the `publicExponent` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RsaHashedKeyGenParams`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `RsaHashedKeyGenParams`*"]
     #[wasm_bindgen(method, setter = "publicExponent")]
     pub fn set_public_exponent(this: &RsaHashedKeyGenParams, val: &::js_sys::Uint8Array);
 }
 impl RsaHashedKeyGenParams {
-    #[cfg(feature = "Uint8Array")]
     #[doc = "Construct a new `RsaHashedKeyGenParams`."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RsaHashedKeyGenParams`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `RsaHashedKeyGenParams`*"]
     pub fn new(
         name: &str,
         hash: &::wasm_bindgen::JsValue,
@@ -87,7 +84,6 @@ impl RsaHashedKeyGenParams {
         self.set_modulus_length(val);
         self
     }
-    #[cfg(feature = "Uint8Array")]
     #[deprecated = "Use `set_public_exponent()` instead."]
     pub fn public_exponent(&mut self, val: &::js_sys::Uint8Array) -> &mut Self {
         self.set_public_exponent(val);

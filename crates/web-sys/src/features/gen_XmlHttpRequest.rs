@@ -265,13 +265,12 @@ extern "C" {
         this: &XmlHttpRequest,
         body: Option<&[u8]>,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Uint8Array")]
     # [wasm_bindgen (catch , method , structural , js_class = "XMLHttpRequest" , js_name = send)]
     #[doc = "The `send()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/send)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `XmlHttpRequest`*"]
+    #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequest`*"]
     pub fn send_with_opt_js_u8_array(
         this: &XmlHttpRequest,
         body: Option<&::js_sys::Uint8Array>,

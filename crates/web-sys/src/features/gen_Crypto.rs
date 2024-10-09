@@ -40,13 +40,12 @@ extern "C" {
         this: &Crypto,
         array: &mut [u8],
     ) -> Result<::js_sys::Object, JsValue>;
-    #[cfg(feature = "Uint8Array")]
     # [wasm_bindgen (catch , method , structural , js_class = "Crypto" , js_name = getRandomValues)]
     #[doc = "The `getRandomValues()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Crypto`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `Crypto`*"]
     pub fn get_random_values_with_js_u8_array(
         this: &Crypto,
         array: &::js_sys::Uint8Array,

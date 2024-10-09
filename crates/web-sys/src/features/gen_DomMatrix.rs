@@ -348,13 +348,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomMatrix`*"]
     pub fn new_with_array32(array32: &mut [f32]) -> Result<DomMatrix, JsValue>;
-    #[cfg(feature = "Float32Array")]
     #[wasm_bindgen(catch, constructor, js_class = "DOMMatrix")]
     #[doc = "The `new DomMatrix(..)` constructor, creating a new instance of `DomMatrix`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix/DOMMatrix)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DomMatrix`, `Float32Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `DomMatrix`*"]
     pub fn new_with_f32_array(array32: &::js_sys::Float32Array) -> Result<DomMatrix, JsValue>;
     #[wasm_bindgen(catch, constructor, js_class = "DOMMatrix")]
     #[doc = "The `new DomMatrix(..)` constructor, creating a new instance of `DomMatrix`."]
@@ -363,13 +362,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomMatrix`*"]
     pub fn new_with_array64(array64: &mut [f64]) -> Result<DomMatrix, JsValue>;
-    #[cfg(feature = "Float64Array")]
     #[wasm_bindgen(catch, constructor, js_class = "DOMMatrix")]
     #[doc = "The `new DomMatrix(..)` constructor, creating a new instance of `DomMatrix`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix/DOMMatrix)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `DomMatrix`, `Float64Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `DomMatrix`*"]
     pub fn new_with_f64_array(array64: &::js_sys::Float64Array) -> Result<DomMatrix, JsValue>;
     #[wasm_bindgen(catch, constructor, js_class = "DOMMatrix")]
     #[doc = "The `new DomMatrix(..)` constructor, creating a new instance of `DomMatrix`."]

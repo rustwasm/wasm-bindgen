@@ -59,13 +59,12 @@ extern "C" {
         destination: &mut [f32],
         channel_number: i32,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (catch , method , structural , js_class = "AudioBuffer" , js_name = copyFromChannel)]
     #[doc = "The `copyFromChannel()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer/copyFromChannel)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`, `Float32Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`*"]
     pub fn copy_from_channel_with_f32_array(
         this: &AudioBuffer,
         destination: &::js_sys::Float32Array,
@@ -83,13 +82,12 @@ extern "C" {
         channel_number: i32,
         start_in_channel: u32,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (catch , method , structural , js_class = "AudioBuffer" , js_name = copyFromChannel)]
     #[doc = "The `copyFromChannel()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer/copyFromChannel)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`, `Float32Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`*"]
     pub fn copy_from_channel_with_f32_array_and_start_in_channel(
         this: &AudioBuffer,
         destination: &::js_sys::Float32Array,
@@ -107,13 +105,12 @@ extern "C" {
         source: &[f32],
         channel_number: i32,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (catch , method , structural , js_class = "AudioBuffer" , js_name = copyToChannel)]
     #[doc = "The `copyToChannel()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer/copyToChannel)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`, `Float32Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`*"]
     pub fn copy_to_channel_with_f32_array(
         this: &AudioBuffer,
         source: &::js_sys::Float32Array,
@@ -131,13 +128,12 @@ extern "C" {
         channel_number: i32,
         start_in_channel: u32,
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Float32Array")]
     # [wasm_bindgen (catch , method , structural , js_class = "AudioBuffer" , js_name = copyToChannel)]
     #[doc = "The `copyToChannel()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer/copyToChannel)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`, `Float32Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`*"]
     pub fn copy_to_channel_with_f32_array_and_start_in_channel(
         this: &AudioBuffer,
         source: &::js_sys::Float32Array,

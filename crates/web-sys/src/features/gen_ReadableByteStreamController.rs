@@ -54,13 +54,12 @@ extern "C" {
         this: &ReadableByteStreamController,
         chunk: &mut [u8],
     ) -> Result<(), JsValue>;
-    #[cfg(feature = "Uint8Array")]
     # [wasm_bindgen (catch , method , structural , js_class = "ReadableByteStreamController" , js_name = enqueue)]
     #[doc = "The `enqueue()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableByteStreamController/enqueue)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `ReadableByteStreamController`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `ReadableByteStreamController`*"]
     pub fn enqueue_with_js_u8_array(
         this: &ReadableByteStreamController,
         chunk: &::js_sys::Uint8Array,

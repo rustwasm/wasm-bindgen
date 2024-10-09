@@ -165,13 +165,13 @@ extern "C" {
         options: &AudioDataCopyToOptions,
     ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(feature = "AudioDataCopyToOptions", feature = "Uint8Array",))]
+    #[cfg(feature = "AudioDataCopyToOptions")]
     # [wasm_bindgen (catch , method , structural , js_class = "AudioData" , js_name = copyTo)]
     #[doc = "The `copyTo()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioData/copyTo)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `AudioData`, `AudioDataCopyToOptions`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `AudioData`, `AudioDataCopyToOptions`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]

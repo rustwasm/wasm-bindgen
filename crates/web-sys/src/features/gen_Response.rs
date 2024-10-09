@@ -108,13 +108,12 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Response`*"]
     pub fn new_with_opt_u8_array(body: Option<&mut [u8]>) -> Result<Response, JsValue>;
-    #[cfg(feature = "Uint8Array")]
     #[wasm_bindgen(catch, constructor, js_class = "Response")]
     #[doc = "The `new Response(..)` constructor, creating a new instance of `Response`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Response/Response)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Response`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `Response`*"]
     pub fn new_with_opt_js_u8_array(
         body: Option<&::js_sys::Uint8Array>,
     ) -> Result<Response, JsValue>;
@@ -185,13 +184,13 @@ extern "C" {
         body: Option<&mut [u8]>,
         init: &ResponseInit,
     ) -> Result<Response, JsValue>;
-    #[cfg(all(feature = "ResponseInit", feature = "Uint8Array",))]
+    #[cfg(feature = "ResponseInit")]
     #[wasm_bindgen(catch, constructor, js_class = "Response")]
     #[doc = "The `new Response(..)` constructor, creating a new instance of `Response`."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Response/Response)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `Response`, `ResponseInit`, `Uint8Array`*"]
+    #[doc = "*This API requires the following crate features to be activated: `Response`, `ResponseInit`*"]
     pub fn new_with_opt_js_u8_array_and_init(
         body: Option<&::js_sys::Uint8Array>,
         init: &ResponseInit,
