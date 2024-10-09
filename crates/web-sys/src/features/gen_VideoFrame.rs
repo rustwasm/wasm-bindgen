@@ -344,8 +344,23 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn new_with_u8_array_and_video_frame_buffer_init(
+    pub fn new_with_u8_slice_and_video_frame_buffer_init(
         data: &mut [u8],
+        init: &VideoFrameBufferInit,
+    ) -> Result<VideoFrame, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(all(feature = "Uint8Array", feature = "VideoFrameBufferInit",))]
+    #[wasm_bindgen(catch, constructor, js_class = "VideoFrame")]
+    #[doc = "The `new VideoFrame(..)` constructor, creating a new instance of `VideoFrame`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoFrame/VideoFrame)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `VideoFrame`, `VideoFrameBufferInit`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn new_with_u8_array_and_video_frame_buffer_init(
+        data: &::js_sys::Uint8Array,
         init: &VideoFrameBufferInit,
     ) -> Result<VideoFrame, JsValue>;
     #[cfg(web_sys_unstable_apis)]
@@ -420,7 +435,22 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn copy_to_with_u8_array(this: &VideoFrame, destination: &mut [u8]) -> ::js_sys::Promise;
+    pub fn copy_to_with_u8_slice(this: &VideoFrame, destination: &mut [u8]) -> ::js_sys::Promise;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "VideoFrame" , js_name = copyTo)]
+    #[doc = "The `copyTo()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoFrame/copyTo)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `VideoFrame`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn copy_to_with_u8_array(
+        this: &VideoFrame,
+        destination: &::js_sys::Uint8Array,
+    ) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "VideoFrameCopyToOptions")]
     # [wasm_bindgen (method , structural , js_class = "VideoFrame" , js_name = copyTo)]
@@ -448,9 +478,25 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn copy_to_with_u8_array_and_options(
+    pub fn copy_to_with_u8_slice_and_options(
         this: &VideoFrame,
         destination: &mut [u8],
+        options: &VideoFrameCopyToOptions,
+    ) -> ::js_sys::Promise;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(all(feature = "Uint8Array", feature = "VideoFrameCopyToOptions",))]
+    # [wasm_bindgen (method , structural , js_class = "VideoFrame" , js_name = copyTo)]
+    #[doc = "The `copyTo()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoFrame/copyTo)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `VideoFrame`, `VideoFrameCopyToOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn copy_to_with_u8_array_and_options(
+        this: &VideoFrame,
+        destination: &::js_sys::Uint8Array,
         options: &VideoFrameCopyToOptions,
     ) -> ::js_sys::Promise;
 }

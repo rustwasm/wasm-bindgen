@@ -291,7 +291,7 @@ extern "C" {
     ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "UsbControlTransferParameters")]
-    # [wasm_bindgen (catch , method , structural , js_class = "USBDevice" , js_name = controlTransferOut)]
+    # [wasm_bindgen (method , structural , js_class = "USBDevice" , js_name = controlTransferOut)]
     #[doc = "The `controlTransferOut()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBDevice/controlTransferOut)"]
@@ -300,10 +300,26 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn control_transfer_out_with_u8_array(
+    pub fn control_transfer_out_with_u8_slice(
         this: &UsbDevice,
         setup: &UsbControlTransferParameters,
         data: &mut [u8],
+    ) -> ::js_sys::Promise;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(all(feature = "Uint8Array", feature = "UsbControlTransferParameters",))]
+    # [wasm_bindgen (catch , method , structural , js_class = "USBDevice" , js_name = controlTransferOut)]
+    #[doc = "The `controlTransferOut()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBDevice/controlTransferOut)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `UsbControlTransferParameters`, `UsbDevice`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn control_transfer_out_with_u8_array(
+        this: &UsbDevice,
+        setup: &UsbControlTransferParameters,
+        data: &::js_sys::Uint8Array,
     ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (method , structural , js_class = "USBDevice" , js_name = forget)]
@@ -348,7 +364,7 @@ extern "C" {
         packet_lengths: &::wasm_bindgen::JsValue,
     ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (catch , method , structural , js_class = "USBDevice" , js_name = isochronousTransferOut)]
+    # [wasm_bindgen (method , structural , js_class = "USBDevice" , js_name = isochronousTransferOut)]
     #[doc = "The `isochronousTransferOut()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBDevice/isochronousTransferOut)"]
@@ -357,10 +373,27 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn isochronous_transfer_out_with_u8_array(
+    pub fn isochronous_transfer_out_with_u8_slice(
         this: &UsbDevice,
         endpoint_number: u8,
         data: &mut [u8],
+        packet_lengths: &::wasm_bindgen::JsValue,
+    ) -> ::js_sys::Promise;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (catch , method , structural , js_class = "USBDevice" , js_name = isochronousTransferOut)]
+    #[doc = "The `isochronousTransferOut()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBDevice/isochronousTransferOut)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `UsbDevice`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn isochronous_transfer_out_with_u8_array(
+        this: &UsbDevice,
+        endpoint_number: u8,
+        data: &::js_sys::Uint8Array,
         packet_lengths: &::wasm_bindgen::JsValue,
     ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
@@ -449,7 +482,7 @@ extern "C" {
         data: &::js_sys::Object,
     ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (catch , method , structural , js_class = "USBDevice" , js_name = transferOut)]
+    # [wasm_bindgen (method , structural , js_class = "USBDevice" , js_name = transferOut)]
     #[doc = "The `transferOut()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBDevice/transferOut)"]
@@ -458,9 +491,25 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn transfer_out_with_u8_array(
+    pub fn transfer_out_with_u8_slice(
         this: &UsbDevice,
         endpoint_number: u8,
         data: &mut [u8],
+    ) -> ::js_sys::Promise;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (catch , method , structural , js_class = "USBDevice" , js_name = transferOut)]
+    #[doc = "The `transferOut()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBDevice/transferOut)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `UsbDevice`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn transfer_out_with_u8_array(
+        this: &UsbDevice,
+        endpoint_number: u8,
+        data: &::js_sys::Uint8Array,
     ) -> Result<::js_sys::Promise, JsValue>;
 }

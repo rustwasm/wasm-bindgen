@@ -457,6 +457,18 @@ extern "C" {
         url: &str,
         data: Option<&mut [u8]>,
     ) -> Result<bool, JsValue>;
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (catch , method , structural , js_class = "Navigator" , js_name = sendBeacon)]
+    #[doc = "The `sendBeacon()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/sendBeacon)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Navigator`, `Uint8Array`*"]
+    pub fn send_beacon_with_opt_js_u8_array(
+        this: &Navigator,
+        url: &str,
+        data: Option<&::js_sys::Uint8Array>,
+    ) -> Result<bool, JsValue>;
     #[cfg(feature = "FormData")]
     # [wasm_bindgen (catch , method , structural , js_class = "Navigator" , js_name = sendBeacon)]
     #[doc = "The `sendBeacon()` method."]

@@ -206,7 +206,7 @@ extern "C" {
         value: &::js_sys::Object,
     ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (catch , method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValue)]
+    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValue)]
     #[doc = "The `writeValue()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/writeValue)"]
@@ -215,9 +215,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn write_value_with_u8_array(
+    pub fn write_value_with_u8_slice(
         this: &BluetoothRemoteGattCharacteristic,
         value: &mut [u8],
+    ) -> ::js_sys::Promise;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (catch , method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValue)]
+    #[doc = "The `writeValue()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/writeValue)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothRemoteGattCharacteristic`, `Uint8Array`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn write_value_with_u8_array(
+        this: &BluetoothRemoteGattCharacteristic,
+        value: &::js_sys::Uint8Array,
     ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (catch , method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValueWithResponse)]
@@ -234,7 +249,7 @@ extern "C" {
         value: &::js_sys::Object,
     ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (catch , method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValueWithResponse)]
+    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValueWithResponse)]
     #[doc = "The `writeValueWithResponse()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/writeValueWithResponse)"]
@@ -243,9 +258,24 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn write_value_with_response_with_u8_array(
+    pub fn write_value_with_response_with_u8_slice(
         this: &BluetoothRemoteGattCharacteristic,
         value: &mut [u8],
+    ) -> ::js_sys::Promise;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (catch , method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValueWithResponse)]
+    #[doc = "The `writeValueWithResponse()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/writeValueWithResponse)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothRemoteGattCharacteristic`, `Uint8Array`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn write_value_with_response_with_u8_array(
+        this: &BluetoothRemoteGattCharacteristic,
+        value: &::js_sys::Uint8Array,
     ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (catch , method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValueWithoutResponse)]
@@ -262,7 +292,7 @@ extern "C" {
         value: &::js_sys::Object,
     ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (catch , method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValueWithoutResponse)]
+    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValueWithoutResponse)]
     #[doc = "The `writeValueWithoutResponse()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/writeValueWithoutResponse)"]
@@ -271,8 +301,23 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn write_value_without_response_with_u8_array(
+    pub fn write_value_without_response_with_u8_slice(
         this: &BluetoothRemoteGattCharacteristic,
         value: &mut [u8],
+    ) -> ::js_sys::Promise;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (catch , method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValueWithoutResponse)]
+    #[doc = "The `writeValueWithoutResponse()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/writeValueWithoutResponse)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BluetoothRemoteGattCharacteristic`, `Uint8Array`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn write_value_without_response_with_u8_array(
+        this: &BluetoothRemoteGattCharacteristic,
+        value: &::js_sys::Uint8Array,
     ) -> Result<::js_sys::Promise, JsValue>;
 }

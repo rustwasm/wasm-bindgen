@@ -159,6 +159,18 @@ extern "C" {
         this: &IdbFileHandle,
         value: &mut [u8],
     ) -> Result<Option<IdbFileRequest>, JsValue>;
+    #[cfg(all(feature = "IdbFileRequest", feature = "Uint8Array",))]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBFileHandle" , js_name = append)]
+    #[doc = "The `append()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBFileHandle/append)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbFileHandle`, `IdbFileRequest`, `Uint8Array`*"]
+    #[deprecated]
+    pub fn append_with_js_u8_array(
+        this: &IdbFileHandle,
+        value: &::js_sys::Uint8Array,
+    ) -> Result<Option<IdbFileRequest>, JsValue>;
     #[cfg(all(feature = "Blob", feature = "IdbFileRequest",))]
     # [wasm_bindgen (catch , method , structural , js_class = "IDBFileHandle" , js_name = append)]
     #[doc = "The `append()` method."]
@@ -355,6 +367,18 @@ extern "C" {
     pub fn write_with_u8_array(
         this: &IdbFileHandle,
         value: &[u8],
+    ) -> Result<Option<IdbFileRequest>, JsValue>;
+    #[cfg(all(feature = "IdbFileRequest", feature = "Uint8Array",))]
+    # [wasm_bindgen (catch , method , structural , js_class = "IDBFileHandle" , js_name = write)]
+    #[doc = "The `write()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBFileHandle/write)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbFileHandle`, `IdbFileRequest`, `Uint8Array`*"]
+    #[deprecated]
+    pub fn write_with_js_u8_array(
+        this: &IdbFileHandle,
+        value: &::js_sys::Uint8Array,
     ) -> Result<Option<IdbFileRequest>, JsValue>;
     #[cfg(all(feature = "Blob", feature = "IdbFileRequest",))]
     # [wasm_bindgen (catch , method , structural , js_class = "IDBFileHandle" , js_name = write)]

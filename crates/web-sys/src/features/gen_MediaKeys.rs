@@ -76,4 +76,15 @@ extern "C" {
         this: &MediaKeys,
         server_certificate: &mut [u8],
     ) -> ::js_sys::Promise;
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "MediaKeys" , js_name = setServerCertificate)]
+    #[doc = "The `setServerCertificate()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeys/setServerCertificate)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaKeys`, `Uint8Array`*"]
+    pub fn set_server_certificate_with_js_u8_array(
+        this: &MediaKeys,
+        server_certificate: &::js_sys::Uint8Array,
+    ) -> ::js_sys::Promise;
 }

@@ -196,11 +196,30 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn set_bind_group_with_u32_array_and_u32_and_dynamic_offsets_data_length(
+    pub fn set_bind_group_with_u32_slice_and_u32_and_dynamic_offsets_data_length(
         this: &GpuRenderPassEncoder,
         index: u32,
         bind_group: Option<&GpuBindGroup>,
         dynamic_offsets_data: &[u32],
+        dynamic_offsets_data_start: u32,
+        dynamic_offsets_data_length: u32,
+    ) -> Result<(), JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(all(feature = "GpuBindGroup", feature = "Uint32Array",))]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPURenderPassEncoder" , js_name = setBindGroup)]
+    #[doc = "The `setBindGroup()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPURenderPassEncoder/setBindGroup)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroup`, `GpuRenderPassEncoder`, `Uint32Array`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn set_bind_group_with_u32_array_and_u32_and_dynamic_offsets_data_length(
+        this: &GpuRenderPassEncoder,
+        index: u32,
+        bind_group: Option<&GpuBindGroup>,
+        dynamic_offsets_data: &::js_sys::Uint32Array,
         dynamic_offsets_data_start: u32,
         dynamic_offsets_data_length: u32,
     ) -> Result<(), JsValue>;
@@ -215,11 +234,30 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn set_bind_group_with_u32_array_and_f64_and_dynamic_offsets_data_length(
+    pub fn set_bind_group_with_u32_slice_and_f64_and_dynamic_offsets_data_length(
         this: &GpuRenderPassEncoder,
         index: u32,
         bind_group: Option<&GpuBindGroup>,
         dynamic_offsets_data: &[u32],
+        dynamic_offsets_data_start: f64,
+        dynamic_offsets_data_length: u32,
+    ) -> Result<(), JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(all(feature = "GpuBindGroup", feature = "Uint32Array",))]
+    # [wasm_bindgen (catch , method , structural , js_class = "GPURenderPassEncoder" , js_name = setBindGroup)]
+    #[doc = "The `setBindGroup()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPURenderPassEncoder/setBindGroup)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuBindGroup`, `GpuRenderPassEncoder`, `Uint32Array`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn set_bind_group_with_u32_array_and_f64_and_dynamic_offsets_data_length(
+        this: &GpuRenderPassEncoder,
+        index: u32,
+        bind_group: Option<&GpuBindGroup>,
+        dynamic_offsets_data: &::js_sys::Uint32Array,
         dynamic_offsets_data_start: f64,
         dynamic_offsets_data_length: u32,
     ) -> Result<(), JsValue>;

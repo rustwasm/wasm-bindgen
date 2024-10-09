@@ -72,6 +72,17 @@ extern "C" {
         this: &FileSystemWritableFileStream,
         data: &[u8],
     ) -> Result<::js_sys::Promise, JsValue>;
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (catch , method , structural , js_class = "FileSystemWritableFileStream" , js_name = write)]
+    #[doc = "The `write()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemWritableFileStream/write)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `FileSystemWritableFileStream`, `Uint8Array`*"]
+    pub fn write_with_js_u8_array(
+        this: &FileSystemWritableFileStream,
+        data: &::js_sys::Uint8Array,
+    ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(feature = "Blob")]
     # [wasm_bindgen (catch , method , structural , js_class = "FileSystemWritableFileStream" , js_name = write)]
     #[doc = "The `write()` method."]

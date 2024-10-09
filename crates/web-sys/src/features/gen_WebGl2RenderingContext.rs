@@ -218,6 +218,19 @@ extern "C" {
         src_data: &[u8],
         usage: u32,
     );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = bufferData)]
+    #[doc = "The `bufferData()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/bufferData)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn buffer_data_with_js_u8_array(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        src_data: &::js_sys::Uint8Array,
+        usage: u32,
+    );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = bufferData)]
     #[doc = "The `bufferData()` method."]
     #[doc = ""]
@@ -241,6 +254,20 @@ extern "C" {
         this: &WebGl2RenderingContext,
         target: u32,
         src_data: &[u8],
+        usage: u32,
+        src_offset: u32,
+    );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = bufferData)]
+    #[doc = "The `bufferData()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/bufferData)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn buffer_data_with_js_u8_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        src_data: &::js_sys::Uint8Array,
         usage: u32,
         src_offset: u32,
     );
@@ -268,6 +295,21 @@ extern "C" {
         this: &WebGl2RenderingContext,
         target: u32,
         src_data: &[u8],
+        usage: u32,
+        src_offset: u32,
+        length: u32,
+    );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = bufferData)]
+    #[doc = "The `bufferData()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/bufferData)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn buffer_data_with_js_u8_array_and_src_offset_and_length(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        src_data: &::js_sys::Uint8Array,
         usage: u32,
         src_offset: u32,
         length: u32,
@@ -344,6 +386,32 @@ extern "C" {
         offset: f64,
         src_data: &[u8],
     );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = bufferSubData)]
+    #[doc = "The `bufferSubData()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/bufferSubData)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn buffer_sub_data_with_i32_and_js_u8_array(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        offset: i32,
+        src_data: &::js_sys::Uint8Array,
+    );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = bufferSubData)]
+    #[doc = "The `bufferSubData()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/bufferSubData)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn buffer_sub_data_with_f64_and_js_u8_array(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        offset: f64,
+        src_data: &::js_sys::Uint8Array,
+    );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = bufferSubData)]
     #[doc = "The `bufferSubData()` method."]
     #[doc = ""]
@@ -394,6 +462,34 @@ extern "C" {
         target: u32,
         dst_byte_offset: f64,
         src_data: &[u8],
+        src_offset: u32,
+    );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = bufferSubData)]
+    #[doc = "The `bufferSubData()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/bufferSubData)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn buffer_sub_data_with_i32_and_js_u8_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        dst_byte_offset: i32,
+        src_data: &::js_sys::Uint8Array,
+        src_offset: u32,
+    );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = bufferSubData)]
+    #[doc = "The `bufferSubData()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/bufferSubData)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn buffer_sub_data_with_f64_and_js_u8_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        dst_byte_offset: f64,
+        src_data: &::js_sys::Uint8Array,
         src_offset: u32,
     );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = bufferSubData)]
@@ -452,6 +548,36 @@ extern "C" {
         src_offset: u32,
         length: u32,
     );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = bufferSubData)]
+    #[doc = "The `bufferSubData()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/bufferSubData)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn buffer_sub_data_with_i32_and_js_u8_array_and_src_offset_and_length(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        dst_byte_offset: i32,
+        src_data: &::js_sys::Uint8Array,
+        src_offset: u32,
+        length: u32,
+    );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = bufferSubData)]
+    #[doc = "The `bufferSubData()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/bufferSubData)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn buffer_sub_data_with_f64_and_js_u8_array_and_src_offset_and_length(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        dst_byte_offset: f64,
+        src_data: &::js_sys::Uint8Array,
+        src_offset: u32,
+        length: u32,
+    );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = clearBufferfi)]
     #[doc = "The `clearBufferfi()` method."]
     #[doc = ""]
@@ -477,6 +603,19 @@ extern "C" {
         drawbuffer: i32,
         values: &[f32],
     );
+    #[cfg(feature = "Float32Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = clearBufferfv)]
+    #[doc = "The `clearBufferfv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/clearBufferfv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`*"]
+    pub fn clear_bufferfv_with_js_f32_array(
+        this: &WebGl2RenderingContext,
+        buffer: u32,
+        drawbuffer: i32,
+        values: &::js_sys::Float32Array,
+    );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = clearBufferfv)]
     #[doc = "The `clearBufferfv()` method."]
     #[doc = ""]
@@ -500,6 +639,20 @@ extern "C" {
         buffer: u32,
         drawbuffer: i32,
         values: &[f32],
+        src_offset: u32,
+    );
+    #[cfg(feature = "Float32Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = clearBufferfv)]
+    #[doc = "The `clearBufferfv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/clearBufferfv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`*"]
+    pub fn clear_bufferfv_with_js_f32_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        buffer: u32,
+        drawbuffer: i32,
+        values: &::js_sys::Float32Array,
         src_offset: u32,
     );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = clearBufferfv)]
@@ -527,6 +680,19 @@ extern "C" {
         drawbuffer: i32,
         values: &[i32],
     );
+    #[cfg(feature = "Int32Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = clearBufferiv)]
+    #[doc = "The `clearBufferiv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/clearBufferiv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebGl2RenderingContext`*"]
+    pub fn clear_bufferiv_with_js_i32_array(
+        this: &WebGl2RenderingContext,
+        buffer: u32,
+        drawbuffer: i32,
+        values: &::js_sys::Int32Array,
+    );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = clearBufferiv)]
     #[doc = "The `clearBufferiv()` method."]
     #[doc = ""]
@@ -550,6 +716,20 @@ extern "C" {
         buffer: u32,
         drawbuffer: i32,
         values: &[i32],
+        src_offset: u32,
+    );
+    #[cfg(feature = "Int32Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = clearBufferiv)]
+    #[doc = "The `clearBufferiv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/clearBufferiv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebGl2RenderingContext`*"]
+    pub fn clear_bufferiv_with_js_i32_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        buffer: u32,
+        drawbuffer: i32,
+        values: &::js_sys::Int32Array,
         src_offset: u32,
     );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = clearBufferiv)]
@@ -577,6 +757,19 @@ extern "C" {
         drawbuffer: i32,
         values: &[u32],
     );
+    #[cfg(feature = "Uint32Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = clearBufferuiv)]
+    #[doc = "The `clearBufferuiv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/clearBufferuiv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint32Array`, `WebGl2RenderingContext`*"]
+    pub fn clear_bufferuiv_with_js_u32_array(
+        this: &WebGl2RenderingContext,
+        buffer: u32,
+        drawbuffer: i32,
+        values: &::js_sys::Uint32Array,
+    );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = clearBufferuiv)]
     #[doc = "The `clearBufferuiv()` method."]
     #[doc = ""]
@@ -600,6 +793,20 @@ extern "C" {
         buffer: u32,
         drawbuffer: i32,
         values: &[u32],
+        src_offset: u32,
+    );
+    #[cfg(feature = "Uint32Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = clearBufferuiv)]
+    #[doc = "The `clearBufferuiv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/clearBufferuiv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint32Array`, `WebGl2RenderingContext`*"]
+    pub fn clear_bufferuiv_with_js_u32_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        buffer: u32,
+        drawbuffer: i32,
+        values: &::js_sys::Uint32Array,
         src_offset: u32,
     );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = clearBufferuiv)]
@@ -707,6 +914,23 @@ extern "C" {
         border: i32,
         src_data: &[u8],
     );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = compressedTexImage2D)]
+    #[doc = "The `compressedTexImage2D()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/compressedTexImage2D)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn compressed_tex_image_2d_with_js_u8_array(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        level: i32,
+        internalformat: u32,
+        width: i32,
+        height: i32,
+        border: i32,
+        src_data: &::js_sys::Uint8Array,
+    );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = compressedTexImage2D)]
     #[doc = "The `compressedTexImage2D()` method."]
     #[doc = ""]
@@ -739,6 +963,24 @@ extern "C" {
         height: i32,
         border: i32,
         src_data: &[u8],
+        src_offset: u32,
+    );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = compressedTexImage2D)]
+    #[doc = "The `compressedTexImage2D()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/compressedTexImage2D)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn compressed_tex_image_2d_with_js_u8_array_and_u32(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        level: i32,
+        internalformat: u32,
+        width: i32,
+        height: i32,
+        border: i32,
+        src_data: &::js_sys::Uint8Array,
         src_offset: u32,
     );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = compressedTexImage2D)]
@@ -774,6 +1016,25 @@ extern "C" {
         height: i32,
         border: i32,
         src_data: &[u8],
+        src_offset: u32,
+        src_length_override: u32,
+    );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = compressedTexImage2D)]
+    #[doc = "The `compressedTexImage2D()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/compressedTexImage2D)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn compressed_tex_image_2d_with_js_u8_array_and_u32_and_src_length_override(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        level: i32,
+        internalformat: u32,
+        width: i32,
+        height: i32,
+        border: i32,
+        src_data: &::js_sys::Uint8Array,
         src_offset: u32,
         src_length_override: u32,
     );
@@ -847,6 +1108,24 @@ extern "C" {
         border: i32,
         src_data: &[u8],
     );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = compressedTexImage3D)]
+    #[doc = "The `compressedTexImage3D()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/compressedTexImage3D)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn compressed_tex_image_3d_with_js_u8_array(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        level: i32,
+        internalformat: u32,
+        width: i32,
+        height: i32,
+        depth: i32,
+        border: i32,
+        src_data: &::js_sys::Uint8Array,
+    );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = compressedTexImage3D)]
     #[doc = "The `compressedTexImage3D()` method."]
     #[doc = ""]
@@ -881,6 +1160,25 @@ extern "C" {
         depth: i32,
         border: i32,
         src_data: &[u8],
+        src_offset: u32,
+    );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = compressedTexImage3D)]
+    #[doc = "The `compressedTexImage3D()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/compressedTexImage3D)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn compressed_tex_image_3d_with_js_u8_array_and_u32(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        level: i32,
+        internalformat: u32,
+        width: i32,
+        height: i32,
+        depth: i32,
+        border: i32,
+        src_data: &::js_sys::Uint8Array,
         src_offset: u32,
     );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = compressedTexImage3D)]
@@ -918,6 +1216,26 @@ extern "C" {
         depth: i32,
         border: i32,
         src_data: &[u8],
+        src_offset: u32,
+        src_length_override: u32,
+    );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = compressedTexImage3D)]
+    #[doc = "The `compressedTexImage3D()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/compressedTexImage3D)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn compressed_tex_image_3d_with_js_u8_array_and_u32_and_src_length_override(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        level: i32,
+        internalformat: u32,
+        width: i32,
+        height: i32,
+        depth: i32,
+        border: i32,
+        src_data: &::js_sys::Uint8Array,
         src_offset: u32,
         src_length_override: u32,
     );
@@ -991,6 +1309,24 @@ extern "C" {
         format: u32,
         src_data: &mut [u8],
     );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = compressedTexSubImage2D)]
+    #[doc = "The `compressedTexSubImage2D()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/compressedTexSubImage2D)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn compressed_tex_sub_image_2d_with_js_u8_array(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        level: i32,
+        xoffset: i32,
+        yoffset: i32,
+        width: i32,
+        height: i32,
+        format: u32,
+        src_data: &::js_sys::Uint8Array,
+    );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = compressedTexSubImage2D)]
     #[doc = "The `compressedTexSubImage2D()` method."]
     #[doc = ""]
@@ -1025,6 +1361,25 @@ extern "C" {
         height: i32,
         format: u32,
         src_data: &mut [u8],
+        src_offset: u32,
+    );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = compressedTexSubImage2D)]
+    #[doc = "The `compressedTexSubImage2D()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/compressedTexSubImage2D)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn compressed_tex_sub_image_2d_with_js_u8_array_and_u32(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        level: i32,
+        xoffset: i32,
+        yoffset: i32,
+        width: i32,
+        height: i32,
+        format: u32,
+        src_data: &::js_sys::Uint8Array,
         src_offset: u32,
     );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = compressedTexSubImage2D)]
@@ -1062,6 +1417,26 @@ extern "C" {
         height: i32,
         format: u32,
         src_data: &mut [u8],
+        src_offset: u32,
+        src_length_override: u32,
+    );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = compressedTexSubImage2D)]
+    #[doc = "The `compressedTexSubImage2D()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/compressedTexSubImage2D)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn compressed_tex_sub_image_2d_with_js_u8_array_and_u32_and_src_length_override(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        level: i32,
+        xoffset: i32,
+        yoffset: i32,
+        width: i32,
+        height: i32,
+        format: u32,
+        src_data: &::js_sys::Uint8Array,
         src_offset: u32,
         src_length_override: u32,
     );
@@ -1143,6 +1518,26 @@ extern "C" {
         format: u32,
         src_data: &mut [u8],
     );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = compressedTexSubImage3D)]
+    #[doc = "The `compressedTexSubImage3D()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/compressedTexSubImage3D)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn compressed_tex_sub_image_3d_with_js_u8_array(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        level: i32,
+        xoffset: i32,
+        yoffset: i32,
+        zoffset: i32,
+        width: i32,
+        height: i32,
+        depth: i32,
+        format: u32,
+        src_data: &::js_sys::Uint8Array,
+    );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = compressedTexSubImage3D)]
     #[doc = "The `compressedTexSubImage3D()` method."]
     #[doc = ""]
@@ -1181,6 +1576,27 @@ extern "C" {
         depth: i32,
         format: u32,
         src_data: &mut [u8],
+        src_offset: u32,
+    );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = compressedTexSubImage3D)]
+    #[doc = "The `compressedTexSubImage3D()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/compressedTexSubImage3D)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn compressed_tex_sub_image_3d_with_js_u8_array_and_u32(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        level: i32,
+        xoffset: i32,
+        yoffset: i32,
+        zoffset: i32,
+        width: i32,
+        height: i32,
+        depth: i32,
+        format: u32,
+        src_data: &::js_sys::Uint8Array,
         src_offset: u32,
     );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = compressedTexSubImage3D)]
@@ -1222,6 +1638,28 @@ extern "C" {
         depth: i32,
         format: u32,
         src_data: &mut [u8],
+        src_offset: u32,
+        src_length_override: u32,
+    );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = compressedTexSubImage3D)]
+    #[doc = "The `compressedTexSubImage3D()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/compressedTexSubImage3D)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn compressed_tex_sub_image_3d_with_js_u8_array_and_u32_and_src_length_override(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        level: i32,
+        xoffset: i32,
+        yoffset: i32,
+        zoffset: i32,
+        width: i32,
+        height: i32,
+        depth: i32,
+        format: u32,
+        src_data: &::js_sys::Uint8Array,
         src_offset: u32,
         src_length_override: u32,
     );
@@ -1640,6 +2078,32 @@ extern "C" {
         src_byte_offset: f64,
         dst_data: &mut [u8],
     );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = getBufferSubData)]
+    #[doc = "The `getBufferSubData()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/getBufferSubData)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn get_buffer_sub_data_with_i32_and_js_u8_array(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        src_byte_offset: i32,
+        dst_data: &::js_sys::Uint8Array,
+    );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = getBufferSubData)]
+    #[doc = "The `getBufferSubData()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/getBufferSubData)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn get_buffer_sub_data_with_f64_and_js_u8_array(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        src_byte_offset: f64,
+        dst_data: &::js_sys::Uint8Array,
+    );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = getBufferSubData)]
     #[doc = "The `getBufferSubData()` method."]
     #[doc = ""]
@@ -1690,6 +2154,34 @@ extern "C" {
         target: u32,
         src_byte_offset: f64,
         dst_data: &mut [u8],
+        dst_offset: u32,
+    );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = getBufferSubData)]
+    #[doc = "The `getBufferSubData()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/getBufferSubData)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn get_buffer_sub_data_with_i32_and_js_u8_array_and_dst_offset(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        src_byte_offset: i32,
+        dst_data: &::js_sys::Uint8Array,
+        dst_offset: u32,
+    );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = getBufferSubData)]
+    #[doc = "The `getBufferSubData()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/getBufferSubData)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn get_buffer_sub_data_with_f64_and_js_u8_array_and_dst_offset(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        src_byte_offset: f64,
+        dst_data: &::js_sys::Uint8Array,
         dst_offset: u32,
     );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = getBufferSubData)]
@@ -1745,6 +2237,36 @@ extern "C" {
         target: u32,
         src_byte_offset: f64,
         dst_data: &mut [u8],
+        dst_offset: u32,
+        length: u32,
+    );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = getBufferSubData)]
+    #[doc = "The `getBufferSubData()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/getBufferSubData)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn get_buffer_sub_data_with_i32_and_js_u8_array_and_dst_offset_and_length(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        src_byte_offset: i32,
+        dst_data: &::js_sys::Uint8Array,
+        dst_offset: u32,
+        length: u32,
+    );
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = getBufferSubData)]
+    #[doc = "The `getBufferSubData()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/getBufferSubData)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn get_buffer_sub_data_with_f64_and_js_u8_array_and_dst_offset_and_length(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        src_byte_offset: f64,
+        dst_data: &::js_sys::Uint8Array,
         dst_offset: u32,
         length: u32,
     );
@@ -1984,6 +2506,23 @@ extern "C" {
         type_: u32,
         dst_data: Option<&mut [u8]>,
     ) -> Result<(), JsValue>;
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (catch , method , structural , js_class = "WebGL2RenderingContext" , js_name = readPixels)]
+    #[doc = "The `readPixels()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/readPixels)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn read_pixels_with_opt_js_u8_array(
+        this: &WebGl2RenderingContext,
+        x: i32,
+        y: i32,
+        width: i32,
+        height: i32,
+        format: u32,
+        type_: u32,
+        dst_data: Option<&::js_sys::Uint8Array>,
+    ) -> Result<(), JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "WebGL2RenderingContext" , js_name = readPixels)]
     #[doc = "The `readPixels()` method."]
     #[doc = ""]
@@ -2048,6 +2587,24 @@ extern "C" {
         format: u32,
         type_: u32,
         dst_data: &mut [u8],
+        dst_offset: u32,
+    ) -> Result<(), JsValue>;
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (catch , method , structural , js_class = "WebGL2RenderingContext" , js_name = readPixels)]
+    #[doc = "The `readPixels()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/readPixels)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn read_pixels_with_js_u8_array_and_dst_offset(
+        this: &WebGl2RenderingContext,
+        x: i32,
+        y: i32,
+        width: i32,
+        height: i32,
+        format: u32,
+        type_: u32,
+        dst_data: &::js_sys::Uint8Array,
         dst_offset: u32,
     ) -> Result<(), JsValue>;
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = renderbufferStorageMultisample)]
@@ -2132,6 +2689,25 @@ extern "C" {
         format: u32,
         type_: u32,
         pixels: Option<&[u8]>,
+    ) -> Result<(), JsValue>;
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (catch , method , structural , js_class = "WebGL2RenderingContext" , js_name = texImage2D)]
+    #[doc = "The `texImage2D()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/texImage2D)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn tex_image_2d_with_i32_and_i32_and_i32_and_format_and_type_and_opt_js_u8_array(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        level: i32,
+        internalformat: i32,
+        width: i32,
+        height: i32,
+        border: i32,
+        format: u32,
+        type_: u32,
+        pixels: Option<&::js_sys::Uint8Array>,
     ) -> Result<(), JsValue>;
     #[cfg(feature = "HtmlCanvasElement")]
     # [wasm_bindgen (catch , method , structural , js_class = "WebGL2RenderingContext" , js_name = texImage2D)]
@@ -2425,6 +3001,26 @@ extern "C" {
         src_data: &[u8],
         src_offset: u32,
     ) -> Result<(), JsValue>;
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (catch , method , structural , js_class = "WebGL2RenderingContext" , js_name = texImage2D)]
+    #[doc = "The `texImage2D()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/texImage2D)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn tex_image_2d_with_i32_and_i32_and_i32_and_format_and_type_and_js_u8_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        level: i32,
+        internalformat: i32,
+        width: i32,
+        height: i32,
+        border: i32,
+        format: u32,
+        type_: u32,
+        src_data: &::js_sys::Uint8Array,
+        src_offset: u32,
+    ) -> Result<(), JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "WebGL2RenderingContext" , js_name = texImage3D)]
     #[doc = "The `texImage3D()` method."]
     #[doc = ""]
@@ -2625,6 +3221,26 @@ extern "C" {
         type_: u32,
         src_data: Option<&[u8]>,
     ) -> Result<(), JsValue>;
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (catch , method , structural , js_class = "WebGL2RenderingContext" , js_name = texImage3D)]
+    #[doc = "The `texImage3D()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/texImage3D)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn tex_image_3d_with_opt_js_u8_array(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        level: i32,
+        internalformat: i32,
+        width: i32,
+        height: i32,
+        depth: i32,
+        border: i32,
+        format: u32,
+        type_: u32,
+        src_data: Option<&::js_sys::Uint8Array>,
+    ) -> Result<(), JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "WebGL2RenderingContext" , js_name = texImage3D)]
     #[doc = "The `texImage3D()` method."]
     #[doc = ""]
@@ -2663,6 +3279,27 @@ extern "C" {
         format: u32,
         type_: u32,
         src_data: &[u8],
+        src_offset: u32,
+    ) -> Result<(), JsValue>;
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (catch , method , structural , js_class = "WebGL2RenderingContext" , js_name = texImage3D)]
+    #[doc = "The `texImage3D()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/texImage3D)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn tex_image_3d_with_js_u8_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        level: i32,
+        internalformat: i32,
+        width: i32,
+        height: i32,
+        depth: i32,
+        border: i32,
+        format: u32,
+        type_: u32,
+        src_data: &::js_sys::Uint8Array,
         src_offset: u32,
     ) -> Result<(), JsValue>;
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = texStorage2D)]
@@ -2729,6 +3366,25 @@ extern "C" {
         format: u32,
         type_: u32,
         pixels: Option<&[u8]>,
+    ) -> Result<(), JsValue>;
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (catch , method , structural , js_class = "WebGL2RenderingContext" , js_name = texSubImage2D)]
+    #[doc = "The `texSubImage2D()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/texSubImage2D)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn tex_sub_image_2d_with_i32_and_i32_and_u32_and_type_and_opt_js_u8_array(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        level: i32,
+        xoffset: i32,
+        yoffset: i32,
+        width: i32,
+        height: i32,
+        format: u32,
+        type_: u32,
+        pixels: Option<&::js_sys::Uint8Array>,
     ) -> Result<(), JsValue>;
     #[cfg(feature = "HtmlCanvasElement")]
     # [wasm_bindgen (catch , method , structural , js_class = "WebGL2RenderingContext" , js_name = texSubImage2D)]
@@ -3028,6 +3684,26 @@ extern "C" {
         src_data: &[u8],
         src_offset: u32,
     ) -> Result<(), JsValue>;
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (catch , method , structural , js_class = "WebGL2RenderingContext" , js_name = texSubImage2D)]
+    #[doc = "The `texSubImage2D()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/texSubImage2D)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn tex_sub_image_2d_with_i32_and_i32_and_u32_and_type_and_js_u8_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        level: i32,
+        xoffset: i32,
+        yoffset: i32,
+        width: i32,
+        height: i32,
+        format: u32,
+        type_: u32,
+        src_data: &::js_sys::Uint8Array,
+        src_offset: u32,
+    ) -> Result<(), JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "WebGL2RenderingContext" , js_name = texSubImage3D)]
     #[doc = "The `texSubImage3D()` method."]
     #[doc = ""]
@@ -3238,6 +3914,27 @@ extern "C" {
         type_: u32,
         src_data: Option<&[u8]>,
     ) -> Result<(), JsValue>;
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (catch , method , structural , js_class = "WebGL2RenderingContext" , js_name = texSubImage3D)]
+    #[doc = "The `texSubImage3D()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/texSubImage3D)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn tex_sub_image_3d_with_opt_js_u8_array(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        level: i32,
+        xoffset: i32,
+        yoffset: i32,
+        zoffset: i32,
+        width: i32,
+        height: i32,
+        depth: i32,
+        format: u32,
+        type_: u32,
+        src_data: Option<&::js_sys::Uint8Array>,
+    ) -> Result<(), JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "WebGL2RenderingContext" , js_name = texSubImage3D)]
     #[doc = "The `texSubImage3D()` method."]
     #[doc = ""]
@@ -3280,6 +3977,28 @@ extern "C" {
         src_data: Option<&[u8]>,
         src_offset: u32,
     ) -> Result<(), JsValue>;
+    #[cfg(feature = "Uint8Array")]
+    # [wasm_bindgen (catch , method , structural , js_class = "WebGL2RenderingContext" , js_name = texSubImage3D)]
+    #[doc = "The `texSubImage3D()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/texSubImage3D)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint8Array`, `WebGl2RenderingContext`*"]
+    pub fn tex_sub_image_3d_with_opt_js_u8_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        target: u32,
+        level: i32,
+        xoffset: i32,
+        yoffset: i32,
+        zoffset: i32,
+        width: i32,
+        height: i32,
+        depth: i32,
+        format: u32,
+        type_: u32,
+        src_data: Option<&::js_sys::Uint8Array>,
+        src_offset: u32,
+    ) -> Result<(), JsValue>;
     #[cfg(feature = "WebGlProgram")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = transformFeedbackVaryings)]
     #[doc = "The `transformFeedbackVaryings()` method."]
@@ -3305,6 +4024,18 @@ extern "C" {
         location: Option<&WebGlUniformLocation>,
         data: &[f32],
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform1fv)]
+    #[doc = "The `uniform1fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform1fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform1fv_with_js_f32_array(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Float32Array,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform1fv)]
     #[doc = "The `uniform1fv()` method."]
@@ -3328,6 +4059,19 @@ extern "C" {
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
         data: &[f32],
+        src_offset: u32,
+    );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform1fv)]
+    #[doc = "The `uniform1fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform1fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform1fv_with_js_f32_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Float32Array,
         src_offset: u32,
     );
     #[cfg(feature = "WebGlUniformLocation")]
@@ -3357,6 +4101,20 @@ extern "C" {
         src_offset: u32,
         src_length: u32,
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform1fv)]
+    #[doc = "The `uniform1fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform1fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform1fv_with_js_f32_array_and_src_offset_and_src_length(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Float32Array,
+        src_offset: u32,
+        src_length: u32,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform1fv)]
     #[doc = "The `uniform1fv()` method."]
@@ -3383,6 +4141,18 @@ extern "C" {
         location: Option<&WebGlUniformLocation>,
         data: &[i32],
     );
+    #[cfg(all(feature = "Int32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform1iv)]
+    #[doc = "The `uniform1iv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform1iv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform1iv_with_js_i32_array(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Int32Array,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform1iv)]
     #[doc = "The `uniform1iv()` method."]
@@ -3406,6 +4176,19 @@ extern "C" {
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
         data: &[i32],
+        src_offset: u32,
+    );
+    #[cfg(all(feature = "Int32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform1iv)]
+    #[doc = "The `uniform1iv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform1iv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform1iv_with_js_i32_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Int32Array,
         src_offset: u32,
     );
     #[cfg(feature = "WebGlUniformLocation")]
@@ -3432,6 +4215,20 @@ extern "C" {
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
         data: &[i32],
+        src_offset: u32,
+        src_length: u32,
+    );
+    #[cfg(all(feature = "Int32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform1iv)]
+    #[doc = "The `uniform1iv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform1iv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform1iv_with_js_i32_array_and_src_offset_and_src_length(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Int32Array,
         src_offset: u32,
         src_length: u32,
     );
@@ -3473,6 +4270,18 @@ extern "C" {
         location: Option<&WebGlUniformLocation>,
         data: &[u32],
     );
+    #[cfg(all(feature = "Uint32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform1uiv)]
+    #[doc = "The `uniform1uiv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform1uiv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform1uiv_with_js_u32_array(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Uint32Array,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform1uiv)]
     #[doc = "The `uniform1uiv()` method."]
@@ -3496,6 +4305,19 @@ extern "C" {
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
         data: &[u32],
+        src_offset: u32,
+    );
+    #[cfg(all(feature = "Uint32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform1uiv)]
+    #[doc = "The `uniform1uiv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform1uiv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform1uiv_with_js_u32_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Uint32Array,
         src_offset: u32,
     );
     #[cfg(feature = "WebGlUniformLocation")]
@@ -3525,6 +4347,20 @@ extern "C" {
         src_offset: u32,
         src_length: u32,
     );
+    #[cfg(all(feature = "Uint32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform1uiv)]
+    #[doc = "The `uniform1uiv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform1uiv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform1uiv_with_js_u32_array_and_src_offset_and_src_length(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Uint32Array,
+        src_offset: u32,
+        src_length: u32,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform1uiv)]
     #[doc = "The `uniform1uiv()` method."]
@@ -3551,6 +4387,18 @@ extern "C" {
         location: Option<&WebGlUniformLocation>,
         data: &[f32],
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform2fv)]
+    #[doc = "The `uniform2fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform2fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform2fv_with_js_f32_array(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Float32Array,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform2fv)]
     #[doc = "The `uniform2fv()` method."]
@@ -3574,6 +4422,19 @@ extern "C" {
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
         data: &[f32],
+        src_offset: u32,
+    );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform2fv)]
+    #[doc = "The `uniform2fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform2fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform2fv_with_js_f32_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Float32Array,
         src_offset: u32,
     );
     #[cfg(feature = "WebGlUniformLocation")]
@@ -3603,6 +4464,20 @@ extern "C" {
         src_offset: u32,
         src_length: u32,
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform2fv)]
+    #[doc = "The `uniform2fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform2fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform2fv_with_js_f32_array_and_src_offset_and_src_length(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Float32Array,
+        src_offset: u32,
+        src_length: u32,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform2fv)]
     #[doc = "The `uniform2fv()` method."]
@@ -3629,6 +4504,18 @@ extern "C" {
         location: Option<&WebGlUniformLocation>,
         data: &[i32],
     );
+    #[cfg(all(feature = "Int32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform2iv)]
+    #[doc = "The `uniform2iv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform2iv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform2iv_with_js_i32_array(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Int32Array,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform2iv)]
     #[doc = "The `uniform2iv()` method."]
@@ -3652,6 +4539,19 @@ extern "C" {
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
         data: &[i32],
+        src_offset: u32,
+    );
+    #[cfg(all(feature = "Int32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform2iv)]
+    #[doc = "The `uniform2iv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform2iv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform2iv_with_js_i32_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Int32Array,
         src_offset: u32,
     );
     #[cfg(feature = "WebGlUniformLocation")]
@@ -3678,6 +4578,20 @@ extern "C" {
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
         data: &[i32],
+        src_offset: u32,
+        src_length: u32,
+    );
+    #[cfg(all(feature = "Int32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform2iv)]
+    #[doc = "The `uniform2iv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform2iv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform2iv_with_js_i32_array_and_src_offset_and_src_length(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Int32Array,
         src_offset: u32,
         src_length: u32,
     );
@@ -3720,6 +4634,18 @@ extern "C" {
         location: Option<&WebGlUniformLocation>,
         data: &[u32],
     );
+    #[cfg(all(feature = "Uint32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform2uiv)]
+    #[doc = "The `uniform2uiv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform2uiv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform2uiv_with_js_u32_array(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Uint32Array,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform2uiv)]
     #[doc = "The `uniform2uiv()` method."]
@@ -3743,6 +4669,19 @@ extern "C" {
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
         data: &[u32],
+        src_offset: u32,
+    );
+    #[cfg(all(feature = "Uint32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform2uiv)]
+    #[doc = "The `uniform2uiv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform2uiv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform2uiv_with_js_u32_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Uint32Array,
         src_offset: u32,
     );
     #[cfg(feature = "WebGlUniformLocation")]
@@ -3772,6 +4711,20 @@ extern "C" {
         src_offset: u32,
         src_length: u32,
     );
+    #[cfg(all(feature = "Uint32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform2uiv)]
+    #[doc = "The `uniform2uiv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform2uiv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform2uiv_with_js_u32_array_and_src_offset_and_src_length(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Uint32Array,
+        src_offset: u32,
+        src_length: u32,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform2uiv)]
     #[doc = "The `uniform2uiv()` method."]
@@ -3798,6 +4751,18 @@ extern "C" {
         location: Option<&WebGlUniformLocation>,
         data: &[f32],
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform3fv)]
+    #[doc = "The `uniform3fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform3fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform3fv_with_js_f32_array(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Float32Array,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform3fv)]
     #[doc = "The `uniform3fv()` method."]
@@ -3821,6 +4786,19 @@ extern "C" {
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
         data: &[f32],
+        src_offset: u32,
+    );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform3fv)]
+    #[doc = "The `uniform3fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform3fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform3fv_with_js_f32_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Float32Array,
         src_offset: u32,
     );
     #[cfg(feature = "WebGlUniformLocation")]
@@ -3850,6 +4828,20 @@ extern "C" {
         src_offset: u32,
         src_length: u32,
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform3fv)]
+    #[doc = "The `uniform3fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform3fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform3fv_with_js_f32_array_and_src_offset_and_src_length(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Float32Array,
+        src_offset: u32,
+        src_length: u32,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform3fv)]
     #[doc = "The `uniform3fv()` method."]
@@ -3876,6 +4868,18 @@ extern "C" {
         location: Option<&WebGlUniformLocation>,
         data: &[i32],
     );
+    #[cfg(all(feature = "Int32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform3iv)]
+    #[doc = "The `uniform3iv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform3iv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform3iv_with_js_i32_array(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Int32Array,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform3iv)]
     #[doc = "The `uniform3iv()` method."]
@@ -3899,6 +4903,19 @@ extern "C" {
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
         data: &[i32],
+        src_offset: u32,
+    );
+    #[cfg(all(feature = "Int32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform3iv)]
+    #[doc = "The `uniform3iv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform3iv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform3iv_with_js_i32_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Int32Array,
         src_offset: u32,
     );
     #[cfg(feature = "WebGlUniformLocation")]
@@ -3925,6 +4942,20 @@ extern "C" {
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
         data: &[i32],
+        src_offset: u32,
+        src_length: u32,
+    );
+    #[cfg(all(feature = "Int32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform3iv)]
+    #[doc = "The `uniform3iv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform3iv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform3iv_with_js_i32_array_and_src_offset_and_src_length(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Int32Array,
         src_offset: u32,
         src_length: u32,
     );
@@ -3968,6 +4999,18 @@ extern "C" {
         location: Option<&WebGlUniformLocation>,
         data: &[u32],
     );
+    #[cfg(all(feature = "Uint32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform3uiv)]
+    #[doc = "The `uniform3uiv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform3uiv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform3uiv_with_js_u32_array(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Uint32Array,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform3uiv)]
     #[doc = "The `uniform3uiv()` method."]
@@ -3991,6 +5034,19 @@ extern "C" {
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
         data: &[u32],
+        src_offset: u32,
+    );
+    #[cfg(all(feature = "Uint32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform3uiv)]
+    #[doc = "The `uniform3uiv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform3uiv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform3uiv_with_js_u32_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Uint32Array,
         src_offset: u32,
     );
     #[cfg(feature = "WebGlUniformLocation")]
@@ -4020,6 +5076,20 @@ extern "C" {
         src_offset: u32,
         src_length: u32,
     );
+    #[cfg(all(feature = "Uint32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform3uiv)]
+    #[doc = "The `uniform3uiv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform3uiv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform3uiv_with_js_u32_array_and_src_offset_and_src_length(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Uint32Array,
+        src_offset: u32,
+        src_length: u32,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform3uiv)]
     #[doc = "The `uniform3uiv()` method."]
@@ -4046,6 +5116,18 @@ extern "C" {
         location: Option<&WebGlUniformLocation>,
         data: &[f32],
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform4fv)]
+    #[doc = "The `uniform4fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform4fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform4fv_with_js_f32_array(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Float32Array,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform4fv)]
     #[doc = "The `uniform4fv()` method."]
@@ -4069,6 +5151,19 @@ extern "C" {
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
         data: &[f32],
+        src_offset: u32,
+    );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform4fv)]
+    #[doc = "The `uniform4fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform4fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform4fv_with_js_f32_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Float32Array,
         src_offset: u32,
     );
     #[cfg(feature = "WebGlUniformLocation")]
@@ -4098,6 +5193,20 @@ extern "C" {
         src_offset: u32,
         src_length: u32,
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform4fv)]
+    #[doc = "The `uniform4fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform4fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform4fv_with_js_f32_array_and_src_offset_and_src_length(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Float32Array,
+        src_offset: u32,
+        src_length: u32,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform4fv)]
     #[doc = "The `uniform4fv()` method."]
@@ -4124,6 +5233,18 @@ extern "C" {
         location: Option<&WebGlUniformLocation>,
         data: &[i32],
     );
+    #[cfg(all(feature = "Int32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform4iv)]
+    #[doc = "The `uniform4iv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform4iv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform4iv_with_js_i32_array(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Int32Array,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform4iv)]
     #[doc = "The `uniform4iv()` method."]
@@ -4147,6 +5268,19 @@ extern "C" {
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
         data: &[i32],
+        src_offset: u32,
+    );
+    #[cfg(all(feature = "Int32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform4iv)]
+    #[doc = "The `uniform4iv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform4iv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform4iv_with_js_i32_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Int32Array,
         src_offset: u32,
     );
     #[cfg(feature = "WebGlUniformLocation")]
@@ -4173,6 +5307,20 @@ extern "C" {
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
         data: &[i32],
+        src_offset: u32,
+        src_length: u32,
+    );
+    #[cfg(all(feature = "Int32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform4iv)]
+    #[doc = "The `uniform4iv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform4iv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform4iv_with_js_i32_array_and_src_offset_and_src_length(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Int32Array,
         src_offset: u32,
         src_length: u32,
     );
@@ -4217,6 +5365,18 @@ extern "C" {
         location: Option<&WebGlUniformLocation>,
         data: &[u32],
     );
+    #[cfg(all(feature = "Uint32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform4uiv)]
+    #[doc = "The `uniform4uiv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform4uiv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform4uiv_with_js_u32_array(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Uint32Array,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform4uiv)]
     #[doc = "The `uniform4uiv()` method."]
@@ -4240,6 +5400,19 @@ extern "C" {
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
         data: &[u32],
+        src_offset: u32,
+    );
+    #[cfg(all(feature = "Uint32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform4uiv)]
+    #[doc = "The `uniform4uiv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform4uiv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform4uiv_with_js_u32_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Uint32Array,
         src_offset: u32,
     );
     #[cfg(feature = "WebGlUniformLocation")]
@@ -4266,6 +5439,20 @@ extern "C" {
         this: &WebGl2RenderingContext,
         location: Option<&WebGlUniformLocation>,
         data: &[u32],
+        src_offset: u32,
+        src_length: u32,
+    );
+    #[cfg(all(feature = "Uint32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniform4uiv)]
+    #[doc = "The `uniform4uiv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniform4uiv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform4uiv_with_js_u32_array_and_src_offset_and_src_length(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        data: &::js_sys::Uint32Array,
         src_offset: u32,
         src_length: u32,
     );
@@ -4309,6 +5496,19 @@ extern "C" {
         transpose: bool,
         data: &[f32],
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix2fv)]
+    #[doc = "The `uniformMatrix2fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix2fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix2fv_with_js_f32_array(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix2fv)]
     #[doc = "The `uniformMatrix2fv()` method."]
@@ -4334,6 +5534,20 @@ extern "C" {
         location: Option<&WebGlUniformLocation>,
         transpose: bool,
         data: &[f32],
+        src_offset: u32,
+    );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix2fv)]
+    #[doc = "The `uniformMatrix2fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix2fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix2fv_with_js_f32_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
         src_offset: u32,
     );
     #[cfg(feature = "WebGlUniformLocation")]
@@ -4365,6 +5579,21 @@ extern "C" {
         src_offset: u32,
         src_length: u32,
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix2fv)]
+    #[doc = "The `uniformMatrix2fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix2fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix2fv_with_js_f32_array_and_src_offset_and_src_length(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
+        src_offset: u32,
+        src_length: u32,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix2fv)]
     #[doc = "The `uniformMatrix2fv()` method."]
@@ -4393,6 +5622,19 @@ extern "C" {
         transpose: bool,
         data: &[f32],
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix2x3fv)]
+    #[doc = "The `uniformMatrix2x3fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix2x3fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix2x3fv_with_js_f32_array(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix2x3fv)]
     #[doc = "The `uniformMatrix2x3fv()` method."]
@@ -4418,6 +5660,20 @@ extern "C" {
         location: Option<&WebGlUniformLocation>,
         transpose: bool,
         data: &[f32],
+        src_offset: u32,
+    );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix2x3fv)]
+    #[doc = "The `uniformMatrix2x3fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix2x3fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix2x3fv_with_js_f32_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
         src_offset: u32,
     );
     #[cfg(feature = "WebGlUniformLocation")]
@@ -4449,6 +5705,21 @@ extern "C" {
         src_offset: u32,
         src_length: u32,
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix2x3fv)]
+    #[doc = "The `uniformMatrix2x3fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix2x3fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix2x3fv_with_js_f32_array_and_src_offset_and_src_length(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
+        src_offset: u32,
+        src_length: u32,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix2x3fv)]
     #[doc = "The `uniformMatrix2x3fv()` method."]
@@ -4477,6 +5748,19 @@ extern "C" {
         transpose: bool,
         data: &[f32],
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix2x4fv)]
+    #[doc = "The `uniformMatrix2x4fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix2x4fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix2x4fv_with_js_f32_array(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix2x4fv)]
     #[doc = "The `uniformMatrix2x4fv()` method."]
@@ -4502,6 +5786,20 @@ extern "C" {
         location: Option<&WebGlUniformLocation>,
         transpose: bool,
         data: &[f32],
+        src_offset: u32,
+    );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix2x4fv)]
+    #[doc = "The `uniformMatrix2x4fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix2x4fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix2x4fv_with_js_f32_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
         src_offset: u32,
     );
     #[cfg(feature = "WebGlUniformLocation")]
@@ -4533,6 +5831,21 @@ extern "C" {
         src_offset: u32,
         src_length: u32,
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix2x4fv)]
+    #[doc = "The `uniformMatrix2x4fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix2x4fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix2x4fv_with_js_f32_array_and_src_offset_and_src_length(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
+        src_offset: u32,
+        src_length: u32,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix2x4fv)]
     #[doc = "The `uniformMatrix2x4fv()` method."]
@@ -4561,6 +5874,19 @@ extern "C" {
         transpose: bool,
         data: &[f32],
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix3fv)]
+    #[doc = "The `uniformMatrix3fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix3fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix3fv_with_js_f32_array(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix3fv)]
     #[doc = "The `uniformMatrix3fv()` method."]
@@ -4586,6 +5912,20 @@ extern "C" {
         location: Option<&WebGlUniformLocation>,
         transpose: bool,
         data: &[f32],
+        src_offset: u32,
+    );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix3fv)]
+    #[doc = "The `uniformMatrix3fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix3fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix3fv_with_js_f32_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
         src_offset: u32,
     );
     #[cfg(feature = "WebGlUniformLocation")]
@@ -4617,6 +5957,21 @@ extern "C" {
         src_offset: u32,
         src_length: u32,
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix3fv)]
+    #[doc = "The `uniformMatrix3fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix3fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix3fv_with_js_f32_array_and_src_offset_and_src_length(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
+        src_offset: u32,
+        src_length: u32,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix3fv)]
     #[doc = "The `uniformMatrix3fv()` method."]
@@ -4645,6 +6000,19 @@ extern "C" {
         transpose: bool,
         data: &[f32],
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix3x2fv)]
+    #[doc = "The `uniformMatrix3x2fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix3x2fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix3x2fv_with_js_f32_array(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix3x2fv)]
     #[doc = "The `uniformMatrix3x2fv()` method."]
@@ -4670,6 +6038,20 @@ extern "C" {
         location: Option<&WebGlUniformLocation>,
         transpose: bool,
         data: &[f32],
+        src_offset: u32,
+    );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix3x2fv)]
+    #[doc = "The `uniformMatrix3x2fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix3x2fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix3x2fv_with_js_f32_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
         src_offset: u32,
     );
     #[cfg(feature = "WebGlUniformLocation")]
@@ -4701,6 +6083,21 @@ extern "C" {
         src_offset: u32,
         src_length: u32,
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix3x2fv)]
+    #[doc = "The `uniformMatrix3x2fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix3x2fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix3x2fv_with_js_f32_array_and_src_offset_and_src_length(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
+        src_offset: u32,
+        src_length: u32,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix3x2fv)]
     #[doc = "The `uniformMatrix3x2fv()` method."]
@@ -4729,6 +6126,19 @@ extern "C" {
         transpose: bool,
         data: &[f32],
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix3x4fv)]
+    #[doc = "The `uniformMatrix3x4fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix3x4fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix3x4fv_with_js_f32_array(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix3x4fv)]
     #[doc = "The `uniformMatrix3x4fv()` method."]
@@ -4754,6 +6164,20 @@ extern "C" {
         location: Option<&WebGlUniformLocation>,
         transpose: bool,
         data: &[f32],
+        src_offset: u32,
+    );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix3x4fv)]
+    #[doc = "The `uniformMatrix3x4fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix3x4fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix3x4fv_with_js_f32_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
         src_offset: u32,
     );
     #[cfg(feature = "WebGlUniformLocation")]
@@ -4785,6 +6209,21 @@ extern "C" {
         src_offset: u32,
         src_length: u32,
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix3x4fv)]
+    #[doc = "The `uniformMatrix3x4fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix3x4fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix3x4fv_with_js_f32_array_and_src_offset_and_src_length(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
+        src_offset: u32,
+        src_length: u32,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix3x4fv)]
     #[doc = "The `uniformMatrix3x4fv()` method."]
@@ -4813,6 +6252,19 @@ extern "C" {
         transpose: bool,
         data: &[f32],
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix4fv)]
+    #[doc = "The `uniformMatrix4fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix4fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix4fv_with_js_f32_array(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix4fv)]
     #[doc = "The `uniformMatrix4fv()` method."]
@@ -4838,6 +6290,20 @@ extern "C" {
         location: Option<&WebGlUniformLocation>,
         transpose: bool,
         data: &[f32],
+        src_offset: u32,
+    );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix4fv)]
+    #[doc = "The `uniformMatrix4fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix4fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix4fv_with_js_f32_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
         src_offset: u32,
     );
     #[cfg(feature = "WebGlUniformLocation")]
@@ -4869,6 +6335,21 @@ extern "C" {
         src_offset: u32,
         src_length: u32,
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix4fv)]
+    #[doc = "The `uniformMatrix4fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix4fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix4fv_with_js_f32_array_and_src_offset_and_src_length(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
+        src_offset: u32,
+        src_length: u32,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix4fv)]
     #[doc = "The `uniformMatrix4fv()` method."]
@@ -4897,6 +6378,19 @@ extern "C" {
         transpose: bool,
         data: &[f32],
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix4x2fv)]
+    #[doc = "The `uniformMatrix4x2fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix4x2fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix4x2fv_with_js_f32_array(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix4x2fv)]
     #[doc = "The `uniformMatrix4x2fv()` method."]
@@ -4922,6 +6416,20 @@ extern "C" {
         location: Option<&WebGlUniformLocation>,
         transpose: bool,
         data: &[f32],
+        src_offset: u32,
+    );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix4x2fv)]
+    #[doc = "The `uniformMatrix4x2fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix4x2fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix4x2fv_with_js_f32_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
         src_offset: u32,
     );
     #[cfg(feature = "WebGlUniformLocation")]
@@ -4953,6 +6461,21 @@ extern "C" {
         src_offset: u32,
         src_length: u32,
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix4x2fv)]
+    #[doc = "The `uniformMatrix4x2fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix4x2fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix4x2fv_with_js_f32_array_and_src_offset_and_src_length(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
+        src_offset: u32,
+        src_length: u32,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix4x2fv)]
     #[doc = "The `uniformMatrix4x2fv()` method."]
@@ -4981,6 +6504,19 @@ extern "C" {
         transpose: bool,
         data: &[f32],
     );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix4x3fv)]
+    #[doc = "The `uniformMatrix4x3fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix4x3fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix4x3fv_with_js_f32_array(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
+    );
     #[cfg(feature = "WebGlUniformLocation")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix4x3fv)]
     #[doc = "The `uniformMatrix4x3fv()` method."]
@@ -5006,6 +6542,20 @@ extern "C" {
         location: Option<&WebGlUniformLocation>,
         transpose: bool,
         data: &[f32],
+        src_offset: u32,
+    );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix4x3fv)]
+    #[doc = "The `uniformMatrix4x3fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix4x3fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix4x3fv_with_js_f32_array_and_src_offset(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
         src_offset: u32,
     );
     #[cfg(feature = "WebGlUniformLocation")]
@@ -5034,6 +6584,21 @@ extern "C" {
         location: Option<&WebGlUniformLocation>,
         transpose: bool,
         data: &[f32],
+        src_offset: u32,
+        src_length: u32,
+    );
+    #[cfg(all(feature = "Float32Array", feature = "WebGlUniformLocation",))]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = uniformMatrix4x3fv)]
+    #[doc = "The `uniformMatrix4x3fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/uniformMatrix4x3fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`, `WebGlUniformLocation`*"]
+    pub fn uniform_matrix4x3fv_with_js_f32_array_and_src_offset_and_src_length(
+        this: &WebGl2RenderingContext,
+        location: Option<&WebGlUniformLocation>,
+        transpose: bool,
+        data: &::js_sys::Float32Array,
         src_offset: u32,
         src_length: u32,
     );
@@ -5084,6 +6649,18 @@ extern "C" {
         index: u32,
         values: &mut [i32],
     );
+    #[cfg(feature = "Int32Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = vertexAttribI4iv)]
+    #[doc = "The `vertexAttribI4iv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/vertexAttribI4iv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Int32Array`, `WebGl2RenderingContext`*"]
+    pub fn vertex_attrib_i4iv_with_js_i32_array(
+        this: &WebGl2RenderingContext,
+        index: u32,
+        values: &::js_sys::Int32Array,
+    );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = vertexAttribI4iv)]
     #[doc = "The `vertexAttribI4iv()` method."]
     #[doc = ""]
@@ -5119,6 +6696,18 @@ extern "C" {
         this: &WebGl2RenderingContext,
         index: u32,
         values: &mut [u32],
+    );
+    #[cfg(feature = "Uint32Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = vertexAttribI4uiv)]
+    #[doc = "The `vertexAttribI4uiv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/vertexAttribI4uiv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Uint32Array`, `WebGl2RenderingContext`*"]
+    pub fn vertex_attrib_i4uiv_with_js_u32_array(
+        this: &WebGl2RenderingContext,
+        index: u32,
+        values: &::js_sys::Uint32Array,
     );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = vertexAttribI4uiv)]
     #[doc = "The `vertexAttribI4uiv()` method."]
@@ -6251,6 +7840,18 @@ extern "C" {
         indx: u32,
         values: &[f32],
     );
+    #[cfg(feature = "Float32Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = vertexAttrib1fv)]
+    #[doc = "The `vertexAttrib1fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/vertexAttrib1fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`*"]
+    pub fn vertex_attrib1fv_with_js_f32_array(
+        this: &WebGl2RenderingContext,
+        indx: u32,
+        values: &::js_sys::Float32Array,
+    );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = vertexAttrib1fv)]
     #[doc = "The `vertexAttrib1fv()` method."]
     #[doc = ""]
@@ -6280,6 +7881,18 @@ extern "C" {
         indx: u32,
         values: &[f32],
     );
+    #[cfg(feature = "Float32Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = vertexAttrib2fv)]
+    #[doc = "The `vertexAttrib2fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/vertexAttrib2fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`*"]
+    pub fn vertex_attrib2fv_with_js_f32_array(
+        this: &WebGl2RenderingContext,
+        indx: u32,
+        values: &::js_sys::Float32Array,
+    );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = vertexAttrib2fv)]
     #[doc = "The `vertexAttrib2fv()` method."]
     #[doc = ""]
@@ -6308,6 +7921,18 @@ extern "C" {
         this: &WebGl2RenderingContext,
         indx: u32,
         values: &[f32],
+    );
+    #[cfg(feature = "Float32Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = vertexAttrib3fv)]
+    #[doc = "The `vertexAttrib3fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/vertexAttrib3fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`*"]
+    pub fn vertex_attrib3fv_with_js_f32_array(
+        this: &WebGl2RenderingContext,
+        indx: u32,
+        values: &::js_sys::Float32Array,
     );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = vertexAttrib3fv)]
     #[doc = "The `vertexAttrib3fv()` method."]
@@ -6344,6 +7969,18 @@ extern "C" {
         this: &WebGl2RenderingContext,
         indx: u32,
         values: &[f32],
+    );
+    #[cfg(feature = "Float32Array")]
+    # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = vertexAttrib4fv)]
+    #[doc = "The `vertexAttrib4fv()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/vertexAttrib4fv)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Float32Array`, `WebGl2RenderingContext`*"]
+    pub fn vertex_attrib4fv_with_js_f32_array(
+        this: &WebGl2RenderingContext,
+        indx: u32,
+        values: &::js_sys::Float32Array,
     );
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = vertexAttrib4fv)]
     #[doc = "The `vertexAttrib4fv()` method."]

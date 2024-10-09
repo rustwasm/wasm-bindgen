@@ -117,6 +117,42 @@ pub(crate) enum IdentifierType<'a> {
     AllowSharedBufferSource {
         immutable: bool,
     },
+    Int8Slice {
+        allow_shared: bool,
+        immutable: bool,
+    },
+    Uint8Slice {
+        allow_shared: bool,
+        immutable: bool,
+    },
+    Uint8ClampedSlice {
+        allow_shared: bool,
+        immutable: bool,
+    },
+    Int16Slice {
+        allow_shared: bool,
+        immutable: bool,
+    },
+    Uint16Slice {
+        allow_shared: bool,
+        immutable: bool,
+    },
+    Int32Slice {
+        allow_shared: bool,
+        immutable: bool,
+    },
+    Uint32Slice {
+        allow_shared: bool,
+        immutable: bool,
+    },
+    Float32Slice {
+        allow_shared: bool,
+        immutable: bool,
+    },
+    Float64Slice {
+        allow_shared: bool,
+        immutable: bool,
+    },
 }
 
 pub(crate) trait ToIdlType<'a> {
@@ -556,6 +592,15 @@ impl<'a> IdlType<'a> {
                     immutable: *immutable,
                 }
                 .push_snake_case_name(dst),
+                IdentifierType::Int8Slice { .. } => dst.push_str("i8_slice"),
+                IdentifierType::Uint8Slice { .. } => dst.push_str("u8_slice"),
+                IdentifierType::Uint8ClampedSlice { .. } => dst.push_str("u8_clamped_slice"),
+                IdentifierType::Int16Slice { .. } => dst.push_str("i16_slice"),
+                IdentifierType::Uint16Slice { .. } => dst.push_str("u16_slice"),
+                IdentifierType::Int32Slice { .. } => dst.push_str("i32_slice"),
+                IdentifierType::Uint32Slice { .. } => dst.push_str("u32_slice"),
+                IdentifierType::Float32Slice { .. } => dst.push_str("f32_slice"),
+                IdentifierType::Float64Slice { .. } => dst.push_str("f64_slice"),
             },
         }
     }
@@ -614,17 +659,42 @@ impl<'a> IdlType<'a> {
 
             IdlType::ArrayBuffer => Ok(js_sys("ArrayBuffer")),
             IdlType::DataView { .. } => Ok(js_sys("DataView")),
-            IdlType::Int8Array { immutable, .. } => Ok(Some(array("i8", pos, *immutable))),
-            IdlType::Uint8Array { immutable, .. } => Ok(Some(array("u8", pos, *immutable))),
-            IdlType::Uint8ClampedArray { immutable, .. } => {
-                Ok(Some(clamped(array("u8", pos, *immutable))))
-            }
-            IdlType::Int16Array { immutable, .. } => Ok(Some(array("i16", pos, *immutable))),
-            IdlType::Uint16Array { immutable, .. } => Ok(Some(array("u16", pos, *immutable))),
-            IdlType::Int32Array { immutable, .. } => Ok(Some(array("i32", pos, *immutable))),
-            IdlType::Uint32Array { immutable, .. } => Ok(Some(array("u32", pos, *immutable))),
-            IdlType::Float32Array { immutable, .. } => Ok(Some(array("f32", pos, *immutable))),
-            IdlType::Float64Array { immutable, .. } => Ok(Some(array("f64", pos, *immutable))),
+            IdlType::Int8Array { immutable, .. } => match pos {
+                TypePosition::Argument => Ok(js_sys("Int8Array")),
+                TypePosition::Return => Ok(Some(array("i8", pos, *immutable))),
+            },
+            IdlType::Uint8Array { immutable, .. } => match pos {
+                TypePosition::Argument => Ok(js_sys("Uint8Array")),
+                TypePosition::Return => Ok(Some(array("u8", pos, *immutable))),
+            },
+            IdlType::Uint8ClampedArray { immutable, .. } => match pos {
+                TypePosition::Argument => Ok(js_sys("Uint8ClampedArray")),
+                TypePosition::Return => Ok(Some(clamped(array("u8", pos, *immutable)))),
+            },
+            IdlType::Int16Array { immutable, .. } => match pos {
+                TypePosition::Argument => Ok(js_sys("Int16Array")),
+                TypePosition::Return => Ok(Some(array("i16", pos, *immutable))),
+            },
+            IdlType::Uint16Array { immutable, .. } => match pos {
+                TypePosition::Argument => Ok(js_sys("Uint16Array")),
+                TypePosition::Return => Ok(Some(array("u16", pos, *immutable))),
+            },
+            IdlType::Int32Array { immutable, .. } => match pos {
+                TypePosition::Argument => Ok(js_sys("Int32Array")),
+                TypePosition::Return => Ok(Some(array("i32", pos, *immutable))),
+            },
+            IdlType::Uint32Array { immutable, .. } => match pos {
+                TypePosition::Argument => Ok(js_sys("Uint32Array")),
+                TypePosition::Return => Ok(Some(array("u32", pos, *immutable))),
+            },
+            IdlType::Float32Array { immutable, .. } => match pos {
+                TypePosition::Argument => Ok(js_sys("Float32Array")),
+                TypePosition::Return => Ok(Some(array("f32", pos, *immutable))),
+            },
+            IdlType::Float64Array { immutable, .. } => match pos {
+                TypePosition::Argument => Ok(js_sys("Float64Array")),
+                TypePosition::Return => Ok(Some(array("f64", pos, *immutable))),
+            },
 
             IdlType::ArrayBufferView { .. } | IdlType::BufferSource { .. } => Ok(js_sys("Object")),
 
@@ -781,6 +851,13 @@ impl<'a> IdlType<'a> {
 
                 vec![
                     view,
+                    IdlType::Identifier {
+                        name: "Uint8Array",
+                        ty: IdentifierType::Uint8Slice {
+                            allow_shared: *allow_shared,
+                            immutable: *immutable,
+                        },
+                    },
                     IdlType::Uint8Array {
                         allow_shared: *allow_shared,
                         immutable: *immutable,
@@ -795,6 +872,13 @@ impl<'a> IdlType<'a> {
                     allow_shared: *allow_shared,
                     immutable: *immutable,
                 },
+                IdlType::Identifier {
+                    name: "Uint8Array",
+                    ty: IdentifierType::Uint8Slice {
+                        allow_shared: *allow_shared,
+                        immutable: *immutable,
+                    },
+                },
                 IdlType::Uint8Array {
                     allow_shared: *allow_shared,
                     immutable: *immutable,
@@ -802,6 +886,150 @@ impl<'a> IdlType<'a> {
             ],
             IdlType::LongLong => vec![IdlType::Long, IdlType::Double],
             IdlType::UnsignedLongLong => vec![IdlType::UnsignedLong, IdlType::Double],
+            IdlType::Int8Array {
+                allow_shared,
+                immutable,
+            } => vec![
+                IdlType::Identifier {
+                    name: "Int8Array",
+                    ty: IdentifierType::Int8Slice {
+                        allow_shared: *allow_shared,
+                        immutable: *immutable,
+                    },
+                },
+                IdlType::Int8Array {
+                    allow_shared: *allow_shared,
+                    immutable: *immutable,
+                },
+            ],
+            IdlType::Uint8Array {
+                allow_shared,
+                immutable,
+            } => vec![
+                IdlType::Identifier {
+                    name: "Uint8Array",
+                    ty: IdentifierType::Uint8Slice {
+                        allow_shared: *allow_shared,
+                        immutable: *immutable,
+                    },
+                },
+                IdlType::Uint8Array {
+                    allow_shared: *allow_shared,
+                    immutable: *immutable,
+                },
+            ],
+            IdlType::Uint8ClampedArray {
+                allow_shared,
+                immutable,
+            } => vec![
+                IdlType::Identifier {
+                    name: "Uint8ClampedArray",
+                    ty: IdentifierType::Uint8ClampedSlice {
+                        allow_shared: *allow_shared,
+                        immutable: *immutable,
+                    },
+                },
+                IdlType::Uint8ClampedArray {
+                    allow_shared: *allow_shared,
+                    immutable: *immutable,
+                },
+            ],
+            IdlType::Int16Array {
+                allow_shared,
+                immutable,
+            } => vec![
+                IdlType::Identifier {
+                    name: "Int16Array",
+                    ty: IdentifierType::Int16Slice {
+                        allow_shared: *allow_shared,
+                        immutable: *immutable,
+                    },
+                },
+                IdlType::Int16Array {
+                    allow_shared: *allow_shared,
+                    immutable: *immutable,
+                },
+            ],
+            IdlType::Uint16Array {
+                allow_shared,
+                immutable,
+            } => vec![
+                IdlType::Identifier {
+                    name: "Uint16Array",
+                    ty: IdentifierType::Uint16Slice {
+                        allow_shared: *allow_shared,
+                        immutable: *immutable,
+                    },
+                },
+                IdlType::Uint16Array {
+                    allow_shared: *allow_shared,
+                    immutable: *immutable,
+                },
+            ],
+            IdlType::Int32Array {
+                allow_shared,
+                immutable,
+            } => vec![
+                IdlType::Identifier {
+                    name: "Int32Array",
+                    ty: IdentifierType::Int32Slice {
+                        allow_shared: *allow_shared,
+                        immutable: *immutable,
+                    },
+                },
+                IdlType::Int32Array {
+                    allow_shared: *allow_shared,
+                    immutable: *immutable,
+                },
+            ],
+            IdlType::Uint32Array {
+                allow_shared,
+                immutable,
+            } => vec![
+                IdlType::Identifier {
+                    name: "Uint32Array",
+                    ty: IdentifierType::Uint32Slice {
+                        allow_shared: *allow_shared,
+                        immutable: *immutable,
+                    },
+                },
+                IdlType::Uint32Array {
+                    allow_shared: *allow_shared,
+                    immutable: *immutable,
+                },
+            ],
+            IdlType::Float32Array {
+                allow_shared,
+                immutable,
+            } => vec![
+                IdlType::Identifier {
+                    name: "Float32Array",
+                    ty: IdentifierType::Float32Slice {
+                        allow_shared: *allow_shared,
+                        immutable: *immutable,
+                    },
+                },
+                IdlType::Float32Array {
+                    allow_shared: *allow_shared,
+                    immutable: *immutable,
+                },
+            ],
+            IdlType::Float64Array {
+                allow_shared,
+                immutable,
+            } => vec![
+                IdlType::Identifier {
+                    name: "Float64Array",
+                    ty: IdentifierType::Float64Slice {
+                        allow_shared: *allow_shared,
+                        immutable: *immutable,
+                    },
+                },
+                IdlType::Float64Array {
+                    allow_shared: *allow_shared,
+                    immutable: *immutable,
+                },
+            ],
             idl_type @ IdlType::Identifier {
                 name: identifier,
                 ty,
@@ -884,6 +1112,25 @@ impl<'a> IdentifierType<'a> {
                 immutable: *immutable,
             }
             .to_syn_type(pos),
+            IdentifierType::Int8Slice { immutable, .. } => Ok(Some(array("i8", pos, *immutable))),
+            IdentifierType::Uint8Slice { immutable, .. } => Ok(Some(array("u8", pos, *immutable))),
+            IdentifierType::Uint8ClampedSlice { immutable, .. } => {
+                Ok(Some(clamped(array("u8", pos, *immutable))))
+            }
+            IdentifierType::Int16Slice { immutable, .. } => Ok(Some(array("i16", pos, *immutable))),
+            IdentifierType::Uint16Slice { immutable, .. } => {
+                Ok(Some(array("u16", pos, *immutable)))
+            }
+            IdentifierType::Int32Slice { immutable, .. } => Ok(Some(array("i32", pos, *immutable))),
+            IdentifierType::Uint32Slice { immutable, .. } => {
+                Ok(Some(array("u32", pos, *immutable)))
+            }
+            IdentifierType::Float32Slice { immutable, .. } => {
+                Ok(Some(array("f32", pos, *immutable)))
+            }
+            IdentifierType::Float64Slice { immutable, .. } => {
+                Ok(Some(array("f64", pos, *immutable)))
+            }
         }
     }
 }
