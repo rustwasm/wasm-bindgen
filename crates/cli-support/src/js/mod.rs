@@ -3771,11 +3771,11 @@ __wbg_set_wasm(wasm);"
     }
 
     fn generate_enum(&mut self, enum_: &AuxEnum) -> Result<(), Error> {
-        let docs = format_doc_comments(&enum_.comments, None);
         let mut variants = String::new();
 
         if enum_.generate_typescript {
-            self.typescript.push_str(&docs);
+            self.typescript
+                .push_str(&format_doc_comments(&enum_.comments, None));
             self.typescript
                 .push_str(&format!("export enum {} {{", enum_.name));
         }
@@ -3802,6 +3802,18 @@ __wbg_set_wasm(wasm);"
         if enum_.generate_typescript {
             self.typescript.push_str("\n}\n");
         }
+
+        // add an `@enum {1|2|3}` to ensure that enums type-check even without .d.ts
+        let mut at_enum = "@enum {".to_string();
+        for (i, (_, value, _)) in enum_.variants.iter().enumerate() {
+            if i != 0 {
+                at_enum.push('|');
+            }
+            at_enum.push_str(&value.to_string());
+        }
+        at_enum.push('}');
+        let docs = format_doc_comments(&enum_.comments, Some(at_enum));
+
         self.export(
             &enum_.name,
             &format!("Object.freeze({{ {} }})", variants),
@@ -3812,15 +3824,19 @@ __wbg_set_wasm(wasm);"
     }
 
     fn generate_string_enum(&mut self, string_enum: &AuxStringEnum) -> Result<(), Error> {
-        let docs = format_doc_comments(&string_enum.comments, None);
-
         let variants: Vec<_> = string_enum
             .variant_values
             .iter()
             .map(|v| format!("\"{v}\""))
             .collect();
+        let type_expr = if variants.is_empty() {
+            "never".to_string()
+        } else {
+            variants.join(" | ")
+        };
 
         if string_enum.generate_typescript {
+            let docs = format_doc_comments(&string_enum.comments, None);
             self.typescript.push_str(&docs);
             if string_enum.public {
                 self.typescript.push_str("export ");
@@ -3828,18 +3844,19 @@ __wbg_set_wasm(wasm);"
             self.typescript.push_str("type ");
             self.typescript.push_str(&string_enum.name);
             self.typescript.push_str(" = ");
-
-            if variants.is_empty() {
-                self.typescript.push_str("never");
-            } else {
-                self.typescript.push_str(&variants.join(" | "));
-            }
-
+            self.typescript.push_str(&type_expr);
             self.typescript.push_str(";\n");
         }
 
+        // generate type definition in case there is no .d.ts file
+        let at = format!(
+            "@typedef {{{type_expr}}} {name}\n@type {{{name}[]}}",
+            name = string_enum.name
+        );
+        let docs = format_doc_comments(&string_enum.comments, Some(at));
+
         self.global(&format!(
-            "const __wbindgen_enum_{name} = [{values}];\n",
+            "{docs}const __wbindgen_enum_{name} = [{values}];\n",
             name = string_enum.name,
             values = variants.join(", ")
         ));

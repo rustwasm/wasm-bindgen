@@ -64,13 +64,28 @@ export function option_string_enum_echo(color) {
 
 /**
  * A color.
+ * @enum {0|1|2}
  */
 export const Color = Object.freeze({ Green:0,"0":"Green",Yellow:1,"1":"Yellow",Red:2,"2":"Red", });
 
+/**
+ * The name of a color.
+ * @typedef {"green" | "yellow" | "red"} ColorName
+ * @type {ColorName[]}
+ */
 const __wbindgen_enum_ColorName = ["green", "yellow", "red"];
 
+/**
+ * An unused string enum.
+ * @typedef {"foo" | "bar"} FooBar
+ * @type {FooBar[]}
+ */
 const __wbindgen_enum_FooBar = ["foo", "bar"];
 
+/**
+ * @typedef {"foo" | "bar"} PrivateStringEnum
+ * @type {PrivateStringEnum[]}
+ */
 const __wbindgen_enum_PrivateStringEnum = ["foo", "bar"];
 
 export function __wbindgen_throw(arg0, arg1) {
