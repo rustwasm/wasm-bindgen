@@ -48,6 +48,15 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
+    pub fn new_with_u8_slice_sequence(
+        blob_parts: &::wasm_bindgen::JsValue,
+    ) -> Result<Blob, JsValue>;
+    #[wasm_bindgen(catch, constructor, js_class = "Blob")]
+    #[doc = "The `new Blob(..)` constructor, creating a new instance of `Blob`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
     pub fn new_with_u8_array_sequence(
         blob_parts: &::wasm_bindgen::JsValue,
     ) -> Result<Blob, JsValue>;
@@ -73,6 +82,17 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`, `BlobPropertyBag`*"]
     pub fn new_with_buffer_source_sequence_and_options(
+        blob_parts: &::wasm_bindgen::JsValue,
+        options: &BlobPropertyBag,
+    ) -> Result<Blob, JsValue>;
+    #[cfg(feature = "BlobPropertyBag")]
+    #[wasm_bindgen(catch, constructor, js_class = "Blob")]
+    #[doc = "The `new Blob(..)` constructor, creating a new instance of `Blob`."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Blob`, `BlobPropertyBag`*"]
+    pub fn new_with_u8_slice_sequence_and_options(
         blob_parts: &::wasm_bindgen::JsValue,
         options: &BlobPropertyBag,
     ) -> Result<Blob, JsValue>;

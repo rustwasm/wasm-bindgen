@@ -91,4 +91,88 @@ extern "C" {
         mag_response: &mut [f32],
         phase_response: &mut [f32],
     );
+    # [wasm_bindgen (method , structural , js_class = "BiquadFilterNode" , js_name = getFrequencyResponse)]
+    #[doc = "The `getFrequencyResponse()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode/getFrequencyResponse)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterNode`*"]
+    pub fn get_frequency_response_with_f32_array_and_f32_slice_and_f32_slice(
+        this: &BiquadFilterNode,
+        frequency_hz: &::js_sys::Float32Array,
+        mag_response: &mut [f32],
+        phase_response: &mut [f32],
+    );
+    # [wasm_bindgen (method , structural , js_class = "BiquadFilterNode" , js_name = getFrequencyResponse)]
+    #[doc = "The `getFrequencyResponse()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode/getFrequencyResponse)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterNode`*"]
+    pub fn get_frequency_response_with_f32_slice_and_f32_array_and_f32_slice(
+        this: &BiquadFilterNode,
+        frequency_hz: &mut [f32],
+        mag_response: &::js_sys::Float32Array,
+        phase_response: &mut [f32],
+    );
+    # [wasm_bindgen (method , structural , js_class = "BiquadFilterNode" , js_name = getFrequencyResponse)]
+    #[doc = "The `getFrequencyResponse()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode/getFrequencyResponse)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterNode`*"]
+    pub fn get_frequency_response_with_f32_array_and_f32_array_and_f32_slice(
+        this: &BiquadFilterNode,
+        frequency_hz: &::js_sys::Float32Array,
+        mag_response: &::js_sys::Float32Array,
+        phase_response: &mut [f32],
+    );
+    # [wasm_bindgen (method , structural , js_class = "BiquadFilterNode" , js_name = getFrequencyResponse)]
+    #[doc = "The `getFrequencyResponse()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode/getFrequencyResponse)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterNode`*"]
+    pub fn get_frequency_response_with_f32_slice_and_f32_slice_and_f32_array(
+        this: &BiquadFilterNode,
+        frequency_hz: &mut [f32],
+        mag_response: &mut [f32],
+        phase_response: &::js_sys::Float32Array,
+    );
+    # [wasm_bindgen (method , structural , js_class = "BiquadFilterNode" , js_name = getFrequencyResponse)]
+    #[doc = "The `getFrequencyResponse()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode/getFrequencyResponse)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterNode`*"]
+    pub fn get_frequency_response_with_f32_array_and_f32_slice_and_f32_array(
+        this: &BiquadFilterNode,
+        frequency_hz: &::js_sys::Float32Array,
+        mag_response: &mut [f32],
+        phase_response: &::js_sys::Float32Array,
+    );
+    # [wasm_bindgen (method , structural , js_class = "BiquadFilterNode" , js_name = getFrequencyResponse)]
+    #[doc = "The `getFrequencyResponse()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode/getFrequencyResponse)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterNode`*"]
+    pub fn get_frequency_response_with_f32_slice_and_f32_array_and_f32_array(
+        this: &BiquadFilterNode,
+        frequency_hz: &mut [f32],
+        mag_response: &::js_sys::Float32Array,
+        phase_response: &::js_sys::Float32Array,
+    );
+    # [wasm_bindgen (method , structural , js_class = "BiquadFilterNode" , js_name = getFrequencyResponse)]
+    #[doc = "The `getFrequencyResponse()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode/getFrequencyResponse)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `BiquadFilterNode`*"]
+    pub fn get_frequency_response_with_f32_array_and_f32_array_and_f32_array(
+        this: &BiquadFilterNode,
+        frequency_hz: &::js_sys::Float32Array,
+        mag_response: &::js_sys::Float32Array,
+        phase_response: &::js_sys::Float32Array,
+    );
 }

@@ -127,7 +127,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn receive_feature_report(this: &HidDevice, report_id: u8) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "HIDDevice" , js_name = sendFeatureReport)]
+    # [wasm_bindgen (catch , method , structural , js_class = "HIDDevice" , js_name = sendFeatureReport)]
     #[doc = "The `sendFeatureReport()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HIDDevice/sendFeatureReport)"]
@@ -140,9 +140,24 @@ extern "C" {
         this: &HidDevice,
         report_id: u8,
         data: &::js_sys::Object,
-    ) -> ::js_sys::Promise;
+    ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "HIDDevice" , js_name = sendFeatureReport)]
+    # [wasm_bindgen (catch , method , structural , js_class = "HIDDevice" , js_name = sendFeatureReport)]
+    #[doc = "The `sendFeatureReport()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HIDDevice/sendFeatureReport)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HidDevice`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn send_feature_report_with_u8_slice(
+        this: &HidDevice,
+        report_id: u8,
+        data: &mut [u8],
+    ) -> Result<::js_sys::Promise, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    # [wasm_bindgen (catch , method , structural , js_class = "HIDDevice" , js_name = sendFeatureReport)]
     #[doc = "The `sendFeatureReport()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HIDDevice/sendFeatureReport)"]
@@ -154,10 +169,10 @@ extern "C" {
     pub fn send_feature_report_with_u8_array(
         this: &HidDevice,
         report_id: u8,
-        data: &mut [u8],
-    ) -> ::js_sys::Promise;
+        data: &::js_sys::Uint8Array,
+    ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "HIDDevice" , js_name = sendReport)]
+    # [wasm_bindgen (catch , method , structural , js_class = "HIDDevice" , js_name = sendReport)]
     #[doc = "The `sendReport()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HIDDevice/sendReport)"]
@@ -170,9 +185,24 @@ extern "C" {
         this: &HidDevice,
         report_id: u8,
         data: &::js_sys::Object,
-    ) -> ::js_sys::Promise;
+    ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "HIDDevice" , js_name = sendReport)]
+    # [wasm_bindgen (catch , method , structural , js_class = "HIDDevice" , js_name = sendReport)]
+    #[doc = "The `sendReport()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HIDDevice/sendReport)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HidDevice`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn send_report_with_u8_slice(
+        this: &HidDevice,
+        report_id: u8,
+        data: &mut [u8],
+    ) -> Result<::js_sys::Promise, JsValue>;
+    #[cfg(web_sys_unstable_apis)]
+    # [wasm_bindgen (catch , method , structural , js_class = "HIDDevice" , js_name = sendReport)]
     #[doc = "The `sendReport()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HIDDevice/sendReport)"]
@@ -184,6 +214,6 @@ extern "C" {
     pub fn send_report_with_u8_array(
         this: &HidDevice,
         report_id: u8,
-        data: &mut [u8],
-    ) -> ::js_sys::Promise;
+        data: &::js_sys::Uint8Array,
+    ) -> Result<::js_sys::Promise, JsValue>;
 }

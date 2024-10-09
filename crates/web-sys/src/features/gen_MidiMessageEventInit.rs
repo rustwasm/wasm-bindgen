@@ -40,6 +40,16 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `MidiMessageEventInit`*"]
     #[wasm_bindgen(method, setter = "composed")]
     pub fn set_composed(this: &MidiMessageEventInit, val: bool);
+    #[doc = "Get the `data` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MidiMessageEventInit`*"]
+    #[wasm_bindgen(method, getter = "data")]
+    pub fn get_data(this: &MidiMessageEventInit) -> Option<Vec<u8>>;
+    #[doc = "Change the `data` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MidiMessageEventInit`*"]
+    #[wasm_bindgen(method, setter = "data")]
+    pub fn set_data(this: &MidiMessageEventInit, val: &::js_sys::Uint8Array);
 }
 impl MidiMessageEventInit {
     #[doc = "Construct a new `MidiMessageEventInit`."]
@@ -63,6 +73,11 @@ impl MidiMessageEventInit {
     #[deprecated = "Use `set_composed()` instead."]
     pub fn composed(&mut self, val: bool) -> &mut Self {
         self.set_composed(val);
+        self
+    }
+    #[deprecated = "Use `set_data()` instead."]
+    pub fn data(&mut self, val: &::js_sys::Uint8Array) -> &mut Self {
+        self.set_data(val);
         self
     }
 }
