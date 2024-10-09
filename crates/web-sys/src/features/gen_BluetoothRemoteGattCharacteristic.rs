@@ -206,7 +206,7 @@ extern "C" {
         value: &::js_sys::Object,
     ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValue)]
+    # [wasm_bindgen (catch , method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValue)]
     #[doc = "The `writeValue()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/writeValue)"]
@@ -218,7 +218,7 @@ extern "C" {
     pub fn write_value_with_u8_slice(
         this: &BluetoothRemoteGattCharacteristic,
         value: &mut [u8],
-    ) -> ::js_sys::Promise;
+    ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (catch , method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValue)]
     #[doc = "The `writeValue()` method."]
@@ -248,7 +248,7 @@ extern "C" {
         value: &::js_sys::Object,
     ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValueWithResponse)]
+    # [wasm_bindgen (catch , method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValueWithResponse)]
     #[doc = "The `writeValueWithResponse()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/writeValueWithResponse)"]
@@ -260,7 +260,7 @@ extern "C" {
     pub fn write_value_with_response_with_u8_slice(
         this: &BluetoothRemoteGattCharacteristic,
         value: &mut [u8],
-    ) -> ::js_sys::Promise;
+    ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (catch , method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValueWithResponse)]
     #[doc = "The `writeValueWithResponse()` method."]
@@ -290,7 +290,7 @@ extern "C" {
         value: &::js_sys::Object,
     ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValueWithoutResponse)]
+    # [wasm_bindgen (catch , method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValueWithoutResponse)]
     #[doc = "The `writeValueWithoutResponse()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTCharacteristic/writeValueWithoutResponse)"]
@@ -302,7 +302,7 @@ extern "C" {
     pub fn write_value_without_response_with_u8_slice(
         this: &BluetoothRemoteGattCharacteristic,
         value: &mut [u8],
-    ) -> ::js_sys::Promise;
+    ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (catch , method , structural , js_class = "BluetoothRemoteGATTCharacteristic" , js_name = writeValueWithoutResponse)]
     #[doc = "The `writeValueWithoutResponse()` method."]

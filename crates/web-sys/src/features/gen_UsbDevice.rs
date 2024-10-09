@@ -291,7 +291,7 @@ extern "C" {
     ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "UsbControlTransferParameters")]
-    # [wasm_bindgen (method , structural , js_class = "USBDevice" , js_name = controlTransferOut)]
+    # [wasm_bindgen (catch , method , structural , js_class = "USBDevice" , js_name = controlTransferOut)]
     #[doc = "The `controlTransferOut()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBDevice/controlTransferOut)"]
@@ -304,7 +304,7 @@ extern "C" {
         this: &UsbDevice,
         setup: &UsbControlTransferParameters,
         data: &mut [u8],
-    ) -> ::js_sys::Promise;
+    ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "UsbControlTransferParameters")]
     # [wasm_bindgen (catch , method , structural , js_class = "USBDevice" , js_name = controlTransferOut)]
@@ -364,7 +364,7 @@ extern "C" {
         packet_lengths: &::wasm_bindgen::JsValue,
     ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "USBDevice" , js_name = isochronousTransferOut)]
+    # [wasm_bindgen (catch , method , structural , js_class = "USBDevice" , js_name = isochronousTransferOut)]
     #[doc = "The `isochronousTransferOut()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBDevice/isochronousTransferOut)"]
@@ -378,7 +378,7 @@ extern "C" {
         endpoint_number: u8,
         data: &mut [u8],
         packet_lengths: &::wasm_bindgen::JsValue,
-    ) -> ::js_sys::Promise;
+    ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (catch , method , structural , js_class = "USBDevice" , js_name = isochronousTransferOut)]
     #[doc = "The `isochronousTransferOut()` method."]
@@ -481,7 +481,7 @@ extern "C" {
         data: &::js_sys::Object,
     ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "USBDevice" , js_name = transferOut)]
+    # [wasm_bindgen (catch , method , structural , js_class = "USBDevice" , js_name = transferOut)]
     #[doc = "The `transferOut()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/USBDevice/transferOut)"]
@@ -494,7 +494,7 @@ extern "C" {
         this: &UsbDevice,
         endpoint_number: u8,
         data: &mut [u8],
-    ) -> ::js_sys::Promise;
+    ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (catch , method , structural , js_class = "USBDevice" , js_name = transferOut)]
     #[doc = "The `transferOut()` method."]

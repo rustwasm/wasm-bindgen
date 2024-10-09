@@ -15,7 +15,7 @@ fn take_and_return_a_bunch_of_slices() {
     assert_eq!(f.i32_with_i32_slice(&mut [1, 2]), [3, 4, 5]);
     assert_eq!(f.u8_with_u8_slice(&mut [1, 2]), [3, 4, 5]);
     assert_eq!(f.u16_with_u16_slice(&mut [1, 2]), [3, 4, 5]);
-    assert_eq!(f.u32_with_u32_slice(&mut [1, 2]), [3, 4, 5]);
+    assert_eq!(f.u32_with_u32_slice(&mut [1, 2]), Ok(vec![3, 4, 5]));
     assert_eq!(
         f.u8_clamped_with_u8_clamped_slice(Clamped(&mut [1, 2])).0,
         [3, 4, 5]

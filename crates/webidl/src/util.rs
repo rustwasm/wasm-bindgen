@@ -732,7 +732,20 @@ fn arg_throws(ty: &IdlType<'_>) -> bool {
         | IdlType::Float32Array { allow_shared, .. }
         | IdlType::Float64Array { allow_shared, .. }
         | IdlType::ArrayBufferView { allow_shared, .. }
-        | IdlType::BufferSource { allow_shared, .. } => !allow_shared,
+        | IdlType::BufferSource { allow_shared, .. }
+        | IdlType::Identifier {
+            ty:
+                IdentifierType::Int8Slice { allow_shared, .. }
+                | IdentifierType::Uint8Slice { allow_shared, .. }
+                | IdentifierType::Uint8ClampedSlice { allow_shared, .. }
+                | IdentifierType::Int16Slice { allow_shared, .. }
+                | IdentifierType::Uint16Slice { allow_shared, .. }
+                | IdentifierType::Int32Slice { allow_shared, .. }
+                | IdentifierType::Uint32Slice { allow_shared, .. }
+                | IdentifierType::Float32Slice { allow_shared, .. }
+                | IdentifierType::Float64Slice { allow_shared, .. },
+            ..
+        } => !allow_shared,
         IdlType::Nullable(item) => arg_throws(item),
         IdlType::Union(list) => list.iter().any(arg_throws),
         // catch-all for everything else like Object

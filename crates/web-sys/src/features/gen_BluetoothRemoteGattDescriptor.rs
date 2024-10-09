@@ -78,7 +78,7 @@ extern "C" {
         value: &::js_sys::Object,
     ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTDescriptor" , js_name = writeValue)]
+    # [wasm_bindgen (catch , method , structural , js_class = "BluetoothRemoteGATTDescriptor" , js_name = writeValue)]
     #[doc = "The `writeValue()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTDescriptor/writeValue)"]
@@ -90,7 +90,7 @@ extern "C" {
     pub fn write_value_with_u8_slice(
         this: &BluetoothRemoteGattDescriptor,
         value: &mut [u8],
-    ) -> ::js_sys::Promise;
+    ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (catch , method , structural , js_class = "BluetoothRemoteGATTDescriptor" , js_name = writeValue)]
     #[doc = "The `writeValue()` method."]
