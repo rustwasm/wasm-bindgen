@@ -29,6 +29,9 @@
 * Added `unsupported` crate to `wasm_bindgen_test(unsupported = test)` as a way of running tests on non-Wasm targets as well.
   [#4150](https://github.com/rustwasm/wasm-bindgen/pull/4150)
 
+* Added support for `Self` in complex type expressions in methods.
+  [#4155](https://github.com/rustwasm/wasm-bindgen/pull/4155)
+
 ### Changed
 
 * Implicitly enable reference type and multivalue transformations if the module already makes use of the corresponding target features.
