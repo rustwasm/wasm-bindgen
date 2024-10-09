@@ -11,7 +11,7 @@ use quote::ToTokens;
 use syn::ext::IdentExt;
 use syn::parse::{Parse, ParseStream, Result as SynResult};
 use syn::spanned::Spanned;
-use syn::{ItemFn, Lit, MacroDelimiter, ReturnType};
+use syn::{ItemFn, Lit, MacroDelimiter, ReturnType, Type};
 
 use crate::ClassMarker;
 
@@ -954,13 +954,19 @@ fn function_from_decl(
                     panic!("arguments cannot be `self`")
                 }
                 assert!(method_self.is_none());
-                if r.reference.is_none() {
-                    method_self = Some(ast::MethodSelf::ByValue);
-                } else if r.mutability.is_some() {
-                    method_self = Some(ast::MethodSelf::RefMutable);
-                } else {
-                    method_self = Some(ast::MethodSelf::RefShared);
-                }
+                // r could be `&self`, `&mut self`, `self`, `self: Self`,
+                // `self: &Self`, `self: &mut Self`, `self: Box<Self>`, or
+                // something else
+                method_self = Some(match &*r.ty {
+                    Type::Reference(ty) => {
+                        if ty.mutability.is_some() {
+                            ast::MethodSelf::RefMutable
+                        } else {
+                            ast::MethodSelf::RefShared
+                        }
+                    }
+                    _ => ast::MethodSelf::ByValue,
+                });
                 None
             }
         })
