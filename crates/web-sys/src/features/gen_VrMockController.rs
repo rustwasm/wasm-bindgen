@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockController/newPoseMove)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrMockController`*"]
-    pub fn new_pose_move_with_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice(
+    pub fn new_pose_move(
         this: &VrMockController,
         position: Option<&mut [f32]>,
         linear_velocity: Option<&mut [f32]>,

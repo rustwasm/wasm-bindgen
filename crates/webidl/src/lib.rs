@@ -420,10 +420,10 @@ impl<'src> FirstPassRecord<'src> {
 
         // use argument position now as we're just binding setters
         let ty = idl_type
-            .to_syn_type(TypePosition::Argument)
+            .to_syn_type(TypePosition::Argument, false)
             .unwrap_or(None)?;
 
-        let mut return_ty = idl_type.to_syn_type(TypePosition::Return).unwrap().unwrap();
+        let mut return_ty = idl_type.to_syn_type(TypePosition::Return, false).unwrap().unwrap();
 
         if field.required.is_none() {
             return_ty = optional_return_ty(return_ty);
@@ -519,7 +519,7 @@ impl<'src> FirstPassRecord<'src> {
         unstable: bool,
     ) {
         let idl_type = member.definition.const_type.to_idl_type(self);
-        let ty = idl_type.to_syn_type(TypePosition::Return).unwrap().unwrap();
+        let ty = idl_type.to_syn_type(TypePosition::Return, false).unwrap().unwrap();
 
         let js_name = member.definition.identifier.0;
         let name = rust_ident(shouty_snake_case_ident(js_name).as_str());
@@ -574,7 +574,7 @@ impl<'src> FirstPassRecord<'src> {
         unstable: bool,
     ) {
         let idl_type = member.const_type.to_idl_type(self);
-        let ty = idl_type.to_syn_type(TypePosition::Return).unwrap().unwrap();
+        let ty = idl_type.to_syn_type(TypePosition::Return, false).unwrap().unwrap();
 
         let js_name = member.identifier.0;
         let name = rust_ident(shouty_snake_case_ident(js_name).as_str());
@@ -728,7 +728,7 @@ impl<'src> FirstPassRecord<'src> {
         let ty = type_
             .type_
             .to_idl_type(self)
-            .to_syn_type(TypePosition::Return)
+            .to_syn_type(TypePosition::Return, false)
             .unwrap_or(None);
 
         // Skip types which can't be converted
@@ -759,7 +759,7 @@ impl<'src> FirstPassRecord<'src> {
                 let ty = type_
                     .type_
                     .to_idl_type(self)
-                    .to_syn_type(TypePosition::Argument)
+                    .to_syn_type(TypePosition::Argument, true)
                     .unwrap_or(None);
 
                 // Skip types which can't be converted
@@ -778,7 +778,7 @@ impl<'src> FirstPassRecord<'src> {
             }
 
             for (idl, ty) in idls.into_iter().filter_map(|idl| {
-                idl.to_syn_type(TypePosition::Argument)
+                idl.to_syn_type(TypePosition::Argument, false)
                     .ok()
                     .flatten()
                     .map(|ty| (idl, ty))
@@ -866,12 +866,12 @@ impl<'src> FirstPassRecord<'src> {
                         name: snake_case_ident(identifier),
                         js_name: identifier.to_string(),
                         ty: idl_type::IdentifierType::Callback
-                            .to_syn_type(pos)
+                            .to_syn_type(pos, false)
                             .unwrap()
                             .unwrap(),
                         return_ty: optional_return_ty(
                             idl_type::IdentifierType::Callback
-                                .to_syn_type(TypePosition::Return)
+                                .to_syn_type(TypePosition::Return, false)
                                 .unwrap()
                                 .unwrap(),
                         ),

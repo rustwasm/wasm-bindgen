@@ -606,7 +606,11 @@ impl<'a> IdlType<'a> {
     }
 
     /// Converts to syn type if possible.
-    pub(crate) fn to_syn_type(&self, pos: TypePosition) -> Result<Option<syn::Type>, TypeError> {
+    pub(crate) fn to_syn_type(
+        &self,
+        pos: TypePosition,
+        legacy: bool,
+    ) -> Result<Option<syn::Type>, TypeError> {
         let externref = |ty| {
             Some(match pos {
                 TypePosition::Argument => shared_ref(ty, false),
@@ -659,47 +663,49 @@ impl<'a> IdlType<'a> {
 
             IdlType::ArrayBuffer => Ok(js_sys("ArrayBuffer")),
             IdlType::DataView { .. } => Ok(js_sys("DataView")),
-            IdlType::Int8Array { immutable, .. } => match pos {
-                TypePosition::Argument => Ok(js_sys("Int8Array")),
-                TypePosition::Return => Ok(Some(array("i8", pos, *immutable))),
+            IdlType::Int8Array { immutable, .. } => match (legacy, pos) {
+                (true, _) | (_, TypePosition::Return) => Ok(Some(array("i8", pos, *immutable))),
+                (false, TypePosition::Argument) => Ok(js_sys("Int8Array")),
             },
-            IdlType::Uint8Array { immutable, .. } => match pos {
-                TypePosition::Argument => Ok(js_sys("Uint8Array")),
-                TypePosition::Return => Ok(Some(array("u8", pos, *immutable))),
+            IdlType::Uint8Array { immutable, .. } => match (legacy, pos) {
+                (true, _) | (_, TypePosition::Return) => Ok(Some(array("u8", pos, *immutable))),
+                (false, TypePosition::Argument) => Ok(js_sys("Uint8Array")),
             },
-            IdlType::Uint8ClampedArray { immutable, .. } => match pos {
-                TypePosition::Argument => Ok(js_sys("Uint8ClampedArray")),
-                TypePosition::Return => Ok(Some(clamped(array("u8", pos, *immutable)))),
+            IdlType::Uint8ClampedArray { immutable, .. } => match (legacy, pos) {
+                (true, _) | (_, TypePosition::Return) => {
+                    Ok(Some(clamped(array("u8", pos, *immutable))))
+                }
+                (false, TypePosition::Argument) => Ok(js_sys("Uint8ClampedArray")),
             },
-            IdlType::Int16Array { immutable, .. } => match pos {
-                TypePosition::Argument => Ok(js_sys("Int16Array")),
-                TypePosition::Return => Ok(Some(array("i16", pos, *immutable))),
+            IdlType::Int16Array { immutable, .. } => match (legacy, pos) {
+                (true, _) | (_, TypePosition::Return) => Ok(Some(array("i16", pos, *immutable))),
+                (false, TypePosition::Argument) => Ok(js_sys("Int16Array")),
             },
-            IdlType::Uint16Array { immutable, .. } => match pos {
-                TypePosition::Argument => Ok(js_sys("Uint16Array")),
-                TypePosition::Return => Ok(Some(array("u16", pos, *immutable))),
+            IdlType::Uint16Array { immutable, .. } => match (legacy, pos) {
+                (true, _) | (_, TypePosition::Return) => Ok(Some(array("u16", pos, *immutable))),
+                (false, TypePosition::Argument) => Ok(js_sys("Uint16Array")),
             },
-            IdlType::Int32Array { immutable, .. } => match pos {
-                TypePosition::Argument => Ok(js_sys("Int32Array")),
-                TypePosition::Return => Ok(Some(array("i32", pos, *immutable))),
+            IdlType::Int32Array { immutable, .. } => match (legacy, pos) {
+                (true, _) | (_, TypePosition::Return) => Ok(Some(array("i32", pos, *immutable))),
+                (false, TypePosition::Argument) => Ok(js_sys("Int32Array")),
             },
-            IdlType::Uint32Array { immutable, .. } => match pos {
-                TypePosition::Argument => Ok(js_sys("Uint32Array")),
-                TypePosition::Return => Ok(Some(array("u32", pos, *immutable))),
+            IdlType::Uint32Array { immutable, .. } => match (legacy, pos) {
+                (true, _) | (_, TypePosition::Return) => Ok(Some(array("u32", pos, *immutable))),
+                (false, TypePosition::Argument) => Ok(js_sys("Uint32Array")),
             },
-            IdlType::Float32Array { immutable, .. } => match pos {
-                TypePosition::Argument => Ok(js_sys("Float32Array")),
-                TypePosition::Return => Ok(Some(array("f32", pos, *immutable))),
+            IdlType::Float32Array { immutable, .. } => match (legacy, pos) {
+                (true, _) | (_, TypePosition::Return) => Ok(Some(array("f32", pos, *immutable))),
+                (false, TypePosition::Argument) => Ok(js_sys("Float32Array")),
             },
-            IdlType::Float64Array { immutable, .. } => match pos {
-                TypePosition::Argument => Ok(js_sys("Float64Array")),
-                TypePosition::Return => Ok(Some(array("f64", pos, *immutable))),
+            IdlType::Float64Array { immutable, .. } => match (legacy, pos) {
+                (true, _) | (_, TypePosition::Return) => Ok(Some(array("f64", pos, *immutable))),
+                (false, TypePosition::Argument) => Ok(js_sys("Float64Array")),
             },
 
             IdlType::ArrayBufferView { .. } | IdlType::BufferSource { .. } => Ok(js_sys("Object")),
 
             IdlType::Nullable(idl_type) => {
-                let inner = idl_type.to_syn_type(pos)?;
+                let inner = idl_type.to_syn_type(pos, legacy)?;
 
                 match inner {
                     Some(inner) => {
@@ -769,15 +775,15 @@ impl<'a> IdlType<'a> {
                         }
                     )
                 }) {
-                    IdlType::Object.to_syn_type(pos)
+                    IdlType::Object.to_syn_type(pos, legacy)
                 } else {
-                    IdlType::Any.to_syn_type(pos)
+                    IdlType::Any.to_syn_type(pos, legacy)
                 }
             }
 
             IdlType::Any => Ok(js_value),
             IdlType::Undefined => Ok(None),
-            IdlType::Identifier { ty, .. } => ty.to_syn_type(pos),
+            IdlType::Identifier { ty, .. } => ty.to_syn_type(pos, legacy),
             IdlType::UnknownIdentifier(_) => Err(TypeError::CannotConvert),
         }
     }
@@ -1081,7 +1087,11 @@ impl<'a> IdlType<'a> {
 
 impl<'a> IdentifierType<'a> {
     /// Converts to syn type if possible.
-    pub(crate) fn to_syn_type(&self, pos: TypePosition) -> Result<Option<syn::Type>, TypeError> {
+    pub(crate) fn to_syn_type(
+        &self,
+        pos: TypePosition,
+        legacy: bool,
+    ) -> Result<Option<syn::Type>, TypeError> {
         let externref = |ty| {
             Some(match pos {
                 TypePosition::Argument => shared_ref(ty, false),
@@ -1106,12 +1116,12 @@ impl<'a> IdentifierType<'a> {
             IdentifierType::Enum(name) => {
                 Ok(Some(ident_ty(rust_ident(camel_case_ident(name).as_str()))))
             }
-            IdentifierType::UnsignedLongLong => IdlType::UnsignedLongLong.to_syn_type(pos),
+            IdentifierType::UnsignedLongLong => IdlType::UnsignedLongLong.to_syn_type(pos, legacy),
             IdentifierType::AllowSharedBufferSource { immutable } => IdlType::BufferSource {
                 allow_shared: true,
                 immutable: *immutable,
             }
-            .to_syn_type(pos),
+            .to_syn_type(pos, legacy),
             IdentifierType::Int8Slice { immutable, .. } => Ok(Some(array("i8", pos, *immutable))),
             IdentifierType::Uint8Slice { immutable, .. } => Ok(Some(array("u8", pos, *immutable))),
             IdentifierType::Uint8ClampedSlice { immutable, .. } => {

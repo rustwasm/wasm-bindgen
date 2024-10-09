@@ -50,7 +50,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRMockDisplay/setPose)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrMockDisplay`*"]
-    pub fn set_pose_with_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice(
+    pub fn set_pose(
         this: &VrMockDisplay,
         position: Option<&mut [f32]>,
         linear_velocity: Option<&mut [f32]>,

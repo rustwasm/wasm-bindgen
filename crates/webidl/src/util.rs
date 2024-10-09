@@ -473,7 +473,7 @@ impl<'src> FirstPassRecord<'src> {
                 let mut output = vec![];
 
                 for (name, idl_type) in args {
-                    let ty = match idl_type.to_syn_type(TypePosition::Argument) {
+                    let ty = match idl_type.to_syn_type(TypePosition::Argument, false) {
                         Ok(ty) => ty.unwrap(),
                         Err(_) => {
                             return None;
@@ -510,7 +510,7 @@ impl<'src> FirstPassRecord<'src> {
             let unstable = unstable || data.stability.is_unstable() || has_unstable_args;
 
             if let Some(arguments) = arguments {
-                if let Ok(ret_ty) = ret_ty.to_syn_type(TypePosition::Return) {
+                if let Ok(ret_ty) = ret_ty.to_syn_type(TypePosition::Return, false) {
                     let mut rust_name = rust_name.clone();
 
                     if let Some(map) =
@@ -557,7 +557,7 @@ impl<'src> FirstPassRecord<'src> {
                 );
 
                 if let Some(arguments) = arguments {
-                    if let Ok(ret_ty) = ret_ty.to_syn_type(TypePosition::Return) {
+                    if let Ok(ret_ty) = ret_ty.to_syn_type(TypePosition::Return, false) {
                         let mut rust_name = format!("{}_{}", &rust_name, i);
 
                         if let Some(map) =

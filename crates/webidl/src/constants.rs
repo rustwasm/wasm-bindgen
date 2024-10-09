@@ -471,7 +471,7 @@ pub(crate) static FIXED_INTERFACES: Lazy<
             ]),
         ),
         (
-            "VrMockController",
+            "VrMockDisplay",
             BTreeMap::from_iter([
                 ("set_pose_with_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice_and_opt_f32_slice", "set_pose"),
             ]),
