@@ -1881,33 +1881,12 @@ mod gen_DeviceRotationRateInit;
 #[allow(unused_imports)]
 pub use gen_DeviceRotationRateInit::*;
 
-#[cfg(feature = "DhImportKeyParams")]
-#[allow(non_snake_case)]
-mod gen_DhImportKeyParams;
-#[cfg(feature = "DhImportKeyParams")]
-#[allow(unused_imports)]
-pub use gen_DhImportKeyParams::*;
-
-#[cfg(feature = "DhKeyAlgorithm")]
-#[allow(non_snake_case)]
-mod gen_DhKeyAlgorithm;
-#[cfg(feature = "DhKeyAlgorithm")]
-#[allow(unused_imports)]
-pub use gen_DhKeyAlgorithm::*;
-
 #[cfg(feature = "DhKeyDeriveParams")]
 #[allow(non_snake_case)]
 mod gen_DhKeyDeriveParams;
 #[cfg(feature = "DhKeyDeriveParams")]
 #[allow(unused_imports)]
 pub use gen_DhKeyDeriveParams::*;
-
-#[cfg(feature = "DhKeyGenParams")]
-#[allow(non_snake_case)]
-mod gen_DhKeyGenParams;
-#[cfg(feature = "DhKeyGenParams")]
-#[allow(unused_imports)]
-pub use gen_DhKeyGenParams::*;
 
 #[cfg(feature = "DirectionSetting")]
 #[allow(non_snake_case)]
@@ -7452,20 +7431,6 @@ mod gen_RsaHashedImportParams;
 #[cfg(feature = "RsaHashedImportParams")]
 #[allow(unused_imports)]
 pub use gen_RsaHashedImportParams::*;
-
-#[cfg(feature = "RsaHashedKeyAlgorithm")]
-#[allow(non_snake_case)]
-mod gen_RsaHashedKeyAlgorithm;
-#[cfg(feature = "RsaHashedKeyAlgorithm")]
-#[allow(unused_imports)]
-pub use gen_RsaHashedKeyAlgorithm::*;
-
-#[cfg(feature = "RsaHashedKeyGenParams")]
-#[allow(non_snake_case)]
-mod gen_RsaHashedKeyGenParams;
-#[cfg(feature = "RsaHashedKeyGenParams")]
-#[allow(unused_imports)]
-pub use gen_RsaHashedKeyGenParams::*;
 
 #[cfg(feature = "RsaOaepParams")]
 #[allow(non_snake_case)]
