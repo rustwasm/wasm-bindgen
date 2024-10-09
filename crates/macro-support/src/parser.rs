@@ -11,6 +11,7 @@ use quote::ToTokens;
 use syn::ext::IdentExt;
 use syn::parse::{Parse, ParseStream, Result as SynResult};
 use syn::spanned::Spanned;
+use syn::visit_mut::VisitMut;
 use syn::{ItemFn, Lit, MacroDelimiter, ReturnType};
 
 use crate::ClassMarker;
@@ -884,6 +885,15 @@ pub(crate) fn is_js_keyword(keyword: &str, skip: Option<&[&str]>) -> bool {
         .any(|this| *this == keyword)
 }
 
+struct SelfReplace(Ident);
+impl VisitMut for SelfReplace {
+    fn visit_ident_mut(&mut self, i: &mut proc_macro2::Ident) {
+        if i == "Self" {
+            *i = self.0.clone();
+        }
+    }
+}
+
 /// Construct a function (and gets the self type if appropriate) for our AST from a syn function.
 #[allow(clippy::too_many_arguments)]
 fn function_from_decl(
@@ -911,24 +921,14 @@ fn function_from_decl(
 
     let syn::Signature { inputs, output, .. } = sig;
 
-    let replace_self = |t: syn::Type| {
+    let replace_self = |mut t: syn::Type| {
         let self_ty = match self_ty {
             Some(i) => i,
             None => return t,
         };
-        let path = match get_ty(&t) {
-            syn::Type::Path(syn::TypePath { qself: None, path }) => path.clone(),
-            other => return other.clone(),
-        };
-        let new_path = if path.segments.len() == 1 && path.segments[0].ident == "Self" {
-            self_ty.clone().into()
-        } else {
-            path
-        };
-        syn::Type::Path(syn::TypePath {
-            qself: None,
-            path: new_path,
-        })
+        let mut replace = SelfReplace(self_ty.clone());
+        replace.visit_type_mut(&mut t);
+        t
     };
 
     let replace_colliding_arg = |i: &mut syn::PatType| {
