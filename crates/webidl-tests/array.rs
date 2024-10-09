@@ -8,15 +8,18 @@ fn take_and_return_a_bunch_of_slices() {
     assert_eq!(f.strings("y"), "x");
     assert_eq!(f.byte_strings("yz"), "xx");
     assert_eq!(f.usv_strings("abc"), "efg");
-    assert_eq!(f.f32(&mut [1.0, 2.0]), [3.0, 4.0, 5.0]);
-    assert_eq!(f.f64(&mut [1.0, 2.0]), [3.0, 4.0, 5.0]);
-    assert_eq!(f.i8(&mut [1, 2]), [3, 4, 5]);
-    assert_eq!(f.i16(&mut [1, 2]), [3, 4, 5]);
-    assert_eq!(f.i32(&mut [1, 2]), [3, 4, 5]);
-    assert_eq!(f.u8(&mut [1, 2]), [3, 4, 5]);
-    assert_eq!(f.u16(&mut [1, 2]), [3, 4, 5]);
-    assert_eq!(f.u32(&mut [1, 2]), [3, 4, 5]);
-    assert_eq!(f.u8_clamped(Clamped(&mut [1, 2])).0, [3, 4, 5]);
+    assert_eq!(f.f32_with_f32_slice(&mut [1.0, 2.0]), [3.0, 4.0, 5.0]);
+    assert_eq!(f.f64_with_f64_slice(&mut [1.0, 2.0]), [3.0, 4.0, 5.0]);
+    assert_eq!(f.i8_with_i8_slice(&mut [1, 2]), [3, 4, 5]);
+    assert_eq!(f.i16_with_i16_slice(&mut [1, 2]), [3, 4, 5]);
+    assert_eq!(f.i32_with_i32_slice(&mut [1, 2]), [3, 4, 5]);
+    assert_eq!(f.u8_with_u8_slice(&mut [1, 2]), [3, 4, 5]);
+    assert_eq!(f.u16_with_u16_slice(&mut [1, 2]), [3, 4, 5]);
+    assert_eq!(f.u32_with_u32_slice(&mut [1, 2]), [3, 4, 5]);
+    assert_eq!(
+        f.u8_clamped_with_u8_clamped_slice(Clamped(&mut [1, 2])).0,
+        [3, 4, 5]
+    );
     assert_eq!(
         f.octet_array()
             .iter()
