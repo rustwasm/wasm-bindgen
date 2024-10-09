@@ -28,6 +28,12 @@ export enum Color {
   Yellow = 1,
   Red = 2,
 }
+export enum ImplicitDiscriminant {
+  A = 0,
+  B = 1,
+  C = 42,
+  D = 43,
+}
 /**
  * The name of a color.
  */
