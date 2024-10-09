@@ -64,7 +64,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn read_value(this: &BluetoothRemoteGattDescriptor) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTDescriptor" , js_name = writeValue)]
+    # [wasm_bindgen (catch , method , structural , js_class = "BluetoothRemoteGATTDescriptor" , js_name = writeValue)]
     #[doc = "The `writeValue()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTDescriptor/writeValue)"]
@@ -76,9 +76,9 @@ extern "C" {
     pub fn write_value_with_buffer_source(
         this: &BluetoothRemoteGattDescriptor,
         value: &::js_sys::Object,
-    ) -> ::js_sys::Promise;
+    ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "BluetoothRemoteGATTDescriptor" , js_name = writeValue)]
+    # [wasm_bindgen (catch , method , structural , js_class = "BluetoothRemoteGATTDescriptor" , js_name = writeValue)]
     #[doc = "The `writeValue()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BluetoothRemoteGATTDescriptor/writeValue)"]
@@ -90,5 +90,5 @@ extern "C" {
     pub fn write_value_with_u8_array(
         this: &BluetoothRemoteGattDescriptor,
         value: &mut [u8],
-    ) -> ::js_sys::Promise;
+    ) -> Result<::js_sys::Promise, JsValue>;
 }

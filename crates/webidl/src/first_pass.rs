@@ -185,6 +185,7 @@ pub(crate) struct Signature<'src> {
 
 #[derive(Clone, Debug)]
 pub(crate) struct Arg<'src> {
+    pub(crate) attributes: &'src Option<ExtendedAttributeList<'src>>,
     pub(crate) name: &'src str,
     pub(crate) ty: &'src weedle::types::Type<'src>,
     pub(crate) optional: bool,
@@ -193,17 +194,19 @@ pub(crate) struct Arg<'src> {
 
 impl<'a> From<&'a Argument<'a>> for Arg<'a> {
     fn from(arg: &'a Argument<'a>) -> Self {
-        let (name, ty, optional, variadic) = match arg {
+        let (attributes, name, ty, optional, variadic) = match arg {
             Argument::Single(single) => (
+                &single.attributes,
                 single.identifier.0,
                 &single.type_.type_,
                 single.optional.is_some(),
                 false,
             ),
-            Argument::Variadic(variadic) => (variadic.identifier.0, &variadic.type_, false, true),
+            Argument::Variadic(variadic) => (&variadic.attributes, variadic.identifier.0, &variadic.type_, false, true),
         };
 
         Self {
+            attributes,
             name,
             ty,
             optional,
@@ -645,12 +648,14 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)>
         let key_ty = &self.generics.body.0;
         let value_ty = &self.generics.body.2;
         let key_arg = || Arg {
+            attributes: &None,
             name: "key",
             ty: &key_ty.type_,
             optional: false,
             variadic: false,
         };
         let value_arg = || Arg {
+            attributes: &None,
             name: "value",
             ty: &value_ty.type_,
             optional: false,
@@ -721,6 +726,7 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)>
         // callback MapLikeForEachCallback = undefined (V value, K key);
         // TODO: the signature of the callback is erased, could we keep it?
         let foreach_callback_arg = Arg {
+            attributes: &None,
             name: "callback",
             ty: &Type::Single(SingleType::NonAny(NonAnyType::Identifier(MayBeNull {
                 type_: Identifier("MapLikeForEachCallback"),
@@ -871,6 +877,7 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)>
     ) -> Result<()> {
         let value_ty = &self.generics.body;
         let value_arg = || Arg {
+            attributes: &None,
             name: "value",
             ty: &value_ty.type_,
             optional: false,
@@ -928,6 +935,7 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)>
         // callback SetlikeForEachCallback = undefined (V value);
         // TODO: the signature of the callback is erased, could we keep it?
         let foreach_callback_arg = Arg {
+            attributes: &None,
             name: "callback",
             ty: &Type::Single(SingleType::NonAny(NonAnyType::Identifier(MayBeNull {
                 type_: Identifier("SetlikeForEachCallback"),
@@ -1136,6 +1144,7 @@ impl<'src> FirstPass<'src, (&'src str, ApiStability)>
         // callback SetlikeForEachCallback = undefined (V value);
         // TODO: the signature of the callback is erased, could we keep it?
         let foreach_callback_arg = Arg {
+            attributes: &None,
             name: "callback",
             ty: &Type::Single(SingleType::NonAny(NonAnyType::Identifier(MayBeNull {
                 type_: Identifier("IterableForEachCallback"),

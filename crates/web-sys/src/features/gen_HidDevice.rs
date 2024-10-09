@@ -127,7 +127,7 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn receive_feature_report(this: &HidDevice, report_id: u8) -> ::js_sys::Promise;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "HIDDevice" , js_name = sendFeatureReport)]
+    # [wasm_bindgen (catch , method , structural , js_class = "HIDDevice" , js_name = sendFeatureReport)]
     #[doc = "The `sendFeatureReport()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HIDDevice/sendFeatureReport)"]
@@ -140,9 +140,9 @@ extern "C" {
         this: &HidDevice,
         report_id: u8,
         data: &::js_sys::Object,
-    ) -> ::js_sys::Promise;
+    ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "HIDDevice" , js_name = sendFeatureReport)]
+    # [wasm_bindgen (catch , method , structural , js_class = "HIDDevice" , js_name = sendFeatureReport)]
     #[doc = "The `sendFeatureReport()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HIDDevice/sendFeatureReport)"]
@@ -155,9 +155,9 @@ extern "C" {
         this: &HidDevice,
         report_id: u8,
         data: &mut [u8],
-    ) -> ::js_sys::Promise;
+    ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "HIDDevice" , js_name = sendReport)]
+    # [wasm_bindgen (catch , method , structural , js_class = "HIDDevice" , js_name = sendReport)]
     #[doc = "The `sendReport()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HIDDevice/sendReport)"]
@@ -170,9 +170,9 @@ extern "C" {
         this: &HidDevice,
         report_id: u8,
         data: &::js_sys::Object,
-    ) -> ::js_sys::Promise;
+    ) -> Result<::js_sys::Promise, JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    # [wasm_bindgen (method , structural , js_class = "HIDDevice" , js_name = sendReport)]
+    # [wasm_bindgen (catch , method , structural , js_class = "HIDDevice" , js_name = sendReport)]
     #[doc = "The `sendReport()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HIDDevice/sendReport)"]
@@ -185,5 +185,5 @@ extern "C" {
         this: &HidDevice,
         report_id: u8,
         data: &mut [u8],
-    ) -> ::js_sys::Promise;
+    ) -> Result<::js_sys::Promise, JsValue>;
 }
