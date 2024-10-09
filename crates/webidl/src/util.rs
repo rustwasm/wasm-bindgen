@@ -17,7 +17,8 @@ use weedle::literal::{ConstValue as ConstValueLit, FloatLit, IntegerLit};
 use weedle::types::{MayBeNull, NonAnyType, SingleType};
 
 use crate::constants::{
-    BREAKING_GETTER_THROWS, BREAKING_SETTER_THROWS, FIXED_INTERFACES, IMMUTABLE_SLICE_WHITELIST,
+    BREAKING_ALLOW_SHARED, BREAKING_GETTER_THROWS, BREAKING_SETTER_THROWS, FIXED_INTERFACES,
+    IMMUTABLE_SLICE_WHITELIST,
 };
 use crate::first_pass::{FirstPassRecord, OperationData, OperationId, Signature};
 use crate::generator::{ConstValue, InterfaceMethod, InterfaceMethodKind};
@@ -259,7 +260,7 @@ impl<'src> FirstPassRecord<'src> {
                     }
 
                     let idl_type = arg.ty.to_idl_type(this);
-                    let idl_type = this.maybe_adjust(idl_type, id);
+                    let idl_type = this.maybe_adjust(arg.attributes, idl_type, id);
                     idl_args.push(Some(idl_type));
                 }
                 signatures.push((signature, idl_args));
@@ -430,7 +431,17 @@ impl<'src> FirstPassRecord<'src> {
             }
             let structural =
                 force_structural || is_structural(signature.orig.attrs.as_ref(), container_attrs);
-            let catch = force_throws || throws(signature.orig.attrs);
+            let catch = force_throws
+                || throws(signature.orig.attrs)
+                || (signature
+                    .args
+                    .iter()
+                    .filter_map(Option::as_ref)
+                    .any(arg_throws)
+                    && type_name
+                        .and_then(|type_name| BREAKING_ALLOW_SHARED.get(type_name))
+                        .filter(|list| list.contains(&js_name))
+                        .is_none());
             let deprecated = get_rust_deprecated(signature.orig.attrs);
             let ret_ty = if id == &OperationId::IndexingGetter {
                 // All indexing getters should return optional values (or
@@ -462,7 +473,7 @@ impl<'src> FirstPassRecord<'src> {
                 let mut output = vec![];
 
                 for (name, idl_type) in args {
-                    let ty = match idl_type.to_syn_type(TypePosition::Argument) {
+                    let ty = match idl_type.to_syn_type(TypePosition::Argument, false) {
                         Ok(ty) => ty.unwrap(),
                         Err(_) => {
                             return None;
@@ -499,7 +510,7 @@ impl<'src> FirstPassRecord<'src> {
             let unstable = unstable || data.stability.is_unstable() || has_unstable_args;
 
             if let Some(arguments) = arguments {
-                if let Ok(ret_ty) = ret_ty.to_syn_type(TypePosition::Return) {
+                if let Ok(ret_ty) = ret_ty.to_syn_type(TypePosition::Return, false) {
                     let mut rust_name = rust_name.clone();
 
                     if let Some(map) =
@@ -546,7 +557,7 @@ impl<'src> FirstPassRecord<'src> {
                 );
 
                 if let Some(arguments) = arguments {
-                    if let Ok(ret_ty) = ret_ty.to_syn_type(TypePosition::Return) {
+                    if let Ok(ret_ty) = ret_ty.to_syn_type(TypePosition::Return, false) {
                         let mut rust_name = format!("{}_{}", &rust_name, i);
 
                         if let Some(map) =
@@ -589,7 +600,16 @@ impl<'src> FirstPassRecord<'src> {
     /// maintained by hand.
     ///
     /// When adding to this whitelist add tests to crates/web-sys/tests/wasm/whitelisted_immutable_slices.rs
-    fn maybe_adjust<'a>(&self, mut idl_type: IdlType<'a>, id: &'a OperationId) -> IdlType<'a> {
+    fn maybe_adjust<'a>(
+        &self,
+        attributes: &'src Option<ExtendedAttributeList<'src>>,
+        mut idl_type: IdlType<'a>,
+        id: &'a OperationId,
+    ) -> IdlType<'a> {
+        if has_named_attribute(attributes.as_ref(), "AllowShared") {
+            flag_slices_allow_shared(&mut idl_type)
+        }
+
         let op = match id {
             OperationId::Operation(Some(op)) => op,
             OperationId::Constructor(Some(op)) => op,
@@ -699,6 +719,40 @@ pub fn throws(attrs: &Option<ExtendedAttributeList>) -> bool {
     has_named_attribute(attrs.as_ref(), "Throws")
 }
 
+fn arg_throws(ty: &IdlType<'_>) -> bool {
+    match ty {
+        IdlType::DataView { allow_shared }
+        | IdlType::Int8Array { allow_shared, .. }
+        | IdlType::Uint8Array { allow_shared, .. }
+        | IdlType::Uint8ClampedArray { allow_shared, .. }
+        | IdlType::Int16Array { allow_shared, .. }
+        | IdlType::Uint16Array { allow_shared, .. }
+        | IdlType::Int32Array { allow_shared, .. }
+        | IdlType::Uint32Array { allow_shared, .. }
+        | IdlType::Float32Array { allow_shared, .. }
+        | IdlType::Float64Array { allow_shared, .. }
+        | IdlType::ArrayBufferView { allow_shared, .. }
+        | IdlType::BufferSource { allow_shared, .. }
+        | IdlType::Identifier {
+            ty:
+                IdentifierType::Int8Slice { allow_shared, .. }
+                | IdentifierType::Uint8Slice { allow_shared, .. }
+                | IdentifierType::Uint8ClampedSlice { allow_shared, .. }
+                | IdentifierType::Int16Slice { allow_shared, .. }
+                | IdentifierType::Uint16Slice { allow_shared, .. }
+                | IdentifierType::Int32Slice { allow_shared, .. }
+                | IdentifierType::Uint32Slice { allow_shared, .. }
+                | IdentifierType::Float32Slice { allow_shared, .. }
+                | IdentifierType::Float64Slice { allow_shared, .. },
+            ..
+        } => !allow_shared,
+        IdlType::Nullable(item) => arg_throws(item),
+        IdlType::Union(list) => list.iter().any(arg_throws),
+        // catch-all for everything else like Object
+        _ => false,
+    }
+}
+
 /// Whether a getter is marked as throwing.
 pub fn getter_throws(
     parent_js_name: &str,
@@ -731,32 +785,57 @@ pub fn setter_throws(
 
 fn flag_slices_immutable(ty: &mut IdlType) {
     match ty {
-        IdlType::Int8Array { immutable }
-        | IdlType::Uint8Array { immutable }
-        | IdlType::Uint8ClampedArray { immutable }
-        | IdlType::Int16Array { immutable }
-        | IdlType::Uint16Array { immutable }
-        | IdlType::Int32Array { immutable }
-        | IdlType::Uint32Array { immutable }
-        | IdlType::Float32Array { immutable }
-        | IdlType::Float64Array { immutable }
-        | IdlType::ArrayBufferView { immutable }
-        | IdlType::BufferSource { immutable }
+        IdlType::Int8Array { immutable, .. }
+        | IdlType::Uint8Array { immutable, .. }
+        | IdlType::Uint8ClampedArray { immutable, .. }
+        | IdlType::Int16Array { immutable, .. }
+        | IdlType::Uint16Array { immutable, .. }
+        | IdlType::Int32Array { immutable, .. }
+        | IdlType::Uint32Array { immutable, .. }
+        | IdlType::Float32Array { immutable, .. }
+        | IdlType::Float64Array { immutable, .. }
+        | IdlType::ArrayBufferView { immutable, .. }
+        | IdlType::BufferSource { immutable, .. }
         | IdlType::Identifier {
-            ty: IdentifierType::BufferSource { immutable },
+            ty: IdentifierType::AllowSharedBufferSource { immutable },
             ..
         } => *immutable = true,
         IdlType::Nullable(item) => flag_slices_immutable(item),
-        IdlType::FrozenArray(item) => flag_slices_immutable(item),
-        IdlType::Sequence(item) => flag_slices_immutable(item),
-        IdlType::Promise(item) => flag_slices_immutable(item),
-        IdlType::Record(item1, item2) => {
-            flag_slices_immutable(item1);
-            flag_slices_immutable(item2);
-        }
         IdlType::Union(list) => {
             for item in list {
                 flag_slices_immutable(item);
+            }
+        }
+        // catch-all for everything else like Object
+        _ => {}
+    }
+}
+
+fn flag_slices_allow_shared(ty: &mut IdlType) {
+    match ty {
+        IdlType::DataView { allow_shared }
+        | IdlType::Int8Array { allow_shared, .. }
+        | IdlType::Uint8Array { allow_shared, .. }
+        | IdlType::Uint8ClampedArray { allow_shared, .. }
+        | IdlType::Int16Array { allow_shared, .. }
+        | IdlType::Uint16Array { allow_shared, .. }
+        | IdlType::Int32Array { allow_shared, .. }
+        | IdlType::Uint32Array { allow_shared, .. }
+        | IdlType::Float32Array { allow_shared, .. }
+        | IdlType::Float64Array { allow_shared, .. }
+        | IdlType::ArrayBufferView { allow_shared, .. }
+        | IdlType::BufferSource { allow_shared, .. } => *allow_shared = true,
+        IdlType::Nullable(item) => flag_slices_allow_shared(item),
+        IdlType::FrozenArray(item) => flag_slices_allow_shared(item),
+        IdlType::Sequence(item) => flag_slices_allow_shared(item),
+        IdlType::Promise(item) => flag_slices_allow_shared(item),
+        IdlType::Record(item1, item2) => {
+            flag_slices_allow_shared(item1);
+            flag_slices_allow_shared(item2);
+        }
+        IdlType::Union(list) => {
+            for item in list {
+                flag_slices_allow_shared(item);
             }
         }
         // catch-all for everything else like Object

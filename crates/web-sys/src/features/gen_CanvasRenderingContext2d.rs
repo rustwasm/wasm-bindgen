@@ -64,7 +64,34 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/strokeStyle)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
+    #[deprecated]
     pub fn set_stroke_style(this: &CanvasRenderingContext2d, value: &::wasm_bindgen::JsValue);
+    # [wasm_bindgen (structural , method , setter , js_class = "CanvasRenderingContext2D" , js_name = strokeStyleStr)]
+    #[doc = "Setter for the `strokeStyleStr` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/strokeStyleStr)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
+    pub fn set_stroke_style_str(this: &CanvasRenderingContext2d, value: &str);
+    #[cfg(feature = "CanvasGradient")]
+    # [wasm_bindgen (structural , method , setter , js_class = "CanvasRenderingContext2D" , js_name = strokeStyleCanvasGradient)]
+    #[doc = "Setter for the `strokeStyleCanvasGradient` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/strokeStyleCanvasGradient)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CanvasGradient`, `CanvasRenderingContext2d`*"]
+    pub fn set_stroke_style_canvas_gradient(
+        this: &CanvasRenderingContext2d,
+        value: &CanvasGradient,
+    );
+    #[cfg(feature = "CanvasPattern")]
+    # [wasm_bindgen (structural , method , setter , js_class = "CanvasRenderingContext2D" , js_name = strokeStyleCanvasPattern)]
+    #[doc = "Setter for the `strokeStyleCanvasPattern` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/strokeStyleCanvasPattern)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CanvasPattern`, `CanvasRenderingContext2d`*"]
+    pub fn set_stroke_style_canvas_pattern(this: &CanvasRenderingContext2d, value: &CanvasPattern);
     # [wasm_bindgen (structural , method , getter , js_class = "CanvasRenderingContext2D" , js_name = fillStyle)]
     #[doc = "Getter for the `fillStyle` field of this object."]
     #[doc = ""]
@@ -78,7 +105,31 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillStyle)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
+    #[deprecated]
     pub fn set_fill_style(this: &CanvasRenderingContext2d, value: &::wasm_bindgen::JsValue);
+    # [wasm_bindgen (structural , method , setter , js_class = "CanvasRenderingContext2D" , js_name = fillStyleStr)]
+    #[doc = "Setter for the `fillStyleStr` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillStyleStr)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
+    pub fn set_fill_style_str(this: &CanvasRenderingContext2d, value: &str);
+    #[cfg(feature = "CanvasGradient")]
+    # [wasm_bindgen (structural , method , setter , js_class = "CanvasRenderingContext2D" , js_name = fillStyleCanvasGradient)]
+    #[doc = "Setter for the `fillStyleCanvasGradient` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillStyleCanvasGradient)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CanvasGradient`, `CanvasRenderingContext2d`*"]
+    pub fn set_fill_style_canvas_gradient(this: &CanvasRenderingContext2d, value: &CanvasGradient);
+    #[cfg(feature = "CanvasPattern")]
+    # [wasm_bindgen (structural , method , setter , js_class = "CanvasRenderingContext2D" , js_name = fillStyleCanvasPattern)]
+    #[doc = "Setter for the `fillStyleCanvasPattern` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillStyleCanvasPattern)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CanvasPattern`, `CanvasRenderingContext2d`*"]
+    pub fn set_fill_style_canvas_pattern(this: &CanvasRenderingContext2d, value: &CanvasPattern);
     # [wasm_bindgen (structural , method , getter , js_class = "CanvasRenderingContext2D" , js_name = filter)]
     #[doc = "Getter for the `filter` field of this object."]
     #[doc = ""]

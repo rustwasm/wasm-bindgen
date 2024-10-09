@@ -29,6 +29,12 @@
 * Added `unsupported` crate to `wasm_bindgen_test(unsupported = test)` as a way of running tests on non-Wasm targets as well.
   [#4150](https://github.com/rustwasm/wasm-bindgen/pull/4150)
 
+* Added additional bindings for methods taking buffer view types (e.g. `&[u8]`) with corresponding JS types (e.g. `Uint8Array`).
+  [#4156](https://github.com/rustwasm/wasm-bindgen/pull/4156)
+
+* Added additional bindings for setters from WebIDL interface attributes with applicaple parameter types of just `JsValue`.
+  [#4156](https://github.com/rustwasm/wasm-bindgen/pull/4156)
+
 * Added support for `Self` in complex type expressions in methods.
   [#4155](https://github.com/rustwasm/wasm-bindgen/pull/4155)
 
@@ -51,6 +57,9 @@
 
 * Updated the WebGPU API to the current draft as of 2024-10-07.
   [#4145](https://github.com/rustwasm/wasm-bindgen/pull/4145)
+
+* Deprecated generated setters from WebIDL interface attribute taking `JsValue` in favor of newer bindings with specific parameter types.
+  [#4156](https://github.com/rustwasm/wasm-bindgen/pull/4156)
 
 ### Fixed
 
@@ -90,6 +99,9 @@
 
 * Fixed string enums not generating TypeScript types.
   [#4147](https://github.com/rustwasm/wasm-bindgen/pull/4147)
+
+* Bindings that take buffer view types (e.g. `&[u8]`) as parameters will now correctly return a `Result` when they might not support a backing `SharedArrayBuffer`. This only applies to new and unstable APIs, which won't cause a breaking in the API.
+  [#4156](https://github.com/rustwasm/wasm-bindgen/pull/4156)
 
 --------------------------------------------------------------------------------
 

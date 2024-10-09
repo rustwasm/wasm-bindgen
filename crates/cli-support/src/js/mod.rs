@@ -3794,7 +3794,11 @@ __wbg_set_wasm(wasm);"
             if enum_.generate_typescript {
                 self.typescript.push('\n');
                 if !variant_docs.is_empty() {
-                    self.typescript.push_str(&variant_docs);
+                    for line in variant_docs.lines() {
+                        self.typescript.push_str("  ");
+                        self.typescript.push_str(line);
+                        self.typescript.push('\n');
+                    }
                 }
                 self.typescript.push_str(&format!("  {name} = {value},"));
             }
