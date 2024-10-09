@@ -24,8 +24,17 @@ export function option_string_enum_echo(color?: ColorName): ColorName | undefine
  * A color.
  */
 export enum Color {
+  /**
+   * Green as a leaf.
+   */
   Green = 0,
+  /**
+   * Yellow as the sun.
+   */
   Yellow = 1,
+  /**
+   * Red as a rose.
+   */
   Red = 2,
 }
 export enum ImplicitDiscriminant {

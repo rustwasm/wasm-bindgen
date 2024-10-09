@@ -65,7 +65,19 @@ export function option_string_enum_echo(color) {
 /**
  * A color.
  */
-export const Color = Object.freeze({ Green:0,"0":"Green",Yellow:1,"1":"Yellow",Red:2,"2":"Red", });
+export const Color = Object.freeze({
+/**
+ * Green as a leaf.
+ */
+Green:0,"0":"Green",
+/**
+ * Yellow as the sun.
+ */
+Yellow:1,"1":"Yellow",
+/**
+ * Red as a rose.
+ */
+Red:2,"2":"Red", });
 
 export const ImplicitDiscriminant = Object.freeze({ A:0,"0":"A",B:1,"1":"B",C:42,"42":"C",D:43,"43":"D", });
 

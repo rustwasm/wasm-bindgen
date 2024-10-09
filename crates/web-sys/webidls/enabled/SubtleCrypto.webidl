@@ -56,23 +56,12 @@ dictionary HmacKeyGenParams : Algorithm {
   [EnforceRange] unsigned long length;
 };
 
-dictionary RsaHashedKeyGenParams : Algorithm {
-  [EnforceRange] required unsigned long modulusLength;
-  required BigInteger publicExponent;
-  required AlgorithmIdentifier hash;
-};
-
 dictionary RsaOaepParams : Algorithm {
   BufferSource label;
 };
 
 dictionary RsaPssParams : Algorithm {
   [EnforceRange] required unsigned long saltLength;
-};
-
-dictionary DhKeyGenParams : Algorithm {
-  required BigInteger prime;
-  required BigInteger generator;
 };
 
 dictionary EcKeyGenParams : Algorithm {
@@ -93,11 +82,6 @@ dictionary EcdhKeyDeriveParams : Algorithm {
 
 dictionary DhKeyDeriveParams : Algorithm {
   required CryptoKey public;
-};
-
-dictionary DhImportKeyParams : Algorithm {
-  required BigInteger prime;
-  required BigInteger generator;
 };
 
 dictionary EcdsaParams : Algorithm {

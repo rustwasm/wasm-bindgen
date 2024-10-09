@@ -4,8 +4,11 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 #[derive(PartialEq, Debug)]
 pub enum Color {
+    /// Green as a leaf.
     Green,
+    /// Yellow as the sun.
     Yellow,
+    /// Red as a rose.
     Red,
 }
 

@@ -59,4 +59,14 @@ extern "C" {
         this: &ReadableStreamByobRequest,
         view: &mut [u8],
     ) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "ReadableStreamBYOBRequest" , js_name = respondWithNewView)]
+    #[doc = "The `respondWithNewView()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamBYOBRequest/respondWithNewView)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `ReadableStreamByobRequest`*"]
+    pub fn respond_with_new_view_with_js_u8_array(
+        this: &ReadableStreamByobRequest,
+        view: &::js_sys::Uint8Array,
+    ) -> Result<(), JsValue>;
 }
