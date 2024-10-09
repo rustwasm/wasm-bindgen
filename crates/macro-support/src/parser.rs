@@ -885,15 +885,6 @@ pub(crate) fn is_js_keyword(keyword: &str, skip: Option<&[&str]>) -> bool {
         .any(|this| *this == keyword)
 }
 
-struct SelfReplace(Ident);
-impl VisitMut for SelfReplace {
-    fn visit_ident_mut(&mut self, i: &mut proc_macro2::Ident) {
-        if i == "Self" {
-            *i = self.0.clone();
-        }
-    }
-}
-
 /// Construct a function (and gets the self type if appropriate) for our AST from a syn function.
 #[allow(clippy::too_many_arguments)]
 fn function_from_decl(
@@ -921,13 +912,23 @@ fn function_from_decl(
 
     let syn::Signature { inputs, output, .. } = sig;
 
+    // A helper function to replace `Self` in the function signature of methods
+    // The following comment explains why this is necessary:
+    // https://github.com/rustwasm/wasm-bindgen/issues/3105#issuecomment-1275160744
     let replace_self = |mut t: syn::Type| {
-        let self_ty = match self_ty {
-            Some(i) => i,
-            None => return t,
-        };
-        let mut replace = SelfReplace(self_ty.clone());
-        replace.visit_type_mut(&mut t);
+        if let Some(self_ty) = self_ty {
+            struct SelfReplace(Ident);
+            impl VisitMut for SelfReplace {
+                fn visit_ident_mut(&mut self, i: &mut proc_macro2::Ident) {
+                    if i == "Self" {
+                        *i = self.0.clone();
+                    }
+                }
+            }
+
+            let mut replace = SelfReplace(self_ty.clone());
+            replace.visit_type_mut(&mut t);
+        }
         t
     };
 
