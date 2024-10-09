@@ -166,14 +166,8 @@ pub(crate) static FIXED_INTERFACES: Lazy<
         (
             "AudioBufferSourceNode",
             BTreeMap::from_iter([
-                (
-                    "start_with_when_and_offset",
-                    "start_with_when_and_grain_offset",
-                ),
-                (
-                    "start_with_when_and_offset_and_duration",
-                    "start_with_when_and_grain_offset_and_grain_duration",
-                ),
+                ("start_with_when_and_offset", "start_with_when_and_grain_offset"),
+                ("start_with_when_and_offset_and_duration", "start_with_when_and_grain_offset_and_grain_duration"),
             ]),
         ),
         (
@@ -191,31 +185,16 @@ pub(crate) static FIXED_INTERFACES: Lazy<
             "IdbObjectStore",
             BTreeMap::from_iter([
                 ("count_with_query", "count_with_key"),
-                (
-                    "create_index_with_str_and_options",
-                    "create_index_with_str_and_optional_parameters",
-                ),
-                (
-                    "create_index_with_str_sequence_and_options",
-                    "create_index_with_str_sequence_and_optional_parameters",
-                ),
+                ("create_index_with_str_and_options", "create_index_with_str_and_optional_parameters"),
+                ("create_index_with_str_sequence_and_options", "create_index_with_str_sequence_and_optional_parameters"),
                 ("open_cursor_with_query", "open_cursor_with_range"),
-                (
-                    "open_cursor_with_query_and_direction",
-                    "open_cursor_with_range_and_direction",
-                ),
+                ("open_cursor_with_query_and_direction", "open_cursor_with_range_and_direction"),
                 ("open_key_cursor_with_query", "open_key_cursor_with_range"),
-                (
-                    "open_key_cursor_with_query_and_direction",
-                    "open_key_cursor_with_range_and_direction",
-                ),
+                ("open_key_cursor_with_query_and_direction", "open_key_cursor_with_range_and_direction"),
                 ("get_all_with_query", "get_all_with_key"),
                 ("get_all_with_query_and_count", "get_all_with_key_and_limit"),
                 ("get_all_keys_with_query", "get_all_keys_with_key"),
-                (
-                    "get_all_keys_with_query_and_count",
-                    "get_all_keys_with_key_and_limit",
-                ),
+                ("get_all_keys_with_query_and_count", "get_all_keys_with_key_and_limit"),
             ]),
         ),
         (
@@ -223,22 +202,13 @@ pub(crate) static FIXED_INTERFACES: Lazy<
             BTreeMap::from_iter([
                 ("count_with_query", "count_with_key"),
                 ("open_cursor_with_query", "open_cursor_with_range"),
-                (
-                    "open_cursor_with_query_and_direction",
-                    "open_cursor_with_range_and_direction",
-                ),
+                ("open_cursor_with_query_and_direction", "open_cursor_with_range_and_direction"),
                 ("open_key_cursor_with_query", "open_key_cursor_with_range"),
-                (
-                    "open_key_cursor_with_query_and_direction",
-                    "open_key_cursor_with_range_and_direction",
-                ),
+                ("open_key_cursor_with_query_and_direction", "open_key_cursor_with_range_and_direction"),
                 ("get_all_with_query", "get_all_with_key"),
                 ("get_all_with_query_and_count", "get_all_with_key_and_limit"),
                 ("get_all_keys_with_query", "get_all_keys_with_key"),
-                (
-                    "get_all_keys_with_query_and_count",
-                    "get_all_keys_with_key_and_limit",
-                ),
+                ("get_all_keys_with_query_and_count", "get_all_keys_with_key_and_limit"),
             ]),
         ),
         (
@@ -246,63 +216,33 @@ pub(crate) static FIXED_INTERFACES: Lazy<
             BTreeMap::from_iter([
                 ("vibrate_with_u32", "vibrate_with_duration"),
                 ("vibrate_with_u32_sequence", "vibrate_with_pattern"),
-                (
-                    "send_beacon_with_opt_u8_slice",
-                    "send_beacon_with_opt_u8_array",
-                ),
-                (
-                    "send_beacon_with_opt_u8_array",
-                    "send_beacon_with_opt_js_u8_array",
-                ),
+                ("send_beacon_with_opt_u8_slice", "send_beacon_with_opt_u8_array"),
+                ("send_beacon_with_opt_u8_array", "send_beacon_with_opt_js_u8_array"),
             ]),
         ),
         (
             "AnalyserNode",
             BTreeMap::from_iter([
-                (
-                    "get_byte_frequency_data_with_u8_slice",
-                    "get_byte_frequency_data",
-                ),
-                (
-                    "get_byte_time_domain_data_with_u8_slice",
-                    "get_byte_time_domain_data",
-                ),
-                (
-                    "get_float_frequency_data_with_f32_slice",
-                    "get_float_frequency_data",
-                ),
-                (
-                    "get_float_time_domain_data_with_f32_slice",
-                    "get_float_time_domain_data",
-                ),
+                ("get_byte_frequency_data_with_u8_slice", "get_byte_frequency_data"),
+                ("get_byte_time_domain_data_with_u8_slice", "get_byte_time_domain_data"),
+                ("get_float_frequency_data_with_f32_slice", "get_float_frequency_data"),
+                ("get_float_time_domain_data_with_f32_slice", "get_float_time_domain_data"),
             ]),
         ),
         (
             "AudioBuffer",
             BTreeMap::from_iter([
                 ("copy_from_channel_with_f32_slice", "copy_from_channel"),
-                (
-                    "copy_from_channel_with_f32_slice_and_start_in_channel",
-                    "copy_from_channel_with_start_in_channel",
-                ),
+                ("copy_from_channel_with_f32_slice_and_start_in_channel", "copy_from_channel_with_start_in_channel"),
                 ("copy_to_channel_with_f32_slice", "copy_to_channel"),
-                (
-                    "copy_to_channel_with_f32_slice_and_start_in_channel",
-                    "copy_to_channel_with_start_in_channel",
-                ),
+                ("copy_to_channel_with_f32_slice_and_start_in_channel", "copy_to_channel_with_start_in_channel"),
             ]),
         ),
         (
             "AudioContext",
             BTreeMap::from_iter([
-                (
-                    "create_periodic_wave_with_f32_slice_and_f32_slice",
-                    "create_periodic_wave",
-                ),
-                (
-                    "create_periodic_wave_with_f32_slice_and_f32_slice_and_constraints",
-                    "create_periodic_wave_with_constraints",
-                ),
+                ("create_periodic_wave_with_f32_slice_and_f32_slice", "create_periodic_wave"),
+                ("create_periodic_wave_with_f32_slice_and_f32_slice_and_constraints", "create_periodic_wave_with_constraints"),
             ]),
         ),
         (
@@ -315,14 +255,8 @@ pub(crate) static FIXED_INTERFACES: Lazy<
         (
             "BaseAudioContext",
             BTreeMap::from_iter([
-                (
-                    "create_periodic_wave_with_f32_slice_and_f32_slice",
-                    "create_periodic_wave",
-                ),
-                (
-                    "create_periodic_wave_with_f32_slice_and_f32_slice_and_constraints",
-                    "create_periodic_wave_with_constraints",
-                ),
+                ("create_periodic_wave_with_f32_slice_and_f32_slice", "create_periodic_wave"),
+                ("create_periodic_wave_with_f32_slice_and_f32_slice_and_constraints", "create_periodic_wave_with_constraints"),
             ]),
         ),
         (
@@ -335,14 +269,8 @@ pub(crate) static FIXED_INTERFACES: Lazy<
         (
             "Crypto",
             BTreeMap::from_iter([
-                (
-                    "get_random_values_with_u8_slice",
-                    "get_random_values_with_u8_array",
-                ),
-                (
-                    "get_random_values_with_u8_array",
-                    "get_random_values_with_js_u8_array",
-                ),
+                ("get_random_values_with_u8_slice", "get_random_values_with_u8_array"),
+                ("get_random_values_with_u8_array", "get_random_values_with_js_u8_array"),
             ]),
         ),
         (
@@ -357,24 +285,12 @@ pub(crate) static FIXED_INTERFACES: Lazy<
             BTreeMap::from_iter([
                 ("read_with_u8_slice", "read_with_u8_array"),
                 ("read_with_u8_array", "read_with_js_u8_array"),
-                (
-                    "read_with_u8_slice_and_options",
-                    "read_with_u8_array_and_options",
-                ),
-                (
-                    "read_with_u8_array_and_options",
-                    "read_with_js_u8_array_and_options",
-                ),
+                ("read_with_u8_slice_and_options", "read_with_u8_array_and_options"),
+                ("read_with_u8_array_and_options", "read_with_js_u8_array_and_options"),
                 ("write_with_u8_slice", "write_with_u8_array"),
                 ("write_with_u8_array", "write_with_js_u8_array"),
-                (
-                    "write_with_u8_slice_and_options",
-                    "write_with_u8_array_and_options",
-                ),
-                (
-                    "write_with_u8_array_and_options",
-                    "write_with_js_u8_array_and_options",
-                ),
+                ("write_with_u8_slice_and_options", "write_with_u8_array_and_options"),
+                ("write_with_u8_array_and_options", "write_with_js_u8_array_and_options"),
             ]),
         ),
         (
@@ -389,14 +305,8 @@ pub(crate) static FIXED_INTERFACES: Lazy<
             BTreeMap::from_iter([
                 ("new_with_u8_slice", "new_with_u8_array"),
                 ("new_with_u8_array", "new_with_js_u8_array"),
-                (
-                    "new_with_u8_slice_and_descriptors",
-                    "new_with_u8_array_and_descriptors",
-                ),
-                (
-                    "new_with_u8_array_and_descriptors",
-                    "new_with_js_u8_array_and_descriptors",
-                ),
+                ("new_with_u8_slice_and_descriptors", "new_with_u8_array_and_descriptors"),
+                ("new_with_u8_array_and_descriptors", "new_with_js_u8_array_and_descriptors"),
             ]),
         ),
         (
@@ -420,40 +330,22 @@ pub(crate) static FIXED_INTERFACES: Lazy<
             BTreeMap::from_iter([
                 ("new_with_u8_clamped_slice", "new_with_u8_clamped_array"),
                 ("new_with_u8_clamped_array", "new_with_js_u8_clamped_array"),
-                (
-                    "new_with_u8_clamped_slice_and_sh",
-                    "new_with_u8_clamped_array_and_sh",
-                ),
-                (
-                    "new_with_u8_clamped_array_and_sh",
-                    "new_with_js_u8_clamped_array_and_sh",
-                ),
+                ("new_with_u8_clamped_slice_and_sh", "new_with_u8_clamped_array_and_sh"),
+                ("new_with_u8_clamped_array_and_sh", "new_with_js_u8_clamped_array_and_sh"),
             ]),
         ),
         (
             "MediaKeys",
             BTreeMap::from_iter([
-                (
-                    "set_server_certificate_with_u8_slice",
-                    "set_server_certificate_with_u8_array",
-                ),
-                (
-                    "set_server_certificate_with_u8_array",
-                    "set_server_certificate_with_js_u8_array",
-                ),
+                ("set_server_certificate_with_u8_slice", "set_server_certificate_with_u8_array"),
+                ("set_server_certificate_with_u8_array", "set_server_certificate_with_js_u8_array"),
             ]),
         ),
         (
             "MediaKeySession",
             BTreeMap::from_iter([
-                (
-                    "generate_request_with_u8_slice",
-                    "generate_request_with_u8_array",
-                ),
-                (
-                    "generate_request_with_u8_array",
-                    "generate_request_with_js_u8_array",
-                ),
+                ("generate_request_with_u8_slice", "generate_request_with_u8_array"),
+                ("generate_request_with_u8_array", "generate_request_with_js_u8_array"),
                 ("update_with_u8_slice", "update_with_u8_array"),
                 ("update_with_u8_array", "update_with_js_u8_array"),
             ]),
@@ -470,14 +362,8 @@ pub(crate) static FIXED_INTERFACES: Lazy<
         (
             "OfflineAudioContext",
             BTreeMap::from_iter([
-                (
-                    "create_periodic_wave_with_f32_slice_and_f32_slice",
-                    "create_periodic_wave",
-                ),
-                (
-                    "create_periodic_wave_with_f32_slice_and_f32_slice_and_constraints",
-                    "create_periodic_wave_with_constraints",
-                ),
+                ("create_periodic_wave_with_f32_slice_and_f32_slice", "create_periodic_wave"),
+                ("create_periodic_wave_with_f32_slice_and_f32_slice_and_constraints", "create_periodic_wave_with_constraints"),
             ]),
         ),
         (
@@ -497,14 +383,8 @@ pub(crate) static FIXED_INTERFACES: Lazy<
         (
             "ReadableStreamByobRequest",
             BTreeMap::from_iter([
-                (
-                    "respond_with_new_view_with_u8_slice",
-                    "respond_with_new_view_with_u8_array",
-                ),
-                (
-                    "respond_with_new_view_with_u8_array",
-                    "respond_with_new_view_with_js_u8_array",
-                ),
+                ("respond_with_new_view_with_u8_slice", "respond_with_new_view_with_u8_array"),
+                ("respond_with_new_view_with_u8_array", "respond_with_new_view_with_js_u8_array"),
             ]),
         ),
         (
@@ -512,14 +392,8 @@ pub(crate) static FIXED_INTERFACES: Lazy<
             BTreeMap::from_iter([
                 ("new_with_opt_u8_slice", "new_with_opt_u8_array"),
                 ("new_with_opt_u8_array", "new_with_opt_js_u8_array"),
-                (
-                    "new_with_opt_u8_slice_and_init",
-                    "new_with_opt_u8_array_and_init",
-                ),
-                (
-                    "new_with_opt_u8_array_and_init",
-                    "new_with_opt_js_u8_array_and_init",
-                ),
+                ("new_with_opt_u8_slice_and_init", "new_with_opt_u8_array_and_init"),
+                ("new_with_opt_u8_array_and_init", "new_with_opt_js_u8_array_and_init"),
             ]),
         ),
         (
@@ -533,172 +407,52 @@ pub(crate) static FIXED_INTERFACES: Lazy<
             "SourceBuffer",
             BTreeMap::from_iter([
                 ("append_buffer_with_u8_slice", "append_buffer_with_u8_array"),
-                (
-                    "append_buffer_with_u8_array",
-                    "append_buffer_with_js_u8_array",
-                ),
-                (
-                    "append_buffer_async_with_u8_slice",
-                    "append_buffer_async_with_u8_array",
-                ),
-                (
-                    "append_buffer_async_with_u8_array",
-                    "append_buffer_async_with_js_u8_array",
-                ),
+                ("append_buffer_with_u8_array", "append_buffer_with_js_u8_array"),
+                ("append_buffer_async_with_u8_slice", "append_buffer_async_with_u8_array"),
+                ("append_buffer_async_with_u8_array", "append_buffer_async_with_js_u8_array"),
             ]),
         ),
         (
             "SubtleCrypto",
             BTreeMap::from_iter([
-                (
-                    "decrypt_with_object_and_u8_slice",
-                    "decrypt_with_object_and_u8_array",
-                ),
-                (
-                    "decrypt_with_object_and_u8_array",
-                    "decrypt_with_object_and_js_u8_array",
-                ),
-                (
-                    "decrypt_with_str_and_u8_slice",
-                    "decrypt_with_str_and_u8_array",
-                ),
-                (
-                    "decrypt_with_str_and_u8_array",
-                    "decrypt_with_str_and_js_u8_array",
-                ),
-                (
-                    "digest_with_object_and_u8_slice",
-                    "digest_with_object_and_u8_array",
-                ),
-                (
-                    "digest_with_object_and_u8_array",
-                    "digest_with_object_and_js_u8_array",
-                ),
-                (
-                    "digest_with_str_and_u8_slice",
-                    "digest_with_str_and_u8_array",
-                ),
-                (
-                    "digest_with_str_and_u8_array",
-                    "digest_with_str_and_js_u8_array",
-                ),
-                (
-                    "encrypt_with_object_and_u8_slice",
-                    "encrypt_with_object_and_u8_array",
-                ),
-                (
-                    "encrypt_with_object_and_u8_array",
-                    "encrypt_with_object_and_js_u8_array",
-                ),
-                (
-                    "encrypt_with_str_and_u8_slice",
-                    "encrypt_with_str_and_u8_array",
-                ),
-                (
-                    "encrypt_with_str_and_u8_array",
-                    "encrypt_with_str_and_js_u8_array",
-                ),
-                (
-                    "sign_with_object_and_u8_slice",
-                    "sign_with_object_and_u8_array",
-                ),
-                (
-                    "sign_with_object_and_u8_array",
-                    "sign_with_object_and_js_u8_array",
-                ),
+                ("decrypt_with_object_and_u8_slice", "decrypt_with_object_and_u8_array"),
+                ("decrypt_with_object_and_u8_array", "decrypt_with_object_and_js_u8_array"),
+                ("decrypt_with_str_and_u8_slice", "decrypt_with_str_and_u8_array"),
+                ("decrypt_with_str_and_u8_array", "decrypt_with_str_and_js_u8_array"),
+                ("digest_with_object_and_u8_slice", "digest_with_object_and_u8_array"),
+                ("digest_with_object_and_u8_array", "digest_with_object_and_js_u8_array"),
+                ("digest_with_str_and_u8_slice", "digest_with_str_and_u8_array"),
+                ("digest_with_str_and_u8_array", "digest_with_str_and_js_u8_array"),
+                ("encrypt_with_object_and_u8_slice", "encrypt_with_object_and_u8_array"),
+                ("encrypt_with_object_and_u8_array", "encrypt_with_object_and_js_u8_array"),
+                ("encrypt_with_str_and_u8_slice", "encrypt_with_str_and_u8_array"),
+                ("encrypt_with_str_and_u8_array", "encrypt_with_str_and_js_u8_array"),
+                ("sign_with_object_and_u8_slice", "sign_with_object_and_u8_array"),
+                ("sign_with_object_and_u8_array", "sign_with_object_and_js_u8_array"),
                 ("sign_with_str_and_u8_slice", "sign_with_str_and_u8_array"),
-                (
-                    "sign_with_str_and_u8_array",
-                    "sign_with_str_and_js_u8_array",
-                ),
-                (
-                    "unwrap_key_with_u8_slice_and_object_and_object",
-                    "unwrap_key_with_u8_array_and_object_and_object",
-                ),
-                (
-                    "unwrap_key_with_u8_array_and_object_and_object",
-                    "unwrap_key_with_js_u8_array_and_object_and_object",
-                ),
-                (
-                    "unwrap_key_with_u8_slice_and_str_and_object",
-                    "unwrap_key_with_u8_array_and_str_and_object",
-                ),
-                (
-                    "unwrap_key_with_u8_array_and_str_and_object",
-                    "unwrap_key_with_js_u8_array_and_str_and_object",
-                ),
-                (
-                    "unwrap_key_with_u8_slice_and_object_and_str",
-                    "unwrap_key_with_u8_array_and_object_and_str",
-                ),
-                (
-                    "unwrap_key_with_u8_array_and_object_and_str",
-                    "unwrap_key_with_js_u8_array_and_object_and_str",
-                ),
-                (
-                    "unwrap_key_with_u8_slice_and_str_and_str",
-                    "unwrap_key_with_u8_array_and_str_and_str",
-                ),
-                (
-                    "unwrap_key_with_u8_array_and_str_and_str",
-                    "unwrap_key_with_js_u8_array_and_str_and_str",
-                ),
-                (
-                    "unwrap_key_with_u8_slice_and_buffer_source",
-                    "unwrap_key_with_u8_array_and_buffer_source",
-                ),
-                (
-                    "unwrap_key_with_u8_array_and_buffer_source",
-                    "unwrap_key_with_js_u8_array_and_buffer_source",
-                ),
-                (
-                    "verify_with_object_and_u8_slice_and_buffer_source",
-                    "verify_with_object_and_u8_array_and_buffer_source",
-                ),
-                (
-                    "verify_with_object_and_u8_array_and_buffer_source",
-                    "verify_with_object_and_js_u8_array_and_buffer_source",
-                ),
-                (
-                    "verify_with_str_and_u8_slice_and_buffer_source",
-                    "verify_with_str_and_u8_array_and_buffer_source",
-                ),
-                (
-                    "verify_with_str_and_u8_array_and_buffer_source",
-                    "verify_with_str_and_js_u8_array_and_buffer_source",
-                ),
-                (
-                    "verify_with_object_and_buffer_source_and_u8_slice",
-                    "verify_with_object_and_buffer_source_and_u8_array",
-                ),
-                (
-                    "verify_with_object_and_buffer_source_and_u8_array",
-                    "verify_with_object_and_buffer_source_and_js_u8_array",
-                ),
-                (
-                    "verify_with_str_and_buffer_source_and_u8_slice",
-                    "verify_with_str_and_buffer_source_and_u8_array",
-                ),
-                (
-                    "verify_with_str_and_buffer_source_and_u8_array",
-                    "verify_with_str_and_buffer_source_and_js_u8_array",
-                ),
-                (
-                    "verify_with_object_and_u8_slice_and_u8_slice",
-                    "verify_with_object_and_u8_array_and_u8_array",
-                ),
-                (
-                    "verify_with_object_and_u8_array_and_u8_array",
-                    "verify_with_object_and_js_u8_array_and_js_u8_array",
-                ),
-                (
-                    "verify_with_str_and_u8_slice_and_u8_slice",
-                    "verify_with_str_and_u8_array_and_u8_array",
-                ),
-                (
-                    "verify_with_str_and_u8_array_and_u8_array",
-                    "verify_with_str_and_js_u8_array_and_js_u8_array",
-                ),
+                ("sign_with_str_and_u8_array", "sign_with_str_and_js_u8_array"),
+                ("unwrap_key_with_u8_slice_and_object_and_object", "unwrap_key_with_u8_array_and_object_and_object"),
+                ("unwrap_key_with_u8_array_and_object_and_object", "unwrap_key_with_js_u8_array_and_object_and_object"),
+                ("unwrap_key_with_u8_slice_and_str_and_object", "unwrap_key_with_u8_array_and_str_and_object"),
+                ("unwrap_key_with_u8_array_and_str_and_object", "unwrap_key_with_js_u8_array_and_str_and_object"),
+                ("unwrap_key_with_u8_slice_and_object_and_str", "unwrap_key_with_u8_array_and_object_and_str"),
+                ("unwrap_key_with_u8_array_and_object_and_str", "unwrap_key_with_js_u8_array_and_object_and_str"),
+                ("unwrap_key_with_u8_slice_and_str_and_str", "unwrap_key_with_u8_array_and_str_and_str"),
+                ("unwrap_key_with_u8_array_and_str_and_str", "unwrap_key_with_js_u8_array_and_str_and_str"),
+                ("unwrap_key_with_u8_slice_and_buffer_source", "unwrap_key_with_u8_array_and_buffer_source"),
+                ("unwrap_key_with_u8_array_and_buffer_source", "unwrap_key_with_js_u8_array_and_buffer_source"),
+                ("verify_with_object_and_u8_slice_and_buffer_source", "verify_with_object_and_u8_array_and_buffer_source"),
+                ("verify_with_object_and_u8_array_and_buffer_source", "verify_with_object_and_js_u8_array_and_buffer_source"),
+                ("verify_with_str_and_u8_slice_and_buffer_source", "verify_with_str_and_u8_array_and_buffer_source"),
+                ("verify_with_str_and_u8_array_and_buffer_source", "verify_with_str_and_js_u8_array_and_buffer_source"),
+                ("verify_with_object_and_buffer_source_and_u8_slice", "verify_with_object_and_buffer_source_and_u8_array"),
+                ("verify_with_object_and_buffer_source_and_u8_array", "verify_with_object_and_buffer_source_and_js_u8_array"),
+                ("verify_with_str_and_buffer_source_and_u8_slice", "verify_with_str_and_buffer_source_and_u8_array"),
+                ("verify_with_str_and_buffer_source_and_u8_array", "verify_with_str_and_buffer_source_and_js_u8_array"),
+                ("verify_with_object_and_u8_slice_and_u8_slice", "verify_with_object_and_u8_array_and_u8_array"),
+                ("verify_with_object_and_u8_array_and_u8_array", "verify_with_object_and_js_u8_array_and_js_u8_array"),
+                ("verify_with_str_and_u8_slice_and_u8_slice", "verify_with_str_and_u8_array_and_u8_array"),
+                ("verify_with_str_and_u8_array_and_u8_array", "verify_with_str_and_js_u8_array_and_js_u8_array"),
             ]),
         ),
         (
@@ -706,14 +460,8 @@ pub(crate) static FIXED_INTERFACES: Lazy<
             BTreeMap::from_iter([
                 ("decode_with_u8_slice", "decode_with_u8_array"),
                 ("decode_with_u8_array", "decode_with_js_u8_array"),
-                (
-                    "decode_with_u8_slice_and_options",
-                    "decode_with_u8_array_and_options",
-                ),
-                (
-                    "decode_with_u8_array_and_options",
-                    "decode_with_js_u8_array_and_options",
-                ),
+                ("decode_with_u8_slice_and_options", "decode_with_u8_array_and_options"),
+                ("decode_with_u8_array_and_options", "decode_with_js_u8_array_and_options"),
             ]),
         ),
         (
