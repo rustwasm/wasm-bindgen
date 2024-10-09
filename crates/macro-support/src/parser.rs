@@ -1470,9 +1470,9 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
             })
             .collect::<Result<Vec<_>, Diagnostic>>()?;
 
-        let hole = (0..u32::MAX)
+        let hole = (0..=u32::MAX)
             .find(|v| !discriminate_map.contains_key(v))
-            .unwrap_or(u32::MAX);
+            .unwrap();
 
         self.to_tokens(tokens);
 
