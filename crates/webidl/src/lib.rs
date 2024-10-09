@@ -423,7 +423,10 @@ impl<'src> FirstPassRecord<'src> {
             .to_syn_type(TypePosition::Argument, false)
             .unwrap_or(None)?;
 
-        let mut return_ty = idl_type.to_syn_type(TypePosition::Return, false).unwrap().unwrap();
+        let mut return_ty = idl_type
+            .to_syn_type(TypePosition::Return, false)
+            .unwrap()
+            .unwrap();
 
         if field.required.is_none() {
             return_ty = optional_return_ty(return_ty);
@@ -519,7 +522,10 @@ impl<'src> FirstPassRecord<'src> {
         unstable: bool,
     ) {
         let idl_type = member.definition.const_type.to_idl_type(self);
-        let ty = idl_type.to_syn_type(TypePosition::Return, false).unwrap().unwrap();
+        let ty = idl_type
+            .to_syn_type(TypePosition::Return, false)
+            .unwrap()
+            .unwrap();
 
         let js_name = member.definition.identifier.0;
         let name = rust_ident(shouty_snake_case_ident(js_name).as_str());
@@ -574,7 +580,10 @@ impl<'src> FirstPassRecord<'src> {
         unstable: bool,
     ) {
         let idl_type = member.const_type.to_idl_type(self);
-        let ty = idl_type.to_syn_type(TypePosition::Return, false).unwrap().unwrap();
+        let ty = idl_type
+            .to_syn_type(TypePosition::Return, false)
+            .unwrap()
+            .unwrap();
 
         let js_name = member.identifier.0;
         let name = rust_ident(shouty_snake_case_ident(js_name).as_str());
