@@ -55,6 +55,22 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IdbFileHandle`*"]
     #[deprecated]
     pub fn set_location(this: &IdbFileHandle, value: Option<f64>);
+    # [wasm_bindgen (structural , method , setter , js_class = "IDBFileHandle" , js_name = locationOptU32)]
+    #[doc = "Setter for the `locationOptU32` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBFileHandle/locationOptU32)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbFileHandle`*"]
+    #[deprecated]
+    pub fn set_location_opt_u32(this: &IdbFileHandle, value: Option<u32>);
+    # [wasm_bindgen (structural , method , setter , js_class = "IDBFileHandle" , js_name = locationOptF64)]
+    #[doc = "Setter for the `locationOptF64` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBFileHandle/locationOptF64)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `IdbFileHandle`*"]
+    #[deprecated]
+    pub fn set_location_opt_f64(this: &IdbFileHandle, value: Option<f64>);
     # [wasm_bindgen (structural , method , getter , js_class = "IDBFileHandle" , js_name = oncomplete)]
     #[doc = "Getter for the `oncomplete` field of this object."]
     #[doc = ""]

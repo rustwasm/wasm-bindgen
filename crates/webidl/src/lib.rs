@@ -31,6 +31,7 @@ use crate::util::{
 };
 use anyhow::Context;
 use anyhow::Result;
+use constants::UNFLATTENED_ATTRIBUTES;
 use idl_type::{IdentifierType, IdlType};
 use proc_macro2::{Ident, TokenStream};
 use quote::ToTokens;
@@ -746,23 +747,58 @@ impl<'src> FirstPassRecord<'src> {
         }
 
         if !readonly {
-            let ty = type_
-                .type_
-                .to_idl_type(self)
-                .to_syn_type(TypePosition::Argument)
-                .unwrap_or(None);
+            let idls = type_.type_.to_idl_type(self).flatten(attrs.as_ref());
+            let any_different_type = idls.len() > 1;
 
-            // Skip types which can't be converted
-            if let Some(ty) = ty {
-                let kind = InterfaceAttributeKind::Setter;
+            if any_different_type
+                && UNFLATTENED_ATTRIBUTES
+                    .get(parent_js_name)
+                    .filter(|list| list.contains(&js_name.as_str()))
+                    .is_some()
+            {
+                let ty = type_
+                    .type_
+                    .to_idl_type(self)
+                    .to_syn_type(TypePosition::Argument)
+                    .unwrap_or(None);
+
+                // Skip types which can't be converted
+                if let Some(ty) = ty {
+                    attributes.push(InterfaceAttribute {
+                        is_static,
+                        structural,
+                        catch: catch || setter_throws(parent_js_name, &js_name, attrs),
+                        ty,
+                        js_name: js_name.clone(),
+                        deprecated: Some(None),
+                        kind: InterfaceAttributeKind::Setter,
+                        unstable,
+                    });
+                }
+            }
+
+            for (idl, ty) in idls.into_iter().filter_map(|idl| {
+                idl.to_syn_type(TypePosition::Argument)
+                    .ok()
+                    .flatten()
+                    .map(|ty| (idl, ty))
+            }) {
+                let mut js_name = js_name.clone();
+
+                if any_different_type {
+                    let mut ext = String::new();
+                    idl.push_snake_case_name(&mut ext);
+                    js_name.push_str(&util::camel_case_ident(&ext));
+                }
+
                 attributes.push(InterfaceAttribute {
                     is_static,
                     structural,
                     catch: catch || setter_throws(parent_js_name, &js_name, attrs),
                     ty,
                     js_name,
-                    deprecated,
-                    kind,
+                    deprecated: deprecated.clone(),
+                    kind: InterfaceAttributeKind::Setter,
                     unstable,
                 });
             }

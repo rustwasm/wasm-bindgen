@@ -1712,3 +1712,18 @@ pub(crate) static BREAKING_ALLOW_SHARED: Lazy<BTreeMap<&'static str, Vec<&'stati
             ),
         ])
     });
+
+pub(crate) static UNFLATTENED_ATTRIBUTES: Lazy<BTreeMap<&'static str, Vec<&'static str>>> =
+    Lazy::new(|| {
+        BTreeMap::from_iter([
+            ("CanvasRenderingContext2D", vec!["strokeStyle", "fillStyle"]),
+            ("IDBFileHandle", vec!["location"]),
+            ("KeyframeEffect", vec!["target"]),
+            (
+                "OffscreenCanvasRenderingContext2D",
+                vec!["strokeStyle", "fillStyle"],
+            ),
+            ("VTTCue", vec!["line", "position"]),
+            ("WaveShaperNode", vec!["curve"]),
+        ])
+    });
