@@ -55,6 +55,14 @@ fn main() -> Result<()> {
 fn runtest(test: &Path) -> Result<()> {
     let contents = fs::read_to_string(test)?;
     let td = tempfile::TempDir::new()?;
+    let root = repo_root();
+    let root = root.display();
+
+    let dependencies = contents
+        .lines()
+        .filter_map(|l| l.strip_prefix("// DEPENDENCY: "))
+        .map(|l| "\n            ".to_string() + &l.trim().replace("{root}", &root.to_string()))
+        .fold(String::new(), |a, b| a + &b);
 
     let manifest = format!(
         "
@@ -65,16 +73,15 @@ fn runtest(test: &Path) -> Result<()> {
             edition = '2021'
 
             [dependencies]
-            wasm-bindgen = {{ path = '{}' }}
-            wasm-bindgen-futures = {{ path = '{}/crates/futures' }}
+            wasm-bindgen = {{ path = '{root}' }}
+            wasm-bindgen-futures = {{ path = '{root}/crates/futures' }}
+            {dependencies}
 
             [lib]
             crate-type = ['cdylib']
-            path = '{}'
+            path = '{test}'
         ",
-        repo_root().display(),
-        repo_root().display(),
-        test.display(),
+        test = test.display(),
     );
 
     fs::write(td.path().join("Cargo.toml"), manifest)?;
