@@ -1,7 +1,7 @@
 #![allow(unused_imports)]
 #![allow(clippy::all)]
 use wasm_bindgen::prelude::*;
-#[wasm_bindgen]
+#[wasm_bindgen(skip_typescript)]
 #[doc = "The `RequestRedirect` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `RequestRedirect`*"]

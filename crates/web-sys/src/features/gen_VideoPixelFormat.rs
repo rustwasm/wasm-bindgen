@@ -2,7 +2,7 @@
 #![allow(clippy::all)]
 use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
-#[wasm_bindgen]
+#[wasm_bindgen(skip_typescript)]
 #[doc = "The `VideoPixelFormat` enum."]
 #[doc = ""]
 #[doc = "*This API requires the following crate features to be activated: `VideoPixelFormat`*"]
