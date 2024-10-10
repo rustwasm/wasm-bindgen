@@ -1,6 +1,15 @@
 # `wasm-bindgen` Change Log
 --------------------------------------------------------------------------------
 
+## Unreleased
+
+### Added
+
+* Added support for `Self` in complex type expressions in methods.
+  [#4155](https://github.com/rustwasm/wasm-bindgen/pull/4155)
+
+--------------------------------------------------------------------------------
+
 ## [0.2.94](https://github.com/rustwasm/wasm-bindgen/compare/0.2.93...0.2.94)
 
 Released 2024-10-09
@@ -36,9 +45,6 @@ Released 2024-10-09
 
 * Added additional bindings for setters from WebIDL interface attributes with applicaple parameter types of just `JsValue`.
   [#4156](https://github.com/rustwasm/wasm-bindgen/pull/4156)
-
-* Added support for `Self` in complex type expressions in methods.
-  [#4155](https://github.com/rustwasm/wasm-bindgen/pull/4155)
 
 ### Changed
 
