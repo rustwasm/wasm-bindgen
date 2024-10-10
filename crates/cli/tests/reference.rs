@@ -146,7 +146,7 @@ fn runtest(test: &Path) -> Result<()> {
 }
 
 fn assert_same(output: &str, expected: &Path) -> Result<()> {
-    if env::var("BLESS").is_ok() || true {
+    if env::var("BLESS").is_ok() {
         fs::write(expected, output)?;
     } else {
         let expected = fs::read_to_string(expected)?;
