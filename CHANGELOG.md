@@ -11,6 +11,11 @@
 * Added support for `Self` in complex type expressions in methods.
   [#4155](https://github.com/rustwasm/wasm-bindgen/pull/4155)
 
+### Changed
+
+* Sting enums are no longer generate TypeScript types.
+  [#4174](https://github.com/rustwasm/wasm-bindgen/pull/4174)
+
 ### Fixed
 
 * Fixed generated setters from WebIDL interface attributes binding to wrong JS method names.

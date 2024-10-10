@@ -3816,31 +3816,11 @@ __wbg_set_wasm(wasm);"
     }
 
     fn generate_string_enum(&mut self, string_enum: &AuxStringEnum) -> Result<(), Error> {
-        let docs = format_doc_comments(&string_enum.comments, None);
-
         let variants: Vec<_> = string_enum
             .variant_values
             .iter()
             .map(|v| format!("\"{v}\""))
             .collect();
-
-        if string_enum.generate_typescript {
-            self.typescript.push_str(&docs);
-            if string_enum.public {
-                self.typescript.push_str("export ");
-            }
-            self.typescript.push_str("type ");
-            self.typescript.push_str(&string_enum.name);
-            self.typescript.push_str(" = ");
-
-            if variants.is_empty() {
-                self.typescript.push_str("never");
-            } else {
-                self.typescript.push_str(&variants.join(" | "));
-            }
-
-            self.typescript.push_str(";\n");
-        }
 
         self.global(&format!(
             "const __wbindgen_enum_{name} = [{values}];\n",

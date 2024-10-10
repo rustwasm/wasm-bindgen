@@ -43,12 +43,3 @@ export enum ImplicitDiscriminant {
   C = 42,
   D = 43,
 }
-/**
- * The name of a color.
- */
-export type ColorName = "green" | "yellow" | "red";
-/**
- * An unused string enum.
- */
-export type FooBar = "foo" | "bar";
-type PrivateStringEnum = "foo" | "bar";
