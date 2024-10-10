@@ -13,13 +13,16 @@
 
 ### Changed
 
-* Sting enums are no longer generate TypeScript types.
+* String enums are no longer generate TypeScript types.
   [#4174](https://github.com/rustwasm/wasm-bindgen/pull/4174)
 
 ### Fixed
 
 * Fixed generated setters from WebIDL interface attributes binding to wrong JS method names.
   [#4170](https://github.com/rustwasm/wasm-bindgen/pull/4170)
+
+* Fix string enums showing up in JS documentation and TypeScript bindings without corresponding types.
+  [#4175](https://github.com/rustwasm/wasm-bindgen/pull/4175)
 
 --------------------------------------------------------------------------------
 
