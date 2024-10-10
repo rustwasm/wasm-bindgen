@@ -123,7 +123,7 @@ pub fn wasm_bindgen_test(
 
     if let Some(path) = attributes.unsupported {
         tokens.extend(
-            quote! { #[cfg_attr(not(all(target_arch = "wasm32", target_os = "unknown")), #path)] },
+            quote! { #[cfg_attr(not(all(any(target_arch = "wasm32", target_arch = "wasm64"), target_os = "unknown")), #path)] },
         );
     }
 
