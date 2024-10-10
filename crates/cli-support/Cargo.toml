@@ -11,7 +11,7 @@ license = "MIT OR Apache-2.0"
 name = "wasm-bindgen-cli-support"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/cli-support"
 rust-version = "1.76"
-version = "0.2.94"
+version = "0.2.95"
 
 [dependencies]
 anyhow = "1.0"
@@ -23,9 +23,9 @@ serde_json = "1.0"
 tempfile = "3.0"
 unicode-ident = "1.0.5"
 walrus = "0.22"
-wasm-bindgen-externref-xform = { path = '../externref-xform', version = '=0.2.94' }
-wasm-bindgen-multi-value-xform = { path = '../multi-value-xform', version = '=0.2.94' }
-wasm-bindgen-shared = { path = "../shared", version = '=0.2.94' }
-wasm-bindgen-threads-xform = { path = '../threads-xform', version = '=0.2.94' }
-wasm-bindgen-wasm-conventions = { path = '../wasm-conventions', version = '=0.2.94' }
-wasm-bindgen-wasm-interpreter = { path = "../wasm-interpreter", version = '=0.2.94' }
+wasm-bindgen-externref-xform = { path = '../externref-xform', version = '=0.2.95' }
+wasm-bindgen-multi-value-xform = { path = '../multi-value-xform', version = '=0.2.95' }
+wasm-bindgen-shared = { path = "../shared", version = '=0.2.95' }
+wasm-bindgen-threads-xform = { path = '../threads-xform', version = '=0.2.95' }
+wasm-bindgen-wasm-conventions = { path = '../wasm-conventions', version = '=0.2.95' }
+wasm-bindgen-wasm-interpreter = { path = "../wasm-interpreter", version = '=0.2.95' }
