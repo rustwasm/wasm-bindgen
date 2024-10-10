@@ -236,6 +236,7 @@ pub enum InterfaceAttributeKind {
 
 pub struct InterfaceAttribute {
     pub js_name: String,
+    pub rust_name: String,
     pub deprecated: Option<Option<String>>,
     pub ty: Type,
     pub is_static: bool,
@@ -256,6 +257,7 @@ impl InterfaceAttribute {
     ) -> TokenStream {
         let InterfaceAttribute {
             js_name,
+            rust_name,
             deprecated,
             ty,
             is_static,
@@ -300,7 +302,7 @@ impl InterfaceAttribute {
 
         let (prefix, attr, def) = match kind {
             InterfaceAttributeKind::Getter => {
-                let name = rust_ident(&snake_case_ident(js_name));
+                let name = rust_ident(&snake_case_ident(rust_name));
 
                 let ty = if *catch {
                     quote!( Result<#ty, JsValue> )
@@ -316,7 +318,7 @@ impl InterfaceAttribute {
             }
 
             InterfaceAttributeKind::Setter => {
-                let name = rust_ident(&format!("set_{}", snake_case_ident(js_name)));
+                let name = rust_ident(&format!("set_{}", snake_case_ident(rust_name)));
 
                 let ret_ty = if *catch {
                     Some(quote!( -> Result<(), JsValue> ))
