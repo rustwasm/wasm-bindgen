@@ -11,6 +11,11 @@
 * Added support for `Self` in complex type expressions in methods.
   [#4155](https://github.com/rustwasm/wasm-bindgen/pull/4155)
 
+### Fixed
+
+* Fixed generated setters from WebIDL interface attributes binding to wrong JS method names.
+  [#4170](https://github.com/rustwasm/wasm-bindgen/pull/4170)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.94](https://github.com/rustwasm/wasm-bindgen/compare/0.2.93...0.2.94)
