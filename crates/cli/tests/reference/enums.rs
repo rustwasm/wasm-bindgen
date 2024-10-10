@@ -45,19 +45,6 @@ pub fn option_string_enum_echo(color: Option<ColorName>) -> Option<ColorName> {
     color
 }
 
-/// An unused string enum.
-#[wasm_bindgen(js_name = "FooBar")]
-pub enum UnusedStringEnum {
-    Foo = "foo",
-    Bar = "bar",
-}
-
-#[wasm_bindgen]
-enum PrivateStringEnum {
-    Foo = "foo",
-    Bar = "bar",
-}
-
 #[wasm_bindgen]
 pub enum ImplicitDiscriminant {
     A,
