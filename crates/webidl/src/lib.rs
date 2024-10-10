@@ -749,6 +749,7 @@ impl<'src> FirstPassRecord<'src> {
                 catch: catch || getter_throws(parent_js_name, &js_name, attrs),
                 ty,
                 js_name: js_name.clone(),
+                rust_name: snake_case_ident(&js_name),
                 deprecated: deprecated.clone(),
                 kind,
                 unstable,
@@ -779,6 +780,7 @@ impl<'src> FirstPassRecord<'src> {
                         catch: catch || setter_throws(parent_js_name, &js_name, attrs),
                         ty,
                         js_name: js_name.clone(),
+                        rust_name: format!("set_{}", snake_case_ident(&js_name)),
                         deprecated: Some(None),
                         kind: InterfaceAttributeKind::Setter,
                         unstable,
@@ -792,12 +794,13 @@ impl<'src> FirstPassRecord<'src> {
                     .flatten()
                     .map(|ty| (idl, ty))
             }) {
-                let mut js_name = js_name.clone();
+                let mut rust_name = format!("set_{}", snake_case_ident(&js_name));
 
                 if any_different_type {
                     let mut ext = String::new();
                     idl.push_snake_case_name(&mut ext);
-                    js_name.push_str(&util::camel_case_ident(&ext));
+                    rust_name.push('_');
+                    rust_name.push_str(&snake_case_ident(&ext));
                 }
 
                 attributes.push(InterfaceAttribute {
@@ -805,7 +808,8 @@ impl<'src> FirstPassRecord<'src> {
                     structural,
                     catch: catch || setter_throws(parent_js_name, &js_name, attrs),
                     ty,
-                    js_name,
+                    js_name: js_name.clone(),
+                    rust_name,
                     deprecated: deprecated.clone(),
                     kind: InterfaceAttributeKind::Setter,
                     unstable,
