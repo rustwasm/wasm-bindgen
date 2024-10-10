@@ -912,11 +912,16 @@ fn function_from_decl(
 
     let syn::Signature { inputs, output, .. } = sig;
 
-    // A helper function to replace `Self` in the function signature of methods
+    // A helper function to replace `Self` in the function signature of methods.
+    // E.g. `fn get(&self) -> Option<Self>` to `fn get(&self) -> Option<MyType>`
     // The following comment explains why this is necessary:
     // https://github.com/rustwasm/wasm-bindgen/issues/3105#issuecomment-1275160744
     let replace_self = |mut t: syn::Type| {
         if let Some(self_ty) = self_ty {
+            // This uses a visitor to replace all occurrences of `Self` with
+            // the actual type identifier. The visitor guarantees that we find
+            // all occurrences of `Self`, even if deeply nested and even if
+            // future Rust versions add more places where `Self` can appear.
             struct SelfReplace(Ident);
             impl VisitMut for SelfReplace {
                 fn visit_ident_mut(&mut self, i: &mut proc_macro2::Ident) {
@@ -932,6 +937,8 @@ fn function_from_decl(
         t
     };
 
+    // A helper function to replace argument names that are JS keywords.
+    // E.g. this will replace `fn foo(class: u32)` to `fn foo(_class: u32)`
     let replace_colliding_arg = |i: &mut syn::PatType| {
         if let syn::Pat::Ident(ref mut i) = *i.pat {
             let ident = i.ident.to_string();
@@ -946,14 +953,18 @@ fn function_from_decl(
         .into_iter()
         .filter_map(|arg| match arg {
             syn::FnArg::Typed(mut c) => {
+                // typical arguments like foo: u32
                 replace_colliding_arg(&mut c);
                 c.ty = Box::new(replace_self(*c.ty));
                 Some(c)
             }
             syn::FnArg::Receiver(r) => {
+                // the self argument, so self, &self, &mut self, self: Box<Self>, etc.
                 if !allow_self {
                     panic!("arguments cannot be `self`")
                 }
+
+                // write down the way in which `self` is passed for later
                 assert!(method_self.is_none());
                 if r.reference.is_none() {
                     method_self = Some(ast::MethodSelf::ByValue);
@@ -962,6 +973,7 @@ fn function_from_decl(
                 } else {
                     method_self = Some(ast::MethodSelf::RefShared);
                 }
+
                 None
             }
         })
