@@ -5,6 +5,9 @@
 
 ### Added
 
+* Added support for implicit discriminants in enums.
+  [#4152](https://github.com/rustwasm/wasm-bindgen/pull/4152)
+
 * Added support for `Self` in complex type expressions in methods.
   [#4155](https://github.com/rustwasm/wasm-bindgen/pull/4155)
 
