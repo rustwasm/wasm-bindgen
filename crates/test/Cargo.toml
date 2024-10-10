@@ -7,16 +7,16 @@ license = "MIT OR Apache-2.0"
 name = "wasm-bindgen-test"
 repository = "https://github.com/rustwasm/wasm-bindgen"
 rust-version = "1.57"
-version = "0.3.43"
+version = "0.3.44"
 
 [dependencies]
 console_error_panic_hook = '0.1'
 gg-alloc = { version = "1.0", optional = true }
-js-sys = { path = '../js-sys', version = '0.3.70' }
+js-sys = { path = '../js-sys', version = '0.3.71' }
 scoped-tls = "1.0"
-wasm-bindgen = { path = '../..', version = '0.2.93' }
-wasm-bindgen-futures = { path = '../futures', version = '0.4.43' }
-wasm-bindgen-test-macro = { path = '../test-macro', version = '=0.3.43' }
+wasm-bindgen = { path = '../..', version = '0.2.94' }
+wasm-bindgen-futures = { path = '../futures', version = '0.4.44' }
+wasm-bindgen-test-macro = { path = '../test-macro', version = '=0.3.44' }
 
 [target.'cfg(all(target_arch = "wasm32", wasm_bindgen_unstable_test_coverage))'.dependencies]
 minicov = "0.3"
