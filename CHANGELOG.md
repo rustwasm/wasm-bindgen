@@ -1,6 +1,15 @@
 # `wasm-bindgen` Change Log
 --------------------------------------------------------------------------------
 
+## Unreleased
+
+### Added
+
+* Added support for implicit discriminants in enums.
+  [#4152](https://github.com/rustwasm/wasm-bindgen/pull/4152)
+
+--------------------------------------------------------------------------------
+
 ## [0.2.94](https://github.com/rustwasm/wasm-bindgen/compare/0.2.93...0.2.94)
 
 Released 2024-10-09

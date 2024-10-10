@@ -1,5 +1,6 @@
 use std::cell::{Cell, RefCell};
 use std::char;
+use std::collections::HashMap;
 use std::str::Chars;
 
 use ast::OperationKind;
@@ -1399,28 +1400,18 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
             return string_enum(self, program, js_name, generate_typescript, comments);
         }
 
-        let has_discriminant = self.variants[0].discriminant.is_some();
-
         match self.vis {
             syn::Visibility::Public(_) => {}
             _ => bail_span!(self, "only public enums are allowed with #[wasm_bindgen]"),
         }
 
+        let mut last_discriminant: Option<u32> = None;
+        let mut discriminate_map: HashMap<u32, &syn::Variant> = HashMap::new();
+
         let variants = self
             .variants
             .iter()
-            .enumerate()
-            .map(|(i, v)| {
-                // Require that everything either has a discriminant or doesn't.
-                // We don't really want to get in the business of emulating how
-                // rustc assigns values to enums.
-                if v.discriminant.is_some() != has_discriminant {
-                    bail_span!(
-                        v,
-                        "must either annotate discriminant of all variants or none"
-                    );
-                }
-
+            .map(|v| {
                 let value = match &v.discriminant {
                     Some((_, expr)) => match get_expr(expr) {
                         syn::Expr::Lit(syn::ExprLit {
@@ -1442,8 +1433,33 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
                              number literal values",
                         ),
                     },
-                    None => i as u32,
+                    None => {
+                        // Use the same algorithm as rustc to determine the next discriminant
+                        // https://doc.rust-lang.org/reference/items/enumerations.html#implicit-discriminants
+                        if let Some(last) = last_discriminant {
+                            if let Some(value) = last.checked_add(1) {
+                                value
+                            } else {
+                                bail_span!(
+                                    v,
+                                    "the discriminants of C-style enums with #[wasm_bindgen] must be representable as u32"
+                                );
+                            }
+                        } else {
+                            0
+                        }
+                    }
                 };
+                last_discriminant = Some(value);
+
+                if let Some(old) = discriminate_map.insert(value, v) {
+                    bail_span!(
+                        v,
+                        "discriminant value `{}` is already used by {} in this enum",
+                        value,
+                        old.ident
+                    );
+                }
 
                 let comments = extract_doc_comments(&v.attrs);
                 Ok(ast::Variant {
@@ -1454,21 +1470,9 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
             })
             .collect::<Result<Vec<_>, Diagnostic>>()?;
 
-        let mut values = variants.iter().map(|v| v.value).collect::<Vec<_>>();
-        values.sort();
-        let hole = values
-            .windows(2)
-            .find_map(|window| {
-                if window[0] + 1 != window[1] {
-                    Some(window[0] + 1)
-                } else {
-                    None
-                }
-            })
-            .unwrap_or(*values.last().unwrap() + 1);
-        for value in values {
-            assert!(hole != value);
-        }
+        let hole = (0..=u32::MAX)
+            .find(|v| !discriminate_map.contains_key(v))
+            .unwrap();
 
         self.to_tokens(tokens);
 
