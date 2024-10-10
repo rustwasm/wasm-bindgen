@@ -9,6 +9,8 @@
 
 [HTMLConstructor]
 interface HTMLSelectElement : HTMLElement {
+  [CEReactions, SetterThrows, Pure, RustDeprecated="Use `HtmlElement::autofocus()` or `HtmlElement::set_autofocus()` instead."]
+  attribute boolean autofocus;
   [CEReactions, SetterThrows, Pure]
   attribute DOMString autocomplete;
   [CEReactions, SetterThrows, Pure]
