@@ -11,7 +11,7 @@ use crate::constants::{BUILTIN_IDENTS, POLYFILL_INTERFACES};
 use crate::idl_type::IdlType;
 use crate::traverse::TraverseType;
 use crate::util::shared_ref;
-use crate::util::{get_cfg_features, mdn_doc, required_doc_string, snake_case_ident};
+use crate::util::{get_cfg_features, mdn_doc, required_doc_string};
 use crate::Options;
 
 fn add_features(features: &mut BTreeSet<String>, ty: &impl TraverseType) {
@@ -302,7 +302,7 @@ impl InterfaceAttribute {
 
         let (prefix, attr, def) = match kind {
             InterfaceAttributeKind::Getter => {
-                let name = rust_ident(&snake_case_ident(rust_name));
+                let rust_name = rust_ident(rust_name);
 
                 let ty = if *catch {
                     quote!( Result<#ty, JsValue> )
@@ -313,12 +313,12 @@ impl InterfaceAttribute {
                 (
                     "Getter",
                     quote!(getter,),
-                    quote!( pub fn #name(#this) -> #ty; ),
+                    quote!( pub fn #rust_name(#this) -> #ty; ),
                 )
             }
 
             InterfaceAttributeKind::Setter => {
-                let name = rust_ident(&format!("set_{}", snake_case_ident(rust_name)));
+                let rust_name = rust_ident(rust_name);
 
                 let ret_ty = if *catch {
                     Some(quote!( -> Result<(), JsValue> ))
@@ -329,7 +329,7 @@ impl InterfaceAttribute {
                 (
                     "Setter",
                     quote!(setter,),
-                    quote!( pub fn #name(#this value: #ty) #ret_ty; ),
+                    quote!( pub fn #rust_name(#this value: #ty) #ret_ty; ),
                 )
             }
         };
