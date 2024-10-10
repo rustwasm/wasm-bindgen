@@ -36,6 +36,7 @@ pub mod getters_and_setters;
 pub mod ignore;
 pub mod import_class;
 pub mod imports;
+pub mod inner_self;
 pub mod intrinsics;
 pub mod js_keywords;
 pub mod js_objects;
