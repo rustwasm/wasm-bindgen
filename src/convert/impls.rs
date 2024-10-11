@@ -99,14 +99,57 @@ macro_rules! type_wasm_native {
 }
 
 type_wasm_native!(
+    i64 as i64
+    u64 as u64
+    f64 as f64
+);
+
+macro_rules! type_wasm_native_f64_option {
+    ($($t:tt as $c:tt)*) => ($(
+        impl IntoWasmAbi for $t {
+            type Abi = $c;
+
+            #[inline]
+            fn into_abi(self) -> $c { self as $c }
+        }
+
+        impl FromWasmAbi for $t {
+            type Abi = $c;
+
+            #[inline]
+            unsafe fn from_abi(js: $c) -> Self { js as $t }
+        }
+
+        impl IntoWasmAbi for Option<$t> {
+            type Abi = f64;
+
+            #[inline]
+            fn into_abi(self) -> Self::Abi {
+                self.map(|v| v as $c as f64).unwrap_or(4294967296_f64)
+            }
+        }
+
+        impl FromWasmAbi for Option<$t> {
+            type Abi = f64;
+
+            #[inline]
+            unsafe fn from_abi(js: Self::Abi) -> Self {
+                if js == 4294967296_f64 {
+                    None
+                } else {
+                    Some(js as $c as $t)
+                }
+            }
+        }
+    )*)
+}
+
+type_wasm_native_f64_option!(
     i32 as i32
     isize as i32
     u32 as u32
     usize as u32
-    i64 as i64
-    u64 as u64
     f32 as f32
-    f64 as f64
 );
 
 macro_rules! type_abi_as_u32 {
