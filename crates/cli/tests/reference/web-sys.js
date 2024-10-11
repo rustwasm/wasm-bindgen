@@ -183,6 +183,14 @@ export function get_url() {
     return takeObject(ret);
 }
 
+/**
+ * @returns {any}
+ */
+export function get_media_source() {
+    const ret = wasm.get_media_source();
+    return __wbindgen_enum_MediaSourceEnum[ret];
+}
+
 function addHeapObject(obj) {
     if (heap_next === heap.length) heap.push(heap.length + 1);
     const idx = heap_next;
@@ -199,6 +207,8 @@ function handleError(f, args) {
         wasm.__wbindgen_exn_store(addHeapObject(e));
     }
 }
+
+const __wbindgen_enum_MediaSourceEnum = ["camera", "screen", "application", "window", "browser", "microphone", "audioCapture", "other"];
 
 const __wbindgen_enum_MediaSourceReadyState = ["closed", "open", "ended"];
 
