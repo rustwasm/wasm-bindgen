@@ -909,13 +909,13 @@ fn instruction(
             let val = js.pop();
             js.cx.expose_is_like_none();
             js.assert_optional_number(&val);
-            js.push(format!("isLikeNone({0}) ? 0x100000000 : {0}", val));
+            js.push(format!("isLikeNone({0}) ? 0x100000001 : {0}", val));
         }
         Instruction::F64FromOptionSentinelF32 => {
             let val = js.pop();
             js.cx.expose_is_like_none();
             js.assert_optional_number(&val);
-            js.push(format!("isLikeNone({0}) ? 0x100000000 : ({0} === 0x100000000 ? 0x100000001 : {0})", val));
+            js.push(format!("isLikeNone({0}) ? 0x100000001 : ({0} === 0x100000001 ? 0x100000002 : {0})", val));
         }
 
         Instruction::FromOptionNative { ty } => {
@@ -1277,7 +1277,7 @@ fn instruction(
 
         Instruction::OptionF64Sentinel => {
             let val = js.pop();
-            js.push(format!("{0} === 0x100000000 ? undefined : {0}", val));
+            js.push(format!("{0} === 0x100000001 ? undefined : {0}", val));
         }
 
         Instruction::OptionU32Sentinel => {

@@ -104,6 +104,8 @@ type_wasm_native!(
     f64 as f64
 );
 
+const F64_SENTINEL: f64 = 4294967297_f64; // 2^32 + 1
+
 macro_rules! type_wasm_native_f64_option {
     ($($t:tt as $c:tt)*) => ($(
         impl IntoWasmAbi for $t {
@@ -125,7 +127,7 @@ macro_rules! type_wasm_native_f64_option {
 
             #[inline]
             fn into_abi(self) -> Self::Abi {
-                self.map(|v| v as $c as f64).unwrap_or(4294967296_f64)
+                self.map(|v| v as $c as f64).unwrap_or(F64_SENTINEL)
             }
         }
 
@@ -134,7 +136,7 @@ macro_rules! type_wasm_native_f64_option {
 
             #[inline]
             unsafe fn from_abi(js: Self::Abi) -> Self {
-                if js == 4294967296_f64 {
+                if js == F64_SENTINEL {
                     None
                 } else {
                     Some(js as $c as $t)
