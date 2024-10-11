@@ -2703,7 +2703,7 @@ __wbg_set_wasm(wasm);"
                 match &export.kind {
                     AuxExportKind::Function(name) => {
                         if let Some(ts_sig) = ts_sig {
-                            self.typescript.push_str(&js_docs);
+                            self.typescript.push_str(&ts_docs);
                             self.typescript.push_str("export function ");
                             self.typescript.push_str(name);
                             self.typescript.push_str(ts_sig);
@@ -2721,7 +2721,7 @@ __wbg_set_wasm(wasm);"
                         }
 
                         exported.has_constructor = true;
-                        exported.push(&js_docs, "constructor", "", &code, ts_sig);
+                        exported.push("constructor", "", &js_docs, &code, &ts_docs, ts_sig);
                     }
                     AuxExportKind::Method {
                         class,
@@ -2774,7 +2774,7 @@ __wbg_set_wasm(wasm);"
                             }
                         };
 
-                        exported.push(&js_docs, name, &prefix, &code, ts);
+                        exported.push(name, &prefix, &js_docs, &code, &ts_docs, ts);
                     }
                 }
             }
@@ -4257,20 +4257,21 @@ fn property_accessor(name: &str) -> String {
 impl ExportedClass {
     fn push(
         &mut self,
-        docs: &str,
         function_name: &str,
         function_prefix: &str,
+        js_docs: &str,
         js: &str,
+        ts_docs: &str,
         ts: Option<&str>,
     ) {
-        self.contents.push_str(docs);
+        self.contents.push_str(js_docs);
         self.contents.push_str(function_prefix);
         self.contents.push_str(function_name);
         self.contents.push_str(js);
         self.contents.push('\n');
         if let Some(ts) = ts {
-            if !docs.is_empty() {
-                for line in docs.lines() {
+            if !ts_docs.is_empty() {
+                for line in ts_docs.lines() {
                     self.typescript.push_str("  ");
                     self.typescript.push_str(line);
                     self.typescript.push('\n');
