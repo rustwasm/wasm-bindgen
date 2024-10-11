@@ -13,7 +13,7 @@ use syn::ext::IdentExt;
 use syn::parse::{Parse, ParseStream, Result as SynResult};
 use syn::spanned::Spanned;
 use syn::visit_mut::VisitMut;
-use syn::{ItemFn, Lit, MacroDelimiter, ReturnType, Type};
+use syn::{ItemFn, Lit, MacroDelimiter, ReturnType};
 
 use crate::ClassMarker;
 
@@ -895,7 +895,7 @@ fn get_self_method(r: syn::Receiver) -> ast::MethodSelf {
     // e.g. `&self` gets the type `&Self`. So we only have check whether the
     // type is a reference or not.
     match &*r.ty {
-        Type::Reference(ty) => {
+        syn::Type::Reference(ty) => {
             if ty.mutability.is_some() {
                 ast::MethodSelf::RefMutable
             } else {
