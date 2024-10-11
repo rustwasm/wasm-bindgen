@@ -1321,6 +1321,8 @@ fn string_enum(
     enum_: syn::ItemEnum,
     program: &mut ast::Program,
     js_name: String,
+    generate_typescript: bool,
+    comments: Vec<String>,
 ) -> Result<(), Diagnostic> {
     let mut variants = vec![];
     let mut variant_values = vec![];
@@ -1356,7 +1358,9 @@ fn string_enum(
             js_name,
             variants,
             variant_values,
+            comments,
             rust_attrs: enum_.attrs,
+            generate_typescript,
             wasm_bindgen: program.wasm_bindgen.clone(),
         }),
     });
@@ -1406,7 +1410,7 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
             false
         });
         if is_string_enum {
-            return string_enum(self, program, js_name);
+            return string_enum(self, program, js_name, generate_typescript, comments);
         }
 
         match self.vis {

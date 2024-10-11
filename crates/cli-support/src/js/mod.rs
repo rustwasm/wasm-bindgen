@@ -9,6 +9,7 @@ use crate::wit::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
 use crate::wit::{JsImport, JsImportName, NonstandardWitSection, WasmBindgenAux};
 use crate::{reset_indentation, Bindgen, EncodeInto, OutputMode, PLACEHOLDER_MODULE};
 use anyhow::{anyhow, bail, Context as _, Error};
+use binding::TSReference;
 use std::borrow::Cow;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fmt;
@@ -46,6 +47,10 @@ pub struct Context<'a> {
     /// the number of times they've been used, used to generate new
     /// identifiers.
     defined_identifiers: HashMap<String, usize>,
+
+    /// A set of all (tracked) symbols referenced from within type definitions,
+    /// function signatures, etc.
+    typescript_refs: HashSet<TSReference>,
 
     exported_classes: Option<BTreeMap<String, ExportedClass>>,
 
@@ -108,6 +113,7 @@ impl<'a> Context<'a> {
             js_imports: Default::default(),
             defined_identifiers: Default::default(),
             wasm_import_definitions: Default::default(),
+            typescript_refs: Default::default(),
             exported_classes: Some(Default::default()),
             config,
             threads_enabled: config.threads.is_enabled(module),
@@ -2662,6 +2668,7 @@ __wbg_set_wasm(wasm);"
             ts_sig,
             ts_arg_tys,
             ts_ret_ty,
+            ts_refs,
             js_doc,
             code,
             might_be_optional_field,
@@ -2687,6 +2694,8 @@ __wbg_set_wasm(wasm);"
                 }
                 Kind::Adapter => "failed to generates bindings for adapter".to_string(),
             })?;
+
+        self.typescript_refs.extend(ts_refs);
 
         // Once we've got all the JS then put it in the right location depending
         // on what's being exported.
@@ -3821,6 +3830,27 @@ __wbg_set_wasm(wasm);"
             .iter()
             .map(|v| format!("\"{v}\""))
             .collect();
+
+        if string_enum.generate_typescript
+            && self
+                .typescript_refs
+                .contains(&TSReference::StringEnum(string_enum.name.clone()))
+        {
+            let docs = format_doc_comments(&string_enum.comments, None);
+
+            self.typescript.push_str(&docs);
+            self.typescript.push_str("type ");
+            self.typescript.push_str(&string_enum.name);
+            self.typescript.push_str(" = ");
+
+            if variants.is_empty() {
+                self.typescript.push_str("never");
+            } else {
+                self.typescript.push_str(&variants.join(" | "));
+            }
+
+            self.typescript.push_str(";\n");
+        }
 
         self.global(&format!(
             "const __wbindgen_enum_{name} = [{values}];\n",

@@ -295,7 +295,7 @@ impl InstructionBuilder<'_, '_> {
                         name: name.clone(),
                         hole: *hole,
                     },
-                    &[AdapterType::StringEnum.option()],
+                    &[AdapterType::StringEnum(name.clone()).option()],
                 );
             }
             Descriptor::RustStruct(name) => {
@@ -538,7 +538,7 @@ impl InstructionBuilder<'_, '_> {
             Instruction::WasmToStringEnum {
                 name: name.to_string(),
             },
-            &[AdapterType::StringEnum],
+            &[AdapterType::StringEnum(name.to_string())],
         );
     }
 
