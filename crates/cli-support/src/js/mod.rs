@@ -2178,7 +2178,7 @@ __wbg_set_wasm(wasm);"
         self.global(
             "
             function isLikeNone(x) {
-                return x == null;
+                return x === undefined || x === null;
             }
         ",
         );
