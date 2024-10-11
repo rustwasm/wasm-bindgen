@@ -33,7 +33,7 @@ export function enum_echo(color) {
 }
 
 function isLikeNone(x) {
-    return x === undefined || x === null;
+    return x == null;
 }
 /**
  * @param {Color | undefined} [color]
@@ -58,7 +58,7 @@ export function get_name(color) {
  * @returns {any | undefined}
  */
 export function option_string_enum_echo(color) {
-    const ret = wasm.option_string_enum_echo(color == undefined ? 4 : ((__wbindgen_enum_ColorName.indexOf(color) + 1 || 4) - 1));
+    const ret = wasm.option_string_enum_echo(isLikeNone(color) ? 4 : ((__wbindgen_enum_ColorName.indexOf(color) + 1 || 4) - 1));
     return __wbindgen_enum_ColorName[ret];
 }
 
