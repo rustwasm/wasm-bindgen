@@ -616,6 +616,14 @@ impl Output {
         self.generated.start.as_ref()
     }
 
+    pub fn snippets(&self) -> &HashMap<String, Vec<String>> {
+        &self.generated.snippets
+    }
+
+    pub fn local_modules(&self) -> &HashMap<String, String> {
+        &self.generated.local_modules
+    }
+
     pub fn npm_dependencies(&self) -> &HashMap<String, (PathBuf, String)> {
         &self.generated.npm_dependencies
     }

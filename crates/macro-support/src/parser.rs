@@ -1,5 +1,6 @@
 use std::cell::{Cell, RefCell};
 use std::char;
+use std::collections::HashMap;
 use std::str::Chars;
 
 use ast::OperationKind;
@@ -11,6 +12,7 @@ use quote::ToTokens;
 use syn::ext::IdentExt;
 use syn::parse::{Parse, ParseStream, Result as SynResult};
 use syn::spanned::Spanned;
+use syn::visit_mut::VisitMut;
 use syn::{ItemFn, Lit, MacroDelimiter, ReturnType, Type};
 
 use crate::ClassMarker;
@@ -911,26 +913,33 @@ fn function_from_decl(
 
     let syn::Signature { inputs, output, .. } = sig;
 
-    let replace_self = |t: syn::Type| {
-        let self_ty = match self_ty {
-            Some(i) => i,
-            None => return t,
-        };
-        let path = match get_ty(&t) {
-            syn::Type::Path(syn::TypePath { qself: None, path }) => path.clone(),
-            other => return other.clone(),
-        };
-        let new_path = if path.segments.len() == 1 && path.segments[0].ident == "Self" {
-            self_ty.clone().into()
-        } else {
-            path
-        };
-        syn::Type::Path(syn::TypePath {
-            qself: None,
-            path: new_path,
-        })
+    // A helper function to replace `Self` in the function signature of methods.
+    // E.g. `fn get(&self) -> Option<Self>` to `fn get(&self) -> Option<MyType>`
+    // The following comment explains why this is necessary:
+    // https://github.com/rustwasm/wasm-bindgen/issues/3105#issuecomment-1275160744
+    let replace_self = |mut t: syn::Type| {
+        if let Some(self_ty) = self_ty {
+            // This uses a visitor to replace all occurrences of `Self` with
+            // the actual type identifier. The visitor guarantees that we find
+            // all occurrences of `Self`, even if deeply nested and even if
+            // future Rust versions add more places where `Self` can appear.
+            struct SelfReplace(Ident);
+            impl VisitMut for SelfReplace {
+                fn visit_ident_mut(&mut self, i: &mut proc_macro2::Ident) {
+                    if i == "Self" {
+                        *i = self.0.clone();
+                    }
+                }
+            }
+
+            let mut replace = SelfReplace(self_ty.clone());
+            replace.visit_type_mut(&mut t);
+        }
+        t
     };
 
+    // A helper function to replace argument names that are JS keywords.
+    // E.g. this will replace `fn foo(class: u32)` to `fn foo(_class: u32)`
     let replace_colliding_arg = |i: &mut syn::PatType| {
         if let syn::Pat::Ident(ref mut i) = *i.pat {
             let ident = i.ident.to_string();
@@ -945,14 +954,18 @@ fn function_from_decl(
         .into_iter()
         .filter_map(|arg| match arg {
             syn::FnArg::Typed(mut c) => {
+                // typical arguments like foo: u32
                 replace_colliding_arg(&mut c);
                 c.ty = Box::new(replace_self(*c.ty));
                 Some(c)
             }
             syn::FnArg::Receiver(r) => {
+                // the self argument, so self, &self, &mut self, self: Box<Self>, etc.
                 if !allow_self {
                     panic!("arguments cannot be `self`")
                 }
+
+                // write down the way in which `self` is passed for later
                 assert!(method_self.is_none());
                 // r could be `&self`, `&mut self`, `self`, `self: Self`,
                 // `self: &Self`, `self: &mut Self`, `self: Box<Self>`, or
@@ -967,6 +980,7 @@ fn function_from_decl(
                     }
                     _ => ast::MethodSelf::ByValue,
                 });
+
                 None
             }
         })
@@ -1313,8 +1327,6 @@ fn string_enum(
     enum_: syn::ItemEnum,
     program: &mut ast::Program,
     js_name: String,
-    generate_typescript: bool,
-    comments: Vec<String>,
 ) -> Result<(), Diagnostic> {
     let mut variants = vec![];
     let mut variant_values = vec![];
@@ -1350,9 +1362,7 @@ fn string_enum(
             js_name,
             variants,
             variant_values,
-            comments,
             rust_attrs: enum_.attrs,
-            generate_typescript,
             wasm_bindgen: program.wasm_bindgen.clone(),
         }),
     });
@@ -1402,31 +1412,21 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
             false
         });
         if is_string_enum {
-            return string_enum(self, program, js_name, generate_typescript, comments);
+            return string_enum(self, program, js_name);
         }
-
-        let has_discriminant = self.variants[0].discriminant.is_some();
 
         match self.vis {
             syn::Visibility::Public(_) => {}
             _ => bail_span!(self, "only public enums are allowed with #[wasm_bindgen]"),
         }
 
+        let mut last_discriminant: Option<u32> = None;
+        let mut discriminate_map: HashMap<u32, &syn::Variant> = HashMap::new();
+
         let variants = self
             .variants
             .iter()
-            .enumerate()
-            .map(|(i, v)| {
-                // Require that everything either has a discriminant or doesn't.
-                // We don't really want to get in the business of emulating how
-                // rustc assigns values to enums.
-                if v.discriminant.is_some() != has_discriminant {
-                    bail_span!(
-                        v,
-                        "must either annotate discriminant of all variants or none"
-                    );
-                }
-
+            .map(|v| {
                 let value = match &v.discriminant {
                     Some((_, expr)) => match get_expr(expr) {
                         syn::Expr::Lit(syn::ExprLit {
@@ -1448,8 +1448,33 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
                              number literal values",
                         ),
                     },
-                    None => i as u32,
+                    None => {
+                        // Use the same algorithm as rustc to determine the next discriminant
+                        // https://doc.rust-lang.org/reference/items/enumerations.html#implicit-discriminants
+                        if let Some(last) = last_discriminant {
+                            if let Some(value) = last.checked_add(1) {
+                                value
+                            } else {
+                                bail_span!(
+                                    v,
+                                    "the discriminants of C-style enums with #[wasm_bindgen] must be representable as u32"
+                                );
+                            }
+                        } else {
+                            0
+                        }
+                    }
                 };
+                last_discriminant = Some(value);
+
+                if let Some(old) = discriminate_map.insert(value, v) {
+                    bail_span!(
+                        v,
+                        "discriminant value `{}` is already used by {} in this enum",
+                        value,
+                        old.ident
+                    );
+                }
 
                 let comments = extract_doc_comments(&v.attrs);
                 Ok(ast::Variant {
@@ -1460,21 +1485,9 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
             })
             .collect::<Result<Vec<_>, Diagnostic>>()?;
 
-        let mut values = variants.iter().map(|v| v.value).collect::<Vec<_>>();
-        values.sort();
-        let hole = values
-            .windows(2)
-            .find_map(|window| {
-                if window[0] + 1 != window[1] {
-                    Some(window[0] + 1)
-                } else {
-                    None
-                }
-            })
-            .unwrap_or(*values.last().unwrap() + 1);
-        for value in values {
-            assert!(hole != value);
-        }
+        let hole = (0..=u32::MAX)
+            .find(|v| !discriminate_map.contains_key(v))
+            .unwrap();
 
         self.to_tokens(tokens);
 

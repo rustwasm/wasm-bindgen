@@ -39,3 +39,27 @@ error: all variants of a string enum must have a string value
    |
 37 |     C,
    |     ^
+
+error: discriminant value `1` is already used by A in this enum
+  --> ui-tests/invalid-enums.rs:43:5
+   |
+43 |     B = 1, // collision
+   |     ^^^^^
+
+error: the discriminants of C-style enums with #[wasm_bindgen] must be representable as u32
+  --> ui-tests/invalid-enums.rs:50:5
+   |
+50 |     C, // would be u32::MAX + 1
+   |     ^
+
+error: discriminant value `0` is already used by A in this enum
+  --> ui-tests/invalid-enums.rs:56:5
+   |
+56 |     B = 0, // collision
+   |     ^^^^^
+
+error: discriminant value `3` is already used by A in this enum
+  --> ui-tests/invalid-enums.rs:63:5
+   |
+63 |     C, // = 3 -> collision
+   |     ^
