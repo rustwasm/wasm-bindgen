@@ -1,0 +1,18 @@
+(module $reference_test.wasm
+  (type (;0;) (func (result i32)))
+  (type (;1;) (func (param i32)))
+  (type (;2;) (func (param i32 i32) (result i32)))
+  (type (;3;) (func (param i32 i32 i32 i32) (result i32)))
+  (func $__wbindgen_realloc (;0;) (type 3) (param i32 i32 i32 i32) (result i32))
+  (func $__wbindgen_malloc (;1;) (type 2) (param i32 i32) (result i32))
+  (func $get_url (;2;) (type 0) (result i32))
+  (func $__wbindgen_exn_store (;3;) (type 1) (param i32))
+  (memory (;0;) 17)
+  (export "memory" (memory 0))
+  (export "get_url" (func $get_url))
+  (export "__wbindgen_malloc" (func $__wbindgen_malloc))
+  (export "__wbindgen_realloc" (func $__wbindgen_realloc))
+  (export "__wbindgen_exn_store" (func $__wbindgen_exn_store))
+  (@custom "target_features" (after code) "\02+\0fmutable-globals+\08sign-ext")
+)
+
