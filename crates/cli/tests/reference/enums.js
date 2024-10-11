@@ -33,7 +33,7 @@ export function enum_echo(color) {
 }
 
 function isLikeNone(x) {
-    return x == null;
+    return x === undefined || x === null;
 }
 /**
  * @param {Color | undefined} [color]
