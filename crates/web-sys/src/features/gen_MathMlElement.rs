@@ -1190,6 +1190,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomStringMap`, `MathMlElement`*"]
     pub fn dataset(this: &MathMlElement) -> DomStringMap;
+    # [wasm_bindgen (structural , method , getter , js_class = "MathMLElement" , js_name = nonce)]
+    #[doc = "Getter for the `nonce` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MathMLElement/nonce)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MathMlElement`*"]
+    pub fn nonce(this: &MathMlElement) -> String;
+    # [wasm_bindgen (structural , method , setter , js_class = "MathMLElement" , js_name = nonce)]
+    #[doc = "Setter for the `nonce` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MathMLElement/nonce)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MathMlElement`*"]
+    pub fn set_nonce(this: &MathMlElement, value: &str);
     # [wasm_bindgen (structural , method , getter , js_class = "MathMLElement" , js_name = autofocus)]
     #[doc = "Getter for the `autofocus` field of this object."]
     #[doc = ""]

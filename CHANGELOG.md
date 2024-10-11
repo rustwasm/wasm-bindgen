@@ -36,7 +36,7 @@ Released 2024-10-10
 
 ### Added
 
-* Added bindings for [MathML](https://www.w3.org/TR/MathML3/) elements and added support for the [`HTMLOrSVGElement`](https://html.spec.whatwg.org/#htmlorsvgelement) `mixin` (which is named `HTMLOrForeignElement` here), which is used for all interfaces deriving from `Element`.
+* Added bindings for [MathML](https://www.w3.org/TR/MathML3/) elements and added support for the [`HTMLOrSVGElement`](https://html.spec.whatwg.org/#htmlorsvgelement) `mixin`, which is used for all interfaces deriving from `Element`.
   [#4143](https://github.com/rustwasm/wasm-bindgen/pull/4143)
 
 * Added support for implicit discriminants in enums.

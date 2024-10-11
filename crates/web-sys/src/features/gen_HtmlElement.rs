@@ -1463,6 +1463,20 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomStringMap`, `HtmlElement`*"]
     pub fn dataset(this: &HtmlElement) -> DomStringMap;
+    # [wasm_bindgen (structural , method , getter , js_class = "HTMLElement" , js_name = nonce)]
+    #[doc = "Getter for the `nonce` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/nonce)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlElement`*"]
+    pub fn nonce(this: &HtmlElement) -> String;
+    # [wasm_bindgen (structural , method , setter , js_class = "HTMLElement" , js_name = nonce)]
+    #[doc = "Setter for the `nonce` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/nonce)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `HtmlElement`*"]
+    pub fn set_nonce(this: &HtmlElement, value: &str);
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLElement" , js_name = autofocus)]
     #[doc = "Getter for the `autofocus` field of this object."]
     #[doc = ""]

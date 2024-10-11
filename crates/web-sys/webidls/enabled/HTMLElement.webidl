@@ -87,6 +87,7 @@ partial interface HTMLElement {
   readonly attribute long offsetHeight;
 };
 
+// https://w3c.github.io/touch-events/#extensions-to-the-globaleventhandlers-mixin
 interface mixin TouchEventHandlers {
   [Func="nsGenericHTMLElement::TouchEventsEnabled"]
            attribute EventHandler ontouchstart;
@@ -98,7 +99,7 @@ interface mixin TouchEventHandlers {
            attribute EventHandler ontouchcancel;
 };
 
-HTMLElement includes HTMLOrForeignElement;
+HTMLElement includes HTMLOrSVGElement;
 HTMLElement includes ElementCSSInlineStyle;
 HTMLElement includes GlobalEventHandlers;
 HTMLElement includes DocumentAndElementEventHandlers;

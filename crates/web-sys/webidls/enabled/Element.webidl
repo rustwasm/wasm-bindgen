@@ -264,12 +264,14 @@ partial interface Element {
   undefined requestPointerLock();
 };
 
-interface mixin HTMLOrForeignElement {
+// https://html.spec.whatwg.org/#htmlorsvgelement
+interface mixin HTMLOrSVGElement {
   [SameObject] readonly attribute DOMStringMap dataset;
 
-  [CEReactions, SetterThrows, Pure] attribute boolean autofocus;
-  [CEReactions, SetterThrows, Pure] attribute long tabIndex;
-  [Throws, NeedsCallerType] undefined focus(optional FocusOptions options = {});
+  attribute DOMString nonce; // intentionally no [CEReactions]
+  [CEReactions, SetterThrows] attribute boolean autofocus;
+  [CEReactions, SetterThrows] attribute long tabIndex;
+  [Throws] undefined focus(optional FocusOptions options = {});
   [Throws] undefined blur();
 };
 

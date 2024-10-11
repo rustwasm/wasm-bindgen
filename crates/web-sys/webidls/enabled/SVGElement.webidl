@@ -20,7 +20,7 @@ interface SVGElement : Element {
   readonly attribute SVGElement? viewportElement;
 };
 
-SVGElement includes HTMLOrForeignElement;
+SVGElement includes HTMLOrSVGElement;
 SVGElement includes ElementCSSInlineStyle;
 SVGElement includes GlobalEventHandlers;
 SVGElement includes DocumentAndElementEventHandlers;

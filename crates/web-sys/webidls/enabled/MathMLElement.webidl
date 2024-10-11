@@ -13,7 +13,7 @@
 [Exposed=Window]
 interface MathMLElement : Element { };
 MathMLElement includes GlobalEventHandlers;
-MathMLElement includes HTMLOrForeignElement;
+MathMLElement includes HTMLOrSVGElement;
 MathMLElement includes ElementCSSInlineStyle;
 MathMLElement includes TouchEventHandlers;
 MathMLElement includes OnErrorEventHandlerForNodes;
