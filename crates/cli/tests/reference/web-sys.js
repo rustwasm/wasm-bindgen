@@ -184,7 +184,7 @@ export function get_url() {
 }
 
 /**
- * @returns {any}
+ * @returns {MediaSourceEnum}
  */
 export function get_media_source() {
     const ret = wasm.get_media_source();

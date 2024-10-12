@@ -3,9 +3,14 @@
 
 ## Unreleased
 
+### Changed
+
+* String enums now generate private TypeScript types but only if used.
+  [#4174](https://github.com/rustwasm/wasm-bindgen/pull/4174)
+
 ### Fixed
 
-* Fixed methods with `self: &Self` consuming the object
+* Fixed methods with `self: &Self` consuming the object.
   [#4178](https://github.com/rustwasm/wasm-bindgen/pull/4178)
 
 --------------------------------------------------------------------------------
