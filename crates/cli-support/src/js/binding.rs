@@ -8,6 +8,7 @@ use crate::js::Context;
 use crate::wit::InstructionData;
 use crate::wit::{Adapter, AdapterId, AdapterKind, AdapterType, Instruction};
 use anyhow::{anyhow, bail, Error};
+use std::collections::HashSet;
 use std::fmt::Write;
 use walrus::{Module, ValType};
 
@@ -68,12 +69,21 @@ pub struct JsFunction {
     pub js_doc: String,
     pub ts_arg_tys: Vec<String>,
     pub ts_ret_ty: Option<String>,
+    pub ts_refs: HashSet<TsReference>,
     /// Whether this function has a single optional argument.
     ///
     /// If the function is a setter, that means that the field it sets is optional.
     pub might_be_optional_field: bool,
     pub catch: bool,
     pub log_error: bool,
+}
+
+/// A references to an (likely) exported symbol used in TS type expression.
+///
+/// Right now, only string enum require this type of anaylsis.
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub enum TsReference {
+    StringEnum(String),
 }
 
 impl<'a, 'b> Builder<'a, 'b> {
@@ -246,7 +256,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         // should start from here. Struct fields(Getter) only have one arg, and
         // this is the clue we can infer if a function might be a field.
         let mut might_be_optional_field = false;
-        let (ts_sig, ts_arg_tys, ts_ret_ty) = self.typescript_signature(
+        let (ts_sig, ts_arg_tys, ts_ret_ty, ts_refs) = self.typescript_signature(
             &function_args,
             &arg_tys,
             &adapter.inner_results,
@@ -266,6 +276,7 @@ impl<'a, 'b> Builder<'a, 'b> {
             js_doc,
             ts_arg_tys,
             ts_ret_ty,
+            ts_refs,
             might_be_optional_field,
             catch: self.catch,
             log_error: self.log_error,
@@ -285,11 +296,12 @@ impl<'a, 'b> Builder<'a, 'b> {
         might_be_optional_field: &mut bool,
         asyncness: bool,
         variadic: bool,
-    ) -> (String, Vec<String>, Option<String>) {
+    ) -> (String, Vec<String>, Option<String>, HashSet<TsReference>) {
         // Build up the typescript signature as well
         let mut omittable = true;
         let mut ts_args = Vec::new();
         let mut ts_arg_tys = Vec::new();
+        let mut ts_refs = HashSet::new();
         for (name, ty) in arg_names.iter().zip(arg_tys).rev() {
             // In TypeScript, we can mark optional parameters as omittable
             // using the `?` suffix, but only if they're not followed by
@@ -302,13 +314,12 @@ impl<'a, 'b> Builder<'a, 'b> {
                 AdapterType::Option(ty) if omittable => {
                     // e.g. `foo?: string | null`
                     arg.push_str("?: ");
-                    adapter2ts(ty, &mut ts, NoneType::Both);
-                    ts.push_str(" | null");
+                    adapter2ts(ty, TypePosition::Argument, &mut ts, Some(&mut ts_refs));
                 }
                 ty => {
                     omittable = false;
                     arg.push_str(": ");
-                    adapter2ts(ty, &mut ts, NoneType::Both);
+                    adapter2ts(ty, TypePosition::Argument, &mut ts, Some(&mut ts_refs));
                 }
             }
             arg.push_str(&ts);
@@ -344,7 +355,12 @@ impl<'a, 'b> Builder<'a, 'b> {
             let mut ret = String::new();
             match result_tys.len() {
                 0 => ret.push_str("void"),
-                1 => adapter2ts(&result_tys[0], &mut ret, NoneType::Undefined),
+                1 => adapter2ts(
+                    &result_tys[0],
+                    TypePosition::Return,
+                    &mut ret,
+                    Some(&mut ts_refs),
+                ),
                 _ => ret.push_str("[any]"),
             }
             if asyncness {
@@ -353,7 +369,7 @@ impl<'a, 'b> Builder<'a, 'b> {
             ts.push_str(&ret);
             ts_ret = Some(ret);
         }
-        (ts, ts_arg_tys, ts_ret)
+        (ts, ts_arg_tys, ts_ret, ts_refs)
     }
 
     /// Returns a helpful JS doc comment which lists types for all parameters
@@ -376,7 +392,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         for (name, ty) in fn_arg_names.iter().zip(arg_tys).rev() {
             let mut arg = "@param {".to_string();
 
-            adapter2ts(ty, &mut arg, NoneType::Both);
+            adapter2ts(ty, TypePosition::Argument, &mut arg, None);
             arg.push_str("} ");
             match ty {
                 AdapterType::Option(..) if omittable => {
@@ -397,7 +413,7 @@ impl<'a, 'b> Builder<'a, 'b> {
 
         if let (Some(name), Some(ty)) = (variadic_arg, arg_tys.last()) {
             ret.push_str("@param {...");
-            adapter2ts(ty, &mut ret, NoneType::Both);
+            adapter2ts(ty, TypePosition::Argument, &mut ret, None);
             ret.push_str("} ");
             ret.push_str(name);
             ret.push('\n');
@@ -714,12 +730,11 @@ fn instruction(
         } => {
             let enum_val = js.pop();
             let enum_val_expr = string_enum_to_wasm(name, *invalid, &enum_val);
+            js.cx.expose_is_like_none();
 
-            // e.g. someEnumVal == undefined ? 4 : (string_enum_to_wasm(someEnumVal))
-            //                  |
-            //    double equals here in case it's null
+            // e.g. isLikeNone(someEnumVal) ? 4 : (string_enum_to_wasm(someEnumVal))
             js.push(format!(
-                "{enum_val} == undefined ? {hole} : ({enum_val_expr})"
+                "isLikeNone({enum_val}) ? {hole} : ({enum_val_expr})"
             ))
         }
 
@@ -1420,22 +1435,17 @@ impl Invocation {
 }
 
 #[derive(Debug, Clone, Copy)]
-enum NoneType {
-    Undefined,
-    Null,
-    Both,
-}
-impl NoneType {
-    fn js_ty(&self) -> &str {
-        match self {
-            NoneType::Undefined => "undefined",
-            NoneType::Null => "null",
-            NoneType::Both => "undefined | null",
-        }
-    }
+enum TypePosition {
+    Argument,
+    Return,
 }
 
-fn adapter2ts(ty: &AdapterType, dst: &mut String, none_type: NoneType) {
+fn adapter2ts(
+    ty: &AdapterType,
+    position: TypePosition,
+    dst: &mut String,
+    refs: Option<&mut HashSet<TsReference>>,
+) {
     match ty {
         AdapterType::I32
         | AdapterType::S8
@@ -1453,14 +1463,22 @@ fn adapter2ts(ty: &AdapterType, dst: &mut String, none_type: NoneType) {
         AdapterType::Bool => dst.push_str("boolean"),
         AdapterType::Vector(kind) => dst.push_str(&kind.js_ty()),
         AdapterType::Option(ty) => {
-            adapter2ts(ty, dst, none_type);
-            dst.push_str(" | ");
-            dst.push_str(none_type.js_ty());
+            adapter2ts(ty, position, dst, refs);
+            dst.push_str(match position {
+                TypePosition::Argument => " | undefined | null",
+                TypePosition::Return => " | undefined",
+            });
         }
         AdapterType::NamedExternref(name) => dst.push_str(name),
         AdapterType::Struct(name) => dst.push_str(name),
         AdapterType::Enum(name) => dst.push_str(name),
-        AdapterType::StringEnum => dst.push_str("any"),
+        AdapterType::StringEnum(name) => {
+            if let Some(refs) = refs {
+                refs.insert(TsReference::StringEnum(name.clone()));
+            }
+
+            dst.push_str(name);
+        }
         AdapterType::Function => dst.push_str("any"),
     }
 }
