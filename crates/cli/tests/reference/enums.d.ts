@@ -1,16 +1,12 @@
 /* tslint:disable */
 /* eslint-disable */
 export function enum_echo(color: Color): Color;
-/**
- * @param {Color | undefined | null} [color]
- * @returns {Color | undefined}
- */
-export function option_enum_echo(color?: Color): Color | undefined;
+export function option_enum_echo(color?: Color | null): Color | undefined;
 export function get_name(color: Color): ColorName;
+export function option_string_enum_echo(color?: ColorName | null): ColorName | undefined;
 /**
- * @param {ColorName | undefined | null} [color]
+ * A color.
  */
-export function option_string_enum_echo(color?: ColorName): ColorName | undefined;
 export enum Color {
   /**
    * Green as a leaf.

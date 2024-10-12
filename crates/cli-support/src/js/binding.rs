@@ -315,6 +315,7 @@ impl<'a, 'b> Builder<'a, 'b> {
                     // e.g. `foo?: string | null`
                     arg.push_str("?: ");
                     adapter2ts(ty, TypePosition::Argument, &mut ts, Some(&mut ts_refs));
+                    ts.push_str(" | null");
                 }
                 ty => {
                     omittable = false;
