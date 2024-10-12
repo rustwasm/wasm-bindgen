@@ -1,12 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-/**
- * @returns {URL}
- */
 export function get_url(): URL;
-/**
- * @returns {MediaSourceEnum}
- */
 export function get_media_source(): MediaSourceEnum;
 /**
  *The `MediaSourceEnum` enum.

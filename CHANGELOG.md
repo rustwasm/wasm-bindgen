@@ -8,6 +8,9 @@
 * String enums now generate private TypeScript types but only if used.
   [#4174](https://github.com/rustwasm/wasm-bindgen/pull/4174)
 
+* Remove unnecessary JSDoc type annotations from generated `.d.ts` files
+  [#4187](https://github.com/rustwasm/wasm-bindgen/pull/4187)
+
 * Optional parameters are now typed as `T | undefined | null` to reflect the actual JS behavior.
   [#4188](https://github.com/rustwasm/wasm-bindgen/pull/4188)
 
