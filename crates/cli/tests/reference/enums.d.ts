@@ -12,14 +12,14 @@ export function enum_echo(color: Color): Color;
 export function option_enum_echo(color?: Color): Color | undefined;
 /**
  * @param {Color} color
- * @returns {any}
+ * @returns {ColorName}
  */
-export function get_name(color: Color): any;
+export function get_name(color: Color): ColorName;
 /**
- * @param {any | undefined} [color]
- * @returns {any | undefined}
+ * @param {ColorName | undefined} [color]
+ * @returns {ColorName | undefined}
  */
-export function option_string_enum_echo(color?: any): any | undefined;
+export function option_string_enum_echo(color?: ColorName): ColorName | undefined;
 /**
  * A color.
  */
@@ -43,3 +43,7 @@ export enum ImplicitDiscriminant {
   C = 42,
   D = 43,
 }
+/**
+ * The name of a color.
+ */
+type ColorName = "green" | "yellow" | "red";

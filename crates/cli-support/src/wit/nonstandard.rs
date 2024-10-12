@@ -179,8 +179,12 @@ pub struct AuxEnum {
 pub struct AuxStringEnum {
     /// The name of this enum
     pub name: String,
+    /// The copied Rust comments to forward to JS
+    pub comments: String,
     /// A list of variants values
     pub variant_values: Vec<String>,
+    /// Whether typescript bindings should be generated for this enum.
+    pub generate_typescript: bool,
 }
 
 #[derive(Debug)]
