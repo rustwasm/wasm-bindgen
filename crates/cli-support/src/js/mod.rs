@@ -2529,47 +2529,51 @@ __wbg_set_wasm(wasm);"
             .collect();
 
         adapters.sort_by_key(|(id, _, _)| id.0);
-        // adapters.sort_by_cached_key(|(id, adapter, kind)| {
-        //     let mut key: Vec<u8> = Vec::new();
+        adapters.sort_by_cached_key(|(id, adapter, kind)| {
+            let mut key: Vec<u8> = Vec::new();
 
-        //     match kind {
-        //         ContextAdapterKind::Export(export) => {
-        //             key.push(b'1');
-        //             // match &export.kind {
-        //             //     AuxExportKind::Function(name) => {
-        //             //         key.push(b'f');
-        //             //         key.extend_from_slice(name.as_bytes());
-        //             //     }
-        //             //     AuxExportKind::Constructor(class) => {
-        //             //         key.push(b'c');
-        //             //         key.extend_from_slice(class.as_bytes());
-        //             //     }
-        //             //     AuxExportKind::Method {
-        //             //         receiver,
-        //             //         kind,
-        //             //         class,
-        //             //         name,
-        //             //     } => {
-        //             //         key.push(b'm');
-        //             //         key.push(*receiver as u8);
-        //             //         key.push(*kind as u8);
-        //             //         key.extend_from_slice(class.as_bytes());
-        //             //         key.push(b'/');
-        //             //         key.extend_from_slice(name.as_bytes());
-        //             //     }
-        //             // }
-        //         }
-        //         ContextAdapterKind::Import(import) => {
-        //             key.push(b'2');
-        //         }
-        //         ContextAdapterKind::Adapter => {
-        //             key.push(b'3');
-        //             key.extend(id.0.to_le_bytes());
-        //         }
-        //     };
+            match kind {
+                ContextAdapterKind::Export(export) => {
+                    key.push(b'1');
+                    // match &export.kind {
+                    //     AuxExportKind::Function(name) => {
+                    //         key.push(b'f');
+                    //         key.extend_from_slice(name.as_bytes());
+                    //     }
+                    //     AuxExportKind::Constructor(class) => {
+                    //         key.push(b'c');
+                    //         key.extend_from_slice(class.as_bytes());
+                    //     }
+                    //     AuxExportKind::Method {
+                    //         receiver,
+                    //         kind,
+                    //         class,
+                    //         name,
+                    //     } => {
+                    //         key.push(b'm');
+                    //         key.push(*receiver as u8);
+                    //         key.push(*kind as u8);
+                    //         key.extend_from_slice(class.as_bytes());
+                    //         key.push(b'/');
+                    //         key.extend_from_slice(name.as_bytes());
+                    //     }
+                    // }
+                }
+                ContextAdapterKind::Import(import) => {
+                    key.push(b'0');
+                    let import = self.module.imports.get_mut(*import);
+                    key.extend_from_slice(import.name.as_bytes());
+                    key.push(b'/');
+                    key.extend_from_slice(import.module.as_bytes());
+                }
+                ContextAdapterKind::Adapter => {
+                    key.push(b'3');
+                    key.extend(id.0.to_le_bytes());
+                }
+            };
 
-        //     key
-        // });
+            key
+        });
 
         for (id, adapter, kind) in adapters {
             let instrs = match &adapter.kind {
