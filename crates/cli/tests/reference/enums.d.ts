@@ -9,17 +9,17 @@ export function enum_echo(color: Color): Color;
  * @param {Color | undefined | null} [color]
  * @returns {Color | undefined}
  */
-export function option_enum_echo(color?: Color | null): Color | undefined;
+export function option_enum_echo(color?: Color): Color | undefined;
 /**
  * @param {Color} color
  * @returns {ColorName}
  */
 export function get_name(color: Color): ColorName;
 /**
- * @param {any | undefined | null} [color]
- * @returns {any | undefined}
+ * @param {ColorName | undefined | null} [color]
+ * @returns {ColorName | undefined}
  */
-export function option_string_enum_echo(color?: any | null): any | undefined;
+export function option_string_enum_echo(color?: ColorName): ColorName | undefined;
 /**
  * A color.
  */

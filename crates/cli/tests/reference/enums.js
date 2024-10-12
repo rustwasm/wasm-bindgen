@@ -54,8 +54,8 @@ export function get_name(color) {
 }
 
 /**
- * @param {any | undefined | null} [color]
- * @returns {any | undefined}
+ * @param {ColorName | undefined | null} [color]
+ * @returns {ColorName | undefined}
  */
 export function option_string_enum_echo(color) {
     const ret = wasm.option_string_enum_echo(isLikeNone(color) ? 4 : ((__wbindgen_enum_ColorName.indexOf(color) + 1 || 4) - 1));
