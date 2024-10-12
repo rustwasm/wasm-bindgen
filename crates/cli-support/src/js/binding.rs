@@ -69,7 +69,7 @@ pub struct JsFunction {
     pub js_doc: String,
     pub ts_arg_tys: Vec<String>,
     pub ts_ret_ty: Option<String>,
-    pub ts_refs: HashSet<TSReference>,
+    pub ts_refs: HashSet<TsReference>,
     /// Whether this function has a single optional argument.
     ///
     /// If the function is a setter, that means that the field it sets is optional.
@@ -82,7 +82,7 @@ pub struct JsFunction {
 ///
 /// Right now, only string enum require this type of anaylsis.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub enum TSReference {
+pub enum TsReference {
     StringEnum(String),
 }
 
@@ -296,7 +296,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         might_be_optional_field: &mut bool,
         asyncness: bool,
         variadic: bool,
-    ) -> (String, Vec<String>, Option<String>, HashSet<TSReference>) {
+    ) -> (String, Vec<String>, Option<String>, HashSet<TsReference>) {
         // Build up the typescript signature as well
         let mut omittable = true;
         let mut ts_args = Vec::new();
@@ -1428,7 +1428,7 @@ impl Invocation {
     }
 }
 
-fn adapter2ts(ty: &AdapterType, dst: &mut String, refs: Option<&mut HashSet<TSReference>>) {
+fn adapter2ts(ty: &AdapterType, dst: &mut String, refs: Option<&mut HashSet<TsReference>>) {
     match ty {
         AdapterType::I32
         | AdapterType::S8
@@ -1454,7 +1454,7 @@ fn adapter2ts(ty: &AdapterType, dst: &mut String, refs: Option<&mut HashSet<TSRe
         AdapterType::Enum(name) => dst.push_str(name),
         AdapterType::StringEnum(name) => {
             if let Some(refs) = refs {
-                refs.insert(TSReference::StringEnum(name.clone()));
+                refs.insert(TsReference::StringEnum(name.clone()));
             }
 
             dst.push_str(name);

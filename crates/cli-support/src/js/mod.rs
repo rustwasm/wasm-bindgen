@@ -9,7 +9,7 @@ use crate::wit::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
 use crate::wit::{JsImport, JsImportName, NonstandardWitSection, WasmBindgenAux};
 use crate::{reset_indentation, Bindgen, EncodeInto, OutputMode, PLACEHOLDER_MODULE};
 use anyhow::{anyhow, bail, Context as _, Error};
-use binding::TSReference;
+use binding::TsReference;
 use std::borrow::Cow;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fmt;
@@ -50,7 +50,7 @@ pub struct Context<'a> {
 
     /// A set of all (tracked) symbols referenced from within type definitions,
     /// function signatures, etc.
-    typescript_refs: HashSet<TSReference>,
+    typescript_refs: HashSet<TsReference>,
 
     exported_classes: Option<BTreeMap<String, ExportedClass>>,
 
@@ -3834,7 +3834,7 @@ __wbg_set_wasm(wasm);"
         if string_enum.generate_typescript
             && self
                 .typescript_refs
-                .contains(&TSReference::StringEnum(string_enum.name.clone()))
+                .contains(&TsReference::StringEnum(string_enum.name.clone()))
         {
             let docs = format_doc_comments(&string_enum.comments, None);
 
