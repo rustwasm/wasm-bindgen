@@ -4,14 +4,13 @@ export function __wbg_set_wasm(val) {
 }
 
 
-const lTextDecoder = typeof TextDecoder === 'undefined' ? (0, module.require)('util').TextDecoder : TextDecoder;
-
-let cachedTextDecoder = new lTextDecoder('utf-8', { ignoreBOM: true, fatal: true });
+/** @type {TextDecoder} */
+let cachedTextDecoder = new (typeof TextDecoder === 'undefined' ? (0, module.require)('util').TextDecoder : TextDecoder)('utf-8', { ignoreBOM: true, fatal: true });
 
 cachedTextDecoder.decode();
 
+/** @type {Uint8Array | null} */
 let cachedUint8ArrayMemory0 = null;
-
 function getUint8ArrayMemory0() {
     if (cachedUint8ArrayMemory0 === null || cachedUint8ArrayMemory0.byteLength === 0) {
         cachedUint8ArrayMemory0 = new Uint8Array(wasm.memory.buffer);
@@ -19,6 +18,11 @@ function getUint8ArrayMemory0() {
     return cachedUint8ArrayMemory0;
 }
 
+/**
+ * @param {number} ptr
+ * @param {number} len
+ * @returns {string}
+ */
 function getStringFromWasm0(ptr, len) {
     ptr = ptr >>> 0;
     return cachedTextDecoder.decode(getUint8ArrayMemory0().subarray(ptr, ptr + len));
@@ -26,10 +30,10 @@ function getStringFromWasm0(ptr, len) {
 
 let WASM_VECTOR_LEN = 0;
 
-const lTextEncoder = typeof TextEncoder === 'undefined' ? (0, module.require)('util').TextEncoder : TextEncoder;
+/** @type {TextEncoder} */
+let cachedTextEncoder = new (typeof TextEncoder === 'undefined' ? (0, module.require)('util').TextEncoder : TextEncoder)('utf-8');
 
-let cachedTextEncoder = new lTextEncoder('utf-8');
-
+/** @type {(arg: string, view: Uint8Array) => TextEncoderEncodeIntoResult} */
 const encodeString = (typeof cachedTextEncoder.encodeInto === 'function'
     ? function (arg, view) {
     return cachedTextEncoder.encodeInto(arg, view);
@@ -43,6 +47,12 @@ const encodeString = (typeof cachedTextEncoder.encodeInto === 'function'
     };
 });
 
+/**
+ * @param {string} arg
+ * @param {(size: number, align: number) => number} malloc
+ * @param {(ptr: number, oldSize: number, newSize: number, align: number) => number} [realloc]
+ * @returns {number}
+ */
 function passStringToWasm0(arg, malloc, realloc) {
 
     if (realloc === undefined) {
