@@ -724,12 +724,11 @@ fn instruction(
         } => {
             let enum_val = js.pop();
             let enum_val_expr = string_enum_to_wasm(name, *invalid, &enum_val);
+            js.cx.expose_is_like_none();
 
-            // e.g. someEnumVal == undefined ? 4 : (string_enum_to_wasm(someEnumVal))
-            //                  |
-            //    double equals here in case it's null
+            // e.g. isLikeNone(someEnumVal) ? 4 : (string_enum_to_wasm(someEnumVal))
             js.push(format!(
-                "{enum_val} == undefined ? {hole} : ({enum_val_expr})"
+                "isLikeNone({enum_val}) ? {hole} : ({enum_val_expr})"
             ))
         }
 
