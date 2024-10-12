@@ -7,3 +7,7 @@
  * @returns to whence I came
  */
 export function docme(arg: number): number;
+/**
+ * Regular documentation.
+ */
+export function i_has_docs(arg: number): number;
