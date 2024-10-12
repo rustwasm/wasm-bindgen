@@ -886,6 +886,26 @@ pub(crate) fn is_js_keyword(keyword: &str, skip: Option<&[&str]>) -> bool {
         .any(|this| *this == keyword)
 }
 
+/// Returns whether `self` is passed by reference or by value.
+fn get_self_method(r: syn::Receiver) -> ast::MethodSelf {
+    // The tricky part here is that `r` can have many forms. E.g. `self`,
+    // `&self`, `&mut self`, `self: Self`, `self: &Self`, `self: &mut Self`,
+    // `self: Box<Self>`, `self: Rc<Self>`, etc.
+    // Luckily, syn always populates the `ty` field with the type of `self`, so
+    // e.g. `&self` gets the type `&Self`. So we only have check whether the
+    // type is a reference or not.
+    match &*r.ty {
+        syn::Type::Reference(ty) => {
+            if ty.mutability.is_some() {
+                ast::MethodSelf::RefMutable
+            } else {
+                ast::MethodSelf::RefShared
+            }
+        }
+        _ => ast::MethodSelf::ByValue,
+    }
+}
+
 /// Construct a function (and gets the self type if appropriate) for our AST from a syn function.
 #[allow(clippy::too_many_arguments)]
 fn function_from_decl(
@@ -965,15 +985,10 @@ fn function_from_decl(
                     panic!("arguments cannot be `self`")
                 }
 
-                // write down the way in which `self` is passed for later
+                // We need to know *how* `self` is passed to the method (by
+                // value or by reference) to generate the correct JS shim.
                 assert!(method_self.is_none());
-                if r.reference.is_none() {
-                    method_self = Some(ast::MethodSelf::ByValue);
-                } else if r.mutability.is_some() {
-                    method_self = Some(ast::MethodSelf::RefMutable);
-                } else {
-                    method_self = Some(ast::MethodSelf::RefShared);
-                }
+                method_self = Some(get_self_method(r));
 
                 None
             }
