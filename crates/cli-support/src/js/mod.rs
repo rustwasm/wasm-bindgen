@@ -2517,12 +2517,66 @@ __wbg_set_wasm(wasm);"
         if self.config.symbol_dispose && !self.aux.structs.is_empty() {
             self.expose_symbol_dispose()?;
         }
-        for (id, adapter) in crate::sorted_iter(&self.wit.adapters) {
+
+        let mut adapters: Vec<_> = self
+            .wit
+            .adapters
+            .iter()
+            .map(|(id, adapter)| {
+                let kind = ContextAdapterKind::get(*id, self.aux, self.wit);
+                (*id, adapter, kind)
+            })
+            .collect();
+
+        adapters.sort_by_key(|(id, _, _)| id.0);
+        // adapters.sort_by_cached_key(|(id, adapter, kind)| {
+        //     let mut key: Vec<u8> = Vec::new();
+
+        //     match kind {
+        //         ContextAdapterKind::Export(export) => {
+        //             key.push(b'1');
+        //             // match &export.kind {
+        //             //     AuxExportKind::Function(name) => {
+        //             //         key.push(b'f');
+        //             //         key.extend_from_slice(name.as_bytes());
+        //             //     }
+        //             //     AuxExportKind::Constructor(class) => {
+        //             //         key.push(b'c');
+        //             //         key.extend_from_slice(class.as_bytes());
+        //             //     }
+        //             //     AuxExportKind::Method {
+        //             //         receiver,
+        //             //         kind,
+        //             //         class,
+        //             //         name,
+        //             //     } => {
+        //             //         key.push(b'm');
+        //             //         key.push(*receiver as u8);
+        //             //         key.push(*kind as u8);
+        //             //         key.extend_from_slice(class.as_bytes());
+        //             //         key.push(b'/');
+        //             //         key.extend_from_slice(name.as_bytes());
+        //             //     }
+        //             // }
+        //         }
+        //         ContextAdapterKind::Import(import) => {
+        //             key.push(b'2');
+        //         }
+        //         ContextAdapterKind::Adapter => {
+        //             key.push(b'3');
+        //             key.extend(id.0.to_le_bytes());
+        //         }
+        //     };
+
+        //     key
+        // });
+
+        for (id, adapter, kind) in adapters {
             let instrs = match &adapter.kind {
                 AdapterKind::Import { .. } => continue,
                 AdapterKind::Local { instructions } => instructions,
             };
-            self.generate_adapter(*id, adapter, instrs)?;
+            self.generate_adapter(id, adapter, instrs, kind)?;
         }
 
         let mut pairs = self.aux.export_map.iter().collect::<Vec<_>>();
@@ -2600,26 +2654,10 @@ __wbg_set_wasm(wasm);"
         id: AdapterId,
         adapter: &Adapter,
         instrs: &[InstructionData],
+        kind: ContextAdapterKind,
     ) -> Result<(), Error> {
-        enum Kind<'a> {
-            Export(&'a AuxExport),
-            Import(walrus::ImportId),
-            Adapter,
-        }
-
-        let kind = match self.aux.export_map.get(&id) {
-            Some(export) => Kind::Export(export),
-            None => {
-                let core = self.wit.implements.iter().find(|pair| pair.2 == id);
-                match core {
-                    Some((core, _, _)) => Kind::Import(*core),
-                    None => Kind::Adapter,
-                }
-            }
-        };
-
         let catch = self.aux.imports_with_catch.contains(&id);
-        if let Kind::Import(core) = kind {
+        if let ContextAdapterKind::Import(core) = kind {
             if !catch && self.attempt_direct_import(core, instrs)? {
                 return Ok(());
             }
@@ -2629,8 +2667,8 @@ __wbg_set_wasm(wasm);"
         // export that we're generating.
         let mut builder = binding::Builder::new(self);
         builder.log_error(match kind {
-            Kind::Export(_) | Kind::Adapter => false,
-            Kind::Import(_) => builder.cx.config.debug,
+            ContextAdapterKind::Export(_) | ContextAdapterKind::Adapter => false,
+            ContextAdapterKind::Import(_) => builder.cx.config.debug,
         });
         builder.catch(catch);
         let mut arg_names = &None;
@@ -2638,7 +2676,7 @@ __wbg_set_wasm(wasm);"
         let mut variadic = false;
         let mut generate_jsdoc = false;
         match kind {
-            Kind::Export(export) => {
+            ContextAdapterKind::Export(export) => {
                 arg_names = &export.arg_names;
                 asyncness = export.asyncness;
                 variadic = export.variadic;
@@ -2653,8 +2691,8 @@ __wbg_set_wasm(wasm);"
                     },
                 }
             }
-            Kind::Import(_) => {}
-            Kind::Adapter => {}
+            ContextAdapterKind::Import(_) => {}
+            ContextAdapterKind::Adapter => {}
         }
 
         // Process the `binding` and generate a bunch of JS/TypeScript/etc.
@@ -2677,21 +2715,25 @@ __wbg_set_wasm(wasm);"
                 generate_jsdoc,
             )
             .with_context(|| match kind {
-                Kind::Export(e) => format!("failed to generate bindings for `{}`", e.debug_name),
-                Kind::Import(i) => {
+                ContextAdapterKind::Export(e) => {
+                    format!("failed to generate bindings for `{}`", e.debug_name)
+                }
+                ContextAdapterKind::Import(i) => {
                     let i = builder.cx.module.imports.get(i);
                     format!(
                         "failed to generate bindings for import of `{}::{}`",
                         i.module, i.name
                     )
                 }
-                Kind::Adapter => "failed to generates bindings for adapter".to_string(),
+                ContextAdapterKind::Adapter => {
+                    "failed to generates bindings for adapter".to_string()
+                }
             })?;
 
         // Once we've got all the JS then put it in the right location depending
         // on what's being exported.
         match kind {
-            Kind::Export(export) => {
+            ContextAdapterKind::Export(export) => {
                 assert!(!catch);
                 assert!(!log_error);
 
@@ -2778,7 +2820,7 @@ __wbg_set_wasm(wasm);"
                     }
                 }
             }
-            Kind::Import(core) => {
+            ContextAdapterKind::Import(core) => {
                 let code = if catch {
                     format!(
                         "function() {{ return handleError(function {}, arguments) }}",
@@ -2795,7 +2837,7 @@ __wbg_set_wasm(wasm);"
 
                 self.wasm_import_definitions.insert(core, code);
             }
-            Kind::Adapter => {
+            ContextAdapterKind::Adapter => {
                 assert!(!catch);
                 assert!(!log_error);
 
@@ -4089,6 +4131,26 @@ __wbg_set_wasm(wasm);"
         self.stack_pointer_shim_injected = true;
 
         Ok(())
+    }
+}
+
+enum ContextAdapterKind<'a> {
+    Export(&'a AuxExport),
+    Import(walrus::ImportId),
+    Adapter,
+}
+impl<'a> ContextAdapterKind<'a> {
+    fn get(id: AdapterId, aux: &'a WasmBindgenAux, wit: &'a NonstandardWitSection) -> Self {
+        match aux.export_map.get(&id) {
+            Some(export) => ContextAdapterKind::Export(export),
+            None => {
+                let core = wit.implements.iter().find(|pair| pair.2 == id);
+                match core {
+                    Some((core, _, _)) => ContextAdapterKind::Import(*core),
+                    None => ContextAdapterKind::Adapter,
+                }
+            }
+        }
     }
 }
 

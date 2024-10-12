@@ -1,13 +1,13 @@
 use crate::descriptor::VectorKind;
 use crate::wit::{AuxImport, WasmBindgenAux};
 use std::borrow::Cow;
-use std::collections::{HashMap, HashSet};
+use std::collections::{BTreeMap, HashMap, HashSet};
 use walrus::{FunctionId, ImportId, RefType, TypedCustomSectionId};
 
 #[derive(Default, Debug)]
 pub struct NonstandardWitSection {
     /// A list of adapter functions, keyed by their id.
-    pub adapters: HashMap<AdapterId, Adapter>,
+    pub adapters: BTreeMap<AdapterId, Adapter>,
 
     /// A list of pairs for adapter functions that implement core Wasm imports.
     pub implements: Vec<(ImportId, FunctionId, AdapterId)>,
