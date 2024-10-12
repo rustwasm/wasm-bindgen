@@ -2,6 +2,7 @@ use futures_channel::oneshot;
 use js_sys::{Promise, Uint8ClampedArray, WebAssembly};
 use rayon::prelude::*;
 use wasm_bindgen::prelude::*;
+use web_sys::ImageData;
 
 macro_rules! console_log {
     ($($t:tt)*) => (crate::log(&format_args!($($t)*).to_string()))
@@ -117,16 +118,6 @@ pub struct RenderingScene {
     height: u32,
 }
 
-// Inline the definition of `ImageData` here because `web_sys` uses
-// `&Clamped<Vec<u8>>`, whereas we want to pass in a JS object here.
-#[wasm_bindgen]
-extern "C" {
-    pub type ImageData;
-
-    #[wasm_bindgen(constructor, catch)]
-    fn new(data: &Uint8ClampedArray, width: f64, height: f64) -> Result<ImageData, JsValue>;
-}
-
 #[wasm_bindgen]
 impl RenderingScene {
     /// Returns the JS promise object which resolves when the render is complete
@@ -157,5 +148,5 @@ fn image_data(base: usize, len: usize, width: u32, height: u32) -> ImageData {
     // could ensure that even on the Rust side of things it's not UB.
     let mem = wasm_bindgen::memory().unchecked_into::<WebAssembly::Memory>();
     let mem = Uint8ClampedArray::new(&mem.buffer()).slice(base as u32, (base + len) as u32);
-    ImageData::new(&mem, width as f64, height as f64).unwrap()
+    ImageData::new_with_js_u8_clamped_array_and_sh(&mem, width, height).unwrap()
 }

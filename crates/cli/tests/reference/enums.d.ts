@@ -27,3 +27,7 @@ export enum ImplicitDiscriminant {
   C = 42,
   D = 43,
 }
+/**
+ * The name of a color.
+ */
+type ColorName = "green" | "yellow" | "red";
