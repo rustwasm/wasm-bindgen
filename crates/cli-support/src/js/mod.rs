@@ -4168,7 +4168,7 @@ fn iter_by_import<'a, T>(
         let a = module.imports.get(*a);
         let b = module.imports.get(*b);
 
-        a.module.cmp(&b.module).then(a.name.cmp(&b.name))
+        a.name.cmp(&b.name)
     });
 
     items
