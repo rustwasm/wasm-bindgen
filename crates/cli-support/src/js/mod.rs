@@ -311,7 +311,7 @@ impl<'a> Context<'a> {
 
         wasm_import_object.push_str(&format!("  {}: {{\n", crate::PLACEHOLDER_MODULE));
 
-        for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
+        for (id, js) in iter_by_import(&self.wasm_import_definitions, self.module) {
             let import = self.module.imports.get(*id);
             wasm_import_object.push_str(&format!("{}: {},\n", &import.name, js.trim()));
         }
@@ -410,8 +410,8 @@ impl<'a> Context<'a> {
 
                 js.push_str("let wasm;\n");
 
-                for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
-                    let import = self.module.imports.get_mut(*id);
+                for (id, js) in iter_by_import(&self.wasm_import_definitions, self.module) {
+                    let import = self.module.imports.get(*id);
                     footer.push_str("\nmodule.exports.");
                     footer.push_str(&import.name);
                     footer.push_str(" = ");
@@ -449,7 +449,7 @@ impl<'a> Context<'a> {
             // and let the bundler/runtime take care of it.
             // With Node we manually read the Wasm file from the filesystem and instantiate it.
             OutputMode::Bundler { .. } | OutputMode::Node { module: true } => {
-                for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
+                for (id, js) in iter_by_import(&self.wasm_import_definitions, self.module) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}_bg.js", module_name);
                     if let Some(body) = js.strip_prefix("function") {
@@ -777,7 +777,7 @@ __wbg_set_wasm(wasm);"
         imports_init.push_str(module_name);
         imports_init.push_str(" = {};\n");
 
-        for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
+        for (id, js) in iter_by_import(&self.wasm_import_definitions, self.module) {
             let import = self.module.imports.get_mut(*id);
             import.module = module_name.to_string();
             imports_init.push_str("imports.");
@@ -4156,6 +4156,22 @@ impl<'a> ContextAdapterKind<'a> {
             }
         }
     }
+}
+
+fn iter_by_import<'a, T>(
+    map: &'a HashMap<ImportId, T>,
+    module: &Module,
+) -> Vec<(&'a ImportId, &'a T)> {
+    let mut items: Vec<_> = map.iter().collect();
+
+    items.sort_by(|&(a, _), &(b, _)| {
+        let a = module.imports.get(*a);
+        let b = module.imports.get(*b);
+
+        a.module.cmp(&b.module).then(a.name.cmp(&b.name))
+    });
+
+    items
 }
 
 fn check_duplicated_getter_and_setter_names(

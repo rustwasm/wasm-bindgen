@@ -72,10 +72,6 @@ export function __wbg_foo_95fe1a04017077db() { return handleError(function () {
     foo();
 }, arguments) };
 
-export function __wbindgen_throw(arg0, arg1) {
-    throw new Error(getStringFromWasm0(arg0, arg1));
-};
-
 export function __wbindgen_init_externref_table() {
     const table = wasm.__wbindgen_export_2;
     const offset = table.grow(4);
@@ -85,5 +81,9 @@ export function __wbindgen_init_externref_table() {
     table.set(offset + 2, true);
     table.set(offset + 3, false);
     ;
+};
+
+export function __wbindgen_throw(arg0, arg1) {
+    throw new Error(getStringFromWasm0(arg0, arg1));
 };
 
