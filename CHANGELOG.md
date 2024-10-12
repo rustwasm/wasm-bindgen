@@ -5,7 +5,7 @@
 
 ### Changed
 
-* String enums now have private TypeScript types only if used.
+* String enums now generate private TypeScript types but only if used.
   [#4174](https://github.com/rustwasm/wasm-bindgen/pull/4174)
 
 ### Fixed
