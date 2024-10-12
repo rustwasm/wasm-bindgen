@@ -300,13 +300,15 @@ impl<'a, 'b> Builder<'a, 'b> {
             let mut ts = String::new();
             match ty {
                 AdapterType::Option(ty) if omittable => {
+                    // e.g. `foo?: string | null`
                     arg.push_str("?: ");
-                    adapter2ts(ty, &mut ts);
+                    adapter2ts(ty, &mut ts, NoneType::Both);
+                    ts.push_str(" | null");
                 }
                 ty => {
                     omittable = false;
                     arg.push_str(": ");
-                    adapter2ts(ty, &mut ts);
+                    adapter2ts(ty, &mut ts, NoneType::Both);
                 }
             }
             arg.push_str(&ts);
@@ -342,7 +344,7 @@ impl<'a, 'b> Builder<'a, 'b> {
             let mut ret = String::new();
             match result_tys.len() {
                 0 => ret.push_str("void"),
-                1 => adapter2ts(&result_tys[0], &mut ret),
+                1 => adapter2ts(&result_tys[0], &mut ret, NoneType::Undefined),
                 _ => ret.push_str("[any]"),
             }
             if asyncness {
@@ -374,7 +376,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         for (name, ty) in fn_arg_names.iter().zip(arg_tys).rev() {
             let mut arg = "@param {".to_string();
 
-            adapter2ts(ty, &mut arg);
+            adapter2ts(ty, &mut arg, NoneType::Both);
             arg.push_str("} ");
             match ty {
                 AdapterType::Option(..) if omittable => {
@@ -395,7 +397,7 @@ impl<'a, 'b> Builder<'a, 'b> {
 
         if let (Some(name), Some(ty)) = (variadic_arg, arg_tys.last()) {
             ret.push_str("@param {...");
-            adapter2ts(ty, &mut ret);
+            adapter2ts(ty, &mut ret, NoneType::Both);
             ret.push_str("} ");
             ret.push_str(name);
             ret.push('\n');
@@ -1417,7 +1419,23 @@ impl Invocation {
     }
 }
 
-fn adapter2ts(ty: &AdapterType, dst: &mut String) {
+#[derive(Debug, Clone, Copy)]
+enum NoneType {
+    Undefined,
+    Null,
+    Both,
+}
+impl NoneType {
+    fn js_ty(&self) -> &str {
+        match self {
+            NoneType::Undefined => "undefined",
+            NoneType::Null => "null",
+            NoneType::Both => "undefined | null",
+        }
+    }
+}
+
+fn adapter2ts(ty: &AdapterType, dst: &mut String, none_type: NoneType) {
     match ty {
         AdapterType::I32
         | AdapterType::S8
@@ -1435,8 +1453,9 @@ fn adapter2ts(ty: &AdapterType, dst: &mut String) {
         AdapterType::Bool => dst.push_str("boolean"),
         AdapterType::Vector(kind) => dst.push_str(&kind.js_ty()),
         AdapterType::Option(ty) => {
-            adapter2ts(ty, dst);
-            dst.push_str(" | undefined");
+            adapter2ts(ty, dst, none_type);
+            dst.push_str(" | ");
+            dst.push_str(none_type.js_ty());
         }
         AdapterType::NamedExternref(name) => dst.push_str(name),
         AdapterType::Struct(name) => dst.push_str(name),

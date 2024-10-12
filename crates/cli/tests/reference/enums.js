@@ -36,7 +36,7 @@ function isLikeNone(x) {
     return x === undefined || x === null;
 }
 /**
- * @param {Color | undefined} [color]
+ * @param {Color | undefined | null} [color]
  * @returns {Color | undefined}
  */
 export function option_enum_echo(color) {
@@ -54,7 +54,7 @@ export function get_name(color) {
 }
 
 /**
- * @param {any | undefined} [color]
+ * @param {any | undefined | null} [color]
  * @returns {any | undefined}
  */
 export function option_string_enum_echo(color) {

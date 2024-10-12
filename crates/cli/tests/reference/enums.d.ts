@@ -6,20 +6,20 @@
  */
 export function enum_echo(color: Color): Color;
 /**
- * @param {Color | undefined} [color]
+ * @param {Color | undefined | null} [color]
  * @returns {Color | undefined}
  */
-export function option_enum_echo(color?: Color): Color | undefined;
+export function option_enum_echo(color?: Color | null): Color | undefined;
 /**
  * @param {Color} color
  * @returns {any}
  */
 export function get_name(color: Color): any;
 /**
- * @param {any | undefined} [color]
+ * @param {any | undefined | null} [color]
  * @returns {any | undefined}
  */
-export function option_string_enum_echo(color?: any): any | undefined;
+export function option_string_enum_echo(color?: any | null): any | undefined;
 /**
  * A color.
  */
