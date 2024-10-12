@@ -5,7 +5,7 @@
 
 ### Changed
 
-* Remove unnecessary JSDoc annotations from generated `.d.ts` files
+* Remove unnecessary JSDoc type annotations from generated `.d.ts` files
   [#4187](https://github.com/rustwasm/wasm-bindgen/pull/4187)
 
 --------------------------------------------------------------------------------
