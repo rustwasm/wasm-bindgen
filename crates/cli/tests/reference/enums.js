@@ -64,9 +64,25 @@ export function option_string_enum_echo(color) {
 
 /**
  * A color.
- * @enum {0|1|2}
+ * @enum {0 | 1 | 2}
  */
-export const Color = Object.freeze({ Green:0,"0":"Green",Yellow:1,"1":"Yellow",Red:2,"2":"Red", });
+export const Color = Object.freeze({
+/**
+ * Green as a leaf.
+ */
+Green:0,"0":"Green",
+/**
+ * Yellow as the sun.
+ */
+Yellow:1,"1":"Yellow",
+/**
+ * Red as a rose.
+ */
+Red:2,"2":"Red", });
+/**
+ * @enum {0 | 1 | 42 | 43}
+ */
+export const ImplicitDiscriminant = Object.freeze({ A:0,"0":"A",B:1,"1":"B",C:42,"42":"C",D:43,"43":"D", });
 
 /**
  * The name of a color.
@@ -74,19 +90,6 @@ export const Color = Object.freeze({ Green:0,"0":"Green",Yellow:1,"1":"Yellow",R
  * @type {ColorName[]}
  */
 const __wbindgen_enum_ColorName = ["green", "yellow", "red"];
-
-/**
- * An unused string enum.
- * @typedef {"foo" | "bar"} FooBar
- * @type {FooBar[]}
- */
-const __wbindgen_enum_FooBar = ["foo", "bar"];
-
-/**
- * @typedef {"foo" | "bar"} PrivateStringEnum
- * @type {PrivateStringEnum[]}
- */
-const __wbindgen_enum_PrivateStringEnum = ["foo", "bar"];
 
 export function __wbindgen_throw(arg0, arg1) {
     throw new Error(getStringFromWasm0(arg0, arg1));

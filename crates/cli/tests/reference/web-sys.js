@@ -208,6 +208,13 @@ function handleError(f, args) {
     }
 }
 
+/**
+ *The `MediaSourceEnum` enum.
+ *
+ **This API requires the following crate features to be activated: `MediaSourceEnum`*
+ * @typedef {"camera" | "screen" | "application" | "window" | "browser" | "microphone" | "audioCapture" | "other"} MediaSourceEnum
+ * @type {MediaSourceEnum[]}
+ */
 const __wbindgen_enum_MediaSourceEnum = ["camera", "screen", "application", "window", "browser", "microphone", "audioCapture", "other"];
 
 export function __wbg_new_1cabf49927794f50() { return handleError(function (arg0, arg1) {

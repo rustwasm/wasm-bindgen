@@ -3824,11 +3824,11 @@ __wbg_set_wasm(wasm);"
             self.typescript.push_str("\n}\n");
         }
 
-        // add an `@enum {1|2|3}` to ensure that enums type-check even without .d.ts
+        // add an `@enum {1 | 2 | 3}` to ensure that enums type-check even without .d.ts
         let mut at_enum = "@enum {".to_string();
         for (i, (_, value, _)) in enum_.variants.iter().enumerate() {
             if i != 0 {
-                at_enum.push('|');
+                at_enum.push_str(" | ");
             }
             at_enum.push_str(&value.to_string());
         }
