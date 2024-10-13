@@ -111,13 +111,15 @@ pub fn wasm_bindgen_test(
     let wasm_bindgen_path = attributes.wasm_bindgen_path;
     tokens.extend(
         quote! {
-            #[no_mangle]
-            #[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
-            #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
-            pub extern "C" fn #name(cx: &#wasm_bindgen_path::__rt::Context) {
-                let test_name = ::core::concat!(::core::module_path!(), "::", ::core::stringify!(#ident));
-                #test_body
-            }
+            const _: () = {
+                #[no_mangle]
+                #[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+                pub extern "C" fn #name(cx: &#wasm_bindgen_path::__rt::Context) {
+                    let test_name = ::core::concat!(::core::module_path!(), "::", ::core::stringify!(#ident));
+                    #test_body
+                }
+            };
         },
     );
 
