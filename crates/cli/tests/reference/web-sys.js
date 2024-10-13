@@ -210,8 +210,6 @@ function handleError(f, args) {
 
 const __wbindgen_enum_MediaSourceEnum = ["camera", "screen", "application", "window", "browser", "microphone", "audioCapture", "other"];
 
-const __wbindgen_enum_MediaSourceReadyState = ["closed", "open", "ended"];
-
 export function __wbg_new_1cabf49927794f50() { return handleError(function (arg0, arg1) {
     const ret = new URL(getStringFromWasm0(arg0, arg1));
     return addHeapObject(ret);
