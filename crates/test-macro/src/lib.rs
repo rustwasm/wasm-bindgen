@@ -82,7 +82,7 @@ pub fn wasm_bindgen_test(
 
     let mut tokens = Vec::<TokenTree>::new();
 
-    let should_panic = match should_panic {
+    let should_panic_par = match &should_panic {
         Some(Some(lit)) => {
             quote! { ::core::option::Option::Some(::core::option::Option::Some(#lit)) }
         }
@@ -99,9 +99,9 @@ pub fn wasm_bindgen_test(
     };
 
     let test_body = if attributes.r#async {
-        quote! { cx.execute_async(test_name, #ident, #should_panic, #ignore); }
+        quote! { cx.execute_async(test_name, #ident, #should_panic_par, #ignore); }
     } else {
-        quote! { cx.execute_sync(test_name, #ident, #should_panic, #ignore); }
+        quote! { cx.execute_sync(test_name, #ident, #should_panic_par, #ignore); }
     };
 
     // We generate a `#[no_mangle]` with a known prefix so the test harness can
@@ -127,6 +127,18 @@ pub fn wasm_bindgen_test(
         tokens.extend(
             quote! { #[cfg_attr(not(all(target_arch = "wasm32", target_os = "unknown")), #path)] },
         );
+
+        if let Some(should_panic) = should_panic {
+            let should_panic = if let Some(lit) = should_panic {
+                quote! { should_panic = #lit }
+            } else {
+                quote! { should_panic }
+            };
+
+            tokens.extend(
+                quote! { #[cfg_attr(not(all(target_arch = "wasm32", target_os = "unknown")), #should_panic)] }
+            )
+        }
     }
 
     tokens.extend(leading_tokens);
