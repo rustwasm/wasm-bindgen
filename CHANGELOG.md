@@ -19,6 +19,9 @@
 * Fixed unused string enums generating JS values.
   [#4193](https://github.com/rustwasm/wasm-bindgen/pull/4193)
 
+* Fixed triggering lints in testing facilities.
+  [#4195](https://github.com/rustwasm/wasm-bindgen/pull/4195)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.95](https://github.com/rustwasm/wasm-bindgen/compare/0.2.94...0.2.95)
