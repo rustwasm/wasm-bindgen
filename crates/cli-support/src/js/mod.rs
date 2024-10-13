@@ -4174,7 +4174,7 @@ fn iter_adapeter<'a>(
             (ContextAdapterKind::Import(a), ContextAdapterKind::Import(b)) => {
                 let a = module.imports.get(*a);
                 let b = module.imports.get(*b);
-                a.name.cmp(&b.name)
+                a.name.cmp(&b.name).reverse() // FIXME: for testing purposes
             }
             _ => get_kind_order(a).cmp(&get_kind_order(b)),
         }

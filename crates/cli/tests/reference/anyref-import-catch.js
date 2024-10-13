@@ -4,21 +4,6 @@ export function __wbg_set_wasm(val) {
 }
 
 
-function addToExternrefTable0(obj) {
-    const idx = wasm.__externref_table_alloc();
-    wasm.__wbindgen_export_2.set(idx, obj);
-    return idx;
-}
-
-function handleError(f, args) {
-    try {
-        return f.apply(this, args);
-    } catch (e) {
-        const idx = addToExternrefTable0(e);
-        wasm.__wbindgen_exn_store(idx);
-    }
-}
-
 const lTextDecoder = typeof TextDecoder === 'undefined' ? (0, module.require)('util').TextDecoder : TextDecoder;
 
 let cachedTextDecoder = new lTextDecoder('utf-8', { ignoreBOM: true, fatal: true });
@@ -39,6 +24,21 @@ function getStringFromWasm0(ptr, len) {
     return cachedTextDecoder.decode(getUint8ArrayMemory0().subarray(ptr, ptr + len));
 }
 
+function addToExternrefTable0(obj) {
+    const idx = wasm.__externref_table_alloc();
+    wasm.__wbindgen_export_0.set(idx, obj);
+    return idx;
+}
+
+function handleError(f, args) {
+    try {
+        return f.apply(this, args);
+    } catch (e) {
+        const idx = addToExternrefTable0(e);
+        wasm.__wbindgen_exn_store(idx);
+    }
+}
+
 let cachedDataViewMemory0 = null;
 
 function getDataViewMemory0() {
@@ -49,7 +49,7 @@ function getDataViewMemory0() {
 }
 
 function takeFromExternrefTable0(idx) {
-    const value = wasm.__wbindgen_export_2.get(idx);
+    const value = wasm.__wbindgen_export_0.get(idx);
     wasm.__externref_table_dealloc(idx);
     return value;
 }
@@ -73,7 +73,7 @@ export function __wbg_foo_95fe1a04017077db() { return handleError(function () {
 }, arguments) };
 
 export function __wbindgen_init_externref_table() {
-    const table = wasm.__wbindgen_export_2;
+    const table = wasm.__wbindgen_export_0;
     const offset = table.grow(4);
     table.set(0, undefined);
     table.set(offset + 0, undefined);
