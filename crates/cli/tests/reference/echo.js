@@ -429,7 +429,7 @@ function isLikeNone(x) {
     return x === undefined || x === null;
 }
 /**
- * @param {number | undefined | null} [a]
+ * @param {number | null} [a]
  * @returns {number | undefined}
  */
 export function echo_option_u8(a) {
@@ -438,7 +438,7 @@ export function echo_option_u8(a) {
 }
 
 /**
- * @param {number | undefined | null} [a]
+ * @param {number | null} [a]
  * @returns {number | undefined}
  */
 export function echo_option_i8(a) {
@@ -447,7 +447,7 @@ export function echo_option_i8(a) {
 }
 
 /**
- * @param {number | undefined | null} [a]
+ * @param {number | null} [a]
  * @returns {number | undefined}
  */
 export function echo_option_u16(a) {
@@ -456,7 +456,7 @@ export function echo_option_u16(a) {
 }
 
 /**
- * @param {number | undefined | null} [a]
+ * @param {number | null} [a]
  * @returns {number | undefined}
  */
 export function echo_option_i16(a) {
@@ -465,7 +465,7 @@ export function echo_option_i16(a) {
 }
 
 /**
- * @param {number | undefined | null} [a]
+ * @param {number | null} [a]
  * @returns {number | undefined}
  */
 export function echo_option_u32(a) {
@@ -481,7 +481,7 @@ export function echo_option_u32(a) {
 }
 
 /**
- * @param {number | undefined | null} [a]
+ * @param {number | null} [a]
  * @returns {number | undefined}
  */
 export function echo_option_i32(a) {
@@ -497,7 +497,7 @@ export function echo_option_i32(a) {
 }
 
 /**
- * @param {bigint | undefined | null} [a]
+ * @param {bigint | null} [a]
  * @returns {bigint | undefined}
  */
 export function echo_option_u64(a) {
@@ -513,7 +513,7 @@ export function echo_option_u64(a) {
 }
 
 /**
- * @param {bigint | undefined | null} [a]
+ * @param {bigint | null} [a]
  * @returns {bigint | undefined}
  */
 export function echo_option_i64(a) {
@@ -529,7 +529,7 @@ export function echo_option_i64(a) {
 }
 
 /**
- * @param {number | undefined | null} [a]
+ * @param {number | null} [a]
  * @returns {number | undefined}
  */
 export function echo_option_usize(a) {
@@ -545,7 +545,7 @@ export function echo_option_usize(a) {
 }
 
 /**
- * @param {number | undefined | null} [a]
+ * @param {number | null} [a]
  * @returns {number | undefined}
  */
 export function echo_option_isize(a) {
@@ -561,7 +561,7 @@ export function echo_option_isize(a) {
 }
 
 /**
- * @param {number | undefined | null} [a]
+ * @param {number | null} [a]
  * @returns {number | undefined}
  */
 export function echo_option_f32(a) {
@@ -577,7 +577,7 @@ export function echo_option_f32(a) {
 }
 
 /**
- * @param {number | undefined | null} [a]
+ * @param {number | null} [a]
  * @returns {number | undefined}
  */
 export function echo_option_f64(a) {
@@ -593,7 +593,7 @@ export function echo_option_f64(a) {
 }
 
 /**
- * @param {boolean | undefined | null} [a]
+ * @param {boolean | null} [a]
  * @returns {boolean | undefined}
  */
 export function echo_option_bool(a) {
@@ -602,7 +602,7 @@ export function echo_option_bool(a) {
 }
 
 /**
- * @param {string | undefined | null} [a]
+ * @param {string | null} [a]
  * @returns {string | undefined}
  */
 export function echo_option_char(a) {
@@ -613,7 +613,7 @@ return ret === 0xFFFFFF ? undefined : String.fromCodePoint(ret);
 }
 
 /**
- * @param {string | undefined | null} [a]
+ * @param {string | null} [a]
  * @returns {string | undefined}
  */
 export function echo_option_string(a) {
@@ -636,7 +636,7 @@ export function echo_option_string(a) {
 }
 
 /**
- * @param {Uint8Array | undefined | null} [a]
+ * @param {Uint8Array | null} [a]
  * @returns {Uint8Array | undefined}
  */
 export function echo_option_vec_u8(a) {
@@ -659,7 +659,7 @@ export function echo_option_vec_u8(a) {
 }
 
 /**
- * @param {Foo | undefined | null} [a]
+ * @param {Foo | null} [a]
  * @returns {Foo | undefined}
  */
 export function echo_option_struct(a) {
@@ -673,7 +673,7 @@ export function echo_option_struct(a) {
 }
 
 /**
- * @param {(Foo)[] | undefined | null} [a]
+ * @param {(Foo)[] | null} [a]
  * @returns {(Foo)[] | undefined}
  */
 export function echo_option_vec_struct(a) {

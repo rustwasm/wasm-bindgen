@@ -393,16 +393,18 @@ impl<'a, 'b> Builder<'a, 'b> {
         for (name, ty) in fn_arg_names.iter().zip(arg_tys).rev() {
             let mut arg = "@param {".to_string();
 
-            adapter2ts(ty, TypePosition::Argument, &mut arg, None);
-            arg.push_str("} ");
             match ty {
-                AdapterType::Option(..) if omittable => {
+                AdapterType::Option(ty) if omittable => {
+                    adapter2ts(ty, TypePosition::Argument, &mut arg, None);
+                    arg.push_str(" | null} ");
                     arg.push('[');
                     arg.push_str(name);
                     arg.push(']');
                 }
                 _ => {
                     omittable = false;
+                    adapter2ts(ty, TypePosition::Argument, &mut arg, None);
+                    arg.push_str("} ");
                     arg.push_str(name);
                 }
             }
