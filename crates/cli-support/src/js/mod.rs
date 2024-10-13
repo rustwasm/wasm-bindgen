@@ -52,6 +52,13 @@ pub struct Context<'a> {
     /// function signatures, etc.
     typescript_refs: HashSet<TsReference>,
 
+    /// String enums that are used internally by the generated bindings.
+    ///
+    /// This tracks which string enums are used independently from whether their
+    /// type is used, because users may only use them in a way that doesn't
+    /// require the type or requires only the type.
+    used_string_enums: HashSet<String>,
+
     exported_classes: Option<BTreeMap<String, ExportedClass>>,
 
     /// A map of the name of npm dependencies we've loaded so far to the path
@@ -114,6 +121,7 @@ impl<'a> Context<'a> {
             defined_identifiers: Default::default(),
             wasm_import_definitions: Default::default(),
             typescript_refs: Default::default(),
+            used_string_enums: Default::default(),
             exported_classes: Some(Default::default()),
             config,
             threads_enabled: config.threads.is_enabled(module),
@@ -3852,13 +3860,20 @@ __wbg_set_wasm(wasm);"
             self.typescript.push_str(";\n");
         }
 
-        self.global(&format!(
-            "const __wbindgen_enum_{name} = [{values}];\n",
-            name = string_enum.name,
-            values = variants.join(", ")
-        ));
+        if self.used_string_enums.contains(&string_enum.name) {
+            // only generate the internal string enum array if it's actually used
+            self.global(&format!(
+                "const __wbindgen_enum_{name} = [{values}];\n",
+                name = string_enum.name,
+                values = variants.join(", ")
+            ));
+        }
 
         Ok(())
+    }
+
+    fn expose_string_enum(&mut self, string_enum_name: &str) {
+        self.used_string_enums.insert(string_enum_name.to_string());
     }
 
     fn generate_struct(&mut self, struct_: &AuxStruct) -> Result<(), Error> {
