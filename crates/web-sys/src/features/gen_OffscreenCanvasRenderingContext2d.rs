@@ -66,9 +66,39 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvasRenderingContext2D/strokeStyle)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvasRenderingContext2d`*"]
+    #[deprecated]
     pub fn set_stroke_style(
         this: &OffscreenCanvasRenderingContext2d,
         value: &::wasm_bindgen::JsValue,
+    );
+    # [wasm_bindgen (structural , method , setter , js_class = "OffscreenCanvasRenderingContext2D" , js_name = strokeStyle)]
+    #[doc = "Setter for the `strokeStyle` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvasRenderingContext2D/strokeStyle)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvasRenderingContext2d`*"]
+    pub fn set_stroke_style_str(this: &OffscreenCanvasRenderingContext2d, value: &str);
+    #[cfg(feature = "CanvasGradient")]
+    # [wasm_bindgen (structural , method , setter , js_class = "OffscreenCanvasRenderingContext2D" , js_name = strokeStyle)]
+    #[doc = "Setter for the `strokeStyle` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvasRenderingContext2D/strokeStyle)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CanvasGradient`, `OffscreenCanvasRenderingContext2d`*"]
+    pub fn set_stroke_style_canvas_gradient(
+        this: &OffscreenCanvasRenderingContext2d,
+        value: &CanvasGradient,
+    );
+    #[cfg(feature = "CanvasPattern")]
+    # [wasm_bindgen (structural , method , setter , js_class = "OffscreenCanvasRenderingContext2D" , js_name = strokeStyle)]
+    #[doc = "Setter for the `strokeStyle` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvasRenderingContext2D/strokeStyle)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CanvasPattern`, `OffscreenCanvasRenderingContext2d`*"]
+    pub fn set_stroke_style_canvas_pattern(
+        this: &OffscreenCanvasRenderingContext2d,
+        value: &CanvasPattern,
     );
     # [wasm_bindgen (structural , method , getter , js_class = "OffscreenCanvasRenderingContext2D" , js_name = fillStyle)]
     #[doc = "Getter for the `fillStyle` field of this object."]
@@ -83,9 +113,39 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvasRenderingContext2D/fillStyle)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvasRenderingContext2d`*"]
+    #[deprecated]
     pub fn set_fill_style(
         this: &OffscreenCanvasRenderingContext2d,
         value: &::wasm_bindgen::JsValue,
+    );
+    # [wasm_bindgen (structural , method , setter , js_class = "OffscreenCanvasRenderingContext2D" , js_name = fillStyle)]
+    #[doc = "Setter for the `fillStyle` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvasRenderingContext2D/fillStyle)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `OffscreenCanvasRenderingContext2d`*"]
+    pub fn set_fill_style_str(this: &OffscreenCanvasRenderingContext2d, value: &str);
+    #[cfg(feature = "CanvasGradient")]
+    # [wasm_bindgen (structural , method , setter , js_class = "OffscreenCanvasRenderingContext2D" , js_name = fillStyle)]
+    #[doc = "Setter for the `fillStyle` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvasRenderingContext2D/fillStyle)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CanvasGradient`, `OffscreenCanvasRenderingContext2d`*"]
+    pub fn set_fill_style_canvas_gradient(
+        this: &OffscreenCanvasRenderingContext2d,
+        value: &CanvasGradient,
+    );
+    #[cfg(feature = "CanvasPattern")]
+    # [wasm_bindgen (structural , method , setter , js_class = "OffscreenCanvasRenderingContext2D" , js_name = fillStyle)]
+    #[doc = "Setter for the `fillStyle` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvasRenderingContext2D/fillStyle)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CanvasPattern`, `OffscreenCanvasRenderingContext2d`*"]
+    pub fn set_fill_style_canvas_pattern(
+        this: &OffscreenCanvasRenderingContext2d,
+        value: &CanvasPattern,
     );
     # [wasm_bindgen (structural , method , getter , js_class = "OffscreenCanvasRenderingContext2D" , js_name = filter)]
     #[doc = "Getter for the `filter` field of this object."]

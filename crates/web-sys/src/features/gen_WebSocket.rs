@@ -210,6 +210,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebSocket`*"]
     pub fn send_with_u8_array(this: &WebSocket, data: &[u8]) -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "WebSocket" , js_name = send)]
+    #[doc = "The `send()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/send)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `WebSocket`*"]
+    pub fn send_with_js_u8_array(
+        this: &WebSocket,
+        data: &::js_sys::Uint8Array,
+    ) -> Result<(), JsValue>;
 }
 impl WebSocket {
     #[doc = "The `WebSocket.CONNECTING` const."]

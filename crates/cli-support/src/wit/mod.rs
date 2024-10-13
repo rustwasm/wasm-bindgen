@@ -868,7 +868,6 @@ impl<'a> Context<'a> {
     fn string_enum(&mut self, string_enum: &decode::StringEnum<'_>) -> Result<(), Error> {
         let aux = AuxStringEnum {
             name: string_enum.name.to_string(),
-            public: string_enum.public,
             comments: concatenate_comments(&string_enum.comments),
             variant_values: string_enum
                 .variant_values

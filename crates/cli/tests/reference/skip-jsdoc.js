@@ -14,3 +14,13 @@ export function docme(arg) {
     return ret >>> 0;
 }
 
+/**
+ * Regular documentation.
+ * @param {number} arg
+ * @returns {number}
+ */
+export function i_has_docs(arg) {
+    const ret = wasm.i_has_docs(arg);
+    return ret >>> 0;
+}
+

@@ -101,6 +101,13 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnalyserNode`*"]
     pub fn get_byte_frequency_data(this: &AnalyserNode, array: &mut [u8]);
+    # [wasm_bindgen (method , structural , js_class = "AnalyserNode" , js_name = getByteFrequencyData)]
+    #[doc = "The `getByteFrequencyData()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/getByteFrequencyData)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnalyserNode`*"]
+    pub fn get_byte_frequency_data_with_u8_array(this: &AnalyserNode, array: &::js_sys::Uint8Array);
     # [wasm_bindgen (method , structural , js_class = "AnalyserNode" , js_name = getByteTimeDomainData)]
     #[doc = "The `getByteTimeDomainData()` method."]
     #[doc = ""]
@@ -108,6 +115,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnalyserNode`*"]
     pub fn get_byte_time_domain_data(this: &AnalyserNode, array: &mut [u8]);
+    # [wasm_bindgen (method , structural , js_class = "AnalyserNode" , js_name = getByteTimeDomainData)]
+    #[doc = "The `getByteTimeDomainData()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/getByteTimeDomainData)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnalyserNode`*"]
+    pub fn get_byte_time_domain_data_with_u8_array(
+        this: &AnalyserNode,
+        array: &::js_sys::Uint8Array,
+    );
     # [wasm_bindgen (method , structural , js_class = "AnalyserNode" , js_name = getFloatFrequencyData)]
     #[doc = "The `getFloatFrequencyData()` method."]
     #[doc = ""]
@@ -115,6 +132,16 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnalyserNode`*"]
     pub fn get_float_frequency_data(this: &AnalyserNode, array: &mut [f32]);
+    # [wasm_bindgen (method , structural , js_class = "AnalyserNode" , js_name = getFloatFrequencyData)]
+    #[doc = "The `getFloatFrequencyData()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/getFloatFrequencyData)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnalyserNode`*"]
+    pub fn get_float_frequency_data_with_f32_array(
+        this: &AnalyserNode,
+        array: &::js_sys::Float32Array,
+    );
     # [wasm_bindgen (method , structural , js_class = "AnalyserNode" , js_name = getFloatTimeDomainData)]
     #[doc = "The `getFloatTimeDomainData()` method."]
     #[doc = ""]
@@ -122,4 +149,14 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnalyserNode`*"]
     pub fn get_float_time_domain_data(this: &AnalyserNode, array: &mut [f32]);
+    # [wasm_bindgen (method , structural , js_class = "AnalyserNode" , js_name = getFloatTimeDomainData)]
+    #[doc = "The `getFloatTimeDomainData()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode/getFloatTimeDomainData)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AnalyserNode`*"]
+    pub fn get_float_time_domain_data_with_f32_array(
+        this: &AnalyserNode,
+        array: &::js_sys::Float32Array,
+    );
 }

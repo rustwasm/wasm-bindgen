@@ -9,6 +9,7 @@ use crate::wit::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
 use crate::wit::{JsImport, JsImportName, NonstandardWitSection, WasmBindgenAux};
 use crate::{reset_indentation, Bindgen, EncodeInto, OutputMode, PLACEHOLDER_MODULE};
 use anyhow::{anyhow, bail, Context as _, Error};
+use binding::TsReference;
 use std::borrow::Cow;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fmt;
@@ -46,6 +47,17 @@ pub struct Context<'a> {
     /// the number of times they've been used, used to generate new
     /// identifiers.
     defined_identifiers: HashMap<String, usize>,
+
+    /// A set of all (tracked) symbols referenced from within type definitions,
+    /// function signatures, etc.
+    typescript_refs: HashSet<TsReference>,
+
+    /// String enums that are used internally by the generated bindings.
+    ///
+    /// This tracks which string enums are used independently from whether their
+    /// type is used, because users may only use them in a way that doesn't
+    /// require the type or requires only the type.
+    used_string_enums: HashSet<String>,
 
     exported_classes: Option<BTreeMap<String, ExportedClass>>,
 
@@ -108,6 +120,8 @@ impl<'a> Context<'a> {
             js_imports: Default::default(),
             defined_identifiers: Default::default(),
             wasm_import_definitions: Default::default(),
+            typescript_refs: Default::default(),
+            used_string_enums: Default::default(),
             exported_classes: Some(Default::default()),
             config,
             threads_enabled: config.threads.is_enabled(module),
@@ -2662,6 +2676,7 @@ __wbg_set_wasm(wasm);"
             ts_sig,
             ts_arg_tys,
             ts_ret_ty,
+            ts_refs,
             js_doc,
             code,
             might_be_optional_field,
@@ -2688,6 +2703,8 @@ __wbg_set_wasm(wasm);"
                 Kind::Adapter => "failed to generates bindings for adapter".to_string(),
             })?;
 
+        self.typescript_refs.extend(ts_refs);
+
         // Once we've got all the JS then put it in the right location depending
         // on what's being exported.
         match kind {
@@ -2703,7 +2720,7 @@ __wbg_set_wasm(wasm);"
                 match &export.kind {
                     AuxExportKind::Function(name) => {
                         if let Some(ts_sig) = ts_sig {
-                            self.typescript.push_str(&js_docs);
+                            self.typescript.push_str(&ts_docs);
                             self.typescript.push_str("export function ");
                             self.typescript.push_str(name);
                             self.typescript.push_str(ts_sig);
@@ -2721,7 +2738,7 @@ __wbg_set_wasm(wasm);"
                         }
 
                         exported.has_constructor = true;
-                        exported.push(&js_docs, "constructor", "", &code, ts_sig);
+                        exported.push("constructor", "", &js_docs, &code, &ts_docs, ts_sig);
                     }
                     AuxExportKind::Method {
                         class,
@@ -2774,7 +2791,7 @@ __wbg_set_wasm(wasm);"
                             }
                         };
 
-                        exported.push(&js_docs, name, &prefix, &code, ts);
+                        exported.push(name, &prefix, &js_docs, &code, &ts_docs, ts);
                     }
                 }
             }
@@ -3794,7 +3811,11 @@ __wbg_set_wasm(wasm);"
             if enum_.generate_typescript {
                 self.typescript.push('\n');
                 if !variant_docs.is_empty() {
-                    self.typescript.push_str(&variant_docs);
+                    for line in variant_docs.lines() {
+                        self.typescript.push_str("  ");
+                        self.typescript.push_str(line);
+                        self.typescript.push('\n');
+                    }
                 }
                 self.typescript.push_str(&format!("  {name} = {value},"));
             }
@@ -3835,12 +3856,14 @@ __wbg_set_wasm(wasm);"
             variants.join(" | ")
         };
 
-        if string_enum.generate_typescript {
+        if string_enum.generate_typescript
+            && self
+                .typescript_refs
+                .contains(&TsReference::StringEnum(string_enum.name.clone()))
+        {
             let docs = format_doc_comments(&string_enum.comments, None);
+
             self.typescript.push_str(&docs);
-            if string_enum.public {
-                self.typescript.push_str("export ");
-            }
             self.typescript.push_str("type ");
             self.typescript.push_str(&string_enum.name);
             self.typescript.push_str(" = ");
@@ -3848,20 +3871,28 @@ __wbg_set_wasm(wasm);"
             self.typescript.push_str(";\n");
         }
 
-        // generate type definition in case there is no .d.ts file
-        let at = format!(
-            "@typedef {{{type_expr}}} {name}\n@type {{{name}[]}}",
-            name = string_enum.name
-        );
-        let docs = format_doc_comments(&string_enum.comments, Some(at));
+        if self.used_string_enums.contains(&string_enum.name) {
+            // only generate the internal string enum array if it's actually used
 
-        self.global(&format!(
-            "{docs}const __wbindgen_enum_{name} = [{values}];\n",
-            name = string_enum.name,
-            values = variants.join(", ")
-        ));
+            // generate type definition in case there is no .d.ts file
+            let at = format!(
+                "@typedef {{{type_expr}}} {name}\n@type {{{name}[]}}",
+                name = string_enum.name
+            );
+            let docs = format_doc_comments(&string_enum.comments, Some(at));
+
+            self.global(&format!(
+                "{docs}const __wbindgen_enum_{name} = [{values}];\n",
+                name = string_enum.name,
+                values = variants.join(", ")
+            ));
+        }
 
         Ok(())
+    }
+
+    fn expose_string_enum(&mut self, string_enum_name: &str) {
+        self.used_string_enums.insert(string_enum_name.to_string());
     }
 
     fn generate_struct(&mut self, struct_: &AuxStruct) -> Result<(), Error> {
@@ -4290,20 +4321,21 @@ fn property_accessor(name: &str) -> String {
 impl ExportedClass {
     fn push(
         &mut self,
-        docs: &str,
         function_name: &str,
         function_prefix: &str,
+        js_docs: &str,
         js: &str,
+        ts_docs: &str,
         ts: Option<&str>,
     ) {
-        self.contents.push_str(docs);
+        self.contents.push_str(js_docs);
         self.contents.push_str(function_prefix);
         self.contents.push_str(function_name);
         self.contents.push_str(js);
         self.contents.push('\n');
         if let Some(ts) = ts {
-            if !docs.is_empty() {
-                for line in docs.lines() {
+            if !ts_docs.is_empty() {
+                for line in ts_docs.lines() {
                     self.typescript.push_str("  ");
                     self.typescript.push_str(line);
                     self.typescript.push('\n');

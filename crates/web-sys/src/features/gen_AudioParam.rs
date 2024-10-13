@@ -114,4 +114,16 @@ extern "C" {
         start_time: f64,
         duration: f64,
     ) -> Result<AudioParam, JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "AudioParam" , js_name = setValueCurveAtTime)]
+    #[doc = "The `setValueCurveAtTime()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioParam/setValueCurveAtTime)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `AudioParam`*"]
+    pub fn set_value_curve_at_time_with_f32_array(
+        this: &AudioParam,
+        values: &::js_sys::Float32Array,
+        start_time: f64,
+        duration: f64,
+    ) -> Result<AudioParam, JsValue>;
 }

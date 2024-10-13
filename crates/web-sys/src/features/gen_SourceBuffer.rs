@@ -214,6 +214,16 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
     pub fn append_buffer_with_u8_array(this: &SourceBuffer, data: &mut [u8])
         -> Result<(), JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "SourceBuffer" , js_name = appendBuffer)]
+    #[doc = "The `appendBuffer()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/appendBuffer)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
+    pub fn append_buffer_with_js_u8_array(
+        this: &SourceBuffer,
+        data: &::js_sys::Uint8Array,
+    ) -> Result<(), JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "SourceBuffer" , js_name = appendBufferAsync)]
     #[doc = "The `appendBufferAsync()` method."]
     #[doc = ""]
@@ -243,6 +253,16 @@ extern "C" {
     pub fn append_buffer_async_with_u8_array(
         this: &SourceBuffer,
         data: &mut [u8],
+    ) -> Result<::js_sys::Promise, JsValue>;
+    # [wasm_bindgen (catch , method , structural , js_class = "SourceBuffer" , js_name = appendBufferAsync)]
+    #[doc = "The `appendBufferAsync()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SourceBuffer/appendBufferAsync)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `SourceBuffer`*"]
+    pub fn append_buffer_async_with_js_u8_array(
+        this: &SourceBuffer,
+        data: &::js_sys::Uint8Array,
     ) -> Result<::js_sys::Promise, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "SourceBuffer" , js_name = changeType)]
     #[doc = "The `changeType()` method."]

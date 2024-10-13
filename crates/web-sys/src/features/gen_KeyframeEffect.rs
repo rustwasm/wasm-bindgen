@@ -25,7 +25,27 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/target)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyframeEffect`*"]
+    #[deprecated]
     pub fn set_target(this: &KeyframeEffect, value: Option<&::js_sys::Object>);
+    #[cfg(feature = "Element")]
+    # [wasm_bindgen (structural , method , setter , js_class = "KeyframeEffect" , js_name = target)]
+    #[doc = "Setter for the `target` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/target)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `Element`, `KeyframeEffect`*"]
+    pub fn set_target_opt_element(this: &KeyframeEffect, value: Option<&Element>);
+    #[cfg(feature = "CssPseudoElement")]
+    # [wasm_bindgen (structural , method , setter , js_class = "KeyframeEffect" , js_name = target)]
+    #[doc = "Setter for the `target` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/target)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `CssPseudoElement`, `KeyframeEffect`*"]
+    pub fn set_target_opt_css_pseudo_element(
+        this: &KeyframeEffect,
+        value: Option<&CssPseudoElement>,
+    );
     #[cfg(feature = "IterationCompositeOperation")]
     # [wasm_bindgen (structural , method , getter , js_class = "KeyframeEffect" , js_name = iterationComposite)]
     #[doc = "Getter for the `iterationComposite` field of this object."]

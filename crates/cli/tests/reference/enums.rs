@@ -4,8 +4,11 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 #[derive(PartialEq, Debug)]
 pub enum Color {
+    /// Green as a leaf.
     Green,
+    /// Yellow as the sun.
     Yellow,
+    /// Red as a rose.
     Red,
 }
 
@@ -44,15 +47,21 @@ pub fn option_string_enum_echo(color: Option<ColorName>) -> Option<ColorName> {
 
 /// An unused string enum.
 #[wasm_bindgen(js_name = "FooBar")]
-#[derive(PartialEq, Debug)]
 pub enum UnusedStringEnum {
     Foo = "foo",
     Bar = "bar",
 }
 
 #[wasm_bindgen]
-#[derive(PartialEq, Debug)]
 enum PrivateStringEnum {
     Foo = "foo",
     Bar = "bar",
+}
+
+#[wasm_bindgen]
+pub enum ImplicitDiscriminant {
+    A,
+    B,
+    C = 42,
+    D,
 }

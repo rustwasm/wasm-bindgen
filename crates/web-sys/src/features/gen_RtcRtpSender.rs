@@ -40,16 +40,35 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn transform(this: &RtcRtpSender) -> Option<::js_sys::Object>;
     #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "SFrameTransform")]
     # [wasm_bindgen (structural , method , setter , js_class = "RTCRtpSender" , js_name = transform)]
     #[doc = "Setter for the `transform` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpSender/transform)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `RtcRtpSender`*"]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpSender`, `SFrameTransform`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn set_transform(this: &RtcRtpSender, value: Option<&::js_sys::Object>);
+    pub fn set_transform_opt_s_frame_transform(
+        this: &RtcRtpSender,
+        value: Option<&SFrameTransform>,
+    );
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "RtcRtpScriptTransform")]
+    # [wasm_bindgen (structural , method , setter , js_class = "RTCRtpSender" , js_name = transform)]
+    #[doc = "Setter for the `transform` field of this object."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpSender/transform)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `RtcRtpScriptTransform`, `RtcRtpSender`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn set_transform_opt_rtc_rtp_script_transform(
+        this: &RtcRtpSender,
+        value: Option<&RtcRtpScriptTransform>,
+    );
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (method , structural , js_class = "RTCRtpSender" , js_name = generateKeyFrame)]
     #[doc = "The `generateKeyFrame()` method."]

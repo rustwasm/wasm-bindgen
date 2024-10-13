@@ -3,6 +3,55 @@
 
 ## Unreleased
 
+### Changed
+
+* String enums now generate private TypeScript types but only if used.
+  [#4174](https://github.com/rustwasm/wasm-bindgen/pull/4174)
+
+* Remove unnecessary JSDoc type annotations from generated `.d.ts` files
+  [#4187](https://github.com/rustwasm/wasm-bindgen/pull/4187)
+
+### Fixed
+
+* Fixed methods with `self: &Self` consuming the object.
+  [#4178](https://github.com/rustwasm/wasm-bindgen/pull/4178)
+
+* Fixed unused string enums generating JS values.
+  [#4193](https://github.com/rustwasm/wasm-bindgen/pull/4193)
+
+--------------------------------------------------------------------------------
+
+## [0.2.95](https://github.com/rustwasm/wasm-bindgen/compare/0.2.94...0.2.95)
+
+Released 2024-10-10
+
+### Added
+
+* Added support for implicit discriminants in enums.
+  [#4152](https://github.com/rustwasm/wasm-bindgen/pull/4152)
+
+* Added support for `Self` in complex type expressions in methods.
+  [#4155](https://github.com/rustwasm/wasm-bindgen/pull/4155)
+
+### Changed
+
+* String enums are no longer generate TypeScript types.
+  [#4174](https://github.com/rustwasm/wasm-bindgen/pull/4174)
+
+### Fixed
+
+* Fixed generated setters from WebIDL interface attributes binding to wrong JS method names.
+  [#4170](https://github.com/rustwasm/wasm-bindgen/pull/4170)
+
+* Fix string enums showing up in JS documentation and TypeScript bindings without corresponding types.
+  [#4175](https://github.com/rustwasm/wasm-bindgen/pull/4175)
+
+--------------------------------------------------------------------------------
+
+## [0.2.94](https://github.com/rustwasm/wasm-bindgen/compare/0.2.93...0.2.94) (YANKED)
+
+Released 2024-10-09
+
 ### Added
 
 * Added support for the WebAssembly `Tail Call` proposal.
@@ -29,6 +78,12 @@
 * Added `unsupported` crate to `wasm_bindgen_test(unsupported = test)` as a way of running tests on non-Wasm targets as well.
   [#4150](https://github.com/rustwasm/wasm-bindgen/pull/4150)
 
+* Added additional bindings for methods taking buffer view types (e.g. `&[u8]`) with corresponding JS types (e.g. `Uint8Array`).
+  [#4156](https://github.com/rustwasm/wasm-bindgen/pull/4156)
+
+* Added additional bindings for setters from WebIDL interface attributes with applicaple parameter types of just `JsValue`.
+  [#4156](https://github.com/rustwasm/wasm-bindgen/pull/4156)
+
 ### Changed
 
 * Implicitly enable reference type and multivalue transformations if the module already makes use of the corresponding target features.
@@ -48,6 +103,9 @@
 
 * Updated the WebGPU API to the current draft as of 2024-10-07.
   [#4145](https://github.com/rustwasm/wasm-bindgen/pull/4145)
+
+* Deprecated generated setters from WebIDL interface attribute taking `JsValue` in favor of newer bindings with specific parameter types.
+  [#4156](https://github.com/rustwasm/wasm-bindgen/pull/4156)
 
 ### Fixed
 
@@ -87,6 +145,9 @@
 
 * Fixed string enums not generating TypeScript types.
   [#4147](https://github.com/rustwasm/wasm-bindgen/pull/4147)
+
+* Bindings that take buffer view types (e.g. `&[u8]`) as parameters will now correctly return a `Result` when they might not support a backing `SharedArrayBuffer`. This only applies to new and unstable APIs, which won't cause a breaking in the API.
+  [#4156](https://github.com/rustwasm/wasm-bindgen/pull/4156)
 
 --------------------------------------------------------------------------------
 
@@ -453,7 +514,7 @@ Released 2023-11-27.
 
 --------------------------------------------------------------------------------
 
-## [0.2.88](https://github.com/rustwasm/wasm-bindgen/compare/0.2.87...0.2.88)
+## [0.2.88](https://github.com/rustwasm/wasm-bindgen/compare/0.2.87...0.2.88) (YANKED)
 
 Released 2023-11-01
 
