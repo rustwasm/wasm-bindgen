@@ -1181,6 +1181,10 @@ __wbg_set_wasm(wasm);"
         // the linked list of heap slots that are free.
         self.global(&format!(
             "
+            /**
+             * @param {{number}} idx
+             * @returns {{void}}
+             */
             function dropObject(idx) {{
                 if (idx < {}) return;
                 heap[idx] = heap_next;
@@ -1321,10 +1325,14 @@ __wbg_set_wasm(wasm);"
         // a `SharedArrayBuffer` is in use.
         let shared = self.module.memories.get(memory).shared;
 
+        let js_doc =
+            "/** @type {(arg: string, view: Uint8Array) => TextEncoderEncodeIntoResult} */";
+
         match self.config.encode_into {
             EncodeInto::Always if !shared => {
                 self.global(&format!(
                     "
+                    {js_doc}
                     const encodeString = {};
                 ",
                     encode_into
@@ -1333,6 +1341,7 @@ __wbg_set_wasm(wasm);"
             EncodeInto::Test if !shared => {
                 self.global(&format!(
                     "
+                    {js_doc}
                     const encodeString = (typeof cachedTextEncoder.encodeInto === 'function'
                         ? {}
                         : {});
@@ -1343,6 +1352,7 @@ __wbg_set_wasm(wasm);"
             _ => {
                 self.global(&format!(
                     "
+                    {js_doc}
                     const encodeString = {};
                 ",
                     encode
@@ -1386,7 +1396,14 @@ __wbg_set_wasm(wasm);"
         );
 
         self.global(&format!(
-            "function {name}(arg, malloc, realloc) {{
+            "
+            /**
+             * @param {{string}} arg
+             * @param {{(size: number, align: number) => number}} malloc
+             * @param {{(ptr: number, oldSize: number, newSize: number, align: number) => number}} [realloc]
+             * @returns {{number}}
+             */
+            function {name}(arg, malloc, realloc) {{
                 {debug}
                 {ascii}
                 if (offset !== len) {{
@@ -1403,7 +1420,8 @@ __wbg_set_wasm(wasm);"
 
                 WASM_VECTOR_LEN = offset;
                 return ptr;
-            }}",
+            }}
+            ",
             name = ret,
             debug = debug,
             ascii = encode_as_ascii,
@@ -1465,6 +1483,11 @@ __wbg_set_wasm(wasm);"
                 let add = self.expose_add_to_externref_table(table, alloc)?;
                 self.global(&format!(
                     "
+                        /**
+                         * @param {{ArrayLike<unknown>}} array
+                         * @param {{(size: number, align: number) => number}} malloc
+                         * @returns {{number}}
+                         */
                         function {}(array, malloc) {{
                             const ptr = malloc(array.length * 4, 4) >>> 0;
                             const mem = {}();
@@ -1482,6 +1505,11 @@ __wbg_set_wasm(wasm);"
                 self.expose_add_heap_object();
                 self.global(&format!(
                     "
+                        /**
+                         * @param {{ArrayLike<unknown>}} array
+                         * @param {{(size: number, align: number) => number}} malloc
+                         * @returns {{number}}
+                         */
                         function {}(array, malloc) {{
                             const ptr = malloc(array.length * 4, 4) >>> 0;
                             const mem = {}();
@@ -1515,6 +1543,11 @@ __wbg_set_wasm(wasm);"
         self.expose_wasm_vector_len();
         self.global(&format!(
             "
+            /**
+             * @param {{ArrayLike<number>}} arg
+             * @param {{(size: number, align: number) => number}} malloc
+             * @returns {{number}}
+             */
             function {}(arg, malloc) {{
                 const ptr = malloc(arg.length * {size}, {size}) >>> 0;
                 {}().set(arg, ptr / {size});
@@ -1572,6 +1605,7 @@ __wbg_set_wasm(wasm);"
         args: &str,
         init: Option<&str>,
     ) -> Result<(), Error> {
+        let js_doc = format!("/** @type {{{s}}} */\n");
         match &self.config.mode {
             OutputMode::Node { .. } => {
                 let name = self.import_name(&JsImport {
@@ -1581,25 +1615,23 @@ __wbg_set_wasm(wasm);"
                     },
                     fields: Vec::new(),
                 })?;
-                self.global(&format!("let cached{} = new {}{};", s, name, args));
+                self.global(&format!("{js_doc}let cached{} = new {}{};", s, name, args));
             }
             OutputMode::Bundler {
                 browser_only: false,
             } => {
-                self.global(&format!(
-                    "
-                    const l{0} = typeof {0} === 'undefined' ? \
-                        (0, module.require)('util').{0} : {0};\
-                ",
-                    s
-                ));
-                self.global(&format!("let cached{0} = new l{0}{1};", s, args));
+                // this is a mix between the web and node version.
+                // we check if Text{En,De}coder is available (web) and if not, we require it (node).
+                let type_expr = format!(
+                    "typeof {s} === 'undefined' ? (0, module.require)('util').{s} : {s}"
+                );
+                self.global(&format!("{js_doc}let cached{s} = new ({type_expr}){args};"));
             }
             OutputMode::Deno
             | OutputMode::Web
             | OutputMode::NoModules { .. }
             | OutputMode::Bundler { browser_only: true } => {
-                self.global(&format!("const cached{0} = (typeof {0} !== 'undefined' ? new {0}{1} : {{ {2}: () => {{ throw Error('{0} not available') }} }} );", s, args, op))
+                self.global(&format!("{js_doc}const cached{0} = (typeof {0} !== 'undefined' ? new {0}{1} : {{ {2}: () => {{ throw Error('{0} not available') }} }} );", s, args, op))
             }
         };
 
@@ -1647,6 +1679,11 @@ __wbg_set_wasm(wasm);"
 
         self.global(&format!(
             "
+            /**
+             * @param {{number}} ptr
+             * @param {{number}} len
+             * @returns {{string}}
+             */
             function {}(ptr, len) {{
                 ptr = ptr >>> 0;
                 return cachedTextDecoder.decode({}().{}(ptr, ptr + len));
@@ -1818,6 +1855,10 @@ __wbg_set_wasm(wasm);"
         }
         self.global(&format!(
             "
+            /**
+             * @param {{number}} ptr
+             * @param {{number}} len
+             */
             function {name}(ptr, len) {{
                 ptr = ptr >>> 0;
                 return {mem}().subarray(ptr / {size}, ptr / {size} + len);
@@ -1906,10 +1947,10 @@ __wbg_set_wasm(wasm);"
             format!("{cache}.byteLength === 0", cache = cache)
         };
 
-        self.global(&format!("let {cache} = null;\n"));
-
         self.global(&format!(
             "
+            /** @type {{{kind} | null}} */
+            let {cache} = null;
             function {name}() {{
                 if ({cache} === null || {resized_check}) {{
                     {cache} = new {kind}(wasm.{mem}.buffer);
@@ -1954,6 +1995,10 @@ __wbg_set_wasm(wasm);"
         }
         self.global(
             "
+            /**
+             * @param {unknown} instance
+             * @param {Function} klass
+             */
             function _assertClass(instance, klass) {
                 if (!(instance instanceof klass)) {
                     throw new Error(`expected instance of ${klass.name}`);
@@ -2001,6 +2046,10 @@ __wbg_set_wasm(wasm);"
         self.expose_drop_ref();
         self.global(
             "
+            /**
+             * @param {number} idx
+             * @returns {any}
+             */
             function takeObject(idx) {
                 const ret = getObject(idx);
                 dropObject(idx);
@@ -2032,6 +2081,10 @@ __wbg_set_wasm(wasm);"
         // one more slot and use that.
         self.global(&format!(
             "
+            /**
+             * @param {{unknown}} obj
+             * @returns {{number}}
+             */
             function addHeapObject(obj) {{
                 if (heap_next === heap.length) heap.push(heap.length + 1);
                 const idx = heap_next;
@@ -2191,6 +2244,10 @@ __wbg_set_wasm(wasm);"
         }
         self.global(
             "
+            /**
+             * @param {unknown} x
+             * @returns {x is undefined | null}
+             */
             function isLikeNone(x) {
                 return x === undefined || x === null;
             }
@@ -3956,7 +4013,11 @@ __wbg_set_wasm(wasm);"
 
         self.global(
             "
-           function debugString(val) {
+            /**
+             * @param {any} val
+             * @returns {string}
+             */
+            function debugString(val) {
                 // primitive types
                 const type = typeof val;
                 if (type == 'number' || type == 'boolean' || val == null) {

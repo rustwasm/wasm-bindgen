@@ -10,6 +10,10 @@ heap.push(undefined, null, true, false);
 
 function getObject(idx) { return heap[idx]; }
 
+/**
+ * @param {any} val
+ * @returns {string}
+ */
 function debugString(val) {
     // primitive types
     const type = typeof val;
@@ -77,8 +81,8 @@ function debugString(val) {
 
 let WASM_VECTOR_LEN = 0;
 
+/** @type {Uint8Array | null} */
 let cachedUint8ArrayMemory0 = null;
-
 function getUint8ArrayMemory0() {
     if (cachedUint8ArrayMemory0 === null || cachedUint8ArrayMemory0.byteLength === 0) {
         cachedUint8ArrayMemory0 = new Uint8Array(wasm.memory.buffer);
@@ -86,10 +90,10 @@ function getUint8ArrayMemory0() {
     return cachedUint8ArrayMemory0;
 }
 
-const lTextEncoder = typeof TextEncoder === 'undefined' ? (0, module.require)('util').TextEncoder : TextEncoder;
+/** @type {TextEncoder} */
+let cachedTextEncoder = new (typeof TextEncoder === 'undefined' ? (0, module.require)('util').TextEncoder : TextEncoder)('utf-8');
 
-let cachedTextEncoder = new lTextEncoder('utf-8');
-
+/** @type {(arg: string, view: Uint8Array) => TextEncoderEncodeIntoResult} */
 const encodeString = (typeof cachedTextEncoder.encodeInto === 'function'
     ? function (arg, view) {
     return cachedTextEncoder.encodeInto(arg, view);
@@ -103,6 +107,12 @@ const encodeString = (typeof cachedTextEncoder.encodeInto === 'function'
     };
 });
 
+/**
+ * @param {string} arg
+ * @param {(size: number, align: number) => number} malloc
+ * @param {(ptr: number, oldSize: number, newSize: number, align: number) => number} [realloc]
+ * @returns {number}
+ */
 function passStringToWasm0(arg, malloc, realloc) {
 
     if (realloc === undefined) {
@@ -142,8 +152,8 @@ function passStringToWasm0(arg, malloc, realloc) {
     return ptr;
 }
 
+/** @type {DataView | null} */
 let cachedDataViewMemory0 = null;
-
 function getDataViewMemory0() {
     if (cachedDataViewMemory0 === null || cachedDataViewMemory0.buffer.detached === true || (cachedDataViewMemory0.buffer.detached === undefined && cachedDataViewMemory0.buffer !== wasm.memory.buffer)) {
         cachedDataViewMemory0 = new DataView(wasm.memory.buffer);
@@ -151,12 +161,16 @@ function getDataViewMemory0() {
     return cachedDataViewMemory0;
 }
 
-const lTextDecoder = typeof TextDecoder === 'undefined' ? (0, module.require)('util').TextDecoder : TextDecoder;
-
-let cachedTextDecoder = new lTextDecoder('utf-8', { ignoreBOM: true, fatal: true });
+/** @type {TextDecoder} */
+let cachedTextDecoder = new (typeof TextDecoder === 'undefined' ? (0, module.require)('util').TextDecoder : TextDecoder)('utf-8', { ignoreBOM: true, fatal: true });
 
 cachedTextDecoder.decode();
 
+/**
+ * @param {number} ptr
+ * @param {number} len
+ * @returns {string}
+ */
 function getStringFromWasm0(ptr, len) {
     ptr = ptr >>> 0;
     return cachedTextDecoder.decode(getUint8ArrayMemory0().subarray(ptr, ptr + len));
@@ -164,12 +178,20 @@ function getStringFromWasm0(ptr, len) {
 
 let heap_next = heap.length;
 
+/**
+ * @param {number} idx
+ * @returns {void}
+ */
 function dropObject(idx) {
     if (idx < 132) return;
     heap[idx] = heap_next;
     heap_next = idx;
 }
 
+/**
+ * @param {number} idx
+ * @returns {any}
+ */
 function takeObject(idx) {
     const ret = getObject(idx);
     dropObject(idx);
@@ -191,6 +213,10 @@ export function get_media_source() {
     return __wbindgen_enum_MediaSourceEnum[ret];
 }
 
+/**
+ * @param {unknown} obj
+ * @returns {number}
+ */
 function addHeapObject(obj) {
     if (heap_next === heap.length) heap.push(heap.length + 1);
     const idx = heap_next;

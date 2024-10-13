@@ -10,6 +10,10 @@ heap.push(undefined, null, true, false);
 
 let heap_next = heap.length;
 
+/**
+ * @param {unknown} obj
+ * @returns {number}
+ */
 function addHeapObject(obj) {
     if (heap_next === heap.length) heap.push(heap.length + 1);
     const idx = heap_next;
@@ -27,8 +31,8 @@ function handleError(f, args) {
     }
 }
 
+/** @type {DataView | null} */
 let cachedDataViewMemory0 = null;
-
 function getDataViewMemory0() {
     if (cachedDataViewMemory0 === null || cachedDataViewMemory0.buffer.detached === true || (cachedDataViewMemory0.buffer.detached === undefined && cachedDataViewMemory0.buffer !== wasm.memory.buffer)) {
         cachedDataViewMemory0 = new DataView(wasm.memory.buffer);
@@ -38,12 +42,20 @@ function getDataViewMemory0() {
 
 function getObject(idx) { return heap[idx]; }
 
+/**
+ * @param {number} idx
+ * @returns {void}
+ */
 function dropObject(idx) {
     if (idx < 132) return;
     heap[idx] = heap_next;
     heap_next = idx;
 }
 
+/**
+ * @param {number} idx
+ * @returns {any}
+ */
 function takeObject(idx) {
     const ret = getObject(idx);
     dropObject(idx);
