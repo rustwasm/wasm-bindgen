@@ -16,6 +16,9 @@
 * Fixed methods with `self: &Self` consuming the object.
   [#4178](https://github.com/rustwasm/wasm-bindgen/pull/4178)
 
+* Fixed unused string enums generating JS values.
+  [#4193](https://github.com/rustwasm/wasm-bindgen/pull/4193)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.95](https://github.com/rustwasm/wasm-bindgen/compare/0.2.94...0.2.95)
