@@ -1995,6 +1995,7 @@ __wbg_set_wasm(wasm);"
                 if (!(instance instanceof klass)) {
                     throw new Error(`expected instance of ${klass.name}`);
                 }
+                return instance.ptr;
             }
             ",
         );
@@ -4042,7 +4043,7 @@ __wbg_set_wasm(wasm);"
                 // Test for built-in
                 const builtInMatches = /\\[object ([^\\]]+)\\]/.exec(toString.call(val));
                 let className;
-                if (builtInMatches && builtInMatches.length > 1) {
+                if (builtInMatches.length > 1) {
                     className = builtInMatches[1];
                 } else {
                     // Failed to match the standard '[object ClassName]'
