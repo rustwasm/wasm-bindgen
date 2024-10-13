@@ -106,6 +106,8 @@ impl<'a> Context<'a> {
         // location listed of what to import there for each item.
         let mut intrinsics = Vec::new();
         let mut duplicate_import_map = HashMap::new();
+        // The order in which imports are deleted later might matter, so we
+        // use an ordered set here to make everything deterministic.
         let mut imports_to_delete = BTreeSet::new();
         for import in self.module.imports.iter() {
             if import.module != PLACEHOLDER_MODULE {

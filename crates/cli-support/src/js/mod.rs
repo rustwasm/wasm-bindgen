@@ -2524,64 +2524,7 @@ __wbg_set_wasm(wasm);"
             self.expose_symbol_dispose()?;
         }
 
-        let mut adapters: Vec<_> = self
-            .wit
-            .adapters
-            .iter()
-            .map(|(id, adapter)| {
-                let kind = ContextAdapterKind::get(*id, self.aux, self.wit);
-                (*id, adapter, kind)
-            })
-            .collect();
-
-        adapters.sort_by_key(|(id, _, _)| id.0);
-        adapters.sort_by_cached_key(|(id, adapter, kind)| {
-            let mut key: Vec<u8> = Vec::new();
-
-            match kind {
-                ContextAdapterKind::Export(export) => {
-                    key.push(b'1');
-                    // match &export.kind {
-                    //     AuxExportKind::Function(name) => {
-                    //         key.push(b'f');
-                    //         key.extend_from_slice(name.as_bytes());
-                    //     }
-                    //     AuxExportKind::Constructor(class) => {
-                    //         key.push(b'c');
-                    //         key.extend_from_slice(class.as_bytes());
-                    //     }
-                    //     AuxExportKind::Method {
-                    //         receiver,
-                    //         kind,
-                    //         class,
-                    //         name,
-                    //     } => {
-                    //         key.push(b'm');
-                    //         key.push(*receiver as u8);
-                    //         key.push(*kind as u8);
-                    //         key.extend_from_slice(class.as_bytes());
-                    //         key.push(b'/');
-                    //         key.extend_from_slice(name.as_bytes());
-                    //     }
-                    // }
-                }
-                ContextAdapterKind::Import(import) => {
-                    key.push(b'0');
-                    let import = self.module.imports.get_mut(*import);
-                    key.extend_from_slice(import.name.as_bytes());
-                    key.push(b'/');
-                    key.extend_from_slice(import.module.as_bytes());
-                }
-                ContextAdapterKind::Adapter => {
-                    key.push(b'3');
-                    key.extend(id.0.to_le_bytes());
-                }
-            };
-
-            key
-        });
-
-        for (id, adapter, kind) in adapters {
+        for (id, adapter, kind) in iter_adapeter(self.aux, self.wit, self.module) {
             let instrs = match &adapter.kind {
                 AdapterKind::Import { .. } => continue,
                 AdapterKind::Local { instructions } => instructions,
@@ -4168,8 +4111,14 @@ __wbg_set_wasm(wasm);"
     }
 }
 
+/// A categorization of adapters for the purpose of code generation.
+///
+/// This is different from [`AdapterKind`] and is only used internally in the
+/// code generation process.
 enum ContextAdapterKind<'a> {
+    /// An exported function, method, constrctor, or getter/setter.
     Export(&'a AuxExport),
+    /// An imported function or intrinsic.
     Import(walrus::ImportId),
     Adapter,
 }
@@ -4188,12 +4137,66 @@ impl<'a> ContextAdapterKind<'a> {
     }
 }
 
+/// Iterate over the adapters in a deterministic order.
+fn iter_adapeter<'a>(
+    aux: &'a WasmBindgenAux,
+    wit: &'a NonstandardWitSection,
+    module: &Module,
+) -> Vec<(AdapterId, &'a Adapter, ContextAdapterKind<'a>)> {
+    let mut adapters: Vec<_> = wit
+        .adapters
+        .iter()
+        .map(|(id, adapter)| {
+            // we need the kind of the adapter to properly sort them
+            let kind = ContextAdapterKind::get(*id, aux, wit);
+            (*id, adapter, kind)
+        })
+        .collect();
+
+    // Since `wit.adapters` is a BTreeMap, the adapters are already sorted by
+    // their ID. This is good enough for exports and adapters, but imports need
+    // to be sorted by their name.
+    //
+    // Note: we do *NOT* want to sort exports by name. By default, exports are
+    // the order in which they were defined in the Rust code. Sorting them by
+    // name would break that order and take away control from the user.
+
+    adapters.sort_by(|(_, _, a), (_, _, b)| {
+        fn get_kind_order(kind: &ContextAdapterKind) -> u8 {
+            match kind {
+                ContextAdapterKind::Import(_) => 0,
+                ContextAdapterKind::Export(_) => 1,
+                ContextAdapterKind::Adapter => 2,
+            }
+        }
+
+        match (a, b) {
+            (ContextAdapterKind::Import(a), ContextAdapterKind::Import(b)) => {
+                let a = module.imports.get(*a);
+                let b = module.imports.get(*b);
+                a.name.cmp(&b.name)
+            }
+            _ => get_kind_order(a).cmp(&get_kind_order(b)),
+        }
+    });
+
+    adapters
+}
+
+/// Iterate over the imports in a deterministic order.
 fn iter_by_import<'a, T>(
     map: &'a HashMap<ImportId, T>,
     module: &Module,
 ) -> Vec<(&'a ImportId, &'a T)> {
     let mut items: Vec<_> = map.iter().collect();
 
+    // Sort by import name.
+    //
+    // Imports have a name and a module, and it's important that we *ignore*
+    // the module. The module of an import is set to its final value *during*
+    // code generation, so using it here would cause the imports to be sorted
+    // differently depending on which part of the code generation process we're
+    // in.
     items.sort_by(|&(a, _), &(b, _)| {
         let a = module.imports.get(*a);
         let b = module.imports.get(*b);
