@@ -701,6 +701,7 @@ fn instruction(
 
         Instruction::WasmToStringEnum { name } => {
             let index = js.pop();
+            js.cx.expose_string_enum(name);
             js.push(wasm_to_string_enum(name, &index))
         }
 
@@ -709,11 +710,13 @@ fn instruction(
             // ["a","b","c"][index], the lookup will implicitly return map
             // the hole to undefined, because OOB indexes will return undefined.
             let index = js.pop();
+            js.cx.expose_string_enum(name);
             js.push(wasm_to_string_enum(name, &index))
         }
 
         Instruction::StringEnumToWasm { name, invalid } => {
             let enum_val = js.pop();
+            js.cx.expose_string_enum(name);
             js.push(string_enum_to_wasm(name, *invalid, &enum_val))
         }
 
@@ -723,6 +726,7 @@ fn instruction(
             hole,
         } => {
             let enum_val = js.pop();
+            js.cx.expose_string_enum(name);
             let enum_val_expr = string_enum_to_wasm(name, *invalid, &enum_val);
             js.cx.expose_is_like_none();
 

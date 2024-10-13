@@ -83,10 +83,6 @@ export const ImplicitDiscriminant = Object.freeze({ A:0,"0":"A",B:1,"1":"B",C:42
 
 const __wbindgen_enum_ColorName = ["green", "yellow", "red"];
 
-const __wbindgen_enum_FooBar = ["foo", "bar"];
-
-const __wbindgen_enum_PrivateStringEnum = ["foo", "bar"];
-
 export function __wbindgen_throw(arg0, arg1) {
     throw new Error(getStringFromWasm0(arg0, arg1));
 };
