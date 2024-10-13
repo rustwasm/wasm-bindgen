@@ -52,7 +52,7 @@ pub struct Context<'a> {
     /// function signatures, etc.
     typescript_refs: HashSet<TsReference>,
 
-    /// String enums that are used internally by the generated code.
+    /// String enums that are used internally by the generated bindings.
     ///
     /// This tracks which string enums are used independently from whether their
     /// type is used, because users may only use them in a way that doesn't
