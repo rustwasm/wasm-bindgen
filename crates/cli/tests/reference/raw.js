@@ -5,6 +5,7 @@ export function __wbg_set_wasm(val) {
     wasm = val;
 }
 
+
 /** @type {TextDecoder} */
 let cachedTextDecoder = new (typeof TextDecoder === 'undefined' ? (0, module.require)('util').TextDecoder : TextDecoder)('utf-8', { ignoreBOM: true, fatal: true });
 
