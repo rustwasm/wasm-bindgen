@@ -37,6 +37,9 @@ pub struct JsBuilder<'a, 'b> {
     /// JS functions, etc.
     cx: &'a mut Context<'b>,
 
+    /// A debug name for the function being generated, used for error messages
+    debug_name: &'a str,
+
     /// The "prelude" of the function, or largely just the JS function we've
     /// built so far.
     prelude: String,
@@ -121,6 +124,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         asyncness: bool,
         variadic: bool,
         generate_jsdoc: bool,
+        debug_name: &str,
     ) -> Result<JsFunction, Error> {
         if self
             .cx
@@ -138,7 +142,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         // If this is a method then we're generating this as part of a class
         // method, so the leading parameter is the this pointer stored on
         // the JS object, so synthesize that here.
-        let mut js = JsBuilder::new(self.cx);
+        let mut js = JsBuilder::new(self.cx, debug_name);
         if let Some(consumes_self) = self.method {
             let _ = params.next();
             if js.cx.config.debug {
@@ -184,7 +188,12 @@ impl<'a, 'b> Builder<'a, 'b> {
             )?;
         }
 
-        assert_eq!(js.stack.len(), adapter.results.len());
+        assert_eq!(
+            js.stack.len(),
+            adapter.results.len(),
+            "stack size mismatch for {}",
+            debug_name
+        );
         match js.stack.len() {
             0 => {}
             1 => {
@@ -422,9 +431,10 @@ impl<'a, 'b> Builder<'a, 'b> {
 }
 
 impl<'a, 'b> JsBuilder<'a, 'b> {
-    pub fn new(cx: &'a mut Context<'b>) -> JsBuilder<'a, 'b> {
+    pub fn new(cx: &'a mut Context<'b>, debug_name: &'a str) -> JsBuilder<'a, 'b> {
         JsBuilder {
             cx,
+            debug_name,
             args: Vec::new(),
             tmp: 0,
             pre_try: String::new(),
@@ -463,7 +473,10 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
     }
 
     fn pop(&mut self) -> String {
-        self.stack.pop().unwrap()
+        match self.stack.pop() {
+            Some(s) => s,
+            None => panic!("popping an empty stack in {}", self.debug_name),
+        }
     }
 
     fn push(&mut self, arg: String) {
