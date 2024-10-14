@@ -216,7 +216,9 @@ pub enum Instruction {
     },
     /// Pops an `externref` from the stack, pushes either a sentinel value if it's
     /// "none" or the integer value of it if it's "some"
-    F64FromOptionSentinelInt,
+    F64FromOptionSentinelInt {
+        signed: bool,
+    },
     /// Pops an `externref` from the stack, pushes either a sentinel value if it's
     /// "none" or the f32 value of it if it's "some"
     F64FromOptionSentinelF32,

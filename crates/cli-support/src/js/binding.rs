@@ -920,17 +920,37 @@ fn instruction(
             js.push(format!("isLikeNone({0}) ? {1} : {0}", val, hole));
         }
 
-        Instruction::F64FromOptionSentinelInt => {
+        Instruction::F64FromOptionSentinelInt { signed } => {
             let val = js.pop();
             js.cx.expose_is_like_none();
             js.assert_optional_number(&val);
-            js.push(format!("isLikeNone({0}) ? 0x100000001 : {0}", val));
+
+            // We need to convert the given number to a 32-bit integer before
+            // passing it to the ABI for 2 reasons:
+            // 1. Rust's behavior for `value_f64 as i32/u32` is different from
+            //    the WebAssembly behavior for values outside the 32-bit range.
+            //    We could implement this behavior is Rust too, but it's easier
+            //    to do it in JS.
+            // 2. If we allowed values outside the 32-bit range, the sentinel
+            //    value itself would be allowed. This would make it impossible
+            //    to distinguish between the sentinel value and a valid value.
+
+            let op = if *signed { ">>" } else { ">>>" };
+            js.push(format!("isLikeNone({val}) ? 0x100000001 : ({val}) {op} 0"));
         }
         Instruction::F64FromOptionSentinelF32 => {
             let val = js.pop();
             js.cx.expose_is_like_none();
             js.assert_optional_number(&val);
-            js.push(format!("isLikeNone({0}) ? 0x100000001 : ({0} === 0x100000001 ? 0x100000002 : {0})", val));
+
+            // Similar to the above 32-bit integer variant, we convert the
+            // number to a 32-bit *float* before passing it to the ABI. This
+            // ensures consistent behavior with WebAssembly and makes it
+            // possible to use a sentinel value.
+
+            js.push(format!(
+                "isLikeNone({val}) ? 0x100000001 : Math.fround({val})"
+            ));
         }
 
         Instruction::FromOptionNative { ty } => {

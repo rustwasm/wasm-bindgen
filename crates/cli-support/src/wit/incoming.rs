@@ -280,8 +280,8 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::U8 => self.in_option_sentinel32(AdapterType::U8),
             Descriptor::I16 => self.in_option_sentinel32(AdapterType::S16),
             Descriptor::U16 => self.in_option_sentinel32(AdapterType::U16),
-            Descriptor::I32 => self.in_option_sentinel64_int(AdapterType::I32),
-            Descriptor::U32 => self.in_option_sentinel64_int(AdapterType::U32),
+            Descriptor::I32 => self.in_option_sentinel64_int(AdapterType::I32, true),
+            Descriptor::U32 => self.in_option_sentinel64_int(AdapterType::U32, false),
             Descriptor::F32 => self.in_option_sentinel64_f32(AdapterType::F32),
             Descriptor::F64 => self.in_option_native(ValType::F64),
             Descriptor::I64 | Descriptor::U64 => self.in_option_native(ValType::I64),
@@ -466,10 +466,10 @@ impl InstructionBuilder<'_, '_> {
             &[AdapterType::I32],
         );
     }
-    fn in_option_sentinel64_int(&mut self, ty: AdapterType) {
+    fn in_option_sentinel64_int(&mut self, ty: AdapterType, signed: bool) {
         self.instruction(
             &[ty.option()],
-            Instruction::F64FromOptionSentinelInt,
+            Instruction::F64FromOptionSentinelInt { signed },
             &[AdapterType::F64],
         );
     }
