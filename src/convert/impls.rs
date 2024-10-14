@@ -104,7 +104,14 @@ type_wasm_native!(
     f64 as f64
 );
 
-const F64_SENTINEL: f64 = 4294967297_f64; // 2^32 + 1
+/// The sentinel value is 2^32 + 1 for 32-bit primitive types.
+///
+/// 2^32 + 1 is used, because it's the smallest positive integer that cannot be
+/// represented by any 32-bit primitive. While any value >= 2^32 works as a
+/// sentinel value for 32-bit integers, it's a bit more tricky for `f32`. `f32`
+/// can represent all powers of 2 up to 2^127 exactly. And between 2^32 and 2^33,
+/// `f32` can represent all integers 2^32+512*k exactly.
+const F64_ABI_OPTION_SENTINEL: f64 = 4294967297_f64;
 
 macro_rules! type_wasm_native_f64_option {
     ($($t:tt as $c:tt)*) => ($(
@@ -127,7 +134,7 @@ macro_rules! type_wasm_native_f64_option {
 
             #[inline]
             fn into_abi(self) -> Self::Abi {
-                self.map(|v| v as $c as f64).unwrap_or(F64_SENTINEL)
+                self.map(|v| v as $c as f64).unwrap_or(F64_ABI_OPTION_SENTINEL)
             }
         }
 
@@ -136,7 +143,7 @@ macro_rules! type_wasm_native_f64_option {
 
             #[inline]
             unsafe fn from_abi(js: Self::Abi) -> Self {
-                if js == F64_SENTINEL {
+                if js == F64_ABI_OPTION_SENTINEL {
                     None
                 } else {
                     Some(js as $c as $t)
@@ -153,6 +160,13 @@ type_wasm_native_f64_option!(
     usize as u32
     f32 as f32
 );
+
+/// The sentinel value is 0xFF_FFFF for primitives with less than 32 bits.
+///
+/// This value is used, so all small primitive types (`bool`, `i8`, `u8`,
+/// `i16`, `u16`, `char`) can use the same JS glue code. `char::MAX` is
+/// 0x10_FFFF btw.
+const U32_ABI_OPTION_SENTINEL: u32 = 0x00FF_FFFFu32;
 
 macro_rules! type_abi_as_u32 {
     ($($t:tt)*) => ($(
@@ -172,12 +186,12 @@ macro_rules! type_abi_as_u32 {
 
         impl OptionIntoWasmAbi for $t {
             #[inline]
-            fn none() -> u32 { 0x00FF_FFFFu32 }
+            fn none() -> u32 { U32_ABI_OPTION_SENTINEL }
         }
 
         impl OptionFromWasmAbi for $t {
             #[inline]
-            fn is_none(js: &u32) -> bool { *js == 0x00FF_FFFFu32 }
+            fn is_none(js: &u32) -> bool { *js == U32_ABI_OPTION_SENTINEL }
         }
     )*)
 }
@@ -205,14 +219,14 @@ impl FromWasmAbi for bool {
 impl OptionIntoWasmAbi for bool {
     #[inline]
     fn none() -> u32 {
-        0x00FF_FFFFu32
+        U32_ABI_OPTION_SENTINEL
     }
 }
 
 impl OptionFromWasmAbi for bool {
     #[inline]
     fn is_none(js: &u32) -> bool {
-        *js == 0x00FF_FFFFu32
+        *js == U32_ABI_OPTION_SENTINEL
     }
 }
 
@@ -238,14 +252,14 @@ impl FromWasmAbi for char {
 impl OptionIntoWasmAbi for char {
     #[inline]
     fn none() -> u32 {
-        0x00FF_FFFFu32
+        U32_ABI_OPTION_SENTINEL
     }
 }
 
 impl OptionFromWasmAbi for char {
     #[inline]
     fn is_none(js: &u32) -> bool {
-        *js == 0x00FF_FFFFu32
+        *js == U32_ABI_OPTION_SENTINEL
     }
 }
 
