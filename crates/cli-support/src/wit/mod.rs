@@ -4,7 +4,7 @@ use crate::descriptors::WasmBindgenDescriptorsSection;
 use crate::intrinsic::Intrinsic;
 use crate::{decode, Bindgen, PLACEHOLDER_MODULE};
 use anyhow::{anyhow, bail, Error};
-use std::collections::{HashMap, HashSet};
+use std::collections::{BTreeSet, HashMap};
 use std::str;
 use walrus::MemoryId;
 use walrus::{ExportId, FunctionId, ImportId, Module};
@@ -106,7 +106,9 @@ impl<'a> Context<'a> {
         // location listed of what to import there for each item.
         let mut intrinsics = Vec::new();
         let mut duplicate_import_map = HashMap::new();
-        let mut imports_to_delete = HashSet::new();
+        // The order in which imports are deleted later might matter, so we
+        // use an ordered set here to make everything deterministic.
+        let mut imports_to_delete = BTreeSet::new();
         for import in self.module.imports.iter() {
             if import.module != PLACEHOLDER_MODULE {
                 continue;
@@ -868,11 +870,13 @@ impl<'a> Context<'a> {
     fn string_enum(&mut self, string_enum: &decode::StringEnum<'_>) -> Result<(), Error> {
         let aux = AuxStringEnum {
             name: string_enum.name.to_string(),
+            comments: concatenate_comments(&string_enum.comments),
             variant_values: string_enum
                 .variant_values
                 .iter()
                 .map(|v| v.to_string())
                 .collect(),
+            generate_typescript: string_enum.generate_typescript,
         };
         let mut result = Ok(());
         self.aux

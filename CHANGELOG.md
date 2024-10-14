@@ -1,6 +1,35 @@
 # `wasm-bindgen` Change Log
 --------------------------------------------------------------------------------
 
+## Unreleased
+
+### Changed
+
+* String enums now generate private TypeScript types but only if used.
+  [#4174](https://github.com/rustwasm/wasm-bindgen/pull/4174)
+
+* Remove unnecessary JSDoc type annotations from generated `.d.ts` files
+  [#4187](https://github.com/rustwasm/wasm-bindgen/pull/4187)
+
+### Fixed
+
+* Fixed methods with `self: &Self` consuming the object.
+  [#4178](https://github.com/rustwasm/wasm-bindgen/pull/4178)
+
+* Fixed unused string enums generating JS values.
+  [#4193](https://github.com/rustwasm/wasm-bindgen/pull/4193)
+
+* Fixed triggering lints in testing facilities.
+  [#4195](https://github.com/rustwasm/wasm-bindgen/pull/4195)
+
+* Fixed `#[should_panic]` not working with `#[wasm_bindgen_test(unsupported = ...)]`.
+  [#4196](https://github.com/rustwasm/wasm-bindgen/pull/4196)
+
+* Fixed potential `null` error when using `JsValue::as_debug_string()`.
+  [#4192](https://github.com/rustwasm/wasm-bindgen/pull/4192)
+
+--------------------------------------------------------------------------------
+
 ## [0.2.95](https://github.com/rustwasm/wasm-bindgen/compare/0.2.94...0.2.95)
 
 Released 2024-10-10
