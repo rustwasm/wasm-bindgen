@@ -25,7 +25,7 @@
 * Fixed `#[should_panic]` not working with `#[wasm_bindgen_test(unsupported = ...)]`.
   [#4196](https://github.com/rustwasm/wasm-bindgen/pull/4196)
 
-* Fixed a minor bug with regexes when printing debug information.
+* Fixed potential `null` error when using `JsValue::as_debug_string()`.
   [#4192](https://github.com/rustwasm/wasm-bindgen/pull/4192)
 
 --------------------------------------------------------------------------------
