@@ -90,7 +90,7 @@ function debugString(val) {
     // Test for built-in
     const builtInMatches = /\[object ([^\]]+)\]/.exec(toString.call(val));
     let className;
-    if (builtInMatches.length > 1) {
+    if (builtInMatches && builtInMatches.length > 1) {
         className = builtInMatches[1];
     } else {
         // Failed to match the standard '[object ClassName]'
