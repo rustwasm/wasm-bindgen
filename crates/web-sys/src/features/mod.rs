@@ -5276,6 +5276,13 @@ mod gen_LockOptions;
 #[allow(unused_imports)]
 pub use gen_LockOptions::*;
 
+#[cfg(feature = "MathMlElement")]
+#[allow(non_snake_case)]
+mod gen_MathMlElement;
+#[cfg(feature = "MathMlElement")]
+#[allow(unused_imports)]
+pub use gen_MathMlElement::*;
+
 #[cfg(feature = "MediaCapabilities")]
 #[allow(non_snake_case)]
 mod gen_MediaCapabilities;
