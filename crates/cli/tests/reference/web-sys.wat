@@ -12,9 +12,9 @@
   (export "memory" (memory 0))
   (export "get_url" (func $get_url))
   (export "get_media_source" (func $get_media_source))
+  (export "__wbindgen_exn_store" (func $__wbindgen_exn_store))
   (export "__wbindgen_malloc" (func $__wbindgen_malloc))
   (export "__wbindgen_realloc" (func $__wbindgen_realloc))
-  (export "__wbindgen_exn_store" (func $__wbindgen_exn_store))
   (@custom "target_features" (after code) "\02+\0fmutable-globals+\08sign-ext")
 )
 
