@@ -5,6 +5,12 @@
 
 ### Added
 
+* Added support for the [`HTMLOrSVGElement`](https://html.spec.whatwg.org/#htmlorsvgelement) `mixin`, which is used for all interfaces deriving from `Element`.
+  [#4143](https://github.com/rustwasm/wasm-bindgen/pull/4143)
+
+* Added bindings for [MathMLElement](https://www.w3.org/TR/MathML3).
+  [#4143](https://github.com/rustwasm/wasm-bindgen/pull/4143)
+
 * Added JSDoc type annotations to C-style enums.
   [#4192](https://github.com/rustwasm/wasm-bindgen/pull/4192)
 
@@ -15,6 +21,9 @@
 
 * Remove unnecessary JSDoc type annotations from generated `.d.ts` files
   [#4187](https://github.com/rustwasm/wasm-bindgen/pull/4187)
+
+* Deprecate `autofocus`, `tabIndex`, `focus()` and `blur()` bindings in favor of bindings on the inherited `Element` class.
+  [#4143](https://github.com/rustwasm/wasm-bindgen/pull/4143)
 
 ### Fixed
 

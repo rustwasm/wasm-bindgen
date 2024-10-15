@@ -263,3 +263,20 @@ partial interface Element {
   [NeedsCallerType]
   undefined requestPointerLock();
 };
+
+// https://html.spec.whatwg.org/#htmlorsvgelement
+interface mixin HTMLOrSVGElement {
+  [SameObject] readonly attribute DOMStringMap dataset;
+
+  attribute DOMString nonce; // intentionally no [CEReactions]
+  [CEReactions, SetterThrows] attribute boolean autofocus;
+  [CEReactions, SetterThrows] attribute long tabIndex;
+  [Throws] undefined focus(optional FocusOptions options = {});
+  [Throws] undefined blur();
+};
+
+// https://drafts.csswg.org/cssom/#the-elementcssinlinestyle-mixin
+interface mixin ElementCSSInlineStyle {
+  [SameObject, PutForwards=cssText]
+  readonly attribute CSSStyleDeclaration style;
+};
