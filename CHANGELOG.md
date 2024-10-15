@@ -28,6 +28,9 @@
 * Fixed potential `null` error when using `JsValue::as_debug_string()`.
   [#4192](https://github.com/rustwasm/wasm-bindgen/pull/4192)
 
+* Fixed C-style enums causing TypeScript type errors without the generated `.d.ts` file.
+  [#4192](https://github.com/rustwasm/wasm-bindgen/pull/4192)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.95](https://github.com/rustwasm/wasm-bindgen/compare/0.2.94...0.2.95)
