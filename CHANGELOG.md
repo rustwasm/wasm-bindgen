@@ -3,6 +3,11 @@
 
 ## Unreleased
 
+### Added
+
+* Added JSDoc type annotations to C-style enums.
+  [#4192](https://github.com/rustwasm/wasm-bindgen/pull/4192)
+
 ### Changed
 
 * String enums now generate private TypeScript types but only if used.
@@ -26,9 +31,6 @@
   [#4196](https://github.com/rustwasm/wasm-bindgen/pull/4196)
 
 * Fixed potential `null` error when using `JsValue::as_debug_string()`.
-  [#4192](https://github.com/rustwasm/wasm-bindgen/pull/4192)
-
-* Fixed C-style enums causing TypeScript type errors without the generated `.d.ts` file.
   [#4192](https://github.com/rustwasm/wasm-bindgen/pull/4192)
 
 --------------------------------------------------------------------------------
