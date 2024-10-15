@@ -18,6 +18,9 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement/autofocus)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlButtonElement`*"]
+    #[deprecated(
+        note = "Use `HtmlElement::autofocus()` or `HtmlElement::set_autofocus()` instead."
+    )]
     pub fn autofocus(this: &HtmlButtonElement) -> bool;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLButtonElement" , js_name = autofocus)]
     #[doc = "Setter for the `autofocus` field of this object."]
@@ -25,6 +28,9 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement/autofocus)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlButtonElement`*"]
+    #[deprecated(
+        note = "Use `HtmlElement::autofocus()` or `HtmlElement::set_autofocus()` instead."
+    )]
     pub fn set_autofocus(this: &HtmlButtonElement, value: bool);
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLButtonElement" , js_name = disabled)]
     #[doc = "Getter for the `disabled` field of this object."]

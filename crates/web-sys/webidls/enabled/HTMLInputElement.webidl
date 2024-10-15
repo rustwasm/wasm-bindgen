@@ -31,7 +31,7 @@ interface HTMLInputElement : HTMLElement {
            attribute DOMString alt;
   [CEReactions, Pure, SetterThrows]
            attribute DOMString autocomplete;
-  [CEReactions, Pure, SetterThrows]
+  [CEReactions, Pure, SetterThrows, RustDeprecated="Use `HtmlElement::autofocus()` or `HtmlElement::set_autofocus()` instead."]
            attribute boolean autofocus;
   [CEReactions, Pure, SetterThrows]
            attribute boolean defaultChecked;
