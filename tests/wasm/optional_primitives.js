@@ -23,16 +23,16 @@ exports.js_works = () => {
     assert.strictEqual(wasm.optional_i32_identity(wasm.optional_i32_neg_one()), -1);
     assert.strictEqual(wasm.optional_i32_identity(wasm.optional_i32_min()), -2147483648);
     assert.strictEqual(wasm.optional_i32_identity(wasm.optional_i32_max()), 2147483647);
-    assert.strictEqual(wasm.optional_i32_identity(2 ** 32), 0);
-    assert.strictEqual(wasm.optional_i32_identity(2 ** 32 + 1), 1);
+    assert.strictEqual(wasm.optional_i32_identity(2 ** 32), 0); // overflows 32 bits
+    assert.strictEqual(wasm.optional_i32_identity(2 ** 32 + 1), 1); // overflows and wraps back around
 
     assert.strictEqual(wasm.optional_u32_identity(wasm.optional_u32_none()), undefined);
     assert.strictEqual(wasm.optional_u32_identity(wasm.optional_u32_zero()), 0);
     assert.strictEqual(wasm.optional_u32_identity(wasm.optional_u32_one()), 1);
     assert.strictEqual(wasm.optional_u32_identity(wasm.optional_u32_min()), 0);
     assert.strictEqual(wasm.optional_u32_identity(wasm.optional_u32_max()), 4294967295);
-    assert.strictEqual(wasm.optional_u32_identity(2 ** 32), 0);
-    assert.strictEqual(wasm.optional_u32_identity(2 ** 32 + 1), 1);
+    assert.strictEqual(wasm.optional_u32_identity(2 ** 32), 0); // overflows 32 bits
+    assert.strictEqual(wasm.optional_u32_identity(2 ** 32 + 1), 1); // overflows and wraps back around
 
     assert.strictEqual(wasm.optional_isize_identity(wasm.optional_isize_none()), undefined);
     assert.strictEqual(wasm.optional_isize_identity(wasm.optional_isize_zero()), 0);
@@ -40,7 +40,7 @@ exports.js_works = () => {
     assert.strictEqual(wasm.optional_isize_identity(wasm.optional_isize_neg_one()), -1);
     assert.strictEqual(wasm.optional_isize_identity(wasm.optional_isize_min()), -2147483648);
     assert.strictEqual(wasm.optional_isize_identity(wasm.optional_isize_max()), 2147483647);
-    assert.strictEqual(wasm.optional_isize_identity(2 ** 32), 0); // isize is 32 bit
+    assert.strictEqual(wasm.optional_isize_identity(2 ** 32), 0); // isize is 32 bit, so it behaves the same as i32
     assert.strictEqual(wasm.optional_isize_identity(2 ** 32 + 1), 1);
 
     assert.strictEqual(wasm.optional_usize_identity(wasm.optional_usize_none()), undefined);
@@ -48,15 +48,15 @@ exports.js_works = () => {
     assert.strictEqual(wasm.optional_usize_identity(wasm.optional_usize_one()), 1);
     assert.strictEqual(wasm.optional_usize_identity(wasm.optional_usize_min()), 0);
     assert.strictEqual(wasm.optional_usize_identity(wasm.optional_usize_max()), 4294967295);
-    assert.strictEqual(wasm.optional_usize_identity(2 ** 32), 0); // usize is 32 bit
+    assert.strictEqual(wasm.optional_usize_identity(2 ** 32), 0); // usize is 32 bit, so it behaves the same as i32
     assert.strictEqual(wasm.optional_usize_identity(2 ** 32 + 1), 1);
 
     assert.strictEqual(wasm.optional_f32_identity(wasm.optional_f32_none()), undefined);
     assert.strictEqual(wasm.optional_f32_identity(wasm.optional_f32_zero()), 0);
     assert.strictEqual(wasm.optional_f32_identity(wasm.optional_f32_one()), 1);
     assert.strictEqual(wasm.optional_f32_identity(wasm.optional_f32_neg_one()), -1);
-    assert.strictEqual(wasm.optional_f32_identity(2 ** 32), 2 ** 32);
-    assert.strictEqual(wasm.optional_f32_identity(2 ** 32 + 1), 2 ** 32);
+    assert.strictEqual(wasm.optional_f32_identity(2 ** 32), 2 ** 32); // 2^32 is exactly representable
+    assert.strictEqual(wasm.optional_f32_identity(2 ** 32 + 1), 2 ** 32); // 2^32 + 1 is not and gets rounded
 
     assert.strictEqual(wasm.optional_f64_identity(wasm.optional_f64_none()), undefined);
     assert.strictEqual(wasm.optional_f64_identity(wasm.optional_f64_zero()), 0);
