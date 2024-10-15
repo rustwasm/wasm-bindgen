@@ -942,7 +942,7 @@ fn instruction(
             // passing it to the ABI for 2 reasons:
             // 1. Rust's behavior for `value_f64 as i32/u32` is different from
             //    the WebAssembly behavior for values outside the 32-bit range.
-            //    We could implement this behavior is Rust too, but it's easier
+            //    We could implement this behavior in Rust too, but it's easier
             //    to do it in JS.
             // 2. If we allowed values outside the 32-bit range, the sentinel
             //    value itself would be allowed. This would make it impossible
