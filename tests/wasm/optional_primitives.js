@@ -85,12 +85,23 @@ exports.js_works = () => {
     assert.strictEqual(wasm.optional_i64_identity(wasm.optional_i64_neg_one()), BigInt('-1'));
     assert.strictEqual(wasm.optional_i64_identity(wasm.optional_i64_min()), BigInt('-9223372036854775808'));
     assert.strictEqual(wasm.optional_i64_identity(wasm.optional_i64_max()), BigInt('9223372036854775807'));
+    assert.strictEqual(wasm.optional_i64_identity(0), BigInt('0'));
+    assert.strictEqual(wasm.optional_i64_identity(1.99), BigInt('1'));
+    assert.strictEqual(wasm.optional_i64_identity(-1.99), BigInt('-1'));
+    assert.throws(() => wasm.optional_i64_identity(NaN));
+    assert.throws(() => wasm.optional_i64_identity(Infinity));
 
     assert.strictEqual(wasm.optional_u64_identity(wasm.optional_u64_none()), undefined);
     assert.strictEqual(wasm.optional_u64_identity(wasm.optional_u64_zero()), BigInt('0'));
     assert.strictEqual(wasm.optional_u64_identity(wasm.optional_u64_one()), BigInt('1'));
     assert.strictEqual(wasm.optional_u64_identity(wasm.optional_u64_min()), BigInt('0'));
     assert.strictEqual(wasm.optional_u64_identity(wasm.optional_u64_max()), BigInt('18446744073709551615'));
+    assert.strictEqual(wasm.optional_u64_identity(0), BigInt('0'));
+    assert.strictEqual(wasm.optional_u64_identity(1.99), BigInt('1'));
+    assert.strictEqual(wasm.optional_u64_identity(-1n), BigInt('18446744073709551615')); // because modulo 2^64
+    assert.strictEqual(wasm.optional_u64_identity(-1.99), BigInt('18446744073709551615')); // because modulo 2^64
+    assert.throws(() => wasm.optional_u64_identity(NaN));
+    assert.throws(() => wasm.optional_u64_identity(Infinity));
 
     assert.strictEqual(wasm.optional_bool_identity(wasm.optional_bool_none()), undefined);
     assert.strictEqual(wasm.optional_bool_identity(wasm.optional_bool_false()), false);

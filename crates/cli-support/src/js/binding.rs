@@ -553,6 +553,29 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
         ));
     }
 
+    /// The given value is a number (`typeof val === 'number'`), it is
+    /// converted to a bigint. If the value is anything else, it will be
+    /// returned as is.
+    ///
+    /// If the number is not an integer, it will be truncated to an integer.
+    /// If the number is NaN, +Infinity, or -Infinity, the conversion will fail
+    /// and result in a runtime JS `RangeError`.
+    ///
+    /// The returned string the name of a variable that holds the converted
+    /// value.
+    fn number_to_bigint(&mut self, val: &str) -> String {
+        // This conversion relies on the WebAssembly API for correctness. The
+        // API automatically adjusts bigint values that are out of range, so we
+        // just have to pass it any bigint. We truncate the number to an integer
+        // to be consistent with the truncation the WebAssembly API does for
+        // 32-bit integers.
+        let new_var = format!("bigint{}", self.tmp());
+        self.prelude(&format!(
+            "const {new_var} = typeof {val} === 'number' ? BigInt(Math.trunc({val})) : {val};"
+        ));
+        new_var
+    }
+
     fn string_to_memory(
         &mut self,
         mem: walrus::MemoryId,
@@ -675,11 +698,16 @@ fn instruction(
         }
 
         Instruction::IntToWasm { input, .. } => {
-            let val = js.pop();
+            let mut val = js.pop();
             if matches!(
                 input,
                 AdapterType::I64 | AdapterType::S64 | AdapterType::U64
             ) {
+                // Regular JS numbers are commonly used for integers >32 bits,
+                // because they can represent integers up to 2^53 exactly. To
+                // support this, we allow both number and bigint for 64-bit
+                // integers.
+                val = js.number_to_bigint(&val);
                 js.assert_bigint(&val);
             } else {
                 js.assert_number(&val);
@@ -921,9 +949,11 @@ fn instruction(
         }
 
         Instruction::FromOptionNative { ty } => {
-            let val = js.pop();
+            let mut val = js.pop();
             js.cx.expose_is_like_none();
             if *ty == ValType::I64 {
+                // same as for Instruction::IntToWasm
+                val = js.number_to_bigint(&val);
                 js.assert_optional_bigint(&val);
             } else {
                 js.assert_optional_number(&val);
