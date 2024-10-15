@@ -31,7 +31,7 @@
 * Fixed generated types when the getter and setter of a property had different types.
   [#4202](https://github.com/rustwasm/wasm-bindgen/pull/4202)
 
-* Fixed generated types when a static getter/setter the same name as an instance getter/setter.
+* Fixed generated types when a static getter/setter has the same name as an instance getter/setter.
   [#4202](https://github.com/rustwasm/wasm-bindgen/pull/4202)
 
 --------------------------------------------------------------------------------
