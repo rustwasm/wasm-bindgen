@@ -1260,8 +1260,8 @@ __wbg_set_wasm(wasm);"
                     if same_type {
                         // simple property, e.g. foo: T
 
-                        // There are no good choices here, so just pick the longer comment
-                        let docs = if getter.docs.len() > setter.docs.len() {
+                        // Prefer the docs of the getter over the setter's
+                        let docs = if !getter.docs.is_empty() {
                             &getter.docs
                         } else {
                             &setter.docs
