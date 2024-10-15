@@ -3838,11 +3838,6 @@ __wbg_set_wasm(wasm);"
             .iter()
             .map(|v| format!("\"{v}\""))
             .collect();
-        let type_expr = if variants.is_empty() {
-            "never".to_string()
-        } else {
-            variants.join(" | ")
-        };
 
         if string_enum.generate_typescript
             && self
@@ -3850,6 +3845,11 @@ __wbg_set_wasm(wasm);"
                 .contains(&TsReference::StringEnum(string_enum.name.clone()))
         {
             let docs = format_doc_comments(&string_enum.comments, None);
+            let type_expr = if variants.is_empty() {
+                "never".to_string()
+            } else {
+                variants.join(" | ")
+            };
 
             self.typescript.push_str(&docs);
             self.typescript.push_str("type ");
@@ -3861,16 +3861,8 @@ __wbg_set_wasm(wasm);"
 
         if self.used_string_enums.contains(&string_enum.name) {
             // only generate the internal string enum array if it's actually used
-
-            // generate type definition in case there is no .d.ts file
-            let at = format!(
-                "@typedef {{{type_expr}}} {name}\n@type {{{name}[]}}",
-                name = string_enum.name
-            );
-            let docs = format_doc_comments(&string_enum.comments, Some(at));
-
             self.global(&format!(
-                "{docs}const __wbindgen_enum_{name} = [{values}];\n",
+                "const __wbindgen_enum_{name} = [{values}];\n",
                 name = string_enum.name,
                 values = variants.join(", ")
             ));
