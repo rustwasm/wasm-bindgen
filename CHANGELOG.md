@@ -11,7 +11,7 @@
 * Remove unnecessary JSDoc type annotations from generated `.d.ts` files
   [#4187](https://github.com/rustwasm/wasm-bindgen/pull/4187)
 
-* Optimized ABI for `Option<{i32,u32,isize,usize,f32,*const T,*mut T}>`.
+* Optimized ABI performance for `Option<{i32,u32,isize,usize,f32,*const T,*mut T}>`.
   [#4183](https://github.com/rustwasm/wasm-bindgen/pull/4183)
 
 ### Fixed
