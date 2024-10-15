@@ -84,11 +84,6 @@ Red:2,"2":"Red", });
  */
 export const ImplicitDiscriminant = Object.freeze({ A:0,"0":"A",B:1,"1":"B",C:42,"42":"C",D:43,"43":"D", });
 
-/**
- * The name of a color.
- * @typedef {"green" | "yellow" | "red"} ColorName
- * @type {ColorName[]}
- */
 const __wbindgen_enum_ColorName = ["green", "yellow", "red"];
 
 export function __wbindgen_throw(arg0, arg1) {

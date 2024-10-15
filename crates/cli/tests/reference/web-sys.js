@@ -208,30 +208,6 @@ export function get_media_source() {
     return __wbindgen_enum_MediaSourceEnum[ret];
 }
 
-function addHeapObject(obj) {
-    if (heap_next === heap.length) heap.push(heap.length + 1);
-    const idx = heap_next;
-    heap_next = heap[idx];
-
-    heap[idx] = obj;
-    return idx;
-}
-
-function handleError(f, args) {
-    try {
-        return f.apply(this, args);
-    } catch (e) {
-        wasm.__wbindgen_exn_store(addHeapObject(e));
-    }
-}
-
-/**
- *The `MediaSourceEnum` enum.
- *
- **This API requires the following crate features to be activated: `MediaSourceEnum`*
- * @typedef {"camera" | "screen" | "application" | "window" | "browser" | "microphone" | "audioCapture" | "other"} MediaSourceEnum
- * @type {MediaSourceEnum[]}
- */
 const __wbindgen_enum_MediaSourceEnum = ["camera", "screen", "application", "window", "browser", "microphone", "audioCapture", "other"];
 
 export function __wbg_new_1cabf49927794f50() { return handleError(function (arg0, arg1) {
