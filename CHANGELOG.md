@@ -3,6 +3,14 @@
 
 ## Unreleased
 
+### Added
+
+* Added support for the [`HTMLOrSVGElement`](https://html.spec.whatwg.org/#htmlorsvgelement) `mixin`, which is used for all interfaces deriving from `Element`.
+  [#4143](https://github.com/rustwasm/wasm-bindgen/pull/4143)
+
+* Added bindings for [MathMLElement](https://www.w3.org/TR/MathML3).
+  [#4143](https://github.com/rustwasm/wasm-bindgen/pull/4143)
+
 ### Changed
 
 * String enums now generate private TypeScript types but only if used.
@@ -10,6 +18,9 @@
 
 * Remove unnecessary JSDoc type annotations from generated `.d.ts` files
   [#4187](https://github.com/rustwasm/wasm-bindgen/pull/4187)
+
+* Deprecate `autofocus`, `tabIndex`, `focus()` and `blur()` bindings in favor of bindings on the inherited `Element` class.
+  [#4143](https://github.com/rustwasm/wasm-bindgen/pull/4143)
 
 ### Fixed
 
@@ -35,9 +46,6 @@
 Released 2024-10-10
 
 ### Added
-
-* Added bindings for [MathML](https://www.w3.org/TR/MathML3/) elements and added support for the [`HTMLOrSVGElement`](https://html.spec.whatwg.org/#htmlorsvgelement) `mixin`, which is used for all interfaces deriving from `Element`.
-  [#4143](https://github.com/rustwasm/wasm-bindgen/pull/4143)
 
 * Added support for implicit discriminants in enums.
   [#4152](https://github.com/rustwasm/wasm-bindgen/pull/4152)
