@@ -947,6 +947,11 @@ fn instruction(
             // 2. If we allowed values outside the 32-bit range, the sentinel
             //    value itself would be allowed. This would make it impossible
             //    to distinguish between the sentinel value and a valid value.
+            //
+            // To perform the actual conversion, we use JS bit shifts. Handily,
+            // >> and >>> perform a conversion to i32 and u32 respectively
+            // to apply the bit shift, so we can use e.g. x >>> 0 to convert to
+            // u32.
 
             let op = if *signed { ">>" } else { ">>>" };
             js.push(format!("isLikeNone({val}) ? 0x100000001 : ({val}) {op} 0"));
