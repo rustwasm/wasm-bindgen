@@ -60,6 +60,9 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/autofocus)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
+    #[deprecated(
+        note = "Use `HtmlElement::autofocus()` or `HtmlElement::set_autofocus()` instead."
+    )]
     pub fn autofocus(this: &HtmlInputElement) -> bool;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLInputElement" , js_name = autofocus)]
     #[doc = "Setter for the `autofocus` field of this object."]
@@ -67,6 +70,9 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/autofocus)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlInputElement`*"]
+    #[deprecated(
+        note = "Use `HtmlElement::autofocus()` or `HtmlElement::set_autofocus()` instead."
+    )]
     pub fn set_autofocus(this: &HtmlInputElement, value: bool);
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLInputElement" , js_name = defaultChecked)]
     #[doc = "Getter for the `defaultChecked` field of this object."]

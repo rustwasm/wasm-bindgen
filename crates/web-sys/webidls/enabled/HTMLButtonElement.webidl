@@ -13,7 +13,7 @@
 // http://www.whatwg.org/specs/web-apps/current-work/#the-button-element
 [HTMLConstructor]
 interface HTMLButtonElement : HTMLElement {
-  [CEReactions, SetterThrows, Pure]
+  [CEReactions, SetterThrows, Pure, RustDeprecated="Use `HtmlElement::autofocus()` or `HtmlElement::set_autofocus()` instead."]
            attribute boolean autofocus;
   [CEReactions, SetterThrows, Pure]
            attribute boolean disabled;

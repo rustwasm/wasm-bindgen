@@ -32,6 +32,9 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/autofocus)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
+    #[deprecated(
+        note = "Use `HtmlElement::autofocus()` or `HtmlElement::set_autofocus()` instead."
+    )]
     pub fn autofocus(this: &HtmlTextAreaElement) -> bool;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLTextAreaElement" , js_name = autofocus)]
     #[doc = "Setter for the `autofocus` field of this object."]
@@ -39,6 +42,9 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/autofocus)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTextAreaElement`*"]
+    #[deprecated(
+        note = "Use `HtmlElement::autofocus()` or `HtmlElement::set_autofocus()` instead."
+    )]
     pub fn set_autofocus(this: &HtmlTextAreaElement, value: bool);
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLTextAreaElement" , js_name = cols)]
     #[doc = "Getter for the `cols` field of this object."]
