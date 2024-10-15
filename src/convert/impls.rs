@@ -282,20 +282,25 @@ impl<T> FromWasmAbi for *const T {
 }
 
 impl<T> IntoWasmAbi for Option<*const T> {
-    type Abi = Option<u32>;
+    type Abi = f64;
 
     #[inline]
-    fn into_abi(self) -> Option<u32> {
-        self.map(|ptr| ptr as u32)
+    fn into_abi(self) -> f64 {
+        self.map(|ptr| ptr as u32 as f64)
+            .unwrap_or(F64_ABI_OPTION_SENTINEL)
     }
 }
 
 impl<T> FromWasmAbi for Option<*const T> {
-    type Abi = Option<u32>;
+    type Abi = f64;
 
     #[inline]
-    unsafe fn from_abi(js: Option<u32>) -> Option<*const T> {
-        js.map(|ptr| ptr as *const T)
+    unsafe fn from_abi(js: f64) -> Option<*const T> {
+        if js == F64_ABI_OPTION_SENTINEL {
+            None
+        } else {
+            Some(js as u32 as *const T)
+        }
     }
 }
 
@@ -318,20 +323,25 @@ impl<T> FromWasmAbi for *mut T {
 }
 
 impl<T> IntoWasmAbi for Option<*mut T> {
-    type Abi = Option<u32>;
+    type Abi = f64;
 
     #[inline]
-    fn into_abi(self) -> Option<u32> {
-        self.map(|ptr| ptr as u32)
+    fn into_abi(self) -> f64 {
+        self.map(|ptr| ptr as u32 as f64)
+            .unwrap_or(F64_ABI_OPTION_SENTINEL)
     }
 }
 
 impl<T> FromWasmAbi for Option<*mut T> {
-    type Abi = Option<u32>;
+    type Abi = f64;
 
     #[inline]
-    unsafe fn from_abi(js: Option<u32>) -> Option<*mut T> {
-        js.map(|ptr| ptr as *mut T)
+    unsafe fn from_abi(js: f64) -> Option<*mut T> {
+        if js == F64_ABI_OPTION_SENTINEL {
+            None
+        } else {
+            Some(js as u32 as *mut T)
+        }
     }
 }
 
