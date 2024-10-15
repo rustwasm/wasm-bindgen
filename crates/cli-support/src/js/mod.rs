@@ -1239,20 +1239,27 @@ __wbg_set_wasm(wasm);"
                 (Some(getter), Some(setter)) => {
                     // read-write property
 
-                    // Welcome to the fun part. Okay, so we current generate
-                    // types for optional arguments and return values differently.
-                    // This is why for the field `foo: Option<T>`, the setter
-                    // will have type `T` with `is_optional` set, while the
-                    // getter has type `T | undefined`.
-                    // Because of this difference, we have to "normalize" the
-                    // type of the setter.
-                    let use_combined_property = if setter.is_optional {
+                    // Here's the tricky part. The getter and setter might have
+                    // different types. Obviously, we can only declare a
+                    // property as `foo: T` if both the getter and setter have
+                    // the same type `T`. If they don't, we have to declare the
+                    // getter and setter separately.
+
+                    // We current generate types for optional arguments and
+                    // return values differently. This is why for the field
+                    // `foo: Option<T>`, the setter will have type `T` with
+                    // `is_optional` set, while the getter has type
+                    // `T | undefined`. Because of this difference, we have to
+                    // "normalize" the type of the setter.
+                    let same_type = if setter.is_optional {
                         getter.ty == setter.ty.clone() + " | undefined"
                     } else {
                         getter.ty == setter.ty
                     };
 
-                    if use_combined_property {
+                    if same_type {
+                        // simple property, e.g. foo: T
+
                         // There are no good choices here, so just pick the longer comment
                         let docs = if getter.docs.len() > setter.docs.len() {
                             &getter.docs
@@ -1267,6 +1274,7 @@ __wbg_set_wasm(wasm);"
                         ts_dst.push_str(&setter.ty);
                         ts_dst.push_str(";\n");
                     } else {
+                        // separate getter and setter
                         write_getter(ts_dst, getter);
                         write_setter(ts_dst, setter);
                     }
