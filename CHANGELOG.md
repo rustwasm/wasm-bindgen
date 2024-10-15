@@ -28,6 +28,12 @@
 * Fixed potential `null` error when using `JsValue::as_debug_string()`.
   [#4192](https://github.com/rustwasm/wasm-bindgen/pull/4192)
 
+* Fixed generated types when the getter and setter of a property had different types.
+  [#4202](https://github.com/rustwasm/wasm-bindgen/pull/4202)
+
+* Fixed generated types when a static getter/setter the same name as an instance getter/setter.
+  [#4202](https://github.com/rustwasm/wasm-bindgen/pull/4202)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.95](https://github.com/rustwasm/wasm-bindgen/compare/0.2.94...0.2.95)
