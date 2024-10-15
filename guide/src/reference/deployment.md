@@ -22,6 +22,7 @@ The methods of deployment and integration here are primarily tied to the
 [`no-modules`]: #without-a-bundler
 [`nodejs`]: #nodejs
 [`deno`]: #deno
+[`experimental-nodejs-module`]: #nodejs-module
 
 ## Bundlers
 

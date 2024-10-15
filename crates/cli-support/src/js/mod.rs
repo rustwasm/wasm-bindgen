@@ -325,7 +325,7 @@ impl<'a> Context<'a> {
 
         wasm_import_object.push_str(&format!("  {}: {{\n", crate::PLACEHOLDER_MODULE));
 
-        for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
+        for (id, js) in iter_by_import(&self.wasm_import_definitions, self.module) {
             let import = self.module.imports.get(*id);
             wasm_import_object.push_str(&format!("{}: {},\n", &import.name, js.trim()));
         }
@@ -424,8 +424,8 @@ impl<'a> Context<'a> {
 
                 js.push_str("let wasm;\n");
 
-                for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
-                    let import = self.module.imports.get_mut(*id);
+                for (id, js) in iter_by_import(&self.wasm_import_definitions, self.module) {
+                    let import = self.module.imports.get(*id);
                     footer.push_str("\nmodule.exports.");
                     footer.push_str(&import.name);
                     footer.push_str(" = ");
@@ -463,7 +463,7 @@ impl<'a> Context<'a> {
             // and let the bundler/runtime take care of it.
             // With Node we manually read the Wasm file from the filesystem and instantiate it.
             OutputMode::Bundler { .. } | OutputMode::Node { module: true } => {
-                for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
+                for (id, js) in iter_by_import(&self.wasm_import_definitions, self.module) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}_bg.js", module_name);
                     if let Some(body) = js.strip_prefix("function") {
@@ -791,7 +791,7 @@ __wbg_set_wasm(wasm);"
         imports_init.push_str(module_name);
         imports_init.push_str(" = {};\n");
 
-        for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
+        for (id, js) in iter_by_import(&self.wasm_import_definitions, self.module) {
             let import = self.module.imports.get_mut(*id);
             import.module = module_name.to_string();
             imports_init.push_str("imports.");
@@ -1958,7 +1958,6 @@ __wbg_set_wasm(wasm);"
                 if (!(instance instanceof klass)) {
                     throw new Error(`expected instance of ${klass.name}`);
                 }
-                return instance.ptr;
             }
             ",
         );
@@ -2531,12 +2530,13 @@ __wbg_set_wasm(wasm);"
         if self.config.symbol_dispose && !self.aux.structs.is_empty() {
             self.expose_symbol_dispose()?;
         }
-        for (id, adapter) in crate::sorted_iter(&self.wit.adapters) {
+
+        for (id, adapter, kind) in iter_adapeter(self.aux, self.wit, self.module) {
             let instrs = match &adapter.kind {
                 AdapterKind::Import { .. } => continue,
                 AdapterKind::Local { instructions } => instructions,
             };
-            self.generate_adapter(*id, adapter, instrs)?;
+            self.generate_adapter(id, adapter, instrs, kind)?;
         }
 
         let mut pairs = self.aux.export_map.iter().collect::<Vec<_>>();
@@ -2614,26 +2614,10 @@ __wbg_set_wasm(wasm);"
         id: AdapterId,
         adapter: &Adapter,
         instrs: &[InstructionData],
+        kind: ContextAdapterKind,
     ) -> Result<(), Error> {
-        enum Kind<'a> {
-            Export(&'a AuxExport),
-            Import(walrus::ImportId),
-            Adapter,
-        }
-
-        let kind = match self.aux.export_map.get(&id) {
-            Some(export) => Kind::Export(export),
-            None => {
-                let core = self.wit.implements.iter().find(|pair| pair.2 == id);
-                match core {
-                    Some((core, _, _)) => Kind::Import(*core),
-                    None => Kind::Adapter,
-                }
-            }
-        };
-
         let catch = self.aux.imports_with_catch.contains(&id);
-        if let Kind::Import(core) = kind {
+        if let ContextAdapterKind::Import(core) = kind {
             if !catch && self.attempt_direct_import(core, instrs)? {
                 return Ok(());
             }
@@ -2643,8 +2627,8 @@ __wbg_set_wasm(wasm);"
         // export that we're generating.
         let mut builder = binding::Builder::new(self);
         builder.log_error(match kind {
-            Kind::Export(_) | Kind::Adapter => false,
-            Kind::Import(_) => builder.cx.config.debug,
+            ContextAdapterKind::Export(_) | ContextAdapterKind::Adapter => false,
+            ContextAdapterKind::Import(_) => builder.cx.config.debug,
         });
         builder.catch(catch);
         let mut arg_names = &None;
@@ -2652,7 +2636,7 @@ __wbg_set_wasm(wasm);"
         let mut variadic = false;
         let mut generate_jsdoc = false;
         match kind {
-            Kind::Export(export) => {
+            ContextAdapterKind::Export(export) => {
                 arg_names = &export.arg_names;
                 asyncness = export.asyncness;
                 variadic = export.variadic;
@@ -2667,8 +2651,8 @@ __wbg_set_wasm(wasm);"
                     },
                 }
             }
-            Kind::Import(_) => {}
-            Kind::Adapter => {}
+            ContextAdapterKind::Import(_) => {}
+            ContextAdapterKind::Adapter => {}
         }
 
         // Process the `binding` and generate a bunch of JS/TypeScript/etc.
@@ -2692,15 +2676,19 @@ __wbg_set_wasm(wasm);"
                 generate_jsdoc,
             )
             .with_context(|| match kind {
-                Kind::Export(e) => format!("failed to generate bindings for `{}`", e.debug_name),
-                Kind::Import(i) => {
+                ContextAdapterKind::Export(e) => {
+                    format!("failed to generate bindings for `{}`", e.debug_name)
+                }
+                ContextAdapterKind::Import(i) => {
                     let i = builder.cx.module.imports.get(i);
                     format!(
                         "failed to generate bindings for import of `{}::{}`",
                         i.module, i.name
                     )
                 }
-                Kind::Adapter => "failed to generates bindings for adapter".to_string(),
+                ContextAdapterKind::Adapter => {
+                    "failed to generates bindings for adapter".to_string()
+                }
             })?;
 
         self.typescript_refs.extend(ts_refs);
@@ -2708,7 +2696,7 @@ __wbg_set_wasm(wasm);"
         // Once we've got all the JS then put it in the right location depending
         // on what's being exported.
         match kind {
-            Kind::Export(export) => {
+            ContextAdapterKind::Export(export) => {
                 assert!(!catch);
                 assert!(!log_error);
 
@@ -2795,7 +2783,7 @@ __wbg_set_wasm(wasm);"
                     }
                 }
             }
-            Kind::Import(core) => {
+            ContextAdapterKind::Import(core) => {
                 let code = if catch {
                     format!(
                         "function() {{ return handleError(function {}, arguments) }}",
@@ -2812,7 +2800,7 @@ __wbg_set_wasm(wasm);"
 
                 self.wasm_import_definitions.insert(core, code);
             }
-            Kind::Adapter => {
+            ContextAdapterKind::Adapter => {
                 assert!(!catch);
                 assert!(!log_error);
 
@@ -3997,7 +3985,7 @@ __wbg_set_wasm(wasm);"
                 // Test for built-in
                 const builtInMatches = /\\[object ([^\\]]+)\\]/.exec(toString.call(val));
                 let className;
-                if (builtInMatches.length > 1) {
+                if (builtInMatches && builtInMatches.length > 1) {
                     className = builtInMatches[1];
                 } else {
                     // Failed to match the standard '[object ClassName]'
@@ -4135,6 +4123,102 @@ __wbg_set_wasm(wasm);"
 
         Ok(())
     }
+}
+
+/// A categorization of adapters for the purpose of code generation.
+///
+/// This is different from [`AdapterKind`] and is only used internally in the
+/// code generation process.
+enum ContextAdapterKind<'a> {
+    /// An exported function, method, constrctor, or getter/setter.
+    Export(&'a AuxExport),
+    /// An imported function or intrinsic.
+    Import(walrus::ImportId),
+    Adapter,
+}
+impl<'a> ContextAdapterKind<'a> {
+    fn get(id: AdapterId, aux: &'a WasmBindgenAux, wit: &'a NonstandardWitSection) -> Self {
+        match aux.export_map.get(&id) {
+            Some(export) => ContextAdapterKind::Export(export),
+            None => {
+                let core = wit.implements.iter().find(|pair| pair.2 == id);
+                match core {
+                    Some((core, _, _)) => ContextAdapterKind::Import(*core),
+                    None => ContextAdapterKind::Adapter,
+                }
+            }
+        }
+    }
+}
+
+/// Iterate over the adapters in a deterministic order.
+fn iter_adapeter<'a>(
+    aux: &'a WasmBindgenAux,
+    wit: &'a NonstandardWitSection,
+    module: &Module,
+) -> Vec<(AdapterId, &'a Adapter, ContextAdapterKind<'a>)> {
+    let mut adapters: Vec<_> = wit
+        .adapters
+        .iter()
+        .map(|(id, adapter)| {
+            // we need the kind of the adapter to properly sort them
+            let kind = ContextAdapterKind::get(*id, aux, wit);
+            (*id, adapter, kind)
+        })
+        .collect();
+
+    // Since `wit.adapters` is a BTreeMap, the adapters are already sorted by
+    // their ID. This is good enough for exports and adapters, but imports need
+    // to be sorted by their name.
+    //
+    // Note: we do *NOT* want to sort exports by name. By default, exports are
+    // the order in which they were defined in the Rust code. Sorting them by
+    // name would break that order and take away control from the user.
+
+    adapters.sort_by(|(_, _, a), (_, _, b)| {
+        fn get_kind_order(kind: &ContextAdapterKind) -> u8 {
+            match kind {
+                ContextAdapterKind::Import(_) => 0,
+                ContextAdapterKind::Export(_) => 1,
+                ContextAdapterKind::Adapter => 2,
+            }
+        }
+
+        match (a, b) {
+            (ContextAdapterKind::Import(a), ContextAdapterKind::Import(b)) => {
+                let a = module.imports.get(*a);
+                let b = module.imports.get(*b);
+                a.name.cmp(&b.name)
+            }
+            _ => get_kind_order(a).cmp(&get_kind_order(b)),
+        }
+    });
+
+    adapters
+}
+
+/// Iterate over the imports in a deterministic order.
+fn iter_by_import<'a, T>(
+    map: &'a HashMap<ImportId, T>,
+    module: &Module,
+) -> Vec<(&'a ImportId, &'a T)> {
+    let mut items: Vec<_> = map.iter().collect();
+
+    // Sort by import name.
+    //
+    // Imports have a name and a module, and it's important that we *ignore*
+    // the module. The module of an import is set to its final value *during*
+    // code generation, so using it here would cause the imports to be sorted
+    // differently depending on which part of the code generation process we're
+    // in.
+    items.sort_by(|&(a, _), &(b, _)| {
+        let a = module.imports.get(*a);
+        let b = module.imports.get(*b);
+
+        a.name.cmp(&b.name)
+    });
+
+    items
 }
 
 fn check_duplicated_getter_and_setter_names(
