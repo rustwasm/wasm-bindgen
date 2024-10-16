@@ -2655,6 +2655,16 @@ __wbg_set_wasm(wasm);"
             ContextAdapterKind::Adapter => {}
         }
 
+        // an internal debug name to help with error messages
+        let debug_name = match kind {
+            ContextAdapterKind::Import(i) => {
+                let i = builder.cx.module.imports.get(i);
+                format!("import of `{}::{}`", i.module, i.name)
+            }
+            ContextAdapterKind::Export(e) => format!("`{}`", e.debug_name),
+            ContextAdapterKind::Adapter => format!("adapter {}", id.0),
+        };
+
         // Process the `binding` and generate a bunch of JS/TypeScript/etc.
         let binding::JsFunction {
             ts_sig,
@@ -2674,22 +2684,9 @@ __wbg_set_wasm(wasm);"
                 asyncness,
                 variadic,
                 generate_jsdoc,
+                &debug_name,
             )
-            .with_context(|| match kind {
-                ContextAdapterKind::Export(e) => {
-                    format!("failed to generate bindings for `{}`", e.debug_name)
-                }
-                ContextAdapterKind::Import(i) => {
-                    let i = builder.cx.module.imports.get(i);
-                    format!(
-                        "failed to generate bindings for import of `{}::{}`",
-                        i.module, i.name
-                    )
-                }
-                ContextAdapterKind::Adapter => {
-                    "failed to generates bindings for adapter".to_string()
-                }
-            })?;
+            .with_context(|| "failed to generates bindings for ".to_string() + &debug_name)?;
 
         self.typescript_refs.extend(ts_refs);
 

@@ -257,15 +257,15 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::NamedExternref(name.clone()).option()],
                 );
             }
-            Descriptor::I8 => self.out_option_sentinel(AdapterType::S8),
-            Descriptor::U8 => self.out_option_sentinel(AdapterType::U8),
-            Descriptor::I16 => self.out_option_sentinel(AdapterType::S16),
-            Descriptor::U16 => self.out_option_sentinel(AdapterType::U16),
-            Descriptor::I32 => self.option_native(true, ValType::I32),
-            Descriptor::U32 => self.option_native(false, ValType::I32),
+            Descriptor::I8 => self.out_option_sentinel32(AdapterType::S8),
+            Descriptor::U8 => self.out_option_sentinel32(AdapterType::U8),
+            Descriptor::I16 => self.out_option_sentinel32(AdapterType::S16),
+            Descriptor::U16 => self.out_option_sentinel32(AdapterType::U16),
+            Descriptor::I32 => self.out_option_sentinel64(AdapterType::S32),
+            Descriptor::U32 => self.out_option_sentinel64(AdapterType::U32),
             Descriptor::I64 => self.option_native(true, ValType::I64),
             Descriptor::U64 => self.option_native(false, ValType::I64),
-            Descriptor::F32 => self.option_native(true, ValType::F32),
+            Descriptor::F32 => self.out_option_sentinel64(AdapterType::F32),
             Descriptor::F64 => self.option_native(true, ValType::F64),
             Descriptor::Boolean => {
                 self.instruction(
@@ -576,10 +576,18 @@ impl InstructionBuilder<'_, '_> {
         );
     }
 
-    fn out_option_sentinel(&mut self, ty: AdapterType) {
+    fn out_option_sentinel32(&mut self, ty: AdapterType) {
         self.instruction(
             &[AdapterType::I32],
             Instruction::OptionU32Sentinel,
+            &[ty.option()],
+        );
+    }
+
+    fn out_option_sentinel64(&mut self, ty: AdapterType) {
+        self.instruction(
+            &[AdapterType::F64],
+            Instruction::OptionF64Sentinel,
             &[ty.option()],
         );
     }

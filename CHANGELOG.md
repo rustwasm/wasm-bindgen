@@ -22,6 +22,9 @@
 * Deprecate `autofocus`, `tabIndex`, `focus()` and `blur()` bindings in favor of bindings on the inherited `Element` class.
   [#4143](https://github.com/rustwasm/wasm-bindgen/pull/4143)
 
+* Optimized ABI performance for `Option<{i32,u32,isize,usize,f32,*const T,*mut T}>`.
+  [#4183](https://github.com/rustwasm/wasm-bindgen/pull/4183)
+
 ### Fixed
 
 * Fixed methods with `self: &Self` consuming the object.
