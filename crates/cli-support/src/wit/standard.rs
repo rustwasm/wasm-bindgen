@@ -214,6 +214,14 @@ pub enum Instruction {
     I32FromOptionEnum {
         hole: u32,
     },
+    /// Pops an `externref` from the stack, pushes either a sentinel value if it's
+    /// "none" or the integer value of it if it's "some"
+    F64FromOptionSentinelInt {
+        signed: bool,
+    },
+    /// Pops an `externref` from the stack, pushes either a sentinel value if it's
+    /// "none" or the f32 value of it if it's "some"
+    F64FromOptionSentinelF32,
     /// Pops any externref from the stack and then pushes two values. First is a
     /// 0/1 if it's none/some and second is `ty` value if it was there or 0 if
     /// it wasn't there.
@@ -324,6 +332,8 @@ pub enum Instruction {
         kind: VectorKind,
         mem: walrus::MemoryId,
     },
+    /// pops f64, pushes it viewed as an optional value with a known sentinel
+    OptionF64Sentinel,
     /// pops i32, pushes it viewed as an optional value with a known sentinel
     OptionU32Sentinel,
     /// pops an i32, then `ty`, then pushes externref

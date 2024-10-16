@@ -2655,6 +2655,16 @@ __wbg_set_wasm(wasm);"
             ContextAdapterKind::Adapter => {}
         }
 
+        // an internal debug name to help with error messages
+        let debug_name = match kind {
+            ContextAdapterKind::Import(i) => {
+                let i = builder.cx.module.imports.get(i);
+                format!("import of `{}::{}`", i.module, i.name)
+            }
+            ContextAdapterKind::Export(e) => format!("`{}`", e.debug_name),
+            ContextAdapterKind::Adapter => format!("adapter {}", id.0),
+        };
+
         // Process the `binding` and generate a bunch of JS/TypeScript/etc.
         let binding::JsFunction {
             ts_sig,
@@ -2674,22 +2684,9 @@ __wbg_set_wasm(wasm);"
                 asyncness,
                 variadic,
                 generate_jsdoc,
+                &debug_name,
             )
-            .with_context(|| match kind {
-                ContextAdapterKind::Export(e) => {
-                    format!("failed to generate bindings for `{}`", e.debug_name)
-                }
-                ContextAdapterKind::Import(i) => {
-                    let i = builder.cx.module.imports.get(i);
-                    format!(
-                        "failed to generate bindings for import of `{}::{}`",
-                        i.module, i.name
-                    )
-                }
-                ContextAdapterKind::Adapter => {
-                    "failed to generates bindings for adapter".to_string()
-                }
-            })?;
+            .with_context(|| "failed to generates bindings for ".to_string() + &debug_name)?;
 
         self.typescript_refs.extend(ts_refs);
 
@@ -3776,11 +3773,11 @@ __wbg_set_wasm(wasm);"
     }
 
     fn generate_enum(&mut self, enum_: &AuxEnum) -> Result<(), Error> {
-        let docs = format_doc_comments(&enum_.comments, None);
         let mut variants = String::new();
 
         if enum_.generate_typescript {
-            self.typescript.push_str(&docs);
+            self.typescript
+                .push_str(&format_doc_comments(&enum_.comments, None));
             self.typescript
                 .push_str(&format!("export enum {} {{", enum_.name));
         }
@@ -3811,6 +3808,18 @@ __wbg_set_wasm(wasm);"
         if enum_.generate_typescript {
             self.typescript.push_str("\n}\n");
         }
+
+        // add an `@enum {1 | 2 | 3}` to ensure that enums type-check even without .d.ts
+        let mut at_enum = "@enum {".to_string();
+        for (i, (_, value, _)) in enum_.variants.iter().enumerate() {
+            if i != 0 {
+                at_enum.push_str(" | ");
+            }
+            at_enum.push_str(&value.to_string());
+        }
+        at_enum.push('}');
+        let docs = format_doc_comments(&enum_.comments, Some(at_enum));
+
         self.export(
             &enum_.name,
             &format!("Object.freeze({{ {} }})", variants),
@@ -3833,18 +3842,17 @@ __wbg_set_wasm(wasm);"
                 .contains(&TsReference::StringEnum(string_enum.name.clone()))
         {
             let docs = format_doc_comments(&string_enum.comments, None);
+            let type_expr = if variants.is_empty() {
+                "never".to_string()
+            } else {
+                variants.join(" | ")
+            };
 
             self.typescript.push_str(&docs);
             self.typescript.push_str("type ");
             self.typescript.push_str(&string_enum.name);
             self.typescript.push_str(" = ");
-
-            if variants.is_empty() {
-                self.typescript.push_str("never");
-            } else {
-                self.typescript.push_str(&variants.join(" | "));
-            }
-
+            self.typescript.push_str(&type_expr);
             self.typescript.push_str(";\n");
         }
 
