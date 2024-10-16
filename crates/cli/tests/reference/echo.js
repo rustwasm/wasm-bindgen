@@ -468,15 +468,8 @@ export function echo_option_i16(a) {
  * @returns {number | undefined}
  */
 export function echo_option_u32(a) {
-    try {
-        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-        wasm.echo_option_u32(retptr, !isLikeNone(a), isLikeNone(a) ? 0 : a);
-        var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
-        var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
-        return r0 === 0 ? undefined : r1 >>> 0;
-    } finally {
-        wasm.__wbindgen_add_to_stack_pointer(16);
-    }
+    const ret = wasm.echo_option_u32(isLikeNone(a) ? 0x100000001 : (a) >>> 0);
+    return ret === 0x100000001 ? undefined : ret;
 }
 
 /**
@@ -484,15 +477,8 @@ export function echo_option_u32(a) {
  * @returns {number | undefined}
  */
 export function echo_option_i32(a) {
-    try {
-        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-        wasm.echo_option_i32(retptr, !isLikeNone(a), isLikeNone(a) ? 0 : a);
-        var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
-        var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
-        return r0 === 0 ? undefined : r1;
-    } finally {
-        wasm.__wbindgen_add_to_stack_pointer(16);
-    }
+    const ret = wasm.echo_option_i32(isLikeNone(a) ? 0x100000001 : (a) >> 0);
+    return ret === 0x100000001 ? undefined : ret;
 }
 
 /**
@@ -532,15 +518,8 @@ export function echo_option_i64(a) {
  * @returns {number | undefined}
  */
 export function echo_option_usize(a) {
-    try {
-        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-        wasm.echo_option_usize(retptr, !isLikeNone(a), isLikeNone(a) ? 0 : a);
-        var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
-        var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
-        return r0 === 0 ? undefined : r1 >>> 0;
-    } finally {
-        wasm.__wbindgen_add_to_stack_pointer(16);
-    }
+    const ret = wasm.echo_option_usize(isLikeNone(a) ? 0x100000001 : (a) >>> 0);
+    return ret === 0x100000001 ? undefined : ret;
 }
 
 /**
@@ -548,15 +527,8 @@ export function echo_option_usize(a) {
  * @returns {number | undefined}
  */
 export function echo_option_isize(a) {
-    try {
-        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-        wasm.echo_option_isize(retptr, !isLikeNone(a), isLikeNone(a) ? 0 : a);
-        var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
-        var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
-        return r0 === 0 ? undefined : r1;
-    } finally {
-        wasm.__wbindgen_add_to_stack_pointer(16);
-    }
+    const ret = wasm.echo_option_isize(isLikeNone(a) ? 0x100000001 : (a) >> 0);
+    return ret === 0x100000001 ? undefined : ret;
 }
 
 /**
@@ -564,15 +536,8 @@ export function echo_option_isize(a) {
  * @returns {number | undefined}
  */
 export function echo_option_f32(a) {
-    try {
-        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-        wasm.echo_option_f32(retptr, !isLikeNone(a), isLikeNone(a) ? 0 : a);
-        var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
-        var r1 = getDataViewMemory0().getFloat32(retptr + 4 * 1, true);
-        return r0 === 0 ? undefined : r1;
-    } finally {
-        wasm.__wbindgen_add_to_stack_pointer(16);
-    }
+    const ret = wasm.echo_option_f32(isLikeNone(a) ? 0x100000001 : Math.fround(a));
+    return ret === 0x100000001 ? undefined : ret;
 }
 
 /**
