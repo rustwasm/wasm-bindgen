@@ -75,6 +75,10 @@ fn opt_i64() -> Descriptor {
     Descriptor::Option(Box::new(Descriptor::I64))
 }
 
+fn opt_u32() -> Descriptor {
+    Descriptor::Option(Box::new(Descriptor::U32))
+}
+
 fn slice(contents: Descriptor) -> Descriptor {
     Descriptor::Ref(Box::new(Descriptor::Slice(Box::new(contents))))
 }
@@ -313,5 +317,11 @@ intrinsics! {
         #[symbol = "__wbindgen_init_externref_table"]
         #[signature = fn() -> Unit]
         InitExternrefTable,
+        #[symbol = "__wbindgen_shim_format_variant"]
+        #[signature = fn() -> opt_u32()]
+        ShimFormatVariant,
+        #[symbol = "__wbindgen_shim_format_string"]
+        #[signature = fn() -> String]
+        ShimFormatString,
     }
 }
