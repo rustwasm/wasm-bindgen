@@ -3910,12 +3910,9 @@ __wbg_set_wasm(wasm);"
             } else {
                 format_doc_comments(comments, None)
             };
-            if !variant_docs.is_empty() {
-                variants.push('\n');
-                variants.push_str(&variant_docs);
-            }
-            variants.push_str(&format!("{}:{},", name, value));
-            variants.push_str(&format!("\"{}\":\"{}\",", value, name));
+            variants.push_str(&variant_docs);
+            variants.push_str(&format!("{}: {}, ", name, value));
+            variants.push_str(&format!("\"{}\": \"{}\",\n", value, name));
             if enum_.generate_typescript {
                 self.typescript.push('\n');
                 if !variant_docs.is_empty() {
@@ -3945,7 +3942,7 @@ __wbg_set_wasm(wasm);"
 
         self.export(
             &enum_.name,
-            &format!("Object.freeze({{ {} }})", variants),
+            &format!("Object.freeze({{\n{}}})", variants),
             Some(&docs),
         )?;
 
