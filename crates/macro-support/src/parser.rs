@@ -1383,6 +1383,21 @@ fn string_enum(
     Ok(())
 }
 
+fn parse_number(expr: &syn::Expr) -> Option<i64> {
+    match get_expr(expr) {
+        syn::Expr::Lit(syn::ExprLit {
+            lit: syn::Lit::Int(int_lit),
+            ..
+        }) => int_lit.base10_digits().parse::<i64>().ok(),
+        syn::Expr::Unary(syn::ExprUnary {
+            op: syn::UnOp::Neg(_),
+            expr,
+            ..
+        }) => parse_number(expr).and_then(|n| n.checked_neg()),
+        _ => None,
+    }
+}
+
 impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
     fn macro_parse(
         self,
@@ -1433,54 +1448,56 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
             _ => bail_span!(self, "only public enums are allowed with #[wasm_bindgen]"),
         }
 
-        let mut last_discriminant: Option<u32> = None;
-        let mut discriminate_map: HashMap<u32, &syn::Variant> = HashMap::new();
+        let mut last_discriminant: Option<i64> = None;
+        let mut discriminant_map: HashMap<i64, &syn::Variant> = HashMap::new();
+        let mut signed: bool = false;
 
         let variants = self
             .variants
             .iter()
             .map(|v| {
                 let value = match &v.discriminant {
-                    Some((_, expr)) => match get_expr(expr) {
-                        syn::Expr::Lit(syn::ExprLit {
-                            attrs: _,
-                            lit: syn::Lit::Int(int_lit),
-                        }) => match int_lit.base10_digits().parse::<u32>() {
-                            Ok(v) => v,
-                            Err(_) => {
-                                bail_span!(
-                                    int_lit,
-                                    "C-style enums with #[wasm_bindgen] can only support \
-                                 numbers that can be represented as u32"
-                                );
-                            }
-                        },
-                        expr => bail_span!(
+                    Some((_, expr)) => match parse_number(expr) {
+                        Some(value) => value,
+                        _ => bail_span!(
                             expr,
                             "C-style enums with #[wasm_bindgen] may only have \
-                             number literal values",
+                             numeric literal values that fit in a 32-bit integer as discriminants",
                         ),
                     },
                     None => {
                         // Use the same algorithm as rustc to determine the next discriminant
                         // https://doc.rust-lang.org/reference/items/enumerations.html#implicit-discriminants
                         if let Some(last) = last_discriminant {
-                            if let Some(value) = last.checked_add(1) {
-                                value
-                            } else {
-                                bail_span!(
-                                    v,
-                                    "the discriminants of C-style enums with #[wasm_bindgen] must be representable as u32"
-                                );
-                            }
+                            // we don't have to worry about overflow, since -2^31 <= last < 2^32
+                            last+1
                         } else {
                             0
                         }
                     }
                 };
-                last_discriminant = Some(value);
 
-                if let Some(old) = discriminate_map.insert(value, v) {
+                if value < i32::MIN as i64 {
+                    bail_span!(
+                        v,
+                        "C-style enums with #[wasm_bindgen] can only support numbers that can be represented as a 32-bit integer, but `{}` is too small to be represented by `i32`",
+                        value
+                    );
+                }
+                if value > u32::MAX as i64 {
+                    bail_span!(
+                        v,
+                        "C-style enums with #[wasm_bindgen] can only support numbers that can be represented as a 32-bit integer, but `{}` is too large to be represented by `u32`",
+                        value
+                    );
+                }
+
+                last_discriminant = Some(value);
+                if value < 0 {
+                    signed = true;
+                }
+
+                if let Some(old) = discriminant_map.insert(value, v) {
                     bail_span!(
                         v,
                         "discriminant value `{}` is already used by {} in this enum",
@@ -1488,6 +1505,11 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
                         old.ident
                     );
                 }
+
+                // We'll check whether the bits of the value are actually valid
+                // later. We can't do it right now, because a variants with a
+                // negative discriminant might change the enum to signed later.
+                let value = value as u32;
 
                 let comments = extract_doc_comments(&v.attrs);
                 Ok(ast::Variant {
@@ -1498,15 +1520,38 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
             })
             .collect::<Result<Vec<_>, Diagnostic>>()?;
 
-        let hole = (0..=u32::MAX)
-            .find(|v| !discriminate_map.contains_key(v))
-            .unwrap();
+        if signed {
+            // If the enum has signed discriminants, the entire enum is signed.
+            // This means that some variants with values >= 2^31 will be
+            // invalid, and we have to generate errors for them.
+            // Since it's enough to generate one error, we just check the
+            // variant with the largest value.
+            let max = discriminant_map.iter().max_by_key(|(k, _)| *k).unwrap();
+            if *max.0 > i32::MAX as i64 {
+                bail_span!(
+                    max.1,
+                    "this C-style enums with #[wasm_bindgen] contains at least one negative discriminant, so it can only support numbers that can be represented by `i32`. \
+                    `{}` is too large for `i32`, so either pick a smaller value for this variant or remove all negative discriminants to support values up to `u32::MAX`.",
+                    max.0
+                );
+            }
+        }
+
+        // By making the assumption that enums will have less than 2^31
+        // variants, we are guaranteed to find a hole by checking that the
+        // positive values of i32. This will work for both signed and unsigned
+        // enums and find the smallest non-negative hole.
+        assert!(variants.len() < i32::MAX as usize);
+        let hole = (0..i32::MAX as i64 + 1)
+            .find(|v| !discriminant_map.contains_key(v))
+            .unwrap() as u32;
 
         self.to_tokens(tokens);
 
         program.enums.push(ast::Enum {
             rust_name: self.ident,
             js_name,
+            signed,
             variants,
             comments,
             hole,

@@ -63,6 +63,15 @@ export function option_string_enum_echo(color) {
 }
 
 /**
+ * @param {Ordering | undefined} [order]
+ * @returns {Ordering | undefined}
+ */
+export function option_order(order) {
+    const ret = wasm.option_order(isLikeNone(order) ? 2 : order);
+    return ret === 2 ? undefined : ret;
+}
+
+/**
  * A color.
  * @enum {0 | 1 | 2}
  */
@@ -83,6 +92,11 @@ Red:2,"2":"Red", });
  * @enum {0 | 1 | 42 | 43}
  */
 export const ImplicitDiscriminant = Object.freeze({ A:0,"0":"A",B:1,"1":"B",C:42,"42":"C",D:43,"43":"D", });
+/**
+ * A C-style enum with negative discriminants.
+ * @enum {-1 | 0 | 1}
+ */
+export const Ordering = Object.freeze({ Less:-1,"-1":"Less",Equal:0,"0":"Equal",Greater:1,"1":"Greater", });
 
 const __wbindgen_enum_ColorName = ["green", "yellow", "red"];
 
