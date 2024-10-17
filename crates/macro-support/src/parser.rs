@@ -1537,12 +1537,14 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
             }
         }
 
-        // By making the assumption that enums will have less than 2^31
-        // variants, we are guaranteed to find a hole by checking that the
-        // positive values of i32. This will work for both signed and unsigned
-        // enums and find the smallest non-negative hole.
-        assert!(variants.len() < i32::MAX as usize);
-        let hole = (0..i32::MAX as i64 + 1)
+        // To make all the code handling holes simpler, we only consider
+        // non-negative holes. This allows us to use `u32` to represent holes.
+        let max = if signed {
+            i32::MAX as i64
+        } else {
+            u32::MAX as i64
+        };
+        let hole = (0..max + 1)
             .find(|v| !discriminant_map.contains_key(v))
             .unwrap() as u32;
 
