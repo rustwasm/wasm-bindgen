@@ -1,0 +1,18 @@
+(module $reference_test.wasm
+  (type (;0;) (func (result i32 i32)))
+  (type (;1;) (func (result i32 i32 i32)))
+  (type (;2;) (func (result i32 i32 i32 i32)))
+  (type (;3;) (func (param i32 i32 i32)))
+  (func $__wbindgen_free (;0;) (type 3) (param i32 i32 i32))
+  (func $"result_string multivalue shim" (;1;) (type 2) (result i32 i32 i32 i32))
+  (func $"result_i32 multivalue shim" (;2;) (type 1) (result i32 i32 i32))
+  (func $"result_void multivalue shim" (;3;) (type 0) (result i32 i32))
+  (memory (;0;) 17)
+  (export "memory" (memory 0))
+  (export "result_string" (func $"result_string multivalue shim"))
+  (export "result_void" (func $"result_void multivalue shim"))
+  (export "result_i32" (func $"result_i32 multivalue shim"))
+  (export "__wbindgen_free" (func $__wbindgen_free))
+  (@custom "target_features" (after code) "\04+\0amultivalue+\0fmutable-globals+\0freference-types+\08sign-ext")
+)
+
