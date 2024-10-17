@@ -1528,7 +1528,7 @@ fn adapter2ts(
         AdapterType::Option(ty) => {
             adapter2ts(ty, position, dst, refs);
             dst.push_str(match position {
-                TypePosition::Argument => " | undefined | null",
+                TypePosition::Argument => unreachable!(),
                 TypePosition::Return => " | undefined",
             });
         }
