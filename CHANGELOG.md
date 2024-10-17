@@ -28,6 +28,9 @@
 * Optimized ABI performance for `Option<{i32,u32,isize,usize,f32,*const T,*mut T}>`.
   [#4183](https://github.com/rustwasm/wasm-bindgen/pull/4183)
 
+* Optional parameters are now typed as `T | undefined | null` to reflect the actual JS behavior.
+  [#4188](https://github.com/rustwasm/wasm-bindgen/pull/4188)
+
 ### Fixed
 
 * Fixed methods with `self: &Self` consuming the object.
