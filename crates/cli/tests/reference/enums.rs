@@ -65,3 +65,16 @@ pub enum ImplicitDiscriminant {
     C = 42,
     D,
 }
+
+/// A C-style enum with negative discriminants.
+#[wasm_bindgen]
+pub enum Ordering {
+    Less = -1,
+    Equal = 0,
+    Greater = 1,
+}
+
+#[wasm_bindgen]
+pub fn option_order(order: Option<Ordering>) -> Option<Ordering> {
+    order
+}
