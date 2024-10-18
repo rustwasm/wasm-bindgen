@@ -99,7 +99,7 @@ pub fn interface(module: &Module) -> Result<String, Error> {
             ret = match ty.results().len() {
                 0 => "void",
                 1 => "number",
-                _ => "any[]",
+                _ => "number[]",
             },
         ));
     }
@@ -147,7 +147,7 @@ pub fn typescript(module: &Module) -> Result<String, Error> {
             ret = match ty.results().len() {
                 0 => "void",
                 1 => "number",
-                _ => "any[]",
+                _ => "number[]",
             },
         ));
     }
