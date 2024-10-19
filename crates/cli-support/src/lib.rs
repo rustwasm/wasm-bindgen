@@ -323,11 +323,17 @@ impl Bindgen {
                 .context("failed getting Wasm module")?,
         };
 
-        // Enable reference type transformations if the module is already using it.
-        if let Ok(true) = wasm_bindgen_wasm_conventions::target_feature(&module, "reference-types")
-        {
-            self.externref = true;
-        }
+        // FIXME: Starting with Rust 1.82 `reference-types` is always present
+        // in the `target_features` section. The problem is that JS bundlers
+        // like Webpack can't currently handle the `reference-types` proposal.
+        // So for now there should not be any automatic detection of the feature
+        // and instead it should explicitly be enabled by the user.
+
+        // // Enable reference type transformations if the module is already using it.
+        // if let Ok(true) = wasm_bindgen_wasm_conventions::target_feature(&module, "reference-types")
+        // {
+        //     self.externref = true;
+        // }
 
         // Enable multivalue transformations if the module is already using it.
         if let Ok(true) = wasm_bindgen_wasm_conventions::target_feature(&module, "multivalue") {
