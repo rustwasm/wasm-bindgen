@@ -138,10 +138,10 @@ fn runtest(test: &Path) -> Result<()> {
     exec(&mut bindgen)?;
 
     if !contents.contains("async") {
-        let js = fs::read_to_string(td.path().join("reference_test_bg.js"))?;
-        assert_same(&js, &test.with_extension("js"))?;
         let wat = sanitize_wasm(&td.path().join("reference_test_bg.wasm"))?;
         assert_same(&wat, &test.with_extension("wat"))?;
+        let js = fs::read_to_string(td.path().join("reference_test_bg.js"))?;
+        assert_same(&js, &test.with_extension("js"))?;
     }
     let d_ts = fs::read_to_string(td.path().join("reference_test.d.ts"))?;
     assert_same(&d_ts, &test.with_extension("d.ts"))?;
