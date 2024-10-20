@@ -115,7 +115,10 @@ fn runtest(test: &Path) -> Result<()> {
         .arg("--target")
         .arg("wasm32-unknown-unknown")
         .env("CARGO_TARGET_DIR", &target_dir)
-        .env("CARGO_ENCODED_RUSTFLAGS", "-Ctarget-feature=-multivalue,-reference-types");
+        .env(
+            "CARGO_ENCODED_RUSTFLAGS",
+            "-Ctarget-feature=-multivalue,-reference-types",
+        );
     exec(&mut cargo)?;
 
     let wasm = target_dir
