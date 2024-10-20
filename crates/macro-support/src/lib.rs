@@ -104,9 +104,70 @@ pub fn expand_class_marker(
     Ok(tokens)
 }
 
+/// Describes how to rename the fields, methods, and classes in the generated
+/// bindings.
+///
+/// This design heavily mimics the `#[serde(rename_all = "...")]` attribute.
+#[derive(Debug, Clone, Copy)]
+enum RenameRule {
+    None,
+    CamelCase,
+}
+impl RenameRule {
+    fn snake_case_to_camel_case(name: String) -> String {
+        let mut camel = String::new();
+        let mut capitalize = false;
+        for c in name.chars() {
+            if c == '_' {
+                capitalize = true;
+            } else if capitalize {
+                camel.push(c.to_ascii_uppercase());
+                capitalize = false;
+            } else {
+                camel.push(c);
+            }
+        }
+        camel
+    }
+
+    fn rename_snake_case(self, name: String) -> String {
+        match self {
+            RenameRule::None => name.to_string(),
+            RenameRule::CamelCase => Self::snake_case_to_camel_case(name),
+        }
+    }
+
+    /// Applies the rule to the field of a struct or enum variant data.
+    fn apply_to_field(self, name: String) -> String {
+        self.rename_snake_case(name)
+    }
+    /// Applies the rule to the method of a struct or enum.
+    fn apply_to_method(self, name: String) -> String {
+        self.rename_snake_case(name)
+    }
+
+    fn rule_name(self) -> &'static str {
+        match self {
+            RenameRule::None => "none",
+            RenameRule::CamelCase => "camelCase",
+        }
+    }
+}
+impl TryFrom<&str> for RenameRule {
+    type Error = ();
+    fn try_from(s: &str) -> Result<Self, Self::Error> {
+        match s {
+            "none" => Ok(RenameRule::None),
+            "camelCase" => Ok(RenameRule::CamelCase),
+            _ => Err(()),
+        }
+    }
+}
+
 struct ClassMarker {
     class: syn::Ident,
     js_class: String,
+    rename_all: RenameRule,
     wasm_bindgen: syn::Path,
     wasm_bindgen_futures: syn::Path,
 }
@@ -120,6 +181,11 @@ impl Parse for ClassMarker {
             .strip_prefix("r#")
             .map(String::from)
             .unwrap_or(js_class);
+
+        input.parse::<Option<Token![,]>>()?;
+
+        let rename_all = input.parse::<syn::LitStr>()?.value();
+        let rename_all: RenameRule = rename_all[..].try_into().unwrap();
 
         let mut wasm_bindgen = None;
         let mut wasm_bindgen_futures = None;
@@ -162,6 +228,7 @@ impl Parse for ClassMarker {
         Ok(ClassMarker {
             class,
             js_class,
+            rename_all,
             wasm_bindgen: wasm_bindgen.unwrap_or_else(|| syn::parse_quote! { wasm_bindgen }),
             wasm_bindgen_futures: wasm_bindgen_futures
                 .unwrap_or_else(|| syn::parse_quote! { wasm_bindgen_futures }),

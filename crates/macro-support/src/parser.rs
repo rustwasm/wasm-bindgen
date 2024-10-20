@@ -15,7 +15,7 @@ use syn::spanned::Spanned;
 use syn::visit_mut::VisitMut;
 use syn::{ItemFn, Lit, MacroDelimiter, ReturnType};
 
-use crate::ClassMarker;
+use crate::{ClassMarker, RenameRule};
 
 thread_local!(static ATTRS: AttributeParseState = Default::default());
 
@@ -77,6 +77,7 @@ macro_rules! attrgen {
             (readonly, Readonly(Span)),
             (js_name, JsName(Span, String, Span)),
             (js_class, JsClass(Span, String, Span)),
+            (rename_all, RenameAll(Span, String, Span)),
             (inspectable, Inspectable(Span)),
             (is_type_of, IsTypeOf(Span, syn::Expr)),
             (extends, Extends(Span, syn::Path)),
@@ -424,6 +425,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs)> for &'a mut syn::ItemStruct
             .map(|s| s.0.to_string())
             .unwrap_or(self.ident.unraw().to_string());
         let is_inspectable = attrs.inspectable().is_some();
+        let rename = get_rename_all(&attrs)?;
         let getter_with_clone = attrs.getter_with_clone();
         for (i, field) in self.fields.iter_mut().enumerate() {
             match field.vis {
@@ -443,7 +445,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs)> for &'a mut syn::ItemStruct
 
             let js_field_name = match attrs.js_name() {
                 Some((name, _)) => name.to_string(),
-                None => js_field_name,
+                None => rename.apply_to_field(js_field_name),
             };
 
             let comments = extract_doc_comments(&field.attrs);
@@ -481,6 +483,20 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs)> for &'a mut syn::ItemStruct
     }
 }
 
+fn get_rename_all(attrs: &BindgenAttrs) -> Result<RenameRule, Diagnostic> {
+    if let Some((value, span)) = attrs.rename_all() {
+        match value {
+            "camelCase" => Ok(RenameRule::CamelCase),
+            _ => Err(Diagnostic::span_error(
+                span,
+                format!("unknown rename rule: `{value}`\nAllowed values are: `camelCase`"),
+            )),
+        }
+    } else {
+        Ok(RenameRule::None)
+    }
+}
+
 fn get_ty(mut ty: &syn::Type) -> &syn::Type {
     while let syn::Type::Group(g) = ty {
         ty = &g.elem;
@@ -497,14 +513,12 @@ fn get_expr(mut expr: &syn::Expr) -> &syn::Expr {
     expr
 }
 
-impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule>)>
-    for syn::ForeignItemFn
-{
+impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a ForeignItemCtx)> for syn::ForeignItemFn {
     type Target = ast::ImportKind;
 
     fn convert(
         self,
-        (program, opts, module): (&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule>),
+        (program, opts, context): (&ast::Program, BindgenAttrs, &'a ForeignItemCtx),
     ) -> Result<Self::Target, Diagnostic> {
         let mut wasm = function_from_decl(
             &self.sig.ident,
@@ -514,6 +528,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             self.vis.clone(),
             false,
             None,
+            context.rename_all,
             false,
             Some(&["default"]),
         )?
@@ -618,7 +633,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
                 ast::ImportFunctionKind::Normal => (0, "n"),
                 ast::ImportFunctionKind::Method { ref class, .. } => (1, &class[..]),
             };
-            let data = (ns, &self.sig.ident, module);
+            let data = (ns, &self.sig.ident, &context.module);
             format!(
                 "__wbg_{}_{}",
                 wasm.name
@@ -871,6 +886,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
             self.vis,
             false,
             None,
+            RenameRule::None,
             false,
             Some(&["default"]),
         )?;
@@ -916,6 +932,7 @@ fn function_from_decl(
     vis: syn::Visibility,
     allow_self: bool,
     self_ty: Option<&Ident>,
+    rename: RenameRule,
     is_from_impl: bool,
     skip_keywords: Option<&[&str]>,
 ) -> Result<(ast::Function, Option<ast::MethodSelf>), Diagnostic> {
@@ -1000,39 +1017,29 @@ fn function_from_decl(
         syn::ReturnType::Type(_, ty) => Some(replace_self(*ty)),
     };
 
-    let (name, name_span, renamed_via_js_name) =
-        if let Some((js_name, js_name_span)) = opts.js_name() {
-            let kind = operation_kind(opts);
-            let prefix = match kind {
-                OperationKind::Setter(_) => "set_",
-                _ => "",
-            };
-            let name = if prefix.is_empty()
-                && opts.method().is_none()
-                && is_js_keyword(js_name, skip_keywords)
-            {
-                format!("_{}", js_name)
-            } else {
-                format!("{}{}", prefix, js_name)
-            };
-            (name, js_name_span, true)
-        } else {
-            let name = if !is_from_impl
-                && opts.method().is_none()
-                && is_js_keyword(&decl_name.to_string(), skip_keywords)
-            {
-                format!("_{}", decl_name.unraw())
-            } else {
-                decl_name.unraw().to_string()
-            };
-            (name, decl_name.span(), false)
+    let (mut name, name_span) = if let Some((js_name, js_name_span)) = opts.js_name() {
+        let kind = operation_kind(opts);
+        let prefix = match kind {
+            OperationKind::Setter(_) => "set_",
+            _ => "",
         };
+        let name = format!("{}{}", prefix, js_name);
+        (name, js_name_span)
+    } else {
+        let name = rename.apply_to_method(decl_name.unraw().to_string());
+        (name, decl_name.span())
+    };
+
+    // add underscore if the name is a keyword
+    if !is_from_impl && opts.method().is_none() && is_js_keyword(&name, skip_keywords) {
+        name = format!("_{}", name);
+    }
+
     Ok((
         ast::Function {
             arguments,
             name_span,
             name,
-            renamed_via_js_name,
             ret,
             rust_attrs: attrs,
             rust_vis: vis,
@@ -1252,6 +1259,9 @@ fn prepare_for_impl_recursion(
         .map(|s| s.0.to_string())
         .unwrap_or(ident.to_string());
 
+    let rename_all = get_rename_all(impl_opts)?;
+    let rename_all = rename_all.rule_name();
+
     let wasm_bindgen = &program.wasm_bindgen;
     let wasm_bindgen_futures = &program.wasm_bindgen_futures;
     method.attrs.insert(
@@ -1260,7 +1270,7 @@ fn prepare_for_impl_recursion(
             pound_token: Default::default(),
             style: syn::AttrStyle::Outer,
             bracket_token: Default::default(),
-            meta: syn::parse_quote! { #wasm_bindgen::prelude::__wasm_bindgen_class_marker(#class = #js_class, wasm_bindgen = #wasm_bindgen, wasm_bindgen_futures = #wasm_bindgen_futures) },
+            meta: syn::parse_quote! { #wasm_bindgen::prelude::__wasm_bindgen_class_marker(#class = #js_class, #rename_all, wasm_bindgen = #wasm_bindgen, wasm_bindgen_futures = #wasm_bindgen_futures) },
         },
     );
 
@@ -1274,6 +1284,7 @@ impl<'a> MacroParse<&ClassMarker> for &'a mut syn::ImplItemFn {
         ClassMarker {
             class,
             js_class,
+            rename_all,
             wasm_bindgen,
             wasm_bindgen_futures,
         }: &ClassMarker,
@@ -1305,6 +1316,7 @@ impl<'a> MacroParse<&ClassMarker> for &'a mut syn::ImplItemFn {
             self.vis.clone(),
             true,
             Some(class),
+            *rename_all,
             true,
             None,
         )?;
@@ -1555,10 +1567,12 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
         let module = module_from_opts(program, &opts)
             .map_err(|e| errors.push(e))
             .unwrap_or_default();
+        let rename_all = get_rename_all(&opts)?;
         for item in self.items.into_iter() {
             let ctx = ForeignItemCtx {
                 module: module.clone(),
                 js_namespace: js_namespace.clone(),
+                rename_all,
             };
             if let Err(e) = item.macro_parse(program, ctx) {
                 errors.push(e);
@@ -1573,6 +1587,7 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
 struct ForeignItemCtx {
     module: Option<ast::ImportModule>,
     js_namespace: Option<Vec<String>>,
+    rename_all: RenameRule,
 }
 
 impl MacroParse<ForeignItemCtx> for syn::ForeignItem {
@@ -1608,18 +1623,17 @@ impl MacroParse<ForeignItemCtx> for syn::ForeignItem {
         let js_namespace = item_opts
             .js_namespace()
             .map(|(s, _)| s.to_owned())
-            .or(ctx.js_namespace);
-        let module = ctx.module;
+            .or_else(|| ctx.js_namespace.clone());
 
         let kind = match self {
-            syn::ForeignItem::Fn(f) => f.convert((program, item_opts, &module))?,
+            syn::ForeignItem::Fn(f) => f.convert((program, item_opts, &ctx))?,
             syn::ForeignItem::Type(t) => t.convert((program, item_opts))?,
-            syn::ForeignItem::Static(s) => s.convert((program, item_opts, &module))?,
+            syn::ForeignItem::Static(s) => s.convert((program, item_opts, &ctx.module))?,
             _ => panic!("only foreign functions/types allowed for now"),
         };
 
         program.imports.push(ast::Import {
-            module,
+            module: ctx.module,
             js_namespace,
             kind,
         });
