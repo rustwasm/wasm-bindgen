@@ -114,6 +114,9 @@ fn runtest(test: &Path) -> Result<()> {
         .arg("build")
         .arg("--target")
         .arg("wasm32-unknown-unknown")
+        .arg("--")
+        .arg("-C")
+        .arg("target-feature=-multivalue")
         .env("CARGO_TARGET_DIR", &target_dir);
     exec(&mut cargo)?;
 
