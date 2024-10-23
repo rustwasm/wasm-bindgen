@@ -1,33 +1,30 @@
 mod update_cargo_toml;
 
 use anyhow::Result;
+use clap::Parser;
 use std::path::PathBuf;
-use structopt::StructOpt;
 use update_cargo_toml::update_cargo_toml_features;
 
-#[derive(StructOpt, Debug)]
+#[derive(Parser, Debug)]
 #[structopt(
     name = "wasm-bindgen-webidl",
     about = "Converts WebIDL into wasm-bindgen compatible code."
 )]
 struct Opt {
-    #[structopt(parse(from_os_str))]
     input_dir: PathBuf,
 
-    #[structopt(parse(from_os_str))]
     output_dir: PathBuf,
 
-    #[structopt(long)]
+    #[clap(long)]
     no_features: bool,
 
-    #[structopt(parse(from_os_str))]
     cargo_toml_path: Option<PathBuf>,
 }
 
 fn main() -> Result<()> {
     env_logger::init();
 
-    let opt = Opt::from_args();
+    let opt = Opt::parse();
 
     let features = !opt.no_features;
 
