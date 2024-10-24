@@ -729,7 +729,7 @@ fn instruction(
             }
         }
 
-        Instruction::Int128ToWasm { .. } => {
+        Instruction::Int128ToWasm => {
             let val = js.pop();
             js.assert_bigint(&val);
             let (low, high) = int128_to_int64x2(&val);
@@ -742,7 +742,7 @@ fn instruction(
             js.push(int64x2_to_int128(low, high, *signed));
         }
 
-        Instruction::OptionInt128ToWasm { .. } => {
+        Instruction::OptionInt128ToWasm => {
             let val = js.pop();
             js.cx.expose_is_like_none();
             js.assert_optional_bigint(&val);

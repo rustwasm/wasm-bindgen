@@ -93,14 +93,14 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::I128 => {
                 self.instruction(
                     &[AdapterType::S128],
-                    Instruction::Int128ToWasm { signed: true },
+                    Instruction::Int128ToWasm,
                     &[AdapterType::I64, AdapterType::I64],
                 );
             }
             Descriptor::U128 => {
                 self.instruction(
                     &[AdapterType::U128],
-                    Instruction::Int128ToWasm { signed: false },
+                    Instruction::Int128ToWasm,
                     &[AdapterType::I64, AdapterType::I64],
                 );
             }
@@ -302,14 +302,14 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::I128 => {
                 self.instruction(
                     &[AdapterType::S128.option()],
-                    Instruction::OptionInt128ToWasm { signed: true },
+                    Instruction::OptionInt128ToWasm,
                     &[AdapterType::I32, AdapterType::I64, AdapterType::I64],
                 );
             }
             Descriptor::U128 => {
                 self.instruction(
                     &[AdapterType::U128.option()],
-                    Instruction::OptionInt128ToWasm { signed: false },
+                    Instruction::OptionInt128ToWasm,
                     &[AdapterType::I32, AdapterType::I64, AdapterType::I64],
                 );
             }

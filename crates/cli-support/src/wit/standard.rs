@@ -148,17 +148,13 @@ pub enum Instruction {
     },
 
     /// Pops a 128-bit integer and pushes 2 Wasm 64-bit ints.
-    Int128ToWasm {
-        signed: bool,
-    },
+    Int128ToWasm,
     /// Pops 2 Wasm 64-bit ints and pushes a 128-bit integer.
     WasmToInt128 {
         signed: bool,
     },
 
-    OptionInt128ToWasm {
-        signed: bool,
-    },
+    OptionInt128ToWasm,
     OptionWasmToInt128 {
         signed: bool,
     },
