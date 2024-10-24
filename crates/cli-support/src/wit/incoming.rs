@@ -90,6 +90,20 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::U32 => self.number(AdapterType::U32, WasmVT::I32),
             Descriptor::I64 => self.number(AdapterType::S64, WasmVT::I64),
             Descriptor::U64 => self.number(AdapterType::U64, WasmVT::I64),
+            Descriptor::I128 => {
+                self.instruction(
+                    &[AdapterType::S128],
+                    Instruction::Int128ToWasm { signed: true },
+                    &[AdapterType::I64, AdapterType::I64],
+                );
+            }
+            Descriptor::U128 => {
+                self.instruction(
+                    &[AdapterType::U128],
+                    Instruction::Int128ToWasm { signed: false },
+                    &[AdapterType::I64, AdapterType::I64],
+                );
+            }
             Descriptor::F32 => {
                 self.get(AdapterType::F32);
                 self.output.push(AdapterType::F32);
@@ -285,6 +299,20 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::F32 => self.in_option_sentinel64_f32(AdapterType::F32),
             Descriptor::F64 => self.in_option_native(ValType::F64),
             Descriptor::I64 | Descriptor::U64 => self.in_option_native(ValType::I64),
+            Descriptor::I128 => {
+                self.instruction(
+                    &[AdapterType::S128.option()],
+                    Instruction::OptionInt128ToWasm { signed: true },
+                    &[AdapterType::I32, AdapterType::I64, AdapterType::I64],
+                );
+            }
+            Descriptor::U128 => {
+                self.instruction(
+                    &[AdapterType::U128.option()],
+                    Instruction::OptionInt128ToWasm { signed: false },
+                    &[AdapterType::I32, AdapterType::I64, AdapterType::I64],
+                );
+            }
             Descriptor::Boolean => {
                 self.instruction(
                     &[AdapterType::Bool.option()],

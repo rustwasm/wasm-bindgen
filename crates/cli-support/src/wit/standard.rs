@@ -75,10 +75,12 @@ pub enum AdapterType {
     S16,
     S32,
     S64,
+    S128,
     U8,
     U16,
     U32,
     U64,
+    U128,
     F32,
     F64,
     String,
@@ -143,6 +145,22 @@ pub enum Instruction {
     WasmToInt {
         input: walrus::ValType,
         output: AdapterType,
+    },
+
+    /// Pops a 128-bit integer and pushes 2 Wasm 64-bit ints.
+    Int128ToWasm {
+        signed: bool,
+    },
+    /// Pops 2 Wasm 64-bit ints and pushes a 128-bit integer.
+    WasmToInt128 {
+        signed: bool,
+    },
+
+    OptionInt128ToWasm {
+        signed: bool,
+    },
+    OptionWasmToInt128 {
+        signed: bool,
     },
 
     /// Pops a Wasm `i32` and pushes the enum variant as a string
