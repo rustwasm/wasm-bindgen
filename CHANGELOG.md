@@ -14,6 +14,12 @@
 * Added JSDoc type annotations to C-style enums.
   [#4192](https://github.com/rustwasm/wasm-bindgen/pull/4192)
 
+* Added bindings for `StaticRange`.
+  [#4221](https://github.com/rustwasm/wasm-bindgen/pull/4221)
+
+* Added bindings for `AbstractRange`.
+  [#4221](https://github.com/rustwasm/wasm-bindgen/pull/4221)
+
 ### Changed
 
 * String enums now generate private TypeScript types but only if used.
