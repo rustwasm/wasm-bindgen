@@ -84,6 +84,15 @@ export function exported() {
     }
 }
 
+export function __wbg_add_dd5307a7ca6818d5(arg0, arg1) {
+    const ret = add(arg0, arg1);
+    return ret;
+};
+
+export function __wbg_barfromfoo_d097f3ec35aab47c() {
+    bar_from_foo();
+};
+
 export function __wbg_catchme_a7bca7f3d5a5f319() { return handleError(function () {
     catch_me();
 }, arguments) };

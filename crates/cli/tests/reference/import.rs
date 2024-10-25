@@ -13,13 +13,20 @@ extern "C" {
     // Reload needs to be passed the right `this` parameter in JS.
     #[wasm_bindgen(js_namespace = ["window", "location"])]
     fn reload();
-
     #[wasm_bindgen(js_namespace = ["window", "document"])]
     fn write(s: &str);
+
+    // module import
+    #[wasm_bindgen(module = "./foo.js")]
+    fn bar_from_foo();
+    #[wasm_bindgen(inline_js = "export function add(a,b) { return a + b; }")]
+    fn add(a: f64, b: f64) -> f64;
 }
 
 #[wasm_bindgen]
 pub fn exported() -> Result<(), JsValue> {
+    bar_from_foo();
+    let _ = add(1.0, 2.0);
     reload();
     write("");
     no_catch();
