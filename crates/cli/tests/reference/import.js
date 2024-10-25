@@ -27,6 +27,26 @@ function handleError(f, args) {
     }
 }
 
+const lTextDecoder = typeof TextDecoder === 'undefined' ? (0, module.require)('util').TextDecoder : TextDecoder;
+
+let cachedTextDecoder = new lTextDecoder('utf-8', { ignoreBOM: true, fatal: true });
+
+cachedTextDecoder.decode();
+
+let cachedUint8ArrayMemory0 = null;
+
+function getUint8ArrayMemory0() {
+    if (cachedUint8ArrayMemory0 === null || cachedUint8ArrayMemory0.byteLength === 0) {
+        cachedUint8ArrayMemory0 = new Uint8Array(wasm.memory.buffer);
+    }
+    return cachedUint8ArrayMemory0;
+}
+
+function getStringFromWasm0(ptr, len) {
+    ptr = ptr >>> 0;
+    return cachedTextDecoder.decode(getUint8ArrayMemory0().subarray(ptr, ptr + len));
+}
+
 let cachedDataViewMemory0 = null;
 
 function getDataViewMemory0() {
@@ -64,7 +84,19 @@ export function exported() {
     }
 }
 
-export function __wbg_foo_95fe1a04017077db() { return handleError(function () {
-    foo();
+export function __wbg_catchme_a7bca7f3d5a5f319() { return handleError(function () {
+    catch_me();
 }, arguments) };
+
+export function __wbg_nocatch_62552fa42a58590b() {
+    no_catch();
+};
+
+export function __wbg_reload_90d82b22b83c1d99() {
+    window.location.reload();
+};
+
+export function __wbg_write_d258674ff6f0ea8d(arg0, arg1) {
+    window.document.write(getStringFromWasm0(arg0, arg1));
+};
 
