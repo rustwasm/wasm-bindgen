@@ -63,11 +63,7 @@ fn args_are_optional(name: &str) -> bool {
 pub fn interface(module: &Module) -> Result<String, Error> {
     let mut exports = String::new();
     module_export_types(module, |name, ty| {
-        exports.push_str("  readonly ");
-        exports.push_str(name);
-        exports.push_str(": ");
-        exports.push_str(ty);
-        exports.push_str(";\n");
+        writeln!(exports, "  readonly {}: {};", name, ty).unwrap();
     });
     Ok(exports)
 }
@@ -75,34 +71,28 @@ pub fn interface(module: &Module) -> Result<String, Error> {
 pub fn typescript(module: &Module) -> Result<String, Error> {
     let mut exports = "/* tslint:disable */\n/* eslint-disable */\n".to_string();
     module_export_types(module, |name, ty| {
-        exports.push_str("export const ");
-        exports.push_str(name);
-        exports.push_str(": ");
-        exports.push_str(ty);
-        exports.push_str(";\n");
+        writeln!(exports, "export const {}: {};", name, ty).unwrap();
     });
     Ok(exports)
 }
 
 fn module_export_types(module: &Module, mut export: impl FnMut(&str, &str)) {
     for entry in module.exports.iter() {
-        let id = match entry.item {
-            walrus::ExportItem::Function(i) => i,
+        match entry.item {
+            walrus::ExportItem::Function(id) => {
+                let func = module.funcs.get(id);
+                let ty = module.types.get(func.ty());
+                let ts_type = get_ts_function_type(ty, args_are_optional(&entry.name));
+                export(&entry.name, &ts_type);
+            }
             walrus::ExportItem::Memory(_) => {
                 export(&entry.name, "WebAssembly.Memory");
-                continue;
             }
             walrus::ExportItem::Table(_) => {
                 export(&entry.name, "WebAssembly.Table");
-                continue;
             }
             walrus::ExportItem::Global(_) => continue,
         };
-
-        let func = module.funcs.get(id);
-        let ty = module.types.get(func.ty());
-        let ts_type = get_ts_function_type(ty, args_are_optional(&entry.name));
-        export(&entry.name, &ts_type);
     }
 }
 fn val_type_to_ts(ty: walrus::ValType) -> &'static str {
