@@ -8,7 +8,7 @@ use std::collections::{BTreeSet, HashMap};
 use std::str;
 use walrus::MemoryId;
 use walrus::{ExportId, FunctionId, ImportId, Module};
-use wasm_bindgen_shared::struct_function_export_name;
+use wasm_bindgen_shared::{free_function_export_name, struct_function_export_name, NameRef};
 use wasm_bindgen_threads_xform::ThreadCount;
 
 mod incoming;
@@ -473,8 +473,8 @@ impl<'a> Context<'a> {
 
     fn export(&mut self, export: decode::Export<'_>) -> Result<(), Error> {
         let wasm_name = match &export.class {
-            Some(class) => struct_function_export_name(class, export.function.name),
-            None => export.function.name.to_string(),
+            Some(class) => struct_function_export_name(class, export.function.name.as_ref()),
+            None => free_function_export_name(export.function.name.as_ref()),
         };
         let mut descriptor = match self.descriptors.remove(&wasm_name) {
             None => return Ok(()),
@@ -507,7 +507,7 @@ impl<'a> Context<'a> {
 
                         AuxExportKind::Method {
                             class,
-                            name: name.to_owned(),
+                            name: name.to_aux(),
                             receiver: if op.is_static {
                                 AuxReceiverKind::None
                             } else if export.consumed {
@@ -520,7 +520,9 @@ impl<'a> Context<'a> {
                     }
                 }
             }
-            None => AuxExportKind::Function(export.function.name.to_string()),
+            None => {
+                AuxExportKind::Function(export.function.name.as_ref().free_function().to_string())
+            }
         };
 
         let id = self.export_adapter(export_id, descriptor)?;
@@ -610,7 +612,7 @@ impl<'a> Context<'a> {
         // to the WebAssembly instance.
         let (id, import) = match method {
             Some(data) => {
-                let class = self.determine_import(import, data.class)?;
+                let class = self.determine_import(import, NameRef::Identifier(data.class))?;
                 match &data.kind {
                     // NB: `structural` is ignored for constructors since the
                     // js type isn't expected to change anyway.
@@ -639,7 +641,7 @@ impl<'a> Context<'a> {
             // expected that the binding isn't changing anyway.
             None => {
                 let id = self.import_adapter(import_id, descriptor, AdapterJsImportKind::Normal)?;
-                let name = self.determine_import(import, function.name)?;
+                let name = self.determine_import(import, function.name.as_ref())?;
                 (id, AuxImport::Value(AuxValue::Bare(name)))
             }
         };
@@ -682,21 +684,20 @@ impl<'a> Context<'a> {
         structural: bool,
         op: &decode::Operation<'_>,
     ) -> Result<(AuxImport, bool), Error> {
-        match op.kind {
+        match &op.kind {
             decode::OperationKind::Regular => {
                 if op.is_static {
                     Ok((
-                        AuxImport::ValueWithThis(class, function.name.to_string()),
+                        AuxImport::ValueWithThis(class, function.name.to_aux()),
                         false,
                     ))
                 } else if structural {
-                    Ok((
-                        AuxImport::StructuralMethod(function.name.to_string()),
-                        false,
-                    ))
+                    Ok((AuxImport::StructuralMethod(function.name.to_aux()), false))
                 } else {
-                    class.fields.push("prototype".to_string());
-                    class.fields.push(function.name.to_string());
+                    class
+                        .fields
+                        .push(AuxName::Identifier("prototype".to_string()));
+                    class.fields.push(function.name.to_aux());
                     Ok((AuxImport::Value(AuxValue::Bare(class)), true))
                 }
             }
@@ -705,17 +706,17 @@ impl<'a> Context<'a> {
                 if structural {
                     if op.is_static {
                         Ok((
-                            AuxImport::StructuralClassGetter(class, field.to_string()),
+                            AuxImport::StructuralClassGetter(class, field.to_aux()),
                             false,
                         ))
                     } else {
-                        Ok((AuxImport::StructuralGetter(field.to_string()), false))
+                        Ok((AuxImport::StructuralGetter(field.to_aux()), false))
                     }
                 } else {
                     let val = if op.is_static {
-                        AuxValue::ClassGetter(class, field.to_string())
+                        AuxValue::ClassGetter(class, field.to_aux())
                     } else {
-                        AuxValue::Getter(class, field.to_string())
+                        AuxValue::Getter(class, field.to_aux())
                     };
                     Ok((AuxImport::Value(val), true))
                 }
@@ -725,17 +726,17 @@ impl<'a> Context<'a> {
                 if structural {
                     if op.is_static {
                         Ok((
-                            AuxImport::StructuralClassSetter(class, field.to_string()),
+                            AuxImport::StructuralClassSetter(class, field.to_aux()),
                             false,
                         ))
                     } else {
-                        Ok((AuxImport::StructuralSetter(field.to_string()), false))
+                        Ok((AuxImport::StructuralSetter(field.to_aux()), false))
                     }
                 } else {
                     let val = if op.is_static {
-                        AuxValue::ClassSetter(class, field.to_string())
+                        AuxValue::ClassSetter(class, field.to_aux())
                     } else {
-                        AuxValue::Setter(class, field.to_string())
+                        AuxValue::Setter(class, field.to_aux())
                     };
                     Ok((AuxImport::Value(val), true))
                 }
@@ -805,7 +806,7 @@ impl<'a> Context<'a> {
 
         // And then save off that this function is is an instanceof shim for an
         // imported item.
-        let import = self.determine_import(import, static_.name)?;
+        let import = self.determine_import(import, NameRef::Identifier(static_.name))?;
         self.aux.import_map.insert(id, AuxImport::Static(import));
         Ok(())
     }
@@ -860,7 +861,7 @@ impl<'a> Context<'a> {
 
         // And then save off that this function is is an instanceof shim for an
         // imported item.
-        let import = self.determine_import(import, type_.name)?;
+        let import = self.determine_import(import, NameRef::Identifier(type_.name))?;
         self.aux
             .import_map
             .insert(id, AuxImport::Instanceof(import));
@@ -923,12 +924,13 @@ impl<'a> Context<'a> {
 
     fn struct_(&mut self, struct_: decode::Struct<'_>) -> Result<(), Error> {
         for field in struct_.fields {
-            let getter = wasm_bindgen_shared::struct_field_get(struct_.name, field.name);
-            let setter = wasm_bindgen_shared::struct_field_set(struct_.name, field.name);
+            let getter = wasm_bindgen_shared::struct_field_get(struct_.name, field.name.as_ref());
+            let setter = wasm_bindgen_shared::struct_field_set(struct_.name, field.name.as_ref());
             let descriptor = match self.descriptors.remove(&getter) {
                 None => continue,
                 Some(d) => d,
             };
+            let debug_name = field.name.as_ref().debug_name();
 
             // Register a webidl transformation for the getter
             let (getter_id, _) = self.function_exports[&getter];
@@ -942,13 +944,13 @@ impl<'a> Context<'a> {
             self.aux.export_map.insert(
                 getter_id,
                 AuxExport {
-                    debug_name: format!("getter for `{}::{}`", struct_.name, field.name),
+                    debug_name: format!("getter for `{}::{}`", struct_.name, debug_name),
                     arg_names: None,
                     asyncness: false,
                     comments: concatenate_comments(&field.comments),
                     kind: AuxExportKind::Method {
                         class: struct_.name.to_string(),
-                        name: field.name.to_string(),
+                        name: field.name.to_aux(),
                         receiver: AuxReceiverKind::Borrowed,
                         kind: AuxExportedMethodKind::Getter,
                     },
@@ -974,13 +976,13 @@ impl<'a> Context<'a> {
             self.aux.export_map.insert(
                 setter_id,
                 AuxExport {
-                    debug_name: format!("setter for `{}::{}`", struct_.name, field.name),
+                    debug_name: format!("setter for `{}::{}`", struct_.name, debug_name),
                     arg_names: None,
                     asyncness: false,
                     comments: concatenate_comments(&field.comments),
                     kind: AuxExportKind::Method {
                         class: struct_.name.to_string(),
-                        name: field.name.to_string(),
+                        name: field.name.to_aux(),
                         receiver: AuxReceiverKind::Borrowed,
                         kind: AuxExportedMethodKind::Setter,
                     },
@@ -1038,57 +1040,66 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    fn determine_import(&self, import: &decode::Import<'_>, item: &str) -> Result<JsImport, Error> {
+    fn determine_import(
+        &self,
+        import: &decode::Import<'_>,
+        item: NameRef,
+    ) -> Result<JsImport, Error> {
         // Similar to `--target no-modules`, only allow vendor prefixes
         // basically for web apis, shouldn't be necessary for things like npm
         // packages or other imported items.
-        let vendor_prefixes = self.vendor_prefixes.get(item);
-        if let Some(vendor_prefixes) = vendor_prefixes {
-            assert!(!vendor_prefixes.is_empty());
+        if let NameRef::Identifier(item) = item {
+            let vendor_prefixes = self.vendor_prefixes.get(item);
+            if let Some(vendor_prefixes) = vendor_prefixes {
+                assert!(!vendor_prefixes.is_empty());
 
-            if let Some(decode::ImportModule::Inline(_) | decode::ImportModule::Named(_)) =
-                &import.module
-            {
-                bail!(
-                    "local JS snippets do not support vendor prefixes for \
+                if let Some(decode::ImportModule::Inline(_) | decode::ImportModule::Named(_)) =
+                    &import.module
+                {
+                    bail!(
+                        "local JS snippets do not support vendor prefixes for \
                      the import of `{}` with a polyfill of `{}`",
-                    item,
-                    &vendor_prefixes[0]
-                );
-            }
-            if let Some(decode::ImportModule::RawNamed(module)) = &import.module {
-                bail!(
-                    "import of `{}` from `{}` has a polyfill of `{}` listed, but
+                        item,
+                        &vendor_prefixes[0]
+                    );
+                }
+                if let Some(decode::ImportModule::RawNamed(module)) = &import.module {
+                    bail!(
+                        "import of `{}` from `{}` has a polyfill of `{}` listed, but
                      vendor prefixes aren't supported when importing from modules",
-                    item,
-                    module,
-                    &vendor_prefixes[0],
-                );
-            }
-            if let Some(ns) = &import.js_namespace {
-                bail!(
-                    "import of `{}` through js namespace `{}` isn't supported \
+                        item,
+                        module,
+                        &vendor_prefixes[0],
+                    );
+                }
+                if let Some(ns) = &import.js_namespace {
+                    bail!(
+                        "import of `{}` through js namespace `{}` isn't supported \
                      right now when it lists a polyfill",
-                    item,
-                    ns.join(".")
-                );
+                        item,
+                        ns.join(".")
+                    );
+                }
+                return Ok(JsImport {
+                    name: JsImportName::VendorPrefixed {
+                        name: item.to_string(),
+                        prefixes: vendor_prefixes.clone(),
+                    },
+                    fields: Vec::new(),
+                });
             }
-            return Ok(JsImport {
-                name: JsImportName::VendorPrefixed {
-                    name: item.to_string(),
-                    prefixes: vendor_prefixes.clone(),
-                },
-                fields: Vec::new(),
-            });
         }
 
         let (name, fields) = match import.js_namespace {
             Some(ref ns) => {
-                let mut tail = ns[1..].to_owned();
-                tail.push(item.to_string());
+                let mut tail: Vec<_> = ns[1..]
+                    .iter()
+                    .map(|s| AuxName::Identifier(s.to_string()))
+                    .collect();
+                tail.push(AuxName::from_ref(item));
                 (ns[0].to_owned(), tail)
             }
-            None => (item.to_owned(), Vec::new()),
+            None => (item.free_function().to_owned(), Vec::new()),
         };
 
         let name = match import.module {
