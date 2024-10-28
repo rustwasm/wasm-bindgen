@@ -10,6 +10,7 @@ use crate::wit::{JsImport, JsImportName, NonstandardWitSection, WasmBindgenAux};
 use crate::{reset_indentation, Bindgen, EncodeInto, OutputMode, PLACEHOLDER_MODULE};
 use anyhow::{anyhow, bail, Context as _, Error};
 use binding::TsReference;
+use file_util::create_load_inline_bytes_snippet;
 use std::borrow::Cow;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fmt;
@@ -19,6 +20,7 @@ use std::path::{Path, PathBuf};
 use walrus::{FunctionId, ImportId, MemoryId, Module, TableId, ValType};
 
 mod binding;
+pub(crate) mod file_util;
 
 pub struct Context<'a> {
     globals: String,
@@ -308,19 +310,14 @@ impl<'a> Context<'a> {
     fn generate_inline_wasm_loading(&mut self) -> String {
         let mut shim = String::new();
 
-        let buf = self.module.emit_wasm();
+        let wasm = self.module.emit_wasm();
 
-        let mut serialized = "const bytes = new Uint8Array([".to_string();
-        let (last, bytes) = buf.split_last().unwrap();
-        for byte in bytes {
-            serialized.push_str(&format!("{},", byte));
-        }
-        serialized.push_str(&format!("{}", last));
-        serialized.push_str("]);");
+        let serialized = create_load_inline_bytes_snippet(&wasm, "bytes".into());
+
         shim.push_str(&serialized);
         shim.push_str(
             "
-                const wasmModule = new WebAssembly.Module(bytes.buffer);
+                const wasmModule = new WebAssembly.Module(bytes);
                 const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
                 wasm = wasmInstance.exports;
                 module.exports.__wasm = wasm;
