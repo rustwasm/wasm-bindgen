@@ -76,13 +76,15 @@ pub fn typescript(module: &Module) -> Result<String, Error> {
     Ok(exports)
 }
 
+/// Iterates over all the exports in a module and generates TypeScript types. All
+/// name-type pairs are passed to the `export` function.
 fn module_export_types(module: &Module, mut export: impl FnMut(&str, &str)) {
     for entry in module.exports.iter() {
         match entry.item {
             walrus::ExportItem::Function(id) => {
                 let func = module.funcs.get(id);
                 let ty = module.types.get(func.ty());
-                let ts_type = get_ts_function_type(ty, args_are_optional(&entry.name));
+                let ts_type = function_type_to_ts(ty, args_are_optional(&entry.name));
                 export(&entry.name, &ts_type);
             }
             walrus::ExportItem::Memory(_) => {
@@ -110,7 +112,7 @@ fn val_type_to_ts(ty: walrus::ValType) -> &'static str {
         walrus::ValType::V128 => "any",
     }
 }
-fn get_ts_function_type(function: &walrus::Type, all_args_optional: bool) -> String {
+fn function_type_to_ts(function: &walrus::Type, all_args_optional: bool) -> String {
     let mut out = String::new();
 
     // parameters
