@@ -87,12 +87,8 @@ fn module_export_types(module: &Module, mut export: impl FnMut(&str, &str)) {
                 let ts_type = function_type_to_ts(ty, args_are_optional(&entry.name));
                 export(&entry.name, &ts_type);
             }
-            walrus::ExportItem::Memory(_) => {
-                export(&entry.name, "WebAssembly.Memory");
-            }
-            walrus::ExportItem::Table(_) => {
-                export(&entry.name, "WebAssembly.Table");
-            }
+            walrus::ExportItem::Memory(_) => export(&entry.name, "WebAssembly.Memory"),
+            walrus::ExportItem::Table(_) => export(&entry.name, "WebAssembly.Table"),
             walrus::ExportItem::Global(_) => continue,
         };
     }
