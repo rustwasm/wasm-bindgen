@@ -24,15 +24,6 @@ function getStringFromWasm0(ptr, len) {
     return cachedTextDecoder.decode(getUint8ArrayMemory0().subarray(ptr, ptr + len));
 }
 
-let cachedDataViewMemory0 = null;
-
-function getDataViewMemory0() {
-    if (cachedDataViewMemory0 === null || cachedDataViewMemory0.buffer.detached === true || (cachedDataViewMemory0.buffer.detached === undefined && cachedDataViewMemory0.buffer !== wasm.memory.buffer)) {
-        cachedDataViewMemory0 = new DataView(wasm.memory.buffer);
-    }
-    return cachedDataViewMemory0;
-}
-
 function isLikeNone(x) {
     return x === undefined || x === null;
 }
@@ -129,61 +120,40 @@ export class Foo {
      * @returns {number | undefined}
      */
     get y() {
-        try {
-            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-            wasm.__wbg_get_foo_y(retptr, this.__wbg_ptr);
-            var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
-            var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
-            return r0 === 0 ? undefined : r1 >>> 0;
-        } finally {
-            wasm.__wbindgen_add_to_stack_pointer(16);
-        }
+        const ret = wasm.__wbg_get_foo_y(this.__wbg_ptr);
+        return ret === 0x100000001 ? undefined : ret;
     }
     /**
-     * @param {number | undefined} [arg0]
+     * @param {number | null} [arg0]
      */
     set y(arg0) {
-        wasm.__wbg_set_foo_y(this.__wbg_ptr, !isLikeNone(arg0), isLikeNone(arg0) ? 0 : arg0);
+        wasm.__wbg_set_foo_y(this.__wbg_ptr, isLikeNone(arg0) ? 0x100000001 : (arg0) >>> 0);
     }
     /**
      * @returns {number | undefined}
      */
     get z() {
-        try {
-            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-            wasm.foo_z(retptr, this.__wbg_ptr);
-            var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
-            var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
-            return r0 === 0 ? undefined : r1 >>> 0;
-        } finally {
-            wasm.__wbindgen_add_to_stack_pointer(16);
-        }
+        const ret = wasm.foo_z(this.__wbg_ptr);
+        return ret === 0x100000001 ? undefined : ret;
     }
     /**
-     * @param {number | undefined} [z]
+     * @param {number | null} [z]
      */
     set z(z) {
-        wasm.foo_set_z(this.__wbg_ptr, !isLikeNone(z), isLikeNone(z) ? 0 : z);
+        wasm.foo_set_z(this.__wbg_ptr, isLikeNone(z) ? 0x100000001 : (z) >>> 0);
     }
     /**
      * @returns {number | undefined}
      */
     get lone_getter() {
-        try {
-            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-            wasm.foo_lone_getter(retptr, this.__wbg_ptr);
-            var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
-            var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
-            return r0 === 0 ? undefined : r1 >>> 0;
-        } finally {
-            wasm.__wbindgen_add_to_stack_pointer(16);
-        }
+        const ret = wasm.foo_lone_getter(this.__wbg_ptr);
+        return ret === 0x100000001 ? undefined : ret;
     }
     /**
-     * @param {number | undefined} [value]
+     * @param {number | null} [value]
      */
     set lone_setter(value) {
-        wasm.foo_set_lone_setter(this.__wbg_ptr, !isLikeNone(value), isLikeNone(value) ? 0 : value);
+        wasm.foo_set_lone_setter(this.__wbg_ptr, isLikeNone(value) ? 0x100000001 : (value) >>> 0);
     }
     /**
      * You will only read numbers.
@@ -197,7 +167,7 @@ export class Foo {
      * But you must write strings.
      *
      * Yes, this is totally fine in JS.
-     * @param {string | undefined} [value]
+     * @param {string | null} [value]
      */
     set weird(value) {
         var ptr0 = isLikeNone(value) ? 0 : passStringToWasm0(value, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
@@ -214,7 +184,7 @@ export class Foo {
         return ret === 0xFFFFFF ? undefined : ret !== 0;
     }
     /**
-     * @param {boolean | undefined} [value]
+     * @param {boolean | null} [value]
      */
     static set x(value) {
         wasm.foo_set_x_static(isLikeNone(value) ? 0xFFFFFF : value ? 1 : 0);
