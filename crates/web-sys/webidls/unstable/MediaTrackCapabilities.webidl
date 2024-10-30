@@ -7,6 +7,10 @@
  * https://w3c.github.io/mediacapture-main/#dom-mediatrackcapabilities
  */
 
+partial interface MediaStreamTrack {
+  MediaTrackCapabilities getCapabilities ();
+};
+
 dictionary ULongRange {
   [Clamp] unsigned long max;
   [Clamp] unsigned long min;
@@ -33,4 +37,5 @@ dictionary MediaTrackCapabilities {
   ULongRange channelCount;
   DOMString deviceId;
   DOMString groupId;
+  sequence<boolean> backgroundBlur;
 };

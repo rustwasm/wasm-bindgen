@@ -17,6 +17,9 @@
 * Added support for C-style enums with negative discriminants.
   [#4204](https://github.com/rustwasm/wasm-bindgen/pull/4204)
 
+* Added bindings for `MediaStreamTrack.getCapabilities`.
+  [#4236](https://github.com/rustwasm/wasm-bindgen/pull/4236)
+
 ### Changed
 
 * String enums now generate private TypeScript types but only if used.

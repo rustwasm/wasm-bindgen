@@ -129,6 +129,18 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`*"]
     pub fn clone(this: &MediaStreamTrack) -> MediaStreamTrack;
+    #[cfg(web_sys_unstable_apis)]
+    #[cfg(feature = "MediaTrackCapabilities")]
+    # [wasm_bindgen (method , structural , js_class = "MediaStreamTrack" , js_name = getCapabilities)]
+    #[doc = "The `getCapabilities()` method."]
+    #[doc = ""]
+    #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/getCapabilities)"]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`, `MediaTrackCapabilities`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    pub fn get_capabilities(this: &MediaStreamTrack) -> MediaTrackCapabilities;
     #[cfg(feature = "MediaTrackConstraints")]
     # [wasm_bindgen (method , structural , js_class = "MediaStreamTrack" , js_name = getConstraints)]
     #[doc = "The `getConstraints()` method."]
