@@ -4,6 +4,6 @@
   (memory (;0;) 17)
   (export "memory" (memory 0))
   (export "nop" (func $nop))
-  (@custom "target_features" (after code) "\02+\0fmutable-globals+\08sign-ext")
+  (@custom "target_features" (after code) "\04+\0amultivalue+\0fmutable-globals+\0freference-types+\08sign-ext")
 )
 
