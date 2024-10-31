@@ -125,6 +125,7 @@ impl Bindgen {
         self
     }
 
+    #[deprecated = "automatically detected via `-Ctarget-feature=+reference-types`"]
     pub fn reference_types(&mut self, enable: bool) -> &mut Bindgen {
         self.externref = enable;
         self
