@@ -42,7 +42,8 @@ export function takes_js_value(a) {
 
 We can see here how under the hood the JS is managing a table of JS values which
 are passed to the Wasm binary, so Wasm actually only works in indices. If we
-pass the `--reference-types` flag to the CLI, however, the generated JS looks like:
+compile with `-Ctarget-feature=+reference-types` (by default since Rust v1.82),
+however, the generated JS looks like:
 
 ```js
 export function takes_js_value(a) {

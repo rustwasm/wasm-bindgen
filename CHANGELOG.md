@@ -31,6 +31,12 @@
 * Optimized ABI performance for `Option<{i32,u32,isize,usize,f32,*const T,*mut T}>`.
   [#4183](https://github.com/rustwasm/wasm-bindgen/pull/4183)
 
+* Reference type proposal transformations are not applied by default when detecting it in the Wasm module for the bundler target because currently `webpack` doesn't support it.
+  [#4235](https://github.com/rustwasm/wasm-bindgen/pull/4235)
+
+* Deprecate `--reference-types` in favor of automatic target feature detection.
+  [#4237](https://github.com/rustwasm/wasm-bindgen/pull/4237)
+
 ### Fixed
 
 * Fixed methods with `self: &Self` consuming the object.
@@ -47,6 +53,18 @@
 
 * Fixed potential `null` error when using `JsValue::as_debug_string()`.
   [#4192](https://github.com/rustwasm/wasm-bindgen/pull/4192)
+
+* Fixed generated types when the getter and setter of a property have different types.
+  [#4202](https://github.com/rustwasm/wasm-bindgen/pull/4202)
+
+* Fixed generated types when a static getter/setter has the same name as an instance getter/setter.
+  [#4202](https://github.com/rustwasm/wasm-bindgen/pull/4202)
+
+* Fixed invalid TypeScript return types for multivalue signatures.
+  [#4210](https://github.com/rustwasm/wasm-bindgen/pull/4210)
+
+* Only emit `table.fill` instructions if the bulk-memory proposal is enabled.
+  [#4237](https://github.com/rustwasm/wasm-bindgen/pull/4237)
 
 --------------------------------------------------------------------------------
 
