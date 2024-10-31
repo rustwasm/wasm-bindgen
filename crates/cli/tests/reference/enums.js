@@ -67,22 +67,28 @@ export function option_string_enum_echo(color) {
  * @enum {0 | 1 | 2}
  */
 export const Color = Object.freeze({
-/**
- * Green as a leaf.
- */
-Green:0,"0":"Green",
-/**
- * Yellow as the sun.
- */
-Yellow:1,"1":"Yellow",
-/**
- * Red as a rose.
- */
-Red:2,"2":"Red", });
+    /**
+     * Green as a leaf.
+     */
+    Green: 0, "0": "Green",
+    /**
+     * Yellow as the sun.
+     */
+    Yellow: 1, "1": "Yellow",
+    /**
+     * Red as a rose.
+     */
+    Red: 2, "2": "Red",
+});
 /**
  * @enum {0 | 1 | 42 | 43}
  */
-export const ImplicitDiscriminant = Object.freeze({ A:0,"0":"A",B:1,"1":"B",C:42,"42":"C",D:43,"43":"D", });
+export const ImplicitDiscriminant = Object.freeze({
+    A: 0, "0": "A",
+    B: 1, "1": "B",
+    C: 42, "42": "C",
+    D: 43, "43": "D",
+});
 
 const __wbindgen_enum_ColorName = ["green", "yellow", "red"];
 

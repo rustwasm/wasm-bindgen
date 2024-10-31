@@ -20,6 +20,6 @@
   (export "test_self_Self" (func $test_self_Self))
   (export "test_self_ref_Self" (func $test_self_ref_Self))
   (export "test_self_ref_mut_Self" (func $test_self_ref_mut_Self))
-  (@custom "target_features" (after code) "\02+\0fmutable-globals+\08sign-ext")
+  (@custom "target_features" (after code) "\04+\0amultivalue+\0fmutable-globals+\0freference-types+\08sign-ext")
 )
 
