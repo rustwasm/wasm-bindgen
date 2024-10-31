@@ -54,6 +54,9 @@
 * Fixed generated types when a static getter/setter has the same name as an instance getter/setter.
   [#4202](https://github.com/rustwasm/wasm-bindgen/pull/4202)
 
+* Fixed invalid TypeScript return types for multivalue signatures.
+  [#4210](https://github.com/rustwasm/wasm-bindgen/pull/4210)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.95](https://github.com/rustwasm/wasm-bindgen/compare/0.2.94...0.2.95)
