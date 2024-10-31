@@ -323,17 +323,13 @@ export function echo_string(a) {
     let deferred2_0;
     let deferred2_1;
     try {
-        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
         const ptr0 = passStringToWasm0(a, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.echo_string(retptr, ptr0, len0);
-        var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
-        var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
-        deferred2_0 = r0;
-        deferred2_1 = r1;
-        return getStringFromWasm0(r0, r1);
+        const ret = wasm.echo_string(ptr0, len0);
+        deferred2_0 = ret[0];
+        deferred2_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
     } finally {
-        wasm.__wbindgen_add_to_stack_pointer(16);
         wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
     }
 }
@@ -354,19 +350,12 @@ function getArrayU8FromWasm0(ptr, len) {
  * @returns {Uint8Array}
  */
 export function echo_vec_u8(a) {
-    try {
-        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-        const ptr0 = passArray8ToWasm0(a, wasm.__wbindgen_malloc);
-        const len0 = WASM_VECTOR_LEN;
-        wasm.echo_vec_u8(retptr, ptr0, len0);
-        var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
-        var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
-        var v2 = getArrayU8FromWasm0(r0, r1).slice();
-        wasm.__wbindgen_free(r0, r1 * 1, 1);
-        return v2;
-    } finally {
-        wasm.__wbindgen_add_to_stack_pointer(16);
-    }
+    const ptr0 = passArray8ToWasm0(a, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.echo_vec_u8(ptr0, len0);
+    var v2 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+    wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+    return v2;
 }
 
 function _assertClass(instance, klass) {
@@ -409,19 +398,12 @@ function getArrayJsValueFromWasm0(ptr, len) {
  * @returns {(Foo)[]}
  */
 export function echo_vec_struct(a) {
-    try {
-        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-        const ptr0 = passArrayJsValueToWasm0(a, wasm.__wbindgen_malloc);
-        const len0 = WASM_VECTOR_LEN;
-        wasm.echo_vec_struct(retptr, ptr0, len0);
-        var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
-        var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
-        var v2 = getArrayJsValueFromWasm0(r0, r1).slice();
-        wasm.__wbindgen_free(r0, r1 * 4, 4);
-        return v2;
-    } finally {
-        wasm.__wbindgen_add_to_stack_pointer(16);
-    }
+    const ptr0 = passArrayJsValueToWasm0(a, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.echo_vec_struct(ptr0, len0);
+    var v2 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
+    wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+    return v2;
 }
 
 function isLikeNone(x) {
@@ -486,15 +468,8 @@ export function echo_option_i32(a) {
  * @returns {bigint | undefined}
  */
 export function echo_option_u64(a) {
-    try {
-        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-        wasm.echo_option_u64(retptr, !isLikeNone(a), isLikeNone(a) ? BigInt(0) : a);
-        var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
-        var r2 = getDataViewMemory0().getBigInt64(retptr + 8 * 1, true);
-        return r0 === 0 ? undefined : BigInt.asUintN(64, r2);
-    } finally {
-        wasm.__wbindgen_add_to_stack_pointer(16);
-    }
+    const ret = wasm.echo_option_u64(!isLikeNone(a), isLikeNone(a) ? BigInt(0) : a);
+    return ret[0] === 0 ? undefined : BigInt.asUintN(64, ret[1]);
 }
 
 /**
@@ -502,15 +477,8 @@ export function echo_option_u64(a) {
  * @returns {bigint | undefined}
  */
 export function echo_option_i64(a) {
-    try {
-        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-        wasm.echo_option_i64(retptr, !isLikeNone(a), isLikeNone(a) ? BigInt(0) : a);
-        var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
-        var r2 = getDataViewMemory0().getBigInt64(retptr + 8 * 1, true);
-        return r0 === 0 ? undefined : r2;
-    } finally {
-        wasm.__wbindgen_add_to_stack_pointer(16);
-    }
+    const ret = wasm.echo_option_i64(!isLikeNone(a), isLikeNone(a) ? BigInt(0) : a);
+    return ret[0] === 0 ? undefined : ret[1];
 }
 
 /**
@@ -545,15 +513,8 @@ export function echo_option_f32(a) {
  * @returns {number | undefined}
  */
 export function echo_option_f64(a) {
-    try {
-        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-        wasm.echo_option_f64(retptr, !isLikeNone(a), isLikeNone(a) ? 0 : a);
-        var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
-        var r2 = getDataViewMemory0().getFloat64(retptr + 8 * 1, true);
-        return r0 === 0 ? undefined : r2;
-    } finally {
-        wasm.__wbindgen_add_to_stack_pointer(16);
-    }
+    const ret = wasm.echo_option_f64(!isLikeNone(a), isLikeNone(a) ? 0 : a);
+    return ret[0] === 0 ? undefined : ret[1];
 }
 
 /**
@@ -571,9 +532,9 @@ export function echo_option_bool(a) {
  */
 export function echo_option_char(a) {
     const char0 = isLikeNone(a) ? 0xFFFFFF : a.codePointAt(0);
-if (char0 !== 0xFFFFFF) { _assertChar(char0); }
-const ret = wasm.echo_option_char(char0);
-return ret === 0xFFFFFF ? undefined : String.fromCodePoint(ret);
+    if (char0 !== 0xFFFFFF) { _assertChar(char0); }
+    const ret = wasm.echo_option_char(char0);
+    return ret === 0xFFFFFF ? undefined : String.fromCodePoint(ret);
 }
 
 /**
@@ -581,22 +542,15 @@ return ret === 0xFFFFFF ? undefined : String.fromCodePoint(ret);
  * @returns {string | undefined}
  */
 export function echo_option_string(a) {
-    try {
-        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-        var ptr0 = isLikeNone(a) ? 0 : passStringToWasm0(a, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        var len0 = WASM_VECTOR_LEN;
-        wasm.echo_option_string(retptr, ptr0, len0);
-        var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
-        var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
-        let v2;
-        if (r0 !== 0) {
-            v2 = getStringFromWasm0(r0, r1).slice();
-            wasm.__wbindgen_free(r0, r1 * 1, 1);
-        }
-        return v2;
-    } finally {
-        wasm.__wbindgen_add_to_stack_pointer(16);
+    var ptr0 = isLikeNone(a) ? 0 : passStringToWasm0(a, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    var len0 = WASM_VECTOR_LEN;
+    const ret = wasm.echo_option_string(ptr0, len0);
+    let v2;
+    if (ret[0] !== 0) {
+        v2 = getStringFromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
     }
+    return v2;
 }
 
 /**
@@ -604,22 +558,15 @@ export function echo_option_string(a) {
  * @returns {Uint8Array | undefined}
  */
 export function echo_option_vec_u8(a) {
-    try {
-        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-        var ptr0 = isLikeNone(a) ? 0 : passArray8ToWasm0(a, wasm.__wbindgen_malloc);
-        var len0 = WASM_VECTOR_LEN;
-        wasm.echo_option_vec_u8(retptr, ptr0, len0);
-        var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
-        var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
-        let v2;
-        if (r0 !== 0) {
-            v2 = getArrayU8FromWasm0(r0, r1).slice();
-            wasm.__wbindgen_free(r0, r1 * 1, 1);
-        }
-        return v2;
-    } finally {
-        wasm.__wbindgen_add_to_stack_pointer(16);
+    var ptr0 = isLikeNone(a) ? 0 : passArray8ToWasm0(a, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    const ret = wasm.echo_option_vec_u8(ptr0, len0);
+    let v2;
+    if (ret[0] !== 0) {
+        v2 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
     }
+    return v2;
 }
 
 /**
@@ -641,22 +588,15 @@ export function echo_option_struct(a) {
  * @returns {(Foo)[] | undefined}
  */
 export function echo_option_vec_struct(a) {
-    try {
-        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-        var ptr0 = isLikeNone(a) ? 0 : passArrayJsValueToWasm0(a, wasm.__wbindgen_malloc);
-        var len0 = WASM_VECTOR_LEN;
-        wasm.echo_option_vec_struct(retptr, ptr0, len0);
-        var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
-        var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
-        let v2;
-        if (r0 !== 0) {
-            v2 = getArrayJsValueFromWasm0(r0, r1).slice();
-            wasm.__wbindgen_free(r0, r1 * 4, 4);
-        }
-        return v2;
-    } finally {
-        wasm.__wbindgen_add_to_stack_pointer(16);
+    var ptr0 = isLikeNone(a) ? 0 : passArrayJsValueToWasm0(a, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    const ret = wasm.echo_option_vec_struct(ptr0, len0);
+    let v2;
+    if (ret[0] !== 0) {
+        v2 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
     }
+    return v2;
 }
 
 const FooFinalization = (typeof FinalizationRegistry === 'undefined')
