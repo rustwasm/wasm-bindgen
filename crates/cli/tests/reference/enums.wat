@@ -11,6 +11,7 @@
   (export "option_enum_echo" (func $option_enum_echo))
   (export "get_name" (func $get_name))
   (export "option_string_enum_echo" (func $option_string_enum_echo))
+  (export "option_order" (func $option_order))
   (@custom "target_features" (after code) "\04+\0amultivalue+\0fmutable-globals+\0freference-types+\08sign-ext")
 )
 

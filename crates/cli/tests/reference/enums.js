@@ -98,6 +98,15 @@ export const ImplicitDiscriminant = Object.freeze({
     C: 42, "42": "C",
     D: 43, "43": "D",
 });
+/**
+ * A C-style enum with negative discriminants.
+ * @enum {-1 | 0 | 1}
+ */
+export const Ordering = Object.freeze({
+    Less: -1, "-1": "Less",
+    Equal: 0, "0": "Equal",
+    Greater: 1, "1": "Greater",
+});
 
 const __wbindgen_enum_ColorName = ["green", "yellow", "red"];
 
