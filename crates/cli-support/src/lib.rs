@@ -502,8 +502,8 @@ fn reset_indentation(s: &str) -> String {
     for line in s.lines() {
         let line = line.trim();
 
+        // handle doc comments separately
         if is_doc_comment(line) {
-            // handle doc comments separately
             for _ in 0..indent {
                 dst.push_str("    ");
             }
