@@ -1544,7 +1544,7 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
         } else {
             u32::MAX as i64
         };
-        let hole = (0..max + 1)
+        let hole = (0..=max)
             .find(|v| !discriminant_map.contains_key(v))
             .unwrap() as u32;
 
