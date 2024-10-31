@@ -63,6 +63,9 @@
 * Only emit `table.fill` instructions if the bulk-memory proposal is enabled.
   [#4237](https://github.com/rustwasm/wasm-bindgen/pull/4237)
 
+* Fixed calls to `JsCast::instanceof()` not respecting JavaScript namespaces.
+  [#4241](https://github.com/rustwasm/wasm-bindgen/pull/4241)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.95](https://github.com/rustwasm/wasm-bindgen/compare/0.2.94...0.2.95)
