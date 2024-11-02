@@ -40,7 +40,7 @@ Options:
     --web                        Deprecated, use `--target web`
     --no-modules                 Deprecated, use `--target no-modules`
     --weak-refs                  Deprecated, is runtime-detected
-    --reference-types            Enable usage of WebAssembly reference types
+    --reference-types            Deprecated, use `-Ctarget-feature=+reference-types`
     -V --version                 Print the version number of wasm-bindgen
 
 Additional documentation: https://rustwasm.github.io/wasm-bindgen/reference/cli.html
@@ -129,6 +129,7 @@ fn rmain(args: &Args) -> Result<(), Error> {
         .omit_default_module_path(args.flag_omit_default_module_path)
         .split_linked_modules(args.flag_split_linked_modules);
     if let Some(true) = args.flag_reference_types {
+        #[allow(deprecated)]
         b.reference_types(true);
     }
     if let Some(ref name) = args.flag_no_modules_global {
