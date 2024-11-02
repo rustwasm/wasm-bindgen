@@ -708,7 +708,11 @@ impl ConvertToAst<(&ast::Program, BindgenAttrs)> for syn::ForeignItemType {
             .map_or_else(|| self.ident.to_string(), |s| s.to_string());
         let typescript_type = attrs.typescript_type().map(|s| s.0.to_string());
         let is_type_of = attrs.is_type_of().cloned();
-        let shim = format!("__wbg_instanceof_{}_{}", self.ident, ShortHash(&self.ident));
+        let shim = format!(
+            "__wbg_instanceof_{}_{}",
+            self.ident,
+            ShortHash((attrs.js_namespace().map(|(ns, _)| ns), &self.ident))
+        );
         let mut extends = Vec::new();
         let mut vendor_prefixes = Vec::new();
         let no_deref = attrs.no_deref().is_some();
