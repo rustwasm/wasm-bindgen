@@ -4,7 +4,7 @@
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | Yes | No | No | Yes | Yes | Yes | A JavaScript `TypedArray` of the appropriate type (`Int32Array`, `Uint8Array`, etc...) |
 
-Note that the contents of the slice are copied into the JavaScript `TypedArray`
+Note that the contents of the slice are copied into the JavaScript [`TypedArray`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray)
 from the Wasm linear memory when returning a boxed slice to JavaScript, and vice
 versa when receiving a JavaScript `TypedArray` as a boxed slice in Rust.
 
