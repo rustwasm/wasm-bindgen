@@ -34,8 +34,7 @@
     call $a
     local.get 5
     ref.null extern
-    i32.const 1
-    table.fill 0
+    table.set 0
     local.get 5
     i32.const 1
     i32.add
