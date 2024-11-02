@@ -12,5 +12,5 @@ error[E0277]: the trait bound `Result<wasm_bindgen::JsValue, wasm_bindgen::JsVal
             i16
             i32
             i64
-            usize
+            i128
           and $N others

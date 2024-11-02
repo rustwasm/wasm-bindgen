@@ -12,6 +12,6 @@ error[E0277]: the trait bound `A: IntoWasmAbi` is not satisfied
             i16
             i32
             i64
-            usize
+            i128
           and $N others
   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
