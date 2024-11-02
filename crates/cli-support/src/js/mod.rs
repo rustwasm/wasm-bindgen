@@ -81,7 +81,7 @@ pub struct Context<'a> {
 }
 
 #[derive(Default)]
-pub struct ExportedClass {
+struct ExportedClass {
     comments: String,
     contents: String,
     /// The TypeScript for the class's methods.
@@ -95,9 +95,29 @@ pub struct ExportedClass {
     is_inspectable: bool,
     /// All readable properties of the class
     readable_properties: Vec<String>,
-    /// Map from field name to type as a string, docs plus whether it has a setter,
-    /// whether it's optional and whether it's static.
-    typescript_fields: HashMap<String, (String, String, bool, bool, bool)>,
+    /// Map from field to information about those fields
+    typescript_fields: HashMap<FieldLocation, FieldInfo>,
+}
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+struct FieldLocation {
+    name: String,
+    is_static: bool,
+}
+#[derive(Debug)]
+struct FieldInfo {
+    name: String,
+    is_static: bool,
+    order: usize,
+    getter: Option<FieldAccessor>,
+    setter: Option<FieldAccessor>,
+}
+/// A getter or setter for a field.
+#[derive(Debug)]
+struct FieldAccessor {
+    ty: String,
+    docs: String,
+    is_optional: bool,
 }
 
 const INITIAL_HEAP_VALUES: &[&str] = &["undefined", "null", "true", "false"];
@@ -1130,27 +1150,8 @@ __wbg_set_wasm(wasm);"
         dst.push_str(&class.contents);
         ts_dst.push_str(&class.typescript);
 
-        let mut fields = class.typescript_fields.keys().collect::<Vec<_>>();
-        fields.sort(); // make sure we have deterministic output
-        for name in fields {
-            let (ty, docs, has_setter, is_optional, is_static) = &class.typescript_fields[name];
-            ts_dst.push_str(docs);
-            ts_dst.push_str("  ");
-            if *is_static {
-                ts_dst.push_str("static ");
-            }
-            if !has_setter {
-                ts_dst.push_str("readonly ");
-            }
-            ts_dst.push_str(name);
-            if *is_optional {
-                ts_dst.push_str("?: ");
-            } else {
-                ts_dst.push_str(": ");
-            }
-            ts_dst.push_str(ty);
-            ts_dst.push_str(";\n");
-        }
+        self.write_class_field_types(class, &mut ts_dst);
+
         dst.push_str("}\n");
         ts_dst.push_str("}\n");
 
@@ -1162,6 +1163,124 @@ __wbg_set_wasm(wasm);"
         }
 
         Ok(())
+    }
+
+    fn write_class_field_types(&mut self, class: &ExportedClass, ts_dst: &mut String) {
+        let mut fields: Vec<&FieldInfo> = class.typescript_fields.values().collect();
+        fields.sort_by_key(|f| f.order); // make sure we have deterministic output
+
+        for FieldInfo {
+            name,
+            is_static,
+            getter,
+            setter,
+            ..
+        } in fields
+        {
+            let is_static = if *is_static { "static " } else { "" };
+
+            let write_docs = |ts_dst: &mut String, docs: &str| {
+                if docs.is_empty() {
+                    return;
+                }
+                // indent by 2 spaces
+                for line in docs.lines() {
+                    ts_dst.push_str("  ");
+                    ts_dst.push_str(line);
+                    ts_dst.push('\n');
+                }
+            };
+            let write_getter = |ts_dst: &mut String, getter: &FieldAccessor| {
+                write_docs(ts_dst, &getter.docs);
+                ts_dst.push_str("  ");
+                ts_dst.push_str(is_static);
+                ts_dst.push_str("get ");
+                ts_dst.push_str(name);
+                ts_dst.push_str("(): ");
+                ts_dst.push_str(&getter.ty);
+                ts_dst.push_str(";\n");
+            };
+            let write_setter = |ts_dst: &mut String, setter: &FieldAccessor| {
+                write_docs(ts_dst, &setter.docs);
+                ts_dst.push_str("  ");
+                ts_dst.push_str(is_static);
+                ts_dst.push_str("set ");
+                ts_dst.push_str(name);
+                ts_dst.push_str("(value: ");
+                ts_dst.push_str(&setter.ty);
+                if setter.is_optional {
+                    ts_dst.push_str(" | undefined");
+                }
+                ts_dst.push_str(");\n");
+            };
+
+            match (getter, setter) {
+                (None, None) => unreachable!("field without getter or setter"),
+                (Some(getter), None) => {
+                    // readonly property
+                    write_docs(ts_dst, &getter.docs);
+                    ts_dst.push_str("  ");
+                    ts_dst.push_str(is_static);
+                    ts_dst.push_str("readonly ");
+                    ts_dst.push_str(name);
+                    ts_dst.push_str(if getter.is_optional { "?: " } else { ": " });
+                    ts_dst.push_str(&getter.ty);
+                    ts_dst.push_str(";\n");
+                }
+                (None, Some(setter)) => {
+                    // write-only property
+
+                    // Note: TypeScript does not handle the types of write-only
+                    // properties correctly and will allow reads from write-only
+                    // properties. This isn't a wasm-bindgen issue, but a
+                    // TypeScript issue.
+                    write_setter(ts_dst, setter);
+                }
+                (Some(getter), Some(setter)) => {
+                    // read-write property
+
+                    // Here's the tricky part. The getter and setter might have
+                    // different types. Obviously, we can only declare a
+                    // property as `foo: T` if both the getter and setter have
+                    // the same type `T`. If they don't, we have to declare the
+                    // getter and setter separately.
+
+                    // We current generate types for optional arguments and
+                    // return values differently. This is why for the field
+                    // `foo: Option<T>`, the setter will have type `T` with
+                    // `is_optional` set, while the getter has type
+                    // `T | undefined`. Because of this difference, we have to
+                    // "normalize" the type of the setter.
+                    let same_type = if setter.is_optional {
+                        getter.ty == setter.ty.clone() + " | undefined"
+                    } else {
+                        getter.ty == setter.ty
+                    };
+
+                    if same_type {
+                        // simple property, e.g. foo: T
+
+                        // Prefer the docs of the getter over the setter's
+                        let docs = if !getter.docs.is_empty() {
+                            &getter.docs
+                        } else {
+                            &setter.docs
+                        };
+                        write_docs(ts_dst, docs);
+                        ts_dst.push_str("  ");
+                        ts_dst.push_str(is_static);
+                        ts_dst.push_str(name);
+                        ts_dst.push_str(if setter.is_optional { "?: " } else { ": " });
+                        ts_dst.push_str(&setter.ty);
+                        ts_dst.push_str(";\n");
+                    } else {
+                        // separate getter and setter
+                        write_getter(ts_dst, getter);
+                        write_setter(ts_dst, setter);
+                    }
+                }
+            };
+        }
     }
 
     fn expose_drop_ref(&mut self) {
@@ -2743,16 +2862,18 @@ __wbg_set_wasm(wasm);"
                                 prefix += "get ";
                                 // For getters and setters, we generate a separate TypeScript definition.
                                 if export.generate_typescript {
-                                    exported.push_accessor_ts(
-                                        &ts_docs,
-                                        name,
+                                    let location = FieldLocation {
+                                        name: name.clone(),
+                                        is_static: receiver.is_static(),
+                                    };
+                                    let accessor = FieldAccessor {
                                         // This is only set to `None` when generating a constructor.
-                                        ts_ret_ty
-                                            .as_deref()
-                                            .expect("missing return type for getter"),
-                                        false,
-                                        receiver.is_static(),
-                                    );
+                                        ty: ts_ret_ty.expect("missing return type for getter"),
+                                        docs: ts_docs.clone(),
+                                        is_optional: false,
+                                    };
+
+                                    exported.push_accessor_ts(location, accessor, false);
                                 }
                                 // Add the getter to the list of readable fields (used to generate `toJSON`)
                                 exported.readable_properties.push(name.clone());
@@ -2762,15 +2883,17 @@ __wbg_set_wasm(wasm);"
                             AuxExportedMethodKind::Setter => {
                                 prefix += "set ";
                                 if export.generate_typescript {
-                                    let is_optional = exported.push_accessor_ts(
-                                        &ts_docs,
-                                        name,
-                                        &ts_arg_tys[0],
-                                        true,
-                                        receiver.is_static(),
-                                    );
-                                    // Set whether the field is optional.
-                                    *is_optional = might_be_optional_field;
+                                    let location = FieldLocation {
+                                        name: name.clone(),
+                                        is_static: receiver.is_static(),
+                                    };
+                                    let accessor = FieldAccessor {
+                                        ty: ts_arg_tys[0].clone(),
+                                        docs: ts_docs.clone(),
+                                        is_optional: might_be_optional_field,
+                                    };
+
+                                    exported.push_accessor_ts(location, accessor, true);
                                 }
                                 None
                             }
@@ -3802,12 +3925,9 @@ __wbg_set_wasm(wasm);"
             } else {
                 format_doc_comments(comments, None)
             };
-            if !variant_docs.is_empty() {
-                variants.push('\n');
-                variants.push_str(&variant_docs);
-            }
-            variants.push_str(&format!("{}:{},", name, value));
-            variants.push_str(&format!("\"{}\":\"{}\",", value, name));
+            variants.push_str(&variant_docs);
+            variants.push_str(&format!("{}: {}, ", name, value));
+            variants.push_str(&format!("\"{}\": \"{}\",\n", value, name));
             if enum_.generate_typescript {
                 self.typescript.push('\n');
                 if !variant_docs.is_empty() {
@@ -3837,7 +3957,7 @@ __wbg_set_wasm(wasm);"
 
         self.export(
             &enum_.name,
-            &format!("Object.freeze({{ {} }})", variants),
+            &format!("Object.freeze({{\n{}}})", variants),
             Some(&docs),
         )?;
 
@@ -4442,26 +4562,29 @@ impl ExportedClass {
         }
     }
 
-    #[allow(clippy::assigning_clones)] // Clippy's suggested fix doesn't work at MSRV.
     fn push_accessor_ts(
         &mut self,
-        docs: &str,
-        field: &str,
-        ty: &str,
+        location: FieldLocation,
+        accessor: FieldAccessor,
         is_setter: bool,
-        is_static: bool,
-    ) -> &mut bool {
-        let (ty_dst, accessor_docs, has_setter, is_optional, is_static_dst) =
-            self.typescript_fields.entry(field.to_string()).or_default();
+    ) {
+        let size = self.typescript_fields.len();
+        let field = self
+            .typescript_fields
+            .entry(location)
+            .or_insert_with_key(|location| FieldInfo {
+                name: location.name.to_string(),
+                is_static: location.is_static,
+                order: size,
+                getter: None,
+                setter: None,
+            });
 
-        *ty_dst = ty.to_string();
-        // Deterministic output: always use the getter's docs if available
-        if !docs.is_empty() && (accessor_docs.is_empty() || !is_setter) {
-            *accessor_docs = docs.to_owned();
+        if is_setter {
+            field.setter = Some(accessor);
+        } else {
+            field.getter = Some(accessor);
         }
-        *has_setter |= is_setter;
-        *is_static_dst = is_static;
-        is_optional
     }
 }
 
