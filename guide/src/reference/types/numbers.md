@@ -49,7 +49,7 @@ This is the same behavior as assigning the JavaScript `BigInt` to a [typed array
 
 The JavaScript `Number` is converted to a Rust `f32` using the same rules as [casting](https://doc.rust-lang.org/reference/expressions/operator-expr.html#numeric-cast) `f64` to `f32` in Rust, i.e. `value_f64 as f32`.
 
-This is the same behavior as assigning the JavaScript `Number` to a [`Float32Array`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array) in JavaScript, i.e. `new Float32Array([value])[0]`.
+This is the same behavior as [`Math.fround`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/fround) or assigning the JavaScript `Number` to a [`Float32Array`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array) in JavaScript, i.e. `new Float32Array([value])[0]`.
 
 ### `Number` to `f64`
 
