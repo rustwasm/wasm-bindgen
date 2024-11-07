@@ -47,7 +47,7 @@ fn main() -> Result<()> {
     let filter = env::args().nth(1);
 
     let mut tests = Vec::new();
-    let dir = env::current_dir()?.join("tests/reference");
+    let dir = repo_root().join("crates/cli/tests/reference");
     for entry in dir.read_dir()? {
         let path = entry?.path();
         if path.extension().and_then(|s| s.to_str()) != Some("rs") {
@@ -248,19 +248,15 @@ fn diff(a: &str, b: &str) -> Result<()> {
 }
 
 fn target_dir() -> PathBuf {
-    let mut dir = env::current_exe().unwrap();
-    dir.pop(); // current exe
-    if dir.ends_with("deps") {
-        dir.pop();
-    }
-    dir.pop(); // debug and/or release
-    dir
+    repo_root().join("target/tests/reference")
 }
 
 fn repo_root() -> PathBuf {
     let mut repo_root = env::current_dir().unwrap();
-    repo_root.pop(); // remove 'cli'
-    repo_root.pop(); // remove 'crates'
+    if repo_root.file_name() == Some("cli".as_ref()) {
+        repo_root.pop(); // remove 'cli'
+        repo_root.pop(); // remove 'crates'
+    }
     repo_root
 }
 
