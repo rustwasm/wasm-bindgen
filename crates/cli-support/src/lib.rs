@@ -325,10 +325,7 @@ impl Bindgen {
         };
 
         // Enable reference type transformations if the module is already using it.
-        // Currently `webpack` does not support reference types.
-        if !matches!(self.mode, OutputMode::Bundler { .. })
-            && wasm_bindgen_wasm_conventions::target_feature(&module, "reference-types").ok()
-                == Some(true)
+        if let Ok(true) = wasm_bindgen_wasm_conventions::target_feature(&module, "reference-types")
         {
             self.externref = true;
         }
