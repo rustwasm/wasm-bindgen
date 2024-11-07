@@ -9,6 +9,11 @@
 //! compilation. Use `BLESS=1` in the environment to automatically update all
 //! tests.
 //!
+//! Note: Tests are run sequentially. In CI, tests are run ordered by name and
+//! all tests will be run to show all errors. Outside of CI, recently modified
+//! tests are run first and the runner will stop on the first failure. This is
+//! done to make it faster to iterate on tests.
+//!
 //! ## Dependencies
 //!
 //! By default, tests only have access to the `wasm-bindgen` and
@@ -57,15 +62,32 @@ fn main() -> Result<()> {
     }
     tests.sort();
 
-    let errs = tests
-        .iter()
-        .filter_map(|t| runtest(t).err().map(|e| (t, e)))
-        .collect::<Vec<_>>();
+    let is_ci = env::var("CI").is_ok();
+    if !is_ci {
+        // sort test files by when they were last modified, so that we run the most
+        // recently modified tests first. This just makes iterating on tests a bit
+        // easier.
+        tests.sort_by_cached_key(|p| fs::metadata(p).unwrap().modified().unwrap());
+        tests.reverse();
+    }
 
-    if errs.is_empty() {
+    let mut errs_iter = tests
+        .iter()
+        .filter_map(|t| runtest(t).err().map(|e| (t, e)));
+
+    let first_error = errs_iter.next();
+    if first_error.is_none() {
         println!("{} tests passed", tests.len());
         return Ok(());
     }
+
+    let mut errs = vec![first_error.unwrap()];
+    if is_ci {
+        // one error should be enough for local testing to ensure fast iteration
+        // only find all errors in CI
+        errs.extend(errs_iter);
+    }
+
     eprintln!("failed tests:\n");
     for (test, err) in errs {
         eprintln!("{} failure\n{}", test.display(), tab(&format!("{:?}", err)));
@@ -74,6 +96,8 @@ fn main() -> Result<()> {
 }
 
 fn runtest(test: &Path) -> Result<()> {
+    println!("Running {}", test.file_name().unwrap().to_string_lossy());
+
     let contents = fs::read_to_string(test)?;
     let td = tempfile::TempDir::new()?;
     let root = repo_root();
