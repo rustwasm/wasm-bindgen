@@ -39,7 +39,6 @@ use anyhow::{bail, Result};
 use assert_cmd::prelude::*;
 use std::env;
 use std::fs;
-use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use walrus::ModuleConfig;
@@ -73,12 +72,8 @@ fn main() -> Result<()> {
     }
 
     let mut errs_iter = tests.iter().filter_map(|t| {
-        let name = t.file_name().unwrap().to_string_lossy();
-        print!("  {}\r", name);
-        std::io::stdout().flush().unwrap();
-        let result = runtest(t);
-        println!("  {name}  {}", if result.is_ok() { "ok" } else { "fail" });
-        result.err().map(|e| (t, e))
+        println!("  {}", t.file_name().unwrap().to_string_lossy());
+        runtest(t).err().map(|e| (t, e))
     });
 
     let first_error = errs_iter.next();
