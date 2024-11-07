@@ -3062,6 +3062,21 @@ __wbg_set_wasm(wasm);"
             }
         }
 
+        if let JsImportName::Global { .. } | JsImportName::VendorPrefixed { .. } = js.name {
+            // We generally cannot import globals directly, because users can
+            // change most globals at runtime.
+            //
+            // An obvious example of this when the object literally changes
+            // (e.g. binding `foo.bar`), but polyfills can also change the
+            // object or fundtion.
+            //
+            // Late binding is another issue. The function might not even be
+            // defined when the Wasm module is instantiated. In such cases,
+            // there is an observable difference between a direct import and a
+            // JS shim calling the function.
+            return Ok(false);
+        }
+
         self.expose_not_defined();
         let name = self.import_name(js)?;
         let js = format!(
