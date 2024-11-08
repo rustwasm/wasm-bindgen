@@ -43,6 +43,8 @@ impl RustStruct {
         self.another_field
     }
 
+    pub fn static_method(a: u32) {}
+
     // getters/setters
 
     #[wasm_bindgen(getter)]
@@ -72,5 +74,4 @@ impl RustStruct {
     }
     #[wasm_bindgen(setter)]
     pub fn set_some_static_prop(value: u32) {}
-
 }

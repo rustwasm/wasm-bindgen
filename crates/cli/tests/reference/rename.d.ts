@@ -7,6 +7,7 @@ export class RustStruct {
   incrementFoo(amount?: number): void;
   setFoo(foo: number): void;
   get_another(): number;
+  static staticMethod(a: number): void;
   foo: number;
   someCoolField: number;
   another_field_for_you: number;

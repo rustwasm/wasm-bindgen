@@ -115,6 +115,12 @@ export class RustStruct {
         return ret >>> 0;
     }
     /**
+     * @param {number} a
+     */
+    static staticMethod(a) {
+        wasm.ruststruct_staticMethod(a);
+    }
+    /**
      * @returns {number}
      */
     get someOtherProp() {
