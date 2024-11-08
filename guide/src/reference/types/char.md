@@ -2,7 +2,7 @@
 
 | `T` parameter | `&T` parameter | `&mut T` parameter | `T` return value | `Option<T>` parameter | `Option<T>` return value | JavaScript representation |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| Yes | No | No | Yes | No | No | A JavaScript string value |
+| Yes | No | No | Yes | Yes | Yes | A JavaScript string value |
 
 Since JavaScript doesn't have a character type, `char` is represented as a JavaScript string with one Unicode code point.
 
