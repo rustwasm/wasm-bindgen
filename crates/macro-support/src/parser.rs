@@ -1524,15 +1524,21 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
                 if value < underlying_min {
                     bail_span!(
                         v,
-                        "C-style enums with #[wasm_bindgen] can only support {numbers} that can be represented by `{underlying}`, \
-                        but `{value}` is too small for `{underlying}`"
+                        "C-style enums with #[wasm_bindgen] can only support {0} that can be represented by `{2}`, \
+                        but `{1}` is too small for `{2}`",
+                        numbers,
+                        value,
+                        underlying
                     );
                 }
                 if value > underlying_max {
                     bail_span!(
                         v,
-                        "C-style enums with #[wasm_bindgen] can only support {numbers} that can be represented by `{underlying}`, \
-                        but `{value}` is too large for `{underlying}`"
+                        "C-style enums with #[wasm_bindgen] can only support {0} that can be represented by `{2}`, \
+                        but `{1}` is too large for `{2}`",
+                        numbers,
+                        value,
+                        underlying
                     );
                 }
 
