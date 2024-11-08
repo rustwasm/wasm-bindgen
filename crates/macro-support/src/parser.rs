@@ -1510,6 +1510,9 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
                     }
                 };
 
+                last_discriminant = Some(value);
+
+                // check that the value fits within the underlying type
                 let underlying = if signed { "i32" } else { "u32" };
                 let numbers = if signed { "signed numbers" } else { "unsigned numbers" };
                 if value < underlying_min {
@@ -1527,8 +1530,7 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
                     );
                 }
 
-                last_discriminant = Some(value);
-
+                // detect duplicate discriminants
                 if let Some(old) = discriminant_map.insert(value, v) {
                     bail_span!(
                         v,
