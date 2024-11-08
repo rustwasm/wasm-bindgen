@@ -19,18 +19,12 @@ function addHeapObject(obj) {
     return idx;
 }
 
-function getObject(idx) { return heap[idx]; }
-
-function dropObject(idx) {
-    if (idx < 132) return;
-    heap[idx] = heap_next;
-    heap_next = idx;
-}
-
-function takeObject(idx) {
-    const ret = getObject(idx);
-    dropObject(idx);
-    return ret;
+function handleError(f, args) {
+    try {
+        return f.apply(this, args);
+    } catch (e) {
+        wasm.__wbindgen_exn_store(addHeapObject(e));
+    }
 }
 
 const lTextDecoder = typeof TextDecoder === 'undefined' ? (0, module.require)('util').TextDecoder : TextDecoder;
@@ -52,30 +46,50 @@ function getStringFromWasm0(ptr, len) {
     ptr = ptr >>> 0;
     return cachedTextDecoder.decode(getUint8ArrayMemory0().subarray(ptr, ptr + len));
 }
-/**
- * @returns {string}
- */
+
+function getObject(idx) { return heap[idx]; }
+
+function dropObject(idx) {
+    if (idx < 132) return;
+    heap[idx] = heap_next;
+    heap_next = idx;
+}
+
+function takeObject(idx) {
+    const ret = getObject(idx);
+    dropObject(idx);
+    return ret;
+}
+
 export function exported() {
-    let deferred2_0;
-    let deferred2_1;
-    try {
-        const ret = wasm.exported();
-        var ptr1 = ret[0];
-        var len1 = ret[1];
-        if (ret[3]) {
-            ptr1 = 0; len1 = 0;
-            throw takeObject(ret[2]);
-        }
-        deferred2_0 = ptr1;
-        deferred2_1 = len1;
-        return getStringFromWasm0(ptr1, len1);
-    } finally {
-        wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
+    const ret = wasm.exported();
+    if (ret[1]) {
+        throw takeObject(ret[0]);
     }
 }
 
-export function __wbindgen_number_new(arg0) {
-    const ret = arg0;
-    return addHeapObject(ret);
+export function __wbg_add_dd5307a7ca6818d5(arg0, arg1) {
+    const ret = add(arg0, arg1);
+    return ret;
+};
+
+export function __wbg_barfromfoo_d097f3ec35aab47c() {
+    bar_from_foo();
+};
+
+export function __wbg_catchme_a7bca7f3d5a5f319() { return handleError(function () {
+    catch_me();
+}, arguments) };
+
+export function __wbg_nocatch_62552fa42a58590b() {
+    no_catch();
+};
+
+export function __wbg_reload_90d82b22b83c1d99() {
+    window.location.reload();
+};
+
+export function __wbg_write_d258674ff6f0ea8d(arg0, arg1) {
+    window.document.write(getStringFromWasm0(arg0, arg1));
 };
 
