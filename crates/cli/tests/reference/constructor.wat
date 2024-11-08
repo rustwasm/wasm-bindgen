@@ -7,6 +7,6 @@
   (export "memory" (memory 0))
   (export "__wbg_classconstructor_free" (func $__wbg_classconstructor_free))
   (export "classconstructor_new" (func $classconstructor_new))
-  (@custom "target_features" (after code) "\02+\0fmutable-globals+\08sign-ext")
+  (@custom "target_features" (after code) "\04+\0amultivalue+\0fmutable-globals+\0freference-types+\08sign-ext")
 )
 
