@@ -33,16 +33,44 @@ impl RustStruct {
 
 #[wasm_bindgen(experimental_auto_camel_case)]
 impl RustStruct {
-    pub fn increment_foo(&mut self, amount: Option<u32>) {
-        self.foo += amount.unwrap_or(1);
-    }
+    // methods
 
-    pub fn set_foo(&mut self, foo: u32) {
-        self.foo = foo;
-    }
+    pub fn increment_foo(&mut self, amount: Option<u32>) {}
+    pub fn set_foo(&mut self, foo: u32) {}
 
     #[wasm_bindgen(js_name = get_another)]
     pub fn another(&self) -> u32 {
         self.another_field
     }
+
+    // getters/setters
+
+    #[wasm_bindgen(getter)]
+    pub fn some_other_prop(&self) -> u32 {
+        0
+    }
+    #[wasm_bindgen(setter)]
+    pub fn set_some_other_prop(&self, value: u32) {}
+
+    #[wasm_bindgen(getter = my_own_name)]
+    pub fn some_different_prop(&self) -> u32 {
+        0
+    }
+    #[wasm_bindgen(setter = my_own_name)]
+    pub fn set_some_different_prop(&self, value: u32) {}
+
+    #[wasm_bindgen(getter, js_name = my_unique_name)]
+    pub fn some_unique_prop(&self) -> u32 {
+        0
+    }
+    #[wasm_bindgen(setter, js_name = my_unique_name)]
+    pub fn set_some_unique_prop(&self, value: u32) {}
+
+    #[wasm_bindgen(getter)]
+    pub fn some_static_prop() -> u32 {
+        0
+    }
+    #[wasm_bindgen(setter)]
+    pub fn set_some_static_prop(value: u32) {}
+
 }

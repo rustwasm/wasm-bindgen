@@ -10,4 +10,8 @@ export class RustStruct {
   foo: number;
   someCoolField: number;
   another_field_for_you: number;
+  someOtherProp: number;
+  my_own_name: number;
+  my_unique_name: number;
+  static someStaticProp: number;
 }

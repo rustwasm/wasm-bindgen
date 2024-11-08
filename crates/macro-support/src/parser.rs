@@ -1016,16 +1016,22 @@ fn function_from_decl(
         syn::ReturnType::Type(_, ty) => Some(replace_self(*ty)),
     };
 
+    // To ensure unique function names in the binary, we need the names of
+    // setters to start with `set_`. This prefix will be removed in later
+    // stages os the JS side never sees it.
+    let is_setter = matches!(operation_kind(opts), OperationKind::Setter(_));
+    let prefix = if is_setter { "set_" } else { "" };
     let (mut name, name_span) = if let Some((js_name, js_name_span)) = opts.js_name() {
-        let kind = operation_kind(opts);
-        let prefix = match kind {
-            OperationKind::Setter(_) => "set_",
-            _ => "",
-        };
         let name = format!("{}{}", prefix, js_name);
         (name, js_name_span)
     } else {
-        let name = camel_caseify(decl_name.unraw().to_string(), auto_camel_case);
+        let ident = decl_name.unraw().to_string();
+        let name = if is_setter && ident.starts_with("set_") {
+            let ident = camel_caseify(ident[4..].to_string(), auto_camel_case);
+            format!("set_{}", ident)
+        } else {
+            camel_caseify(ident, auto_camel_case)
+        };
         (name, decl_name.span())
     };
 
