@@ -29,6 +29,6 @@
   (export "ruststruct_incrementFoo" (func $ruststruct_incrementFoo))
   (export "ruststruct_setFoo" (func $ruststruct_setFoo))
   (export "ruststruct_get_another" (func $ruststruct_get_another))
-  (@custom "target_features" (after code) "\02+\0fmutable-globals+\08sign-ext")
+  (@custom "target_features" (after code) "\04+\0amultivalue+\0fmutable-globals+\0freference-types+\08sign-ext")
 )
 

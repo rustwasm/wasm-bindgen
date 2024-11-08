@@ -1,6 +1,6 @@
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen(rename_all = "camelCase")]
+#[wasm_bindgen(experimental_auto_camel_case)]
 extern "C" {
     #[wasm_bindgen(js_name = foo_bar)]
     fn foo_bar();
@@ -18,7 +18,7 @@ pub fn export_from_rust(a: u32) -> u32 {
     a
 }
 
-#[wasm_bindgen(rename_all = "camelCase")]
+#[wasm_bindgen(experimental_auto_camel_case)]
 pub struct RustStruct {
     pub foo: u32,
     pub some_cool_field: u32,
@@ -31,7 +31,7 @@ impl RustStruct {
     pub fn i_dont_get_renamed() {}
 }
 
-#[wasm_bindgen(rename_all = "camelCase")]
+#[wasm_bindgen(experimental_auto_camel_case)]
 impl RustStruct {
     pub fn increment_foo(&mut self, amount: Option<u32>) {
         self.foo += amount.unwrap_or(1);

@@ -15,7 +15,7 @@ use syn::spanned::Spanned;
 use syn::visit_mut::VisitMut;
 use syn::{ItemFn, Lit, MacroDelimiter, ReturnType};
 
-use crate::{ClassMarker, RenameRule};
+use crate::{snake_case_to_camel_case, ClassMarker};
 
 thread_local!(static ATTRS: AttributeParseState = Default::default());
 
@@ -77,7 +77,7 @@ macro_rules! attrgen {
             (readonly, Readonly(Span)),
             (js_name, JsName(Span, String, Span)),
             (js_class, JsClass(Span, String, Span)),
-            (rename_all, RenameAll(Span, String, Span)),
+            (experimental_auto_camel_case, AutoCamelCase(Span)),
             (inspectable, Inspectable(Span)),
             (is_type_of, IsTypeOf(Span, syn::Expr)),
             (extends, Extends(Span, syn::Path)),
@@ -425,7 +425,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs)> for &'a mut syn::ItemStruct
             .map(|s| s.0.to_string())
             .unwrap_or(self.ident.unraw().to_string());
         let is_inspectable = attrs.inspectable().is_some();
-        let rename = get_rename_all(&attrs)?;
+        let auto_camel_case = attrs.experimental_auto_camel_case().is_some();
         let getter_with_clone = attrs.getter_with_clone();
         for (i, field) in self.fields.iter_mut().enumerate() {
             match field.vis {
@@ -445,7 +445,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs)> for &'a mut syn::ItemStruct
 
             let js_field_name = match attrs.js_name() {
                 Some((name, _)) => name.to_string(),
-                None => rename.apply_to_field(js_field_name),
+                None => camel_caseify(js_field_name, auto_camel_case),
             };
 
             let comments = extract_doc_comments(&field.attrs);
@@ -483,18 +483,13 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs)> for &'a mut syn::ItemStruct
     }
 }
 
-fn get_rename_all(attrs: &BindgenAttrs) -> Result<RenameRule, Diagnostic> {
-    if let Some((value, span)) = attrs.rename_all() {
-        match value {
-            "camelCase" => Ok(RenameRule::CamelCase),
-            _ => Err(Diagnostic::span_error(
-                span,
-                format!("unknown rename rule: `{value}`\nAllowed values are: `camelCase`"),
-            )),
+fn camel_caseify(name: String, auto_camel_case: bool) -> String {
+    if auto_camel_case {
+        if let Some(camel_case) = snake_case_to_camel_case(&name) {
+            return camel_case;
         }
-    } else {
-        Ok(RenameRule::None)
     }
+    name
 }
 
 fn get_ty(mut ty: &syn::Type) -> &syn::Type {
@@ -528,7 +523,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a ForeignItemCtx)> for syn
             self.vis.clone(),
             false,
             None,
-            context.rename_all,
+            context.auto_camel_case,
             false,
             Some(&["default"]),
         )?
@@ -890,7 +885,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
             self.vis,
             false,
             None,
-            RenameRule::None,
+            false,
             false,
             Some(&["default"]),
         )?;
@@ -936,7 +931,7 @@ fn function_from_decl(
     vis: syn::Visibility,
     allow_self: bool,
     self_ty: Option<&Ident>,
-    rename: RenameRule,
+    auto_camel_case: bool,
     is_from_impl: bool,
     skip_keywords: Option<&[&str]>,
 ) -> Result<(ast::Function, Option<ast::MethodSelf>), Diagnostic> {
@@ -1030,7 +1025,7 @@ fn function_from_decl(
         let name = format!("{}{}", prefix, js_name);
         (name, js_name_span)
     } else {
-        let name = rename.apply_to_method(decl_name.unraw().to_string());
+        let name = camel_caseify(decl_name.unraw().to_string(), auto_camel_case);
         (name, decl_name.span())
     };
 
@@ -1263,8 +1258,7 @@ fn prepare_for_impl_recursion(
         .map(|s| s.0.to_string())
         .unwrap_or(ident.to_string());
 
-    let rename_all = get_rename_all(impl_opts)?;
-    let rename_all = rename_all.rule_name();
+    let auto_camel_case = impl_opts.experimental_auto_camel_case().is_some();
 
     let wasm_bindgen = &program.wasm_bindgen;
     let wasm_bindgen_futures = &program.wasm_bindgen_futures;
@@ -1274,7 +1268,7 @@ fn prepare_for_impl_recursion(
             pound_token: Default::default(),
             style: syn::AttrStyle::Outer,
             bracket_token: Default::default(),
-            meta: syn::parse_quote! { #wasm_bindgen::prelude::__wasm_bindgen_class_marker(#class = #js_class, #rename_all, wasm_bindgen = #wasm_bindgen, wasm_bindgen_futures = #wasm_bindgen_futures) },
+            meta: syn::parse_quote! { #wasm_bindgen::prelude::__wasm_bindgen_class_marker(#class = #js_class, #auto_camel_case, wasm_bindgen = #wasm_bindgen, wasm_bindgen_futures = #wasm_bindgen_futures) },
         },
     );
 
@@ -1288,7 +1282,7 @@ impl<'a> MacroParse<&ClassMarker> for &'a mut syn::ImplItemFn {
         ClassMarker {
             class,
             js_class,
-            rename_all,
+            auto_camel_case,
             wasm_bindgen,
             wasm_bindgen_futures,
         }: &ClassMarker,
@@ -1320,7 +1314,7 @@ impl<'a> MacroParse<&ClassMarker> for &'a mut syn::ImplItemFn {
             self.vis.clone(),
             true,
             Some(class),
-            *rename_all,
+            *auto_camel_case,
             true,
             None,
         )?;
@@ -1571,12 +1565,12 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
         let module = module_from_opts(program, &opts)
             .map_err(|e| errors.push(e))
             .unwrap_or_default();
-        let rename_all = get_rename_all(&opts)?;
+        let auto_camel_case = opts.experimental_auto_camel_case().is_some();
         for item in self.items.into_iter() {
             let ctx = ForeignItemCtx {
                 module: module.clone(),
                 js_namespace: js_namespace.clone(),
-                rename_all,
+                auto_camel_case,
             };
             if let Err(e) = item.macro_parse(program, ctx) {
                 errors.push(e);
@@ -1591,7 +1585,7 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
 struct ForeignItemCtx {
     module: Option<ast::ImportModule>,
     js_namespace: Option<Vec<String>>,
-    rename_all: RenameRule,
+    auto_camel_case: bool,
 }
 
 impl MacroParse<ForeignItemCtx> for syn::ForeignItem {

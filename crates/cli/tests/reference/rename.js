@@ -4,8 +4,6 @@ export function __wbg_set_wasm(val) {
 }
 
 
-function notDefined(what) { return () => { throw new Error(`${what} is not defined`); }; }
-
 const lTextDecoder = typeof TextDecoder === 'undefined' ? (0, module.require)('util').TextDecoder : TextDecoder;
 
 let cachedTextDecoder = new lTextDecoder('utf-8', { ignoreBOM: true, fatal: true });
@@ -118,11 +116,17 @@ export class RustStruct {
     }
 }
 
-export const __wbg_foobar_aa5072d28246f9cb = typeof foo_bar == 'function' ? foo_bar : notDefined('foo_bar');
+export function __wbg_foobar_aa5072d28246f9cb() {
+    foo_bar();
+};
 
-export const __wbg_quxCorge_d8ec2d56c00b013f = typeof quxCorge == 'function' ? quxCorge : notDefined('quxCorge');
+export function __wbg_quxCorge_d8ec2d56c00b013f() {
+    quxCorge();
+};
 
-export const __wbg_yesNo_1feba4b061143a4c = typeof Baz.yesNo == 'function' ? Baz.yesNo : notDefined('Baz.yesNo');
+export function __wbg_yesNo_1feba4b061143a4c() {
+    Baz.yesNo();
+};
 
 export function __wbindgen_throw(arg0, arg1) {
     throw new Error(getStringFromWasm0(arg0, arg1));

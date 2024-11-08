@@ -104,70 +104,62 @@ pub fn expand_class_marker(
     Ok(tokens)
 }
 
-/// Describes how to rename the fields, methods, and classes in the generated
-/// bindings.
+/// Turns the given string from lower_snake_case to camelCase.
 ///
-/// This design heavily mimics the `#[serde(rename_all = "...")]` attribute.
-#[derive(Debug, Clone, Copy)]
-enum RenameRule {
-    None,
-    CamelCase,
-}
-impl RenameRule {
-    fn snake_case_to_camel_case(name: String) -> String {
-        let mut camel = String::new();
-        let mut capitalize = false;
-        for c in name.chars() {
-            if c == '_' {
-                capitalize = true;
-            } else if capitalize {
-                camel.push(c.to_ascii_uppercase());
-                capitalize = false;
-            } else {
-                camel.push(c);
+/// If the given string is not in lower_snake_case, this function returns None.
+pub fn snake_case_to_camel_case(name: &str) -> Option<String> {
+    // TODO: test
+
+    let mut out = String::new();
+
+    let mut is_leading = true;
+    let mut seen_underscore = false;
+
+    for c in name.chars() {
+        match c {
+            '_' => {
+                if is_leading {
+                    // we want to keep leading underscores.
+                    // e.g. "_foo_bar" -> "_fooBar"
+                    out.push('_');
+                } else if seen_underscore {
+                    // double underscores are not allowed except for leading
+                    // underscores.
+                    return None;
+                }
+
+                seen_underscore = true;
+            }
+            _ => {
+                if !c.is_ascii_alphanumeric() {
+                    // We currently only support ASCII.
+                    // This might change in the future.
+                    return None;
+                }
+                if c.is_ascii_uppercase() {
+                    // we only support lower_snake_case
+                    return None;
+                }
+
+                if seen_underscore {
+                    out.push(c.to_ascii_uppercase());
+                } else {
+                    out.push(c);
+                }
+
+                is_leading = false;
+                seen_underscore = false;
             }
         }
-        camel
     }
 
-    fn rename_snake_case(self, name: String) -> String {
-        match self {
-            RenameRule::None => name.to_string(),
-            RenameRule::CamelCase => Self::snake_case_to_camel_case(name),
-        }
-    }
-
-    /// Applies the rule to the field of a struct or enum variant data.
-    fn apply_to_field(self, name: String) -> String {
-        self.rename_snake_case(name)
-    }
-    /// Applies the rule to the method of a struct or enum.
-    fn apply_to_method(self, name: String) -> String {
-        self.rename_snake_case(name)
-    }
-
-    fn rule_name(self) -> &'static str {
-        match self {
-            RenameRule::None => "none",
-            RenameRule::CamelCase => "camelCase",
-        }
-    }
-}
-impl TryFrom<&str> for RenameRule {
-    type Error = ();
-    fn try_from(s: &str) -> Result<Self, Self::Error> {
-        match s {
-            "none" => Ok(RenameRule::None),
-            "camelCase" => Ok(RenameRule::CamelCase),
-            _ => Err(()),
-        }
-    }
+    Some(out)
 }
 
 struct ClassMarker {
     class: syn::Ident,
     js_class: String,
-    rename_all: RenameRule,
+    auto_camel_case: bool,
     wasm_bindgen: syn::Path,
     wasm_bindgen_futures: syn::Path,
 }
@@ -183,9 +175,7 @@ impl Parse for ClassMarker {
             .unwrap_or(js_class);
 
         input.parse::<Option<Token![,]>>()?;
-
-        let rename_all = input.parse::<syn::LitStr>()?.value();
-        let rename_all: RenameRule = rename_all[..].try_into().unwrap();
+        let auto_camel_case = input.parse::<syn::LitBool>()?.value();
 
         let mut wasm_bindgen = None;
         let mut wasm_bindgen_futures = None;
@@ -228,7 +218,7 @@ impl Parse for ClassMarker {
         Ok(ClassMarker {
             class,
             js_class,
-            rename_all,
+            auto_camel_case,
             wasm_bindgen: wasm_bindgen.unwrap_or_else(|| syn::parse_quote! { wasm_bindgen }),
             wasm_bindgen_futures: wasm_bindgen_futures
                 .unwrap_or_else(|| syn::parse_quote! { wasm_bindgen_futures }),
