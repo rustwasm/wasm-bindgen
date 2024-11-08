@@ -1387,38 +1387,44 @@ fn string_enum(
     Ok(())
 }
 
-/// Returns whether the number is negative and the base 10 digits of the number.
-///
-/// E.g. for `-123`, this function would return `Some((true, "123"))`.
-fn get_base10_digits(expr: &syn::Expr) -> Option<(bool, &str)> {
-    match get_expr(expr) {
-        syn::Expr::Lit(syn::ExprLit {
-            lit: syn::Lit::Int(int_lit),
-            ..
-        }) => Some((false, int_lit.base10_digits())),
-        syn::Expr::Unary(syn::ExprUnary {
-            op: syn::UnOp::Neg(_),
-            expr,
-            ..
-        }) => get_base10_digits(expr).map(|(sign, digits)| (!sign, digits)),
-        _ => None,
-    }
+/// Represents a possibly negative numeric value as base 10 digits.
+struct NumericValue<'a> {
+    negative: bool,
+    base10_digits: &'a str,
 }
+impl<'a> NumericValue<'a> {
+    fn from_expr(expr: &'a syn::Expr) -> Option<Self> {
+        match get_expr(expr) {
+            syn::Expr::Lit(syn::ExprLit {
+                lit: syn::Lit::Int(int_lit),
+                ..
+            }) => Some(Self {
+                negative: false,
+                base10_digits: int_lit.base10_digits(),
+            }),
+            syn::Expr::Unary(syn::ExprUnary {
+                op: syn::UnOp::Neg(_),
+                expr,
+                ..
+            }) => Self::from_expr(expr).map(|n| n.neg()),
+            _ => None,
+        }
+    }
 
-fn parse_number(expr: &syn::Expr) -> Option<i64> {
-    get_base10_digits(expr).and_then(|(sign, digits)| {
-        let mut value = digits.parse::<i64>().ok()?;
-        if sign {
+    fn parse(&self) -> Option<i64> {
+        let mut value = self.base10_digits.parse::<i64>().ok()?;
+        if self.negative {
             value = -value;
         }
         Some(value)
-    })
-}
+    }
 
-fn is_negative_number(expr: &syn::Expr) -> bool {
-    get_base10_digits(expr)
-        .map(|(sign, _)| sign)
-        .unwrap_or(false)
+    fn neg(self) -> Self {
+        Self {
+            negative: !self.negative,
+            base10_digits: self.base10_digits,
+        }
+    }
 }
 
 impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
@@ -1476,7 +1482,7 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
         // values yet, we just need to know their sign. The actual parsing is
         // done in a second pass.
         let signed = self.variants.iter().any(|v| match &v.discriminant {
-            Some((_, expr)) => is_negative_number(expr),
+            Some((_, expr)) => NumericValue::from_expr(expr).map_or(false, |n| n.negative),
             None => false,
         });
         let underlying_min = if signed { i32::MIN as i64 } else { 0 };
@@ -1493,8 +1499,8 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
             .variants
             .iter()
             .map(|v| {
-                let value = match &v.discriminant {
-                    Some((_, expr)) => match parse_number(expr) {
+                let value: i64 = match &v.discriminant {
+                    Some((_, expr)) => match NumericValue::from_expr(expr).and_then(|n| n.parse()) {
                         Some(value) => value,
                         _ => bail_span!(
                             expr,
