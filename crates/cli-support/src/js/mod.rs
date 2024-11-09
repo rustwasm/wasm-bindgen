@@ -3972,9 +3972,10 @@ __wbg_set_wasm(wasm);"
             .collect();
 
         if string_enum.generate_typescript
-            && self
-                .typescript_refs
-                .contains(&TsReference::StringEnum(string_enum.name.clone()))
+            && (string_enum.export_type
+                || self
+                    .typescript_refs
+                    .contains(&TsReference::StringEnum(string_enum.name.clone())))
         {
             let docs = format_doc_comments(&string_enum.comments, None);
             let type_expr = if variants.is_empty() {
@@ -3984,6 +3985,9 @@ __wbg_set_wasm(wasm);"
             };
 
             self.typescript.push_str(&docs);
+            if string_enum.export_type {
+                self.typescript.push_str("export ");
+            }
             self.typescript.push_str("type ");
             self.typescript.push_str(&string_enum.name);
             self.typescript.push_str(" = ");

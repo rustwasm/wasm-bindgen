@@ -96,6 +96,7 @@
       - [`getter` and `setter`](./reference/attributes/on-rust-exports/getter-and-setter.md)
       - [`inspectable`](./reference/attributes/on-rust-exports/inspectable.md)
       - [`skip_typescript`](./reference/attributes/on-rust-exports/skip_typescript.md)
+      - [`export_type`](./reference/attributes/on-rust-exports/export_type.md)
       - [`getter_with_clone`](./reference/attributes/on-rust-exports/getter_with_clone.md)
 
 - [`web-sys`](./web-sys/index.md)

@@ -185,6 +185,8 @@ pub struct AuxStringEnum {
     pub variant_values: Vec<String>,
     /// Whether typescript bindings should be generated for this enum.
     pub generate_typescript: bool,
+    /// Whether typescript bindings should be exported.
+    pub export_type: bool,
 }
 
 #[derive(Debug)]

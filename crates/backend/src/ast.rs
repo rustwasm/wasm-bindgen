@@ -349,6 +349,9 @@ pub struct StringEnum {
     pub rust_attrs: Vec<syn::Attribute>,
     /// Whether to generate a typescript definition for this enum
     pub generate_typescript: bool,
+    /// Whether the type generated for this string enum should be publicly
+    /// exported as part of the API of the generated JS module
+    pub export_type: bool,
     /// Path to wasm_bindgen
     pub wasm_bindgen: Path,
 }

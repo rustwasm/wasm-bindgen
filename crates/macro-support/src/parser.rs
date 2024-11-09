@@ -95,6 +95,7 @@ macro_rules! attrgen {
             (typescript_type, TypeScriptType(Span, String, Span)),
             (getter_with_clone, GetterWithClone(Span)),
             (static_string, StaticString(Span)),
+            (export_type, ExportType(Span)),
             (thread_local, ThreadLocal(Span)),
 
             // For testing purposes only.
@@ -1341,6 +1342,7 @@ fn string_enum(
     program: &mut ast::Program,
     js_name: String,
     generate_typescript: bool,
+    export_type: bool,
     comments: Vec<String>,
 ) -> Result<(), Diagnostic> {
     let mut variants = vec![];
@@ -1380,6 +1382,7 @@ fn string_enum(
             comments,
             rust_attrs: enum_.attrs,
             generate_typescript,
+            export_type,
             wasm_bindgen: program.wasm_bindgen.clone(),
         }),
     });
@@ -1413,8 +1416,6 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
             .map_or_else(|| self.ident.to_string(), |s| s.to_string());
         let comments = extract_doc_comments(&self.attrs);
 
-        opts.check_used();
-
         // Check if the enum is a string enum, by checking whether any variant has a string discriminant.
         let is_string_enum = self.variants.iter().any(|v| {
             if let Some((_, expr)) = &v.discriminant {
@@ -1429,8 +1430,21 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
             false
         });
         if is_string_enum {
-            return string_enum(self, program, js_name, generate_typescript, comments);
+            let export_ype = opts.export_type().is_some();
+
+            opts.check_used();
+
+            return string_enum(
+                self,
+                program,
+                js_name,
+                generate_typescript,
+                export_ype,
+                comments,
+            );
         }
+
+        opts.check_used();
 
         match self.vis {
             syn::Visibility::Public(_) => {}

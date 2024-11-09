@@ -52,6 +52,13 @@ pub enum UnusedStringEnum {
     Bar = "bar",
 }
 
+/// An unused string enum that has its typed exported.
+#[wasm_bindgen(js_name = "FooBarBaz", export_type)]
+pub enum ExportedUnusedStringEnum {
+    Foo = "foo",
+    Bar = "bar",
+}
+
 #[wasm_bindgen]
 enum PrivateStringEnum {
     Foo = "foo",

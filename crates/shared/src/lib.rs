@@ -109,6 +109,7 @@ macro_rules! shared_api {
             variant_values: Vec<&'a str>,
             comments: Vec<&'a str>,
             generate_typescript: bool,
+            export_type: bool,
         }
 
         struct Export<'a> {

@@ -31,3 +31,7 @@ export enum ImplicitDiscriminant {
  * The name of a color.
  */
 type ColorName = "green" | "yellow" | "red";
+/**
+ * An unused string enum that has its typed exported.
+ */
+export type FooBarBaz = "foo" | "bar";

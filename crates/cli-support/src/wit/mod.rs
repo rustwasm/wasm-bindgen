@@ -877,6 +877,7 @@ impl<'a> Context<'a> {
                 .map(|v| v.to_string())
                 .collect(),
             generate_typescript: string_enum.generate_typescript,
+            export_type: string_enum.export_type,
         };
         let mut result = Ok(());
         self.aux
