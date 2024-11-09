@@ -123,6 +123,7 @@ macro_rules! shared_api {
 
         struct Enum<'a> {
             name: &'a str,
+            signed: bool,
             variants: Vec<EnumVariant<'a>>,
             comments: Vec<&'a str>,
             generate_typescript: bool,

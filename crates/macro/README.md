@@ -17,12 +17,10 @@ To add a test:
 * Create `ui-tests/my-awesome-test.rs`
 * Write an invalid `#[wasm_bindgen]` invocation, testing the error you're
   generating
-* Execute `cargo test -p ui-tests`, the test will fail
+* Execute `cargo test -p wasm-bindgen-macro --test ui`, the test will fail
 * From within the `ui-tests` folder, execute `./update-all-references.sh`. This
   should create a `my-awesome-test.stderr` file.
-* Inspect `my-awesome-test.stderr` to make sure it looks ok
-* Rerun `cargo test -p ui-tests` and your tests should pass!
 
-Testing here is a work in progress, see
-[#601](https://github.com/rustwasm/wasm-bindgen/issues/601) for more
-information.
+  OR if you are on Windows, set the `TRYBUILD=overwrite` environment variable (this is done as `$env:TRYBUILD="overwrite"` [in powershell](https://stackoverflow.com/a/1333717/7595472)) and run the command again.
+* Inspect `my-awesome-test.stderr` to make sure it looks ok
+* Rerun `cargo test -p wasm-bindgen-macro --test ui` and your tests should pass!

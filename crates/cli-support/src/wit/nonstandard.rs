@@ -170,7 +170,7 @@ pub struct AuxEnum {
     pub comments: String,
     /// A list of variants with their name, value and comments
     /// and whether typescript bindings should be generated for each variant
-    pub variants: Vec<(String, u32, String)>,
+    pub variants: Vec<(String, i64, String)>,
     /// Whether typescript bindings should be generated for this enum.
     pub generate_typescript: bool,
 }
