@@ -10,17 +10,17 @@ error: enum variants with associated data are not supported with #[wasm_bindgen]
 8 |     D(u32),
   |      ^^^^^
 
-error: C-style enums with #[wasm_bindgen] may only have number literal values
+error: C-style enums with #[wasm_bindgen] may only have numeric literal values that fit in a 32-bit integer as discriminants. Expressions or variables are not supported.
   --> ui-tests/invalid-enums.rs:13:9
    |
 13 |     X = 1 + 3,
    |         ^^^^^
 
-error: C-style enums with #[wasm_bindgen] can only support numbers that can be represented as u32
-  --> ui-tests/invalid-enums.rs:18:9
+error: C-style enums with #[wasm_bindgen] can only support unsigned numbers that can be represented by `u32`, but `4294967296` is too large for `u32`
+  --> ui-tests/invalid-enums.rs:18:5
    |
 18 |     X = 4294967296,
-   |         ^^^^^^^^^^
+   |     ^^^^^^^^^^^^^^
 
 error: enums with #[wasm_bindgen] cannot mix string and non-string values
   --> ui-tests/invalid-enums.rs:23:9
@@ -46,10 +46,10 @@ error: discriminant value `1` is already used by A in this enum
 43 |     B = 1, // collision
    |     ^^^^^
 
-error: the discriminants of C-style enums with #[wasm_bindgen] must be representable as u32
+error: C-style enums with #[wasm_bindgen] can only support unsigned numbers that can be represented by `u32`, but `4294967296` is too large for `u32`
   --> ui-tests/invalid-enums.rs:50:5
    |
-50 |     C, // would be u32::MAX + 1
+50 |     C,              // = u32::MAX + 1
    |     ^
 
 error: discriminant value `0` is already used by A in this enum
@@ -63,3 +63,15 @@ error: discriminant value `3` is already used by A in this enum
    |
 63 |     C, // = 3 -> collision
    |     ^
+
+error: C-style enums with #[wasm_bindgen] can only support signed numbers that can be represented by `i32`, but `-2147483649` is too small for `i32`
+  --> ui-tests/invalid-enums.rs:69:5
+   |
+69 |     B = -2147483649, // i32::MIN - 1
+   |     ^^^^^^^^^^^^^^^
+
+error: C-style enums with #[wasm_bindgen] can only support signed numbers that can be represented by `i32`, but `2147483648` is too large for `i32`
+  --> ui-tests/invalid-enums.rs:75:5
+   |
+75 |     B = 2147483648, // i32::MAX + 1
+   |     ^^^^^^^^^^^^^^
