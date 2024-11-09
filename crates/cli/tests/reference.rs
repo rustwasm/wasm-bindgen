@@ -76,13 +76,12 @@ fn main() -> Result<()> {
         runtest(t).err().map(|e| (t, e))
     });
 
-    let first_error = errs_iter.next();
-    if first_error.is_none() {
+    let Some(first_error) = errs_iter.next() else {
         println!("{} tests passed", tests.len());
         return Ok(());
-    }
+    };
 
-    let mut errs = vec![first_error.unwrap()];
+    let mut errs = vec![first_error];
     if is_ci {
         // one error should be enough for local testing to ensure fast iteration
         // only find all errors in CI
