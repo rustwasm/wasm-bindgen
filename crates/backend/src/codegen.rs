@@ -1894,9 +1894,9 @@ fn respan(input: TokenStream, span: &dyn ToTokens) -> TokenStream {
 
     for (i, token) in spans.into_iter().enumerate() {
         if i == 0 {
-            first_span = token.span();
+            first_span = Span::call_site().located_at(token.span());
         }
-        last_span = token.span();
+        last_span = Span::call_site().located_at(token.span());
     }
 
     let mut new_tokens = Vec::new();
