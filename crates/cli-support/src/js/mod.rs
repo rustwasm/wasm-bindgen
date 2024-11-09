@@ -281,6 +281,9 @@ impl<'a> Context<'a> {
                     // exported without an existing object of the same name.
                     // In that case, we need to create the object before
                     // initializing the namespace.
+                    //
+                    // It's only correct to do it like this, because namespaces
+                    // are always the last things to be exported.
                     let mut definition = String::new();
                     if !self.defined_identifiers.contains_key(export_name) {
                         definition = format!("export const {} = {{}};\n", export_name)
@@ -4774,15 +4777,12 @@ impl ExportedNamespace {
         ts: Option<&str>,
     ) {
         self.contents.push_str(js_docs);
-        self.contents.push_str("function ");
-        self.contents.push_str(function_name);
-        self.contents.push_str(js);
-        self.contents.push('\n');
         self.contents.push_str(&self.name);
         self.contents.push('.');
         self.contents.push_str(function_name);
-        self.contents.push_str(" = ");
+        self.contents.push_str(" = function ");
         self.contents.push_str(function_name);
+        self.contents.push_str(js);
         self.contents.push_str(";\n");
 
         if let Some(ts) = ts {

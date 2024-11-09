@@ -98,13 +98,12 @@ const __wbindgen_enum_Status = ["success", "failure"];
      * @param {string} s
      * @returns {ImageFormat}
      */
-    function from_str(s) {
+    ImageFormat.from_str = function from_str(s) {
         const ptr0 = passStringToWasm0(s, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
         const ret = wasm.imageformat_from_str(ptr0, len0);
         return ret;
-    }
-    ImageFormat.from_str = from_str;
+    };
 })(ImageFormat);
 
 export const Status = {};
@@ -114,11 +113,10 @@ export const Status = {};
      * @param {boolean} success
      * @returns {Status}
      */
-    function from_bool(success) {
+    Status.from_bool = function from_bool(success) {
         const ret = wasm.status_from_bool(success);
         return __wbindgen_enum_Status[ret];
-    }
-    Status.from_bool = from_bool;
+    };
 })(Status);
 
 export function __wbindgen_throw(arg0, arg1) {
