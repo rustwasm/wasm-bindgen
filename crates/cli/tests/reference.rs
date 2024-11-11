@@ -118,13 +118,13 @@ fn runtest(test: &Path) -> Result<()> {
     let root = root.display();
 
     // parse target declarations
-    let mut targets: Vec<_> = contents
+    let mut all_flags: Vec<_> = contents
         .lines()
-        .filter_map(|l| l.strip_prefix("// TARGET: "))
+        .filter_map(|l| l.strip_prefix("// FLAGS: "))
         .map(|l| l.trim())
         .collect();
-    if targets.is_empty() {
-        targets.push("bundler");
+    if all_flags.is_empty() {
+        all_flags.push("");
     }
 
     // parse additional dependency declarations
@@ -170,7 +170,13 @@ fn runtest(test: &Path) -> Result<()> {
         .join("debug")
         .join("reference_test.wasm");
 
-    for target in targets.iter().copied() {
+    for (flags_index, &flags) in all_flags.iter().enumerate() {
+        // extract the target from the flags
+        let target = flags
+            .split_whitespace()
+            .find_map(|f| f.strip_prefix("--target="))
+            .unwrap_or("bundler");
+
         let out_dir = &td.path().join(target);
         fs::create_dir(out_dir)?;
 
@@ -179,17 +185,22 @@ fn runtest(test: &Path) -> Result<()> {
             .arg("--out-dir")
             .arg(out_dir)
             .arg(&wasm)
-            .arg("--remove-producers-section")
-            .arg(format!("--target={target}"));
+            .arg("--remove-producers-section");
+        for flag in flags.split_whitespace() {
+            bindgen.arg(flag);
+        }
         if contents.contains("// enable-externref") {
             bindgen.env("WASM_BINDGEN_EXTERNREF", "1");
         }
         exec(&mut bindgen)?;
 
         // suffix the file name with the target
-        let test = if target != "bundler" || targets.len() > 1 {
-            let base_file_name =
-                test.file_stem().unwrap().to_string_lossy().into_owned() + "-" + target + ".rs";
+        let test = if all_flags.len() > 1 {
+            let base_file_name = format!(
+                "{}-{}.rs",
+                test.file_stem().unwrap().to_string_lossy(),
+                flags_index
+            );
             test.with_file_name(base_file_name)
         } else {
             test.to_owned()
@@ -197,7 +208,6 @@ fn runtest(test: &Path) -> Result<()> {
 
         let main_js_file = match target {
             "bundler" => "reference_test_bg.js",
-            "web" | "nodejs" => "reference_test.js",
             _ => "reference_test.js",
         };
 

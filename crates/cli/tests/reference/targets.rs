@@ -1,8 +1,8 @@
-// TARGET: bundler
-// TARGET: web
-// TARGET: no-modules
-// TARGET: nodejs
-// TARGET: deno
+// FLAGS: --target=bundler
+// FLAGS: --target=web
+// FLAGS: --target=no-modules
+// FLAGS: --target=nodejs
+// FLAGS: --target=deno
 
 use wasm_bindgen::prelude::*;
 
