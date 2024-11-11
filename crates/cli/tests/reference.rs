@@ -34,6 +34,22 @@
 //!
 //! Multiple dependencies can be declared in a single test file using multiple
 //! `DEPENDENCY:` comments.
+//!
+//! ## Targets
+//!
+//! By default, tests will use the `bundler` target. You can test other targets
+//! by adding a comment at the top of the test file.
+//!
+//! ```rust
+//! // TARGET: nodejs
+//! ```
+//!
+//! Multiple targets can be declared for a single test file:
+//!
+//! ```rust
+//! // TARGET: nodejs
+//! // TARGET: web
+//! ```
 
 use anyhow::{bail, Result};
 use assert_cmd::prelude::*;
@@ -101,6 +117,16 @@ fn runtest(test: &Path) -> Result<()> {
     let root = repo_root();
     let root = root.display();
 
+    // parse target declarations
+    let mut targets: Vec<_> = contents
+        .lines()
+        .filter_map(|l| l.strip_prefix("// TARGET: "))
+        .map(|l| l.trim())
+        .collect();
+    if targets.is_empty() {
+        targets.push("bundler");
+    }
+
     // parse additional dependency declarations
     let dependencies = contents
         .lines()
@@ -144,25 +170,46 @@ fn runtest(test: &Path) -> Result<()> {
         .join("debug")
         .join("reference_test.wasm");
 
-    let mut bindgen = Command::cargo_bin("wasm-bindgen")?;
-    bindgen
-        .arg("--out-dir")
-        .arg(td.path())
-        .arg(&wasm)
-        .arg("--remove-producers-section");
-    if contents.contains("// enable-externref") {
-        bindgen.env("WASM_BINDGEN_EXTERNREF", "1");
-    }
-    exec(&mut bindgen)?;
+    for target in targets.iter().copied() {
+        let out_dir = &td.path().join(target);
+        fs::create_dir(out_dir)?;
 
-    if !contents.contains("async") {
-        let js = fs::read_to_string(td.path().join("reference_test_bg.js"))?;
-        assert_same(&js, &test.with_extension("js"))?;
-        let wat = sanitize_wasm(&td.path().join("reference_test_bg.wasm"))?;
-        assert_same(&wat, &test.with_extension("wat"))?;
+        let mut bindgen = Command::cargo_bin("wasm-bindgen")?;
+        bindgen
+            .arg("--out-dir")
+            .arg(out_dir)
+            .arg(&wasm)
+            .arg("--remove-producers-section")
+            .arg(format!("--target={target}"));
+        if contents.contains("// enable-externref") {
+            bindgen.env("WASM_BINDGEN_EXTERNREF", "1");
+        }
+        exec(&mut bindgen)?;
+
+        // suffix the file name with the target
+        let test = if target != "bundler" || targets.len() > 1 {
+            let base_file_name =
+                test.file_stem().unwrap().to_string_lossy().into_owned() + "-" + target + ".rs";
+            test.with_file_name(base_file_name)
+        } else {
+            test.to_owned()
+        };
+
+        let main_js_file = match target {
+            "bundler" => "reference_test_bg.js",
+            "web" | "nodejs" => "reference_test.js",
+            _ => "reference_test.js",
+        };
+
+        if !contents.contains("async") {
+            let js = fs::read_to_string(out_dir.join(main_js_file))?;
+            assert_same(&js, &test.with_extension("js"))?;
+            let wat = sanitize_wasm(&out_dir.join("reference_test_bg.wasm"))?;
+            assert_same(&wat, &test.with_extension("wat"))?;
+        }
+        let d_ts = fs::read_to_string(out_dir.join("reference_test.d.ts"))?;
+        assert_same(&d_ts, &test.with_extension("d.ts"))?;
     }
-    let d_ts = fs::read_to_string(td.path().join("reference_test.d.ts"))?;
-    assert_same(&d_ts, &test.with_extension("d.ts"))?;
 
     Ok(())
 }
