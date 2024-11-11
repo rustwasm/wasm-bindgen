@@ -35,20 +35,22 @@
 //! Multiple dependencies can be declared in a single test file using multiple
 //! `DEPENDENCY:` comments.
 //!
-//! ## Targets
+//! ## Custom CLI flags
 //!
-//! By default, tests will use the `bundler` target. You can test other targets
-//! by adding a comment at the top of the test file.
+//! By default, tests will use the `bundler` target. Custom CLI flags can be
+//! passed to the `wasm-bindgen` CLI by declaring them in a comment at the top
+//! of the test file. For example:
 //!
 //! ```rust
-//! // TARGET: nodejs
+//! // FLAGS: --target=web --reference-types
 //! ```
 //!
-//! Multiple targets can be declared for a single test file:
+//! Multiple comments can be used to run the test multiple times with different
+//! flags.
 //!
 //! ```rust
-//! // TARGET: nodejs
-//! // TARGET: web
+//! // TARGET: --target=web
+//! // TARGET: --target=nodejs
 //! ```
 
 use anyhow::{bail, Result};
@@ -206,6 +208,8 @@ fn runtest(test: &Path) -> Result<()> {
             test.to_owned()
         };
 
+        // bundler uses a different main JS file, because its
+        // reference_test.js just imports the reference_test_bg.js
         let main_js_file = match target {
             "bundler" => "reference_test_bg.js",
             _ => "reference_test.js",
