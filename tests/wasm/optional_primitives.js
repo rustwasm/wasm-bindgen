@@ -108,8 +108,8 @@ exports.js_works = () => {
     assert.strictEqual(wasm.optional_i128_identity(wasm.optional_i128_zero()), BigInt('0'));
     assert.strictEqual(wasm.optional_i128_identity(wasm.optional_i128_one()), BigInt('1'));
     assert.strictEqual(wasm.optional_i128_identity(wasm.optional_i128_neg_one()), BigInt('-1'));
-    assert.strictEqual(wasm.optional_i128_identity(wasm.optional_i128_min()), -170141183460469231731687303715884105728n);
-    assert.strictEqual(wasm.optional_i128_identity(wasm.optional_i128_max()), 170141183460469231731687303715884105727n);
+    assert.strictEqual(wasm.optional_i128_identity(wasm.optional_i128_min()), -0x8000_0000_0000_0000_0000_0000_0000_0000n);
+    assert.strictEqual(wasm.optional_i128_identity(wasm.optional_i128_max()), 0x7FFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFFn);
     assert.strictEqual(wasm.optional_i128_identity(0x3_1415_9265_3598_7932_3846n), 0x3_1415_9265_3598_7932_3846n);
     assert.strictEqual(wasm.optional_i128_identity(-0x3_1415_9265_3598_7932_3846n), -0x3_1415_9265_3598_7932_3846n);
 
@@ -117,7 +117,7 @@ exports.js_works = () => {
     assert.strictEqual(wasm.optional_u128_identity(wasm.optional_u128_zero()), BigInt('0'));
     assert.strictEqual(wasm.optional_u128_identity(wasm.optional_u128_one()), BigInt('1'));
     assert.strictEqual(wasm.optional_u128_identity(wasm.optional_u128_min()), BigInt('0'));
-    assert.strictEqual(wasm.optional_u128_identity(wasm.optional_u128_max()), 340282366920938463463374607431768211455n);
+    assert.strictEqual(wasm.optional_u128_identity(wasm.optional_u128_max()), 0xFFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFFn);
     assert.strictEqual(wasm.optional_u128_identity(0x3_1415_9265_3598_7932_3846n), 0x3_1415_9265_3598_7932_3846n);
 
     assert.strictEqual(wasm.optional_bool_identity(wasm.optional_bool_none()), undefined);
