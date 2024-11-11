@@ -8,8 +8,8 @@ export function __wbg_set_wasm(val) {
  * @returns {bigint}
  */
 export function echo_i128(a) {
-    const ret = wasm.echo_i128(a, a >> 64n);
-    return (BigInt.asUintN(64, ret[0]) | (ret[1] << 64n));
+    const ret = wasm.echo_i128(a, a >> BigInt(64));
+    return (BigInt.asUintN(64, ret[0]) | (ret[1] << BigInt(64)));
 }
 
 /**
@@ -17,8 +17,8 @@ export function echo_i128(a) {
  * @returns {bigint}
  */
 export function echo_u128(a) {
-    const ret = wasm.echo_u128(a, a >> 64n);
-    return (BigInt.asUintN(64, ret[0]) | (BigInt.asUintN(64, ret[1]) << 64n));
+    const ret = wasm.echo_u128(a, a >> BigInt(64));
+    return (BigInt.asUintN(64, ret[0]) | (BigInt.asUintN(64, ret[1]) << BigInt(64)));
 }
 
 function isLikeNone(x) {
@@ -29,8 +29,8 @@ function isLikeNone(x) {
  * @returns {bigint | undefined}
  */
 export function echo_option_i128(a) {
-    const ret = wasm.echo_option_i128(!isLikeNone(a), isLikeNone(a) ? 0n : a, isLikeNone(a) ? 0n : a >> 64n);
-    return ret[0] === 0 ? undefined : (BigInt.asUintN(64, ret[1]) | (ret[2] << 64n));
+    const ret = wasm.echo_option_i128(!isLikeNone(a), isLikeNone(a) ? BigInt(0) : a, isLikeNone(a) ? BigInt(0) : a >> BigInt(64));
+    return ret[0] === 0 ? undefined : (BigInt.asUintN(64, ret[1]) | (ret[2] << BigInt(64)));
 }
 
 /**
@@ -38,8 +38,8 @@ export function echo_option_i128(a) {
  * @returns {bigint | undefined}
  */
 export function echo_option_u128(a) {
-    const ret = wasm.echo_option_u128(!isLikeNone(a), isLikeNone(a) ? 0n : a, isLikeNone(a) ? 0n : a >> 64n);
-    return ret[0] === 0 ? undefined : (BigInt.asUintN(64, ret[1]) | (BigInt.asUintN(64, ret[2]) << 64n));
+    const ret = wasm.echo_option_u128(!isLikeNone(a), isLikeNone(a) ? BigInt(0) : a, isLikeNone(a) ? BigInt(0) : a >> BigInt(64));
+    return ret[0] === 0 ? undefined : (BigInt.asUintN(64, ret[1]) | (BigInt.asUintN(64, ret[2]) << BigInt(64)));
 }
 
 const heap = new Array(128).fill(undefined);
@@ -69,6 +69,6 @@ export function throw_i128() {
     if (ret[3]) {
         throw takeObject(ret[2]);
     }
-    return (BigInt.asUintN(64, ret[0]) | (ret[1] << 64n));
+    return (BigInt.asUintN(64, ret[0]) | (ret[1] << BigInt(64)));
 }
 

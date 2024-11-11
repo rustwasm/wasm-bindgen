@@ -625,15 +625,15 @@ fn instruction(
         // WebAssembly API will automatically convert the bigints to 64 bits
         // for us. This even allows us to ignore signedness.
         let low = val.to_owned();
-        let high = format!("{val} >> 64n");
+        let high = format!("{val} >> BigInt(64)");
         (low, high)
     }
     fn int64x2_to_int128(low: String, high: String, signed: bool) -> String {
         let low = format!("BigInt.asUintN(64, {low})");
         if signed {
-            format!("({low} | ({high} << 64n))")
+            format!("({low} | ({high} << BigInt(64)))")
         } else {
-            format!("({low} | (BigInt.asUintN(64, {high}) << 64n))")
+            format!("({low} | (BigInt.asUintN(64, {high}) << BigInt(64)))")
         }
     }
 
@@ -748,8 +748,8 @@ fn instruction(
             js.assert_optional_bigint(&val);
             let (low, high) = int128_to_int64x2(&val);
             js.push(format!("!isLikeNone({val})"));
-            js.push(format!("isLikeNone({val}) ? 0n : {low}"));
-            js.push(format!("isLikeNone({val}) ? 0n : {high}"));
+            js.push(format!("isLikeNone({val}) ? BigInt(0) : {low}"));
+            js.push(format!("isLikeNone({val}) ? BigInt(0) : {high}"));
         }
         Instruction::OptionWasmToInt128 { signed } => {
             let high = js.pop();
@@ -1029,7 +1029,13 @@ fn instruction(
             js.push(format!("!isLikeNone({0})", val));
             js.push(format!(
                 "isLikeNone({val}) ? {zero} : {val}",
-                zero = if *ty == ValType::I64 { "0n" } else { "0" }
+                zero = if *ty == ValType::I64 {
+                    // We can't use bigint literals for now. See:
+                    // https://github.com/rustwasm/wasm-bindgen/issues/4246
+                    "BigInt(0)"
+                } else {
+                    "0"
+                }
             ));
         }
 
