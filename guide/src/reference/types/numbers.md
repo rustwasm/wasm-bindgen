@@ -7,7 +7,7 @@
 [JavaScript `Number`s](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number#number_encoding) are 64-bit floating point value under the hood and cannot accurately represent all of Rust's numeric types. `wasm-bindgen` will automatically use either [`BigInt`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) or `Number` to accurately represent Rust's numeric types in JavaScript:
 
 - `u8`, `i8`, `u16`, `i16`, `u32`, `i32`, `isize`, `usize`, `f32`, and `f64` will be represented as `Number` in JavaScript.
-- `u64` and `i64` will be represented as `BigInt` in JavaScript.
+- `u64`, `i64`, `u128`, and `i128` will be represented as `BigInt` in JavaScript.
 
 > **Note**: Wasm is currently a 32-bit architecture, so `isize` and `usize` are 32-bit integers and "fit" into a JavaScript `Number`.
 
@@ -39,11 +39,11 @@ This is the same behavior as assigning the JavaScript `Number` to a [typed array
 
 Except for the handling of `Infinity` and `-Infinity`, this is the same behavior as [casting](https://doc.rust-lang.org/reference/expressions/operator-expr.html#numeric-cast) `f64` to the appropriate integer type in Rust, i.e. `value_f64 as u32`.
 
-### `BigInt` to `u64` and `i64`
+### `BigInt` to `u64`, `i64`, `u128`, and `i128`
 
 If the JavaScript `BigInt` is too large or too small for the target integer type, it will wrap around.
 
-This is the same behavior as assigning the JavaScript `BigInt` to a [typed array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray) of the appropriate integer type in JavaScript, i.e. `new Int64Array([value])[0]`.
+This is the same behavior as assigning the JavaScript `BigInt` to a [typed array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray) for 64-bit integer types in JavaScript, i.e. `new Int64Array([value])[0]`.
 
 ### `Number` to `f32`
 
