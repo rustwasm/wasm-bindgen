@@ -11,6 +11,8 @@
 
 > **Note**: Wasm is currently a 32-bit architecture, so `isize` and `usize` are 32-bit integers and "fit" into a JavaScript `Number`.
 
+> **Note**: `u128` and `i128` require `wasm-bindgen` version 0.2.96 or later.
+
 ## Converting from JavaScript to Rust
 
 `wasm-bindgen` will automatically handle the conversion of JavaScript numbers to Rust numeric types. The conversion rules are as follows:
