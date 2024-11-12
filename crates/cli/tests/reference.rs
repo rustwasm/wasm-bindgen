@@ -49,8 +49,8 @@
 //! flags.
 //!
 //! ```rust
-//! // TARGET: --target=web
-//! // TARGET: --target=nodejs
+//! // FLAGS: --target=web
+//! // FLAGS: --target=nodejs
 //! ```
 
 use anyhow::{bail, Result};
