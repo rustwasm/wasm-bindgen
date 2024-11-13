@@ -9,6 +9,11 @@
 //! compilation. Use `BLESS=1` in the environment to automatically update all
 //! tests.
 //!
+//! Note: Tests are run sequentially. In CI, tests are run ordered by name and
+//! all tests will be run to show all errors. Outside of CI, recently modified
+//! tests are run first and the runner will stop on the first failure. This is
+//! done to make it faster to iterate on tests.
+//!
 //! ## Dependencies
 //!
 //! By default, tests only have access to the `wasm-bindgen` and
@@ -29,6 +34,24 @@
 //!
 //! Multiple dependencies can be declared in a single test file using multiple
 //! `DEPENDENCY:` comments.
+//!
+//! ## Custom CLI flags
+//!
+//! By default, tests will use the `bundler` target. Custom CLI flags can be
+//! passed to the `wasm-bindgen` CLI by declaring them in a comment at the top
+//! of the test file. For example:
+//!
+//! ```rust
+//! // FLAGS: --target=web --reference-types
+//! ```
+//!
+//! Multiple comments can be used to run the test multiple times with different
+//! flags.
+//!
+//! ```rust
+//! // FLAGS: --target=web
+//! // FLAGS: --target=nodejs
+//! ```
 
 use anyhow::{bail, Result};
 use assert_cmd::prelude::*;
@@ -42,7 +65,7 @@ fn main() -> Result<()> {
     let filter = env::args().nth(1);
 
     let mut tests = Vec::new();
-    let dir = env::current_dir()?.join("tests/reference");
+    let dir = repo_root().join("crates/cli/tests/reference");
     for entry in dir.read_dir()? {
         let path = entry?.path();
         if path.extension().and_then(|s| s.to_str()) != Some("rs") {
@@ -57,15 +80,32 @@ fn main() -> Result<()> {
     }
     tests.sort();
 
-    let errs = tests
-        .iter()
-        .filter_map(|t| runtest(t).err().map(|e| (t, e)))
-        .collect::<Vec<_>>();
+    let is_ci = env::var("CI").is_ok();
+    if !is_ci {
+        // sort test files by when they were last modified, so that we run the most
+        // recently modified tests first. This just makes iterating on tests a bit
+        // easier.
+        tests.sort_by_cached_key(|p| fs::metadata(p).unwrap().modified().unwrap());
+        tests.reverse();
+    }
 
-    if errs.is_empty() {
+    let mut errs_iter = tests.iter().filter_map(|t| {
+        println!("  {}", t.file_name().unwrap().to_string_lossy());
+        runtest(t).err().map(|e| (t, e))
+    });
+
+    let Some(first_error) = errs_iter.next() else {
         println!("{} tests passed", tests.len());
         return Ok(());
+    };
+
+    let mut errs = vec![first_error];
+    if is_ci {
+        // one error should be enough for local testing to ensure fast iteration
+        // only find all errors in CI
+        errs.extend(errs_iter);
     }
+
     eprintln!("failed tests:\n");
     for (test, err) in errs {
         eprintln!("{} failure\n{}", test.display(), tab(&format!("{:?}", err)));
@@ -78,6 +118,16 @@ fn runtest(test: &Path) -> Result<()> {
     let td = tempfile::TempDir::new()?;
     let root = repo_root();
     let root = root.display();
+
+    // parse target declarations
+    let mut all_flags: Vec<_> = contents
+        .lines()
+        .filter_map(|l| l.strip_prefix("// FLAGS: "))
+        .map(|l| l.trim())
+        .collect();
+    if all_flags.is_empty() {
+        all_flags.push("");
+    }
 
     // parse additional dependency declarations
     let dependencies = contents
@@ -122,25 +172,58 @@ fn runtest(test: &Path) -> Result<()> {
         .join("debug")
         .join("reference_test.wasm");
 
-    let mut bindgen = Command::cargo_bin("wasm-bindgen")?;
-    bindgen
-        .arg("--out-dir")
-        .arg(td.path())
-        .arg(&wasm)
-        .arg("--remove-producers-section");
-    if contents.contains("// enable-externref") {
-        bindgen.env("WASM_BINDGEN_EXTERNREF", "1");
-    }
-    exec(&mut bindgen)?;
+    for (flags_index, &flags) in all_flags.iter().enumerate() {
+        // extract the target from the flags
+        let target = flags
+            .split_whitespace()
+            .find_map(|f| f.strip_prefix("--target="))
+            .unwrap_or("bundler");
 
-    if !contents.contains("async") {
-        let js = fs::read_to_string(td.path().join("reference_test_bg.js"))?;
-        assert_same(&js, &test.with_extension("js"))?;
-        let wat = sanitize_wasm(&td.path().join("reference_test_bg.wasm"))?;
-        assert_same(&wat, &test.with_extension("wat"))?;
+        let out_dir = &td.path().join(target);
+        fs::create_dir(out_dir)?;
+
+        let mut bindgen = Command::cargo_bin("wasm-bindgen")?;
+        bindgen
+            .arg("--out-dir")
+            .arg(out_dir)
+            .arg(&wasm)
+            .arg("--remove-producers-section");
+        for flag in flags.split_whitespace() {
+            bindgen.arg(flag);
+        }
+        if contents.contains("// enable-externref") {
+            bindgen.env("WASM_BINDGEN_EXTERNREF", "1");
+        }
+        exec(&mut bindgen)?;
+
+        // suffix the file name with the target
+        let test = if all_flags.len() > 1 {
+            let base_file_name = format!(
+                "{}-{}.rs",
+                test.file_stem().unwrap().to_string_lossy(),
+                flags_index
+            );
+            test.with_file_name(base_file_name)
+        } else {
+            test.to_owned()
+        };
+
+        // bundler uses a different main JS file, because its
+        // reference_test.js just imports the reference_test_bg.js
+        let main_js_file = match target {
+            "bundler" => "reference_test_bg.js",
+            _ => "reference_test.js",
+        };
+
+        if !contents.contains("async") {
+            let js = fs::read_to_string(out_dir.join(main_js_file))?;
+            assert_same(&js, &test.with_extension("js"))?;
+            let wat = sanitize_wasm(&out_dir.join("reference_test_bg.wasm"))?;
+            assert_same(&wat, &test.with_extension("wat"))?;
+        }
+        let d_ts = fs::read_to_string(out_dir.join("reference_test.d.ts"))?;
+        assert_same(&d_ts, &test.with_extension("d.ts"))?;
     }
-    let d_ts = fs::read_to_string(td.path().join("reference_test.d.ts"))?;
-    assert_same(&d_ts, &test.with_extension("d.ts"))?;
 
     Ok(())
 }
@@ -224,19 +307,15 @@ fn diff(a: &str, b: &str) -> Result<()> {
 }
 
 fn target_dir() -> PathBuf {
-    let mut dir = env::current_exe().unwrap();
-    dir.pop(); // current exe
-    if dir.ends_with("deps") {
-        dir.pop();
-    }
-    dir.pop(); // debug and/or release
-    dir
+    repo_root().join("target/tests/reference")
 }
 
 fn repo_root() -> PathBuf {
     let mut repo_root = env::current_dir().unwrap();
-    repo_root.pop(); // remove 'cli'
-    repo_root.pop(); // remove 'crates'
+    if repo_root.file_name() == Some("cli".as_ref()) {
+        repo_root.pop(); // remove 'cli'
+        repo_root.pop(); // remove 'crates'
+    }
     repo_root
 }
 
