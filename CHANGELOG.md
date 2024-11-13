@@ -14,6 +14,15 @@
 * Added JSDoc type annotations to C-style enums.
   [#4192](https://github.com/rustwasm/wasm-bindgen/pull/4192)
 
+* Added support for C-style enums with negative discriminants.
+  [#4204](https://github.com/rustwasm/wasm-bindgen/pull/4204)
+
+* Added bindings for `MediaStreamTrack.getCapabilities`.
+  [#4236](https://github.com/rustwasm/wasm-bindgen/pull/4236)
+
+* Added WASM ABI support for `u128` and `i128`
+  [#4222](https://github.com/rustwasm/wasm-bindgen/pull/4222)
+
 ### Changed
 
 * String enums now generate private TypeScript types but only if used.
@@ -65,6 +74,9 @@
 
 * Fixed calls to `JsCast::instanceof()` not respecting JavaScript namespaces.
   [#4241](https://github.com/rustwasm/wasm-bindgen/pull/4241)
+
+* Fixed imports for functions using `this` and late binding.
+  [#4225](https://github.com/rustwasm/wasm-bindgen/pull/4225)
 
 --------------------------------------------------------------------------------
 

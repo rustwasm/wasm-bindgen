@@ -6,10 +6,7 @@ use std::path::PathBuf;
 use update_cargo_toml::update_cargo_toml_features;
 
 #[derive(Parser, Debug)]
-#[structopt(
-    name = "wasm-bindgen-webidl",
-    about = "Converts WebIDL into wasm-bindgen compatible code."
-)]
+#[clap(about = "Converts WebIDL into wasm-bindgen compatible code.")]
 struct Opt {
     input_dir: PathBuf,
 

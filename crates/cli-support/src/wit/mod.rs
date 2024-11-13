@@ -894,6 +894,7 @@ impl<'a> Context<'a> {
     }
 
     fn enum_(&mut self, enum_: decode::Enum<'_>) -> Result<(), Error> {
+        let signed = enum_.signed;
         let aux = AuxEnum {
             name: enum_.name.to_string(),
             comments: concatenate_comments(&enum_.comments),
@@ -901,11 +902,12 @@ impl<'a> Context<'a> {
                 .variants
                 .iter()
                 .map(|v| {
-                    (
-                        v.name.to_string(),
-                        v.value,
-                        concatenate_comments(&v.comments),
-                    )
+                    let value = if signed {
+                        v.value as i32 as i64
+                    } else {
+                        v.value as i64
+                    };
+                    (v.name.to_string(), value, concatenate_comments(&v.comments))
                 })
                 .collect(),
             generate_typescript: enum_.generate_typescript,

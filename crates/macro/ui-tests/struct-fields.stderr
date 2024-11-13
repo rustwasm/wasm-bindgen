@@ -1,6 +1,9 @@
 error[E0277]: the trait bound `Foo: std::marker::Copy` is not satisfied
   --> ui-tests/struct-fields.rs:10:12
    |
+8  | #[wasm_bindgen]
+   | --------------- in this procedural macro expansion
+9  | struct Bar {
 10 |     pub a: Foo,
    |            ^^^ the trait `std::marker::Copy` is not implemented for `Foo`
    |
