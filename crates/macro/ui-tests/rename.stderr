@@ -1,0 +1,31 @@
+error: can only #[wasm_bindgen] public functions
+ --> ui-tests/rename.rs:4:1
+  |
+4 | fn foo_bar() {}
+  | ^^^^^^^^^^^^^^^
+
+warning: unused variable: `auto_rename`
+ --> ui-tests/rename.rs:8:20
+  |
+8 |     #[wasm_bindgen(auto_rename)]
+  |                    ^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_auto_rename`
+  |
+  = note: `#[warn(unused_variables)]` on by default
+
+warning: unused variable: `auto_rename`
+  --> ui-tests/rename.rs:11:20
+   |
+11 |     #[wasm_bindgen(auto_rename)]
+   |                    ^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_auto_rename`
+
+warning: unused variable: `auto_rename`
+  --> ui-tests/rename.rs:17:20
+   |
+17 |     #[wasm_bindgen(auto_rename)]
+   |                    ^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_auto_rename`
+
+warning: unused variable: `auto_rename`
+  --> ui-tests/rename.rs:23:20
+   |
+23 |     #[wasm_bindgen(auto_rename)]
+   |                    ^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_auto_rename`
