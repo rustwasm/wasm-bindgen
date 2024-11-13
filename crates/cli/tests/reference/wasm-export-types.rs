@@ -10,3 +10,8 @@ use wasm_bindgen::prelude::*;
 pub fn example(a: u32, b: u64, c: JsValue, d: &str) -> String {
     todo!()
 }
+
+#[wasm_bindgen]
+pub fn example_128(a: u128) -> Option<u128> {
+    None
+}

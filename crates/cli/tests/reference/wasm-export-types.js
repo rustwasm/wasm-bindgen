@@ -95,6 +95,15 @@ export function example(a, b, c, d) {
     }
 }
 
+/**
+ * @param {bigint} a
+ * @returns {bigint | undefined}
+ */
+export function example_128(a) {
+    const ret = wasm.example_128(a, a >> BigInt(64));
+    return ret[0] === 0 ? undefined : (BigInt.asUintN(64, ret[1]) | (BigInt.asUintN(64, ret[2]) << BigInt(64)));
+}
+
 async function __wbg_load(module, imports) {
     if (typeof Response === 'function' && module instanceof Response) {
         if (typeof WebAssembly.instantiateStreaming === 'function') {
