@@ -52,6 +52,15 @@
 //! // FLAGS: --target=web
 //! // FLAGS: --target=nodejs
 //! ```
+//!
+//! ## Testing only types
+//!
+//! In some cases, we are only interested in testing the generated `.d.ts` file.
+//! In this case, add a comment at the top of the test file:
+//!
+//! ```rust
+//! // TYPES ONLY
+//! ```
 
 use anyhow::{bail, Result};
 use assert_cmd::prelude::*;
@@ -118,6 +127,8 @@ fn runtest(test: &Path) -> Result<()> {
     let td = tempfile::TempDir::new()?;
     let root = repo_root();
     let root = root.display();
+
+    let types_only = contents.contains("// TYPES ONLY");
 
     // parse target declarations
     let mut all_flags: Vec<_> = contents
@@ -215,7 +226,7 @@ fn runtest(test: &Path) -> Result<()> {
             _ => "reference_test.js",
         };
 
-        if !contents.contains("async") {
+        if !types_only {
             let js = fs::read_to_string(out_dir.join(main_js_file))?;
             assert_same(&js, &test.with_extension("js"))?;
             let wat = sanitize_wasm(&out_dir.join("reference_test_bg.wasm"))?;
