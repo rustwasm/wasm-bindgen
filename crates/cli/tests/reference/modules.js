@@ -8,24 +8,7 @@ const heap = new Array(128).fill(undefined);
 
 heap.push(undefined, null, true, false);
 
-let heap_next = heap.length;
-
-function addHeapObject(obj) {
-    if (heap_next === heap.length) heap.push(heap.length + 1);
-    const idx = heap_next;
-    heap_next = heap[idx];
-
-    heap[idx] = obj;
-    return idx;
-}
-
-function handleError(f, args) {
-    try {
-        return f.apply(this, args);
-    } catch (e) {
-        wasm.__wbindgen_exn_store(addHeapObject(e));
-    }
-}
+function getObject(idx) { return heap[idx]; }
 
 const lTextDecoder = typeof TextDecoder === 'undefined' ? (0, module.require)('util').TextDecoder : TextDecoder;
 
@@ -47,7 +30,7 @@ function getStringFromWasm0(ptr, len) {
     return cachedTextDecoder.decode(getUint8ArrayMemory0().subarray(ptr, ptr + len));
 }
 
-function getObject(idx) { return heap[idx]; }
+let heap_next = heap.length;
 
 function dropObject(idx) {
     if (idx < 132) return;
@@ -61,35 +44,35 @@ function takeObject(idx) {
     return ret;
 }
 
-export function exported() {
-    const ret = wasm.exported();
-    if (ret[1]) {
-        throw takeObject(ret[0]);
-    }
+function addHeapObject(obj) {
+    if (heap_next === heap.length) heap.push(heap.length + 1);
+    const idx = heap_next;
+    heap_next = heap[idx];
+
+    heap[idx] = obj;
+    return idx;
 }
 
-export function __wbg_add_0f820bc7ed50a898(arg0, arg1) {
-    const ret = add(arg0, arg1);
+export function exported() {
+    wasm.exported();
+}
+
+export function __wbg_parseFloat_a582c94ad6956cc9(arg0) {
+    const ret = parseFloat(getObject(arg0));
     return ret;
 };
 
-export function __wbg_barfromfoo_fc0e2d223c6eed1f() {
-    bar_from_foo();
+export function __wbg_parseFloat_e7f07194fb2af388(arg0, arg1) {
+    const ret = parseFloat(getStringFromWasm0(arg0, arg1));
+    return ret;
 };
 
-export function __wbg_catchme_6fd452194698de3b() { return handleError(function () {
-    catch_me();
-}, arguments) };
-
-export function __wbg_nocatch_633680ea5fdb920d() {
-    no_catch();
+export function __wbindgen_object_drop_ref(arg0) {
+    takeObject(arg0);
 };
 
-export function __wbg_reload_bd59a4b785b50f44() {
-    window.location.reload();
-};
-
-export function __wbg_write_67852f31952d3412(arg0, arg1) {
-    window.document.write(getStringFromWasm0(arg0, arg1));
+export function __wbindgen_string_new(arg0, arg1) {
+    const ret = getStringFromWasm0(arg0, arg1);
+    return addHeapObject(ret);
 };
 

@@ -104,7 +104,7 @@ export class Test {
     }
 }
 
-export function __wbg_test2_39fe629b9aa739cf() {
+export function __wbg_test2_a7ee3654c08eebfe() {
     const ret = test2();
     return addHeapObject(ret);
 };

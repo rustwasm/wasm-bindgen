@@ -52,7 +52,7 @@ export function exported() {
     }
 }
 
-export function __wbg_foo_95fe1a04017077db() { return handleError(function () {
+export function __wbg_foo_fa0172cdeb670adb() { return handleError(function () {
     foo();
 }, arguments) };
 

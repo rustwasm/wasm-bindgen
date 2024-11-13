@@ -10,7 +10,7 @@ export function add_that_might_fail(a, b) {
 
 const imports = {
     __wbindgen_placeholder__: {
-        __wbg_random_5d40be260a2cfbac: function() {
+        __wbg_random_32888cfc47f8ed4d: function() {
             const ret = Math.random();
             return ret;
         },
