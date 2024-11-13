@@ -2989,7 +2989,16 @@ __wbg_set_wasm(wasm);"
                         self.globals.push('\n');
                     }
                     AuxExportKind::Constructor(class) => {
-                        let exported = self.require_class(class);
+                        let exported = self.require_class_or_namespace(class);
+                        let exported = match exported {
+                            ClassOrNamespace::Class(class) => class,
+                            ClassOrNamespace::Namespace(_) => {
+                                bail!(
+                                    "constructor is not supported on `{}`. Enums do not support exported constructors.",
+                                    class
+                                );
+                            }
+                        };
 
                         if exported.has_constructor {
                             bail!("found duplicate constructor for class `{}`", class);
@@ -3004,10 +3013,11 @@ __wbg_set_wasm(wasm);"
                         receiver,
                         kind,
                     } => {
+                        let is_static = receiver.is_static();
                         let mut exported = self.require_class_or_namespace(class);
 
                         let mut prefix = String::new();
-                        if receiver.is_static() {
+                        if is_static {
                             prefix += "static ";
                         }
                         let ts = match kind {
@@ -3029,7 +3039,7 @@ __wbg_set_wasm(wasm);"
                                 if export.generate_typescript {
                                     let location = FieldLocation {
                                         name: name.clone(),
-                                        is_static: receiver.is_static(),
+                                        is_static,
                                     };
                                     let accessor = FieldAccessor {
                                         // This is only set to `None` when generating a constructor.
@@ -3061,7 +3071,7 @@ __wbg_set_wasm(wasm);"
                                 if export.generate_typescript {
                                     let location = FieldLocation {
                                         name: name.clone(),
-                                        is_static: receiver.is_static(),
+                                        is_static,
                                     };
                                     let accessor = FieldAccessor {
                                         ty: ts_arg_tys[0].clone(),
@@ -3080,14 +3090,19 @@ __wbg_set_wasm(wasm);"
                                 class.push(name, &prefix, &js_docs, &code, &ts_docs, ts);
                             }
                             ClassOrNamespace::Namespace(ns) => {
-                                if !receiver.is_static() {
-                                    bail!(
-                                        "non-static method `{}` on namespace `{}`",
-                                        name,
-                                        ns.name
+                                if !is_static {
+                                    let msg = format!(
+                                        "The enum `{}` cannot support the instance method `{}`. \
+                                        No binding will be generated for this method. \
+                                        Consider moving the method in an `impl` block with the `#[wasm_bindgen]` attribute to avoid exporting it, \
+                                        or making it a static method by replacing `self` with `value: Self`.",
+                                        ns.name,
+                                        name
                                     );
+                                    println!("WARNING: {}", msg);
+                                } else {
+                                    ns.push(name, &js_docs, &code, &ts_docs, ts);
                                 }
-                                ns.push(name, &js_docs, &code, &ts_docs, ts);
                             }
                         }
                     }

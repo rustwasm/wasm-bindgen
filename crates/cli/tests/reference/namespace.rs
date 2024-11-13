@@ -19,6 +19,11 @@ impl ImageFormat {
             _ => panic!("unknown image format: {}", s),
         }
     }
+
+    /// I will be ignored by the generated JS bindings.
+    pub fn is_lossless(self) -> bool {
+        matches!(self, ImageFormat::PNG | ImageFormat::GIF)
+    }
 }
 
 /// String enum
@@ -38,5 +43,10 @@ impl Status {
         } else {
             Status::Failure
         }
+    }
+
+    /// I will be ignored by the generated JS bindings.
+    pub fn to_bool(self) -> bool {
+        matches!(self, Status::Success)
     }
 }
