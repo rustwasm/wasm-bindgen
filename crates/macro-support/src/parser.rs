@@ -77,7 +77,7 @@ macro_rules! attrgen {
             (readonly, Readonly(Span)),
             (js_name, JsName(Span, String, Span)),
             (js_class, JsClass(Span, String, Span)),
-            (experimental_auto_camel_case, AutoCamelCase(Span)),
+            (auto_rename, AutoRename(Span)),
             (inspectable, Inspectable(Span)),
             (is_type_of, IsTypeOf(Span, syn::Expr)),
             (extends, Extends(Span, syn::Path)),
@@ -425,7 +425,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs)> for &'a mut syn::ItemStruct
             .map(|s| s.0.to_string())
             .unwrap_or(self.ident.unraw().to_string());
         let is_inspectable = attrs.inspectable().is_some();
-        let auto_camel_case = attrs.experimental_auto_camel_case().is_some();
+        let auto_rename = attrs.auto_rename().is_some();
         let getter_with_clone = attrs.getter_with_clone();
         for (i, field) in self.fields.iter_mut().enumerate() {
             match field.vis {
@@ -445,7 +445,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs)> for &'a mut syn::ItemStruct
 
             let js_field_name = match attrs.js_name() {
                 Some((name, _)) => name.to_string(),
-                None => camel_caseify(js_field_name, auto_camel_case),
+                None => camel_caseify(js_field_name, auto_rename),
             };
 
             let comments = extract_doc_comments(&field.attrs);
@@ -483,8 +483,8 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs)> for &'a mut syn::ItemStruct
     }
 }
 
-fn camel_caseify(name: String, auto_camel_case: bool) -> String {
-    if auto_camel_case {
+fn camel_caseify(name: String, auto_rename: bool) -> String {
+    if auto_rename {
         if let Some(camel_case) = snake_case_to_camel_case(&name) {
             return camel_case;
         }
@@ -523,7 +523,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a ForeignItemCtx)> for syn
             self.vis.clone(),
             false,
             None,
-            context.auto_camel_case,
+            context.auto_rename,
             false,
             Some(&["default"]),
         )?
@@ -931,7 +931,7 @@ fn function_from_decl(
     vis: syn::Visibility,
     allow_self: bool,
     self_ty: Option<&Ident>,
-    auto_camel_case: bool,
+    auto_rename: bool,
     is_from_impl: bool,
     skip_keywords: Option<&[&str]>,
 ) -> Result<(ast::Function, Option<ast::MethodSelf>), Diagnostic> {
@@ -1027,10 +1027,10 @@ fn function_from_decl(
     } else {
         let ident = decl_name.unraw().to_string();
         let name = if is_setter && ident.starts_with("set_") {
-            let ident = camel_caseify(ident[4..].to_string(), auto_camel_case);
+            let ident = camel_caseify(ident[4..].to_string(), auto_rename);
             format!("set_{}", ident)
         } else {
-            camel_caseify(ident, auto_camel_case)
+            camel_caseify(ident, auto_rename)
         };
         (name, decl_name.span())
     };
@@ -1264,7 +1264,7 @@ fn prepare_for_impl_recursion(
         .map(|s| s.0.to_string())
         .unwrap_or(ident.to_string());
 
-    let auto_camel_case = impl_opts.experimental_auto_camel_case().is_some();
+    let auto_rename = impl_opts.auto_rename().is_some();
 
     let wasm_bindgen = &program.wasm_bindgen;
     let wasm_bindgen_futures = &program.wasm_bindgen_futures;
@@ -1274,7 +1274,7 @@ fn prepare_for_impl_recursion(
             pound_token: Default::default(),
             style: syn::AttrStyle::Outer,
             bracket_token: Default::default(),
-            meta: syn::parse_quote! { #wasm_bindgen::prelude::__wasm_bindgen_class_marker(#class = #js_class, #auto_camel_case, wasm_bindgen = #wasm_bindgen, wasm_bindgen_futures = #wasm_bindgen_futures) },
+            meta: syn::parse_quote! { #wasm_bindgen::prelude::__wasm_bindgen_class_marker(#class = #js_class, #auto_rename, wasm_bindgen = #wasm_bindgen, wasm_bindgen_futures = #wasm_bindgen_futures) },
         },
     );
 
@@ -1288,7 +1288,7 @@ impl<'a> MacroParse<&ClassMarker> for &'a mut syn::ImplItemFn {
         ClassMarker {
             class,
             js_class,
-            auto_camel_case,
+            auto_rename: auto_camel_case,
             wasm_bindgen,
             wasm_bindgen_futures,
         }: &ClassMarker,
@@ -1635,12 +1635,12 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
         let module = module_from_opts(program, &opts)
             .map_err(|e| errors.push(e))
             .unwrap_or_default();
-        let auto_camel_case = opts.experimental_auto_camel_case().is_some();
+        let auto_rename = opts.auto_rename().is_some();
         for item in self.items.into_iter() {
             let ctx = ForeignItemCtx {
                 module: module.clone(),
                 js_namespace: js_namespace.clone(),
-                auto_camel_case,
+                auto_rename,
             };
             if let Err(e) = item.macro_parse(program, ctx) {
                 errors.push(e);
@@ -1655,7 +1655,7 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
 struct ForeignItemCtx {
     module: Option<ast::ImportModule>,
     js_namespace: Option<Vec<String>>,
-    auto_camel_case: bool,
+    auto_rename: bool,
 }
 
 impl MacroParse<ForeignItemCtx> for syn::ForeignItem {

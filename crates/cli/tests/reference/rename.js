@@ -4,6 +4,21 @@ export function __wbg_set_wasm(val) {
 }
 
 
+const heap = new Array(128).fill(undefined);
+
+heap.push(undefined, null, true, false);
+
+let heap_next = heap.length;
+
+function addHeapObject(obj) {
+    if (heap_next === heap.length) heap.push(heap.length + 1);
+    const idx = heap_next;
+    heap_next = heap[idx];
+
+    heap[idx] = obj;
+    return idx;
+}
+
 const lTextDecoder = typeof TextDecoder === 'undefined' ? (0, module.require)('util').TextDecoder : TextDecoder;
 
 let cachedTextDecoder = new lTextDecoder('utf-8', { ignoreBOM: true, fatal: true });
@@ -22,6 +37,20 @@ function getUint8ArrayMemory0() {
 function getStringFromWasm0(ptr, len) {
     ptr = ptr >>> 0;
     return cachedTextDecoder.decode(getUint8ArrayMemory0().subarray(ptr, ptr + len));
+}
+
+function getObject(idx) { return heap[idx]; }
+
+function dropObject(idx) {
+    if (idx < 132) return;
+    heap[idx] = heap_next;
+    heap_next = idx;
+}
+
+function takeObject(idx) {
+    const ret = getObject(idx);
+    dropObject(idx);
+    return ret;
 }
 /**
  * @param {number} a
@@ -121,6 +150,12 @@ export class RustStruct {
         wasm.ruststruct_staticMethod(a);
     }
     /**
+     * @param {number} a
+     */
+    static IHaveA_funky_name(a) {
+        wasm.ruststruct_IHaveA_funky_name(a);
+    }
+    /**
      * @returns {number}
      */
     get someOtherProp() {
@@ -174,16 +209,36 @@ export class RustStruct {
     }
 }
 
+export function __wbg_documentElement_17a3f0d4e04c6241() {
+    const ret = document.documentElement();
+    return addHeapObject(ret);
+};
+
 export function __wbg_foobar_aa5072d28246f9cb() {
     foo_bar();
+};
+
+export function __wbg_querySelector_ab6b6886c63dca45(arg0, arg1) {
+    const ret = document.querySelector(getStringFromWasm0(arg0, arg1));
+    return addHeapObject(ret);
 };
 
 export function __wbg_quxCorge_d8ec2d56c00b013f() {
     quxCorge();
 };
 
-export function __wbg_yesNo_1feba4b061143a4c() {
-    Baz.yesNo();
+export function __wbg_static_accessor_MAX_SAFE_INTEGER_37128e65405df998() {
+    const ret = Number.MAX_SAFE_INTEGER;
+    return ret;
+};
+
+export function __wbg_static_accessor_i_do_not_exist_344091339f70bf24() {
+    const ret = Number.i_do_not_exist;
+    return ret;
+};
+
+export function __wbindgen_object_drop_ref(arg0) {
+    takeObject(arg0);
 };
 
 export function __wbindgen_throw(arg0, arg1) {

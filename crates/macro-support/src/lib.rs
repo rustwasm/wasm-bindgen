@@ -159,7 +159,7 @@ pub fn snake_case_to_camel_case(name: &str) -> Option<String> {
 struct ClassMarker {
     class: syn::Ident,
     js_class: String,
-    auto_camel_case: bool,
+    auto_rename: bool,
     wasm_bindgen: syn::Path,
     wasm_bindgen_futures: syn::Path,
 }
@@ -175,7 +175,7 @@ impl Parse for ClassMarker {
             .unwrap_or(js_class);
 
         input.parse::<Option<Token![,]>>()?;
-        let auto_camel_case = input.parse::<syn::LitBool>()?.value();
+        let auto_rename = input.parse::<syn::LitBool>()?.value();
 
         let mut wasm_bindgen = None;
         let mut wasm_bindgen_futures = None;
@@ -218,7 +218,7 @@ impl Parse for ClassMarker {
         Ok(ClassMarker {
             class,
             js_class,
-            auto_camel_case,
+            auto_rename,
             wasm_bindgen: wasm_bindgen.unwrap_or_else(|| syn::parse_quote! { wasm_bindgen }),
             wasm_bindgen_futures: wasm_bindgen_futures
                 .unwrap_or_else(|| syn::parse_quote! { wasm_bindgen_futures }),
