@@ -1,5 +1,4 @@
 // FLAGS: --target=web
-// TYPES ONLY
 
 use wasm_bindgen::prelude::*;
 
