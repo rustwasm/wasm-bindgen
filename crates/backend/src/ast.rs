@@ -443,6 +443,9 @@ pub struct Enum {
     pub rust_name: Ident,
     /// The name of this enum in JS code
     pub js_name: String,
+    /// Whether the variant values and hole are signed, meaning that they
+    /// represent the bits of a `i32` value.
+    pub signed: bool,
     /// The variants provided by this enum
     pub variants: Vec<Variant>,
     /// The doc comments on this enum, if any
