@@ -23,6 +23,9 @@
 * Added WASM ABI support for `u128` and `i128`
   [#4222](https://github.com/rustwasm/wasm-bindgen/pull/4222)
 
+* The timeout to connect to the test driver in `wasm-bindgen-test-runner` can now be configured via `WASM_BINDGEN_DRIVER_TIMEOUT`. This is useful when testing on a slower machine, e.g. CI.
+  [#4266](https://github.com/rustwasm/wasm-bindgen/pull/4266)
+
 ### Changed
 
 * String enums now generate private TypeScript types but only if used.
