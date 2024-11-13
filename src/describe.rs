@@ -30,6 +30,8 @@ tys! {
     U32
     I64
     U64
+    I128
+    U128
     F32
     F64
     BOOLEAN
@@ -89,6 +91,8 @@ simple! {
     u32 => U32
     i64 => I64
     u64 => U64
+    i128 => I128
+    u128 => U128
     isize => I32
     usize => U32
     f32 => F32

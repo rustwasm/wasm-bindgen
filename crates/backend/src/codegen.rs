@@ -1535,10 +1535,15 @@ impl ToTokens for ast::Enum {
         let name_len = name_str.len() as u32;
         let name_chars = name_str.chars().map(|c| c as u32);
         let hole = &self.hole;
+        let underlying = if self.signed {
+            quote! { i32 }
+        } else {
+            quote! { u32 }
+        };
         let cast_clauses = self.variants.iter().map(|variant| {
             let variant_name = &variant.name;
             quote! {
-                if js == #enum_name::#variant_name as u32 {
+                if js == #enum_name::#variant_name as #underlying {
                     #enum_name::#variant_name
                 }
             }
@@ -1548,20 +1553,20 @@ impl ToTokens for ast::Enum {
         (quote! {
             #[automatically_derived]
             impl #wasm_bindgen::convert::IntoWasmAbi for #enum_name {
-                type Abi = u32;
+                type Abi = #underlying;
 
                 #[inline]
-                fn into_abi(self) -> u32 {
-                    self as u32
+                fn into_abi(self) -> #underlying {
+                    self as #underlying
                 }
             }
 
             #[automatically_derived]
             impl #wasm_bindgen::convert::FromWasmAbi for #enum_name {
-                type Abi = u32;
+                type Abi = #underlying;
 
                 #[inline]
-                unsafe fn from_abi(js: u32) -> Self {
+                unsafe fn from_abi(js: #underlying) -> Self {
                     #(#cast_clauses else)* {
                         #wasm_bindgen::throw_str("invalid enum value passed")
                     }
@@ -1571,13 +1576,13 @@ impl ToTokens for ast::Enum {
             #[automatically_derived]
             impl #wasm_bindgen::convert::OptionFromWasmAbi for #enum_name {
                 #[inline]
-                fn is_none(val: &u32) -> bool { *val == #hole }
+                fn is_none(val: &Self::Abi) -> bool { *val == #hole as #underlying }
             }
 
             #[automatically_derived]
             impl #wasm_bindgen::convert::OptionIntoWasmAbi for #enum_name {
                 #[inline]
-                fn none() -> Self::Abi { #hole }
+                fn none() -> Self::Abi { #hole as #underlying }
             }
 
             #[automatically_derived]
@@ -1597,7 +1602,7 @@ impl ToTokens for ast::Enum {
                 #wasm_bindgen::JsValue
             {
                 fn from(value: #enum_name) -> Self {
-                    #wasm_bindgen::JsValue::from_f64((value as u32).into())
+                    #wasm_bindgen::JsValue::from_f64((value as #underlying).into())
                 }
             }
 
@@ -1608,7 +1613,7 @@ impl ToTokens for ast::Enum {
                 fn try_from_js_value(value: #wasm_bindgen::JsValue)
                     -> #wasm_bindgen::__rt::core::result::Result<Self, <#enum_name as #wasm_bindgen::convert::TryFromJsValue>::Error> {
                     use #wasm_bindgen::__rt::core::convert::TryFrom;
-                    let js = f64::try_from(&value)? as u32;
+                    let js = f64::try_from(&value)? as #underlying;
 
                     #wasm_bindgen::__rt::core::result::Result::Ok(
                         #(#try_from_cast_clauses else)* {
@@ -1894,9 +1899,9 @@ fn respan(input: TokenStream, span: &dyn ToTokens) -> TokenStream {
 
     for (i, token) in spans.into_iter().enumerate() {
         if i == 0 {
-            first_span = token.span();
+            first_span = Span::call_site().located_at(token.span());
         }
-        last_span = token.span();
+        last_span = Span::call_site().located_at(token.span());
     }
 
     let mut new_tokens = Vec::new();

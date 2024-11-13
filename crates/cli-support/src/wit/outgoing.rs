@@ -65,6 +65,20 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::U32 => self.outgoing_i32(AdapterType::U32),
             Descriptor::I64 => self.outgoing_i64(AdapterType::I64),
             Descriptor::U64 => self.outgoing_i64(AdapterType::U64),
+            Descriptor::I128 => {
+                self.instruction(
+                    &[AdapterType::I64, AdapterType::I64],
+                    Instruction::WasmToInt128 { signed: true },
+                    &[AdapterType::S128],
+                );
+            }
+            Descriptor::U128 => {
+                self.instruction(
+                    &[AdapterType::I64, AdapterType::I64],
+                    Instruction::WasmToInt128 { signed: false },
+                    &[AdapterType::U128],
+                );
+            }
             Descriptor::F32 => {
                 self.get(AdapterType::F32);
                 self.output.push(AdapterType::F32);
@@ -267,6 +281,20 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::U64 => self.option_native(false, ValType::I64),
             Descriptor::F32 => self.out_option_sentinel64(AdapterType::F32),
             Descriptor::F64 => self.option_native(true, ValType::F64),
+            Descriptor::I128 => {
+                self.instruction(
+                    &[AdapterType::I32, AdapterType::I64, AdapterType::I64],
+                    Instruction::OptionWasmToInt128 { signed: true },
+                    &[AdapterType::S128.option()],
+                );
+            }
+            Descriptor::U128 => {
+                self.instruction(
+                    &[AdapterType::I32, AdapterType::I64, AdapterType::I64],
+                    Instruction::OptionWasmToInt128 { signed: false },
+                    &[AdapterType::U128.option()],
+                );
+            }
             Descriptor::Boolean => {
                 self.instruction(
                     &[AdapterType::I32],
@@ -360,6 +388,8 @@ impl InstructionBuilder<'_, '_> {
             | Descriptor::F64
             | Descriptor::I64
             | Descriptor::U64
+            | Descriptor::I128
+            | Descriptor::U128
             | Descriptor::Boolean
             | Descriptor::Char
             | Descriptor::Enum { .. }
