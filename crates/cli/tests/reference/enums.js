@@ -102,11 +102,11 @@ export const ImplicitDiscriminant = {
  * A C-style enum with negative discriminants.
  * @enum {-1 | 0 | 1}
  */
-export const Ordering = Object.freeze({
+export const Ordering = {
     Less: -1, "-1": "Less",
     Equal: 0, "0": "Equal",
     Greater: 1, "1": "Greater",
-});
+};
 
 const __wbindgen_enum_ColorName = ["green", "yellow", "red"];
 
