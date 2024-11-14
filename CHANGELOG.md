@@ -43,6 +43,9 @@
 * Deprecate `--reference-types` in favor of automatic target feature detection.
   [#4237](https://github.com/rustwasm/wasm-bindgen/pull/4237)
 
+* `wasm-bindgen-test-runner` now tries to restart the WebDriver on failure, instead of spending its timeout period trying to connect to a non-existing WebDriver.
+  [#4267](https://github.com/rustwasm/wasm-bindgen/pull/4267)
+
 ### Fixed
 
 * Fixed methods with `self: &Self` consuming the object.
