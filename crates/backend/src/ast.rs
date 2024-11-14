@@ -248,9 +248,9 @@ pub enum OperationKind {
     /// A standard method, nothing special
     Regular,
     /// A method for getting the value of the provided Ident or String
-    Getter(Option<String>),
+    Getter,
     /// A method for setting the value of the provided Ident or String
-    Setter(Option<String>),
+    Setter,
     /// A dynamically intercepted getter
     IndexingGetter,
     /// A dynamically intercepted setter
@@ -361,8 +361,6 @@ pub struct Function {
     pub name: String,
     /// The span of the function's name in Rust code
     pub name_span: Span,
-    /// Whether the function has a js_name attribute
-    pub renamed_via_js_name: bool,
     /// The arguments to the function
     pub arguments: Vec<syn::PatType>,
     /// The return type of the function, if provided
@@ -542,29 +540,5 @@ impl ImportKind {
             ImportKind::Type(_) => false,
             ImportKind::Enum(_) => false,
         }
-    }
-}
-
-impl Function {
-    /// If the rust object has a `fn xxx(&self) -> MyType` method, get the name for a getter in
-    /// javascript (in this case `xxx`, so you can write `val = obj.xxx`)
-    pub fn infer_getter_property(&self) -> &str {
-        &self.name
-    }
-
-    /// If the rust object has a `fn set_xxx(&mut self, MyType)` style method, get the name
-    /// for a setter in javascript (in this case `xxx`, so you can write `obj.xxx = val`)
-    pub fn infer_setter_property(&self) -> Result<String, Diagnostic> {
-        let name = self.name.to_string();
-
-        // Otherwise we infer names based on the Rust function name.
-        if !name.starts_with("set_") {
-            bail_span!(
-                syn::token::Pub(self.name_span),
-                "setters must start with `set_`, found: {}",
-                name,
-            );
-        }
-        Ok(name[4..].to_string())
     }
 }

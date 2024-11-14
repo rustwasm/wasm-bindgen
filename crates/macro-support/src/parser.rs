@@ -67,8 +67,8 @@ macro_rules! attrgen {
             (module, Module(Span, String, Span)),
             (raw_module, RawModule(Span, String, Span)),
             (inline_js, InlineJs(Span, String, Span)),
-            (getter, Getter(Span, Option<String>)),
-            (setter, Setter(Span, Option<String>)),
+            (getter, Getter(Span, Option<String>, Span)),
+            (setter, Setter(Span, Option<String>, Span)),
             (indexing_getter, IndexingGetter(Span)),
             (indexing_setter, IndexingSetter(Span)),
             (indexing_deleter, IndexingDeleter(Span)),
@@ -153,6 +153,20 @@ macro_rules! methods {
                     BindgenAttr::$variant(_, s, span) => {
                         a.0.set(true);
                         Some((&s[..], *span))
+                    }
+                    _ => None,
+                })
+        }
+    };
+
+    (@method $name:ident, $variant:ident(Span, Option<String>, Span)) => {
+        fn $name(&self) -> Option<(Option<&str>, Span)> {
+            self.attrs
+                .iter()
+                .find_map(|a| match &a.1 {
+                    BindgenAttr::$variant(_, s, span) => {
+                        a.0.set(true);
+                        Some((s.as_ref().map(|s| &s[..]), *span))
                     }
                     _ => None,
                 })
@@ -304,17 +318,18 @@ impl Parse for BindgenAttr {
                 return Ok(BindgenAttr::$variant(attr_span, ident))
             });
 
-            (@parser $variant:ident(Span, Option<String>)) => ({
+            (@parser $variant:ident(Span, Option<String>, Span)) => ({
                 if input.parse::<Token![=]>().is_ok() {
-                    if input.peek(syn::LitStr) {
-                        let litstr = input.parse::<syn::LitStr>()?;
-                        return Ok(BindgenAttr::$variant(attr_span, Some(litstr.value())))
-                    }
-
-                    let ident = input.parse::<AnyIdent>()?.0;
-                    return Ok(BindgenAttr::$variant(attr_span, Some(ident.to_string())))
+                    let (val, span) = match input.parse::<syn::LitStr>() {
+                        Ok(str) => (str.value(), str.span()),
+                        Err(_) => {
+                            let ident = input.parse::<AnyIdent>()?.0;
+                            (ident.to_string(), ident.span())
+                        }
+                    };
+                    return Ok(BindgenAttr::$variant(attr_span, Some(val), span))
                 } else {
-                    return Ok(BindgenAttr::$variant(attr_span, None));
+                    return Ok(BindgenAttr::$variant(attr_span, None, attr_span));
                 }
             });
 
@@ -1004,39 +1019,51 @@ fn function_from_decl(
         syn::ReturnType::Type(_, ty) => Some(replace_self(*ty)),
     };
 
-    let (name, name_span, renamed_via_js_name) =
-        if let Some((js_name, js_name_span)) = opts.js_name() {
-            let kind = operation_kind(opts);
-            let prefix = match kind {
-                OperationKind::Setter(_) => "set_",
-                _ => "",
-            };
-            let name = if prefix.is_empty()
-                && opts.method().is_none()
-                && is_js_keyword(js_name, skip_keywords)
-            {
-                format!("_{}", js_name)
+    let kind = operation_kind(opts);
+    let attr_name = match kind {
+        OperationKind::Getter => {
+            if let Some((Some(name), span)) = opts.getter() {
+                Some((name, span))
             } else {
-                format!("{}{}", prefix, js_name)
-            };
-            (name, js_name_span, true)
-        } else {
-            let name = if !is_from_impl
-                && opts.method().is_none()
-                && is_js_keyword(&decl_name.to_string(), skip_keywords)
-            {
-                format!("_{}", decl_name.unraw())
+                opts.js_name()
+            }
+        }
+        OperationKind::Setter => {
+            if let Some((Some(name), span)) = opts.setter() {
+                Some((name, span))
             } else {
-                decl_name.unraw().to_string()
-            };
-            (name, decl_name.span(), false)
+                opts.js_name()
+            }
+        }
+        _ => opts.js_name(),
+    };
+
+    let (mut name, name_span) = if let Some((js_name, js_name_span)) = attr_name {
+        let prefix = match kind {
+            OperationKind::Setter => "set_",
+            _ => "",
         };
+        (format!("{}{}", prefix, js_name), js_name_span)
+    } else {
+        let name = decl_name.unraw().to_string();
+        if matches!(kind, OperationKind::Setter) && !name.starts_with("set_") {
+            bail_span!(decl_name, "setters must start with `set_`, found: {}", name);
+        }
+        (name, decl_name.span())
+    };
+
+    if !is_from_impl
+        && opts.method().is_none()
+        && is_js_keyword(&decl_name.to_string(), skip_keywords)
+    {
+        name = format!("_{}", name)
+    }
+
     Ok((
         ast::Function {
             arguments,
             name_span,
             name,
-            renamed_via_js_name,
             ret,
             rust_attrs: attrs,
             rust_vis: vis,
@@ -1920,11 +1947,11 @@ pub fn check_unused_attrs(tokens: &mut TokenStream) {
 
 fn operation_kind(opts: &BindgenAttrs) -> ast::OperationKind {
     let mut operation_kind = ast::OperationKind::Regular;
-    if let Some(g) = opts.getter() {
-        operation_kind = ast::OperationKind::Getter(g.clone());
+    if opts.getter().is_some() {
+        operation_kind = ast::OperationKind::Getter;
     }
-    if let Some(s) = opts.setter() {
-        operation_kind = ast::OperationKind::Setter(s.clone());
+    if opts.setter().is_some() {
+        operation_kind = ast::OperationKind::Setter;
     }
     if opts.indexing_getter().is_some() {
         operation_kind = ast::OperationKind::IndexingGetter;
