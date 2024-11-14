@@ -50,7 +50,7 @@ let wasm_bindgen;
     function __wbg_get_imports() {
         const imports = {};
         imports.wbg = {};
-        imports.wbg.__wbg_random_5d40be260a2cfbac = function() {
+        imports.wbg.__wbg_random_8be0a899673d8681 = function() {
             const ret = Math.random();
             return ret;
         };
