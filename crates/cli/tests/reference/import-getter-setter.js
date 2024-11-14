@@ -37,61 +37,61 @@ export function exported() {
     wasm.exported();
 }
 
-export function __wbg_a_f17802a22332a667(arg0) {
+export function __wbg_a_266c81b129cbc216(arg0) {
     const ret = getObject(arg0).a;
     return ret;
 };
 
-export function __wbg_bar2_84566b6bcf547b19() {
+export function __wbg_bar2_38c86771c0e03476() {
     const ret = Foo.bar2();
     return ret;
 };
 
-export function __wbg_bar_eae0175044c62418() {
+export function __wbg_bar_690459206923b526() {
     const ret = Foo.bar();
     return ret;
 };
 
-export function __wbg_new_d728785ba7e8df96() {
+export function __wbg_new_98ff9abc2a3e2736() {
     const ret = new SomeClass();
     return addHeapObject(ret);
 };
 
-export function __wbg_prop2_edf1002f8e41a5da(arg0) {
+export function __wbg_prop2_79dcbfe47962d7a7(arg0) {
     const ret = getObject(arg0).prop2;
     return ret;
 };
 
-export function __wbg_seta_40f909ae19a05c10(arg0, arg1) {
+export function __wbg_seta_eda0c18669c4ad53(arg0, arg1) {
     getObject(arg0).a = arg1 >>> 0;
 };
 
-export function __wbg_setbar2_c8b4a150c6accea2(arg0) {
+export function __wbg_setbar2_d99cb80edd0e1959(arg0) {
     Foo.set_bar2(arg0 >>> 0);
 };
 
-export function __wbg_setbar_6c6b6af72f779234(arg0) {
+export function __wbg_setbar_029452b4d4645d79(arg0) {
     Foo.set_bar(arg0 >>> 0);
 };
 
-export function __wbg_setprop2_2d160a2b6600e990(arg0, arg1) {
+export function __wbg_setprop2_51e596d4d035bc4d(arg0, arg1) {
     getObject(arg0).prop2 = arg1 >>> 0;
 };
 
-export function __wbg_setsignal_d386d151e7775c3f(arg0, arg1) {
+export function __wbg_setsignal_bd536e517c35da41(arg0, arg1) {
     getObject(arg0).signal = arg1 >>> 0;
 };
 
-export function __wbg_setsomeprop_afbca63b5d0f4c92(arg0, arg1) {
+export function __wbg_setsomeprop_965004b0138eb32c(arg0, arg1) {
     getObject(arg0).some_prop = arg1 >>> 0;
 };
 
-export function __wbg_signal_b82e5486ce265c55(arg0) {
+export function __wbg_signal_89fe6c5b19fec3df(arg0) {
     const ret = getObject(arg0).signal;
     return ret;
 };
 
-export function __wbg_someprop_26178791e2719528(arg0) {
+export function __wbg_someprop_fd4fc05f44bf5de2(arg0) {
     const ret = getObject(arg0).some_prop;
     return ret;
 };
