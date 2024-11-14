@@ -146,8 +146,8 @@ enum ExportJs<'a> {
     Function(&'a str),
     /// An arbitrary JS expression.
     Expression(&'a str),
-    /// A namespace as a function expression for initiating the namespace. The
-    /// function expression is of the form `(function(Name) {...})`.
+    /// A namespace as a statement with multiple assignments of the form
+    /// `<namespace name>.prop = value;`
     Namespace(&'a str),
 }
 
@@ -230,7 +230,8 @@ impl<'a> Context<'a> {
                 }
                 ExportJs::Namespace(namespace) => {
                     format!(
-                        "{}({});\n",
+                        "(function({}) {{\n{}}})({});\n",
+                        export_name,
                         namespace,
                         namespace_init_arg(&format!("module.exports.{}", export_name))
                     )
@@ -245,7 +246,8 @@ impl<'a> Context<'a> {
                 }
                 ExportJs::Namespace(namespace) => {
                     format!(
-                        "{}({});\n",
+                        "(function({}) {{\n{}}})({});\n",
+                        export_name,
                         namespace,
                         namespace_init_arg(&format!("__exports.{}", export_name))
                     )
@@ -288,7 +290,8 @@ impl<'a> Context<'a> {
                     if !self.defined_identifiers.contains_key(export_name) {
                         definition = format!("export const {} = {{}};\n", export_name)
                     }
-                    format!("{}{}({});\n", definition, namespace, export_name)
+                    definition.push_str(namespace);
+                    definition
                 }
             },
         };
@@ -1416,11 +1419,7 @@ __wbg_set_wasm(wasm);"
             return Ok(());
         }
 
-        let dst = format!(
-            "(function({name}) {{\n{contents}}})",
-            contents = namespace.contents
-        );
-        self.export(name, ExportJs::Namespace(&dst), None)?;
+        self.export(name, ExportJs::Namespace(&namespace.contents), None)?;
 
         if namespace.generate_typescript {
             let ts_dst = format!(

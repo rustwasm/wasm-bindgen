@@ -93,31 +93,27 @@ export const ImageFormat = {
 
 const __wbindgen_enum_Status = ["success", "failure"];
 
-(function(ImageFormat) {
-    /**
-     * @param {string} s
-     * @returns {ImageFormat}
-     */
-    ImageFormat.from_str = function from_str(s) {
-        const ptr0 = passStringToWasm0(s, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.imageformat_from_str(ptr0, len0);
-        return ret;
-    };
-})(ImageFormat);
+/**
+ * @param {string} s
+ * @returns {ImageFormat}
+ */
+ImageFormat.from_str = function from_str(s) {
+    const ptr0 = passStringToWasm0(s, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.imageformat_from_str(ptr0, len0);
+    return ret;
+};
 
 export const Status = {};
-(function(Status) {
-    /**
-     * I have documentation.
-     * @param {boolean} success
-     * @returns {Status}
-     */
-    Status.from_bool = function from_bool(success) {
-        const ret = wasm.status_from_bool(success);
-        return __wbindgen_enum_Status[ret];
-    };
-})(Status);
+/**
+ * I have documentation.
+ * @param {boolean} success
+ * @returns {Status}
+ */
+Status.from_bool = function from_bool(success) {
+    const ret = wasm.status_from_bool(success);
+    return __wbindgen_enum_Status[ret];
+};
 
 export function __wbindgen_throw(arg0, arg1) {
     throw new Error(getStringFromWasm0(arg0, arg1));
