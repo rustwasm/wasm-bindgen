@@ -2,13 +2,13 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_namespace = Foo, getter = bar)]
+    #[wasm_bindgen(js_namespace = Bar, getter = bar)]
     fn get_foo() -> u32;
-    #[wasm_bindgen(js_namespace = Foo, setter = bar)]
+    #[wasm_bindgen(js_namespace = Bar, setter = bar)]
     fn set_foo(value: u32);
-    #[wasm_bindgen(js_namespace = Foo, getter, js_name = bar2)]
+    #[wasm_bindgen(js_namespace = Bar, getter, js_name = bar2)]
     fn get_foo2() -> u32;
-    #[wasm_bindgen(js_namespace = Foo, setter, js_name = bar2)]
+    #[wasm_bindgen(js_namespace = Bar, setter, js_name = bar2)]
     fn set_foo2(value: u32);
 
     #[wasm_bindgen]
@@ -43,7 +43,6 @@ extern "C" {
     pub fn c(this: &SomeClass) -> u32;
     #[wasm_bindgen(method, setter = a, js_class = "SomeClass", js_name = b)]
     pub fn set_c(this: &SomeClass, value: u32);
-
 }
 
 #[wasm_bindgen]

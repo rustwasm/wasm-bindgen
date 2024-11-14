@@ -43,12 +43,12 @@ export function __wbg_a_266c81b129cbc216(arg0) {
 };
 
 export function __wbg_bar2_38c86771c0e03476() {
-    const ret = Foo.bar2();
+    const ret = Bar.bar2();
     return ret;
 };
 
 export function __wbg_bar_690459206923b526() {
-    const ret = Foo.bar();
+    const ret = Bar.bar();
     return ret;
 };
 
@@ -67,11 +67,11 @@ export function __wbg_seta_eda0c18669c4ad53(arg0, arg1) {
 };
 
 export function __wbg_setbar2_d99cb80edd0e1959(arg0) {
-    Foo.set_bar2(arg0 >>> 0);
+    Bar.set_bar2(arg0 >>> 0);
 };
 
 export function __wbg_setbar_029452b4d4645d79(arg0) {
-    Foo.set_bar(arg0 >>> 0);
+    Bar.set_bar(arg0 >>> 0);
 };
 
 export function __wbg_setprop2_51e596d4d035bc4d(arg0, arg1) {
