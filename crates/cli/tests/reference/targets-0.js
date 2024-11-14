@@ -13,7 +13,7 @@ export function add_that_might_fail(a, b) {
     return ret >>> 0;
 }
 
-export function __wbg_random_32888cfc47f8ed4d() {
+export function __wbg_random_8be0a899673d8681() {
     const ret = Math.random();
     return ret;
 };

@@ -4,12 +4,6 @@ export function __wbg_set_wasm(val) {
 }
 
 
-const heap = new Array(128).fill(undefined);
-
-heap.push(undefined, null, true, false);
-
-function getObject(idx) { return heap[idx]; }
-
 const lTextDecoder = typeof TextDecoder === 'undefined' ? (0, module.require)('util').TextDecoder : TextDecoder;
 
 let cachedTextDecoder = new lTextDecoder('utf-8', { ignoreBOM: true, fatal: true });
@@ -29,6 +23,12 @@ function getStringFromWasm0(ptr, len) {
     ptr = ptr >>> 0;
     return cachedTextDecoder.decode(getUint8ArrayMemory0().subarray(ptr, ptr + len));
 }
+
+const heap = new Array(128).fill(undefined);
+
+heap.push(undefined, null, true, false);
+
+function getObject(idx) { return heap[idx]; }
 
 let heap_next = heap.length;
 
@@ -57,13 +57,13 @@ export function exported() {
     wasm.exported();
 }
 
-export function __wbg_parseFloat_a582c94ad6956cc9(arg0) {
-    const ret = parseFloat(getObject(arg0));
+export function __wbg_parseFloat_2be7f01c31025438(arg0, arg1) {
+    const ret = parseFloat(getStringFromWasm0(arg0, arg1));
     return ret;
 };
 
-export function __wbg_parseFloat_e7f07194fb2af388(arg0, arg1) {
-    const ret = parseFloat(getStringFromWasm0(arg0, arg1));
+export function __wbg_parseFloat_7bc8aecd47f33642(arg0) {
+    const ret = parseFloat(getObject(arg0));
     return ret;
 };
 

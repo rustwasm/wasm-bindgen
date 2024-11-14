@@ -210,7 +210,7 @@ export function get_media_source() {
 
 const __wbindgen_enum_MediaSourceEnum = ["camera", "screen", "application", "window", "browser", "microphone", "audioCapture", "other"];
 
-export function __wbg_new_afb0ba7f51a036ca() { return handleError(function (arg0, arg1) {
+export function __wbg_new_561a91ce53f10a66() { return handleError(function (arg0, arg1) {
     const ret = new URL(getStringFromWasm0(arg0, arg1));
     return addHeapObject(ret);
 }, arguments) };

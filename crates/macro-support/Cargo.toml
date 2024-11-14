@@ -21,6 +21,6 @@ strict-macro = []
 [dependencies]
 proc-macro2 = "1.0"
 quote = '1.0'
-syn = { version = '2.0', features = ['visit', 'visit-mut', 'full', 'extra-traits'] }
+syn = { version = '2.0', features = ['visit', 'visit-mut', 'full'] }
 wasm-bindgen-backend = { path = "../backend", version = "=0.2.95" }
 wasm-bindgen-shared = { path = "../shared", version = "=0.2.95" }
