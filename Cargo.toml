@@ -106,7 +106,6 @@ members = [
   "examples/wasm-in-wasm",
   "examples/wasm-in-wasm-imports",
   "examples/wasm-in-web-worker",
-  "examples/wasm2js",
   "examples/weather_report",
   "examples/webaudio",
   "examples/webgl",
