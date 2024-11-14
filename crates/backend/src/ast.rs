@@ -248,9 +248,9 @@ pub enum OperationKind {
     /// A standard method, nothing special
     Regular,
     /// A method for getting the value of the provided Ident or String
-    Getter(Option<String>),
+    Getter,
     /// A method for setting the value of the provided Ident or String
-    Setter(Option<String>),
+    Setter,
     /// A dynamically intercepted getter
     IndexingGetter,
     /// A dynamically intercepted setter
