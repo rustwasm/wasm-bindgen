@@ -1045,7 +1045,11 @@ fn function_from_decl(
         };
         (format!("{}{}", prefix, js_name), js_name_span)
     } else {
-        (decl_name.unraw().to_string(), decl_name.span())
+        let name = decl_name.unraw().to_string();
+        if matches!(kind, OperationKind::Setter) && !name.starts_with("set_") {
+            bail_span!(decl_name, "setters must start with `set_`, found: {}", name);
+        }
+        (name, decl_name.span())
     };
 
     if !is_from_impl
