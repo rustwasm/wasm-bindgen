@@ -361,8 +361,6 @@ pub struct Function {
     pub name: String,
     /// The span of the function's name in Rust code
     pub name_span: Span,
-    /// Whether the function has a js_name attribute
-    pub renamed_via_js_name: bool,
     /// The arguments to the function
     pub arguments: Vec<syn::PatType>,
     /// The return type of the function, if provided

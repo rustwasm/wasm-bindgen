@@ -104,9 +104,62 @@ pub fn expand_class_marker(
     Ok(tokens)
 }
 
+/// Turns the given string from lower_snake_case to camelCase.
+///
+/// If the given string is not in lower_snake_case, this function returns None.
+pub fn snake_case_to_camel_case(name: &str) -> Option<String> {
+    // TODO: test
+
+    let mut out = String::new();
+
+    let mut is_leading = true;
+    let mut seen_underscore = false;
+
+    for c in name.chars() {
+        match c {
+            '_' => {
+                if is_leading {
+                    // we want to keep leading underscores.
+                    // e.g. "_foo_bar" -> "_fooBar"
+                    out.push('_');
+                } else if seen_underscore {
+                    // double underscores are not allowed except for leading
+                    // underscores.
+                    return None;
+                }
+
+                seen_underscore = true;
+            }
+            _ => {
+                if !c.is_ascii_alphanumeric() {
+                    // We currently only support ASCII.
+                    // This might change in the future.
+                    return None;
+                }
+                if c.is_ascii_uppercase() {
+                    // we only support lower_snake_case
+                    return None;
+                }
+
+                if seen_underscore {
+                    out.push(c.to_ascii_uppercase());
+                } else {
+                    out.push(c);
+                }
+
+                is_leading = false;
+                seen_underscore = false;
+            }
+        }
+    }
+
+    Some(out)
+}
+
 struct ClassMarker {
     class: syn::Ident,
     js_class: String,
+    auto_rename: bool,
     wasm_bindgen: syn::Path,
     wasm_bindgen_futures: syn::Path,
 }
@@ -120,6 +173,9 @@ impl Parse for ClassMarker {
             .strip_prefix("r#")
             .map(String::from)
             .unwrap_or(js_class);
+
+        input.parse::<Option<Token![,]>>()?;
+        let auto_rename = input.parse::<syn::LitBool>()?.value();
 
         let mut wasm_bindgen = None;
         let mut wasm_bindgen_futures = None;
@@ -162,6 +218,7 @@ impl Parse for ClassMarker {
         Ok(ClassMarker {
             class,
             js_class,
+            auto_rename,
             wasm_bindgen: wasm_bindgen.unwrap_or_else(|| syn::parse_quote! { wasm_bindgen }),
             wasm_bindgen_futures: wasm_bindgen_futures
                 .unwrap_or_else(|| syn::parse_quote! { wasm_bindgen_futures }),
