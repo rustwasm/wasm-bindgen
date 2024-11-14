@@ -2958,6 +2958,10 @@ __wbg_set_wasm(wasm);"
 
         self.typescript_refs.extend(ts_refs);
 
+        fn warn(message: &str) {
+            println!("warning: {}", message);
+        }
+
         // Once we've got all the JS then put it in the right location depending
         // on what's being exported.
         match kind {
@@ -2992,10 +2996,11 @@ __wbg_set_wasm(wasm);"
                         let exported = match exported {
                             ClassOrNamespace::Class(class) => class,
                             ClassOrNamespace::Namespace(_) => {
-                                bail!(
+                                warn(&format!(
                                     "constructor is not supported on `{}`. Enums do not support exported constructors.",
                                     class
-                                );
+                                ));
+                                return Ok(());
                             }
                         };
 
@@ -3025,11 +3030,12 @@ __wbg_set_wasm(wasm);"
                                 let class = match exported {
                                     ClassOrNamespace::Class(ref mut class) => class,
                                     ClassOrNamespace::Namespace(_) => {
-                                        bail!(
+                                        warn(&format!(
                                             "the getter `{}` is not supported on `{}`. Enums only support static methods on them.",
                                             name,
                                             class
-                                        );
+                                        ));
+                                        return Ok(());
                                     }
                                 };
 
@@ -3058,11 +3064,12 @@ __wbg_set_wasm(wasm);"
                                 let class = match exported {
                                     ClassOrNamespace::Class(ref mut class) => class,
                                     ClassOrNamespace::Namespace(_) => {
-                                        bail!(
-                                            "the setter `{}` is not supported on `{}`. Enums only support static methods on them.",
+                                        warn(&format!(
+                                           "the setter `{}` is not supported on `{}`. Enums only support static methods on them.",
                                             name,
                                             class
-                                        );
+                                        ));
+                                        return Ok(());
                                     }
                                 };
 
@@ -3090,15 +3097,15 @@ __wbg_set_wasm(wasm);"
                             }
                             ClassOrNamespace::Namespace(ns) => {
                                 if !is_static {
-                                    let msg = format!(
+                                    warn(&format!(
                                         "The enum `{}` cannot support the instance method `{}`. \
                                         No binding will be generated for this method. \
                                         Consider moving the method in an `impl` block with the `#[wasm_bindgen]` attribute to avoid exporting it, \
                                         or making it a static method by replacing `self` with `value: Self`.",
                                         ns.name,
                                         name
-                                    );
-                                    println!("WARNING: {}", msg);
+                                    ));
+                                    return Ok(());
                                 } else {
                                     ns.push(name, &js_docs, &code, &ts_docs, ts);
                                 }
