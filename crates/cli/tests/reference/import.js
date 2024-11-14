@@ -68,28 +68,28 @@ export function exported() {
     }
 }
 
-export function __wbg_add_dd5307a7ca6818d5(arg0, arg1) {
+export function __wbg_add_7fbfb2c172506d12(arg0, arg1) {
     const ret = add(arg0, arg1);
     return ret;
 };
 
-export function __wbg_barfromfoo_d097f3ec35aab47c() {
+export function __wbg_barfromfoo_29614885590bfb6f() {
     bar_from_foo();
 };
 
-export function __wbg_catchme_a7bca7f3d5a5f319() { return handleError(function () {
+export function __wbg_catchme_f7d87ea824a61e87() { return handleError(function () {
     catch_me();
 }, arguments) };
 
-export function __wbg_nocatch_62552fa42a58590b() {
+export function __wbg_nocatch_be850a8dddd9599d() {
     no_catch();
 };
 
-export function __wbg_reload_90d82b22b83c1d99() {
+export function __wbg_reload_84c12f152ad689f0() {
     window.location.reload();
 };
 
-export function __wbg_write_d258674ff6f0ea8d(arg0, arg1) {
+export function __wbg_write_c2ce0ce33a6087d5(arg0, arg1) {
     window.document.write(getStringFromWasm0(arg0, arg1));
 };
 

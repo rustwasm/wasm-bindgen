@@ -12,7 +12,7 @@ module.exports.add_that_might_fail = function(a, b) {
     return ret >>> 0;
 };
 
-module.exports.__wbg_random_5d40be260a2cfbac = function() {
+module.exports.__wbg_random_8be0a899673d8681 = function() {
     const ret = Math.random();
     return ret;
 };
