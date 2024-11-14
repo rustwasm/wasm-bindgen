@@ -1,3 +1,8 @@
+// test the next export code
+// FLAGS: --target=bundler
+// FLAGS: --target=nodejs
+// FLAGS: --target=no-modules
+
 use wasm_bindgen::prelude::*;
 
 /// C-style enum
