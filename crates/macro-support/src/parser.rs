@@ -633,7 +633,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
                 ast::ImportFunctionKind::Normal => (0, "n"),
                 ast::ImportFunctionKind::Method { ref class, .. } => (1, &class[..]),
             };
-            let data = (ns, &self.sig.ident, module);
+            let data = (ns, self.sig.to_token_stream().to_string(), module);
             format!(
                 "__wbg_{}_{}",
                 wasm.name
