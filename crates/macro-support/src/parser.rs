@@ -1016,14 +1016,14 @@ fn function_from_decl(
                 match position {
                     FunctionPosition::Free => {
                         bail_span!(
-                            r,
+                            r.self_token,
                             "the `self` argument is only allowed for functions in `impl` blocks.\n\n\
                             If the function is already in an `impl` block, did you perhaps forget to add `#[wasm_bindgen]` to the `impl` block?"
                         );
                     }
                     FunctionPosition::Extern => {
                         bail_span!(
-                            r,
+                            r.self_token,
                             "the `self` argument is not allowed for `extern` functions.\n\n\
                             Did you perhaps mean `this`? For more information on importing JavaScript functions, see:\n\
                             https://rustwasm.github.io/docs/wasm-bindgen/examples/import-js.html"

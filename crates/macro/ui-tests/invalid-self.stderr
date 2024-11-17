@@ -1,10 +1,10 @@
 error: the `self` argument is only allowed for functions in `impl` blocks.
 
        If the function is already in an `impl` block, did you perhaps forget to add `#[wasm_bindgen]` to the `impl` block?
-  --> ui-tests/invalid-self.rs:11:16
+  --> ui-tests/invalid-self.rs:11:17
    |
 11 |     pub fn foo(&self) {}
-   |                ^^^^^
+   |                 ^^^^
 
 error: the `self` argument is not allowed for `extern` functions.
 
@@ -13,4 +13,4 @@ error: the `self` argument is not allowed for `extern` functions.
   --> ui-tests/invalid-self.rs:20:15
    |
 20 |     fn render(self: &MyClass) -> String;
-   |               ^^^^^^^^^^^^^^
+   |               ^^^^
