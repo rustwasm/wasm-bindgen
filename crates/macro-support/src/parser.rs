@@ -530,9 +530,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             self.sig.clone(),
             self.attrs.clone(),
             self.vis.clone(),
-            false,
-            None,
-            false,
+            FunctionPosition::Extern,
             Some(&["default"]),
         )?
         .0;
@@ -894,9 +892,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
             self.sig.clone(),
             self.attrs,
             self.vis,
-            false,
-            None,
-            false,
+            FunctionPosition::Free,
             Some(&["default"]),
         )?;
         attrs.check_used();
@@ -931,6 +927,17 @@ fn get_self_method(r: syn::Receiver) -> ast::MethodSelf {
     }
 }
 
+enum FunctionPosition<'a> {
+    Extern,
+    Free,
+    Impl { self_ty: &'a Ident },
+}
+impl FunctionPosition<'_> {
+    fn is_impl(&self) -> bool {
+        matches!(self, FunctionPosition::Impl { .. })
+    }
+}
+
 /// Construct a function (and gets the self type if appropriate) for our AST from a syn function.
 #[allow(clippy::too_many_arguments)]
 fn function_from_decl(
@@ -939,9 +946,7 @@ fn function_from_decl(
     sig: syn::Signature,
     attrs: Vec<syn::Attribute>,
     vis: syn::Visibility,
-    allow_self: bool,
-    self_ty: Option<&Ident>,
-    is_from_impl: bool,
+    position: FunctionPosition,
     skip_keywords: Option<&[&str]>,
 ) -> Result<(ast::Function, Option<ast::MethodSelf>), Diagnostic> {
     if sig.variadic.is_some() {
@@ -963,7 +968,7 @@ fn function_from_decl(
     // The following comment explains why this is necessary:
     // https://github.com/rustwasm/wasm-bindgen/issues/3105#issuecomment-1275160744
     let replace_self = |mut t: syn::Type| {
-        if let Some(self_ty) = self_ty {
+        if let FunctionPosition::Impl { self_ty } = position {
             // This uses a visitor to replace all occurrences of `Self` with
             // the actual type identifier. The visitor guarantees that we find
             // all occurrences of `Self`, even if deeply nested and even if
@@ -995,30 +1000,45 @@ fn function_from_decl(
     };
 
     let mut method_self = None;
-    let arguments = inputs
-        .into_iter()
-        .filter_map(|arg| match arg {
+    let mut arguments = Vec::new();
+    for arg in inputs.into_iter() {
+        match arg {
             syn::FnArg::Typed(mut c) => {
                 // typical arguments like foo: u32
                 replace_colliding_arg(&mut c);
                 c.ty = Box::new(replace_self(*c.ty));
-                Some(c)
+                arguments.push(c);
             }
             syn::FnArg::Receiver(r) => {
                 // the self argument, so self, &self, &mut self, self: Box<Self>, etc.
-                if !allow_self {
-                    panic!("arguments cannot be `self`")
+
+                // `self` is only allowed for `fn`s inside an `impl` block.
+                match position {
+                    FunctionPosition::Free => {
+                        bail_span!(
+                            r,
+                            "the `self` argument is only allowed for functions in `impl` blocks.\n\n\
+                            If the function is already inside an `impl` block, did you perhaps forget to add `#[wasm_bindgen]` to the `impl` block?"
+                        );
+                    }
+                    FunctionPosition::Extern => {
+                        bail_span!(
+                            r,
+                            "the `self` argument is not allowed for `extern` functions.\n\n\
+                            Did you perhaps mean `this`? For more information on importing JavaScript functions, see:\n\
+                            https://rustwasm.github.io/docs/wasm-bindgen/examples/import-js.html"
+                        );
+                    }
+                    FunctionPosition::Impl { .. } => {}
                 }
 
                 // We need to know *how* `self` is passed to the method (by
                 // value or by reference) to generate the correct JS shim.
                 assert!(method_self.is_none());
                 method_self = Some(get_self_method(r));
-
-                None
             }
-        })
-        .collect::<Vec<_>>();
+        }
+    }
 
     let ret = match output {
         syn::ReturnType::Default => None,
@@ -1042,7 +1062,7 @@ fn function_from_decl(
             };
             (name, js_name_span, true)
         } else {
-            let name = if !is_from_impl
+            let name = if !position.is_impl()
                 && opts.method().is_none()
                 && is_js_keyword(&decl_name.to_string(), skip_keywords)
             {
@@ -1328,9 +1348,7 @@ impl MacroParse<&ClassMarker> for &mut syn::ImplItemFn {
             self.sig.clone(),
             self.attrs.clone(),
             self.vis.clone(),
-            true,
-            Some(class),
-            true,
+            FunctionPosition::Impl { self_ty: class },
             None,
         )?;
         let method_kind = if opts.constructor().is_some() {
