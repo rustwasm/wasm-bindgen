@@ -1018,7 +1018,7 @@ fn function_from_decl(
                         bail_span!(
                             r,
                             "the `self` argument is only allowed for functions in `impl` blocks.\n\n\
-                            If the function is already inside an `impl` block, did you perhaps forget to add `#[wasm_bindgen]` to the `impl` block?"
+                            If the function is already in an `impl` block, did you perhaps forget to add `#[wasm_bindgen]` to the `impl` block?"
                         );
                     }
                     FunctionPosition::Extern => {

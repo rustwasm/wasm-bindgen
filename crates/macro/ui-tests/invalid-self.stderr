@@ -1,6 +1,6 @@
 error: the `self` argument is only allowed for functions in `impl` blocks.
 
-       If the function is already inside an `impl` block, did you perhaps forget to add `#[wasm_bindgen]` to the `impl` block?
+       If the function is already in an `impl` block, did you perhaps forget to add `#[wasm_bindgen]` to the `impl` block?
   --> ui-tests/invalid-self.rs:11:16
    |
 11 |     pub fn foo(&self) {}
