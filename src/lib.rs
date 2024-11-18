@@ -71,8 +71,8 @@ pub use wasm_bindgen_macro::link_to;
 pub mod closure;
 pub mod convert;
 pub mod describe;
-pub mod marker;
 mod link;
+pub mod marker;
 
 mod cast;
 pub use crate::cast::{JsCast, JsObject};
