@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/media)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaQueryList`*"]
-    pub fn media(this: &MediaQueryList) -> String;
+    pub fn media(this: &MediaQueryList) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "MediaQueryList" , js_name = matches)]
     #[doc = "Getter for the `matches` field of this object."]
     #[doc = ""]

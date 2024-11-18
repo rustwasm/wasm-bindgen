@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HttpConnectionElement`*"]
     #[wasm_bindgen(method, getter = "host")]
-    pub fn get_host(this: &HttpConnectionElement) -> Option<String>;
+    pub fn get_host(this: &HttpConnectionElement) -> Option<::alloc::string::String>;
     #[doc = "Change the `host` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HttpConnectionElement`*"]

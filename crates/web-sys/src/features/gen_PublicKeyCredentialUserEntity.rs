@@ -15,7 +15,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
     #[deprecated]
     #[wasm_bindgen(method, getter = "icon")]
-    pub fn get_icon(this: &PublicKeyCredentialUserEntity) -> Option<String>;
+    pub fn get_icon(this: &PublicKeyCredentialUserEntity) -> Option<::alloc::string::String>;
     #[doc = "Change the `icon` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
@@ -26,7 +26,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &PublicKeyCredentialUserEntity) -> String;
+    pub fn get_name(this: &PublicKeyCredentialUserEntity) -> ::alloc::string::String;
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
@@ -36,7 +36,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]
     #[wasm_bindgen(method, getter = "displayName")]
-    pub fn get_display_name(this: &PublicKeyCredentialUserEntity) -> String;
+    pub fn get_display_name(this: &PublicKeyCredentialUserEntity) -> ::alloc::string::String;
     #[doc = "Change the `displayName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialUserEntity`*"]

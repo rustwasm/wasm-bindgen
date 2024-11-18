@@ -30,17 +30,25 @@
 //! systems and make sure that Rust/JavaScript can work together with
 //! asynchronous and I/O work.
 
+#![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(target_feature = "atomics", feature(stdarch_wasm_atomic_wait))]
+#![cfg_attr(
+    all(not(feature = "std"), target_feature = "atomics"),
+    feature(thread_local)
+)]
 #![deny(missing_docs)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
+extern crate alloc;
+
+use alloc::boxed::Box;
+use alloc::rc::Rc;
+use core::cell::RefCell;
+use core::fmt;
+use core::future::Future;
+use core::pin::Pin;
+use core::task::{Context, Poll, Waker};
 use js_sys::Promise;
-use std::cell::RefCell;
-use std::fmt;
-use std::future::Future;
-use std::pin::Pin;
-use std::rc::Rc;
-use std::task::{Context, Poll, Waker};
 use wasm_bindgen::prelude::*;
 
 mod queue;

@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Pbkdf2Params`*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &Pbkdf2Params) -> String;
+    pub fn get_name(this: &Pbkdf2Params) -> ::alloc::string::String;
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Pbkdf2Params`*"]

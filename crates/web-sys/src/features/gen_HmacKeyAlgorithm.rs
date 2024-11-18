@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HmacKeyAlgorithm`*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &HmacKeyAlgorithm) -> String;
+    pub fn get_name(this: &HmacKeyAlgorithm) -> ::alloc::string::String;
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HmacKeyAlgorithm`*"]

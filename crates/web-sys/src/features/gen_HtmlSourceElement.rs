@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSourceElement/src)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSourceElement`*"]
-    pub fn src(this: &HtmlSourceElement) -> String;
+    pub fn src(this: &HtmlSourceElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLSourceElement" , js_name = src)]
     #[doc = "Setter for the `src` field of this object."]
     #[doc = ""]
@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSourceElement/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSourceElement`*"]
-    pub fn type_(this: &HtmlSourceElement) -> String;
+    pub fn type_(this: &HtmlSourceElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLSourceElement" , js_name = type)]
     #[doc = "Setter for the `type` field of this object."]
     #[doc = ""]
@@ -46,7 +46,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSourceElement/srcset)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSourceElement`*"]
-    pub fn srcset(this: &HtmlSourceElement) -> String;
+    pub fn srcset(this: &HtmlSourceElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLSourceElement" , js_name = srcset)]
     #[doc = "Setter for the `srcset` field of this object."]
     #[doc = ""]
@@ -60,7 +60,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSourceElement/sizes)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSourceElement`*"]
-    pub fn sizes(this: &HtmlSourceElement) -> String;
+    pub fn sizes(this: &HtmlSourceElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLSourceElement" , js_name = sizes)]
     #[doc = "Setter for the `sizes` field of this object."]
     #[doc = ""]
@@ -74,7 +74,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSourceElement/media)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlSourceElement`*"]
-    pub fn media(this: &HtmlSourceElement) -> String;
+    pub fn media(this: &HtmlSourceElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLSourceElement" , js_name = media)]
     #[doc = "Setter for the `media` field of this object."]
     #[doc = ""]

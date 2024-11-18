@@ -18,14 +18,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/StyleSheet/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StyleSheet`*"]
-    pub fn type_(this: &StyleSheet) -> String;
+    pub fn type_(this: &StyleSheet) -> ::alloc::string::String;
     # [wasm_bindgen (structural , catch , method , getter , js_class = "StyleSheet" , js_name = href)]
     #[doc = "Getter for the `href` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/StyleSheet/href)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StyleSheet`*"]
-    pub fn href(this: &StyleSheet) -> Result<Option<String>, JsValue>;
+    pub fn href(this: &StyleSheet) -> Result<Option<::alloc::string::String>, JsValue>;
     #[cfg(feature = "Node")]
     # [wasm_bindgen (structural , method , getter , js_class = "StyleSheet" , js_name = ownerNode)]
     #[doc = "Getter for the `ownerNode` field of this object."]
@@ -47,7 +47,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/StyleSheet/title)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StyleSheet`*"]
-    pub fn title(this: &StyleSheet) -> Option<String>;
+    pub fn title(this: &StyleSheet) -> Option<::alloc::string::String>;
     #[cfg(feature = "MediaList")]
     # [wasm_bindgen (structural , method , getter , js_class = "StyleSheet" , js_name = media)]
     #[doc = "Getter for the `media` field of this object."]

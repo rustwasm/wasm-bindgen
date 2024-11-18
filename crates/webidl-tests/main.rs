@@ -1,3 +1,5 @@
+extern crate alloc;
+
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 

@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpTransceiver/mid)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpTransceiver`*"]
-    pub fn mid(this: &RtcRtpTransceiver) -> Option<String>;
+    pub fn mid(this: &RtcRtpTransceiver) -> Option<::alloc::string::String>;
     #[cfg(feature = "RtcRtpSender")]
     # [wasm_bindgen (structural , method , getter , js_class = "RTCRtpTransceiver" , js_name = sender)]
     #[doc = "Getter for the `sender` field of this object."]
@@ -72,7 +72,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCRtpTransceiver/getRemoteTrackId)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpTransceiver`*"]
-    pub fn get_remote_track_id(this: &RtcRtpTransceiver) -> String;
+    pub fn get_remote_track_id(this: &RtcRtpTransceiver) -> ::alloc::string::String;
     # [wasm_bindgen (method , structural , js_class = "RTCRtpTransceiver" , js_name = setCodecPreferences)]
     #[doc = "The `setCodecPreferences()` method."]
     #[doc = ""]

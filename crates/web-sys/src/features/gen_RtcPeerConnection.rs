@@ -112,7 +112,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/idpLoginUrl)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnection`*"]
-    pub fn idp_login_url(this: &RtcPeerConnection) -> Option<String>;
+    pub fn idp_login_url(this: &RtcPeerConnection) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnection" , js_name = onnegotiationneeded)]
     #[doc = "Getter for the `onnegotiationneeded` field of this object."]
     #[doc = ""]

@@ -18,21 +18,21 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/kind)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`*"]
-    pub fn kind(this: &MediaStreamTrack) -> String;
+    pub fn kind(this: &MediaStreamTrack) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "MediaStreamTrack" , js_name = id)]
     #[doc = "Getter for the `id` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/id)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`*"]
-    pub fn id(this: &MediaStreamTrack) -> String;
+    pub fn id(this: &MediaStreamTrack) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "MediaStreamTrack" , js_name = label)]
     #[doc = "Getter for the `label` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/label)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamTrack`*"]
-    pub fn label(this: &MediaStreamTrack) -> String;
+    pub fn label(this: &MediaStreamTrack) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "MediaStreamTrack" , js_name = enabled)]
     #[doc = "Getter for the `enabled` field of this object."]
     #[doc = ""]

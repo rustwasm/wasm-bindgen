@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use std::str::Chars;
 
 use ast::OperationKind;
-use backend::ast;
+use backend::ast::{self, ThreadLocal};
 use backend::util::{ident_ty, ShortHash};
 use backend::Diagnostic;
 use proc_macro2::{Ident, Span, TokenStream, TokenTree};
@@ -96,6 +96,7 @@ macro_rules! attrgen {
             (getter_with_clone, GetterWithClone(Span)),
             (static_string, StaticString(Span)),
             (thread_local, ThreadLocal(Span)),
+            (thread_local_v2, ThreadLocalV2(Span)),
 
             // For testing purposes only.
             (assert_no_shim, AssertNoShim(Span)),
@@ -778,7 +779,18 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             self.ident,
             ShortHash((&js_name, module, &self.ident)),
         );
-        let thread_local = opts.thread_local().is_some();
+        let mut thread_local = opts.thread_local_v2().map(|_| ThreadLocal::V2);
+
+        if let Some(span) = opts.thread_local() {
+            if thread_local.is_some() {
+                return Err(Diagnostic::span_error(
+                    *span,
+                    "`thread_local` can't be used with `thread_local_v2`",
+                ));
+            } else {
+                thread_local = Some(ThreadLocal::V1)
+            }
+        }
 
         opts.check_used();
         Ok(ast::ImportKind::Static(ast::ImportStatic {
@@ -826,12 +838,27 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             )
         }
 
-        if opts.thread_local().is_none() {
+        let mut thread_local = opts.thread_local_v2().map(|_| ThreadLocal::V2);
+
+        if let Some(span) = opts.thread_local() {
+            if thread_local.is_some() {
+                return Err(Diagnostic::span_error(
+                    *span,
+                    "`thread_local` can't be used with `thread_local_v2`",
+                ));
+            } else {
+                thread_local = Some(ThreadLocal::V1)
+            }
+        }
+
+        let thread_local = if let Some(thread_local) = thread_local {
+            thread_local
+        } else {
             bail_span!(
                 self,
-                "static strings require `#[wasm_bindgen(thread_local)]`"
+                "static strings require `#[wasm_bindgen(thread_local_v2)]`"
             )
-        }
+        };
 
         let shim = format!(
             "__wbg_string_{}_{}",
@@ -847,6 +874,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             wasm_bindgen: program.wasm_bindgen.clone(),
             js_sys: program.js_sys.clone(),
             string,
+            thread_local,
         }))
     }
 }

@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad/id)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Gamepad`*"]
-    pub fn id(this: &Gamepad) -> String;
+    pub fn id(this: &Gamepad) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "Gamepad" , js_name = index)]
     #[doc = "Getter for the `index` field of this object."]
     #[doc = ""]

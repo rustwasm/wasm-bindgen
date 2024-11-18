@@ -44,7 +44,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FetchEventInit`*"]
     #[wasm_bindgen(method, getter = "clientId")]
-    pub fn get_client_id(this: &FetchEventInit) -> Option<String>;
+    pub fn get_client_id(this: &FetchEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `clientId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FetchEventInit`*"]

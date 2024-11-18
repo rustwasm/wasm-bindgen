@@ -44,7 +44,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PluginCrashedEventInit`*"]
     #[wasm_bindgen(method, getter = "browserDumpID")]
-    pub fn get_browser_dump_id(this: &PluginCrashedEventInit) -> Option<String>;
+    pub fn get_browser_dump_id(this: &PluginCrashedEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `browserDumpID` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PluginCrashedEventInit`*"]
@@ -64,7 +64,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PluginCrashedEventInit`*"]
     #[wasm_bindgen(method, getter = "pluginDumpID")]
-    pub fn get_plugin_dump_id(this: &PluginCrashedEventInit) -> Option<String>;
+    pub fn get_plugin_dump_id(this: &PluginCrashedEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `pluginDumpID` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PluginCrashedEventInit`*"]
@@ -74,7 +74,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PluginCrashedEventInit`*"]
     #[wasm_bindgen(method, getter = "pluginFilename")]
-    pub fn get_plugin_filename(this: &PluginCrashedEventInit) -> Option<String>;
+    pub fn get_plugin_filename(this: &PluginCrashedEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `pluginFilename` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PluginCrashedEventInit`*"]
@@ -94,7 +94,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PluginCrashedEventInit`*"]
     #[wasm_bindgen(method, getter = "pluginName")]
-    pub fn get_plugin_name(this: &PluginCrashedEventInit) -> Option<String>;
+    pub fn get_plugin_name(this: &PluginCrashedEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `pluginName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PluginCrashedEventInit`*"]

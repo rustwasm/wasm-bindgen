@@ -14,8 +14,11 @@ rust-version = "1.57"
 version = "0.2.95"
 
 [features]
+atomics = []
+default = ["std"]
 extra-traits = ["syn/extra-traits"]
 spans = []
+std = []
 
 [dependencies]
 bumpalo = "3.0.0"

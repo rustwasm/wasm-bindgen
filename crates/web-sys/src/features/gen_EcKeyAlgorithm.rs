@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &EcKeyAlgorithm) -> String;
+    pub fn get_name(this: &EcKeyAlgorithm) -> ::alloc::string::String;
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
     #[wasm_bindgen(method, getter = "namedCurve")]
-    pub fn get_named_curve(this: &EcKeyAlgorithm) -> String;
+    pub fn get_named_curve(this: &EcKeyAlgorithm) -> ::alloc::string::String;
     #[doc = "Change the `namedCurve` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]

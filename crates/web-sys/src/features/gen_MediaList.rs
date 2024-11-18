@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaList/mediaText)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaList`*"]
-    pub fn media_text(this: &MediaList) -> String;
+    pub fn media_text(this: &MediaList) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "MediaList" , js_name = mediaText)]
     #[doc = "Setter for the `mediaText` field of this object."]
     #[doc = ""]
@@ -53,12 +53,12 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaList/item)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaList`*"]
-    pub fn item(this: &MediaList, index: u32) -> Option<String>;
+    pub fn item(this: &MediaList, index: u32) -> Option<::alloc::string::String>;
     #[wasm_bindgen(method, structural, js_class = "MediaList", indexing_getter)]
     #[doc = "Indexing getter. As in the literal Javascript `this[key]`."]
     #[doc = ""]
     #[doc = ""]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaList`*"]
-    pub fn get(this: &MediaList, index: u32) -> Option<String>;
+    pub fn get(this: &MediaList, index: u32) -> Option<::alloc::string::String>;
 }

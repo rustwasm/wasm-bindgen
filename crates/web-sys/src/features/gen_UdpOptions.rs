@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
     #[wasm_bindgen(method, getter = "localAddress")]
-    pub fn get_local_address(this: &UdpOptions) -> Option<String>;
+    pub fn get_local_address(this: &UdpOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `localAddress` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
@@ -54,7 +54,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]
     #[wasm_bindgen(method, getter = "remoteAddress")]
-    pub fn get_remote_address(this: &UdpOptions) -> Option<String>;
+    pub fn get_remote_address(this: &UdpOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `remoteAddress` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UdpOptions`*"]

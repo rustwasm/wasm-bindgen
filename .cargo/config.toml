@@ -1,4 +1,4 @@
-[target.wasm32-unknown-unknown]
+[target.'cfg(target_arch = "wasm32")']
 runner = 'cargo run -p wasm-bindgen-cli --bin wasm-bindgen-test-runner --'
 
 [target.'cfg(all())']

@@ -20,7 +20,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbMutableFile`*"]
     #[deprecated]
-    pub fn name(this: &IdbMutableFile) -> String;
+    pub fn name(this: &IdbMutableFile) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "IDBMutableFile" , js_name = type)]
     #[doc = "Getter for the `type` field of this object."]
     #[doc = ""]
@@ -28,7 +28,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbMutableFile`*"]
     #[deprecated]
-    pub fn type_(this: &IdbMutableFile) -> String;
+    pub fn type_(this: &IdbMutableFile) -> ::alloc::string::String;
     #[cfg(feature = "IdbDatabase")]
     # [wasm_bindgen (structural , method , getter , js_class = "IDBMutableFile" , js_name = database)]
     #[doc = "Getter for the `database` field of this object."]

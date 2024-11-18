@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NativeOsFileWriteAtomicOptions`*"]
     #[wasm_bindgen(method, getter = "backupTo")]
-    pub fn get_backup_to(this: &NativeOsFileWriteAtomicOptions) -> Option<String>;
+    pub fn get_backup_to(this: &NativeOsFileWriteAtomicOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `backupTo` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NativeOsFileWriteAtomicOptions`*"]
@@ -54,7 +54,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NativeOsFileWriteAtomicOptions`*"]
     #[wasm_bindgen(method, getter = "tmpPath")]
-    pub fn get_tmp_path(this: &NativeOsFileWriteAtomicOptions) -> Option<String>;
+    pub fn get_tmp_path(this: &NativeOsFileWriteAtomicOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `tmpPath` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NativeOsFileWriteAtomicOptions`*"]

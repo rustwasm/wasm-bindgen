@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     #[wasm_bindgen(method, getter = "clientData")]
-    pub fn get_client_data(this: &RegisterResponse) -> Option<String>;
+    pub fn get_client_data(this: &RegisterResponse) -> Option<::alloc::string::String>;
     #[doc = "Change the `clientData` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     #[wasm_bindgen(method, getter = "errorMessage")]
-    pub fn get_error_message(this: &RegisterResponse) -> Option<String>;
+    pub fn get_error_message(this: &RegisterResponse) -> Option<::alloc::string::String>;
     #[doc = "Change the `errorMessage` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
@@ -44,7 +44,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     #[wasm_bindgen(method, getter = "registrationData")]
-    pub fn get_registration_data(this: &RegisterResponse) -> Option<String>;
+    pub fn get_registration_data(this: &RegisterResponse) -> Option<::alloc::string::String>;
     #[doc = "Change the `registrationData` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
@@ -54,7 +54,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]
     #[wasm_bindgen(method, getter = "version")]
-    pub fn get_version(this: &RegisterResponse) -> Option<String>;
+    pub fn get_version(this: &RegisterResponse) -> Option<::alloc::string::String>;
     #[doc = "Change the `version` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterResponse`*"]

@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryListEvent/media)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaQueryListEvent`*"]
-    pub fn media(this: &MediaQueryListEvent) -> String;
+    pub fn media(this: &MediaQueryListEvent) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "MediaQueryListEvent" , js_name = matches)]
     #[doc = "Getter for the `matches` field of this object."]
     #[doc = ""]

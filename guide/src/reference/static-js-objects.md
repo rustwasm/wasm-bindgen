@@ -19,7 +19,7 @@ let COLORS = {
 ```rust
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(thread_local)]
+    #[wasm_bindgen(thread_local_v2)]
     static COLORS;
 }
 
@@ -50,11 +50,11 @@ The binding for this module:
 #[wasm_bindgen(module = "/js/some-rollup.js")]
 extern "C" {
     // Likewise with the namespace--this refers to the object directly.
-    #[wasm_bindgen(thread_local, js_name = namespace)]
+    #[wasm_bindgen(thread_local_v2, js_name = namespace)]
     static NAMESPACE: JsValue;
 
     // Refer to SomeType's class
-    #[wasm_bindgen(thread_local, js_name = SomeType)]
+    #[wasm_bindgen(thread_local_v2, js_name = SomeType)]
     static SOME_TYPE: JsValue;
 
     // Other bindings for SomeType
@@ -71,7 +71,7 @@ Strings can be imported to avoid going through `TextDecoder/Encoder` when requir
 ```rust
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(thread_local, static_string)]
+    #[wasm_bindgen(thread_local_v2, static_string)]
     static STRING: JsString = "a string literal";
 }
 ```

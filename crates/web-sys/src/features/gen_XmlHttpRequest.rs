@@ -75,7 +75,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseURL)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequest`*"]
-    pub fn response_url(this: &XmlHttpRequest) -> String;
+    pub fn response_url(this: &XmlHttpRequest) -> ::alloc::string::String;
     # [wasm_bindgen (structural , catch , method , getter , js_class = "XMLHttpRequest" , js_name = status)]
     #[doc = "Getter for the `status` field of this object."]
     #[doc = ""]
@@ -89,7 +89,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/statusText)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequest`*"]
-    pub fn status_text(this: &XmlHttpRequest) -> Result<String, JsValue>;
+    pub fn status_text(this: &XmlHttpRequest) -> Result<::alloc::string::String, JsValue>;
     #[cfg(feature = "XmlHttpRequestResponseType")]
     # [wasm_bindgen (structural , method , getter , js_class = "XMLHttpRequest" , js_name = responseType)]
     #[doc = "Getter for the `responseType` field of this object."]
@@ -119,7 +119,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseText)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequest`*"]
-    pub fn response_text(this: &XmlHttpRequest) -> Result<Option<String>, JsValue>;
+    pub fn response_text(this: &XmlHttpRequest)
+        -> Result<Option<::alloc::string::String>, JsValue>;
     #[cfg(feature = "Document")]
     # [wasm_bindgen (structural , catch , method , getter , js_class = "XMLHttpRequest" , js_name = responseXML)]
     #[doc = "Getter for the `responseXML` field of this object."]
@@ -155,7 +156,9 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/getAllResponseHeaders)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XmlHttpRequest`*"]
-    pub fn get_all_response_headers(this: &XmlHttpRequest) -> Result<String, JsValue>;
+    pub fn get_all_response_headers(
+        this: &XmlHttpRequest,
+    ) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "XMLHttpRequest" , js_name = getResponseHeader)]
     #[doc = "The `getResponseHeader()` method."]
     #[doc = ""]
@@ -165,7 +168,7 @@ extern "C" {
     pub fn get_response_header(
         this: &XmlHttpRequest,
         header: &str,
-    ) -> Result<Option<String>, JsValue>;
+    ) -> Result<Option<::alloc::string::String>, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "XMLHttpRequest" , js_name = open)]
     #[doc = "The `open()` method."]
     #[doc = ""]

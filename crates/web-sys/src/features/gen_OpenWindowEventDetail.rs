@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OpenWindowEventDetail`*"]
     #[wasm_bindgen(method, getter = "features")]
-    pub fn get_features(this: &OpenWindowEventDetail) -> Option<String>;
+    pub fn get_features(this: &OpenWindowEventDetail) -> Option<::alloc::string::String>;
     #[doc = "Change the `features` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OpenWindowEventDetail`*"]
@@ -36,7 +36,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OpenWindowEventDetail`*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &OpenWindowEventDetail) -> Option<String>;
+    pub fn get_name(this: &OpenWindowEventDetail) -> Option<::alloc::string::String>;
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OpenWindowEventDetail`*"]
@@ -46,7 +46,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OpenWindowEventDetail`*"]
     #[wasm_bindgen(method, getter = "url")]
-    pub fn get_url(this: &OpenWindowEventDetail) -> Option<String>;
+    pub fn get_url(this: &OpenWindowEventDetail) -> Option<::alloc::string::String>;
     #[doc = "Change the `url` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `OpenWindowEventDetail`*"]

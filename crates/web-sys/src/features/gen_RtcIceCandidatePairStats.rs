@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidatePairStats`*"]
     #[wasm_bindgen(method, getter = "id")]
-    pub fn get_id(this: &RtcIceCandidatePairStats) -> Option<String>;
+    pub fn get_id(this: &RtcIceCandidatePairStats) -> Option<::alloc::string::String>;
     #[doc = "Change the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidatePairStats`*"]
@@ -96,7 +96,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidatePairStats`*"]
     #[wasm_bindgen(method, getter = "localCandidateId")]
-    pub fn get_local_candidate_id(this: &RtcIceCandidatePairStats) -> Option<String>;
+    pub fn get_local_candidate_id(
+        this: &RtcIceCandidatePairStats,
+    ) -> Option<::alloc::string::String>;
     #[doc = "Change the `localCandidateId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidatePairStats`*"]
@@ -136,7 +138,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidatePairStats`*"]
     #[wasm_bindgen(method, getter = "remoteCandidateId")]
-    pub fn get_remote_candidate_id(this: &RtcIceCandidatePairStats) -> Option<String>;
+    pub fn get_remote_candidate_id(
+        this: &RtcIceCandidatePairStats,
+    ) -> Option<::alloc::string::String>;
     #[doc = "Change the `remoteCandidateId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidatePairStats`*"]
@@ -168,7 +172,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidatePairStats`*"]
     #[wasm_bindgen(method, getter = "transportId")]
-    pub fn get_transport_id(this: &RtcIceCandidatePairStats) -> Option<String>;
+    pub fn get_transport_id(this: &RtcIceCandidatePairStats) -> Option<::alloc::string::String>;
     #[doc = "Change the `transportId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidatePairStats`*"]

@@ -33,7 +33,9 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "attestation")]
-    pub fn get_attestation(this: &PublicKeyCredentialRequestOptions) -> Option<String>;
+    pub fn get_attestation(
+        this: &PublicKeyCredentialRequestOptions,
+    ) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `attestation` field of this object."]
     #[doc = ""]
@@ -115,7 +117,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRequestOptions`*"]
     #[wasm_bindgen(method, getter = "rpId")]
-    pub fn get_rp_id(this: &PublicKeyCredentialRequestOptions) -> Option<String>;
+    pub fn get_rp_id(this: &PublicKeyCredentialRequestOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `rpId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRequestOptions`*"]

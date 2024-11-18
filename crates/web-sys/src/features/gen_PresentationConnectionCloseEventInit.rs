@@ -44,7 +44,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnectionCloseEventInit`*"]
     #[wasm_bindgen(method, getter = "message")]
-    pub fn get_message(this: &PresentationConnectionCloseEventInit) -> Option<String>;
+    pub fn get_message(
+        this: &PresentationConnectionCloseEventInit,
+    ) -> Option<::alloc::string::String>;
     #[doc = "Change the `message` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnectionCloseEventInit`*"]

@@ -18,14 +18,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ToggleEvent/oldState)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ToggleEvent`*"]
-    pub fn old_state(this: &ToggleEvent) -> String;
+    pub fn old_state(this: &ToggleEvent) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "ToggleEvent" , js_name = newState)]
     #[doc = "Getter for the `newState` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ToggleEvent/newState)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ToggleEvent`*"]
-    pub fn new_state(this: &ToggleEvent) -> String;
+    pub fn new_state(this: &ToggleEvent) -> ::alloc::string::String;
     #[wasm_bindgen(catch, constructor, js_class = "ToggleEvent")]
     #[doc = "The `new ToggleEvent(..)` constructor, creating a new instance of `ToggleEvent`."]
     #[doc = ""]

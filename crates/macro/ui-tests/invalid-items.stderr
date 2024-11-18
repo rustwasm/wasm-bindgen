@@ -29,10 +29,10 @@ error: static strings require a string literal
    |                    ^^^^^^^^^^^^^
 
 error: static strings require a string literal
-  --> $DIR/invalid-items.rs:20:34
+  --> $DIR/invalid-items.rs:20:37
    |
-20 |     #[wasm_bindgen(thread_local, static_string)]
-   |                                  ^^^^^^^^^^^^^
+20 |     #[wasm_bindgen(thread_local_v2, static_string)]
+   |                                     ^^^^^^^^^^^^^
 
 error: static strings require `#[wasm_bindgen(static_string)]`
   --> $DIR/invalid-items.rs:23:5
@@ -40,7 +40,7 @@ error: static strings require `#[wasm_bindgen(static_string)]`
 23 |     static FOO4: JsString = "test";
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-error: static strings require `#[wasm_bindgen(thread_local)]`
+error: static strings require `#[wasm_bindgen(thread_local_v2)]`
   --> $DIR/invalid-items.rs:26:5
    |
 26 |     static FOO5: JsString = "test";

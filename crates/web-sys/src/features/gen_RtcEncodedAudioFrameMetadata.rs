@@ -44,7 +44,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "mimeType")]
-    pub fn get_mime_type(this: &RtcEncodedAudioFrameMetadata) -> Option<String>;
+    pub fn get_mime_type(this: &RtcEncodedAudioFrameMetadata) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `mimeType` field of this object."]
     #[doc = ""]

@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginMimeEntry`*"]
     #[wasm_bindgen(method, getter = "description")]
-    pub fn get_description(this: &FakePluginMimeEntry) -> Option<String>;
+    pub fn get_description(this: &FakePluginMimeEntry) -> Option<::alloc::string::String>;
     #[doc = "Change the `description` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginMimeEntry`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginMimeEntry`*"]
     #[wasm_bindgen(method, getter = "extension")]
-    pub fn get_extension(this: &FakePluginMimeEntry) -> Option<String>;
+    pub fn get_extension(this: &FakePluginMimeEntry) -> Option<::alloc::string::String>;
     #[doc = "Change the `extension` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginMimeEntry`*"]
@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginMimeEntry`*"]
     #[wasm_bindgen(method, getter = "type")]
-    pub fn get_type(this: &FakePluginMimeEntry) -> String;
+    pub fn get_type(this: &FakePluginMimeEntry) -> ::alloc::string::String;
     #[doc = "Change the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginMimeEntry`*"]

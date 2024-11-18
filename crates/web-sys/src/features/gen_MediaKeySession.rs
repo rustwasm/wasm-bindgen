@@ -26,7 +26,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeySession/sessionId)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySession`*"]
-    pub fn session_id(this: &MediaKeySession) -> String;
+    pub fn session_id(this: &MediaKeySession) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "MediaKeySession" , js_name = expiration)]
     #[doc = "Getter for the `expiration` field of this object."]
     #[doc = ""]

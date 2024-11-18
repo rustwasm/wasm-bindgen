@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/target)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
-    pub fn target(this: &HtmlAnchorElement) -> String;
+    pub fn target(this: &HtmlAnchorElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLAnchorElement" , js_name = target)]
     #[doc = "Setter for the `target` field of this object."]
     #[doc = ""]
@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/download)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
-    pub fn download(this: &HtmlAnchorElement) -> String;
+    pub fn download(this: &HtmlAnchorElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLAnchorElement" , js_name = download)]
     #[doc = "Setter for the `download` field of this object."]
     #[doc = ""]
@@ -46,7 +46,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/ping)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
-    pub fn ping(this: &HtmlAnchorElement) -> String;
+    pub fn ping(this: &HtmlAnchorElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLAnchorElement" , js_name = ping)]
     #[doc = "Setter for the `ping` field of this object."]
     #[doc = ""]
@@ -60,7 +60,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/rel)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
-    pub fn rel(this: &HtmlAnchorElement) -> String;
+    pub fn rel(this: &HtmlAnchorElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLAnchorElement" , js_name = rel)]
     #[doc = "Setter for the `rel` field of this object."]
     #[doc = ""]
@@ -74,7 +74,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/referrerPolicy)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
-    pub fn referrer_policy(this: &HtmlAnchorElement) -> String;
+    pub fn referrer_policy(this: &HtmlAnchorElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLAnchorElement" , js_name = referrerPolicy)]
     #[doc = "Setter for the `referrerPolicy` field of this object."]
     #[doc = ""]
@@ -96,7 +96,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/hreflang)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
-    pub fn hreflang(this: &HtmlAnchorElement) -> String;
+    pub fn hreflang(this: &HtmlAnchorElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLAnchorElement" , js_name = hreflang)]
     #[doc = "Setter for the `hreflang` field of this object."]
     #[doc = ""]
@@ -110,7 +110,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
-    pub fn type_(this: &HtmlAnchorElement) -> String;
+    pub fn type_(this: &HtmlAnchorElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLAnchorElement" , js_name = type)]
     #[doc = "Setter for the `type` field of this object."]
     #[doc = ""]
@@ -124,7 +124,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/text)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
-    pub fn text(this: &HtmlAnchorElement) -> Result<String, JsValue>;
+    pub fn text(this: &HtmlAnchorElement) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLAnchorElement" , js_name = text)]
     #[doc = "Setter for the `text` field of this object."]
     #[doc = ""]
@@ -138,7 +138,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/coords)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
-    pub fn coords(this: &HtmlAnchorElement) -> String;
+    pub fn coords(this: &HtmlAnchorElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLAnchorElement" , js_name = coords)]
     #[doc = "Setter for the `coords` field of this object."]
     #[doc = ""]
@@ -152,7 +152,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/charset)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
-    pub fn charset(this: &HtmlAnchorElement) -> String;
+    pub fn charset(this: &HtmlAnchorElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLAnchorElement" , js_name = charset)]
     #[doc = "Setter for the `charset` field of this object."]
     #[doc = ""]
@@ -166,7 +166,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
-    pub fn name(this: &HtmlAnchorElement) -> String;
+    pub fn name(this: &HtmlAnchorElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLAnchorElement" , js_name = name)]
     #[doc = "Setter for the `name` field of this object."]
     #[doc = ""]
@@ -180,7 +180,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/rev)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
-    pub fn rev(this: &HtmlAnchorElement) -> String;
+    pub fn rev(this: &HtmlAnchorElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLAnchorElement" , js_name = rev)]
     #[doc = "Setter for the `rev` field of this object."]
     #[doc = ""]
@@ -194,7 +194,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/shape)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
-    pub fn shape(this: &HtmlAnchorElement) -> String;
+    pub fn shape(this: &HtmlAnchorElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLAnchorElement" , js_name = shape)]
     #[doc = "Setter for the `shape` field of this object."]
     #[doc = ""]
@@ -208,7 +208,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/href)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
-    pub fn href(this: &HtmlAnchorElement) -> String;
+    pub fn href(this: &HtmlAnchorElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLAnchorElement" , js_name = href)]
     #[doc = "Setter for the `href` field of this object."]
     #[doc = ""]
@@ -222,14 +222,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/origin)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
-    pub fn origin(this: &HtmlAnchorElement) -> String;
+    pub fn origin(this: &HtmlAnchorElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLAnchorElement" , js_name = protocol)]
     #[doc = "Getter for the `protocol` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/protocol)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
-    pub fn protocol(this: &HtmlAnchorElement) -> String;
+    pub fn protocol(this: &HtmlAnchorElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLAnchorElement" , js_name = protocol)]
     #[doc = "Setter for the `protocol` field of this object."]
     #[doc = ""]
@@ -243,7 +243,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/username)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
-    pub fn username(this: &HtmlAnchorElement) -> String;
+    pub fn username(this: &HtmlAnchorElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLAnchorElement" , js_name = username)]
     #[doc = "Setter for the `username` field of this object."]
     #[doc = ""]
@@ -257,7 +257,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/password)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
-    pub fn password(this: &HtmlAnchorElement) -> String;
+    pub fn password(this: &HtmlAnchorElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLAnchorElement" , js_name = password)]
     #[doc = "Setter for the `password` field of this object."]
     #[doc = ""]
@@ -271,7 +271,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/host)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
-    pub fn host(this: &HtmlAnchorElement) -> String;
+    pub fn host(this: &HtmlAnchorElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLAnchorElement" , js_name = host)]
     #[doc = "Setter for the `host` field of this object."]
     #[doc = ""]
@@ -285,7 +285,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/hostname)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
-    pub fn hostname(this: &HtmlAnchorElement) -> String;
+    pub fn hostname(this: &HtmlAnchorElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLAnchorElement" , js_name = hostname)]
     #[doc = "Setter for the `hostname` field of this object."]
     #[doc = ""]
@@ -299,7 +299,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/port)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
-    pub fn port(this: &HtmlAnchorElement) -> String;
+    pub fn port(this: &HtmlAnchorElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLAnchorElement" , js_name = port)]
     #[doc = "Setter for the `port` field of this object."]
     #[doc = ""]
@@ -313,7 +313,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/pathname)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
-    pub fn pathname(this: &HtmlAnchorElement) -> String;
+    pub fn pathname(this: &HtmlAnchorElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLAnchorElement" , js_name = pathname)]
     #[doc = "Setter for the `pathname` field of this object."]
     #[doc = ""]
@@ -327,7 +327,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/search)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
-    pub fn search(this: &HtmlAnchorElement) -> String;
+    pub fn search(this: &HtmlAnchorElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLAnchorElement" , js_name = search)]
     #[doc = "Setter for the `search` field of this object."]
     #[doc = ""]
@@ -341,7 +341,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/hash)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlAnchorElement`*"]
-    pub fn hash(this: &HtmlAnchorElement) -> String;
+    pub fn hash(this: &HtmlAnchorElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLAnchorElement" , js_name = hash)]
     #[doc = "Setter for the `hash` field of this object."]
     #[doc = ""]

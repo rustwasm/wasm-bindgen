@@ -6,7 +6,7 @@ pub mod same_function_different_locations_a {
     #[wasm_bindgen(module = "tests/wasm/duplicates_a.js")]
     extern "C" {
         pub fn foo();
-        #[wasm_bindgen(thread_local, js_name = bar)]
+        #[wasm_bindgen(thread_local_v2, js_name = bar)]
         pub static BAR: JsValue;
     }
 }
@@ -17,7 +17,7 @@ pub mod same_function_different_locations_b {
     #[wasm_bindgen(module = "tests/wasm/duplicates_a.js")]
     extern "C" {
         pub fn foo();
-        #[wasm_bindgen(thread_local, js_name = bar)]
+        #[wasm_bindgen(thread_local_v2, js_name = bar)]
         pub static BAR: JsValue;
     }
 }
@@ -36,7 +36,7 @@ pub mod same_function_different_modules_a {
     #[wasm_bindgen(module = "tests/wasm/duplicates_b.js")]
     extern "C" {
         pub fn foo() -> bool;
-        #[wasm_bindgen(thread_local, js_name = bar)]
+        #[wasm_bindgen(thread_local_v2, js_name = bar)]
         pub static BAR: JsValue;
     }
 }
@@ -47,7 +47,7 @@ pub mod same_function_different_modules_b {
     #[wasm_bindgen(module = "tests/wasm/duplicates_c.js")]
     extern "C" {
         pub fn foo() -> bool;
-        #[wasm_bindgen(thread_local, js_name = bar)]
+        #[wasm_bindgen(thread_local_v2, js_name = bar)]
         pub static BAR: JsValue;
     }
 }

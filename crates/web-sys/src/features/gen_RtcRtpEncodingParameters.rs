@@ -75,7 +75,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpEncodingParameters`*"]
     #[wasm_bindgen(method, getter = "rid")]
-    pub fn get_rid(this: &RtcRtpEncodingParameters) -> Option<String>;
+    pub fn get_rid(this: &RtcRtpEncodingParameters) -> Option<::alloc::string::String>;
     #[doc = "Change the `rid` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpEncodingParameters`*"]
@@ -101,7 +101,8 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "scalabilityMode")]
-    pub fn get_scalability_mode(this: &RtcRtpEncodingParameters) -> Option<String>;
+    pub fn get_scalability_mode(this: &RtcRtpEncodingParameters)
+        -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `scalabilityMode` field of this object."]
     #[doc = ""]

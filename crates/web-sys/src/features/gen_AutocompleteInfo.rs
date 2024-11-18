@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AutocompleteInfo`*"]
     #[wasm_bindgen(method, getter = "addressType")]
-    pub fn get_address_type(this: &AutocompleteInfo) -> Option<String>;
+    pub fn get_address_type(this: &AutocompleteInfo) -> Option<::alloc::string::String>;
     #[doc = "Change the `addressType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AutocompleteInfo`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AutocompleteInfo`*"]
     #[wasm_bindgen(method, getter = "contactType")]
-    pub fn get_contact_type(this: &AutocompleteInfo) -> Option<String>;
+    pub fn get_contact_type(this: &AutocompleteInfo) -> Option<::alloc::string::String>;
     #[doc = "Change the `contactType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AutocompleteInfo`*"]
@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AutocompleteInfo`*"]
     #[wasm_bindgen(method, getter = "fieldName")]
-    pub fn get_field_name(this: &AutocompleteInfo) -> Option<String>;
+    pub fn get_field_name(this: &AutocompleteInfo) -> Option<::alloc::string::String>;
     #[doc = "Change the `fieldName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AutocompleteInfo`*"]
@@ -44,7 +44,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AutocompleteInfo`*"]
     #[wasm_bindgen(method, getter = "section")]
-    pub fn get_section(this: &AutocompleteInfo) -> Option<String>;
+    pub fn get_section(this: &AutocompleteInfo) -> Option<::alloc::string::String>;
     #[doc = "Change the `section` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AutocompleteInfo`*"]

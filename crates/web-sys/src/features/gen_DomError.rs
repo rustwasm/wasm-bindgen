@@ -18,14 +18,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMError/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomError`*"]
-    pub fn name(this: &DomError) -> String;
+    pub fn name(this: &DomError) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "DOMError" , js_name = message)]
     #[doc = "Getter for the `message` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMError/message)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomError`*"]
-    pub fn message(this: &DomError) -> String;
+    pub fn message(this: &DomError) -> ::alloc::string::String;
     #[wasm_bindgen(catch, constructor, js_class = "DOMError")]
     #[doc = "The `new DomError(..)` constructor, creating a new instance of `DomError`."]
     #[doc = ""]

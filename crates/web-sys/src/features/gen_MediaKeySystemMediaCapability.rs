@@ -14,7 +14,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemMediaCapability`*"]
     #[wasm_bindgen(method, getter = "contentType")]
-    pub fn get_content_type(this: &MediaKeySystemMediaCapability) -> Option<String>;
+    pub fn get_content_type(
+        this: &MediaKeySystemMediaCapability,
+    ) -> Option<::alloc::string::String>;
     #[doc = "Change the `contentType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemMediaCapability`*"]
@@ -24,7 +26,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemMediaCapability`*"]
     #[wasm_bindgen(method, getter = "robustness")]
-    pub fn get_robustness(this: &MediaKeySystemMediaCapability) -> Option<String>;
+    pub fn get_robustness(this: &MediaKeySystemMediaCapability) -> Option<::alloc::string::String>;
     #[doc = "Change the `robustness` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemMediaCapability`*"]

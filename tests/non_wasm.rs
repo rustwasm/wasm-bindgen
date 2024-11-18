@@ -31,7 +31,7 @@ pub fn foo(x: bool) {
 #[wasm_bindgen]
 extern "C" {
     fn some_import();
-    #[wasm_bindgen(thread_local)]
+    #[wasm_bindgen(thread_local_v2)]
     static A: JsValue;
 }
 

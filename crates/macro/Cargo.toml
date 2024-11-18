@@ -17,13 +17,16 @@ version = "0.2.95"
 proc-macro = true
 
 [features]
+atomics = ["wasm-bindgen-macro-support/atomics"]
+default = ["std"]
 spans = ["wasm-bindgen-macro-support/spans"]
+std = ["wasm-bindgen-macro-support/std"]
 strict-macro = ["wasm-bindgen-macro-support/strict-macro"]
 xxx_debug_only_print_generated_code = []
 
 [dependencies]
 quote = "1.0"
-wasm-bindgen-macro-support = { path = "../macro-support", version = "=0.2.95" }
+wasm-bindgen-macro-support = { path = "../macro-support", version = "=0.2.95", default-features = false }
 
 [dev-dependencies]
 js-sys = { path = "../js-sys" }

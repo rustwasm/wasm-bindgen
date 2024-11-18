@@ -44,7 +44,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationEventInit`*"]
     #[wasm_bindgen(method, getter = "animationName")]
-    pub fn get_animation_name(this: &AnimationEventInit) -> Option<String>;
+    pub fn get_animation_name(this: &AnimationEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `animationName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationEventInit`*"]
@@ -64,7 +64,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationEventInit`*"]
     #[wasm_bindgen(method, getter = "pseudoElement")]
-    pub fn get_pseudo_element(this: &AnimationEventInit) -> Option<String>;
+    pub fn get_pseudo_element(this: &AnimationEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `pseudoElement` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationEventInit`*"]

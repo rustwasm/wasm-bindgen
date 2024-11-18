@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityAssertionResult`*"]
     #[wasm_bindgen(method, getter = "assertion")]
-    pub fn get_assertion(this: &RtcIdentityAssertionResult) -> String;
+    pub fn get_assertion(this: &RtcIdentityAssertionResult) -> ::alloc::string::String;
     #[doc = "Change the `assertion` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityAssertionResult`*"]

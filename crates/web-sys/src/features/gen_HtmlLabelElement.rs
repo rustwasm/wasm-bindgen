@@ -26,7 +26,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/htmlFor)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlLabelElement`*"]
-    pub fn html_for(this: &HtmlLabelElement) -> String;
+    pub fn html_for(this: &HtmlLabelElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLLabelElement" , js_name = htmlFor)]
     #[doc = "Setter for the `htmlFor` field of this object."]
     #[doc = ""]

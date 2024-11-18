@@ -74,7 +74,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerType)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEvent`*"]
-    pub fn pointer_type(this: &PointerEvent) -> String;
+    pub fn pointer_type(this: &PointerEvent) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "PointerEvent" , js_name = isPrimary)]
     #[doc = "Getter for the `isPrimary` field of this object."]
     #[doc = ""]

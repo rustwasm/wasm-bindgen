@@ -54,7 +54,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UdpMessageEventInit`*"]
     #[wasm_bindgen(method, getter = "remoteAddress")]
-    pub fn get_remote_address(this: &UdpMessageEventInit) -> Option<String>;
+    pub fn get_remote_address(this: &UdpMessageEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `remoteAddress` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UdpMessageEventInit`*"]

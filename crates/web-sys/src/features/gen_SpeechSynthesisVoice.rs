@@ -18,21 +18,21 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisVoice/voiceURI)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisVoice`*"]
-    pub fn voice_uri(this: &SpeechSynthesisVoice) -> String;
+    pub fn voice_uri(this: &SpeechSynthesisVoice) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "SpeechSynthesisVoice" , js_name = name)]
     #[doc = "Getter for the `name` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisVoice/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisVoice`*"]
-    pub fn name(this: &SpeechSynthesisVoice) -> String;
+    pub fn name(this: &SpeechSynthesisVoice) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "SpeechSynthesisVoice" , js_name = lang)]
     #[doc = "Getter for the `lang` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisVoice/lang)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisVoice`*"]
-    pub fn lang(this: &SpeechSynthesisVoice) -> String;
+    pub fn lang(this: &SpeechSynthesisVoice) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "SpeechSynthesisVoice" , js_name = localService)]
     #[doc = "Getter for the `localService` field of this object."]
     #[doc = ""]

@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Text/wholeText)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Text`*"]
-    pub fn whole_text(this: &Text) -> Result<String, JsValue>;
+    pub fn whole_text(this: &Text) -> Result<::alloc::string::String, JsValue>;
     #[cfg(feature = "HtmlSlotElement")]
     # [wasm_bindgen (structural , method , getter , js_class = "Text" , js_name = assignedSlot)]
     #[doc = "Getter for the `assignedSlot` field of this object."]

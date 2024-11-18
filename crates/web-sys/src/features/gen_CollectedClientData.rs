@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     #[wasm_bindgen(method, getter = "challenge")]
-    pub fn get_challenge(this: &CollectedClientData) -> String;
+    pub fn get_challenge(this: &CollectedClientData) -> ::alloc::string::String;
     #[doc = "Change the `challenge` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
@@ -54,7 +54,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     #[deprecated]
     #[wasm_bindgen(method, getter = "hashAlgorithm")]
-    pub fn get_hash_algorithm(this: &CollectedClientData) -> String;
+    pub fn get_hash_algorithm(this: &CollectedClientData) -> ::alloc::string::String;
     #[doc = "Change the `hashAlgorithm` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
@@ -65,7 +65,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     #[wasm_bindgen(method, getter = "origin")]
-    pub fn get_origin(this: &CollectedClientData) -> String;
+    pub fn get_origin(this: &CollectedClientData) -> ::alloc::string::String;
     #[doc = "Change the `origin` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
@@ -88,7 +88,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     #[deprecated]
     #[wasm_bindgen(method, getter = "tokenBindingId")]
-    pub fn get_token_binding_id(this: &CollectedClientData) -> Option<String>;
+    pub fn get_token_binding_id(this: &CollectedClientData) -> Option<::alloc::string::String>;
     #[doc = "Change the `tokenBindingId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
@@ -99,7 +99,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]
     #[wasm_bindgen(method, getter = "type")]
-    pub fn get_type(this: &CollectedClientData) -> String;
+    pub fn get_type(this: &CollectedClientData) -> ::alloc::string::String;
     #[doc = "Change the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CollectedClientData`*"]

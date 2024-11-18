@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
     #[wasm_bindgen(method, getter = "id")]
-    pub fn get_id(this: &RtcIceCandidateStats) -> Option<String>;
+    pub fn get_id(this: &RtcIceCandidateStats) -> Option<::alloc::string::String>;
     #[doc = "Change the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
@@ -46,7 +46,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
     #[wasm_bindgen(method, getter = "candidateId")]
-    pub fn get_candidate_id(this: &RtcIceCandidateStats) -> Option<String>;
+    pub fn get_candidate_id(this: &RtcIceCandidateStats) -> Option<::alloc::string::String>;
     #[doc = "Change the `candidateId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
@@ -68,7 +68,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
     #[wasm_bindgen(method, getter = "componentId")]
-    pub fn get_component_id(this: &RtcIceCandidateStats) -> Option<String>;
+    pub fn get_component_id(this: &RtcIceCandidateStats) -> Option<::alloc::string::String>;
     #[doc = "Change the `componentId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
@@ -78,7 +78,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
     #[wasm_bindgen(method, getter = "ipAddress")]
-    pub fn get_ip_address(this: &RtcIceCandidateStats) -> Option<String>;
+    pub fn get_ip_address(this: &RtcIceCandidateStats) -> Option<::alloc::string::String>;
     #[doc = "Change the `ipAddress` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
@@ -98,7 +98,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]
     #[wasm_bindgen(method, getter = "transport")]
-    pub fn get_transport(this: &RtcIceCandidateStats) -> Option<String>;
+    pub fn get_transport(this: &RtcIceCandidateStats) -> Option<::alloc::string::String>;
     #[doc = "Change the `transport` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateStats`*"]

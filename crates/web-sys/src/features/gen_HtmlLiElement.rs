@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLIElement/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlLiElement`*"]
-    pub fn type_(this: &HtmlLiElement) -> String;
+    pub fn type_(this: &HtmlLiElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLLIElement" , js_name = type)]
     #[doc = "Setter for the `type` field of this object."]
     #[doc = ""]

@@ -3,6 +3,8 @@
 //! and ported to Rust
 //!
 
+#![allow(clippy::incompatible_msrv)]
+
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -36,18 +38,37 @@
  * when possible.  The worker communicates with its parent using postMessage.
  */
 
+use alloc::vec;
+use alloc::vec::Vec;
+use core::cell::RefCell;
+use core::sync::atomic::AtomicI32;
 use js_sys::{Array, Promise};
-use std::cell::RefCell;
-use std::sync::atomic::AtomicI32;
 use wasm_bindgen::prelude::*;
 use web_sys::{MessageEvent, Worker};
 
-thread_local! {
-    static HELPERS: RefCell<Vec<Worker>> = RefCell::new(vec![]);
+struct Helpers;
+
+impl Helpers {
+    #[cfg(feature = "std")]
+    pub(crate) fn with<R>(f: impl FnOnce(&RefCell<Vec<Worker>>) -> R) -> R {
+        thread_local! {
+            static HELPERS: RefCell<Vec<Worker>> = RefCell::new(vec![]);
+        }
+
+        HELPERS.with(f)
+    }
+
+    #[cfg(not(feature = "std"))]
+    pub(crate) fn with<R>(f: impl FnOnce(&RefCell<Vec<Worker>>) -> R) -> R {
+        #[thread_local]
+        static HELPERS: RefCell<Vec<Worker>> = RefCell::new(vec![]);
+
+        f(&HELPERS)
+    }
 }
 
 fn alloc_helper() -> Worker {
-    HELPERS.with(|helpers| {
+    Helpers::with(|helpers| {
         if let Some(helper) = helpers.borrow_mut().pop() {
             return helper;
         }
@@ -58,7 +79,7 @@ fn alloc_helper() -> Worker {
 }
 
 fn free_helper(helper: Worker) {
-    HELPERS.with(move |helpers| {
+    Helpers::with(move |helpers| {
         let mut helpers = helpers.borrow_mut();
         helpers.push(helper.clone());
         helpers.truncate(10); // random arbitrary limit chosen here

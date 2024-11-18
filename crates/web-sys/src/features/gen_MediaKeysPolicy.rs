@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeysPolicy`*"]
     #[wasm_bindgen(method, getter = "minHdcpVersion")]
-    pub fn get_min_hdcp_version(this: &MediaKeysPolicy) -> Option<String>;
+    pub fn get_min_hdcp_version(this: &MediaKeysPolicy) -> Option<::alloc::string::String>;
     #[doc = "Change the `minHdcpVersion` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeysPolicy`*"]

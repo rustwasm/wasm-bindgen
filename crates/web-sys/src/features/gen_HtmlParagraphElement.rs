@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLParagraphElement/align)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlParagraphElement`*"]
-    pub fn align(this: &HtmlParagraphElement) -> String;
+    pub fn align(this: &HtmlParagraphElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLParagraphElement" , js_name = align)]
     #[doc = "Setter for the `align` field of this object."]
     #[doc = ""]

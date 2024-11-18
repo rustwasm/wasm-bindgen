@@ -113,7 +113,7 @@ pub fn wasm_bindgen_test(
         quote! {
             const _: () = {
                 #[no_mangle]
-                #[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+                #[cfg(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")))]
                 #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
                 pub extern "C" fn #name(cx: &#wasm_bindgen_path::__rt::Context) {
                     let test_name = ::core::concat!(::core::module_path!(), "::", ::core::stringify!(#ident));
@@ -125,7 +125,7 @@ pub fn wasm_bindgen_test(
 
     if let Some(path) = attributes.unsupported {
         tokens.extend(
-            quote! { #[cfg_attr(not(all(target_arch = "wasm32", target_os = "unknown")), #path)] },
+            quote! { #[cfg_attr(not(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none"))), #path)] },
         );
 
         if let Some(should_panic) = should_panic {
@@ -136,7 +136,7 @@ pub fn wasm_bindgen_test(
             };
 
             tokens.extend(
-                quote! { #[cfg_attr(not(all(target_arch = "wasm32", target_os = "unknown")), #should_panic)] }
+                quote! { #[cfg_attr(not(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none"))), #should_panic)] }
             )
         }
     }

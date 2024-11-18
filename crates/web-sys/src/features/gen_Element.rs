@@ -18,35 +18,35 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/namespaceURI)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    pub fn namespace_uri(this: &Element) -> Option<String>;
+    pub fn namespace_uri(this: &Element) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "Element" , js_name = prefix)]
     #[doc = "Getter for the `prefix` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/prefix)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    pub fn prefix(this: &Element) -> Option<String>;
+    pub fn prefix(this: &Element) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "Element" , js_name = localName)]
     #[doc = "Getter for the `localName` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/localName)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    pub fn local_name(this: &Element) -> String;
+    pub fn local_name(this: &Element) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "Element" , js_name = tagName)]
     #[doc = "Getter for the `tagName` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/tagName)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    pub fn tag_name(this: &Element) -> String;
+    pub fn tag_name(this: &Element) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "Element" , js_name = id)]
     #[doc = "Getter for the `id` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/id)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    pub fn id(this: &Element) -> String;
+    pub fn id(this: &Element) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "Element" , js_name = id)]
     #[doc = "Setter for the `id` field of this object."]
     #[doc = ""]
@@ -60,7 +60,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/className)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    pub fn class_name(this: &Element) -> String;
+    pub fn class_name(this: &Element) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "Element" , js_name = className)]
     #[doc = "Setter for the `className` field of this object."]
     #[doc = ""]
@@ -160,7 +160,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    pub fn inner_html(this: &Element) -> String;
+    pub fn inner_html(this: &Element) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "Element" , js_name = innerHTML)]
     #[doc = "Setter for the `innerHTML` field of this object."]
     #[doc = ""]
@@ -174,7 +174,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/outerHTML)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    pub fn outer_html(this: &Element) -> String;
+    pub fn outer_html(this: &Element) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "Element" , js_name = outerHTML)]
     #[doc = "Setter for the `outerHTML` field of this object."]
     #[doc = ""]
@@ -204,7 +204,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/slot)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    pub fn slot(this: &Element) -> String;
+    pub fn slot(this: &Element) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "Element" , js_name = slot)]
     #[doc = "Setter for the `slot` field of this object."]
     #[doc = ""]
@@ -279,7 +279,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Element`*"]
-    pub fn get_attribute(this: &Element, name: &str) -> Option<String>;
+    pub fn get_attribute(this: &Element, name: &str) -> Option<::alloc::string::String>;
     # [wasm_bindgen (method , structural , js_class = "Element" , js_name = getAttributeNS)]
     #[doc = "The `getAttributeNS()` method."]
     #[doc = ""]
@@ -290,7 +290,7 @@ extern "C" {
         this: &Element,
         namespace: Option<&str>,
         local_name: &str,
-    ) -> Option<String>;
+    ) -> Option<::alloc::string::String>;
     # [wasm_bindgen (method , structural , js_class = "Element" , js_name = getAttributeNames)]
     #[doc = "The `getAttributeNames()` method."]
     #[doc = ""]

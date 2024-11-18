@@ -26,7 +26,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IntersectionObserverInit`*"]
     #[wasm_bindgen(method, getter = "rootMargin")]
-    pub fn get_root_margin(this: &IntersectionObserverInit) -> Option<String>;
+    pub fn get_root_margin(this: &IntersectionObserverInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `rootMargin` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IntersectionObserverInit`*"]
