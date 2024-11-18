@@ -9,6 +9,7 @@ pub struct RustStruct {
 impl RustStruct {
     pub fn instance_method(&self) {}
     fn priv_instance_method(&self) {}
+    pub fn static_method() {}
 
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
@@ -49,6 +50,7 @@ pub enum RustEnum {
 impl RustEnum {
     pub fn instance_method(self) {}
     fn priv_instance_method(self) {}
+    pub fn static_method() {}
 
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
@@ -68,6 +70,13 @@ impl RustEnum {
     }
     #[wasm_bindgen(setter)]
     pub fn set_static_prop(_value: u32) {}
+}
+
+pub struct NonWasmType;
+
+#[wasm_bindgen]
+impl NonWasmType {
+    pub fn static_method() {}
 }
 
 fn main() {}
