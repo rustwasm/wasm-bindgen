@@ -16,7 +16,7 @@ use alloc::boxed::Box;
 use alloc::string::String;
 use alloc::vec::Vec;
 use core::convert::TryFrom;
-use core::marker;
+use core::marker::PhantomData;
 use core::mem;
 use core::ops::{
     Add, BitAnd, BitOr, BitXor, Deref, DerefMut, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub,
@@ -71,6 +71,7 @@ pub use wasm_bindgen_macro::link_to;
 pub mod closure;
 pub mod convert;
 pub mod describe;
+pub mod marker;
 mod link;
 
 mod cast;
@@ -92,7 +93,7 @@ if_std! {
 /// but for now it may be slightly slow.
 pub struct JsValue {
     idx: u32,
-    _marker: marker::PhantomData<*mut u8>, // not at all threadsafe
+    _marker: PhantomData<*mut u8>, // not at all threadsafe
 }
 
 const JSIDX_OFFSET: u32 = 128; // keep in sync with js/mod.rs
@@ -119,7 +120,7 @@ impl JsValue {
     const fn _new(idx: u32) -> JsValue {
         JsValue {
             idx,
-            _marker: marker::PhantomData,
+            _marker: PhantomData,
         }
     }
 

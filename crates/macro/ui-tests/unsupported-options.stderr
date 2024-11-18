@@ -1,0 +1,75 @@
+error[E0277]: JavaScript constructors are not supported for `RustEnum`
+  --> ui-tests/unsupported-options.rs:54:12
+   |
+54 |     pub fn new() -> Self {
+   |            ^^^ the trait `SupportsConstructor` is not implemented for `RustEnum`
+   |
+   = note: `#[wasm_bindgen(constructor)]` is generally only supported for `struct`s with `#[wasm_bindgen]` and cannot be used for `enum`s.
+   = note: Consider removing the `constructor` option and using a regular static method instead.
+   = help: the trait `SupportsConstructor` is implemented for `RustStruct`
+note: required by a bound in `__wasm_bindgen_generated_RustEnum_new::_::assert_supports_constructor`
+  --> ui-tests/unsupported-options.rs:48:1
+   |
+48 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_supports_constructor`
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: JavaScript instance getters and setters are not supported for `RustEnum`
+  --> ui-tests/unsupported-options.rs:59:12
+   |
+59 |     pub fn prop(self) -> u32 {
+   |            ^^^^ the trait `SupportsInstanceProperty` is not implemented for `RustEnum`
+   |
+   = note: `#[wasm_bindgen(getter)]` and `#[wasm_bindgen(setter)]` are generally only supported for `struct`s with `#[wasm_bindgen]`. They cannot be used for `enum`s.
+   = help: the trait `SupportsInstanceProperty` is implemented for `RustStruct`
+note: required by a bound in `__wasm_bindgen_generated_RustEnum_prop::_::assert_supports_instance_property`
+  --> ui-tests/unsupported-options.rs:48:1
+   |
+48 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_supports_instance_property`
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: JavaScript instance getters and setters are not supported for `RustEnum`
+  --> ui-tests/unsupported-options.rs:63:12
+   |
+63 |     pub fn set_prop(self, _value: u32) {}
+   |            ^^^^^^^^ the trait `SupportsInstanceProperty` is not implemented for `RustEnum`
+   |
+   = note: `#[wasm_bindgen(getter)]` and `#[wasm_bindgen(setter)]` are generally only supported for `struct`s with `#[wasm_bindgen]`. They cannot be used for `enum`s.
+   = help: the trait `SupportsInstanceProperty` is implemented for `RustStruct`
+note: required by a bound in `__wasm_bindgen_generated_RustEnum_set_prop::_::assert_supports_instance_property`
+  --> ui-tests/unsupported-options.rs:48:1
+   |
+48 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_supports_instance_property`
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: JavaScript static getters and setters are not supported for `RustEnum`
+  --> ui-tests/unsupported-options.rs:66:12
+   |
+66 |     pub fn static_prop() -> u32 {
+   |            ^^^^^^^^^^^ the trait `SupportsStaticProperty` is not implemented for `RustEnum`
+   |
+   = note: `#[wasm_bindgen(getter)]` and `#[wasm_bindgen(setter)]` are generally only supported for `struct`s with `#[wasm_bindgen]`. They cannot be used for `enum`s.
+   = help: the trait `SupportsStaticProperty` is implemented for `RustStruct`
+note: required by a bound in `__wasm_bindgen_generated_RustEnum_static_prop::_::assert_supports_static_property`
+  --> ui-tests/unsupported-options.rs:48:1
+   |
+48 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_supports_static_property`
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: JavaScript static getters and setters are not supported for `RustEnum`
+  --> ui-tests/unsupported-options.rs:70:12
+   |
+70 |     pub fn set_static_prop(_value: u32) {}
+   |            ^^^^^^^^^^^^^^^ the trait `SupportsStaticProperty` is not implemented for `RustEnum`
+   |
+   = note: `#[wasm_bindgen(getter)]` and `#[wasm_bindgen(setter)]` are generally only supported for `struct`s with `#[wasm_bindgen]`. They cannot be used for `enum`s.
+   = help: the trait `SupportsStaticProperty` is implemented for `RustStruct`
+note: required by a bound in `__wasm_bindgen_generated_RustEnum_set_static_prop::_::assert_supports_static_property`
+  --> ui-tests/unsupported-options.rs:48:1
+   |
+48 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ required by this bound in `assert_supports_static_property`
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
