@@ -31,7 +31,7 @@ serde = { version = "1.0", features = ['derive'] }
 serde_derive = "1.0"
 serde_json = "1.0"
 ureq = { version = "2.7", default-features = false, features = ["brotli", "gzip"] }
-walrus = { version = "0.22", features = ['parallel'] }
+walrus = { version = "0.23", features = ['parallel'] }
 wasm-bindgen-cli-support = { path = "../cli-support", version = "=0.2.95" }
 wasm-bindgen-shared = { path = "../shared", version = "=0.2.95" }
 
@@ -41,8 +41,8 @@ diff = "0.1"
 predicates = "3"
 rayon = "1.0"
 tempfile = "3.0"
-wasmparser = "0.212"
-wasmprinter = "0.212"
+wasmparser = "0.214"
+wasmprinter = "0.214"
 
 [[test]]
 harness = false
