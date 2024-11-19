@@ -482,7 +482,8 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
         ident
     }
 
-    /// Creates a mutable JS `var`iable with the given name and returns the name.
+    /// Creates a mutable JS `var`iable with the given name and returns the
+    /// name. The create variable is also visible in the `finally` block.
     ///
     /// If the name is already taken, a different name is generated.
     pub fn var(&mut self, name: &str, initial_value: String) -> String {
