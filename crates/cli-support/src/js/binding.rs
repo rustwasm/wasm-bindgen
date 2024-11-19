@@ -9,7 +9,6 @@ use crate::wit::InstructionData;
 use crate::wit::{Adapter, AdapterId, AdapterKind, AdapterType, Instruction};
 use anyhow::{anyhow, bail, Error};
 use std::collections::HashSet;
-use std::fmt::Write;
 use walrus::{Module, ValType};
 
 /// A one-size-fits-all builder for processing WebIDL bindings and generating
@@ -57,6 +56,10 @@ pub struct JsBuilder<'a, 'b> {
     /// Names or expressions representing the arguments to the adapter. This is
     /// use to translate the `arg.get` instruction.
     args: Vec<String>,
+
+    /// A set of JS identifiers that cannot be used as temporary variables in
+    /// the generated JS code.
+    used_identifiers: HashSet<String>,
 
     /// The Wasm interface types "stack". The expressions pushed onto this stack
     /// are intended to be *pure*, and if they're not, they should be pushed
@@ -151,10 +154,10 @@ impl<'a, 'b> Builder<'a, 'b> {
                 );
             }
             if consumes_self {
-                js.prelude("const ptr = this.__destroy_into_raw();");
-                js.args.push("ptr".into());
+                let ptr = js.alias("ptr", "this.__destroy_into_raw()".to_string());
+                js.push_arg(ptr);
             } else {
-                js.args.push("this.__wbg_ptr".into());
+                js.push_arg("this.__wbg_ptr".into());
             }
         }
         for (i, param) in params.enumerate() {
@@ -162,7 +165,7 @@ impl<'a, 'b> Builder<'a, 'b> {
                 Some(list) => list[i].clone(),
                 None => format!("arg{}", i),
             };
-            js.args.push(arg.clone());
+            js.push_arg(arg.clone());
             function_args.push(arg);
             arg_tys.push(param);
         }
@@ -436,6 +439,7 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
             cx,
             debug_name,
             args: Vec::new(),
+            used_identifiers: HashSet::new(),
             tmp: 0,
             pre_try: String::new(),
             finally: String::new(),
@@ -446,6 +450,61 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
 
     pub fn arg(&self, idx: u32) -> &str {
         &self.args[idx as usize]
+    }
+
+    pub fn push_arg(&mut self, arg: String) {
+        self.args.push(arg.clone());
+        self.used_identifiers.insert(arg);
+    }
+
+    /// Creates a new variable with the given name and returns the name.
+    ///
+    /// If the name is already taken, this function panics.
+    pub fn guarantee_alias(&mut self, name: &str, expression: String) -> String {
+        let can_use = self.used_identifiers.insert(name.to_string());
+        assert!(
+            can_use,
+            "identifier {} already in use in {}",
+            name, self.debug_name
+        );
+
+        self.prelude(&format!("const {name} = {expression};"));
+        name.to_string()
+    }
+
+    /// Creates a new JS `const` variable with the given name and returns the
+    /// name.
+    ///
+    /// If the name is already taken, a different name is generated.
+    pub fn alias(&mut self, name: &str, expression: String) -> String {
+        let ident = self.unique_name(name);
+        self.prelude(&format!("const {} = {};", ident, expression));
+        ident
+    }
+
+    /// Creates a mutable JS `var`iable with the given name and returns the name.
+    ///
+    /// If the name is already taken, a different name is generated.
+    pub fn var(&mut self, name: &str, initial_value: String) -> String {
+        let ident = self.unique_name(name);
+        self.prelude(&format!("var {} = {};", ident, initial_value));
+        ident
+    }
+
+    /// Returns a unique variable name based on the given name.
+    pub fn unique_name(&mut self, preferred: &str) -> String {
+        if !self.used_identifiers.contains(preferred) {
+            self.used_identifiers.insert(preferred.to_string());
+            return preferred.to_string();
+        }
+
+        loop {
+            self.tmp += 1;
+            let ident = format!("{}{}", preferred, self.tmp);
+            if self.used_identifiers.insert(ident.clone()) {
+                return ident;
+            }
+        }
     }
 
     pub fn prelude(&mut self, prelude: &str) {
@@ -464,12 +523,6 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
                 self.finally.push('\n');
             }
         }
-    }
-
-    pub fn tmp(&mut self) -> usize {
-        let ret = self.tmp;
-        self.tmp += 1;
-        ret
     }
 
     fn pop(&mut self) -> String {
@@ -575,22 +628,14 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
         let pass = self.cx.expose_pass_string_to_wasm(mem)?;
         let val = self.pop();
         let malloc = self.cx.export_name_of(malloc);
-        let i = self.tmp();
         let realloc = match realloc {
             Some(f) => format!(", wasm.{}", self.cx.export_name_of(f)),
             None => String::new(),
         };
-        self.prelude(&format!(
-            "const ptr{i} = {f}({0}, wasm.{malloc}{realloc});",
-            val,
-            i = i,
-            f = pass,
-            malloc = malloc,
-            realloc = realloc,
-        ));
-        self.prelude(&format!("const len{} = WASM_VECTOR_LEN;", i));
-        self.push(format!("ptr{}", i));
-        self.push(format!("len{}", i));
+        let ptr = self.alias("ptr", format!("{pass}({val}, wasm.{malloc}{realloc})"));
+        let len = self.alias("len", "WASM_VECTOR_LEN".to_string());
+        self.push(ptr);
+        self.push(len);
         Ok(())
     }
 }
@@ -652,7 +697,6 @@ fn instruction(
             let (mut params, results) = invoc.params_results(js.cx);
 
             let mut args = Vec::new();
-            let tmp = js.tmp();
             if invoc.defer() {
                 if let Instruction::DeferFree { .. } = instr {
                     // Ignore `free`'s final `align` argument, since that's manually inserted later.
@@ -661,11 +705,10 @@ fn instruction(
                 // If the call is deferred, the arguments to the function still need to be
                 // accessible in the `finally` block, so we declare variables to hold the args
                 // outside of the try-finally block and then set those to the args.
-                for (i, arg) in js.stack[js.stack.len() - params..].iter().enumerate() {
-                    let name = format!("deferred{tmp}_{i}");
-                    writeln!(js.pre_try, "let {name};").unwrap();
-                    writeln!(js.prelude, "{name} = {arg};").unwrap();
-                    args.push(name);
+                let mut slice = Vec::new();
+                slice.extend(js.stack[js.stack.len() - params..].iter().cloned());
+                for (i, arg) in slice.into_iter().enumerate() {
+                    args.push(js.var(&format!("deferred{i}"), arg));
                 }
                 if let Instruction::DeferFree { align, .. } = instr {
                     // add alignment
@@ -692,12 +735,12 @@ fn instruction(
                 (true, _) => panic!("deferred calls must have no results"),
                 (false, 0) => js.prelude(&format!("{};", call)),
                 (false, n) => {
-                    js.prelude(&format!("const ret = {};", call));
+                    let ret = js.alias("ret", call);
                     if n == 1 {
-                        js.push("ret".to_string());
+                        js.push(ret);
                     } else {
                         for i in 0..n {
-                            js.push(format!("ret[{}]", i));
+                            js.push(format!("{ret}[{i}]"));
                         }
                     }
                 }
@@ -813,12 +856,12 @@ fn instruction(
 
         Instruction::Retptr { size } => {
             js.cx.inject_stack_pointer_shim()?;
-            js.prelude(&format!(
-                "const retptr = wasm.__wbindgen_add_to_stack_pointer(-{});",
-                size
-            ));
+            let return_ptr = js.guarantee_alias(
+                "retptr",
+                format!("wasm.__wbindgen_add_to_stack_pointer(-{size})"),
+            );
             js.finally(&format!("wasm.__wbindgen_add_to_stack_pointer({});", size));
-            js.stack.push("retptr".to_string());
+            js.push(return_ptr);
         }
 
         Instruction::StoreRetptr { ty, offset, mem } => {
@@ -878,11 +921,9 @@ fn instruction(
 
         Instruction::I32FromStringFirstChar => {
             let val = js.pop();
-            let i = js.tmp();
-            js.prelude(&format!("const char{i} = {val}.codePointAt(0);"));
-            let val = format!("char{i}");
-            js.assert_char(&val);
-            js.push(val);
+            let char = js.alias("char", format!("{val}.codePointAt(0)"));
+            js.assert_char(&char);
+            js.push(char);
         }
 
         Instruction::I32FromExternrefOwned => {
@@ -903,9 +944,8 @@ fn instruction(
             let val = js.pop();
             js.assert_class(&val, class);
             js.assert_not_moved(&val);
-            let i = js.tmp();
-            js.prelude(&format!("var ptr{} = {}.__destroy_into_raw();", i, val));
-            js.push(format!("ptr{}", i));
+            let ptr = js.alias("ptr", format!("{val}.__destroy_into_raw()"));
+            js.push(ptr);
         }
 
         Instruction::I32FromExternrefRustBorrow { class } => {
@@ -918,14 +958,13 @@ fn instruction(
         Instruction::I32FromOptionRust { class } => {
             let val = js.pop();
             js.cx.expose_is_like_none();
-            let i = js.tmp();
-            js.prelude(&format!("let ptr{} = 0;", i));
+            let ptr = js.var("ptr", "0".to_string());
             js.prelude(&format!("if (!isLikeNone({0})) {{", val));
             js.assert_class(&val, class);
             js.assert_not_moved(&val);
-            js.prelude(&format!("ptr{} = {}.__destroy_into_raw();", i, val));
+            js.prelude(&format!("{ptr} = {val}.__destroy_into_raw();"));
             js.prelude("}");
-            js.push(format!("ptr{}", i));
+            js.push(ptr);
         }
 
         Instruction::I32FromOptionExternref { table_and_alloc } => {
@@ -959,13 +998,11 @@ fn instruction(
 
         Instruction::I32FromOptionChar => {
             let val = js.pop();
-            let i = js.tmp();
             js.cx.expose_is_like_none();
-            js.prelude(&format!(
-                "const char{i} = isLikeNone({0}) ? 0xFFFFFF : {0}.codePointAt(0);",
-                val
-            ));
-            let val = format!("char{i}");
+            let val = js.alias(
+                "char",
+                format!("isLikeNone({val}) ? 0xFFFFFF : {val}.codePointAt(0)"),
+            );
             js.cx.expose_assert_char();
             js.prelude(&format!(
                 "if ({val} !== 0xFFFFFF) {{ _assertChar({val}); }}"
@@ -1043,17 +1080,10 @@ fn instruction(
             let val = js.pop();
             let func = js.cx.pass_to_wasm_function(kind.clone(), *mem)?;
             let malloc = js.cx.export_name_of(*malloc);
-            let i = js.tmp();
-            js.prelude(&format!(
-                "const ptr{i} = {f}({0}, wasm.{malloc});",
-                val,
-                i = i,
-                f = func,
-                malloc = malloc,
-            ));
-            js.prelude(&format!("const len{} = WASM_VECTOR_LEN;", i));
-            js.push(format!("ptr{}", i));
-            js.push(format!("len{}", i));
+            let ptr = js.alias("ptr", format!("{func}({val}, wasm.{malloc})"));
+            let len = js.alias("len", "WASM_VECTOR_LEN".to_string());
+            js.push(ptr);
+            js.push(len);
         }
 
         Instruction::UnwrapResult { table_and_drop } => {
@@ -1098,25 +1128,19 @@ fn instruction(
             let err = js.pop();
             let len = js.pop();
             let ptr = js.pop();
-            let i = js.tmp();
+
+            let ptr = js.var("ptr", ptr);
+            let len = js.var("len", len);
             js.prelude(&format!(
                 "
-                var ptr{i} = {ptr};
-                var len{i} = {len};
                 if ({is_err}) {{
-                    ptr{i} = 0; len{i} = 0;
+                    {ptr} = 0; {len} = 0;
                     throw {take_object}({err});
                 }}
-                ",
-                take_object = take_object,
-                is_err = is_err,
-                err = err,
-                i = i,
-                ptr = ptr,
-                len = len,
+                "
             ));
-            js.push(format!("ptr{}", i));
-            js.push(format!("len{}", i));
+            js.push(ptr);
+            js.push(len);
         }
 
         Instruction::OptionString {
@@ -1126,42 +1150,33 @@ fn instruction(
         } => {
             let func = js.cx.expose_pass_string_to_wasm(*mem)?;
             js.cx.expose_is_like_none();
-            let i = js.tmp();
             let malloc = js.cx.export_name_of(*malloc);
             let val = js.pop();
             let realloc = match realloc {
                 Some(f) => format!(", wasm.{}", js.cx.export_name_of(*f)),
                 None => String::new(),
             };
-            js.prelude(&format!(
-                "var ptr{i} = isLikeNone({0}) ? 0 : {f}({0}, wasm.{malloc}{realloc});",
-                val,
-                i = i,
-                f = func,
-                malloc = malloc,
-                realloc = realloc,
-            ));
-            js.prelude(&format!("var len{} = WASM_VECTOR_LEN;", i));
-            js.push(format!("ptr{}", i));
-            js.push(format!("len{}", i));
+            let ptr = js.alias(
+                "ptr",
+                format!("isLikeNone({val}) ? 0 : {func}({val}, wasm.{malloc}{realloc})"),
+            );
+            let len = js.alias("len", "WASM_VECTOR_LEN".to_string());
+            js.push(ptr);
+            js.push(len);
         }
 
         Instruction::OptionVector { kind, mem, malloc } => {
             let func = js.cx.pass_to_wasm_function(kind.clone(), *mem)?;
             js.cx.expose_is_like_none();
-            let i = js.tmp();
             let malloc = js.cx.export_name_of(*malloc);
             let val = js.pop();
-            js.prelude(&format!(
-                "var ptr{i} = isLikeNone({0}) ? 0 : {f}({0}, wasm.{malloc});",
-                val,
-                i = i,
-                f = func,
-                malloc = malloc,
-            ));
-            js.prelude(&format!("var len{} = WASM_VECTOR_LEN;", i));
-            js.push(format!("ptr{}", i));
-            js.push(format!("len{}", i));
+            let ptr = js.alias(
+                "ptr",
+                format!("isLikeNone({val}) ? 0 : {func}({val}, wasm.{malloc})"),
+            );
+            let len = js.alias("len", "WASM_VECTOR_LEN".to_string());
+            js.push(ptr);
+            js.push(len);
         }
 
         Instruction::MutableSliceToMemory { kind, malloc, mem } => {
@@ -1169,18 +1184,11 @@ fn instruction(
             let val = js.pop();
             let func = js.cx.pass_to_wasm_function(kind.clone(), *mem)?;
             let malloc = js.cx.export_name_of(*malloc);
-            let i = js.tmp();
-            js.prelude(&format!(
-                "var ptr{i} = {f}({val}, wasm.{malloc});",
-                val = val,
-                i = i,
-                f = func,
-                malloc = malloc,
-            ));
-            js.prelude(&format!("var len{} = WASM_VECTOR_LEN;", i));
+            let ptr = js.alias("ptr", format!("{func}({val}, wasm.{malloc})"));
+            let len = js.alias("len", "WASM_VECTOR_LEN".to_string());
             // Then pass it the pointer and the length of where we copied it.
-            js.push(format!("ptr{}", i));
-            js.push(format!("len{}", i));
+            js.push(ptr);
+            js.push(len);
             // Then we give Wasm a reference to the original typed array, so that it can
             // update it with modifications made on the Wasm side before returning.
             js.push(val);
@@ -1247,11 +1255,10 @@ fn instruction(
         } => {
             let len = js.pop();
             let ptr = js.pop();
-            let tmp = js.tmp();
 
             let get = js.cx.expose_get_cached_string_from_wasm(*mem, *table)?;
 
-            js.prelude(&format!("var v{} = {}({}, {});", tmp, get, ptr, len));
+            let val = js.alias("v", format!("{get}({ptr}, {len})"));
 
             if *owned {
                 let free = js.cx.export_name_of(*free);
@@ -1263,7 +1270,7 @@ fn instruction(
                 ));
             }
 
-            js.push(format!("v{}", tmp));
+            js.push(val);
         }
 
         Instruction::TableGet => {
@@ -1277,85 +1284,71 @@ fn instruction(
             nargs,
             mutable,
         } => {
-            let i = js.tmp();
             let b = js.pop();
             let a = js.pop();
-            js.prelude(&format!("var state{} = {{a: {}, b: {}}};", i, a, b));
+            let state = js.var("state", format!("{{a: {}, b: {}}}", a, b));
             let args = (0..*nargs)
                 .map(|i| format!("arg{}", i))
                 .collect::<Vec<_>>()
                 .join(", ");
             let wrapper = js.cx.adapter_name(*adapter);
-            if *mutable {
-                // Mutable closures need protection against being called
-                // recursively, so ensure that we clear out one of the
-                // internal pointers while it's being invoked.
-                js.prelude(&format!(
-                    "var cb{i} = ({args}) => {{
-                        const a = state{i}.a;
-                        state{i}.a = 0;
-                        try {{
-                            return {name}(a, state{i}.b, {args});
-                        }} finally {{
-                            state{i}.a = a;
-                        }}
-                    }};",
-                    i = i,
-                    args = args,
-                    name = wrapper,
-                ));
-            } else {
-                js.prelude(&format!(
-                    "var cb{i} = ({args}) => {wrapper}(state{i}.a, state{i}.b, {args});",
-                    i = i,
-                    args = args,
-                    wrapper = wrapper,
-                ));
-            }
+            let cb = js.var(
+                "cb",
+                if *mutable {
+                    // Mutable closures need protection against being called
+                    // recursively, so ensure that we clear out one of the
+                    // internal pointers while it's being invoked.
+                    format!(
+                        "({args}) => {{
+                            const a = {state}.a;
+                            {state}.a = 0;
+                            try {{
+                                return {wrapper}(a, {state}.b, {args});
+                            }} finally {{
+                                {state}.a = a;
+                            }}
+                        }}"
+                    )
+                } else {
+                    format!("({args}) => {wrapper}({state}.a, {state}.b, {args})")
+                },
+            );
 
             // Make sure to null out our internal pointers when we return
             // back to Rust to ensure that any lingering references to the
             // closure will fail immediately due to null pointers passed in
             // to Rust.
-            js.finally(&format!("state{}.a = state{0}.b = 0;", i));
-            js.push(format!("cb{}", i));
+            js.finally(&format!("{state}.a = {state}.b = 0;"));
+            js.push(cb);
         }
 
         Instruction::VectorLoad { kind, mem, free } => {
             let len = js.pop();
             let ptr = js.pop();
             let f = js.cx.expose_get_vector_from_wasm(kind.clone(), *mem)?;
-            let i = js.tmp();
             let free = js.cx.export_name_of(*free);
-            js.prelude(&format!("var v{} = {}({}, {}).slice();", i, f, ptr, len));
+            let val = js.alias("v", format!("{f}({ptr}, {len}).slice()"));
             js.prelude(&format!(
-                "wasm.{}({}, {} * {size}, {size});",
-                free,
-                ptr,
-                len,
+                "wasm.{free}({ptr}, {len} * {size}, {size});",
                 size = kind.size()
             ));
-            js.push(format!("v{}", i))
+            js.push(val);
         }
 
         Instruction::OptionVectorLoad { kind, mem, free } => {
             let len = js.pop();
             let ptr = js.pop();
             let f = js.cx.expose_get_vector_from_wasm(kind.clone(), *mem)?;
-            let i = js.tmp();
             let free = js.cx.export_name_of(*free);
-            js.prelude(&format!("let v{};", i));
+            let val = js.var("v", "undefined".to_string());
             js.prelude(&format!("if ({} !== 0) {{", ptr));
-            js.prelude(&format!("v{} = {}({}, {}).slice();", i, f, ptr, len));
+            js.prelude(&format!("{val} = {f}({ptr}, {len}).slice();"));
             js.prelude(&format!(
-                "wasm.{}({}, {} * {size}, {size});",
-                free,
-                ptr,
-                len,
+                "wasm.{free}({ptr}, {len} * {size}, {size});",
                 size = kind.size()
             ));
             js.prelude("}");
-            js.push(format!("v{}", i));
+            js.push(val);
         }
 
         Instruction::View { kind, mem } => {
