@@ -109,12 +109,17 @@ pub fn wasm_bindgen_test(
     // main test harness. This is the entry point for all tests.
     let name = format_ident!("__wbgt_{}_{}", ident, CNT.fetch_add(1, Ordering::SeqCst));
     let wasm_bindgen_path = attributes.wasm_bindgen_path;
+    let coverage = if cfg!(wasm_bindgen_unstable_test_coverage) {
+        Some(quote! { #[coverage(off)] })
+    } else {
+        None
+    };
     tokens.extend(
         quote! {
             const _: () = {
                 #[no_mangle]
                 #[cfg(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")))]
-                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+                #coverage
                 pub extern "C" fn #name(cx: &#wasm_bindgen_path::__rt::Context) {
                     let test_name = ::core::concat!(::core::module_path!(), "::", ::core::stringify!(#ident));
                     #test_body

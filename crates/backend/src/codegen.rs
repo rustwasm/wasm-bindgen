@@ -224,6 +224,11 @@ impl ToTokens for ast::Struct {
         let free_fn = Ident::new(&shared::free_function(&name_str), Span::call_site());
         let unwrap_fn = Ident::new(&shared::unwrap_function(&name_str), Span::call_site());
         let wasm_bindgen = &self.wasm_bindgen;
+        let maybe_no_coverage = if cfg!(wasm_bindgen_unstable_test_coverage) {
+            Some(quote! { #[coverage(off)] })
+        } else {
+            None
+        };
         (quote! {
             #[automatically_derived]
             impl #wasm_bindgen::describe::WasmDescribe for #name {
@@ -300,7 +305,7 @@ impl ToTokens for ast::Struct {
                 #[doc(hidden)]
                 // `allow_delayed` is whether it's ok to not actually free the `ptr` immediately
                 // if it's still borrowed.
-                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+                #maybe_no_coverage
                 pub unsafe extern "C" fn #free_fn(ptr: u32, allow_delayed: u32) {
                     use #wasm_bindgen::__rt::alloc::rc::Rc;
 
@@ -476,6 +481,11 @@ impl ToTokens for ast::StructField {
             quote! { assert_copy::<#ty>() }
         };
         let maybe_assert_copy = respan(maybe_assert_copy, ty);
+        let maybe_no_coverage = if cfg!(wasm_bindgen_unstable_test_coverage) {
+            Some(quote! { #[coverage(off)] })
+        } else {
+            None
+        };
 
         // Split this out so that it isn't affected by `quote_spanned!`.
         //
@@ -496,7 +506,7 @@ impl ToTokens for ast::StructField {
             const _: () = {
                 #[cfg_attr(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")), no_mangle)]
                 #[doc(hidden)]
-                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+                #maybe_no_coverage
                 pub unsafe extern "C" fn #getter(js: u32)
                     -> #wasm_bindgen::convert::WasmRet<<#ty as #wasm_bindgen::convert::IntoWasmAbi>::Abi>
                 {
@@ -538,7 +548,7 @@ impl ToTokens for ast::StructField {
             const _: () = {
                 #[no_mangle]
                 #[doc(hidden)]
-                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+                #maybe_no_coverage
                 pub unsafe extern "C" fn #setter(
                     js: u32,
                     #(#args,)*
@@ -787,6 +797,12 @@ impl TryToTokens for ast::Export {
             quote! {}
         };
 
+        let maybe_no_coverage = if cfg!(wasm_bindgen_unstable_test_coverage) {
+            Some(quote! { #[coverage(off)] })
+        } else {
+            None
+        };
+
         (quote! {
             #[automatically_derived]
             const _: () = {
@@ -795,7 +811,7 @@ impl TryToTokens for ast::Export {
                     all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")),
                     export_name = #export_name,
                 )]
-                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+                #maybe_no_coverage
                 pub unsafe extern "C" fn #generated_name(#(#args),*) -> #wasm_bindgen::convert::WasmRet<#projection::Abi> {
                     #start_check
 
@@ -1156,6 +1172,12 @@ impl ToTokens for ast::StringEnum {
         let hole = variant_count + 1;
         let attrs = &self.rust_attrs;
 
+        let maybe_no_coverage = if cfg!(wasm_bindgen_unstable_test_coverage) {
+            Some(quote! { #[coverage(off)] })
+        } else {
+            None
+        };
+
         let invalid_to_str_msg = format!(
             "Converting an invalid string enum ({}) back to a string is currently not supported",
             enum_name
@@ -1242,7 +1264,7 @@ impl ToTokens for ast::StringEnum {
 
             #[automatically_derived]
             impl #wasm_bindgen::describe::WasmDescribe for #enum_name {
-                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+                #maybe_no_coverage
                 fn describe() {
                     use #wasm_bindgen::describe::*;
                     inform(STRING_ENUM);
@@ -1536,6 +1558,11 @@ impl ToTokens for ast::Enum {
         let name_len = name_str.len() as u32;
         let name_chars = name_str.chars().map(|c| c as u32);
         let hole = &self.hole;
+        let maybe_no_coverage = if cfg!(wasm_bindgen_unstable_test_coverage) {
+            Some(quote! { #[coverage(off)] })
+        } else {
+            None
+        };
         let underlying = if self.signed {
             quote! { i32 }
         } else {
@@ -1588,7 +1615,7 @@ impl ToTokens for ast::Enum {
 
             #[automatically_derived]
             impl #wasm_bindgen::describe::WasmDescribe for #enum_name {
-                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+                #maybe_no_coverage
                 fn describe() {
                     use #wasm_bindgen::describe::*;
                     inform(ENUM);
@@ -1853,6 +1880,12 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
             return;
         }
 
+        let maybe_no_coverage = if cfg!(wasm_bindgen_unstable_test_coverage) {
+            Some(quote! { #[coverage(off)] })
+        } else {
+            None
+        };
+
         let name = Ident::new(&format!("__wbindgen_describe_{}", ident), ident.span());
         let inner = &self.inner;
         let attrs = &self.attrs;
@@ -1864,7 +1897,7 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
                 #(#attrs)*
                 #[no_mangle]
                 #[doc(hidden)]
-                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+                #maybe_no_coverage
                 pub extern "C" fn #name() {
                     use #wasm_bindgen::describe::*;
                     // See definition of `link_mem_intrinsics` for what this is doing
