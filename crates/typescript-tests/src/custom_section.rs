@@ -22,6 +22,6 @@ pub struct Person {
 impl Person {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
-      Self { height: 170 }
+        Self { height: 170 }
     }
 }
