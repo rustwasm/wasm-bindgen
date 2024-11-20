@@ -17,3 +17,11 @@ const _: &str = TS_INTERFACE_EXPORT2;
 pub struct Person {
     pub height: u32,
 }
+
+#[wasm_bindgen]
+impl Person {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Self {
+      Self { height: 170 }
+    }
+}

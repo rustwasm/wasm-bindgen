@@ -3,13 +3,23 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 pub struct ColorWithGetters {
     r: f64,
-    _g: f64,
-    _b: f64,
-    _a: u8,
+    g: f64,
+    b: f64,
+    a: u8,
 }
 
 #[wasm_bindgen]
 impl ColorWithGetters {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Self {
+        Self {
+            r: 0.0,
+            g: 0.0,
+            b: 0.0,
+            a: 0,
+        }
+    }
+
     #[wasm_bindgen(getter)]
     pub fn r(&self) -> f64 {
         self.r
@@ -24,13 +34,23 @@ impl ColorWithGetters {
 #[wasm_bindgen]
 pub struct ColorWithSetters {
     r: f64,
-    _g: f64,
-    _b: f64,
+    g: f64,
+    b: f64,
     a: u8,
 }
 
 #[wasm_bindgen]
 impl ColorWithSetters {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Self {
+        Self {
+            r: 0.0,
+            g: 0.0,
+            b: 0.0,
+            a: 0,
+        }
+    }
+
     #[wasm_bindgen(setter)]
     pub fn set_r(&mut self, r: f64) {
         self.r = r;
@@ -50,13 +70,23 @@ impl ColorWithSetters {
 #[wasm_bindgen]
 pub struct ColorWithGetterAndSetter {
     r: f64,
-    _g: f64,
-    _b: f64,
+    g: f64,
+    b: f64,
     a: u8,
 }
 
 #[wasm_bindgen]
 impl ColorWithGetterAndSetter {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Self {
+        Self {
+            r: 0.0,
+            g: 0.0,
+            b: 0.0,
+            a: 0,
+        }
+    }
+
     #[wasm_bindgen(getter)]
     pub fn r(&self) -> f64 {
         self.r
