@@ -1,4 +1,4 @@
-// https://www.w3.org/TR/2024/WD-webgpu-20241007
+// https://www.w3.org/TR/2024/WD-webgpu-20241122/
 
 interface mixin GPUObjectBase {
     attribute USVString label;
@@ -75,9 +75,10 @@ interface GPU {
 };
 
 dictionary GPURequestAdapterOptions {
-    DOMString featureLevel;
+    DOMString featureLevel = "core";
     GPUPowerPreference powerPreference;
     boolean forceFallbackAdapter = false;
+    boolean xrCompatible = false;
 };
 
 enum GPUPowerPreference {
@@ -116,6 +117,7 @@ enum GPUFeatureName {
     "rg11b10ufloat-renderable",
     "bgra8unorm-storage",
     "float32-filterable",
+    "float32-blendable",
     "clip-distances",
     "dual-source-blending",
 };
@@ -124,6 +126,7 @@ enum GPUFeatureName {
 interface GPUDevice : EventTarget {
     [SameObject] readonly attribute GPUSupportedFeatures features;
     [SameObject] readonly attribute GPUSupportedLimits limits;
+    [SameObject] readonly attribute GPUAdapterInfo adapterInfo;
 
     [SameObject] readonly attribute GPUQueue queue;
 
@@ -575,7 +578,7 @@ GPUPipelineLayout includes GPUObjectBase;
 
 dictionary GPUPipelineLayoutDescriptor
          : GPUObjectDescriptorBase {
-    required sequence<GPUBindGroupLayout> bindGroupLayouts;
+    required sequence<GPUBindGroupLayout?> bindGroupLayouts;
 };
 
 [Exposed=(Window, Worker), SecureContext]
@@ -815,22 +818,31 @@ enum GPUIndexFormat {
 };
 
 enum GPUVertexFormat {
+    "uint8",
     "uint8x2",
     "uint8x4",
+    "sint8",
     "sint8x2",
     "sint8x4",
+    "unorm8",
     "unorm8x2",
     "unorm8x4",
+    "snorm8",
     "snorm8x2",
     "snorm8x4",
+    "uint16",
     "uint16x2",
     "uint16x4",
+    "sint16",
     "sint16x2",
     "sint16x4",
+    "unorm16",
     "unorm16x2",
     "unorm16x4",
+    "snorm16",
     "snorm16x2",
     "snorm16x4",
+    "float16",
     "float16x2",
     "float16x4",
     "float32",
@@ -846,6 +858,7 @@ enum GPUVertexFormat {
     "sint32x3",
     "sint32x4",
     "unorm10-10-10-2",
+    "unorm8x4-bgra",
 };
 
 enum GPUVertexStepMode {
@@ -871,26 +884,26 @@ dictionary GPUVertexAttribute {
     required GPUIndex32 shaderLocation;
 };
 
-dictionary GPUImageDataLayout {
+dictionary GPUTexelCopyBufferLayout {
     GPUSize64 offset = 0;
     GPUSize32 bytesPerRow;
     GPUSize32 rowsPerImage;
 };
 
-dictionary GPUImageCopyBuffer
-         : GPUImageDataLayout {
+dictionary GPUTexelCopyBufferInfo
+         : GPUTexelCopyBufferLayout {
     required GPUBuffer buffer;
 };
 
-dictionary GPUImageCopyTexture {
+dictionary GPUTexelCopyTextureInfo {
     required GPUTexture texture;
     GPUIntegerCoordinate mipLevel = 0;
     GPUOrigin3D origin = {};
     GPUTextureAspect aspect = "all";
 };
 
-dictionary GPUImageCopyTextureTagged
-         : GPUImageCopyTexture {
+dictionary GPUCopyExternalImageDestInfo
+         : GPUTexelCopyTextureInfo {
     PredefinedColorSpace colorSpace = "srgb";
     boolean premultipliedAlpha = false;
 };
@@ -901,10 +914,10 @@ typedef (ImageBitmap or
          HTMLVideoElement or
          VideoFrame or
          HTMLCanvasElement or
-         OffscreenCanvas) GPUImageCopyExternalImageSource;
+         OffscreenCanvas) GPUCopyExternalImageSource;
 
-dictionary GPUImageCopyExternalImage {
-    required GPUImageCopyExternalImageSource source;
+dictionary GPUCopyExternalImageSourceInfo {
+    required GPUCopyExternalImageSource source;
     GPUOrigin2D origin = {};
     boolean flipY = false;
 };
@@ -927,6 +940,7 @@ interface GPUCommandEncoder {
     GPURenderPassEncoder beginRenderPass(GPURenderPassDescriptor descriptor);
     GPUComputePassEncoder beginComputePass(optional GPUComputePassDescriptor descriptor = {});
 
+    [Throws]
     undefined copyBufferToBuffer(
         GPUBuffer source,
         GPUSize64 sourceOffset,
@@ -936,20 +950,20 @@ interface GPUCommandEncoder {
 
     [Throws]
     undefined copyBufferToTexture(
-        GPUImageCopyBuffer source,
-        GPUImageCopyTexture destination,
+        GPUTexelCopyBufferInfo source,
+        GPUTexelCopyTextureInfo destination,
         GPUExtent3D copySize);
 
     [Throws]
     undefined copyTextureToBuffer(
-        GPUImageCopyTexture source,
-        GPUImageCopyBuffer destination,
+        GPUTexelCopyTextureInfo source,
+        GPUTexelCopyBufferInfo destination,
         GPUExtent3D copySize);
 
     [Throws]
     undefined copyTextureToTexture(
-        GPUImageCopyTexture source,
-        GPUImageCopyTexture destination,
+        GPUTexelCopyTextureInfo source,
+        GPUTexelCopyTextureInfo destination,
         GPUExtent3D copySize);
 
     undefined clearBuffer(
@@ -1158,15 +1172,15 @@ interface GPUQueue {
 
     [Throws]
     undefined writeTexture(
-        GPUImageCopyTexture destination,
+        GPUTexelCopyTextureInfo destination,
         AllowSharedBufferSource data,
-        GPUImageDataLayout dataLayout,
+        GPUTexelCopyBufferLayout dataLayout,
         GPUExtent3D size);
 
     [Throws]
     undefined copyExternalImageToTexture(
-        GPUImageCopyExternalImage source,
-        GPUImageCopyTextureTagged destination,
+        GPUCopyExternalImageSourceInfo source,
+        GPUCopyExternalImageDestInfo destination,
         GPUExtent3D copySize);
 };
 GPUQueue includes GPUObjectBase;
@@ -1291,7 +1305,6 @@ dictionary GPUUncapturedErrorEventInit : EventInit {
 };
 
 partial interface GPUDevice {
-    [Exposed=(Window, Worker)]
     attribute EventHandler onuncapturederror;
 };
 

@@ -5,116 +5,98 @@ use wasm_bindgen::prelude::*;
 #[cfg(web_sys_unstable_apis)]
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPUImageCopyTextureTagged)]
+    # [wasm_bindgen (extends = :: js_sys :: Object , js_name = GPUTexelCopyTextureInfo)]
     #[derive(Debug, Clone, PartialEq, Eq)]
-    #[doc = "The `GpuImageCopyTextureTagged` dictionary."]
+    #[doc = "The `GpuTexelCopyTextureInfo` dictionary."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyTextureTagged`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuTexelCopyTextureInfo`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub type GpuImageCopyTextureTagged;
+    pub type GpuTexelCopyTextureInfo;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureAspect")]
     #[doc = "Get the `aspect` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyTextureTagged`, `GpuTextureAspect`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuTexelCopyTextureInfo`, `GpuTextureAspect`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "aspect")]
-    pub fn get_aspect(this: &GpuImageCopyTextureTagged) -> Option<GpuTextureAspect>;
+    pub fn get_aspect(this: &GpuTexelCopyTextureInfo) -> Option<GpuTextureAspect>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTextureAspect")]
     #[doc = "Change the `aspect` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyTextureTagged`, `GpuTextureAspect`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuTexelCopyTextureInfo`, `GpuTextureAspect`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "aspect")]
-    pub fn set_aspect(this: &GpuImageCopyTextureTagged, val: GpuTextureAspect);
+    pub fn set_aspect(this: &GpuTexelCopyTextureInfo, val: GpuTextureAspect);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `mipLevel` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyTextureTagged`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuTexelCopyTextureInfo`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "mipLevel")]
-    pub fn get_mip_level(this: &GpuImageCopyTextureTagged) -> Option<u32>;
+    pub fn get_mip_level(this: &GpuTexelCopyTextureInfo) -> Option<u32>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `mipLevel` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyTextureTagged`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuTexelCopyTextureInfo`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "mipLevel")]
-    pub fn set_mip_level(this: &GpuImageCopyTextureTagged, val: u32);
+    pub fn set_mip_level(this: &GpuTexelCopyTextureInfo, val: u32);
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Get the `origin` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyTextureTagged`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuTexelCopyTextureInfo`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "origin")]
-    pub fn get_origin(this: &GpuImageCopyTextureTagged) -> ::wasm_bindgen::JsValue;
+    pub fn get_origin(this: &GpuTexelCopyTextureInfo) -> ::wasm_bindgen::JsValue;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `origin` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyTextureTagged`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuTexelCopyTextureInfo`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "origin")]
-    pub fn set_origin(this: &GpuImageCopyTextureTagged, val: &::wasm_bindgen::JsValue);
+    pub fn set_origin(this: &GpuTexelCopyTextureInfo, val: &::wasm_bindgen::JsValue);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTexture")]
     #[doc = "Get the `texture` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyTextureTagged`, `GpuTexture`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuTexelCopyTextureInfo`, `GpuTexture`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "texture")]
-    pub fn get_texture(this: &GpuImageCopyTextureTagged) -> GpuTexture;
+    pub fn get_texture(this: &GpuTexelCopyTextureInfo) -> GpuTexture;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "GpuTexture")]
     #[doc = "Change the `texture` field of this object."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyTextureTagged`, `GpuTexture`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuTexelCopyTextureInfo`, `GpuTexture`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "texture")]
-    pub fn set_texture(this: &GpuImageCopyTextureTagged, val: &GpuTexture);
-    #[cfg(web_sys_unstable_apis)]
-    #[doc = "Get the `premultipliedAlpha` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyTextureTagged`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    #[wasm_bindgen(method, getter = "premultipliedAlpha")]
-    pub fn get_premultiplied_alpha(this: &GpuImageCopyTextureTagged) -> Option<bool>;
-    #[cfg(web_sys_unstable_apis)]
-    #[doc = "Change the `premultipliedAlpha` field of this object."]
-    #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyTextureTagged`*"]
-    #[doc = ""]
-    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
-    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    #[wasm_bindgen(method, setter = "premultipliedAlpha")]
-    pub fn set_premultiplied_alpha(this: &GpuImageCopyTextureTagged, val: bool);
+    pub fn set_texture(this: &GpuTexelCopyTextureInfo, val: &GpuTexture);
 }
 #[cfg(web_sys_unstable_apis)]
-impl GpuImageCopyTextureTagged {
+impl GpuTexelCopyTextureInfo {
     #[cfg(feature = "GpuTexture")]
-    #[doc = "Construct a new `GpuImageCopyTextureTagged`."]
+    #[doc = "Construct a new `GpuTexelCopyTextureInfo`."]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyTextureTagged`, `GpuTexture`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuTexelCopyTextureInfo`, `GpuTexture`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
@@ -148,12 +130,6 @@ impl GpuImageCopyTextureTagged {
     #[deprecated = "Use `set_texture()` instead."]
     pub fn texture(&mut self, val: &GpuTexture) -> &mut Self {
         self.set_texture(val);
-        self
-    }
-    #[cfg(web_sys_unstable_apis)]
-    #[deprecated = "Use `set_premultiplied_alpha()` instead."]
-    pub fn premultiplied_alpha(&mut self, val: bool) -> &mut Self {
-        self.set_premultiplied_alpha(val);
         self
     }
 }

@@ -24,6 +24,7 @@ pub enum GpuFeatureName {
     Rg11b10ufloatRenderable = "rg11b10ufloat-renderable",
     Bgra8unormStorage = "bgra8unorm-storage",
     Float32Filterable = "float32-filterable",
+    Float32Blendable = "float32-blendable",
     ClipDistances = "clip-distances",
     DualSourceBlending = "dual-source-blending",
 }
