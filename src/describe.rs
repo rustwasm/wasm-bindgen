@@ -144,7 +144,7 @@ impl<T: WasmDescribe> WasmDescribe for [T] {
     }
 }
 
-impl<'a, T: WasmDescribe + ?Sized> WasmDescribe for &'a T {
+impl<T: WasmDescribe + ?Sized> WasmDescribe for &T {
     #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
     fn describe() {
         inform(REF);
@@ -152,7 +152,7 @@ impl<'a, T: WasmDescribe + ?Sized> WasmDescribe for &'a T {
     }
 }
 
-impl<'a, T: WasmDescribe + ?Sized> WasmDescribe for &'a mut T {
+impl<T: WasmDescribe + ?Sized> WasmDescribe for &mut T {
     #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
     fn describe() {
         inform(REFMUT);

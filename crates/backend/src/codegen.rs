@@ -1500,7 +1500,7 @@ struct DescribeImport<'a> {
     wasm_bindgen: &'a syn::Path,
 }
 
-impl<'a> ToTokens for DescribeImport<'a> {
+impl ToTokens for DescribeImport<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         let f = match *self.kind {
             ast::ImportKind::Function(ref f) => f,
@@ -1838,7 +1838,7 @@ struct Descriptor<'a, T> {
     wasm_bindgen: &'a syn::Path,
 }
 
-impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
+impl<T: ToTokens> ToTokens for Descriptor<'_, T> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         // It's possible for the same descriptor to be emitted in two different
         // modules (aka a value imported twice in a crate, each in a separate

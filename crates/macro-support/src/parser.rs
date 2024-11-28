@@ -422,7 +422,7 @@ trait ConvertToAst<Ctx> {
     fn convert(self, context: Ctx) -> Result<Self::Target, Diagnostic>;
 }
 
-impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs)> for &'a mut syn::ItemStruct {
+impl ConvertToAst<(&ast::Program, BindgenAttrs)> for &mut syn::ItemStruct {
     type Target = ast::Struct;
 
     fn convert(
@@ -1188,7 +1188,7 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
     }
 }
 
-impl<'a> MacroParse<BindgenAttrs> for &'a mut syn::ItemImpl {
+impl MacroParse<BindgenAttrs> for &mut syn::ItemImpl {
     fn macro_parse(self, program: &mut ast::Program, opts: BindgenAttrs) -> Result<(), Diagnostic> {
         if self.defaultness.is_some() {
             bail_span!(
@@ -1292,7 +1292,7 @@ fn prepare_for_impl_recursion(
     Ok(())
 }
 
-impl<'a> MacroParse<&ClassMarker> for &'a mut syn::ImplItemFn {
+impl MacroParse<&ClassMarker> for &mut syn::ImplItemFn {
     fn macro_parse(
         self,
         program: &mut ast::Program,

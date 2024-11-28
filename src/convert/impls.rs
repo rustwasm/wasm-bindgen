@@ -437,7 +437,7 @@ impl FromWasmAbi for JsValue {
     }
 }
 
-impl<'a> IntoWasmAbi for &'a JsValue {
+impl IntoWasmAbi for &JsValue {
     type Abi = u32;
 
     #[inline]

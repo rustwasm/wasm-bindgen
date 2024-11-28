@@ -1093,7 +1093,7 @@ impl<'a> IdlType<'a> {
     }
 }
 
-impl<'a> IdentifierType<'a> {
+impl IdentifierType<'_> {
     /// Converts to syn type if possible.
     pub(crate) fn to_syn_type(
         &self,

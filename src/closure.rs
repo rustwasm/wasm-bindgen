@@ -471,7 +471,7 @@ where
 }
 
 // `Closure` can only be passed by reference to imports.
-impl<'a, T> IntoWasmAbi for &'a Closure<T>
+impl<T> IntoWasmAbi for &Closure<T>
 where
     T: WasmClosure + ?Sized,
 {
@@ -482,7 +482,7 @@ where
     }
 }
 
-impl<'a, T> OptionIntoWasmAbi for &'a Closure<T>
+impl<T> OptionIntoWasmAbi for &Closure<T>
 where
     T: WasmClosure + ?Sized,
 {
