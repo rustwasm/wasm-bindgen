@@ -18,6 +18,7 @@ proc-macro = true
 
 [features]
 atomics = ["wasm-bindgen-macro-support/atomics"]
+coverage = ["wasm-bindgen-macro-support/coverage"]
 default = ["std"]
 spans = ["wasm-bindgen-macro-support/spans"]
 std = ["wasm-bindgen-macro-support/std"]
@@ -34,6 +35,3 @@ trybuild = "1.0"
 wasm-bindgen = { path = "../.." }
 wasm-bindgen-futures = { path = "../futures" }
 web-sys = { path = "../web-sys", features = ["Worker"] }
-
-[lints.rust]
-unexpected_cfgs = { level = "warn", check-cfg = ['cfg(wasm_bindgen_unstable_test_coverage)'] }

@@ -15,6 +15,7 @@ version = "0.2.95"
 
 [features]
 atomics = []
+coverage = []
 default = ["std"]
 extra-traits = ["syn/extra-traits"]
 spans = []
@@ -28,6 +29,3 @@ proc-macro2 = "1.0"
 quote = '1.0'
 syn = { version = '2.0', features = ['full'] }
 wasm-bindgen-shared = { path = "../shared", version = "=0.2.95" }
-
-[lints.rust]
-unexpected_cfgs = { level = "warn", check-cfg = ['cfg(wasm_bindgen_unstable_test_coverage)'] }

@@ -15,6 +15,7 @@ version = "0.2.95"
 
 [features]
 atomics = ["wasm-bindgen-backend/atomics"]
+coverage = ["wasm-bindgen-backend/coverage"]
 default = ["std"]
 extra-traits = ["syn/extra-traits"]
 spans = ["wasm-bindgen-backend/spans"]

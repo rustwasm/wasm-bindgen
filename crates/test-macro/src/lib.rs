@@ -2,7 +2,7 @@
 //! going on here.
 
 #![cfg_attr(
-    wasm_bindgen_unstable_test_coverage,
+    feature = "coverage",
     feature(allow_internal_unstable),
     allow(internal_features)
 )]
@@ -18,10 +18,7 @@ use std::sync::atomic::*;
 static CNT: AtomicUsize = AtomicUsize::new(0);
 
 #[proc_macro_attribute]
-#[cfg_attr(
-    wasm_bindgen_unstable_test_coverage,
-    allow_internal_unstable(coverage_attribute)
-)]
+#[cfg_attr(feature = "coverage", allow_internal_unstable(coverage_attribute))]
 pub fn wasm_bindgen_test(
     attr: proc_macro::TokenStream,
     body: proc_macro::TokenStream,
@@ -109,7 +106,7 @@ pub fn wasm_bindgen_test(
     // main test harness. This is the entry point for all tests.
     let name = format_ident!("__wbgt_{}_{}", ident, CNT.fetch_add(1, Ordering::SeqCst));
     let wasm_bindgen_path = attributes.wasm_bindgen_path;
-    let coverage = if cfg!(wasm_bindgen_unstable_test_coverage) {
+    let coverage = if cfg!(feature = "coverage") {
         Some(quote! { #[coverage(off)] })
     } else {
         None

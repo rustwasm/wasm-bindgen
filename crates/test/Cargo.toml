@@ -24,6 +24,7 @@ wasm-bindgen-test-macro = { path = '../test-macro', version = '=0.3.45' }
 
 [target.'cfg(all(target_arch = "wasm32", wasm_bindgen_unstable_test_coverage))'.dependencies]
 minicov = "0.3"
+wasm-bindgen-test-macro = { path = '../test-macro', version = '=0.3.45', features = ["coverage"] }
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(wasm_bindgen_unstable_test_coverage)'] }
