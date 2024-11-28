@@ -4,21 +4,32 @@ name = "msrv-library-test"
 publish = false
 version = "0.0.0"
 
-[dependencies]
-js-sys = { path = "../../js-sys" }
-wasm-bindgen = { path = "../../../" }
-wasm-bindgen-backend = { path = "../../backend" }
-wasm-bindgen-futures = { path = "../../futures" }
-wasm-bindgen-macro = { path = "../../macro" }
-wasm-bindgen-macro-support = { path = "../../macro-support" }
-wasm-bindgen-shared = { path = "../../shared" }
-wasm-bindgen-test = { path = "../../test" }
-wasm-bindgen-test-macro = { path = "../../test-macro" }
-web-sys = { path = "../../web-sys" }
+[features]
+default = ["std"]
+std = [
+  "wasm-bindgen-backend/std",
+  "wasm-bindgen-macro-support/std",
+  "wasm-bindgen-macro/std",
+  "wasm-bindgen/std",
+  "js-sys/std",
+  "wasm-bindgen-futures/std",
+  "web-sys/std",
+  "wasm-bindgen-test/std",
+]
 
+[dependencies]
+js-sys = { path = "../../js-sys", default-features = false }
+wasm-bindgen = { path = "../../../", default-features = false }
+wasm-bindgen-backend = { path = "../../backend", default-features = false }
+wasm-bindgen-futures = { path = "../../futures", default-features = false }
+wasm-bindgen-macro = { path = "../../macro", default-features = false }
+wasm-bindgen-macro-support = { path = "../../macro-support", default-features = false }
+wasm-bindgen-shared = { path = "../../shared" }
+wasm-bindgen-test = { path = "../../test", default-features = false }
+wasm-bindgen-test-macro = { path = "../../test-macro" }
+web-sys = { path = "../../web-sys", default-features = false }
+
+# Pinned sub-dependencies for MSRV
 bumpalo = "=3.12.0"
 log = "=0.4.18"
-scoped-tls = "=1.0.0"
-
-[patch.crates-io]
-wasm-bindgen = { path = "../../../" }
+scoped-tls = { version = "=1.0.0", optional = false }
