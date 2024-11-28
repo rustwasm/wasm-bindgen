@@ -43,8 +43,8 @@ impl RequestMediaKeySystemAccessNotification {
     pub fn new(key_system: &str, status: MediaKeySystemStatus) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.key_system(key_system);
-        ret.status(status);
+        ret.set_key_system(key_system);
+        ret.set_status(status);
         ret
     }
     #[deprecated = "Use `set_key_system()` instead."]

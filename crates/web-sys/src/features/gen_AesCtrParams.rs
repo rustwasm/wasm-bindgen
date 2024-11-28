@@ -48,9 +48,9 @@ impl AesCtrParams {
     pub fn new(name: &str, counter: &::js_sys::Object, length: u8) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.counter(counter);
-        ret.length(length);
+        ret.set_name(name);
+        ret.set_counter(counter);
+        ret.set_length(length);
         ret
     }
     #[deprecated = "Use `set_name()` instead."]

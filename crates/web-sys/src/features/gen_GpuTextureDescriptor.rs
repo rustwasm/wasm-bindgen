@@ -175,9 +175,9 @@ impl GpuTextureDescriptor {
     pub fn new(format: GpuTextureFormat, size: &::wasm_bindgen::JsValue, usage: u32) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.format(format);
-        ret.size(size);
-        ret.usage(usage);
+        ret.set_format(format);
+        ret.set_size(size);
+        ret.set_usage(usage);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

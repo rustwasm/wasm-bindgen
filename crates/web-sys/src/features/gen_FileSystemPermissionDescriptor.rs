@@ -87,8 +87,8 @@ impl FileSystemPermissionDescriptor {
     pub fn new(name: PermissionName, handle: &FileSystemHandle) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.handle(handle);
+        ret.set_name(name);
+        ret.set_handle(handle);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

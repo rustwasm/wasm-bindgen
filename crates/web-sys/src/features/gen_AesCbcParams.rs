@@ -38,8 +38,8 @@ impl AesCbcParams {
     pub fn new(name: &str, iv: &::js_sys::Object) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.iv(iv);
+        ret.set_name(name);
+        ret.set_iv(iv);
         ret
     }
     #[deprecated = "Use `set_name()` instead."]

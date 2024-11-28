@@ -215,7 +215,7 @@ impl GpuDepthStencilState {
     pub fn new(format: GpuTextureFormat) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.format(format);
+        ret.set_format(format);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

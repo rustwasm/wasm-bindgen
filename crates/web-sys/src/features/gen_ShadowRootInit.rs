@@ -31,7 +31,7 @@ impl ShadowRootInit {
     pub fn new(mode: ShadowRootMode) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.mode(mode);
+        ret.set_mode(mode);
         ret
     }
     #[cfg(feature = "ShadowRootMode")]

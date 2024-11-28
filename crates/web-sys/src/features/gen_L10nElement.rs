@@ -78,9 +78,9 @@ impl L10nElement {
     pub fn new(l10n_id: &str, local_name: &str, namespace_uri: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.l10n_id(l10n_id);
-        ret.local_name(local_name);
-        ret.namespace_uri(namespace_uri);
+        ret.set_l10n_id(l10n_id);
+        ret.set_local_name(local_name);
+        ret.set_namespace_uri(namespace_uri);
         ret
     }
     #[deprecated = "Use `set_l10n_args()` instead."]

@@ -98,8 +98,8 @@ impl GpuBufferDescriptor {
     pub fn new(size: f64, usage: u32) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.size(size);
-        ret.usage(usage);
+        ret.set_size(size);
+        ret.set_usage(usage);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

@@ -48,8 +48,8 @@ impl HmacKeyGenParams {
     pub fn new(name: &str, hash: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.hash(hash);
+        ret.set_name(name);
+        ret.set_hash(hash);
         ret
     }
     #[deprecated = "Use `set_name()` instead."]

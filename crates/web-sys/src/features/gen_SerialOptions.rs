@@ -138,7 +138,7 @@ impl SerialOptions {
     pub fn new(baud_rate: u32) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.baud_rate(baud_rate);
+        ret.set_baud_rate(baud_rate);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

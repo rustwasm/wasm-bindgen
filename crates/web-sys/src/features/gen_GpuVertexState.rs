@@ -101,7 +101,7 @@ impl GpuVertexState {
     pub fn new(module: &GpuShaderModule) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.module(module);
+        ret.set_module(module);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

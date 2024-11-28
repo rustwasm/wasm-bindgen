@@ -158,7 +158,7 @@ impl PublicKeyCredentialRequestOptions {
     pub fn new(challenge: &::js_sys::Object) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.challenge(challenge);
+        ret.set_challenge(challenge);
         ret
     }
     #[deprecated = "Use `set_allow_credentials()` instead."]

@@ -83,7 +83,7 @@ impl GpuBufferBinding {
     pub fn new(buffer: &GpuBuffer) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.buffer(buffer);
+        ret.set_buffer(buffer);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

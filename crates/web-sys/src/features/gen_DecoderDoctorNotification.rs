@@ -97,9 +97,9 @@ impl DecoderDoctorNotification {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.decoder_doctor_report_id(decoder_doctor_report_id);
-        ret.is_solved(is_solved);
-        ret.type_(type_);
+        ret.set_decoder_doctor_report_id(decoder_doctor_report_id);
+        ret.set_is_solved(is_solved);
+        ret.set_type(type_);
         ret
     }
     #[deprecated = "Use `set_decode_issue()` instead."]

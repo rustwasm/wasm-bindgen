@@ -44,7 +44,7 @@ impl BluetoothPermissionStorage {
     pub fn new(allowed_devices: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.allowed_devices(allowed_devices);
+        ret.set_allowed_devices(allowed_devices);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

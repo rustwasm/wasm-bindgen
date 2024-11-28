@@ -103,7 +103,7 @@ impl XrPermissionDescriptor {
     pub fn new(name: PermissionName) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
+        ret.set_name(name);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

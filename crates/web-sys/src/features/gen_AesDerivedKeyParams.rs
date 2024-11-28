@@ -38,8 +38,8 @@ impl AesDerivedKeyParams {
     pub fn new(name: &str, length: u32) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.length(length);
+        ret.set_name(name);
+        ret.set_length(length);
         ret
     }
     #[deprecated = "Use `set_name()` instead."]

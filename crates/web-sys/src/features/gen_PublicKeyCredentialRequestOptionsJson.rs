@@ -211,7 +211,7 @@ impl PublicKeyCredentialRequestOptionsJson {
     pub fn new(challenge: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.challenge(challenge);
+        ret.set_challenge(challenge);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

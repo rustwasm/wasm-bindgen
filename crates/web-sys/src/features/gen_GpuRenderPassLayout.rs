@@ -100,7 +100,7 @@ impl GpuRenderPassLayout {
     pub fn new(color_formats: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.color_formats(color_formats);
+        ret.set_color_formats(color_formats);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

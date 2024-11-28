@@ -63,10 +63,10 @@ impl Pbkdf2Params {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.hash(hash);
-        ret.iterations(iterations);
-        ret.salt(salt);
+        ret.set_name(name);
+        ret.set_hash(hash);
+        ret.set_iterations(iterations);
+        ret.set_salt(salt);
         ret
     }
     #[deprecated = "Use `set_name()` instead."]

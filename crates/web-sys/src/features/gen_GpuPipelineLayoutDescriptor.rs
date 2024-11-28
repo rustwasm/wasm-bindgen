@@ -65,7 +65,7 @@ impl GpuPipelineLayoutDescriptor {
     pub fn new(bind_group_layouts: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.bind_group_layouts(bind_group_layouts);
+        ret.set_bind_group_layouts(bind_group_layouts);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

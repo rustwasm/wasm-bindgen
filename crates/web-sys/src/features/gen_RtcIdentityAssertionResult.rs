@@ -41,8 +41,8 @@ impl RtcIdentityAssertionResult {
     pub fn new(assertion: &str, idp: &RtcIdentityProviderDetails) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.assertion(assertion);
-        ret.idp(idp);
+        ret.set_assertion(assertion);
+        ret.set_idp(idp);
         ret
     }
     #[deprecated = "Use `set_assertion()` instead."]

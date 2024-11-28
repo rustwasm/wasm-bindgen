@@ -80,7 +80,7 @@ impl GpuCopyExternalImageSourceInfo {
     pub fn new(source: &::js_sys::Object) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.source(source);
+        ret.set_source(source);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

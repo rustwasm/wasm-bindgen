@@ -60,9 +60,9 @@ impl PublicKeyCredentialUserEntity {
     pub fn new(name: &str, display_name: &str, id: &::js_sys::Object) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.display_name(display_name);
-        ret.id(id);
+        ret.set_name(name);
+        ret.set_display_name(display_name);
+        ret.set_id(id);
         ret
     }
     #[deprecated = "Use `set_icon()` instead."]

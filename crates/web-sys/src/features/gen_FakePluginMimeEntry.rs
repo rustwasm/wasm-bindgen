@@ -48,7 +48,7 @@ impl FakePluginMimeEntry {
     pub fn new(type_: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.type_(type_);
+        ret.set_type(type_);
         ret
     }
     #[deprecated = "Use `set_description()` instead."]

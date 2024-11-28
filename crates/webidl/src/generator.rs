@@ -832,9 +832,10 @@ impl Dictionary {
         for field in fields.iter() {
             if field.required {
                 let name = rust_ident(&field.name);
+                let set_name = rust_ident(&format!("set_{}", field.name));
                 let ty = &field.ty;
                 required_args.push(quote!( #name: #ty ));
-                required_calls.push(quote!( ret.#name(#name); ));
+                required_calls.push(quote!( ret.#set_name(#name); ));
                 add_features(&mut required_features, &field.ty);
             }
         }
