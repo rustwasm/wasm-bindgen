@@ -40,6 +40,8 @@ pub enum AdapterKind {
         instructions: Vec<InstructionData>,
     },
     Import {
+        #[allow(dead_code)]
+        module: String,
         name: String,
         kind: AdapterJsImportKind,
     },
@@ -138,9 +140,13 @@ pub enum Instruction {
     /// Pops a typed integer (`u8`, `s16`, etc.) and pushes a plain Wasm `i32` or `i64` equivalent.
     IntToWasm {
         input: AdapterType,
+        #[allow(dead_code)]
+        output: walrus::ValType,
     },
     /// Pops a Wasm `i32` or `i64` and pushes a typed integer (`u8`, `s16`, etc.) equivalent.
     WasmToInt {
+        #[allow(dead_code)]
+        input: walrus::ValType,
         output: AdapterType,
     },
 
@@ -163,6 +169,8 @@ pub enum Instruction {
 
     OptionWasmToStringEnum {
         name: String,
+        #[allow(dead_code)]
+        hole: u32,
     },
 
     /// pops a string and pushes the enum variant as an `i32`
@@ -306,6 +314,8 @@ pub enum Instruction {
     /// pops ptr/length i32, loads string from cache
     CachedStringLoad {
         owned: bool,
+        #[allow(dead_code)]
+        optional: bool,
         mem: walrus::MemoryId,
         free: walrus::FunctionId,
         /// If we're in reference-types mode, the externref table ID to get the cached string from.
