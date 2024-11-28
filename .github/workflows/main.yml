@@ -117,11 +117,11 @@ jobs:
     - run: rustup default nightly-2024-07-06
     - run: rustup target add wasm32-unknown-unknown
     - run: rustup component add clippy rust-src
-    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p wasm-bindgen -Zbuild-std=panic_abort,core,alloc -- -D warnings
-    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p js-sys -Zbuild-std=panic_abort,core,alloc -- -D warnings
-    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p web-sys -Zbuild-std=panic_abort,core,alloc -- -D warnings
-    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p wasm-bindgen-futures --features once_cell/critical-section -Zbuild-std=panic_abort,core,alloc -- -D warnings
-    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p wasm-bindgen-test --features once_cell/critical-section -Zbuild-std=panic_abort,core,alloc -- -D warnings
+    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p wasm-bindgen -Zbuild-std=core,alloc -- -D warnings
+    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p js-sys -Zbuild-std=core,alloc -- -D warnings
+    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p web-sys -Zbuild-std=core,alloc -- -D warnings
+    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p wasm-bindgen-futures --features once_cell/critical-section -Zbuild-std=core,alloc -- -D warnings
+    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p wasm-bindgen-test --features once_cell/critical-section -Zbuild-std=core,alloc -- -D warnings
 
   # Run `cargo clippy` over the project
   clippy_project:
