@@ -58,6 +58,9 @@
 * Updated the WebGPU API to the current draft as of 2024-11-22.
   [#4290](https://github.com/rustwasm/wasm-bindgen/pull/4290)
 
+* Improved error messages for `self` arguments in invalid positions.
+  [#4276](https://github.com/rustwasm/wasm-bindgen/pull/4276)
+
 ### Fixed
 
 * Fixed methods with `self: &Self` consuming the object.
