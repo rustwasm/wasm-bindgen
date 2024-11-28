@@ -932,11 +932,6 @@ enum FunctionPosition<'a> {
     Free,
     Impl { self_ty: &'a Ident },
 }
-impl FunctionPosition<'_> {
-    fn is_impl(&self) -> bool {
-        matches!(self, FunctionPosition::Impl { .. })
-    }
-}
 
 /// Construct a function (and gets the self type if appropriate) for our AST from a syn function.
 #[allow(clippy::too_many_arguments)]
@@ -1062,7 +1057,7 @@ fn function_from_decl(
             };
             (name, js_name_span, true)
         } else {
-            let name = if !position.is_impl()
+            let name = if !matches!(position, FunctionPosition::Impl { .. })
                 && opts.method().is_none()
                 && is_js_keyword(&decl_name.to_string(), skip_keywords)
             {
