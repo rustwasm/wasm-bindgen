@@ -3,9 +3,9 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 pub struct ColorWithGetters {
     r: f64,
-    g: f64,
-    b: f64,
-    a: u8,
+    _g: f64,
+    _b: f64,
+    _a: u8,
 }
 
 #[wasm_bindgen]
@@ -14,9 +14,9 @@ impl ColorWithGetters {
     pub fn new() -> Self {
         Self {
             r: 0.0,
-            g: 0.0,
-            b: 0.0,
-            a: 0,
+            _g: 0.0,
+            _b: 0.0,
+            _a: 0,
         }
     }
 
@@ -34,8 +34,8 @@ impl ColorWithGetters {
 #[wasm_bindgen]
 pub struct ColorWithSetters {
     r: f64,
-    g: f64,
-    b: f64,
+    _g: f64,
+    _b: f64,
     a: u8,
 }
 
@@ -45,8 +45,8 @@ impl ColorWithSetters {
     pub fn new() -> Self {
         Self {
             r: 0.0,
-            g: 0.0,
-            b: 0.0,
+            _g: 0.0,
+            _b: 0.0,
             a: 0,
         }
     }
@@ -70,8 +70,8 @@ impl ColorWithSetters {
 #[wasm_bindgen]
 pub struct ColorWithGetterAndSetter {
     r: f64,
-    g: f64,
-    b: f64,
+    _g: f64,
+    _b: f64,
     a: u8,
 }
 
@@ -81,8 +81,8 @@ impl ColorWithGetterAndSetter {
     pub fn new() -> Self {
         Self {
             r: 0.0,
-            g: 0.0,
-            b: 0.0,
+            _g: 0.0,
+            _b: 0.0,
             a: 0,
         }
     }
