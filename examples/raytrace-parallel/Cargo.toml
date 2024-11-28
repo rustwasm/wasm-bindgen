@@ -32,3 +32,6 @@ features = [
   'MessageEvent',
 ]
 path = "../../crates/web-sys"
+
+[lints]
+workspace = true

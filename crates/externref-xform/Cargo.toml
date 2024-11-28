@@ -24,6 +24,9 @@ wasmprinter = "0.214"
 wast = "214"
 wat = "1.0"
 
+[lints]
+workspace = true
+
 [[test]]
 harness = false
 name = "all"

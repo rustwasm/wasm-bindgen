@@ -117,7 +117,6 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::Enum(name.clone())],
                     Instruction::IntToWasm {
                         input: AdapterType::U32,
-                        output: ValType::I32,
                     },
                     &[AdapterType::I32],
                 );
@@ -473,7 +472,6 @@ impl InstructionBuilder<'_, '_> {
     fn number(&mut self, input: AdapterType, output: walrus::ValType) {
         let instr = Instruction::IntToWasm {
             input: input.clone(),
-            output,
         };
         self.instruction(&[input], instr, &[AdapterType::from_wasm(output).unwrap()]);
     }

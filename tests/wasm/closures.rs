@@ -499,7 +499,9 @@ fn test_closure_returner() {
     js_test_closure_returner();
 
     #[wasm_bindgen]
-    pub struct ClosureHandle(Closure<ClosureType>);
+    pub struct ClosureHandle {
+        _closure: Closure<ClosureType>,
+    }
 
     #[wasm_bindgen]
     pub struct BadStruct {}
@@ -518,7 +520,7 @@ fn test_closure_returner() {
         Reflect::set(
             &o,
             &JsValue::from("handle"),
-            &JsValue::from(ClosureHandle(some_fn)),
+            &JsValue::from(ClosureHandle { _closure: some_fn }),
         )
         .unwrap();
 

@@ -244,7 +244,6 @@ pub enum AuxImport {
         mutable: bool,      // whether or not this was a `FnMut` closure
         dtor: u32,          // table element index of the destructor function
         adapter: AdapterId, // the adapter which translates the types for this closure
-        nargs: usize,
     },
 
     /// This import is expected to be a shim that simply calls the `foo` method

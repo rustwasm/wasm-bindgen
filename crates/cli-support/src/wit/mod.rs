@@ -197,7 +197,6 @@ impl<'a> Context<'a> {
                 // aren't present in the signature but are present in the wasm
                 // signature.
                 let mut function = descriptor.function.clone();
-                let nargs = function.arguments.len();
                 function.arguments.insert(0, Descriptor::I32);
                 function.arguments.insert(0, Descriptor::I32);
                 let adapter = self.table_element_adapter(descriptor.shim_idx, function)?;
@@ -206,7 +205,6 @@ impl<'a> Context<'a> {
                     AuxImport::Closure {
                         dtor: descriptor.dtor_idx,
                         mutable: descriptor.mutable,
-                        nargs,
                         adapter,
                     },
                 );
@@ -1204,7 +1202,7 @@ impl<'a> Context<'a> {
         kind: AdapterJsImportKind,
     ) -> Result<AdapterId, Error> {
         let import = self.module.imports.get(import);
-        let (import_module, import_name) = (import.module.clone(), import.name.clone());
+        let import_name = import.name.clone();
         let import_id = import.id();
         let core_id = match import.kind {
             walrus::ImportKind::Function(f) => f,
@@ -1241,7 +1239,6 @@ impl<'a> Context<'a> {
             ret.input,
             vec![],
             AdapterKind::Import {
-                module: import_module,
                 name: import_name,
                 kind,
             },

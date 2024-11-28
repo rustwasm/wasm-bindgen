@@ -11,3 +11,6 @@ crate-type = ["cdylib"]
 [dependencies]
 js-sys = { path = "../../crates/js-sys" }
 wasm-bindgen = { path = "../../" }
+
+[lints]
+workspace = true

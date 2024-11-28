@@ -16,3 +16,6 @@ wasm-bindgen-futures = { path = "../../crates/futures" }
 [dependencies.web-sys]
 features = ['Headers', 'Request', 'RequestInit', 'RequestMode', 'Response', 'Window']
 path = "../../crates/web-sys"
+
+[lints]
+workspace = true

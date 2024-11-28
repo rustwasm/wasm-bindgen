@@ -3274,7 +3274,6 @@ __wbg_set_wasm(wasm);"
                 dtor,
                 mutable,
                 adapter,
-                nargs: _,
             } => {
                 assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);

@@ -18,3 +18,6 @@ version = "0.2.95"
 # graph, pretend we link a native library so that `cargo` will provide better
 # error messages than the esoteric linker errors we would otherwise trigger.
 links = "wasm_bindgen"
+
+[lints]
+workspace = true
