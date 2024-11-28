@@ -12,16 +12,14 @@ fn test_optgroup_element() {
     let optgroup = new_optgroup();
 
     optgroup.set_disabled(true);
-    assert_eq!(
+    assert!(
         optgroup.disabled(),
-        true,
         "Optgroup should be disabled after we set it to be disabled."
     );
 
     optgroup.set_disabled(false);
-    assert_eq!(
-        optgroup.disabled(),
-        false,
+    assert!(
+        !optgroup.disabled(),
         "Optgroup should not be disabled after we set it to be not-disabled."
     );
 

@@ -272,7 +272,6 @@ impl Context {
     /// coordinated, and this will collect output and results for all executed
     /// tests.
     #[wasm_bindgen(constructor)]
-    #[allow(clippy::new_without_default)]
     pub fn new() -> Context {
         fn panic_handling(mut message: String) {
             let should_panic = CURRENT_OUTPUT.with(|output| {

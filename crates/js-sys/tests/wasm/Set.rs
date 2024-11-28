@@ -5,7 +5,7 @@ use wasm_bindgen_test::*;
 fn set2vec(s: &Set) -> Vec<JsValue> {
     let mut result = Vec::new();
     s.for_each(&mut |x, _, _| result.push(x));
-    return result;
+    result
 }
 
 #[wasm_bindgen_test]

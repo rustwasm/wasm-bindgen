@@ -35,3 +35,6 @@ trybuild = "1.0"
 wasm-bindgen = { path = "../.." }
 wasm-bindgen-futures = { path = "../futures" }
 web-sys = { path = "../web-sys", features = ["Worker"] }
+
+[lints]
+workspace = true

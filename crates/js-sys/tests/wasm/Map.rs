@@ -19,8 +19,8 @@ fn delete() {
     let map = Map::new();
     map.set(&"foo".into(), &"bar".into());
     assert_eq!(map.size(), 1);
-    assert_eq!(map.delete(&"foo".into()), true);
-    assert_eq!(map.delete(&"bar".into()), false);
+    assert!(map.delete(&"foo".into()));
+    assert!(!map.delete(&"bar".into()));
     assert_eq!(map.size(), 0);
 }
 
@@ -63,8 +63,8 @@ fn get() {
 fn has() {
     let map = Map::new();
     map.set(&"foo".into(), &"bar".into());
-    assert_eq!(map.has(&"foo".into()), true);
-    assert_eq!(map.has(&"bar".into()), false);
+    assert!(map.has(&"foo".into()));
+    assert!(!map.has(&"bar".into()));
 }
 
 #[wasm_bindgen_test]
@@ -76,8 +76,8 @@ fn new() {
 fn set() {
     let map = Map::new();
     let new = map.set(&"foo".into(), &"bar".into());
-    assert_eq!(map.has(&"foo".into()), true);
-    assert_eq!(new.has(&"foo".into()), true);
+    assert!(map.has(&"foo".into()));
+    assert!(new.has(&"foo".into()));
 }
 
 #[wasm_bindgen_test]

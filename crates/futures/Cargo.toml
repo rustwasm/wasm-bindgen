@@ -38,3 +38,6 @@ version = "=0.3.72"
 futures-channel-preview = { version = "0.3.0-alpha.18" }
 futures-lite = { version = "1.11.3", default-features = false }
 wasm-bindgen-test = { path = '../test' }
+
+[lints]
+workspace = true
