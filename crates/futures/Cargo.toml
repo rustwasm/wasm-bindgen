@@ -19,9 +19,9 @@ rustdoc-args = ["--cfg", "docsrs"]
 [dependencies]
 cfg-if = "1.0.0"
 futures-core = { version = '0.3.8', default-features = false, optional = true }
-js-sys = { path = "../js-sys", version = '0.3.72', default-features = false }
+js-sys = { path = "../js-sys", version = '=0.3.72', default-features = false }
 once_cell = { version = "1.12", default-features = false }
-wasm-bindgen = { path = "../..", version = '0.2.95', default-features = false }
+wasm-bindgen = { path = "../..", version = '=0.2.95', default-features = false }
 
 [features]
 default = ["std"]
@@ -32,7 +32,7 @@ std = ["wasm-bindgen/std", "js-sys/std", "web-sys/std", "once_cell/std"]
 default-features = false
 features = ["MessageEvent", "Worker"]
 path = "../web-sys"
-version = "0.3.24"
+version = "=0.3.72"
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
 futures-channel-preview = { version = "0.3.0-alpha.18" }

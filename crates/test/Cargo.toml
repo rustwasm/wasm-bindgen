@@ -15,11 +15,11 @@ std = ["wasm-bindgen/std", "js-sys/std", "wasm-bindgen-futures/std", "once_cell/
 
 [dependencies]
 gg-alloc = { version = "1.0", optional = true }
-js-sys = { path = '../js-sys', version = '0.3.72', default-features = false }
+js-sys = { path = '../js-sys', version = '=0.3.72', default-features = false }
 once_cell = { version = "1.12", default-features = false }
 scoped-tls = { version = "1.0", optional = true }
-wasm-bindgen = { path = '../..', version = '0.2.95', default-features = false }
-wasm-bindgen-futures = { path = '../futures', version = '0.4.45', default-features = false }
+wasm-bindgen = { path = '../..', version = '=0.2.95', default-features = false }
+wasm-bindgen-futures = { path = '../futures', version = '=0.4.45', default-features = false }
 wasm-bindgen-test-macro = { path = '../test-macro', version = '=0.3.45' }
 
 [target.'cfg(all(target_arch = "wasm32", wasm_bindgen_unstable_test_coverage))'.dependencies]
