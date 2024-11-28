@@ -2,9 +2,10 @@
 
 JavaScript modules will often export arbitrary static objects for use with
 their provided interfaces. These objects can be accessed from Rust by declaring
-a named `static` in the `extern` block. `wasm-bindgen` will bind a `JsStatic`
-for these objects, which can be cloned into a `JsValue`. For example, given the
-following JavaScript:
+a named `static` in the `extern` block with an
+`#[wasm_bindgen(thread_local_v2)]` attribute. `wasm-bindgen` will bind a
+`JsThreadLocal` for these objects, which can be cloned into a `JsValue`. For
+example, given the following JavaScript:
 
 ```js
 let COLORS = {
