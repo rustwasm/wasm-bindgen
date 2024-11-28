@@ -7,9 +7,6 @@ version = "0.0.0"
 [features]
 default = ["std"]
 std = [
-  "wasm-bindgen-backend/std",
-  "wasm-bindgen-macro-support/std",
-  "wasm-bindgen-macro/std",
   "wasm-bindgen/std",
   "js-sys/std",
   "wasm-bindgen-futures/std",
@@ -20,13 +17,8 @@ std = [
 [dependencies]
 js-sys = { path = "../../js-sys", default-features = false }
 wasm-bindgen = { path = "../../../", default-features = false }
-wasm-bindgen-backend = { path = "../../backend", default-features = false }
 wasm-bindgen-futures = { path = "../../futures", default-features = false }
-wasm-bindgen-macro = { path = "../../macro", default-features = false }
-wasm-bindgen-macro-support = { path = "../../macro-support", default-features = false }
-wasm-bindgen-shared = { path = "../../shared" }
 wasm-bindgen-test = { path = "../../test", default-features = false }
-wasm-bindgen-test-macro = { path = "../../test-macro" }
 web-sys = { path = "../../web-sys", default-features = false }
 
 # Pinned sub-dependencies for MSRV
