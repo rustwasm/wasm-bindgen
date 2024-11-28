@@ -96,6 +96,9 @@
 * Fixed imports for functions using `this` and late binding.
   [#4225](https://github.com/rustwasm/wasm-bindgen/pull/4225)
 
+* Don't expose non-functioning implicit constructors to classes when none are provided.
+  [#4282](https://github.com/rustwasm/wasm-bindgen/pull/4282)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.95](https://github.com/rustwasm/wasm-bindgen/compare/0.2.94...0.2.95)

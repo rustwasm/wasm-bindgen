@@ -57,5 +57,6 @@ export function echo_option_vec_string(a?: (string)[]): (string)[] | undefined;
 export function echo_option_struct(a?: Foo): Foo | undefined;
 export function echo_option_vec_struct(a?: (Foo)[]): (Foo)[] | undefined;
 export class Foo {
+  private constructor();
   free(): void;
 }

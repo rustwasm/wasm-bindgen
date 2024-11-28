@@ -1016,14 +1016,19 @@ __wbg_set_wasm(wasm);"
         let mut dst = format!("class {} {{\n", name);
         let mut ts_dst = format!("export {}", dst);
 
-        if self.config.debug && !class.has_constructor {
-            dst.push_str(
-                "
-                    constructor() {
-                        throw new Error('cannot invoke `new` directly');
-                    }
-                ",
-            );
+        if !class.has_constructor {
+            // declare the constructor as private to prevent direct instantiation
+            ts_dst.push_str("  private constructor();\n");
+
+            if self.config.debug {
+                dst.push_str(
+                    "
+                        constructor() {
+                            throw new Error('cannot invoke `new` directly');
+                        }
+                    ",
+                );
+            }
         }
 
         if class.wrap_needed {
