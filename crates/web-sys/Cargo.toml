@@ -23,8 +23,8 @@ doctest = false
 test = false
 
 [dependencies]
-js-sys = { path = '../js-sys', version = '0.3.72', default-features = false }
-wasm-bindgen = { path = "../..", version = "0.2.95", default-features = false }
+js-sys = { path = '../js-sys', version = '=0.3.72', default-features = false }
+wasm-bindgen = { path = "../..", version = "=0.2.95", default-features = false }
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
 futures = "0.3"
