@@ -1,12 +1,15 @@
-use std::cell::RefCell;
-use std::future::Future;
-use std::mem::ManuallyDrop;
-use std::pin::Pin;
-use std::rc::Rc;
-use std::sync::atomic::AtomicI32;
-use std::sync::atomic::Ordering::SeqCst;
-use std::sync::Arc;
-use std::task::{Context, Poll, RawWaker, RawWakerVTable, Waker};
+#![allow(clippy::incompatible_msrv)]
+
+use alloc::boxed::Box;
+use alloc::rc::Rc;
+use alloc::sync::Arc;
+use core::cell::RefCell;
+use core::future::Future;
+use core::mem::ManuallyDrop;
+use core::pin::Pin;
+use core::sync::atomic::AtomicI32;
+use core::sync::atomic::Ordering::SeqCst;
+use core::task::{Context, Poll, RawWaker, RawWakerVTable, Waker};
 use wasm_bindgen::prelude::*;
 
 const SLEEPING: i32 = 0;
@@ -101,7 +104,7 @@ impl Task {
         *this.inner.borrow_mut() = Some(Inner { future, closure });
 
         // Queue up the Future's work to happen on the next microtask tick.
-        crate::queue::QUEUE.with(move |queue| queue.schedule_task(this));
+        crate::queue::Queue::with(move |queue| queue.schedule_task(this));
     }
 
     pub(crate) fn run(&self) {

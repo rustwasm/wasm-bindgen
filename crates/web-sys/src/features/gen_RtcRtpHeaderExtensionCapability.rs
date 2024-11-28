@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpHeaderExtensionCapability`*"]
     #[wasm_bindgen(method, getter = "uri")]
-    pub fn get_uri(this: &RtcRtpHeaderExtensionCapability) -> String;
+    pub fn get_uri(this: &RtcRtpHeaderExtensionCapability) -> ::alloc::string::String;
     #[doc = "Change the `uri` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpHeaderExtensionCapability`*"]

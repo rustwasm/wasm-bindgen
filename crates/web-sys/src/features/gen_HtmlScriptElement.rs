@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement/src)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlScriptElement`*"]
-    pub fn src(this: &HtmlScriptElement) -> String;
+    pub fn src(this: &HtmlScriptElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLScriptElement" , js_name = src)]
     #[doc = "Setter for the `src` field of this object."]
     #[doc = ""]
@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlScriptElement`*"]
-    pub fn type_(this: &HtmlScriptElement) -> String;
+    pub fn type_(this: &HtmlScriptElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLScriptElement" , js_name = type)]
     #[doc = "Setter for the `type` field of this object."]
     #[doc = ""]
@@ -60,7 +60,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement/charset)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlScriptElement`*"]
-    pub fn charset(this: &HtmlScriptElement) -> String;
+    pub fn charset(this: &HtmlScriptElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLScriptElement" , js_name = charset)]
     #[doc = "Setter for the `charset` field of this object."]
     #[doc = ""]
@@ -102,7 +102,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement/crossOrigin)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlScriptElement`*"]
-    pub fn cross_origin(this: &HtmlScriptElement) -> Option<String>;
+    pub fn cross_origin(this: &HtmlScriptElement) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLScriptElement" , js_name = crossOrigin)]
     #[doc = "Setter for the `crossOrigin` field of this object."]
     #[doc = ""]
@@ -116,7 +116,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement/text)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlScriptElement`*"]
-    pub fn text(this: &HtmlScriptElement) -> Result<String, JsValue>;
+    pub fn text(this: &HtmlScriptElement) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLScriptElement" , js_name = text)]
     #[doc = "Setter for the `text` field of this object."]
     #[doc = ""]
@@ -130,7 +130,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement/event)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlScriptElement`*"]
-    pub fn event(this: &HtmlScriptElement) -> String;
+    pub fn event(this: &HtmlScriptElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLScriptElement" , js_name = event)]
     #[doc = "Setter for the `event` field of this object."]
     #[doc = ""]
@@ -144,7 +144,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement/htmlFor)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlScriptElement`*"]
-    pub fn html_for(this: &HtmlScriptElement) -> String;
+    pub fn html_for(this: &HtmlScriptElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLScriptElement" , js_name = htmlFor)]
     #[doc = "Setter for the `htmlFor` field of this object."]
     #[doc = ""]
@@ -158,7 +158,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLScriptElement/integrity)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlScriptElement`*"]
-    pub fn integrity(this: &HtmlScriptElement) -> String;
+    pub fn integrity(this: &HtmlScriptElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLScriptElement" , js_name = integrity)]
     #[doc = "Setter for the `integrity` field of this object."]
     #[doc = ""]

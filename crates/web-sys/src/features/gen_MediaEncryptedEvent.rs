@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaEncryptedEvent/initDataType)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaEncryptedEvent`*"]
-    pub fn init_data_type(this: &MediaEncryptedEvent) -> String;
+    pub fn init_data_type(this: &MediaEncryptedEvent) -> ::alloc::string::String;
     # [wasm_bindgen (structural , catch , method , getter , js_class = "MediaEncryptedEvent" , js_name = initData)]
     #[doc = "Getter for the `initData` field of this object."]
     #[doc = ""]

@@ -53,7 +53,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGLength/valueAsString)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgLength`*"]
-    pub fn value_as_string(this: &SvgLength) -> String;
+    pub fn value_as_string(this: &SvgLength) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "SVGLength" , js_name = valueAsString)]
     #[doc = "Setter for the `valueAsString` field of this object."]
     #[doc = ""]

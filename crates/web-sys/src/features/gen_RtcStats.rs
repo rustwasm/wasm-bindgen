@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcStats`*"]
     #[wasm_bindgen(method, getter = "id")]
-    pub fn get_id(this: &RtcStats) -> Option<String>;
+    pub fn get_id(this: &RtcStats) -> Option<::alloc::string::String>;
     #[doc = "Change the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcStats`*"]

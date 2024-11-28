@@ -60,7 +60,7 @@ on methods:
 #[wasm_bindgen]
 extern "C" {
     type Foo;
-    #[wasm_bindgen(thread_local)]
+    #[wasm_bindgen(thread_local_v2)]
     static FOO: Foo;
 
     #[wasm_bindgen(method, structural, indexing_getter)]

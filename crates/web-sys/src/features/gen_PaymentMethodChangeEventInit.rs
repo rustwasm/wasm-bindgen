@@ -54,7 +54,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PaymentMethodChangeEventInit`*"]
     #[wasm_bindgen(method, getter = "methodName")]
-    pub fn get_method_name(this: &PaymentMethodChangeEventInit) -> String;
+    pub fn get_method_name(this: &PaymentMethodChangeEventInit) -> ::alloc::string::String;
     #[doc = "Change the `methodName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PaymentMethodChangeEventInit`*"]

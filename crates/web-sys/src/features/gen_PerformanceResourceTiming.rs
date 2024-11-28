@@ -18,14 +18,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/initiatorType)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceResourceTiming`*"]
-    pub fn initiator_type(this: &PerformanceResourceTiming) -> String;
+    pub fn initiator_type(this: &PerformanceResourceTiming) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "PerformanceResourceTiming" , js_name = nextHopProtocol)]
     #[doc = "Getter for the `nextHopProtocol` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/nextHopProtocol)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceResourceTiming`*"]
-    pub fn next_hop_protocol(this: &PerformanceResourceTiming) -> String;
+    pub fn next_hop_protocol(this: &PerformanceResourceTiming) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "PerformanceResourceTiming" , js_name = workerStart)]
     #[doc = "Getter for the `workerStart` field of this object."]
     #[doc = ""]

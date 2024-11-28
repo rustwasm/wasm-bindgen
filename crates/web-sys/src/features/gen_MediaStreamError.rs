@@ -18,19 +18,19 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamError/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamError`*"]
-    pub fn name(this: &MediaStreamError) -> String;
+    pub fn name(this: &MediaStreamError) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "MediaStreamError" , js_name = message)]
     #[doc = "Getter for the `message` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamError/message)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamError`*"]
-    pub fn message(this: &MediaStreamError) -> Option<String>;
+    pub fn message(this: &MediaStreamError) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "MediaStreamError" , js_name = constraint)]
     #[doc = "Getter for the `constraint` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamError/constraint)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamError`*"]
-    pub fn constraint(this: &MediaStreamError) -> Option<String>;
+    pub fn constraint(this: &MediaStreamError) -> Option<::alloc::string::String>;
 }

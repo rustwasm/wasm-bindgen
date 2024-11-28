@@ -4,6 +4,6 @@ column_width = 100
 reorder_keys = true
 
 [[rule]]
-formatting = { array_auto_expand = false }
+formatting = { array_auto_expand = false, reorder_keys = false }
 include = ["crates/web-sys/Cargo.toml"]
 keys = ["features"]

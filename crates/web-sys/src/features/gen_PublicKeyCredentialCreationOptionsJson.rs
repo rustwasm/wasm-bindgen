@@ -22,7 +22,9 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "attestation")]
-    pub fn get_attestation(this: &PublicKeyCredentialCreationOptionsJson) -> Option<String>;
+    pub fn get_attestation(
+        this: &PublicKeyCredentialCreationOptionsJson,
+    ) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `attestation` field of this object."]
     #[doc = ""]
@@ -88,7 +90,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "challenge")]
-    pub fn get_challenge(this: &PublicKeyCredentialCreationOptionsJson) -> String;
+    pub fn get_challenge(this: &PublicKeyCredentialCreationOptionsJson) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `challenge` field of this object."]
     #[doc = ""]

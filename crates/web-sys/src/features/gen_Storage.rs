@@ -32,14 +32,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Storage/getItem)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Storage`*"]
-    pub fn get_item(this: &Storage, key: &str) -> Result<Option<String>, JsValue>;
+    pub fn get_item(this: &Storage, key: &str) -> Result<Option<::alloc::string::String>, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "Storage" , js_name = key)]
     #[doc = "The `key()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Storage/key)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Storage`*"]
-    pub fn key(this: &Storage, index: u32) -> Result<Option<String>, JsValue>;
+    pub fn key(this: &Storage, index: u32) -> Result<Option<::alloc::string::String>, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "Storage" , js_name = removeItem)]
     #[doc = "The `removeItem()` method."]
     #[doc = ""]
@@ -60,7 +60,7 @@ extern "C" {
     #[doc = ""]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Storage`*"]
-    pub fn get(this: &Storage, key: &str) -> Result<Option<String>, JsValue>;
+    pub fn get(this: &Storage, key: &str) -> Result<Option<::alloc::string::String>, JsValue>;
     #[wasm_bindgen(catch, method, structural, js_class = "Storage", indexing_setter)]
     #[doc = "Indexing setter. As in the literal Javascript `this[key] = value`."]
     #[doc = ""]

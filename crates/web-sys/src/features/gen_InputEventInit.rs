@@ -66,7 +66,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `InputEventInit`*"]
     #[wasm_bindgen(method, getter = "data")]
-    pub fn get_data(this: &InputEventInit) -> Option<String>;
+    pub fn get_data(this: &InputEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `data` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `InputEventInit`*"]
@@ -88,7 +88,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `InputEventInit`*"]
     #[wasm_bindgen(method, getter = "inputType")]
-    pub fn get_input_type(this: &InputEventInit) -> Option<String>;
+    pub fn get_input_type(this: &InputEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `inputType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `InputEventInit`*"]

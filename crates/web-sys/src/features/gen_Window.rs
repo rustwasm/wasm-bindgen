@@ -40,7 +40,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
-    pub fn name(this: &Window) -> Result<String, JsValue>;
+    pub fn name(this: &Window) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (structural , catch , method , setter , js_class = "Window" , js_name = name)]
     #[doc = "Setter for the `name` field of this object."]
     #[doc = ""]
@@ -126,7 +126,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/status)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
-    pub fn status(this: &Window) -> Result<String, JsValue>;
+    pub fn status(this: &Window) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (structural , catch , method , setter , js_class = "Window" , js_name = status)]
     #[doc = "Setter for the `status` field of this object."]
     #[doc = ""]
@@ -1988,7 +1988,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/origin)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
-    pub fn origin(this: &Window) -> String;
+    pub fn origin(this: &Window) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "Window" , js_name = isSecureContext)]
     #[doc = "Getter for the `isSecureContext` field of this object."]
     #[doc = ""]
@@ -2213,14 +2213,17 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/prompt)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
-    pub fn prompt(this: &Window) -> Result<Option<String>, JsValue>;
+    pub fn prompt(this: &Window) -> Result<Option<::alloc::string::String>, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "Window" , js_name = prompt)]
     #[doc = "The `prompt()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/prompt)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
-    pub fn prompt_with_message(this: &Window, message: &str) -> Result<Option<String>, JsValue>;
+    pub fn prompt_with_message(
+        this: &Window,
+        message: &str,
+    ) -> Result<Option<::alloc::string::String>, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "Window" , js_name = prompt)]
     #[doc = "The `prompt()` method."]
     #[doc = ""]
@@ -2231,7 +2234,7 @@ extern "C" {
         this: &Window,
         message: &str,
         default: &str,
-    ) -> Result<Option<String>, JsValue>;
+    ) -> Result<Option<::alloc::string::String>, JsValue>;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (catch , method , structural , js_class = "Window" , js_name = queryLocalFonts)]
     #[doc = "The `queryLocalFonts()` method."]
@@ -2482,14 +2485,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/atob)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
-    pub fn atob(this: &Window, atob: &str) -> Result<String, JsValue>;
+    pub fn atob(this: &Window, atob: &str) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "Window" , js_name = btoa)]
     #[doc = "The `btoa()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/btoa)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Window`*"]
-    pub fn btoa(this: &Window, btoa: &str) -> Result<String, JsValue>;
+    pub fn btoa(this: &Window, btoa: &str) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (method , structural , js_class = "Window" , js_name = clearInterval)]
     #[doc = "The `clearInterval()` method."]
     #[doc = ""]

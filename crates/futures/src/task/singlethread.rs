@@ -1,9 +1,10 @@
-use std::cell::{Cell, RefCell};
-use std::future::Future;
-use std::mem::ManuallyDrop;
-use std::pin::Pin;
-use std::rc::Rc;
-use std::task::{Context, RawWaker, RawWakerVTable, Waker};
+use alloc::boxed::Box;
+use alloc::rc::Rc;
+use core::cell::{Cell, RefCell};
+use core::future::Future;
+use core::mem::ManuallyDrop;
+use core::pin::Pin;
+use core::task::{Context, RawWaker, RawWakerVTable, Waker};
 
 struct Inner {
     future: Pin<Box<dyn Future<Output = ()> + 'static>>,
@@ -32,11 +33,11 @@ impl Task {
 
         *this.inner.borrow_mut() = Some(Inner { future, waker });
 
-        crate::queue::QUEUE.with(|queue| queue.schedule_task(this));
+        crate::queue::Queue::with(|queue| queue.schedule_task(this));
     }
 
     fn force_wake(this: Rc<Self>) {
-        crate::queue::QUEUE.with(|queue| {
+        crate::queue::Queue::with(|queue| {
             queue.push_task(this);
         });
     }

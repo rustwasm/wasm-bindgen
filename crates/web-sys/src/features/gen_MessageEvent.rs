@@ -25,14 +25,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/origin)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageEvent`*"]
-    pub fn origin(this: &MessageEvent) -> String;
+    pub fn origin(this: &MessageEvent) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "MessageEvent" , js_name = lastEventId)]
     #[doc = "Getter for the `lastEventId` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/lastEventId)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageEvent`*"]
-    pub fn last_event_id(this: &MessageEvent) -> String;
+    pub fn last_event_id(this: &MessageEvent) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "MessageEvent" , js_name = source)]
     #[doc = "Getter for the `source` field of this object."]
     #[doc = ""]

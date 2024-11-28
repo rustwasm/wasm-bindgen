@@ -23,6 +23,15 @@
 * Added WASM ABI support for `u128` and `i128`
   [#4222](https://github.com/rustwasm/wasm-bindgen/pull/4222)
 
+* Added support for the `wasm32v1-none` target.
+  [#4277](https://github.com/rustwasm/wasm-bindgen/pull/4277)
+
+* Added support for `no_std` to `js-sys`, `web-sys`, `wasm-bindgen-futures` and `wasm-bindgen-test`.
+  [#4277](https://github.com/rustwasm/wasm-bindgen/pull/4277)
+
+* Added support for `no_std` to `link_to!`, `static_string` (via `thread_local_v2`) and `throw`.
+  [#4277](https://github.com/rustwasm/wasm-bindgen/pull/4277)
+
 ### Changed
 
 * String enums now generate private TypeScript types but only if used.
@@ -45,6 +54,9 @@
 
 * `wasm-bindgen-test-runner` now tries to restart the WebDriver on failure, instead of spending its timeout period trying to connect to a non-existing WebDriver.
   [#4267](https://github.com/rustwasm/wasm-bindgen/pull/4267)
+
+* Deprecated `#[wasm_bindgen(thread_local)]` in favor of `#[wasm_bindgen(thread_local_v2)]`, which creates a `wasm_bindgen::JsThreadLocal`. It is similar to `std::thread::LocalKey` but supports `no_std`.
+  [#4277](https://github.com/rustwasm/wasm-bindgen/pull/4277)
 
 ### Fixed
 

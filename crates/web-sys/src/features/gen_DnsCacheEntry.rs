@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsCacheEntry`*"]
     #[wasm_bindgen(method, getter = "family")]
-    pub fn get_family(this: &DnsCacheEntry) -> Option<String>;
+    pub fn get_family(this: &DnsCacheEntry) -> Option<::alloc::string::String>;
     #[doc = "Change the `family` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsCacheEntry`*"]
@@ -44,7 +44,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsCacheEntry`*"]
     #[wasm_bindgen(method, getter = "hostname")]
-    pub fn get_hostname(this: &DnsCacheEntry) -> Option<String>;
+    pub fn get_hostname(this: &DnsCacheEntry) -> Option<::alloc::string::String>;
     #[doc = "Change the `hostname` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsCacheEntry`*"]

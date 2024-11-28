@@ -22,7 +22,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "displayName")]
-    pub fn get_display_name(this: &PublicKeyCredentialUserEntityJson) -> String;
+    pub fn get_display_name(this: &PublicKeyCredentialUserEntityJson) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `displayName` field of this object."]
     #[doc = ""]
@@ -40,7 +40,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "id")]
-    pub fn get_id(this: &PublicKeyCredentialUserEntityJson) -> String;
+    pub fn get_id(this: &PublicKeyCredentialUserEntityJson) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `id` field of this object."]
     #[doc = ""]
@@ -58,7 +58,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &PublicKeyCredentialUserEntityJson) -> String;
+    pub fn get_name(this: &PublicKeyCredentialUserEntityJson) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]

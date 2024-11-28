@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOtherPrimesInfo`*"]
     #[wasm_bindgen(method, getter = "d")]
-    pub fn get_d(this: &RsaOtherPrimesInfo) -> String;
+    pub fn get_d(this: &RsaOtherPrimesInfo) -> ::alloc::string::String;
     #[doc = "Change the `d` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOtherPrimesInfo`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOtherPrimesInfo`*"]
     #[wasm_bindgen(method, getter = "r")]
-    pub fn get_r(this: &RsaOtherPrimesInfo) -> String;
+    pub fn get_r(this: &RsaOtherPrimesInfo) -> ::alloc::string::String;
     #[doc = "Change the `r` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOtherPrimesInfo`*"]
@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOtherPrimesInfo`*"]
     #[wasm_bindgen(method, getter = "t")]
-    pub fn get_t(this: &RsaOtherPrimesInfo) -> String;
+    pub fn get_t(this: &RsaOtherPrimesInfo) -> ::alloc::string::String;
     #[doc = "Change the `t` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOtherPrimesInfo`*"]

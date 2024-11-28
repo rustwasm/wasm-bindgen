@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGElement/id)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgElement`*"]
-    pub fn id(this: &SvgElement) -> String;
+    pub fn id(this: &SvgElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "SVGElement" , js_name = id)]
     #[doc = "Setter for the `id` field of this object."]
     #[doc = ""]
@@ -1275,7 +1275,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGElement/nonce)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgElement`*"]
-    pub fn nonce(this: &SvgElement) -> String;
+    pub fn nonce(this: &SvgElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "SVGElement" , js_name = nonce)]
     #[doc = "Setter for the `nonce` field of this object."]
     #[doc = ""]

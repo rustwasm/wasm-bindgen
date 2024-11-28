@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecCapability`*"]
     #[wasm_bindgen(method, getter = "mimeType")]
-    pub fn get_mime_type(this: &RtcRtpCodecCapability) -> String;
+    pub fn get_mime_type(this: &RtcRtpCodecCapability) -> ::alloc::string::String;
     #[doc = "Change the `mimeType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecCapability`*"]
@@ -44,7 +44,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecCapability`*"]
     #[wasm_bindgen(method, getter = "sdpFmtpLine")]
-    pub fn get_sdp_fmtp_line(this: &RtcRtpCodecCapability) -> Option<String>;
+    pub fn get_sdp_fmtp_line(this: &RtcRtpCodecCapability) -> Option<::alloc::string::String>;
     #[doc = "Change the `sdpFmtpLine` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecCapability`*"]

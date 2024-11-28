@@ -22,7 +22,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "featureLevel")]
-    pub fn get_feature_level(this: &GpuRequestAdapterOptions) -> Option<String>;
+    pub fn get_feature_level(this: &GpuRequestAdapterOptions) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `featureLevel` field of this object."]
     #[doc = ""]

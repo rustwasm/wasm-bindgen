@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &HkdfParams) -> String;
+    pub fn get_name(this: &HkdfParams) -> ::alloc::string::String;
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]

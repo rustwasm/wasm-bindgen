@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLBodyElement/text)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlBodyElement`*"]
-    pub fn text(this: &HtmlBodyElement) -> String;
+    pub fn text(this: &HtmlBodyElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLBodyElement" , js_name = text)]
     #[doc = "Setter for the `text` field of this object."]
     #[doc = ""]
@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLBodyElement/link)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlBodyElement`*"]
-    pub fn link(this: &HtmlBodyElement) -> String;
+    pub fn link(this: &HtmlBodyElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLBodyElement" , js_name = link)]
     #[doc = "Setter for the `link` field of this object."]
     #[doc = ""]
@@ -46,7 +46,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLBodyElement/vLink)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlBodyElement`*"]
-    pub fn v_link(this: &HtmlBodyElement) -> String;
+    pub fn v_link(this: &HtmlBodyElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLBodyElement" , js_name = vLink)]
     #[doc = "Setter for the `vLink` field of this object."]
     #[doc = ""]
@@ -60,7 +60,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLBodyElement/aLink)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlBodyElement`*"]
-    pub fn a_link(this: &HtmlBodyElement) -> String;
+    pub fn a_link(this: &HtmlBodyElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLBodyElement" , js_name = aLink)]
     #[doc = "Setter for the `aLink` field of this object."]
     #[doc = ""]
@@ -74,7 +74,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLBodyElement/bgColor)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlBodyElement`*"]
-    pub fn bg_color(this: &HtmlBodyElement) -> String;
+    pub fn bg_color(this: &HtmlBodyElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLBodyElement" , js_name = bgColor)]
     #[doc = "Setter for the `bgColor` field of this object."]
     #[doc = ""]
@@ -88,7 +88,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLBodyElement/background)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlBodyElement`*"]
-    pub fn background(this: &HtmlBodyElement) -> String;
+    pub fn background(this: &HtmlBodyElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLBodyElement" , js_name = background)]
     #[doc = "Setter for the `background` field of this object."]
     #[doc = ""]

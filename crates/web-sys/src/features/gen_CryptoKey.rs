@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CryptoKey/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CryptoKey`*"]
-    pub fn type_(this: &CryptoKey) -> String;
+    pub fn type_(this: &CryptoKey) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "CryptoKey" , js_name = extractable)]
     #[doc = "Getter for the `extractable` field of this object."]
     #[doc = ""]

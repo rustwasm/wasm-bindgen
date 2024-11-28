@@ -1639,7 +1639,7 @@ extern "C" {
     pub fn get_program_info_log(
         this: &WebGlRenderingContext,
         program: &WebGlProgram,
-    ) -> Option<String>;
+    ) -> Option<::alloc::string::String>;
     #[cfg(feature = "WebGlProgram")]
     # [wasm_bindgen (method , structural , js_class = "WebGLRenderingContext" , js_name = getProgramParameter)]
     #[doc = "The `getProgramParameter()` method."]
@@ -1673,7 +1673,7 @@ extern "C" {
     pub fn get_shader_info_log(
         this: &WebGlRenderingContext,
         shader: &WebGlShader,
-    ) -> Option<String>;
+    ) -> Option<::alloc::string::String>;
     #[cfg(feature = "WebGlShader")]
     # [wasm_bindgen (method , structural , js_class = "WebGLRenderingContext" , js_name = getShaderParameter)]
     #[doc = "The `getShaderParameter()` method."]
@@ -1705,7 +1705,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/getShaderSource)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGlRenderingContext`, `WebGlShader`*"]
-    pub fn get_shader_source(this: &WebGlRenderingContext, shader: &WebGlShader) -> Option<String>;
+    pub fn get_shader_source(
+        this: &WebGlRenderingContext,
+        shader: &WebGlShader,
+    ) -> Option<::alloc::string::String>;
     # [wasm_bindgen (method , structural , js_class = "WebGLRenderingContext" , js_name = getSupportedExtensions)]
     #[doc = "The `getSupportedExtensions()` method."]
     #[doc = ""]

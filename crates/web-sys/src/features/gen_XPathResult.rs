@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XPathResult/stringValue)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `XPathResult`*"]
-    pub fn string_value(this: &XPathResult) -> Result<String, JsValue>;
+    pub fn string_value(this: &XPathResult) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (structural , catch , method , getter , js_class = "XPathResult" , js_name = booleanValue)]
     #[doc = "Getter for the `booleanValue` field of this object."]
     #[doc = ""]

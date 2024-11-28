@@ -22,7 +22,9 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "attestationObject")]
-    pub fn get_attestation_object(this: &AuthenticatorAttestationResponseJson) -> String;
+    pub fn get_attestation_object(
+        this: &AuthenticatorAttestationResponseJson,
+    ) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `attestationObject` field of this object."]
     #[doc = ""]
@@ -40,7 +42,9 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "authenticatorData")]
-    pub fn get_authenticator_data(this: &AuthenticatorAttestationResponseJson) -> String;
+    pub fn get_authenticator_data(
+        this: &AuthenticatorAttestationResponseJson,
+    ) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `authenticatorData` field of this object."]
     #[doc = ""]
@@ -58,7 +62,9 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "clientDataJSON")]
-    pub fn get_client_data_json(this: &AuthenticatorAttestationResponseJson) -> String;
+    pub fn get_client_data_json(
+        this: &AuthenticatorAttestationResponseJson,
+    ) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `clientDataJSON` field of this object."]
     #[doc = ""]
@@ -76,7 +82,9 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "publicKey")]
-    pub fn get_public_key(this: &AuthenticatorAttestationResponseJson) -> Option<String>;
+    pub fn get_public_key(
+        this: &AuthenticatorAttestationResponseJson,
+    ) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `publicKey` field of this object."]
     #[doc = ""]

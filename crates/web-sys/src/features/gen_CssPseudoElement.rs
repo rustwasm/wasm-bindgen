@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSPseudoElement/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssPseudoElement`*"]
-    pub fn type_(this: &CssPseudoElement) -> String;
+    pub fn type_(this: &CssPseudoElement) -> ::alloc::string::String;
     #[cfg(feature = "Element")]
     # [wasm_bindgen (structural , method , getter , js_class = "CSSPseudoElement" , js_name = parentElement)]
     #[doc = "Getter for the `parentElement` field of this object."]

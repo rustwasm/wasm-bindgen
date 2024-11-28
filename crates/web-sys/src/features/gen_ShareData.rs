@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
     #[wasm_bindgen(method, getter = "text")]
-    pub fn get_text(this: &ShareData) -> Option<String>;
+    pub fn get_text(this: &ShareData) -> Option<::alloc::string::String>;
     #[doc = "Change the `text` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
     #[wasm_bindgen(method, getter = "title")]
-    pub fn get_title(this: &ShareData) -> Option<String>;
+    pub fn get_title(this: &ShareData) -> Option<::alloc::string::String>;
     #[doc = "Change the `title` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
@@ -44,7 +44,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]
     #[wasm_bindgen(method, getter = "url")]
-    pub fn get_url(this: &ShareData) -> Option<String>;
+    pub fn get_url(this: &ShareData) -> Option<::alloc::string::String>;
     #[doc = "Change the `url` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShareData`*"]

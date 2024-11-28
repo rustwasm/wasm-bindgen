@@ -40,7 +40,9 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
-    pub fn global_composite_operation(this: &CanvasRenderingContext2d) -> Result<String, JsValue>;
+    pub fn global_composite_operation(
+        this: &CanvasRenderingContext2d,
+    ) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (structural , catch , method , setter , js_class = "CanvasRenderingContext2D" , js_name = globalCompositeOperation)]
     #[doc = "Setter for the `globalCompositeOperation` field of this object."]
     #[doc = ""]
@@ -136,7 +138,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/filter)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
-    pub fn filter(this: &CanvasRenderingContext2d) -> String;
+    pub fn filter(this: &CanvasRenderingContext2d) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "CanvasRenderingContext2D" , js_name = filter)]
     #[doc = "Setter for the `filter` field of this object."]
     #[doc = ""]
@@ -178,7 +180,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineCap)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
-    pub fn line_cap(this: &CanvasRenderingContext2d) -> String;
+    pub fn line_cap(this: &CanvasRenderingContext2d) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "CanvasRenderingContext2D" , js_name = lineCap)]
     #[doc = "Setter for the `lineCap` field of this object."]
     #[doc = ""]
@@ -192,7 +194,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
-    pub fn line_join(this: &CanvasRenderingContext2d) -> String;
+    pub fn line_join(this: &CanvasRenderingContext2d) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "CanvasRenderingContext2D" , js_name = lineJoin)]
     #[doc = "Setter for the `lineJoin` field of this object."]
     #[doc = ""]
@@ -276,7 +278,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/shadowColor)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
-    pub fn shadow_color(this: &CanvasRenderingContext2d) -> String;
+    pub fn shadow_color(this: &CanvasRenderingContext2d) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "CanvasRenderingContext2D" , js_name = shadowColor)]
     #[doc = "Setter for the `shadowColor` field of this object."]
     #[doc = ""]
@@ -290,7 +292,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/font)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
-    pub fn font(this: &CanvasRenderingContext2d) -> String;
+    pub fn font(this: &CanvasRenderingContext2d) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "CanvasRenderingContext2D" , js_name = font)]
     #[doc = "Setter for the `font` field of this object."]
     #[doc = ""]
@@ -304,7 +306,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/textAlign)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
-    pub fn text_align(this: &CanvasRenderingContext2d) -> String;
+    pub fn text_align(this: &CanvasRenderingContext2d) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "CanvasRenderingContext2D" , js_name = textAlign)]
     #[doc = "Setter for the `textAlign` field of this object."]
     #[doc = ""]
@@ -318,7 +320,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/textBaseline)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CanvasRenderingContext2d`*"]
-    pub fn text_baseline(this: &CanvasRenderingContext2d) -> String;
+    pub fn text_baseline(this: &CanvasRenderingContext2d) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "CanvasRenderingContext2D" , js_name = textBaseline)]
     #[doc = "Setter for the `textBaseline` field of this object."]
     #[doc = ""]

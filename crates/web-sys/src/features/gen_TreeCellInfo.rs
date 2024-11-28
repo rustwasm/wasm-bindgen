@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TreeCellInfo`*"]
     #[wasm_bindgen(method, getter = "childElt")]
-    pub fn get_child_elt(this: &TreeCellInfo) -> Option<String>;
+    pub fn get_child_elt(this: &TreeCellInfo) -> Option<::alloc::string::String>;
     #[doc = "Change the `childElt` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TreeCellInfo`*"]

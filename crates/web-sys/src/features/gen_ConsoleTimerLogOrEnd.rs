@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerLogOrEnd`*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &ConsoleTimerLogOrEnd) -> Option<String>;
+    pub fn get_name(this: &ConsoleTimerLogOrEnd) -> Option<::alloc::string::String>;
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerLogOrEnd`*"]

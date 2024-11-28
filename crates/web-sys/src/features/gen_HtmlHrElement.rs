@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLHRElement/align)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlHrElement`*"]
-    pub fn align(this: &HtmlHrElement) -> String;
+    pub fn align(this: &HtmlHrElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLHRElement" , js_name = align)]
     #[doc = "Setter for the `align` field of this object."]
     #[doc = ""]
@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLHRElement/color)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlHrElement`*"]
-    pub fn color(this: &HtmlHrElement) -> String;
+    pub fn color(this: &HtmlHrElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLHRElement" , js_name = color)]
     #[doc = "Setter for the `color` field of this object."]
     #[doc = ""]
@@ -60,7 +60,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLHRElement/size)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlHrElement`*"]
-    pub fn size(this: &HtmlHrElement) -> String;
+    pub fn size(this: &HtmlHrElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLHRElement" , js_name = size)]
     #[doc = "Setter for the `size` field of this object."]
     #[doc = ""]
@@ -74,7 +74,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLHRElement/width)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlHrElement`*"]
-    pub fn width(this: &HtmlHrElement) -> String;
+    pub fn width(this: &HtmlHrElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLHRElement" , js_name = width)]
     #[doc = "Setter for the `width` field of this object."]
     #[doc = ""]

@@ -55,7 +55,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRDisplay/displayName)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrDisplay`*"]
-    pub fn display_name(this: &VrDisplay) -> String;
+    pub fn display_name(this: &VrDisplay) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "VRDisplay" , js_name = depthNear)]
     #[doc = "Getter for the `depthNear` field of this object."]
     #[doc = ""]

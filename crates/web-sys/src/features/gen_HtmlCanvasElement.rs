@@ -116,14 +116,17 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toDataURL)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlCanvasElement`*"]
-    pub fn to_data_url(this: &HtmlCanvasElement) -> Result<String, JsValue>;
+    pub fn to_data_url(this: &HtmlCanvasElement) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "HTMLCanvasElement" , js_name = toDataURL)]
     #[doc = "The `toDataURL()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toDataURL)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlCanvasElement`*"]
-    pub fn to_data_url_with_type(this: &HtmlCanvasElement, type_: &str) -> Result<String, JsValue>;
+    pub fn to_data_url_with_type(
+        this: &HtmlCanvasElement,
+        type_: &str,
+    ) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "HTMLCanvasElement" , js_name = toDataURL)]
     #[doc = "The `toDataURL()` method."]
     #[doc = ""]
@@ -134,7 +137,7 @@ extern "C" {
         this: &HtmlCanvasElement,
         type_: &str,
         encoder_options: &::wasm_bindgen::JsValue,
-    ) -> Result<String, JsValue>;
+    ) -> Result<::alloc::string::String, JsValue>;
     #[cfg(feature = "OffscreenCanvas")]
     # [wasm_bindgen (catch , method , structural , js_class = "HTMLCanvasElement" , js_name = transferControlToOffscreen)]
     #[doc = "The `transferControlToOffscreen()` method."]

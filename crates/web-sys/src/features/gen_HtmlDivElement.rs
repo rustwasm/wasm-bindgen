@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDivElement/align)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlDivElement`*"]
-    pub fn align(this: &HtmlDivElement) -> String;
+    pub fn align(this: &HtmlDivElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLDivElement" , js_name = align)]
     #[doc = "Setter for the `align` field of this object."]
     #[doc = ""]

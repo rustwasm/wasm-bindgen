@@ -4,7 +4,7 @@ use wasm_bindgen_test::*;
 #[wasm_bindgen(module = "tests/wasm/node.js")]
 extern "C" {
     fn test_works();
-    #[wasm_bindgen(thread_local)]
+    #[wasm_bindgen(thread_local_v2)]
     static FOO: JsValue;
     fn hit();
 }

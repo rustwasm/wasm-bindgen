@@ -206,7 +206,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyboardEventInit`*"]
     #[wasm_bindgen(method, getter = "code")]
-    pub fn get_code(this: &KeyboardEventInit) -> Option<String>;
+    pub fn get_code(this: &KeyboardEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `code` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyboardEventInit`*"]
@@ -226,7 +226,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyboardEventInit`*"]
     #[wasm_bindgen(method, getter = "key")]
-    pub fn get_key(this: &KeyboardEventInit) -> Option<String>;
+    pub fn get_key(this: &KeyboardEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `key` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyboardEventInit`*"]

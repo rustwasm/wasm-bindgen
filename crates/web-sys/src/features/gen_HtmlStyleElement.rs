@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLStyleElement/media)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlStyleElement`*"]
-    pub fn media(this: &HtmlStyleElement) -> String;
+    pub fn media(this: &HtmlStyleElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLStyleElement" , js_name = media)]
     #[doc = "Setter for the `media` field of this object."]
     #[doc = ""]
@@ -46,7 +46,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLStyleElement/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlStyleElement`*"]
-    pub fn type_(this: &HtmlStyleElement) -> String;
+    pub fn type_(this: &HtmlStyleElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLStyleElement" , js_name = type)]
     #[doc = "Setter for the `type` field of this object."]
     #[doc = ""]

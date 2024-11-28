@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsLookupDict`*"]
     #[wasm_bindgen(method, getter = "error")]
-    pub fn get_error(this: &DnsLookupDict) -> Option<String>;
+    pub fn get_error(this: &DnsLookupDict) -> Option<::alloc::string::String>;
     #[doc = "Change the `error` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DnsLookupDict`*"]

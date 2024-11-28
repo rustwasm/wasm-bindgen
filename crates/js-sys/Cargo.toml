@@ -20,8 +20,12 @@ version = "0.3.72"
 doctest = false
 test = false
 
+[features]
+default = ["std"]
+std = ["wasm-bindgen/std"]
+
 [dependencies]
-wasm-bindgen = { path = "../..", version = "0.2.95" }
+wasm-bindgen = { path = "../..", version = "0.2.95", default-features = false }
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
 wasm-bindgen-futures = { path = '../futures' }

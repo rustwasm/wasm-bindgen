@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityValidationResult`*"]
     #[wasm_bindgen(method, getter = "contents")]
-    pub fn get_contents(this: &RtcIdentityValidationResult) -> String;
+    pub fn get_contents(this: &RtcIdentityValidationResult) -> ::alloc::string::String;
     #[doc = "Change the `contents` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityValidationResult`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityValidationResult`*"]
     #[wasm_bindgen(method, getter = "identity")]
-    pub fn get_identity(this: &RtcIdentityValidationResult) -> String;
+    pub fn get_identity(this: &RtcIdentityValidationResult) -> ::alloc::string::String;
     #[doc = "Change the `identity` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityValidationResult`*"]

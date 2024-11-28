@@ -15,7 +15,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]
     #[deprecated]
     #[wasm_bindgen(method, getter = "locale")]
-    pub fn get_locale(this: &IdbIndexParameters) -> Option<String>;
+    pub fn get_locale(this: &IdbIndexParameters) -> Option<::alloc::string::String>;
     #[doc = "Change the `locale` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbIndexParameters`*"]

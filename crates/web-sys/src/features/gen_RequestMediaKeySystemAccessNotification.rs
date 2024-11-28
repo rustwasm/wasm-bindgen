@@ -14,7 +14,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RequestMediaKeySystemAccessNotification`*"]
     #[wasm_bindgen(method, getter = "keySystem")]
-    pub fn get_key_system(this: &RequestMediaKeySystemAccessNotification) -> String;
+    pub fn get_key_system(
+        this: &RequestMediaKeySystemAccessNotification,
+    ) -> ::alloc::string::String;
     #[doc = "Change the `keySystem` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RequestMediaKeySystemAccessNotification`*"]

@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesKeyAlgorithm`*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &AesKeyAlgorithm) -> String;
+    pub fn get_name(this: &AesKeyAlgorithm) -> ::alloc::string::String;
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesKeyAlgorithm`*"]

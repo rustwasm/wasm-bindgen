@@ -74,7 +74,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisErrorEventInit`*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &SpeechSynthesisErrorEventInit) -> Option<String>;
+    pub fn get_name(this: &SpeechSynthesisErrorEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisErrorEventInit`*"]

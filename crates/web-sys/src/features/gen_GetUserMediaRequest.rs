@@ -32,21 +32,21 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GetUserMediaRequest/callID)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GetUserMediaRequest`*"]
-    pub fn call_id(this: &GetUserMediaRequest) -> String;
+    pub fn call_id(this: &GetUserMediaRequest) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "GetUserMediaRequest" , js_name = rawID)]
     #[doc = "Getter for the `rawID` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GetUserMediaRequest/rawID)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GetUserMediaRequest`*"]
-    pub fn raw_id(this: &GetUserMediaRequest) -> String;
+    pub fn raw_id(this: &GetUserMediaRequest) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "GetUserMediaRequest" , js_name = mediaSource)]
     #[doc = "Getter for the `mediaSource` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GetUserMediaRequest/mediaSource)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `GetUserMediaRequest`*"]
-    pub fn media_source(this: &GetUserMediaRequest) -> String;
+    pub fn media_source(this: &GetUserMediaRequest) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "GetUserMediaRequest" , js_name = isSecure)]
     #[doc = "Getter for the `isSecure` field of this object."]
     #[doc = ""]

@@ -54,7 +54,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaQueryListEventInit`*"]
     #[wasm_bindgen(method, getter = "media")]
-    pub fn get_media(this: &MediaQueryListEventInit) -> Option<String>;
+    pub fn get_media(this: &MediaQueryListEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `media` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaQueryListEventInit`*"]

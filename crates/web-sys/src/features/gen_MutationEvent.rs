@@ -26,21 +26,21 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationEvent/prevValue)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MutationEvent`*"]
-    pub fn prev_value(this: &MutationEvent) -> String;
+    pub fn prev_value(this: &MutationEvent) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "MutationEvent" , js_name = newValue)]
     #[doc = "Getter for the `newValue` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationEvent/newValue)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MutationEvent`*"]
-    pub fn new_value(this: &MutationEvent) -> String;
+    pub fn new_value(this: &MutationEvent) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "MutationEvent" , js_name = attrName)]
     #[doc = "Getter for the `attrName` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationEvent/attrName)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MutationEvent`*"]
-    pub fn attr_name(this: &MutationEvent) -> String;
+    pub fn attr_name(this: &MutationEvent) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "MutationEvent" , js_name = attrChange)]
     #[doc = "Getter for the `attrChange` field of this object."]
     #[doc = ""]

@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
     #[wasm_bindgen(method, getter = "property")]
-    pub fn get_property(this: &AnimationPropertyDetails) -> String;
+    pub fn get_property(this: &AnimationPropertyDetails) -> ::alloc::string::String;
     #[doc = "Change the `property` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
@@ -44,7 +44,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]
     #[wasm_bindgen(method, getter = "warning")]
-    pub fn get_warning(this: &AnimationPropertyDetails) -> Option<String>;
+    pub fn get_warning(this: &AnimationPropertyDetails) -> Option<::alloc::string::String>;
     #[doc = "Change the `warning` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyDetails`*"]

@@ -44,7 +44,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcdtmfToneChangeEventInit`*"]
     #[wasm_bindgen(method, getter = "tone")]
-    pub fn get_tone(this: &RtcdtmfToneChangeEventInit) -> Option<String>;
+    pub fn get_tone(this: &RtcdtmfToneChangeEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `tone` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcdtmfToneChangeEventInit`*"]

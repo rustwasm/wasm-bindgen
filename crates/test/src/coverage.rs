@@ -1,3 +1,4 @@
+use alloc::vec::Vec;
 use wasm_bindgen::prelude::wasm_bindgen;
 
 #[cfg(wasm_bindgen_unstable_test_coverage)]

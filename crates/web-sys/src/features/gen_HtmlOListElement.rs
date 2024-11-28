@@ -46,7 +46,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOListElement/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOListElement`*"]
-    pub fn type_(this: &HtmlOListElement) -> String;
+    pub fn type_(this: &HtmlOListElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLOListElement" , js_name = type)]
     #[doc = "Setter for the `type` field of this object."]
     #[doc = ""]

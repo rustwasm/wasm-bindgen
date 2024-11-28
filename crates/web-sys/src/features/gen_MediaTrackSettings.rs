@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackSettings`*"]
     #[wasm_bindgen(method, getter = "deviceId")]
-    pub fn get_device_id(this: &MediaTrackSettings) -> Option<String>;
+    pub fn get_device_id(this: &MediaTrackSettings) -> Option<::alloc::string::String>;
     #[doc = "Change the `deviceId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackSettings`*"]
@@ -54,7 +54,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackSettings`*"]
     #[wasm_bindgen(method, getter = "facingMode")]
-    pub fn get_facing_mode(this: &MediaTrackSettings) -> Option<String>;
+    pub fn get_facing_mode(this: &MediaTrackSettings) -> Option<::alloc::string::String>;
     #[doc = "Change the `facingMode` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaTrackSettings`*"]

@@ -26,7 +26,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn rid(this: &KeyFrameRequestEvent) -> Option<String>;
+    pub fn rid(this: &KeyFrameRequestEvent) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[wasm_bindgen(catch, constructor, js_class = "KeyFrameRequestEvent")]
     #[doc = "The `new KeyFrameRequestEvent(..)` constructor, creating a new instance of `KeyFrameRequestEvent`."]
