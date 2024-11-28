@@ -1595,20 +1595,23 @@ pub mod __rt {
     /// Wrapper around [`::once_cell::unsync::Lazy`] adding some compatibility methods with
     /// [`std::thread::LocalKey`] and adding `Send + Sync` when `atomics` is not enabled.
     #[cfg(not(feature = "std"))]
-    pub struct LazyCell<T>(::once_cell::unsync::Lazy<T>);
+    pub struct LazyCell<T, F = fn() -> T>(::once_cell::unsync::Lazy<T, F>);
 
     #[cfg(all(not(target_feature = "atomics"), not(feature = "std")))]
-    unsafe impl<T> Sync for LazyCell<T> {}
+    unsafe impl<T, F> Sync for LazyCell<T, F> {}
 
     #[cfg(all(not(target_feature = "atomics"), not(feature = "std")))]
-    unsafe impl<T> Send for LazyCell<T> {}
+    unsafe impl<T, F> Send for LazyCell<T, F> {}
 
     #[cfg(not(feature = "std"))]
-    impl<T> LazyCell<T> {
-        pub const fn new(init: fn() -> T) -> LazyCell<T> {
+    impl<T, F> LazyCell<T, F> {
+        pub const fn new(init: F) -> LazyCell<T, F> {
             Self(::once_cell::unsync::Lazy::new(init))
         }
+    }
 
+    #[cfg(not(feature = "std"))]
+    impl<T, F: FnOnce() -> T> LazyCell<T, F> {
         pub(crate) fn try_with<R>(
             &self,
             f: impl FnOnce(&T) -> R,

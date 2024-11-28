@@ -37,7 +37,7 @@ impl<T> ScopedKey<T> {
     #[doc(hidden)]
     /// # Safety
     /// `inner` must only be accessed through `ScopedKey`'s API
-    pub const unsafe fn new(inner: &'static Wrapper<Cell<*const ()>>) -> Self {
+    pub(super) const unsafe fn new(inner: &'static Wrapper<Cell<*const ()>>) -> Self {
         Self {
             inner,
             _marker: PhantomData,

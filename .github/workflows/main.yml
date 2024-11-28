@@ -540,13 +540,22 @@ jobs:
   msrv-lib:
     name: Check MSRV for libraries
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - x86_64-unknown-linux-gnu
+          - wasm32-unknown-unknown
+        features:
+          - --no-default-features
+          - ""
     defaults:
       run:
         working-directory: crates/msrv/lib
     steps:
     - uses: actions/checkout@v4
-    - run: rustup update --no-self-update 1.57 && rustup default 1.57
-    - run: cargo build
+    - run: rustup update --no-self-update 1.57 && rustup default 1.57 && rustup target add ${{ matrix.target }}
+    - run: cargo build --target ${{ matrix.target }} ${{ matrix.features }}
 
   msrv-cli:
     name: Check MSRV for CLI tools
