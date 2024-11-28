@@ -237,6 +237,23 @@ impl BindgenAttrs {
         }
     }
 
+    fn get_thread_local(&self) -> Result<Option<ThreadLocal>, Diagnostic> {
+        let mut thread_local = self.thread_local_v2().map(|_| ThreadLocal::V2);
+
+        if let Some(span) = self.thread_local() {
+            if thread_local.is_some() {
+                return Err(Diagnostic::span_error(
+                    *span,
+                    "`thread_local` can't be used with `thread_local_v2`",
+                ));
+            } else {
+                thread_local = Some(ThreadLocal::V1)
+            }
+        }
+
+        Ok(thread_local)
+    }
+
     attrgen!(methods);
 }
 
@@ -779,18 +796,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             self.ident,
             ShortHash((&js_name, module, &self.ident)),
         );
-        let mut thread_local = opts.thread_local_v2().map(|_| ThreadLocal::V2);
-
-        if let Some(span) = opts.thread_local() {
-            if thread_local.is_some() {
-                return Err(Diagnostic::span_error(
-                    *span,
-                    "`thread_local` can't be used with `thread_local_v2`",
-                ));
-            } else {
-                thread_local = Some(ThreadLocal::V1)
-            }
-        }
+        let thread_local = opts.get_thread_local()?;
 
         opts.check_used();
         Ok(ast::ImportKind::Static(ast::ImportStatic {
@@ -838,20 +844,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             )
         }
 
-        let mut thread_local = opts.thread_local_v2().map(|_| ThreadLocal::V2);
-
-        if let Some(span) = opts.thread_local() {
-            if thread_local.is_some() {
-                return Err(Diagnostic::span_error(
-                    *span,
-                    "`thread_local` can't be used with `thread_local_v2`",
-                ));
-            } else {
-                thread_local = Some(ThreadLocal::V1)
-            }
-        }
-
-        let thread_local = if let Some(thread_local) = thread_local {
+        let thread_local = if let Some(thread_local) = opts.get_thread_local()? {
             thread_local
         } else {
             bail_span!(
