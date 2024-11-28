@@ -445,10 +445,8 @@ impl InterfaceMethod<'_> {
                     let js_name = raw_ident(js_name);
                     extra_args.push(quote!( js_name = #js_name ));
                 }
-                let method_buffer;
                 let method = if *is_static {
-                    method_buffer = format!("{js_name}_static");
-                    &method_buffer
+                    &format!("{js_name}_static")
                 } else {
                     js_name
                 };

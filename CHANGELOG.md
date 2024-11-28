@@ -32,9 +32,6 @@
 * Added support for `no_std` to `link_to!`, `static_string` (via `thread_local_v2`) and `throw`.
   [#4277](https://github.com/rustwasm/wasm-bindgen/pull/4277)
 
-* Updated the WebGPU API to the current draft as of 2024-11-22.
-  [#4290](https://github.com/rustwasm/wasm-bindgen/pull/4290)
-
 ### Changed
 
 * String enums now generate private TypeScript types but only if used.
@@ -57,6 +54,9 @@
 
 * Deprecated `#[wasm_bindgen(thread_local)]` in favor of `#[wasm_bindgen(thread_local_v2)]`, which creates a `wasm_bindgen::JsThreadLocal`. It is similar to `std::thread::LocalKey` but supports `no_std`.
   [#4277](https://github.com/rustwasm/wasm-bindgen/pull/4277)
+
+* Updated the WebGPU API to the current draft as of 2024-11-22.
+  [#4290](https://github.com/rustwasm/wasm-bindgen/pull/4290)
 
 ### Fixed
 
