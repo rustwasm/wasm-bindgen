@@ -707,7 +707,7 @@ pub struct ArrayIter<'a> {
     array: &'a Array,
 }
 
-impl<'a> core::iter::Iterator for ArrayIter<'a> {
+impl core::iter::Iterator for ArrayIter<'_> {
     type Item = JsValue;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -743,7 +743,7 @@ impl<'a> core::iter::Iterator for ArrayIter<'a> {
     }
 }
 
-impl<'a> core::iter::DoubleEndedIterator for ArrayIter<'a> {
+impl core::iter::DoubleEndedIterator for ArrayIter<'_> {
     fn next_back(&mut self) -> Option<Self::Item> {
         let index = self.range.next_back()?;
         Some(self.array.get(index))
@@ -754,9 +754,9 @@ impl<'a> core::iter::DoubleEndedIterator for ArrayIter<'a> {
     }
 }
 
-impl<'a> core::iter::FusedIterator for ArrayIter<'a> {}
+impl core::iter::FusedIterator for ArrayIter<'_> {}
 
-impl<'a> core::iter::ExactSizeIterator for ArrayIter<'a> {}
+impl core::iter::ExactSizeIterator for ArrayIter<'_> {}
 
 impl Array {
     /// Returns an iterator over the values of the JS array.
@@ -2311,7 +2311,7 @@ impl<'a> IntoIterator for &'a Iterator {
     }
 }
 
-impl<'a> core::iter::Iterator for Iter<'a> {
+impl core::iter::Iterator for Iter<'_> {
     type Item = Result<JsValue, JsValue>;
 
     fn next(&mut self) -> Option<Self::Item> {

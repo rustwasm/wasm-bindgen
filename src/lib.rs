@@ -1733,7 +1733,7 @@ pub mod __rt {
         borrow: &'b Cell<usize>,
     }
 
-    impl<'b, T: ?Sized> Deref for Ref<'b, T> {
+    impl<T: ?Sized> Deref for Ref<'_, T> {
         type Target = T;
 
         #[inline]
@@ -1742,14 +1742,14 @@ pub mod __rt {
         }
     }
 
-    impl<'b, T: ?Sized> Borrow<T> for Ref<'b, T> {
+    impl<T: ?Sized> Borrow<T> for Ref<'_, T> {
         #[inline]
         fn borrow(&self) -> &T {
             self.value
         }
     }
 
-    impl<'b, T: ?Sized> Drop for Ref<'b, T> {
+    impl<T: ?Sized> Drop for Ref<'_, T> {
         fn drop(&mut self) {
             self.borrow.set(self.borrow.get() - 1);
         }
@@ -1760,7 +1760,7 @@ pub mod __rt {
         borrow: &'b Cell<usize>,
     }
 
-    impl<'b, T: ?Sized> Deref for RefMut<'b, T> {
+    impl<T: ?Sized> Deref for RefMut<'_, T> {
         type Target = T;
 
         #[inline]
@@ -1769,28 +1769,28 @@ pub mod __rt {
         }
     }
 
-    impl<'b, T: ?Sized> DerefMut for RefMut<'b, T> {
+    impl<T: ?Sized> DerefMut for RefMut<'_, T> {
         #[inline]
         fn deref_mut(&mut self) -> &mut T {
             self.value
         }
     }
 
-    impl<'b, T: ?Sized> Borrow<T> for RefMut<'b, T> {
+    impl<T: ?Sized> Borrow<T> for RefMut<'_, T> {
         #[inline]
         fn borrow(&self) -> &T {
             self.value
         }
     }
 
-    impl<'b, T: ?Sized> BorrowMut<T> for RefMut<'b, T> {
+    impl<T: ?Sized> BorrowMut<T> for RefMut<'_, T> {
         #[inline]
         fn borrow_mut(&mut self) -> &mut T {
             self.value
         }
     }
 
-    impl<'b, T: ?Sized> Drop for RefMut<'b, T> {
+    impl<T: ?Sized> Drop for RefMut<'_, T> {
         fn drop(&mut self) {
             self.borrow.set(0);
         }

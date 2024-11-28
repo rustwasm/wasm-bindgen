@@ -362,7 +362,7 @@ impl<'a> IntoWasmAbi for &'a str {
     }
 }
 
-impl<'a> OptionIntoWasmAbi for &'a str {
+impl OptionIntoWasmAbi for &str {
     #[inline]
     fn none() -> Self::Abi {
         null_slice()
