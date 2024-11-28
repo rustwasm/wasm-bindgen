@@ -57,7 +57,7 @@ macro_rules! stack_closures {
             #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
             fn describe() {
                 inform(FUNCTION);
-                inform($invoke::<$($var,)* R> as u32);
+                inform($invoke::<$($var,)* R> as usize as u32);
                 inform($cnt);
                 $(<$var as WasmDescribe>::describe();)*
                 <R as WasmDescribe>::describe();
@@ -112,7 +112,7 @@ macro_rules! stack_closures {
             #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
             fn describe() {
                 inform(FUNCTION);
-                inform($invoke_mut::<$($var,)* R> as u32);
+                inform($invoke_mut::<$($var,)* R> as usize as u32);
                 inform($cnt);
                 $(<$var as WasmDescribe>::describe();)*
                 <R as WasmDescribe>::describe();
@@ -183,7 +183,7 @@ where
     #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
     fn describe() {
         inform(FUNCTION);
-        inform(invoke1_ref::<A, R> as u32);
+        inform(invoke1_ref::<A, R> as usize as u32);
         inform(1);
         <&A as WasmDescribe>::describe();
         <R as WasmDescribe>::describe();
@@ -240,7 +240,7 @@ where
     #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
     fn describe() {
         inform(FUNCTION);
-        inform(invoke1_mut_ref::<A, R> as u32);
+        inform(invoke1_mut_ref::<A, R> as usize as u32);
         inform(1);
         <&A as WasmDescribe>::describe();
         <R as WasmDescribe>::describe();

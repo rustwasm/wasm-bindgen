@@ -1,5 +1,4 @@
-use std::f64::consts::PI;
-use std::f64::{NAN, NEG_INFINITY};
+use std::f64::consts::{FRAC_PI_3, LN_2, LOG10_2, PI};
 
 use js_sys::*;
 use wasm_bindgen_test::*;
@@ -30,7 +29,7 @@ fn abs() {
 #[wasm_bindgen_test]
 fn acos() {
     assert_eq!(Math::acos(-1.), PI);
-    assert_eq!(Math::acos(0.5), 1.0471975511965979);
+    assert_eq!(Math::acos(0.5), FRAC_PI_3);
     assert!(Math::acos(2.).is_nan());
 }
 
@@ -127,9 +126,9 @@ fn floor() {
 #[wasm_bindgen_test]
 fn fround() {
     assert!(Math::fround(5.5) == 5.5);
-    assert!(Math::fround(5.05) == 5.050000190734863);
+    assert!(Math::fround(5.05) == 5.05);
     assert!(Math::fround(5.) == 5.);
-    assert!(Math::fround(-5.05) == -5.050000190734863);
+    assert!(Math::fround(-5.05) == -5.05);
 }
 
 #[wasm_bindgen_test]
@@ -157,14 +156,14 @@ fn log() {
 fn log10() {
     assert_eq!(Math::log10(100000.), 5.);
     assert_eq!(Math::log10(1.), 0.);
-    assert_eq!(Math::log10(2.), 0.3010299956639812);
+    assert_eq!(Math::log10(2.), LOG10_2);
 }
 
 #[wasm_bindgen_test]
 fn log1p() {
-    assert_eq!(Math::log1p(1.), 0.6931471805599453);
+    assert_eq!(Math::log1p(1.), LN_2);
     assert_eq!(Math::log1p(0.), 0.);
-    assert_eq!(Math::log1p(-1.), NEG_INFINITY);
+    assert_eq!(Math::log1p(-1.), f64::NEG_INFINITY);
     assert!(Math::log1p(-2.).is_nan());
 }
 
@@ -173,7 +172,7 @@ fn log2() {
     assert_eq!(Math::log2(3.), 1.584962500721156);
     assert_eq!(Math::log2(2.), 1.);
     assert_eq!(Math::log2(1.), 0.);
-    assert_eq!(Math::log2(0.), NEG_INFINITY);
+    assert_eq!(Math::log2(0.), f64::NEG_INFINITY);
 }
 
 #[wasm_bindgen_test]
@@ -222,7 +221,7 @@ fn sign() {
     assert_eq!(Math::sign(-3.), -1.);
     assert_eq!(Math::sign(2.3), 1.);
     assert_eq!(Math::sign(0.), 0.);
-    assert!(Math::sign(NAN).is_nan());
+    assert!(Math::sign(f64::NAN).is_nan());
 }
 
 #[wasm_bindgen_test]

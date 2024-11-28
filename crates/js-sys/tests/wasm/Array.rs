@@ -13,9 +13,7 @@ macro_rules! js_array {
 
 macro_rules! array {
     ($($e:expr),*) => ({
-        let mut __x = Vec::new();
-        $(__x.push(JsValue::from($e));)*
-        __x
+        vec![$(JsValue::from($e)),*]
     })
 }
 
@@ -38,7 +36,7 @@ fn from_iter() {
 
     assert_eq!(
         to_rust(
-            &vec![JsValue::from("a"), JsValue::from("b"), JsValue::from("c"),]
+            &[JsValue::from("a"), JsValue::from("b"), JsValue::from("c")]
                 .iter()
                 .collect()
         ),
@@ -53,7 +51,7 @@ fn from_iter() {
     );
 
     assert_eq!(
-        to_rust(&vec![array.clone(),].iter().collect()),
+        to_rust(&[array.clone()].iter().collect()),
         vec![JsValue::from(array)],
     );
 
@@ -74,7 +72,7 @@ fn from_iter() {
     let v = vec!["a", "b", "c"];
 
     assert_eq!(
-        to_rust(&Array::from_iter(v.into_iter().map(|s| JsValue::from(s)))),
+        to_rust(&Array::from_iter(v.into_iter().map(JsValue::from))),
         vec!["a", "b", "c"],
     );
 }
@@ -290,6 +288,7 @@ fn sort() {
 }
 
 #[wasm_bindgen_test]
+#[allow(clippy::cmp_owned)]
 fn some() {
     let array = js_array!["z", 1, "y", 2];
     assert!(array.some(&mut |e| e == JsValue::from(2)));
@@ -553,7 +552,7 @@ fn find_last_index() {
 fn to_locale_string() {
     let output = js_array![1, "a", Date::new(&"21 Dec 1997 14:12:00 UTC".into())]
         .to_locale_string(&"en".into(), &JsValue::undefined());
-    assert!(String::from(output).len() > 0);
+    assert!(!String::from(output).is_empty());
 }
 
 #[wasm_bindgen_test]
@@ -567,7 +566,7 @@ fn for_each() {
         res
     }
 
-    assert_eq!(sum_indices_of_evens(&js_array![2, 4, 6, 8]), 0 + 1 + 2 + 3);
+    assert_eq!(sum_indices_of_evens(&js_array![2, 4, 6, 8]), 1 + 2 + 3);
     assert_eq!(sum_indices_of_evens(&js_array![1, 3, 5, 7]), 0);
     assert_eq!(sum_indices_of_evens(&js_array![3, 5, 7, 10]), 3);
 }
@@ -578,7 +577,7 @@ fn set_length() {
     array.set_length(3);
     assert_eq!(
         array.iter().collect::<Vec<_>>(),
-        [1.0, 2.0, 3.0].map(|x| JsValue::from_f64(x))
+        [1.0, 2.0, 3.0].map(JsValue::from_f64)
     );
 
     array.set_length(7);
@@ -587,7 +586,7 @@ fn set_length() {
         [1.0, 2.0, 3.0]
             .iter()
             .copied()
-            .map(|x| JsValue::from_f64(x))
+            .map(JsValue::from_f64)
             .chain([JsValue::UNDEFINED; 4])
             .collect::<Vec<_>>()
     );
@@ -620,8 +619,7 @@ fn test_array_view_mut_raw<ElemT: std::cmp::PartialEq + std::fmt::Debug, ArrT>(
     let start: u8 = 10;
     let len: usize = 32;
     let end: u8 = start + len as u8;
-    let mut buffer: Vec<ElemT> = Vec::new();
-    buffer.reserve(len);
+    let mut buffer: Vec<ElemT> = Vec::with_capacity(len);
     unsafe {
         let array: ArrT = sut(buffer.as_mut_ptr(), len);
         populate_array(

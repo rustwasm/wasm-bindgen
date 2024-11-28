@@ -1,12 +1,9 @@
-use std::f64::{INFINITY, NAN};
-
 use js_sys::*;
 use wasm_bindgen_test::*;
 
 #[wasm_bindgen_test]
 fn test_decode_uri() {
     let x = decode_uri("https://mozilla.org/?x=%D1%88%D0%B5%D0%BB%D0%BB%D1%8B")
-        .ok()
         .expect("should decode URI OK");
     assert_eq!(String::from(x), "https://mozilla.org/?x=шеллы");
 
@@ -15,9 +12,7 @@ fn test_decode_uri() {
 
 #[wasm_bindgen_test]
 fn test_decode_uri_component() {
-    let x = decode_uri_component("%3Fx%3Dtest")
-        .ok()
-        .expect("should decode URI OK");
+    let x = decode_uri_component("%3Fx%3Dtest").expect("should decode URI OK");
     assert_eq!(String::from(x), "?x=test");
 
     assert!(decode_uri_component("%E0%A4%A").is_err());
@@ -37,12 +32,10 @@ fn test_encode_uri_component() {
 
 #[wasm_bindgen_test]
 fn test_eval() {
-    let x = eval("42").ok().expect("should eval OK");
+    let x = eval("42").expect("should eval OK");
     assert_eq!(x.as_f64().unwrap(), 42.0);
 
-    let err = eval("(function () { throw 42; }())")
-        .err()
-        .expect("eval should throw");
+    let err = eval("(function () { throw 42; }())").expect_err("eval should throw");
     assert_eq!(err.as_f64().unwrap(), 42.0);
 }
 
@@ -51,8 +44,8 @@ fn test_is_finite() {
     assert!(is_finite(&42.into()));
     assert!(is_finite(&42.1.into()));
     assert!(is_finite(&"42".into()));
-    assert!(!is_finite(&NAN.into()));
-    assert!(!is_finite(&INFINITY.into()));
+    assert!(!is_finite(&f64::NAN.into()));
+    assert!(!is_finite(&f64::INFINITY.into()));
 }
 
 #[wasm_bindgen_test]

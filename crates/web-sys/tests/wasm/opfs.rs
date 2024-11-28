@@ -26,8 +26,9 @@ async fn create_directory(
     path: &str,
 ) -> FileSystemDirectoryHandle {
     let mut opts = FileSystemGetDirectoryOptions::new();
+    #[allow(deprecated)]
     opts.create(true);
-    JsFuture::from(dir.get_directory_handle_with_options(&path, &opts))
+    JsFuture::from(dir.get_directory_handle_with_options(path, &opts))
         .await
         .expect("Couldn't create test directory")
         .dyn_into::<FileSystemDirectoryHandle>()
@@ -41,6 +42,7 @@ async fn create_test_directory(path: &str) -> FileSystemDirectoryHandle {
 
 async fn create_file(dir: &FileSystemDirectoryHandle, path: &str) {
     let mut opts = FileSystemGetFileOptions::new();
+    #[allow(deprecated)]
     opts.create(true);
     let _ = JsFuture::from(dir.get_file_handle_with_options(path, &opts)).await;
 }
@@ -81,8 +83,9 @@ async fn test_write_to_file() {
 
     // create file
     let mut opts = FileSystemGetFileOptions::new();
+    #[allow(deprecated)]
     opts.create(true);
-    let file = JsFuture::from(test_dir.get_file_handle_with_options(&"test.txt", &opts))
+    let file = JsFuture::from(test_dir.get_file_handle_with_options("test.txt", &opts))
         .await
         .expect("Couldn't create file")
         .dyn_into::<FileSystemFileHandle>()
@@ -95,11 +98,11 @@ async fn test_write_to_file() {
         .unwrap()
         .dyn_into::<FileSystemWritableFileStream>()
         .unwrap();
-    JsFuture::from(write_stream.write_with_str(test_txt).unwrap()).await;
+    let _ = JsFuture::from(write_stream.write_with_str(test_txt).unwrap()).await;
     JsFuture::from(write_stream.close()).await.unwrap();
 
     // Read and check contents
-    let mut values = JsStream::from(test_dir.values())
+    let values = JsStream::from(test_dir.values())
         .map(|x| x.unwrap().dyn_into::<FileSystemFileHandle>().unwrap())
         .collect::<Vec<_>>()
         .await;
@@ -140,17 +143,17 @@ async fn test_entries() {
     assert_eq!(entries.len(), 3);
 
     match entries.get("dir") {
-        Some(handle) => assert!(FileSystemDirectoryHandle::instanceof(&handle)),
+        Some(handle) => assert!(FileSystemDirectoryHandle::instanceof(handle)),
         _ => panic!("Didn't find directory"),
     }
 
     match entries.get("file") {
-        Some(handle) => assert!(FileSystemFileHandle::instanceof(&handle)),
+        Some(handle) => assert!(FileSystemFileHandle::instanceof(handle)),
         _ => panic!("Couldn't find file"),
     }
 
     match entries.get("file2") {
-        Some(handle) => assert!(FileSystemFileHandle::instanceof(&handle)),
+        Some(handle) => assert!(FileSystemFileHandle::instanceof(handle)),
         _ => panic!("Couldn't find file2"),
     }
 }
