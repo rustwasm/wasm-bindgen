@@ -1,0 +1,703 @@
+
+Input: |
+    This is a description.
+
+Output: |
+    This is a description.
+
+Ast: |
+    JsDoc {
+        description: Some(
+            "This is a description.",
+        ),
+        tags: [],
+    }
+
+---
+
+Input: |
+    This is
+     
+
+    a multi-line
+    description.
+
+Output: |
+    This is
+     
+
+    a multi-line
+    description.
+
+Ast: |
+    JsDoc {
+        description: Some(
+            "This is\n \n\na multi-line\ndescription.",
+        ),
+        tags: [],
+    }
+
+---
+
+Input: |
+    This is a description with tag.
+
+    @public
+
+Output: |
+    This is a description with tag.
+    @public
+
+Ast: |
+    JsDoc {
+        description: Some(
+            "This is a description with tag.",
+        ),
+        tags: [
+            Unknown(
+                UnknownTag {
+                    tag: "@public",
+                    text: "",
+                },
+            ),
+        ],
+    }
+
+---
+
+Input: |
+    This is a description with tag.
+    @public
+
+Output: |
+    This is a description with tag.
+    @public
+
+Ast: |
+    JsDoc {
+        description: Some(
+            "This is a description with tag.",
+        ),
+        tags: [
+            Unknown(
+                UnknownTag {
+                    tag: "@public",
+                    text: "",
+                },
+            ),
+        ],
+    }
+
+---
+
+Input: |
+    @param foo
+    @param foo description
+    @param foo
+    description
+    @param [foo]
+    @param [foo] description
+    @param [foo]
+    description
+    @param [foo=123]
+    @param [foo=123] description
+    @param [foo=123]
+    description
+    @param {number} foo
+    @param {number} foo description
+    @param {number} [foo]
+    @param {number} [foo] description
+    @param {number} [foo=123]
+    @param {number} [foo=123] description
+    @param {object} obj
+    @param {string} obj.name
+    @param {object[]} obj.locations
+    @param {string} obj.locations[].address
+    @param {} foo
+
+Output: |
+    @param foo
+    @param foo description
+    @param foo
+    description
+    @param [foo]
+    @param [foo] description
+    @param [foo]
+    description
+    @param [foo=123]
+    @param [foo=123] description
+    @param [foo=123]
+    description
+    @param {number} foo
+    @param {number} foo description
+    @param {number} [foo]
+    @param {number} [foo] description
+    @param {number} [foo=123]
+    @param {number} [foo=123] description
+    @param {object} obj
+    @param {string} obj.name
+    @param {object[]} obj.locations
+    @param {string} obj.locations[].address
+    @param {} foo
+
+Ast: |
+    JsDoc {
+        description: None,
+        tags: [
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: None,
+                    name: "foo",
+                    optional: Required,
+                    description: "",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: None,
+                    name: "foo",
+                    optional: Required,
+                    description: "description",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: None,
+                    name: "foo",
+                    optional: Required,
+                    description: "\ndescription",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: None,
+                    name: "foo",
+                    optional: Optional,
+                    description: "",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: None,
+                    name: "foo",
+                    optional: Optional,
+                    description: "description",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: None,
+                    name: "foo",
+                    optional: Optional,
+                    description: "\ndescription",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: None,
+                    name: "foo",
+                    optional: OptionalWithDefault(
+                        "123",
+                    ),
+                    description: "",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: None,
+                    name: "foo",
+                    optional: OptionalWithDefault(
+                        "123",
+                    ),
+                    description: "description",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: None,
+                    name: "foo",
+                    optional: OptionalWithDefault(
+                        "123",
+                    ),
+                    description: "\ndescription",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: Some(
+                        "number",
+                    ),
+                    name: "foo",
+                    optional: Required,
+                    description: "",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: Some(
+                        "number",
+                    ),
+                    name: "foo",
+                    optional: Required,
+                    description: "description",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: Some(
+                        "number",
+                    ),
+                    name: "foo",
+                    optional: Optional,
+                    description: "",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: Some(
+                        "number",
+                    ),
+                    name: "foo",
+                    optional: Optional,
+                    description: "description",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: Some(
+                        "number",
+                    ),
+                    name: "foo",
+                    optional: OptionalWithDefault(
+                        "123",
+                    ),
+                    description: "",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: Some(
+                        "number",
+                    ),
+                    name: "foo",
+                    optional: OptionalWithDefault(
+                        "123",
+                    ),
+                    description: "description",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: Some(
+                        "object",
+                    ),
+                    name: "obj",
+                    optional: Required,
+                    description: "",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: Some(
+                        "string",
+                    ),
+                    name: "obj.name",
+                    optional: Required,
+                    description: "",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: Some(
+                        "object[]",
+                    ),
+                    name: "obj.locations",
+                    optional: Required,
+                    description: "",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: Some(
+                        "string",
+                    ),
+                    name: "obj.locations[].address",
+                    optional: Required,
+                    description: "",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: Some(
+                        "",
+                    ),
+                    name: "foo",
+                    optional: Required,
+                    description: "",
+                },
+            ),
+        ],
+    }
+
+---
+
+Input: |
+    @param {string} foo
+    @param{string}foo  
+    @param{string}[foo]
+
+Output: |
+    @param {string} foo
+    @param {string} foo
+    @param {string} [foo]
+
+Ast: |
+    JsDoc {
+        description: None,
+        tags: [
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: Some(
+                        "string",
+                    ),
+                    name: "foo",
+                    optional: Required,
+                    description: "",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: Some(
+                        "string",
+                    ),
+                    name: "foo",
+                    optional: Required,
+                    description: "",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: Some(
+                        "string",
+                    ),
+                    name: "foo",
+                    optional: Optional,
+                    description: "",
+                },
+            ),
+        ],
+    }
+
+---
+
+Input: |
+    @arg foo
+    @arg {string} foo
+    @argument foo
+    @argument {string} foo
+
+Output: |
+    @arg foo
+    @arg {string} foo
+    @argument foo
+    @argument {string} foo
+
+Ast: |
+    JsDoc {
+        description: None,
+        tags: [
+            Param(
+                ParamTag {
+                    tag: "@arg",
+                    ty: None,
+                    name: "foo",
+                    optional: Required,
+                    description: "",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@arg",
+                    ty: Some(
+                        "string",
+                    ),
+                    name: "foo",
+                    optional: Required,
+                    description: "",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@argument",
+                    ty: None,
+                    name: "foo",
+                    optional: Required,
+                    description: "",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@argument",
+                    ty: Some(
+                        "string",
+                    ),
+                    name: "foo",
+                    optional: Required,
+                    description: "",
+                },
+            ),
+        ],
+    }
+
+---
+
+Input: |
+    @returns
+    @returns description
+    @returns
+    description
+    @returns {string}
+    @returns {string} description
+    @returns {string}
+    description
+
+Output: |
+    @returns
+    @returns description
+    @returns description
+    @returns {string}
+    @returns {string} description
+    @returns {string} description
+
+Ast: |
+    JsDoc {
+        description: None,
+        tags: [
+            Returns(
+                ReturnsTag {
+                    tag: "@returns",
+                    ty: None,
+                    description: "",
+                },
+            ),
+            Returns(
+                ReturnsTag {
+                    tag: "@returns",
+                    ty: None,
+                    description: "description",
+                },
+            ),
+            Returns(
+                ReturnsTag {
+                    tag: "@returns",
+                    ty: None,
+                    description: "description",
+                },
+            ),
+            Returns(
+                ReturnsTag {
+                    tag: "@returns",
+                    ty: Some(
+                        "string",
+                    ),
+                    description: "",
+                },
+            ),
+            Returns(
+                ReturnsTag {
+                    tag: "@returns",
+                    ty: Some(
+                        "string",
+                    ),
+                    description: "description",
+                },
+            ),
+            Returns(
+                ReturnsTag {
+                    tag: "@returns",
+                    ty: Some(
+                        "string",
+                    ),
+                    description: "description",
+                },
+            ),
+        ],
+    }
+
+---
+
+Input: |
+    @returns   
+    @returns   description
+    @returns  {} 
+    @returns{void}
+    @returns{void}   
+    @returns{void}description
+    @returns{void}   description
+    @returns
+
+
+    {
+
+    void
+
+    }
+
+Output: |
+    @returns
+    @returns description
+    @returns {}
+    @returns {void}
+    @returns {void}
+    @returns {void} description
+    @returns {void} description
+    @returns {
+
+    void
+
+    }
+
+Ast: |
+    JsDoc {
+        description: None,
+        tags: [
+            Returns(
+                ReturnsTag {
+                    tag: "@returns",
+                    ty: None,
+                    description: "",
+                },
+            ),
+            Returns(
+                ReturnsTag {
+                    tag: "@returns",
+                    ty: None,
+                    description: "description",
+                },
+            ),
+            Returns(
+                ReturnsTag {
+                    tag: "@returns",
+                    ty: Some(
+                        "",
+                    ),
+                    description: "",
+                },
+            ),
+            Returns(
+                ReturnsTag {
+                    tag: "@returns",
+                    ty: Some(
+                        "void",
+                    ),
+                    description: "",
+                },
+            ),
+            Returns(
+                ReturnsTag {
+                    tag: "@returns",
+                    ty: Some(
+                        "void",
+                    ),
+                    description: "",
+                },
+            ),
+            Returns(
+                ReturnsTag {
+                    tag: "@returns",
+                    ty: Some(
+                        "void",
+                    ),
+                    description: "description",
+                },
+            ),
+            Returns(
+                ReturnsTag {
+                    tag: "@returns",
+                    ty: Some(
+                        "void",
+                    ),
+                    description: "description",
+                },
+            ),
+            Returns(
+                ReturnsTag {
+                    tag: "@returns",
+                    ty: Some(
+                        "\n\nvoid\n\n",
+                    ),
+                    description: "",
+                },
+            ),
+        ],
+    }
+
+---
+
+Input: |
+    @returns  {
+
+Output: |
+    @returns  {
+
+Ast: |
+    JsDoc {
+        description: None,
+        tags: [
+            Unknown(
+                UnknownTag {
+                    tag: "@returns",
+                    text: "  {",
+                },
+            ),
+        ],
+    }
+
+---
+
+Input: |
+    @return {string} description
+
+Output: |
+    @return {string} description
+
+Ast: |
+    JsDoc {
+        description: None,
+        tags: [
+            Returns(
+                ReturnsTag {
+                    tag: "@return",
+                    ty: Some(
+                        "string",
+                    ),
+                    description: "description",
+                },
+            ),
+        ],
+    }
+
+---
