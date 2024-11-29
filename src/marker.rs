@@ -1,6 +1,9 @@
 //! This module contains marker traits used by `wasm-bindgen` to verify its
 //! generated code.
 //!
+//! NOTE: This module is not exported as is. It is re-exported under
+//! `wasm_bindgen::__rt::marker`.
+//!
 //! # ⚠️ Unstable
 //!
 //! This is an internal module, no stability guarantees are provided. Use at

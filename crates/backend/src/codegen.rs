@@ -227,11 +227,11 @@ impl ToTokens for ast::Struct {
         let maybe_no_coverage = coverage();
         (quote! {
             #[automatically_derived]
-            impl #wasm_bindgen::marker::SupportsConstructor for #name {}
+            impl #wasm_bindgen::__rt::marker::SupportsConstructor for #name {}
             #[automatically_derived]
-            impl #wasm_bindgen::marker::SupportsInstanceProperty for #name {}
+            impl #wasm_bindgen::__rt::marker::SupportsInstanceProperty for #name {}
             #[automatically_derived]
-            impl #wasm_bindgen::marker::SupportsStaticProperty for #name {}
+            impl #wasm_bindgen::__rt::marker::SupportsStaticProperty for #name {}
 
             #[automatically_derived]
             impl #wasm_bindgen::describe::WasmDescribe for #name {
@@ -805,7 +805,7 @@ impl TryToTokens for ast::Export {
             match &self.method_kind {
                 ast::MethodKind::Constructor => {
                     add_check(quote! {
-                        struct CheckSupportsConstructor<T: #wasm_bindgen::marker::SupportsConstructor>(T);
+                        struct CheckSupportsConstructor<T: #wasm_bindgen::__rt::marker::SupportsConstructor>(T);
                         let _: CheckSupportsConstructor<#class>;
                     });
                 }
@@ -813,12 +813,12 @@ impl TryToTokens for ast::Export {
                     ast::OperationKind::Getter(_) | ast::OperationKind::Setter(_) => {
                         if operation.is_static {
                             add_check(quote! {
-                                struct CheckSupportsStaticProperty<T: #wasm_bindgen::marker::SupportsStaticProperty>(T);
+                                struct CheckSupportsStaticProperty<T: #wasm_bindgen::__rt::marker::SupportsStaticProperty>(T);
                                 let _: CheckSupportsStaticProperty<#class>;
                             });
                         } else {
                             add_check(quote! {
-                                struct CheckSupportsInstanceProperty<T: #wasm_bindgen::marker::SupportsInstanceProperty>(T);
+                                struct CheckSupportsInstanceProperty<T: #wasm_bindgen::__rt::marker::SupportsInstanceProperty>(T);
                                 let _: CheckSupportsInstanceProperty<#class>;
                             });
                         }

@@ -77,7 +77,7 @@ pub mod convert;
 pub mod describe;
 mod externref;
 mod link;
-pub mod marker;
+mod marker;
 
 mod cast;
 pub use crate::cast::{JsCast, JsObject};
@@ -1582,6 +1582,10 @@ pub mod __rt {
     use alloc::alloc::{alloc, dealloc, realloc, Layout};
     use alloc::boxed::Box;
     use alloc::rc::Rc;
+
+    pub mod marker {
+        pub use super::super::marker::*;
+    }
 
     pub mod once_cell {
         #[cfg(any(target_feature = "atomics", feature = "std"))]
