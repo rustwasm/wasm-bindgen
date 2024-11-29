@@ -796,14 +796,15 @@ impl TryToTokens for ast::Export {
         };
 
         if let Some(class) = self.rust_class.as_ref() {
-            // change span of class, so it points to the location of the
-            // function causing the assert to fail
-            let mut class = class.clone();
-            class.set_span(self.rust_name.span());
+            // little helper function to make sure the check points to the
+            // location of the function causing the assert to fail
+            let mut add_check = |token_stream| {
+                checks.push(respan(token_stream, &self.rust_name));
+            };
 
             match &self.method_kind {
                 ast::MethodKind::Constructor => {
-                    checks.push(quote! {
+                    add_check(quote! {
                         struct CheckSupportsConstructor<T: #wasm_bindgen::marker::SupportsConstructor>(T);
                         let _: CheckSupportsConstructor<#class>;
                     });
@@ -811,12 +812,12 @@ impl TryToTokens for ast::Export {
                 ast::MethodKind::Operation(operation) => match operation.kind {
                     ast::OperationKind::Getter(_) | ast::OperationKind::Setter(_) => {
                         if operation.is_static {
-                            checks.push(quote! {
+                            add_check(quote! {
                                 struct CheckSupportsStaticProperty<T: #wasm_bindgen::marker::SupportsStaticProperty>(T);
                                 let _: CheckSupportsStaticProperty<#class>;
                             });
                         } else {
-                            checks.push(quote! {
+                            add_check(quote! {
                                 struct CheckSupportsInstanceProperty<T: #wasm_bindgen::marker::SupportsInstanceProperty>(T);
                                 let _: CheckSupportsInstanceProperty<#class>;
                             });
