@@ -7,7 +7,7 @@ error[E0433]: failed to resolve: could not find `convert` in `test`
    = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: consider importing one of these items
    |
-3  + use crate::test::test::convert;
+3  + use crate::extern_test::convert;
    |
 3  + use wasm_bindgen::convert;
    |

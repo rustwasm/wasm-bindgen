@@ -15,3 +15,41 @@ error[E0277]: the trait bound `A: IntoWasmAbi` is not satisfied
             i128
           and $N others
   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `A: IntoWasmAbi` is not satisfied
+ --> ui-tests/traits-not-implemented.rs:8:19
+  |
+8 |     pub fn foo(a: A);
+  |                   ^ the trait `IntoWasmAbi` is not implemented for `A`
+  |
+  = help: the following other types implement trait `IntoWasmAbi`:
+            bool
+            char
+            isize
+            i8
+            i16
+            i32
+            i64
+            i128
+          and $N others
+
+error[E0277]: the trait bound `A: IntoWasmAbi` is not satisfied
+ --> ui-tests/traits-not-implemented.rs:8:12
+  |
+5 | #[wasm_bindgen]
+  | --------------- in this procedural macro expansion
+...
+8 |     pub fn foo(a: A);
+  |            ^^^ the trait `IntoWasmAbi` is not implemented for `A`
+  |
+  = help: the following other types implement trait `IntoWasmAbi`:
+            bool
+            char
+            isize
+            i8
+            i16
+            i32
+            i64
+            i128
+          and $N others
+  = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)

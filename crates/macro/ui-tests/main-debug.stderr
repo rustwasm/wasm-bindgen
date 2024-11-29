@@ -3,3 +3,11 @@ error: the main function has to be called main
    |
 18 | fn fail() {}
    |    ^^^^
+
+warning: unused variable: `f`
+  --> ui-tests/main-debug.rs:12:19
+   |
+12 |     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+   |                   ^ help: if this is intentional, prefix it with an underscore: `_f`
+   |
+   = note: `#[warn(unused_variables)]` on by default
