@@ -1484,15 +1484,12 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
         }
 
         let generate_typescript = opts.skip_typescript().is_none();
+        let no_export = opts.no_export().is_some();
         let js_name = opts
             .js_name()
             .map(|s| s.0)
             .map_or_else(|| self.ident.to_string(), |s| s.to_string());
         let comments = extract_doc_comments(&self.attrs);
-
-        // don't export private enums and if explicitly requested
-        let no_export =
-            opts.no_export().is_some() || !matches!(self.vis, syn::Visibility::Public(_));
 
         opts.check_used();
 
@@ -1518,11 +1515,6 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
                 no_export,
                 comments,
             );
-        }
-
-        match self.vis {
-            syn::Visibility::Public(_) => {}
-            _ => bail_span!(self, "only public enums are allowed with #[wasm_bindgen]"),
         }
 
         // Go through all variants once first to determine whether the enum is
