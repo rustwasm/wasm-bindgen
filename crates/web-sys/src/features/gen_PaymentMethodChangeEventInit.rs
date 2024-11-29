@@ -68,7 +68,7 @@ impl PaymentMethodChangeEventInit {
     pub fn new(method_name: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.method_name(method_name);
+        ret.set_method_name(method_name);
         ret
     }
     #[deprecated = "Use `set_bubbles()` instead."]

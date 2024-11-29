@@ -82,8 +82,8 @@ impl GpuVertexBufferLayout {
     pub fn new(array_stride: f64, attributes: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.array_stride(array_stride);
-        ret.attributes(attributes);
+        ret.set_array_stride(array_stride);
+        ret.set_attributes(attributes);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

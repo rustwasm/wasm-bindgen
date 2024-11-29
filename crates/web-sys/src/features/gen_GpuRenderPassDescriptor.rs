@@ -147,7 +147,7 @@ impl GpuRenderPassDescriptor {
     pub fn new(color_attachments: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.color_attachments(color_attachments);
+        ret.set_color_attachments(color_attachments);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

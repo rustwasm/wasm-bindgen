@@ -113,10 +113,10 @@ impl CollectedClientData {
     pub fn new(challenge: &str, hash_algorithm: &str, origin: &str, type_: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.challenge(challenge);
-        ret.hash_algorithm(hash_algorithm);
-        ret.origin(origin);
-        ret.type_(type_);
+        ret.set_challenge(challenge);
+        ret.set_hash_algorithm(hash_algorithm);
+        ret.set_origin(origin);
+        ret.set_type(type_);
         ret
     }
     #[deprecated = "Use `set_challenge()` instead."]

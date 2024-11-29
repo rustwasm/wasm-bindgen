@@ -41,8 +41,8 @@ impl RtcRtpCapabilities {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.codecs(codecs);
-        ret.header_extensions(header_extensions);
+        ret.set_codecs(codecs);
+        ret.set_header_extensions(header_extensions);
         ret
     }
     #[deprecated = "Use `set_codecs()` instead."]

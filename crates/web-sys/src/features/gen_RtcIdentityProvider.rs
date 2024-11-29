@@ -41,8 +41,8 @@ impl RtcIdentityProvider {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.generate_assertion(generate_assertion);
-        ret.validate_assertion(validate_assertion);
+        ret.set_generate_assertion(generate_assertion);
+        ret.set_validate_assertion(validate_assertion);
         ret
     }
     #[deprecated = "Use `set_generate_assertion()` instead."]

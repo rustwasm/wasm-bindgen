@@ -273,10 +273,10 @@ impl PublicKeyCredentialCreationOptionsJson {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.challenge(challenge);
-        ret.pub_key_cred_params(pub_key_cred_params);
-        ret.rp(rp);
-        ret.user(user);
+        ret.set_challenge(challenge);
+        ret.set_pub_key_cred_params(pub_key_cred_params);
+        ret.set_rp(rp);
+        ret.set_user(user);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

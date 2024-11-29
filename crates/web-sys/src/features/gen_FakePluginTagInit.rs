@@ -108,8 +108,8 @@ impl FakePluginTagInit {
     pub fn new(handler_uri: &str, mime_entries: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.handler_uri(handler_uri);
-        ret.mime_entries(mime_entries);
+        ret.set_handler_uri(handler_uri);
+        ret.set_mime_entries(mime_entries);
         ret
     }
     #[deprecated = "Use `set_description()` instead."]

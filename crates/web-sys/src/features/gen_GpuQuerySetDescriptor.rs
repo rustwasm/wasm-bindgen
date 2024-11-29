@@ -83,8 +83,8 @@ impl GpuQuerySetDescriptor {
     pub fn new(count: u32, type_: GpuQueryType) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.count(count);
-        ret.type_(type_);
+        ret.set_count(count);
+        ret.set_type(type_);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

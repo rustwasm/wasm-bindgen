@@ -38,8 +38,8 @@ impl AttributeNameValue {
     pub fn new(name: &str, value: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.value(value);
+        ret.set_name(name);
+        ret.set_value(value);
         ret
     }
     #[deprecated = "Use `set_name()` instead."]

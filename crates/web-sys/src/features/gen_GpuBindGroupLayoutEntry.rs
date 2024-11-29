@@ -172,8 +172,8 @@ impl GpuBindGroupLayoutEntry {
     pub fn new(binding: u32, visibility: u32) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.binding(binding);
-        ret.visibility(visibility);
+        ret.set_binding(binding);
+        ret.set_visibility(visibility);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

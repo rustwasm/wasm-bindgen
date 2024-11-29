@@ -38,8 +38,8 @@ impl RsaPssParams {
     pub fn new(name: &str, salt_length: u32) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.salt_length(salt_length);
+        ret.set_name(name);
+        ret.set_salt_length(salt_length);
         ret
     }
     #[deprecated = "Use `set_name()` instead."]

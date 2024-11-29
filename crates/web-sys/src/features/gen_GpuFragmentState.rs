@@ -101,8 +101,8 @@ impl GpuFragmentState {
     pub fn new(module: &GpuShaderModule, targets: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.module(module);
-        ret.targets(targets);
+        ret.set_module(module);
+        ret.set_targets(targets);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

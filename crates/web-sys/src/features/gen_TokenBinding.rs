@@ -38,7 +38,7 @@ impl TokenBinding {
     pub fn new(status: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.status(status);
+        ret.set_status(status);
         ret
     }
     #[deprecated = "Use `set_id()` instead."]

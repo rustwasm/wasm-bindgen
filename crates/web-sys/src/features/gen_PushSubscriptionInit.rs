@@ -68,8 +68,8 @@ impl PushSubscriptionInit {
     pub fn new(endpoint: &str, scope: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.endpoint(endpoint);
-        ret.scope(scope);
+        ret.set_endpoint(endpoint);
+        ret.set_scope(scope);
         ret
     }
     #[deprecated = "Use `set_app_server_key()` instead."]
