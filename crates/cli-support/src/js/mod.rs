@@ -1,8 +1,8 @@
 use crate::descriptor::VectorKind;
 use crate::intrinsic::Intrinsic;
 use crate::wit::{
-    Adapter, AdapterId, AdapterJsImportKind, AdapterType, AuxExportedMethodKind, AuxReceiverKind,
-    AuxStringEnum, AuxValue,
+    Adapter, AdapterId, AdapterJsImportKind, AuxExportedMethodKind, AuxReceiverKind, AuxStringEnum,
+    AuxValue,
 };
 use crate::wit::{AdapterKind, Instruction, InstructionData};
 use crate::wit::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
@@ -3119,16 +3119,14 @@ __wbg_set_wasm(wasm);"
 
                 // Conversions to Wasm integers are always supported since
                 // they're coerced into i32/f32/f64 appropriately.
-                IntToWasm { .. } => {}
+                Int32ToWasm => {}
+                Int64ToWasm => {}
 
-                // Converts from Wasm to JS, however, only supports most
-                // integers. Converting into a u32 isn't supported because we
+                // Converting into a u32 isn't supported because we
                 // need to generate glue to change the sign.
-                WasmToInt {
-                    output: AdapterType::U32,
-                    ..
-                } => return false,
-                WasmToInt { .. } => {}
+                WasmToInt32 { unsigned_32: false } => {}
+                // A Wasm `i64` is already a signed JS BigInt, so no glue needed.
+                WasmToInt64 { unsigned: false } => {}
 
                 // JS spec automatically coerces boolean values to i32 of 0 or 1
                 // depending on true/false
@@ -3279,7 +3277,6 @@ __wbg_set_wasm(wasm);"
                 dtor,
                 mutable,
                 adapter,
-                nargs: _,
             } => {
                 assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);

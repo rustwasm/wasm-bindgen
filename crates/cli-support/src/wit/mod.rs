@@ -197,7 +197,6 @@ impl<'a> Context<'a> {
                 // aren't present in the signature but are present in the wasm
                 // signature.
                 let mut function = descriptor.function.clone();
-                let nargs = function.arguments.len();
                 function.arguments.insert(0, Descriptor::I32);
                 function.arguments.insert(0, Descriptor::I32);
                 let adapter = self.table_element_adapter(descriptor.shim_idx, function)?;
@@ -206,7 +205,6 @@ impl<'a> Context<'a> {
                     AuxImport::Closure {
                         dtor: descriptor.dtor_idx,
                         mutable: descriptor.mutable,
-                        nargs,
                         adapter,
                     },
                 );
