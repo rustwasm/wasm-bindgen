@@ -32,6 +32,9 @@
 * Added support for `no_std` to `link_to!`, `static_string` (via `thread_local_v2`) and `throw`.
   [#4277](https://github.com/rustwasm/wasm-bindgen/pull/4277)
 
+* Added environment variables to configure tests: `WASM_BINDGEN_USE_BROWSER`, `WASM_BINDGEN_USE_DEDICATED_WORKER`, `WASM_BINDGEN_USE_SHARED_WORKER` `WASM_BINDGEN_USE_SERVICE_WORKER`, `WASM_BINDGEN_USE_DENO` and `WASM_BINDGEN_USE_NODE_EXPERIMENTAL`. The use of `wasm_bindgen_test_configure!` will overwrite any environment variable.
+  [#4295](https://github.com/rustwasm/wasm-bindgen/pull/4295)
+
 ### Changed
 
 * String enums now generate private TypeScript types but only if used.
