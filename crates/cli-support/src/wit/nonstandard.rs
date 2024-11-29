@@ -241,11 +241,12 @@ pub enum AuxImport {
     /// This import is intended to manufacture a JS closure with the given
     /// signature and then return that back to Rust.
     Closure {
-        mutable: bool,      // whether or not this was a `FnMut` closure
-        dtor: u32,          // table element index of the destructor function
-        adapter: AdapterId, // the adapter which translates the types for this closure
-        #[allow(dead_code)]
-        nargs: usize,
+        /// whether or not this was a `FnMut` closure
+        mutable: bool,
+        /// table element index of the destructor function
+        dtor: u32,
+        /// the adapter which translates the types for this closure
+        adapter: AdapterId,
     },
 
     /// This import is expected to be a shim that simply calls the `foo` method

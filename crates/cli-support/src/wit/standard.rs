@@ -137,17 +137,19 @@ pub enum Instruction {
         size: u32,
     },
 
-    /// Pops a typed integer (`u8`, `s16`, etc.) and pushes a plain Wasm `i32` or `i64` equivalent.
-    IntToWasm {
-        input: AdapterType,
-        #[allow(dead_code)]
-        output: walrus::ValType,
+    /// Pops a 32/16/8-bit integer (`u8`, `s16`, etc.) and pushes a Wasm `i32`.
+    Int32ToWasm,
+    /// Pops a Wasm `i32` and pushes a 32-bit integer.
+    WasmToInt32 {
+        /// Whether the integer represents an unsigned 32-bit value.
+        unsigned_32: bool,
     },
-    /// Pops a Wasm `i32` or `i64` and pushes a typed integer (`u8`, `s16`, etc.) equivalent.
-    WasmToInt {
-        #[allow(dead_code)]
-        input: walrus::ValType,
-        output: AdapterType,
+
+    /// Pops a 64-bit integer and pushes a Wasm `i64`.
+    Int64ToWasm,
+    /// Pops a Wasm `i64` and pushes a 64-bit integer.
+    WasmToInt64 {
+        unsigned: bool,
     },
 
     /// Pops a 128-bit integer and pushes 2 Wasm 64-bit ints.
@@ -169,8 +171,6 @@ pub enum Instruction {
 
     OptionWasmToStringEnum {
         name: String,
-        #[allow(dead_code)]
-        hole: u32,
     },
 
     /// pops a string and pushes the enum variant as an `i32`
