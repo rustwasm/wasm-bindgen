@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RadioNodeList/value)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RadioNodeList`*"]
-    pub fn value(this: &RadioNodeList) -> String;
+    pub fn value(this: &RadioNodeList) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "RadioNodeList" , js_name = value)]
     #[doc = "Setter for the `value` field of this object."]
     #[doc = ""]

@@ -18,21 +18,21 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DocumentType`*"]
-    pub fn name(this: &DocumentType) -> String;
+    pub fn name(this: &DocumentType) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "DocumentType" , js_name = publicId)]
     #[doc = "Getter for the `publicId` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/publicId)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DocumentType`*"]
-    pub fn public_id(this: &DocumentType) -> String;
+    pub fn public_id(this: &DocumentType) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "DocumentType" , js_name = systemId)]
     #[doc = "Getter for the `systemId` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DocumentType/systemId)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DocumentType`*"]
-    pub fn system_id(this: &DocumentType) -> String;
+    pub fn system_id(this: &DocumentType) -> ::alloc::string::String;
     # [wasm_bindgen (catch , method , structural , variadic , js_class = "DocumentType" , js_name = after)]
     #[doc = "The `after()` method."]
     #[doc = ""]

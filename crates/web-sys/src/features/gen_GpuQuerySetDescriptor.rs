@@ -22,7 +22,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "label")]
-    pub fn get_label(this: &GpuQuerySetDescriptor) -> Option<String>;
+    pub fn get_label(this: &GpuQuerySetDescriptor) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `label` field of this object."]
     #[doc = ""]
@@ -83,8 +83,8 @@ impl GpuQuerySetDescriptor {
     pub fn new(count: u32, type_: GpuQueryType) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.count(count);
-        ret.type_(type_);
+        ret.set_count(count);
+        ret.set_type(type_);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

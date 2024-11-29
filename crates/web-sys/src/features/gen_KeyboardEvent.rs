@@ -81,14 +81,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyboardEvent`*"]
-    pub fn key(this: &KeyboardEvent) -> String;
+    pub fn key(this: &KeyboardEvent) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "KeyboardEvent" , js_name = code)]
     #[doc = "Getter for the `code` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyboardEvent`*"]
-    pub fn code(this: &KeyboardEvent) -> String;
+    pub fn code(this: &KeyboardEvent) -> ::alloc::string::String;
     #[wasm_bindgen(catch, constructor, js_class = "KeyboardEvent")]
     #[doc = "The `new KeyboardEvent(..)` constructor, creating a new instance of `KeyboardEvent`."]
     #[doc = ""]

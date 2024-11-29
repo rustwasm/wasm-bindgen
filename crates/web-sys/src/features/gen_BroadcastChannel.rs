@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BroadcastChannel`*"]
-    pub fn name(this: &BroadcastChannel) -> String;
+    pub fn name(this: &BroadcastChannel) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "BroadcastChannel" , js_name = onmessage)]
     #[doc = "Getter for the `onmessage` field of this object."]
     #[doc = ""]

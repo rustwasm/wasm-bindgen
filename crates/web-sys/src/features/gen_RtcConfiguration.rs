@@ -58,7 +58,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcConfiguration`*"]
     #[wasm_bindgen(method, getter = "peerIdentity")]
-    pub fn get_peer_identity(this: &RtcConfiguration) -> Option<String>;
+    pub fn get_peer_identity(this: &RtcConfiguration) -> Option<::alloc::string::String>;
     #[doc = "Change the `peerIdentity` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcConfiguration`*"]

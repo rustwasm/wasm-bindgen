@@ -32,12 +32,12 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMStringList/item)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomStringList`*"]
-    pub fn item(this: &DomStringList, index: u32) -> Option<String>;
+    pub fn item(this: &DomStringList, index: u32) -> Option<::alloc::string::String>;
     #[wasm_bindgen(method, structural, js_class = "DOMStringList", indexing_getter)]
     #[doc = "Indexing getter. As in the literal Javascript `this[key]`."]
     #[doc = ""]
     #[doc = ""]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomStringList`*"]
-    pub fn get(this: &DomStringList, index: u32) -> Option<String>;
+    pub fn get(this: &DomStringList, index: u32) -> Option<::alloc::string::String>;
 }

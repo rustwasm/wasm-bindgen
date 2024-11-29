@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLBaseElement/href)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlBaseElement`*"]
-    pub fn href(this: &HtmlBaseElement) -> String;
+    pub fn href(this: &HtmlBaseElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLBaseElement" , js_name = href)]
     #[doc = "Setter for the `href` field of this object."]
     #[doc = ""]
@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLBaseElement/target)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlBaseElement`*"]
-    pub fn target(this: &HtmlBaseElement) -> String;
+    pub fn target(this: &HtmlBaseElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLBaseElement" , js_name = target)]
     #[doc = "Setter for the `target` field of this object."]
     #[doc = ""]

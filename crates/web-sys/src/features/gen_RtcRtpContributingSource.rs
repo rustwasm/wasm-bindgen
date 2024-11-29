@@ -48,8 +48,8 @@ impl RtcRtpContributingSource {
     pub fn new(source: u32, timestamp: f64) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.source(source);
-        ret.timestamp(timestamp);
+        ret.set_source(source);
+        ret.set_timestamp(timestamp);
         ret
     }
     #[deprecated = "Use `set_audio_level()` instead."]

@@ -40,7 +40,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionElement/label)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionElement`*"]
-    pub fn label(this: &HtmlOptionElement) -> String;
+    pub fn label(this: &HtmlOptionElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLOptionElement" , js_name = label)]
     #[doc = "Setter for the `label` field of this object."]
     #[doc = ""]
@@ -82,7 +82,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionElement/value)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionElement`*"]
-    pub fn value(this: &HtmlOptionElement) -> String;
+    pub fn value(this: &HtmlOptionElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLOptionElement" , js_name = value)]
     #[doc = "Setter for the `value` field of this object."]
     #[doc = ""]
@@ -96,7 +96,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionElement/text)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptionElement`*"]
-    pub fn text(this: &HtmlOptionElement) -> String;
+    pub fn text(this: &HtmlOptionElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLOptionElement" , js_name = text)]
     #[doc = "Setter for the `text` field of this object."]
     #[doc = ""]

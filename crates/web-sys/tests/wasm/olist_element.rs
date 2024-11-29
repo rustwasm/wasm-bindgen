@@ -12,16 +12,14 @@ fn test_olist_element() {
     let olist = new_olist();
 
     olist.set_reversed(true);
-    assert_eq!(
+    assert!(
         olist.reversed(),
-        true,
         "Olist should be reversed after we set it to be reversed."
     );
 
     olist.set_reversed(false);
-    assert_eq!(
-        olist.reversed(),
-        false,
+    assert!(
+        !olist.reversed(),
         "Olist should not be reversed after we set it to be not reversed."
     );
 
@@ -47,16 +45,14 @@ fn test_olist_element() {
     );
 
     olist.set_compact(true);
-    assert_eq!(
+    assert!(
         olist.compact(),
-        true,
         "Olist should be compact after we set it to be compact."
     );
 
     olist.set_compact(false);
-    assert_eq!(
-        olist.compact(),
-        false,
+    assert!(
+        !olist.compact(),
         "Olist should not be compact after we set it to be not compact."
     );
 }

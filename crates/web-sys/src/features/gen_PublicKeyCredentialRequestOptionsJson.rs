@@ -45,7 +45,9 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "attestation")]
-    pub fn get_attestation(this: &PublicKeyCredentialRequestOptionsJson) -> Option<String>;
+    pub fn get_attestation(
+        this: &PublicKeyCredentialRequestOptionsJson,
+    ) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `attestation` field of this object."]
     #[doc = ""]
@@ -86,7 +88,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "challenge")]
-    pub fn get_challenge(this: &PublicKeyCredentialRequestOptionsJson) -> String;
+    pub fn get_challenge(this: &PublicKeyCredentialRequestOptionsJson) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `challenge` field of this object."]
     #[doc = ""]
@@ -147,7 +149,9 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "rpId")]
-    pub fn get_rp_id(this: &PublicKeyCredentialRequestOptionsJson) -> Option<String>;
+    pub fn get_rp_id(
+        this: &PublicKeyCredentialRequestOptionsJson,
+    ) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `rpId` field of this object."]
     #[doc = ""]
@@ -183,7 +187,9 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "userVerification")]
-    pub fn get_user_verification(this: &PublicKeyCredentialRequestOptionsJson) -> Option<String>;
+    pub fn get_user_verification(
+        this: &PublicKeyCredentialRequestOptionsJson,
+    ) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `userVerification` field of this object."]
     #[doc = ""]
@@ -205,7 +211,7 @@ impl PublicKeyCredentialRequestOptionsJson {
     pub fn new(challenge: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.challenge(challenge);
+        ret.set_challenge(challenge);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

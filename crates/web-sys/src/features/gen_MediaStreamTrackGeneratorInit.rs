@@ -22,7 +22,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "kind")]
-    pub fn get_kind(this: &MediaStreamTrackGeneratorInit) -> String;
+    pub fn get_kind(this: &MediaStreamTrackGeneratorInit) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `kind` field of this object."]
     #[doc = ""]
@@ -44,7 +44,7 @@ impl MediaStreamTrackGeneratorInit {
     pub fn new(kind: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.kind(kind);
+        ret.set_kind(kind);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

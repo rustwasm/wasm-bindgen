@@ -61,7 +61,7 @@ impl OfflineAudioCompletionEventInit {
     pub fn new(rendered_buffer: &AudioBuffer) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.rendered_buffer(rendered_buffer);
+        ret.set_rendered_buffer(rendered_buffer);
         ret
     }
     #[deprecated = "Use `set_bubbles()` instead."]

@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
     #[wasm_bindgen(method, getter = "asyncCause")]
-    pub fn get_async_cause(this: &ProfileTimelineStackFrame) -> Option<String>;
+    pub fn get_async_cause(this: &ProfileTimelineStackFrame) -> Option<::alloc::string::String>;
     #[doc = "Change the `asyncCause` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
@@ -44,7 +44,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
     #[wasm_bindgen(method, getter = "functionDisplayName")]
-    pub fn get_function_display_name(this: &ProfileTimelineStackFrame) -> Option<String>;
+    pub fn get_function_display_name(
+        this: &ProfileTimelineStackFrame,
+    ) -> Option<::alloc::string::String>;
     #[doc = "Change the `functionDisplayName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
@@ -74,7 +76,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]
     #[wasm_bindgen(method, getter = "source")]
-    pub fn get_source(this: &ProfileTimelineStackFrame) -> Option<String>;
+    pub fn get_source(this: &ProfileTimelineStackFrame) -> Option<::alloc::string::String>;
     #[doc = "Change the `source` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineStackFrame`*"]

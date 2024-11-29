@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAnimatedString/baseVal)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedString`*"]
-    pub fn base_val(this: &SvgAnimatedString) -> String;
+    pub fn base_val(this: &SvgAnimatedString) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "SVGAnimatedString" , js_name = baseVal)]
     #[doc = "Setter for the `baseVal` field of this object."]
     #[doc = ""]
@@ -32,5 +32,5 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAnimatedString/animVal)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgAnimatedString`*"]
-    pub fn anim_val(this: &SvgAnimatedString) -> String;
+    pub fn anim_val(this: &SvgAnimatedString) -> ::alloc::string::String;
 }

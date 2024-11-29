@@ -20,7 +20,7 @@ fn get(b: &mut &[u8]) -> u8 {
     r
 }
 
-impl<'src> Deref for LitOrExpr<'src> {
+impl Deref for LitOrExpr<'_> {
     type Target = str;
     fn deref(&self) -> &Self::Target {
         self.str

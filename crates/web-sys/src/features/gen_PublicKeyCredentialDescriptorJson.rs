@@ -22,7 +22,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "id")]
-    pub fn get_id(this: &PublicKeyCredentialDescriptorJson) -> String;
+    pub fn get_id(this: &PublicKeyCredentialDescriptorJson) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `id` field of this object."]
     #[doc = ""]
@@ -58,7 +58,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "type")]
-    pub fn get_type(this: &PublicKeyCredentialDescriptorJson) -> String;
+    pub fn get_type(this: &PublicKeyCredentialDescriptorJson) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `type` field of this object."]
     #[doc = ""]
@@ -80,8 +80,8 @@ impl PublicKeyCredentialDescriptorJson {
     pub fn new(id: &str, type_: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.id(id);
-        ret.type_(type_);
+        ret.set_id(id);
+        ret.set_type(type_);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

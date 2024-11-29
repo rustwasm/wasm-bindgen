@@ -20,5 +20,5 @@ fn test_hr_element() {
     assert_eq!(hr.width(), "256");
 
     hr.set_no_shade(true);
-    assert_eq!(hr.no_shade(), true);
+    assert!(hr.no_shade());
 }

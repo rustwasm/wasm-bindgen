@@ -40,7 +40,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "codec")]
-    pub fn get_codec(this: &AudioEncoderConfig) -> String;
+    pub fn get_codec(this: &AudioEncoderConfig) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `codec` field of this object."]
     #[doc = ""]
@@ -98,7 +98,7 @@ impl AudioEncoderConfig {
     pub fn new(codec: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.codec(codec);
+        ret.set_codec(codec);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

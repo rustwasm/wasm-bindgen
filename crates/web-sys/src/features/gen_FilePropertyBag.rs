@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FilePropertyBag`*"]
     #[wasm_bindgen(method, getter = "type")]
-    pub fn get_type(this: &FilePropertyBag) -> Option<String>;
+    pub fn get_type(this: &FilePropertyBag) -> Option<::alloc::string::String>;
     #[doc = "Change the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FilePropertyBag`*"]

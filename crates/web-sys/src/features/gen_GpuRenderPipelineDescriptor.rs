@@ -22,7 +22,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "label")]
-    pub fn get_label(this: &GpuRenderPipelineDescriptor) -> Option<String>;
+    pub fn get_label(this: &GpuRenderPipelineDescriptor) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `label` field of this object."]
     #[doc = ""]
@@ -163,8 +163,8 @@ impl GpuRenderPipelineDescriptor {
     pub fn new(layout: &::wasm_bindgen::JsValue, vertex: &GpuVertexState) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.layout(layout);
-        ret.vertex(vertex);
+        ret.set_layout(layout);
+        ret.set_vertex(vertex);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

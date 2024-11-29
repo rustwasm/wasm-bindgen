@@ -62,7 +62,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Selection/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Selection`*"]
-    pub fn type_(this: &Selection) -> String;
+    pub fn type_(this: &Selection) -> ::alloc::string::String;
     # [wasm_bindgen (structural , catch , method , getter , js_class = "Selection" , js_name = caretBidiLevel)]
     #[doc = "Getter for the `caretBidiLevel` field of this object."]
     #[doc = ""]

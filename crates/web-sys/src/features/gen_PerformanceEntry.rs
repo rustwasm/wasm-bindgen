@@ -18,14 +18,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntry`*"]
-    pub fn name(this: &PerformanceEntry) -> String;
+    pub fn name(this: &PerformanceEntry) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "PerformanceEntry" , js_name = entryType)]
     #[doc = "Getter for the `entryType` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry/entryType)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntry`*"]
-    pub fn entry_type(this: &PerformanceEntry) -> String;
+    pub fn entry_type(this: &PerformanceEntry) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "PerformanceEntry" , js_name = startTime)]
     #[doc = "Getter for the `startTime` field of this object."]
     #[doc = ""]

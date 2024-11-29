@@ -62,8 +62,8 @@ impl GpuBindGroupEntry {
     pub fn new(binding: u32, resource: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.binding(binding);
-        ret.resource(resource);
+        ret.set_binding(binding);
+        ret.set_resource(resource);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

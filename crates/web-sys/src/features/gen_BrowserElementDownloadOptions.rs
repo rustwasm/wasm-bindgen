@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementDownloadOptions`*"]
     #[wasm_bindgen(method, getter = "filename")]
-    pub fn get_filename(this: &BrowserElementDownloadOptions) -> Option<String>;
+    pub fn get_filename(this: &BrowserElementDownloadOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `filename` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementDownloadOptions`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementDownloadOptions`*"]
     #[wasm_bindgen(method, getter = "referrer")]
-    pub fn get_referrer(this: &BrowserElementDownloadOptions) -> Option<String>;
+    pub fn get_referrer(this: &BrowserElementDownloadOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `referrer` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementDownloadOptions`*"]

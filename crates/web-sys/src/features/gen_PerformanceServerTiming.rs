@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceServerTiming/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceServerTiming`*"]
-    pub fn name(this: &PerformanceServerTiming) -> String;
+    pub fn name(this: &PerformanceServerTiming) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "PerformanceServerTiming" , js_name = duration)]
     #[doc = "Getter for the `duration` field of this object."]
     #[doc = ""]
@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceServerTiming/description)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceServerTiming`*"]
-    pub fn description(this: &PerformanceServerTiming) -> String;
+    pub fn description(this: &PerformanceServerTiming) -> ::alloc::string::String;
     # [wasm_bindgen (method , structural , js_class = "PerformanceServerTiming" , js_name = toJSON)]
     #[doc = "The `toJSON()` method."]
     #[doc = ""]

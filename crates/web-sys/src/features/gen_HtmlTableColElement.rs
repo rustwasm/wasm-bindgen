@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableColElement/align)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTableColElement`*"]
-    pub fn align(this: &HtmlTableColElement) -> String;
+    pub fn align(this: &HtmlTableColElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLTableColElement" , js_name = align)]
     #[doc = "Setter for the `align` field of this object."]
     #[doc = ""]
@@ -46,7 +46,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableColElement/ch)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTableColElement`*"]
-    pub fn ch(this: &HtmlTableColElement) -> String;
+    pub fn ch(this: &HtmlTableColElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLTableColElement" , js_name = ch)]
     #[doc = "Setter for the `ch` field of this object."]
     #[doc = ""]
@@ -60,7 +60,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableColElement/chOff)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTableColElement`*"]
-    pub fn ch_off(this: &HtmlTableColElement) -> String;
+    pub fn ch_off(this: &HtmlTableColElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLTableColElement" , js_name = chOff)]
     #[doc = "Setter for the `chOff` field of this object."]
     #[doc = ""]
@@ -74,7 +74,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableColElement/vAlign)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTableColElement`*"]
-    pub fn v_align(this: &HtmlTableColElement) -> String;
+    pub fn v_align(this: &HtmlTableColElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLTableColElement" , js_name = vAlign)]
     #[doc = "Setter for the `vAlign` field of this object."]
     #[doc = ""]
@@ -88,7 +88,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableColElement/width)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTableColElement`*"]
-    pub fn width(this: &HtmlTableColElement) -> String;
+    pub fn width(this: &HtmlTableColElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLTableColElement" , js_name = width)]
     #[doc = "Setter for the `width` field of this object."]
     #[doc = ""]

@@ -139,7 +139,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &BluetoothAdvertisingEventInit) -> Option<String>;
+    pub fn get_name(this: &BluetoothAdvertisingEventInit) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
@@ -238,7 +238,7 @@ impl BluetoothAdvertisingEventInit {
     pub fn new(device: &BluetoothDevice) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.device(device);
+        ret.set_device(device);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

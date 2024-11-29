@@ -40,7 +40,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "serialNumber")]
-    pub fn get_serial_number(this: &AllowedUsbDevice) -> Option<String>;
+    pub fn get_serial_number(this: &AllowedUsbDevice) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `serialNumber` field of this object."]
     #[doc = ""]
@@ -80,8 +80,8 @@ impl AllowedUsbDevice {
     pub fn new(product_id: u8, vendor_id: u8) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.product_id(product_id);
-        ret.vendor_id(vendor_id);
+        ret.set_product_id(product_id);
+        ret.set_vendor_id(vendor_id);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

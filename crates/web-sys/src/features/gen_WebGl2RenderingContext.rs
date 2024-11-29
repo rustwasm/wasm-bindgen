@@ -1976,7 +1976,7 @@ extern "C" {
         this: &WebGl2RenderingContext,
         program: &WebGlProgram,
         uniform_block_index: u32,
-    ) -> Option<String>;
+    ) -> Option<::alloc::string::String>;
     #[cfg(feature = "WebGlProgram")]
     # [wasm_bindgen (catch , method , structural , js_class = "WebGL2RenderingContext" , js_name = getActiveUniformBlockParameter)]
     #[doc = "The `getActiveUniformBlockParameter()` method."]
@@ -7307,7 +7307,7 @@ extern "C" {
     pub fn get_program_info_log(
         this: &WebGl2RenderingContext,
         program: &WebGlProgram,
-    ) -> Option<String>;
+    ) -> Option<::alloc::string::String>;
     #[cfg(feature = "WebGlProgram")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = getProgramParameter)]
     #[doc = "The `getProgramParameter()` method."]
@@ -7341,7 +7341,7 @@ extern "C" {
     pub fn get_shader_info_log(
         this: &WebGl2RenderingContext,
         shader: &WebGlShader,
-    ) -> Option<String>;
+    ) -> Option<::alloc::string::String>;
     #[cfg(feature = "WebGlShader")]
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = getShaderParameter)]
     #[doc = "The `getShaderParameter()` method."]
@@ -7373,8 +7373,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/getShaderSource)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGl2RenderingContext`, `WebGlShader`*"]
-    pub fn get_shader_source(this: &WebGl2RenderingContext, shader: &WebGlShader)
-        -> Option<String>;
+    pub fn get_shader_source(
+        this: &WebGl2RenderingContext,
+        shader: &WebGlShader,
+    ) -> Option<::alloc::string::String>;
     # [wasm_bindgen (method , structural , js_class = "WebGL2RenderingContext" , js_name = getSupportedExtensions)]
     #[doc = "The `getSupportedExtensions()` method."]
     #[doc = ""]

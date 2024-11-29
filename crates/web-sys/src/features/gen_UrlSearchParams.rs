@@ -78,7 +78,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/get)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `UrlSearchParams`*"]
-    pub fn get(this: &UrlSearchParams, name: &str) -> Option<String>;
+    pub fn get(this: &UrlSearchParams, name: &str) -> Option<::alloc::string::String>;
     # [wasm_bindgen (method , structural , js_class = "URLSearchParams" , js_name = getAll)]
     #[doc = "The `getAll()` method."]
     #[doc = ""]

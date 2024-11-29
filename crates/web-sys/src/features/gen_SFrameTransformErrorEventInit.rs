@@ -137,8 +137,8 @@ impl SFrameTransformErrorEventInit {
     pub fn new(error_type: SFrameTransformErrorEventType, frame: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.error_type(error_type);
-        ret.frame(frame);
+        ret.set_error_type(error_type);
+        ret.set_frame(frame);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

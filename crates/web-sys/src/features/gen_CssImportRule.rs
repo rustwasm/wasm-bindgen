@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSImportRule/href)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssImportRule`*"]
-    pub fn href(this: &CssImportRule) -> String;
+    pub fn href(this: &CssImportRule) -> ::alloc::string::String;
     #[cfg(feature = "MediaList")]
     # [wasm_bindgen (structural , method , getter , js_class = "CSSImportRule" , js_name = media)]
     #[doc = "Getter for the `media` field of this object."]

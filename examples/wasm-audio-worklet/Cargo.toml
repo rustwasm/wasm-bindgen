@@ -31,3 +31,6 @@ features = [
   "Window",
 ]
 path = "../../crates/web-sys"
+
+[lints]
+workspace = true

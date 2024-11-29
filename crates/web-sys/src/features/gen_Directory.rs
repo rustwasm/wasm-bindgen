@@ -18,14 +18,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Directory/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Directory`*"]
-    pub fn name(this: &Directory) -> Result<String, JsValue>;
+    pub fn name(this: &Directory) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (structural , catch , method , getter , js_class = "Directory" , js_name = path)]
     #[doc = "Getter for the `path` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Directory/path)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Directory`*"]
-    pub fn path(this: &Directory) -> Result<String, JsValue>;
+    pub fn path(this: &Directory) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "Directory" , js_name = getFiles)]
     #[doc = "The `getFiles()` method."]
     #[doc = ""]

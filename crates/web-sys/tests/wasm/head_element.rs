@@ -10,5 +10,5 @@ extern "C" {
 #[wasm_bindgen_test]
 fn test_head_element() {
     let _element = new_head();
-    assert!(true, "Head doesn't have an interface");
+    // Head doesn't have an interface
 }

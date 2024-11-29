@@ -26,7 +26,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognitionError/message)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionError`*"]
-    pub fn message(this: &SpeechRecognitionError) -> Option<String>;
+    pub fn message(this: &SpeechRecognitionError) -> Option<::alloc::string::String>;
     #[wasm_bindgen(catch, constructor, js_class = "SpeechRecognitionError")]
     #[doc = "The `new SpeechRecognitionError(..)` constructor, creating a new instance of `SpeechRecognitionError`."]
     #[doc = ""]

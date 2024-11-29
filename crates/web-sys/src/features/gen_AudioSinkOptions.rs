@@ -47,7 +47,7 @@ impl AudioSinkOptions {
     pub fn new(type_: AudioSinkType) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.type_(type_);
+        ret.set_type(type_);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HttpConnInfo`*"]
     #[wasm_bindgen(method, getter = "protocolVersion")]
-    pub fn get_protocol_version(this: &HttpConnInfo) -> Option<String>;
+    pub fn get_protocol_version(this: &HttpConnInfo) -> Option<::alloc::string::String>;
     #[doc = "Change the `protocolVersion` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HttpConnInfo`*"]

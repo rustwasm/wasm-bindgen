@@ -39,8 +39,8 @@ extern "C" {
 
 #[wasm_bindgen]
 pub struct MyStruct {
-    x: Vec<i64>,
-    y: Vec<i64>,
+    _x: Vec<i64>,
+    _y: Vec<i64>,
     name: String,
 }
 
@@ -50,8 +50,8 @@ impl MyStruct {
     pub fn new(name: String) -> MyStruct {
         Self {
             name,
-            x: (0..50).collect(),
-            y: (0..50).collect(),
+            _x: (0..50).collect(),
+            _y: (0..50).collect(),
         }
     }
 }

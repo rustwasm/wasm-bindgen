@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionKeys`*"]
     #[wasm_bindgen(method, getter = "auth")]
-    pub fn get_auth(this: &PushSubscriptionKeys) -> Option<String>;
+    pub fn get_auth(this: &PushSubscriptionKeys) -> Option<::alloc::string::String>;
     #[doc = "Change the `auth` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionKeys`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionKeys`*"]
     #[wasm_bindgen(method, getter = "p256dh")]
-    pub fn get_p256dh(this: &PushSubscriptionKeys) -> Option<String>;
+    pub fn get_p256dh(this: &PushSubscriptionKeys) -> Option<::alloc::string::String>;
     #[doc = "Change the `p256dh` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionKeys`*"]

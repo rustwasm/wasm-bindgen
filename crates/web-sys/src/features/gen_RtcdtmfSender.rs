@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCDTMFSender/toneBuffer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcdtmfSender`*"]
-    pub fn tone_buffer(this: &RtcdtmfSender) -> String;
+    pub fn tone_buffer(this: &RtcdtmfSender) -> ::alloc::string::String;
     # [wasm_bindgen (method , structural , js_class = "RTCDTMFSender" , js_name = insertDTMF)]
     #[doc = "The `insertDTMF()` method."]
     #[doc = ""]

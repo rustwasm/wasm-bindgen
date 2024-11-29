@@ -14,7 +14,10 @@ fn element() {
     */
     let element = new_div();
 
-    assert_eq!(element, element);
+    #[allow(clippy::eq_op)]
+    {
+        assert_eq!(element, element);
+    }
 
     assert_eq!(element.prefix(), None, "Shouldn't have a prefix");
     assert_eq!(element.local_name(), "div", "Should have a div local name");
@@ -24,17 +27,11 @@ fn element() {
     assert_eq!(element.id(), "beep", "Should have an id of 'beep'");
 
     // must_use is set on this result?
-    assert_eq!(
-        element.set_attribute("id", "beep").unwrap(),
-        (),
-        "Should set id"
-    );
+    // Should set id
+    let _: () = element.set_attribute("id", "beep").unwrap();
     assert!(element.has_attribute("id"), "Should now have an id");
-    assert_eq!(
-        element.remove_attribute("id").unwrap(),
-        (),
-        "Should return nothing if removed"
-    );
+    // Should return nothing if removed
+    let _: () = element.remove_attribute("id").unwrap();
 
     assert_eq!(element.class_name(), "", "Shouldn't have a class name");
     element.set_class_name("test thing");
@@ -48,11 +45,8 @@ fn element() {
         "test thing",
         "Should have a class name"
     );
-    assert_eq!(
-        element.remove_attribute("class").unwrap(),
-        (),
-        "Should return nothing if removed"
-    );
+    // Should return nothing if removed
+    let _: () = element.remove_attribute("class").unwrap();
     /* Tests needed for:
     get_attribute_ns
     */
@@ -79,71 +73,52 @@ fn element() {
     assert!(!element.has_attribute("disabled"), "Should not be disabled");
 
     assert!(!element.has_attribute("title"), "Should not have a title");
-    assert_eq!(
-        element.set_attribute("title", "boop").unwrap(),
-        (),
-        "Should return nothing if set correctly"
-    );
+    // Should return nothing if set correctly
+    let _: () = element.set_attribute("title", "boop").unwrap();
     assert!(element.has_attribute("title"), "Should have a title");
     assert_eq!(
         element.get_attribute("title").unwrap(),
         "boop",
         "Title should be 'boop'"
     );
-    assert_eq!(
-        element.remove_attribute("title").unwrap(),
-        (),
-        "Should return nothing if removed"
-    );
+    // Should return nothing if removed
+    let _: () = element.remove_attribute("title").unwrap();
     assert!(!element.has_attribute("title"), "Should not have a title");
     /* Tests needed for:
     set_attribute_ns
     */
 
     assert!(!element.has_attributes(), "Should not have any attributes");
-    assert_eq!(
-        element.set_attribute("title", "boop").unwrap(),
-        (),
-        "Should return nothing if set correctly"
-    );
+    // Should return nothing if set correctly
+    let _: () = element.set_attribute("title", "boop").unwrap();
     assert!(element.has_attributes(), "Should have attributes");
-    assert_eq!(
-        element.remove_attribute("title").unwrap(),
-        (),
-        "Should return nothing if removed"
-    );
+    // Should return nothing if removed
+    let _: () = element.remove_attribute("title").unwrap();
     /* Tests needed for:
     remove_attribute_ns
     has_attribute_ns
     closest
     */
 
-    assert_eq!(
-        element.matches(".this-is-a-thing").unwrap(),
-        false,
+    assert!(
+        !element.matches(".this-is-a-thing").unwrap(),
         "Should not match selector"
     );
-    assert_eq!(
-        element.webkit_matches_selector(".this-is-a-thing").unwrap(),
-        false,
+    assert!(
+        !element.webkit_matches_selector(".this-is-a-thing").unwrap(),
         "Should not match selector"
     );
     element.set_class_name("this-is-a-thing");
-    assert_eq!(
+    assert!(
         element.matches(".this-is-a-thing").unwrap(),
-        true,
         "Should match selector"
     );
-    assert_eq!(
+    assert!(
         element.webkit_matches_selector(".this-is-a-thing").unwrap(),
-        true,
         "Should match selector"
     );
-    assert_eq!(
-        element.remove_attribute("class").unwrap(),
-        (),
-        "Should return nothing if removed"
-    );
+    // Should return nothing if removed
+    let _: () = element.remove_attribute("class").unwrap();
 
     /* Tests needed for:
     insert_adjacent_element

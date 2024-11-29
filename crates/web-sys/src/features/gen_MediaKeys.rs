@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeys/keySystem)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeys`*"]
-    pub fn key_system(this: &MediaKeys) -> String;
+    pub fn key_system(this: &MediaKeys) -> ::alloc::string::String;
     #[cfg(feature = "MediaKeySession")]
     # [wasm_bindgen (catch , method , structural , js_class = "MediaKeys" , js_name = createSession)]
     #[doc = "The `createSession()` method."]

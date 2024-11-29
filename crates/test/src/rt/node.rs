@@ -3,6 +3,8 @@
 //! This currently uses the same output as `libtest`, only reimplemented here
 //! for node itself.
 
+use alloc::format;
+use alloc::string::String;
 use wasm_bindgen::prelude::*;
 
 use super::TestResult;

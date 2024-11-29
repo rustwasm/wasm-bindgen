@@ -748,28 +748,34 @@ fn instruction(
             }
         }
 
-        Instruction::IntToWasm { input, .. } => {
+        Instruction::Int32ToWasm => {
             let val = js.pop();
-            if matches!(
-                input,
-                AdapterType::I64 | AdapterType::S64 | AdapterType::U64
-            ) {
-                js.assert_bigint(&val);
-            } else {
-                js.assert_number(&val);
-            }
+            js.assert_number(&val);
             js.push(val);
         }
-
-        // When converting to a JS number we need to specially handle the `u32`
-        // case because if the high bit is set then it comes out as a negative
-        // number, but we want to switch that to an unsigned representation.
-        Instruction::WasmToInt { output, .. } => {
+        Instruction::WasmToInt32 { unsigned_32 } => {
             let val = js.pop();
-            match output {
-                AdapterType::U32 | AdapterType::NonNull => js.push(format!("{} >>> 0", val)),
-                AdapterType::U64 => js.push(format!("BigInt.asUintN(64, {val})")),
-                _ => js.push(val),
+            if *unsigned_32 {
+                // When converting to a JS number we need to specially handle the `u32`
+                // case because if the high bit is set then it comes out as a negative
+                // number, but we want to switch that to an unsigned representation.
+                js.push(format!("{} >>> 0", val))
+            } else {
+                js.push(val)
+            }
+        }
+
+        Instruction::Int64ToWasm => {
+            let val = js.pop();
+            js.assert_bigint(&val);
+            js.push(val);
+        }
+        Instruction::WasmToInt64 { unsigned } => {
+            let val = js.pop();
+            if *unsigned {
+                js.push(format!("BigInt.asUintN(64, {val})"))
+            } else {
+                js.push(val)
             }
         }
 
@@ -809,7 +815,7 @@ fn instruction(
             js.push(wasm_to_string_enum(name, &index))
         }
 
-        Instruction::OptionWasmToStringEnum { name, .. } => {
+        Instruction::OptionWasmToStringEnum { name } => {
             // Since hole is currently variant_count+1 and the lookup is
             // ["a","b","c"][index], the lookup will implicitly return map
             // the hole to undefined, because OOB indexes will return undefined.

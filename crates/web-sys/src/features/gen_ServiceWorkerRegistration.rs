@@ -42,7 +42,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/scope)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerRegistration`*"]
-    pub fn scope(this: &ServiceWorkerRegistration) -> String;
+    pub fn scope(this: &ServiceWorkerRegistration) -> ::alloc::string::String;
     #[cfg(feature = "ServiceWorkerUpdateViaCache")]
     # [wasm_bindgen (structural , catch , method , getter , js_class = "ServiceWorkerRegistration" , js_name = updateViaCache)]
     #[doc = "Getter for the `updateViaCache` field of this object."]

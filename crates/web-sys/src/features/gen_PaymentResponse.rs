@@ -18,14 +18,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PaymentResponse/requestId)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PaymentResponse`*"]
-    pub fn request_id(this: &PaymentResponse) -> String;
+    pub fn request_id(this: &PaymentResponse) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "PaymentResponse" , js_name = methodName)]
     #[doc = "Getter for the `methodName` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PaymentResponse/methodName)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PaymentResponse`*"]
-    pub fn method_name(this: &PaymentResponse) -> String;
+    pub fn method_name(this: &PaymentResponse) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "PaymentResponse" , js_name = details)]
     #[doc = "Getter for the `details` field of this object."]
     #[doc = ""]
@@ -47,28 +47,28 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PaymentResponse/shippingOption)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PaymentResponse`*"]
-    pub fn shipping_option(this: &PaymentResponse) -> Option<String>;
+    pub fn shipping_option(this: &PaymentResponse) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "PaymentResponse" , js_name = payerName)]
     #[doc = "Getter for the `payerName` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PaymentResponse/payerName)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PaymentResponse`*"]
-    pub fn payer_name(this: &PaymentResponse) -> Option<String>;
+    pub fn payer_name(this: &PaymentResponse) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "PaymentResponse" , js_name = payerEmail)]
     #[doc = "Getter for the `payerEmail` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PaymentResponse/payerEmail)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PaymentResponse`*"]
-    pub fn payer_email(this: &PaymentResponse) -> Option<String>;
+    pub fn payer_email(this: &PaymentResponse) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "PaymentResponse" , js_name = payerPhone)]
     #[doc = "Getter for the `payerPhone` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PaymentResponse/payerPhone)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PaymentResponse`*"]
-    pub fn payer_phone(this: &PaymentResponse) -> Option<String>;
+    pub fn payer_phone(this: &PaymentResponse) -> Option<::alloc::string::String>;
     # [wasm_bindgen (method , structural , js_class = "PaymentResponse" , js_name = complete)]
     #[doc = "The `complete()` method."]
     #[doc = ""]

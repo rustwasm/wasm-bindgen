@@ -40,7 +40,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "deviceId")]
-    pub fn get_device_id(this: &AllowedBluetoothDevice) -> String;
+    pub fn get_device_id(this: &AllowedBluetoothDevice) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `deviceId` field of this object."]
     #[doc = ""]
@@ -84,9 +84,9 @@ impl AllowedBluetoothDevice {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.allowed_services(allowed_services);
-        ret.device_id(device_id);
-        ret.may_use_gatt(may_use_gatt);
+        ret.set_allowed_services(allowed_services);
+        ret.set_device_id(device_id);
+        ret.set_may_use_gatt(may_use_gatt);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

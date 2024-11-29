@@ -53,6 +53,7 @@ async fn wasm_instantiate_streaming() {
 
     let headers = Headers::new().unwrap();
     headers.append("Content-Type", "application/wasm").unwrap();
+    #[allow(deprecated)]
     let response = Response::new_with_opt_u8_array_and_init(
         Some(&mut wasm),
         ResponseInit::new().headers(&headers),

@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
     #[wasm_bindgen(method, getter = "appId")]
-    pub fn get_app_id(this: &RegisteredKey) -> Option<String>;
+    pub fn get_app_id(this: &RegisteredKey) -> Option<::alloc::string::String>;
     #[doc = "Change the `appId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
     #[wasm_bindgen(method, getter = "keyHandle")]
-    pub fn get_key_handle(this: &RegisteredKey) -> Option<String>;
+    pub fn get_key_handle(this: &RegisteredKey) -> Option<::alloc::string::String>;
     #[doc = "Change the `keyHandle` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
@@ -44,7 +44,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]
     #[wasm_bindgen(method, getter = "version")]
-    pub fn get_version(this: &RegisteredKey) -> Option<String>;
+    pub fn get_version(this: &RegisteredKey) -> Option<::alloc::string::String>;
     #[doc = "Change the `version` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisteredKey`*"]

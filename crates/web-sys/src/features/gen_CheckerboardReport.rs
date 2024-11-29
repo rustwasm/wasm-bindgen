@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CheckerboardReport`*"]
     #[wasm_bindgen(method, getter = "log")]
-    pub fn get_log(this: &CheckerboardReport) -> Option<String>;
+    pub fn get_log(this: &CheckerboardReport) -> Option<::alloc::string::String>;
     #[doc = "Change the `log` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CheckerboardReport`*"]

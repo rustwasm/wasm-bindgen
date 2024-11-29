@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecCapability`*"]
     #[wasm_bindgen(method, getter = "mimeType")]
-    pub fn get_mime_type(this: &RtcRtpCodecCapability) -> String;
+    pub fn get_mime_type(this: &RtcRtpCodecCapability) -> ::alloc::string::String;
     #[doc = "Change the `mimeType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecCapability`*"]
@@ -44,7 +44,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecCapability`*"]
     #[wasm_bindgen(method, getter = "sdpFmtpLine")]
-    pub fn get_sdp_fmtp_line(this: &RtcRtpCodecCapability) -> Option<String>;
+    pub fn get_sdp_fmtp_line(this: &RtcRtpCodecCapability) -> Option<::alloc::string::String>;
     #[doc = "Change the `sdpFmtpLine` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpCodecCapability`*"]
@@ -58,8 +58,8 @@ impl RtcRtpCodecCapability {
     pub fn new(clock_rate: u32, mime_type: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.clock_rate(clock_rate);
-        ret.mime_type(mime_type);
+        ret.set_clock_rate(clock_rate);
+        ret.set_mime_type(mime_type);
         ret
     }
     #[deprecated = "Use `set_channels()` instead."]

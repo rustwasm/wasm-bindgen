@@ -25,7 +25,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Blob/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`*"]
-    pub fn type_(this: &Blob) -> String;
+    pub fn type_(this: &Blob) -> ::alloc::string::String;
     #[wasm_bindgen(catch, constructor, js_class = "Blob")]
     #[doc = "The `new Blob(..)` constructor, creating a new instance of `Blob`."]
     #[doc = ""]

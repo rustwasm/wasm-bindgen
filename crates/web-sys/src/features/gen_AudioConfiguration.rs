@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`*"]
     #[wasm_bindgen(method, getter = "channels")]
-    pub fn get_channels(this: &AudioConfiguration) -> Option<String>;
+    pub fn get_channels(this: &AudioConfiguration) -> Option<::alloc::string::String>;
     #[doc = "Change the `channels` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`*"]
@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`*"]
     #[wasm_bindgen(method, getter = "contentType")]
-    pub fn get_content_type(this: &AudioConfiguration) -> Option<String>;
+    pub fn get_content_type(this: &AudioConfiguration) -> Option<::alloc::string::String>;
     #[doc = "Change the `contentType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioConfiguration`*"]

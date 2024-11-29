@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HmacDerivedKeyParams`*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &HmacDerivedKeyParams) -> String;
+    pub fn get_name(this: &HmacDerivedKeyParams) -> ::alloc::string::String;
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HmacDerivedKeyParams`*"]
@@ -48,8 +48,8 @@ impl HmacDerivedKeyParams {
     pub fn new(name: &str, hash: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.hash(hash);
+        ret.set_name(name);
+        ret.set_hash(hash);
         ret
     }
     #[deprecated = "Use `set_name()` instead."]

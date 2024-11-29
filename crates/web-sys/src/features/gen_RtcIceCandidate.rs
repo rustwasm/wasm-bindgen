@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCIceCandidate/candidate)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidate`*"]
-    pub fn candidate(this: &RtcIceCandidate) -> String;
+    pub fn candidate(this: &RtcIceCandidate) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "RTCIceCandidate" , js_name = candidate)]
     #[doc = "Setter for the `candidate` field of this object."]
     #[doc = ""]
@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCIceCandidate/sdpMid)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidate`*"]
-    pub fn sdp_mid(this: &RtcIceCandidate) -> Option<String>;
+    pub fn sdp_mid(this: &RtcIceCandidate) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , setter , js_class = "RTCIceCandidate" , js_name = sdpMid)]
     #[doc = "Setter for the `sdpMid` field of this object."]
     #[doc = ""]

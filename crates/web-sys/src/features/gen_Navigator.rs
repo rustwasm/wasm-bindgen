@@ -50,7 +50,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/doNotTrack)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Navigator`*"]
-    pub fn do_not_track(this: &Navigator) -> String;
+    pub fn do_not_track(this: &Navigator) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "Navigator" , js_name = maxTouchPoints)]
     #[doc = "Getter for the `maxTouchPoints` field of this object."]
     #[doc = ""]
@@ -261,49 +261,49 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/appCodeName)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Navigator`*"]
-    pub fn app_code_name(this: &Navigator) -> Result<String, JsValue>;
+    pub fn app_code_name(this: &Navigator) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "Navigator" , js_name = appName)]
     #[doc = "Getter for the `appName` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/appName)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Navigator`*"]
-    pub fn app_name(this: &Navigator) -> String;
+    pub fn app_name(this: &Navigator) -> ::alloc::string::String;
     # [wasm_bindgen (structural , catch , method , getter , js_class = "Navigator" , js_name = appVersion)]
     #[doc = "Getter for the `appVersion` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/appVersion)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Navigator`*"]
-    pub fn app_version(this: &Navigator) -> Result<String, JsValue>;
+    pub fn app_version(this: &Navigator) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (structural , catch , method , getter , js_class = "Navigator" , js_name = platform)]
     #[doc = "Getter for the `platform` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/platform)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Navigator`*"]
-    pub fn platform(this: &Navigator) -> Result<String, JsValue>;
+    pub fn platform(this: &Navigator) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (structural , catch , method , getter , js_class = "Navigator" , js_name = userAgent)]
     #[doc = "Getter for the `userAgent` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/userAgent)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Navigator`*"]
-    pub fn user_agent(this: &Navigator) -> Result<String, JsValue>;
+    pub fn user_agent(this: &Navigator) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "Navigator" , js_name = product)]
     #[doc = "Getter for the `product` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/product)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Navigator`*"]
-    pub fn product(this: &Navigator) -> String;
+    pub fn product(this: &Navigator) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "Navigator" , js_name = language)]
     #[doc = "Getter for the `language` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/language)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Navigator`*"]
-    pub fn language(this: &Navigator) -> Option<String>;
+    pub fn language(this: &Navigator) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "Navigator" , js_name = languages)]
     #[doc = "Getter for the `languages` field of this object."]
     #[doc = ""]

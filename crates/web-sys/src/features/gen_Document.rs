@@ -26,49 +26,49 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/URL)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
-    pub fn url(this: &Document) -> Result<String, JsValue>;
+    pub fn url(this: &Document) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (structural , catch , method , getter , js_class = "Document" , js_name = documentURI)]
     #[doc = "Getter for the `documentURI` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/documentURI)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
-    pub fn document_uri(this: &Document) -> Result<String, JsValue>;
+    pub fn document_uri(this: &Document) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = compatMode)]
     #[doc = "Getter for the `compatMode` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/compatMode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
-    pub fn compat_mode(this: &Document) -> String;
+    pub fn compat_mode(this: &Document) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = characterSet)]
     #[doc = "Getter for the `characterSet` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/characterSet)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
-    pub fn character_set(this: &Document) -> String;
+    pub fn character_set(this: &Document) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = charset)]
     #[doc = "Getter for the `charset` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/charset)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
-    pub fn charset(this: &Document) -> String;
+    pub fn charset(this: &Document) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = inputEncoding)]
     #[doc = "Getter for the `inputEncoding` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/inputEncoding)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
-    pub fn input_encoding(this: &Document) -> String;
+    pub fn input_encoding(this: &Document) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = contentType)]
     #[doc = "Getter for the `contentType` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/contentType)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
-    pub fn content_type(this: &Document) -> String;
+    pub fn content_type(this: &Document) -> ::alloc::string::String;
     #[cfg(feature = "DocumentType")]
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = doctype)]
     #[doc = "Getter for the `doctype` field of this object."]
@@ -99,28 +99,28 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/referrer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
-    pub fn referrer(this: &Document) -> String;
+    pub fn referrer(this: &Document) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = lastModified)]
     #[doc = "Getter for the `lastModified` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/lastModified)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
-    pub fn last_modified(this: &Document) -> String;
+    pub fn last_modified(this: &Document) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = readyState)]
     #[doc = "Getter for the `readyState` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/readyState)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
-    pub fn ready_state(this: &Document) -> String;
+    pub fn ready_state(this: &Document) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = title)]
     #[doc = "Getter for the `title` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/title)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
-    pub fn title(this: &Document) -> String;
+    pub fn title(this: &Document) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = title)]
     #[doc = "Setter for the `title` field of this object."]
     #[doc = ""]
@@ -134,7 +134,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/dir)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
-    pub fn dir(this: &Document) -> String;
+    pub fn dir(this: &Document) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = dir)]
     #[doc = "Setter for the `dir` field of this object."]
     #[doc = ""]
@@ -407,7 +407,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/selectedStyleSheetSet)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
-    pub fn selected_style_sheet_set(this: &Document) -> Option<String>;
+    pub fn selected_style_sheet_set(this: &Document) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , setter , js_class = "Document" , js_name = selectedStyleSheetSet)]
     #[doc = "Setter for the `selectedStyleSheetSet` field of this object."]
     #[doc = ""]
@@ -421,14 +421,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/lastStyleSheetSet)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
-    pub fn last_style_sheet_set(this: &Document) -> Option<String>;
+    pub fn last_style_sheet_set(this: &Document) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = preferredStyleSheetSet)]
     #[doc = "Getter for the `preferredStyleSheetSet` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Document/preferredStyleSheetSet)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Document`*"]
-    pub fn preferred_style_sheet_set(this: &Document) -> Option<String>;
+    pub fn preferred_style_sheet_set(this: &Document) -> Option<::alloc::string::String>;
     #[cfg(feature = "DomStringList")]
     # [wasm_bindgen (structural , method , getter , js_class = "Document" , js_name = styleSheetSets)]
     #[doc = "Getter for the `styleSheetSets` field of this object."]

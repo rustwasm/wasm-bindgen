@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbDatabase`*"]
-    pub fn name(this: &IdbDatabase) -> String;
+    pub fn name(this: &IdbDatabase) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "IDBDatabase" , js_name = version)]
     #[doc = "Getter for the `version` field of this object."]
     #[doc = ""]

@@ -60,7 +60,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLVideoElement/poster)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlVideoElement`*"]
-    pub fn poster(this: &HtmlVideoElement) -> String;
+    pub fn poster(this: &HtmlVideoElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLVideoElement" , js_name = poster)]
     #[doc = "Setter for the `poster` field of this object."]
     #[doc = ""]

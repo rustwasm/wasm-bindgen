@@ -37,7 +37,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn authenticator_attachment(this: &PublicKeyCredential) -> Option<String>;
+    pub fn authenticator_attachment(this: &PublicKeyCredential) -> Option<::alloc::string::String>;
     #[cfg(feature = "AuthenticationExtensionsClientOutputs")]
     # [wasm_bindgen (method , structural , js_class = "PublicKeyCredential" , js_name = getClientExtensionResults)]
     #[doc = "The `getClientExtensionResults()` method."]

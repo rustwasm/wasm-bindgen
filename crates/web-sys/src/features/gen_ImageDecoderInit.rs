@@ -134,7 +134,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "type")]
-    pub fn get_type(this: &ImageDecoderInit) -> String;
+    pub fn get_type(this: &ImageDecoderInit) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `type` field of this object."]
     #[doc = ""]
@@ -156,8 +156,8 @@ impl ImageDecoderInit {
     pub fn new(data: &::wasm_bindgen::JsValue, type_: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.data(data);
-        ret.type_(type_);
+        ret.set_data(data);
+        ret.set_type(type_);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

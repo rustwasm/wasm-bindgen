@@ -15,3 +15,6 @@ web-sys = { path = '../web-sys', features = ['HtmlElement', 'Node', 'Document'] 
 
 [lib]
 crate-type = ['cdylib']
+
+[lints]
+workspace = true

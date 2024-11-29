@@ -626,6 +626,14 @@ impl<'a> IdlType<'a> {
             let path = vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")];
             externref(leading_colon_path_ty(path))
         };
+        let string = {
+            let path = vec![
+                rust_ident("alloc"),
+                rust_ident("string"),
+                rust_ident("String"),
+            ];
+            externref(leading_colon_path_ty(path))
+        };
         match self {
             IdlType::Boolean => Ok(Some(ident_ty(raw_ident("bool")))),
             IdlType::Byte => Ok(Some(ident_ty(raw_ident("i8")))),
@@ -655,7 +663,7 @@ impl<'a> IdlType<'a> {
             IdlType::UnrestrictedDouble => Ok(Some(ident_ty(raw_ident("f64")))),
             IdlType::DomString | IdlType::ByteString | IdlType::UsvString => match pos {
                 TypePosition::Argument => Ok(Some(shared_ref(ident_ty(raw_ident("str")), false))),
-                TypePosition::Return => Ok(Some(ident_ty(raw_ident("String")))),
+                TypePosition::Return => Ok(string),
             },
             IdlType::Object => Ok(js_sys("Object")),
             IdlType::Symbol => Err(TypeError::CannotConvert),
@@ -1085,7 +1093,7 @@ impl<'a> IdlType<'a> {
     }
 }
 
-impl<'a> IdentifierType<'a> {
+impl IdentifierType<'_> {
     /// Converts to syn type if possible.
     pub(crate) fn to_syn_type(
         &self,
