@@ -52,10 +52,22 @@ pub enum UnusedStringEnum {
     Bar = "bar",
 }
 
+/// An unused string enum.
+#[wasm_bindgen(js_name = "FooBarNoExport", no_export)]
+pub enum UnusedStringEnumNoExport {
+    Foo = "foo",
+    Bar = "bar",
+}
+
 #[wasm_bindgen]
 enum PrivateStringEnum {
     Foo = "foo",
     Bar = "bar",
+}
+
+#[wasm_bindgen]
+pub fn use_private_enum() -> PrivateStringEnum {
+    PrivateStringEnum::Foo
 }
 
 #[wasm_bindgen]

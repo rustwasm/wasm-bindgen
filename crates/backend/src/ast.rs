@@ -360,6 +360,8 @@ pub struct StringEnum {
     pub rust_attrs: Vec<syn::Attribute>,
     /// Whether to generate a typescript definition for this enum
     pub generate_typescript: bool,
+    /// Whether the type should not be exported in JS/TS.
+    pub no_export: bool,
     /// Path to wasm_bindgen
     pub wasm_bindgen: Path,
 }
@@ -467,6 +469,8 @@ pub struct Enum {
     pub hole: u32,
     /// Whether to generate a typescript definition for this enum
     pub generate_typescript: bool,
+    /// Whether the type should not be exported in JS/TS.
+    pub no_export: bool,
     /// Path to wasm_bindgen
     pub wasm_bindgen: Path,
 }

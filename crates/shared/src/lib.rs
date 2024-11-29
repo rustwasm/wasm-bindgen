@@ -109,6 +109,7 @@ macro_rules! shared_api {
             variant_values: Vec<&'a str>,
             comments: Vec<&'a str>,
             generate_typescript: bool,
+            no_export: bool,
         }
 
         struct Export<'a> {
@@ -126,6 +127,7 @@ macro_rules! shared_api {
             variants: Vec<EnumVariant<'a>>,
             comments: Vec<&'a str>,
             generate_typescript: bool,
+            no_export: bool,
         }
 
         struct EnumVariant<'a> {

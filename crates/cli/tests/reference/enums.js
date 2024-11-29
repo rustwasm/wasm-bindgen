@@ -63,6 +63,14 @@ export function option_string_enum_echo(color) {
 }
 
 /**
+ * @returns {PrivateStringEnum}
+ */
+export function use_private_enum() {
+    const ret = wasm.use_private_enum();
+    return __wbindgen_enum_PrivateStringEnum[ret];
+}
+
+/**
  * @param {Ordering | undefined} [order]
  * @returns {Ordering | undefined}
  */
@@ -109,6 +117,8 @@ export const Ordering = Object.freeze({
 });
 
 const __wbindgen_enum_ColorName = ["green", "yellow", "red"];
+
+const __wbindgen_enum_PrivateStringEnum = ["foo", "bar"];
 
 export function __wbindgen_init_externref_table() {
     const table = wasm.__wbindgen_export_0;
