@@ -804,22 +804,22 @@ impl TryToTokens for ast::Export {
             match &self.method_kind {
                 ast::MethodKind::Constructor => {
                     checks.push(quote! {
-                        const fn assert_supports_constructor<T: #wasm_bindgen::marker::SupportsConstructor>() {}
-                        assert_supports_constructor::<#class>();
+                        struct CheckSupportsConstructor<T: #wasm_bindgen::marker::SupportsConstructor>(T);
+                        let _: CheckSupportsConstructor<#class>;
                     });
                 }
                 ast::MethodKind::Operation(operation) => match operation.kind {
                     ast::OperationKind::Getter(_) | ast::OperationKind::Setter(_) => {
                         if operation.is_static {
                             checks.push(quote! {
-                                    const fn assert_supports_static_property<T: #wasm_bindgen::marker::SupportsStaticProperty>() {}
-                                    assert_supports_static_property::<#class>();
-                                });
+                                struct CheckSupportsStaticProperty<T: #wasm_bindgen::marker::SupportsStaticProperty>(T);
+                                let _: CheckSupportsStaticProperty<#class>;
+                            });
                         } else {
                             checks.push(quote! {
-                                    const fn assert_supports_instance_property<T: #wasm_bindgen::marker::SupportsInstanceProperty>() {}
-                                    assert_supports_instance_property::<#class>();
-                                });
+                                struct CheckSupportsInstanceProperty<T: #wasm_bindgen::marker::SupportsInstanceProperty>(T);
+                                let _: CheckSupportsInstanceProperty<#class>;
+                            });
                         }
                     }
                     _ => {}
