@@ -72,8 +72,8 @@ impl IirFilterOptions {
     pub fn new(feedback: &::wasm_bindgen::JsValue, feedforward: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.feedback(feedback);
-        ret.feedforward(feedforward);
+        ret.set_feedback(feedback);
+        ret.set_feedforward(feedforward);
         ret
     }
     #[deprecated = "Use `set_channel_count()` instead."]

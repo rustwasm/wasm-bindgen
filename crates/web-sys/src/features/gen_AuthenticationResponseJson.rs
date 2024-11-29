@@ -158,11 +158,11 @@ impl AuthenticationResponseJson {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.client_extension_results(client_extension_results);
-        ret.id(id);
-        ret.raw_id(raw_id);
-        ret.response(response);
-        ret.type_(type_);
+        ret.set_client_extension_results(client_extension_results);
+        ret.set_id(id);
+        ret.set_raw_id(raw_id);
+        ret.set_response(response);
+        ret.set_type(type_);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

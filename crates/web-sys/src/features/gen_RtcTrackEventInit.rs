@@ -103,9 +103,9 @@ impl RtcTrackEventInit {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.receiver(receiver);
-        ret.track(track);
-        ret.transceiver(transceiver);
+        ret.set_receiver(receiver);
+        ret.set_track(track);
+        ret.set_transceiver(transceiver);
         ret
     }
     #[deprecated = "Use `set_bubbles()` instead."]

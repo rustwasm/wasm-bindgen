@@ -101,9 +101,9 @@ impl EncodedAudioChunkInit {
     pub fn new(data: &::js_sys::Object, timestamp: f64, type_: EncodedAudioChunkType) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.data(data);
-        ret.timestamp(timestamp);
-        ret.type_(type_);
+        ret.set_data(data);
+        ret.set_timestamp(timestamp);
+        ret.set_type(type_);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

@@ -84,9 +84,9 @@ impl AllowedBluetoothDevice {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.allowed_services(allowed_services);
-        ret.device_id(device_id);
-        ret.may_use_gatt(may_use_gatt);
+        ret.set_allowed_services(allowed_services);
+        ret.set_device_id(device_id);
+        ret.set_may_use_gatt(may_use_gatt);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

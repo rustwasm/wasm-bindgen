@@ -38,7 +38,7 @@ impl RtcIdentityProviderDetails {
     pub fn new(domain: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.domain(domain);
+        ret.set_domain(domain);
         ret
     }
     #[deprecated = "Use `set_domain()` instead."]

@@ -41,8 +41,8 @@ impl EcdhKeyDeriveParams {
     pub fn new(name: &str, public: &CryptoKey) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.public(public);
+        ret.set_name(name);
+        ret.set_public(public);
         ret
     }
     #[deprecated = "Use `set_name()` instead."]

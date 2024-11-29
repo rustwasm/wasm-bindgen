@@ -48,9 +48,9 @@ impl RsaOtherPrimesInfo {
     pub fn new(d: &str, r: &str, t: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.d(d);
-        ret.r(r);
-        ret.t(t);
+        ret.set_d(d);
+        ret.set_r(r);
+        ret.set_t(t);
         ret
     }
     #[deprecated = "Use `set_d()` instead."]

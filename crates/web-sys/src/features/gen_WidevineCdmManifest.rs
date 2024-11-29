@@ -96,13 +96,13 @@ impl WidevineCdmManifest {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.description(description);
-        ret.name(name);
-        ret.version(version);
-        ret.x_cdm_codecs(x_cdm_codecs);
-        ret.x_cdm_host_versions(x_cdm_host_versions);
-        ret.x_cdm_interface_versions(x_cdm_interface_versions);
-        ret.x_cdm_module_versions(x_cdm_module_versions);
+        ret.set_description(description);
+        ret.set_name(name);
+        ret.set_version(version);
+        ret.set_x_cdm_codecs(x_cdm_codecs);
+        ret.set_x_cdm_host_versions(x_cdm_host_versions);
+        ret.set_x_cdm_interface_versions(x_cdm_interface_versions);
+        ret.set_x_cdm_module_versions(x_cdm_module_versions);
         ret
     }
     #[deprecated = "Use `set_description()` instead."]

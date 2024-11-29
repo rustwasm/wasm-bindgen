@@ -62,9 +62,9 @@ impl AnimationPropertyDetails {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.property(property);
-        ret.running_on_compositor(running_on_compositor);
-        ret.values(values);
+        ret.set_property(property);
+        ret.set_running_on_compositor(running_on_compositor);
+        ret.set_values(values);
         ret
     }
     #[deprecated = "Use `set_property()` instead."]

@@ -28,7 +28,7 @@ impl RtcRtpHeaderExtensionCapability {
     pub fn new(uri: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.uri(uri);
+        ret.set_uri(uri);
         ret
     }
     #[deprecated = "Use `set_uri()` instead."]

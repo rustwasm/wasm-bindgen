@@ -48,8 +48,8 @@ impl NotificationAction {
     pub fn new(action: &str, title: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.action(action);
-        ret.title(title);
+        ret.set_action(action);
+        ret.set_title(title);
         ret
     }
     #[deprecated = "Use `set_action()` instead."]

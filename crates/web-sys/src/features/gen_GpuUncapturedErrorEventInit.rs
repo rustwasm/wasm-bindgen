@@ -101,7 +101,7 @@ impl GpuUncapturedErrorEventInit {
     pub fn new(error: &GpuError) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.error(error);
+        ret.set_error(error);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

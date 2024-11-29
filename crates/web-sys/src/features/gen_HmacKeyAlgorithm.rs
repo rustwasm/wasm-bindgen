@@ -51,9 +51,9 @@ impl HmacKeyAlgorithm {
     pub fn new(name: &str, hash: &KeyAlgorithm, length: u32) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.hash(hash);
-        ret.length(length);
+        ret.set_name(name);
+        ret.set_hash(hash);
+        ret.set_length(length);
         ret
     }
     #[deprecated = "Use `set_name()` instead."]

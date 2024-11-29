@@ -124,9 +124,9 @@ impl AuthenticatorAssertionResponseJson {
     pub fn new(authenticator_data: &str, client_data_json: &str, signature: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.authenticator_data(authenticator_data);
-        ret.client_data_json(client_data_json);
-        ret.signature(signature);
+        ret.set_authenticator_data(authenticator_data);
+        ret.set_client_data_json(client_data_json);
+        ret.set_signature(signature);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

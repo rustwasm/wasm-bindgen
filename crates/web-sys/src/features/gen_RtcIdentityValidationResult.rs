@@ -38,8 +38,8 @@ impl RtcIdentityValidationResult {
     pub fn new(contents: &str, identity: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.contents(contents);
-        ret.identity(identity);
+        ret.set_contents(contents);
+        ret.set_identity(identity);
         ret
     }
     #[deprecated = "Use `set_contents()` instead."]

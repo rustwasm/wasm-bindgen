@@ -151,11 +151,11 @@ impl AuthenticatorAttestationResponseJson {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.attestation_object(attestation_object);
-        ret.authenticator_data(authenticator_data);
-        ret.client_data_json(client_data_json);
-        ret.public_key_algorithm(public_key_algorithm);
-        ret.transports(transports);
+        ret.set_attestation_object(attestation_object);
+        ret.set_authenticator_data(authenticator_data);
+        ret.set_client_data_json(client_data_json);
+        ret.set_public_key_algorithm(public_key_algorithm);
+        ret.set_transports(transports);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

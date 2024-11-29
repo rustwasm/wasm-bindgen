@@ -80,9 +80,9 @@ impl PublicKeyCredentialUserEntityJson {
     pub fn new(display_name: &str, id: &str, name: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.display_name(display_name);
-        ret.id(id);
-        ret.name(name);
+        ret.set_display_name(display_name);
+        ret.set_id(id);
+        ret.set_name(name);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

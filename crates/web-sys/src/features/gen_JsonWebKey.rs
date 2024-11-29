@@ -198,7 +198,7 @@ impl JsonWebKey {
     pub fn new(kty: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.kty(kty);
+        ret.set_kty(kty);
         ret
     }
     #[deprecated = "Use `set_alg()` instead."]

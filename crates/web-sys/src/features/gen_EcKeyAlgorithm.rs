@@ -38,8 +38,8 @@ impl EcKeyAlgorithm {
     pub fn new(name: &str, named_curve: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.named_curve(named_curve);
+        ret.set_name(name);
+        ret.set_named_curve(named_curve);
         ret
     }
     #[deprecated = "Use `set_name()` instead."]

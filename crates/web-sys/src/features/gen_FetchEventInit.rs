@@ -81,7 +81,7 @@ impl FetchEventInit {
     pub fn new(request: &Request) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.request(request);
+        ret.set_request(request);
         ret
     }
     #[deprecated = "Use `set_bubbles()` instead."]

@@ -48,7 +48,7 @@ impl RtcIceCandidateInit {
     pub fn new(candidate: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.candidate(candidate);
+        ret.set_candidate(candidate);
         ret
     }
     #[deprecated = "Use `set_candidate()` instead."]
