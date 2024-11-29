@@ -302,9 +302,9 @@ function _assertChar(c) {
  * @returns {string}
  */
 export function echo_char(a) {
-    const char0 = a.codePointAt(0);
-    _assertChar(char0);
-    const ret = wasm.echo_char(char0);
+    const char = a.codePointAt(0);
+    _assertChar(char);
+    const ret = wasm.echo_char(char);
     return String.fromCodePoint(ret);
 }
 
@@ -313,17 +313,15 @@ export function echo_char(a) {
  * @returns {string}
  */
 export function echo_string(a) {
-    let deferred2_0;
-    let deferred2_1;
     try {
-        const ptr0 = passStringToWasm0(a, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.echo_string(ptr0, len0);
-        deferred2_0 = ret[0];
-        deferred2_1 = ret[1];
+        const ptr = passStringToWasm0(a, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len = WASM_VECTOR_LEN;
+        const ret = wasm.echo_string(ptr, len);
+        var deferred0 = ret[0];
+        var deferred1 = ret[1];
         return getStringFromWasm0(ret[0], ret[1]);
     } finally {
-        wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
+        wasm.__wbindgen_free(deferred0, deferred1, 1);
     }
 }
 
@@ -343,12 +341,12 @@ function getArrayU8FromWasm0(ptr, len) {
  * @returns {Uint8Array}
  */
 export function echo_vec_u8(a) {
-    const ptr0 = passArray8ToWasm0(a, wasm.__wbindgen_malloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.echo_vec_u8(ptr0, len0);
-    var v2 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+    const ptr = passArray8ToWasm0(a, wasm.__wbindgen_malloc);
+    const len = WASM_VECTOR_LEN;
+    const ret = wasm.echo_vec_u8(ptr, len);
+    const v = getArrayU8FromWasm0(ret[0], ret[1]).slice();
     wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
-    return v2;
+    return v;
 }
 
 let cachedInt8ArrayMemory0 = null;
@@ -369,12 +367,12 @@ function getArrayI8FromWasm0(ptr, len) {
  * @returns {Int8Array}
  */
 export function echo_vec_i8(a) {
-    const ptr0 = passArray8ToWasm0(a, wasm.__wbindgen_malloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.echo_vec_i8(ptr0, len0);
-    var v2 = getArrayI8FromWasm0(ret[0], ret[1]).slice();
+    const ptr = passArray8ToWasm0(a, wasm.__wbindgen_malloc);
+    const len = WASM_VECTOR_LEN;
+    const ret = wasm.echo_vec_i8(ptr, len);
+    const v = getArrayI8FromWasm0(ret[0], ret[1]).slice();
     wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
-    return v2;
+    return v;
 }
 
 let cachedUint16ArrayMemory0 = null;
@@ -402,12 +400,12 @@ function getArrayU16FromWasm0(ptr, len) {
  * @returns {Uint16Array}
  */
 export function echo_vec_u16(a) {
-    const ptr0 = passArray16ToWasm0(a, wasm.__wbindgen_malloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.echo_vec_u16(ptr0, len0);
-    var v2 = getArrayU16FromWasm0(ret[0], ret[1]).slice();
+    const ptr = passArray16ToWasm0(a, wasm.__wbindgen_malloc);
+    const len = WASM_VECTOR_LEN;
+    const ret = wasm.echo_vec_u16(ptr, len);
+    const v = getArrayU16FromWasm0(ret[0], ret[1]).slice();
     wasm.__wbindgen_free(ret[0], ret[1] * 2, 2);
-    return v2;
+    return v;
 }
 
 let cachedInt16ArrayMemory0 = null;
@@ -428,12 +426,12 @@ function getArrayI16FromWasm0(ptr, len) {
  * @returns {Int16Array}
  */
 export function echo_vec_i16(a) {
-    const ptr0 = passArray16ToWasm0(a, wasm.__wbindgen_malloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.echo_vec_i16(ptr0, len0);
-    var v2 = getArrayI16FromWasm0(ret[0], ret[1]).slice();
+    const ptr = passArray16ToWasm0(a, wasm.__wbindgen_malloc);
+    const len = WASM_VECTOR_LEN;
+    const ret = wasm.echo_vec_i16(ptr, len);
+    const v = getArrayI16FromWasm0(ret[0], ret[1]).slice();
     wasm.__wbindgen_free(ret[0], ret[1] * 2, 2);
-    return v2;
+    return v;
 }
 
 let cachedUint32ArrayMemory0 = null;
@@ -461,12 +459,12 @@ function getArrayU32FromWasm0(ptr, len) {
  * @returns {Uint32Array}
  */
 export function echo_vec_u32(a) {
-    const ptr0 = passArray32ToWasm0(a, wasm.__wbindgen_malloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.echo_vec_u32(ptr0, len0);
-    var v2 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+    const ptr = passArray32ToWasm0(a, wasm.__wbindgen_malloc);
+    const len = WASM_VECTOR_LEN;
+    const ret = wasm.echo_vec_u32(ptr, len);
+    const v = getArrayU32FromWasm0(ret[0], ret[1]).slice();
     wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
-    return v2;
+    return v;
 }
 
 let cachedInt32ArrayMemory0 = null;
@@ -487,12 +485,12 @@ function getArrayI32FromWasm0(ptr, len) {
  * @returns {Int32Array}
  */
 export function echo_vec_i32(a) {
-    const ptr0 = passArray32ToWasm0(a, wasm.__wbindgen_malloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.echo_vec_i32(ptr0, len0);
-    var v2 = getArrayI32FromWasm0(ret[0], ret[1]).slice();
+    const ptr = passArray32ToWasm0(a, wasm.__wbindgen_malloc);
+    const len = WASM_VECTOR_LEN;
+    const ret = wasm.echo_vec_i32(ptr, len);
+    const v = getArrayI32FromWasm0(ret[0], ret[1]).slice();
     wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
-    return v2;
+    return v;
 }
 
 let cachedBigUint64ArrayMemory0 = null;
@@ -520,12 +518,12 @@ function getArrayU64FromWasm0(ptr, len) {
  * @returns {BigUint64Array}
  */
 export function echo_vec_u64(a) {
-    const ptr0 = passArray64ToWasm0(a, wasm.__wbindgen_malloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.echo_vec_u64(ptr0, len0);
-    var v2 = getArrayU64FromWasm0(ret[0], ret[1]).slice();
+    const ptr = passArray64ToWasm0(a, wasm.__wbindgen_malloc);
+    const len = WASM_VECTOR_LEN;
+    const ret = wasm.echo_vec_u64(ptr, len);
+    const v = getArrayU64FromWasm0(ret[0], ret[1]).slice();
     wasm.__wbindgen_free(ret[0], ret[1] * 8, 8);
-    return v2;
+    return v;
 }
 
 let cachedBigInt64ArrayMemory0 = null;
@@ -546,12 +544,12 @@ function getArrayI64FromWasm0(ptr, len) {
  * @returns {BigInt64Array}
  */
 export function echo_vec_i64(a) {
-    const ptr0 = passArray64ToWasm0(a, wasm.__wbindgen_malloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.echo_vec_i64(ptr0, len0);
-    var v2 = getArrayI64FromWasm0(ret[0], ret[1]).slice();
+    const ptr = passArray64ToWasm0(a, wasm.__wbindgen_malloc);
+    const len = WASM_VECTOR_LEN;
+    const ret = wasm.echo_vec_i64(ptr, len);
+    const v = getArrayI64FromWasm0(ret[0], ret[1]).slice();
     wasm.__wbindgen_free(ret[0], ret[1] * 8, 8);
-    return v2;
+    return v;
 }
 
 function addToExternrefTable0(obj) {
@@ -585,12 +583,12 @@ function getArrayJsValueFromWasm0(ptr, len) {
  * @returns {(string)[]}
  */
 export function echo_vec_string(a) {
-    const ptr0 = passArrayJsValueToWasm0(a, wasm.__wbindgen_malloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.echo_vec_string(ptr0, len0);
-    var v2 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
+    const ptr = passArrayJsValueToWasm0(a, wasm.__wbindgen_malloc);
+    const len = WASM_VECTOR_LEN;
+    const ret = wasm.echo_vec_string(ptr, len);
+    const v = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
     wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
-    return v2;
+    return v;
 }
 
 function _assertClass(instance, klass) {
@@ -604,8 +602,8 @@ function _assertClass(instance, klass) {
  */
 export function echo_struct(a) {
     _assertClass(a, Foo);
-    var ptr0 = a.__destroy_into_raw();
-    const ret = wasm.echo_struct(ptr0);
+    const ptr = a.__destroy_into_raw();
+    const ret = wasm.echo_struct(ptr);
     return Foo.__wrap(ret);
 }
 
@@ -614,12 +612,12 @@ export function echo_struct(a) {
  * @returns {(Foo)[]}
  */
 export function echo_vec_struct(a) {
-    const ptr0 = passArrayJsValueToWasm0(a, wasm.__wbindgen_malloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.echo_vec_struct(ptr0, len0);
-    var v2 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
+    const ptr = passArrayJsValueToWasm0(a, wasm.__wbindgen_malloc);
+    const len = WASM_VECTOR_LEN;
+    const ret = wasm.echo_vec_struct(ptr, len);
+    const v = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
     wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
-    return v2;
+    return v;
 }
 
 /**
@@ -762,9 +760,9 @@ export function echo_option_bool(a) {
  * @returns {string | undefined}
  */
 export function echo_option_char(a) {
-    const char0 = isLikeNone(a) ? 0xFFFFFF : a.codePointAt(0);
-    if (char0 !== 0xFFFFFF) { _assertChar(char0); }
-    const ret = wasm.echo_option_char(char0);
+    const char = isLikeNone(a) ? 0xFFFFFF : a.codePointAt(0);
+    if (char !== 0xFFFFFF) { _assertChar(char); }
+    const ret = wasm.echo_option_char(char);
     return ret === 0xFFFFFF ? undefined : String.fromCodePoint(ret);
 }
 
@@ -773,15 +771,15 @@ export function echo_option_char(a) {
  * @returns {string | undefined}
  */
 export function echo_option_string(a) {
-    var ptr0 = isLikeNone(a) ? 0 : passStringToWasm0(a, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    var len0 = WASM_VECTOR_LEN;
-    const ret = wasm.echo_option_string(ptr0, len0);
-    let v2;
+    const ptr = isLikeNone(a) ? 0 : passStringToWasm0(a, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len = WASM_VECTOR_LEN;
+    const ret = wasm.echo_option_string(ptr, len);
+    var v = undefined;
     if (ret[0] !== 0) {
-        v2 = getStringFromWasm0(ret[0], ret[1]).slice();
+        v = getStringFromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
     }
-    return v2;
+    return v;
 }
 
 /**
@@ -789,15 +787,15 @@ export function echo_option_string(a) {
  * @returns {Uint8Array | undefined}
  */
 export function echo_option_vec_u8(a) {
-    var ptr0 = isLikeNone(a) ? 0 : passArray8ToWasm0(a, wasm.__wbindgen_malloc);
-    var len0 = WASM_VECTOR_LEN;
-    const ret = wasm.echo_option_vec_u8(ptr0, len0);
-    let v2;
+    const ptr = isLikeNone(a) ? 0 : passArray8ToWasm0(a, wasm.__wbindgen_malloc);
+    const len = WASM_VECTOR_LEN;
+    const ret = wasm.echo_option_vec_u8(ptr, len);
+    var v = undefined;
     if (ret[0] !== 0) {
-        v2 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+        v = getArrayU8FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
     }
-    return v2;
+    return v;
 }
 
 /**
@@ -805,15 +803,15 @@ export function echo_option_vec_u8(a) {
  * @returns {Int8Array | undefined}
  */
 export function echo_option_vec_i8(a) {
-    var ptr0 = isLikeNone(a) ? 0 : passArray8ToWasm0(a, wasm.__wbindgen_malloc);
-    var len0 = WASM_VECTOR_LEN;
-    const ret = wasm.echo_option_vec_i8(ptr0, len0);
-    let v2;
+    const ptr = isLikeNone(a) ? 0 : passArray8ToWasm0(a, wasm.__wbindgen_malloc);
+    const len = WASM_VECTOR_LEN;
+    const ret = wasm.echo_option_vec_i8(ptr, len);
+    var v = undefined;
     if (ret[0] !== 0) {
-        v2 = getArrayI8FromWasm0(ret[0], ret[1]).slice();
+        v = getArrayI8FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
     }
-    return v2;
+    return v;
 }
 
 /**
@@ -821,15 +819,15 @@ export function echo_option_vec_i8(a) {
  * @returns {Uint16Array | undefined}
  */
 export function echo_option_vec_u16(a) {
-    var ptr0 = isLikeNone(a) ? 0 : passArray16ToWasm0(a, wasm.__wbindgen_malloc);
-    var len0 = WASM_VECTOR_LEN;
-    const ret = wasm.echo_option_vec_u16(ptr0, len0);
-    let v2;
+    const ptr = isLikeNone(a) ? 0 : passArray16ToWasm0(a, wasm.__wbindgen_malloc);
+    const len = WASM_VECTOR_LEN;
+    const ret = wasm.echo_option_vec_u16(ptr, len);
+    var v = undefined;
     if (ret[0] !== 0) {
-        v2 = getArrayU16FromWasm0(ret[0], ret[1]).slice();
+        v = getArrayU16FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 2, 2);
     }
-    return v2;
+    return v;
 }
 
 /**
@@ -837,15 +835,15 @@ export function echo_option_vec_u16(a) {
  * @returns {Int16Array | undefined}
  */
 export function echo_option_vec_i16(a) {
-    var ptr0 = isLikeNone(a) ? 0 : passArray16ToWasm0(a, wasm.__wbindgen_malloc);
-    var len0 = WASM_VECTOR_LEN;
-    const ret = wasm.echo_option_vec_i16(ptr0, len0);
-    let v2;
+    const ptr = isLikeNone(a) ? 0 : passArray16ToWasm0(a, wasm.__wbindgen_malloc);
+    const len = WASM_VECTOR_LEN;
+    const ret = wasm.echo_option_vec_i16(ptr, len);
+    var v = undefined;
     if (ret[0] !== 0) {
-        v2 = getArrayI16FromWasm0(ret[0], ret[1]).slice();
+        v = getArrayI16FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 2, 2);
     }
-    return v2;
+    return v;
 }
 
 /**
@@ -853,15 +851,15 @@ export function echo_option_vec_i16(a) {
  * @returns {Uint32Array | undefined}
  */
 export function echo_option_vec_u32(a) {
-    var ptr0 = isLikeNone(a) ? 0 : passArray32ToWasm0(a, wasm.__wbindgen_malloc);
-    var len0 = WASM_VECTOR_LEN;
-    const ret = wasm.echo_option_vec_u32(ptr0, len0);
-    let v2;
+    const ptr = isLikeNone(a) ? 0 : passArray32ToWasm0(a, wasm.__wbindgen_malloc);
+    const len = WASM_VECTOR_LEN;
+    const ret = wasm.echo_option_vec_u32(ptr, len);
+    var v = undefined;
     if (ret[0] !== 0) {
-        v2 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        v = getArrayU32FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
     }
-    return v2;
+    return v;
 }
 
 /**
@@ -869,15 +867,15 @@ export function echo_option_vec_u32(a) {
  * @returns {Int32Array | undefined}
  */
 export function echo_option_vec_i32(a) {
-    var ptr0 = isLikeNone(a) ? 0 : passArray32ToWasm0(a, wasm.__wbindgen_malloc);
-    var len0 = WASM_VECTOR_LEN;
-    const ret = wasm.echo_option_vec_i32(ptr0, len0);
-    let v2;
+    const ptr = isLikeNone(a) ? 0 : passArray32ToWasm0(a, wasm.__wbindgen_malloc);
+    const len = WASM_VECTOR_LEN;
+    const ret = wasm.echo_option_vec_i32(ptr, len);
+    var v = undefined;
     if (ret[0] !== 0) {
-        v2 = getArrayI32FromWasm0(ret[0], ret[1]).slice();
+        v = getArrayI32FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
     }
-    return v2;
+    return v;
 }
 
 /**
@@ -885,15 +883,15 @@ export function echo_option_vec_i32(a) {
  * @returns {BigUint64Array | undefined}
  */
 export function echo_option_vec_u64(a) {
-    var ptr0 = isLikeNone(a) ? 0 : passArray64ToWasm0(a, wasm.__wbindgen_malloc);
-    var len0 = WASM_VECTOR_LEN;
-    const ret = wasm.echo_option_vec_u64(ptr0, len0);
-    let v2;
+    const ptr = isLikeNone(a) ? 0 : passArray64ToWasm0(a, wasm.__wbindgen_malloc);
+    const len = WASM_VECTOR_LEN;
+    const ret = wasm.echo_option_vec_u64(ptr, len);
+    var v = undefined;
     if (ret[0] !== 0) {
-        v2 = getArrayU64FromWasm0(ret[0], ret[1]).slice();
+        v = getArrayU64FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 8, 8);
     }
-    return v2;
+    return v;
 }
 
 /**
@@ -901,15 +899,15 @@ export function echo_option_vec_u64(a) {
  * @returns {BigInt64Array | undefined}
  */
 export function echo_option_vec_i64(a) {
-    var ptr0 = isLikeNone(a) ? 0 : passArray64ToWasm0(a, wasm.__wbindgen_malloc);
-    var len0 = WASM_VECTOR_LEN;
-    const ret = wasm.echo_option_vec_i64(ptr0, len0);
-    let v2;
+    const ptr = isLikeNone(a) ? 0 : passArray64ToWasm0(a, wasm.__wbindgen_malloc);
+    const len = WASM_VECTOR_LEN;
+    const ret = wasm.echo_option_vec_i64(ptr, len);
+    var v = undefined;
     if (ret[0] !== 0) {
-        v2 = getArrayI64FromWasm0(ret[0], ret[1]).slice();
+        v = getArrayI64FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 8, 8);
     }
-    return v2;
+    return v;
 }
 
 /**
@@ -917,15 +915,15 @@ export function echo_option_vec_i64(a) {
  * @returns {(string)[] | undefined}
  */
 export function echo_option_vec_string(a) {
-    var ptr0 = isLikeNone(a) ? 0 : passArrayJsValueToWasm0(a, wasm.__wbindgen_malloc);
-    var len0 = WASM_VECTOR_LEN;
-    const ret = wasm.echo_option_vec_string(ptr0, len0);
-    let v2;
+    const ptr = isLikeNone(a) ? 0 : passArrayJsValueToWasm0(a, wasm.__wbindgen_malloc);
+    const len = WASM_VECTOR_LEN;
+    const ret = wasm.echo_option_vec_string(ptr, len);
+    var v = undefined;
     if (ret[0] !== 0) {
-        v2 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
+        v = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
     }
-    return v2;
+    return v;
 }
 
 /**
@@ -933,12 +931,12 @@ export function echo_option_vec_string(a) {
  * @returns {Foo | undefined}
  */
 export function echo_option_struct(a) {
-    let ptr0 = 0;
+    var ptr = 0;
     if (!isLikeNone(a)) {
         _assertClass(a, Foo);
-        ptr0 = a.__destroy_into_raw();
+        ptr = a.__destroy_into_raw();
     }
-    const ret = wasm.echo_option_struct(ptr0);
+    const ret = wasm.echo_option_struct(ptr);
     return ret === 0 ? undefined : Foo.__wrap(ret);
 }
 
@@ -947,15 +945,15 @@ export function echo_option_struct(a) {
  * @returns {(Foo)[] | undefined}
  */
 export function echo_option_vec_struct(a) {
-    var ptr0 = isLikeNone(a) ? 0 : passArrayJsValueToWasm0(a, wasm.__wbindgen_malloc);
-    var len0 = WASM_VECTOR_LEN;
-    const ret = wasm.echo_option_vec_struct(ptr0, len0);
-    let v2;
+    const ptr = isLikeNone(a) ? 0 : passArrayJsValueToWasm0(a, wasm.__wbindgen_malloc);
+    const len = WASM_VECTOR_LEN;
+    const ret = wasm.echo_option_vec_struct(ptr, len);
+    var v = undefined;
     if (ret[0] !== 0) {
-        v2 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
+        v = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
     }
-    return v2;
+    return v;
 }
 
 const FooFinalization = (typeof FinalizationRegistry === 'undefined')
@@ -1004,10 +1002,10 @@ export function __wbg_foo_unwrap(arg0) {
 
 export function __wbindgen_debug_string(arg0, arg1) {
     const ret = debugString(arg1);
-    const ptr1 = passStringToWasm0(ret, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len1 = WASM_VECTOR_LEN;
-    getDataViewMemory0().setInt32(arg0 + 4 * 1, len1, true);
-    getDataViewMemory0().setInt32(arg0 + 4 * 0, ptr1, true);
+    const ptr = passStringToWasm0(ret, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len = WASM_VECTOR_LEN;
+    getDataViewMemory0().setInt32(arg0 + 4 * 1, len, true);
+    getDataViewMemory0().setInt32(arg0 + 4 * 0, ptr, true);
 };
 
 export function __wbindgen_init_externref_table() {
@@ -1024,10 +1022,10 @@ export function __wbindgen_init_externref_table() {
 export function __wbindgen_string_get(arg0, arg1) {
     const obj = arg1;
     const ret = typeof(obj) === 'string' ? obj : undefined;
-    var ptr1 = isLikeNone(ret) ? 0 : passStringToWasm0(ret, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    var len1 = WASM_VECTOR_LEN;
-    getDataViewMemory0().setInt32(arg0 + 4 * 1, len1, true);
-    getDataViewMemory0().setInt32(arg0 + 4 * 0, ptr1, true);
+    const ptr = isLikeNone(ret) ? 0 : passStringToWasm0(ret, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len = WASM_VECTOR_LEN;
+    getDataViewMemory0().setInt32(arg0 + 4 * 1, len, true);
+    getDataViewMemory0().setInt32(arg0 + 4 * 0, ptr, true);
 };
 
 export function __wbindgen_string_new(arg0, arg1) {

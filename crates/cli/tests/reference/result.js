@@ -39,7 +39,7 @@ export function result_string() {
         var len = ret[1];
         if (ret[3]) {
             ptr = 0; len = 0;
-            throw takeObject(ret[2]);
+            throw takeFromExternrefTable0(ret[2]);
         }
         var deferred0 = ptr;
         var deferred1 = len;
