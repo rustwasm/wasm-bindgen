@@ -1,8 +1,8 @@
 use crate::descriptor::VectorKind;
 use crate::intrinsic::Intrinsic;
 use crate::wit::{
-    Adapter, AdapterId, AdapterJsImportKind, AdapterType, AuxExportedMethodKind, AuxReceiverKind,
-    AuxStringEnum, AuxValue,
+    Adapter, AdapterId, AdapterJsImportKind, AuxExportedMethodKind, AuxReceiverKind, AuxStringEnum,
+    AuxValue,
 };
 use crate::wit::{AdapterKind, Instruction, InstructionData};
 use crate::wit::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
