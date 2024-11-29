@@ -93,6 +93,7 @@ extern "C" {
     /// dox
     pub fn foo();
 
+    /// dox
     pub type Options;
     #[wasm_bindgen(constructor)]
     fn new() -> Options;

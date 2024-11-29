@@ -10,5 +10,5 @@ extern "C" {
 #[wasm_bindgen_test]
 fn test_span_element() {
     let _element = new_span();
-    assert!(true, "Span doesn't have an interface");
+    // Span doesn't have an interface
 }

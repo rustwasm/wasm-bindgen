@@ -25,7 +25,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageCaptureError/message)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageCaptureError`*"]
-    pub fn message(this: &ImageCaptureError) -> String;
+    pub fn message(this: &ImageCaptureError) -> ::alloc::string::String;
 }
 impl ImageCaptureError {
     #[doc = "The `ImageCaptureError.FRAME_GRAB_ERROR` const."]

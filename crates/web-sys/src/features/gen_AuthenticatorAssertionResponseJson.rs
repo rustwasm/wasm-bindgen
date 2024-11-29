@@ -22,7 +22,9 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "attestationObject")]
-    pub fn get_attestation_object(this: &AuthenticatorAssertionResponseJson) -> Option<String>;
+    pub fn get_attestation_object(
+        this: &AuthenticatorAssertionResponseJson,
+    ) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `attestationObject` field of this object."]
     #[doc = ""]
@@ -40,7 +42,9 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "authenticatorData")]
-    pub fn get_authenticator_data(this: &AuthenticatorAssertionResponseJson) -> String;
+    pub fn get_authenticator_data(
+        this: &AuthenticatorAssertionResponseJson,
+    ) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `authenticatorData` field of this object."]
     #[doc = ""]
@@ -58,7 +62,9 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "clientDataJSON")]
-    pub fn get_client_data_json(this: &AuthenticatorAssertionResponseJson) -> String;
+    pub fn get_client_data_json(
+        this: &AuthenticatorAssertionResponseJson,
+    ) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `clientDataJSON` field of this object."]
     #[doc = ""]
@@ -76,7 +82,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "signature")]
-    pub fn get_signature(this: &AuthenticatorAssertionResponseJson) -> String;
+    pub fn get_signature(this: &AuthenticatorAssertionResponseJson) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `signature` field of this object."]
     #[doc = ""]
@@ -94,7 +100,9 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "userHandle")]
-    pub fn get_user_handle(this: &AuthenticatorAssertionResponseJson) -> Option<String>;
+    pub fn get_user_handle(
+        this: &AuthenticatorAssertionResponseJson,
+    ) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `userHandle` field of this object."]
     #[doc = ""]
@@ -116,9 +124,9 @@ impl AuthenticatorAssertionResponseJson {
     pub fn new(authenticator_data: &str, client_data_json: &str, signature: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.authenticator_data(authenticator_data);
-        ret.client_data_json(client_data_json);
-        ret.signature(signature);
+        ret.set_authenticator_data(authenticator_data);
+        ret.set_client_data_json(client_data_json);
+        ret.set_signature(signature);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

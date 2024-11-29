@@ -26,7 +26,7 @@ default = ["spans", "std"]
 enable-interning = ["std"]
 serde-serialize = ["serde", "serde_json", "std"]
 spans = ["wasm-bindgen-macro/spans"]
-std = []
+std = ["wasm-bindgen-macro/std", "once_cell/std"]
 
 # Whether or not the `#[wasm_bindgen]` macro is strict and generates an error on
 # all unused attributes
@@ -42,10 +42,20 @@ xxx_debug_only_print_generated_code = ["wasm-bindgen-macro/xxx_debug_only_print_
 
 [dependencies]
 cfg-if = "1.0.0"
-once_cell = "1.12"
+once_cell = { version = "1.12", default-features = false }
 serde = { version = "1.0", optional = true }
 serde_json = { version = "1.0", optional = true }
-wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.95" }
+wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.95", default-features = false }
+
+[target.'cfg(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none"), target_feature = "atomics"))'.dependencies]
+wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.95", default-features = false, features = [
+  "atomics",
+] }
+
+[target.'cfg(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none"), wasm_bindgen_unstable_test_coverage))'.dependencies]
+wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.95", default-features = false, features = [
+  "coverage",
+] }
 
 [dev-dependencies]
 wasm-bindgen-test = { path = 'crates/test' }
@@ -59,6 +69,20 @@ wasm-bindgen-test-crate-b = { path = 'tests/crates/b' }
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(wasm_bindgen_unstable_test_coverage)'] }
+
+[lints.clippy]
+large_enum_variant = "allow"
+new_without_default = "allow"
+overly_complex_bool_expr = "allow"
+too_many_arguments = "allow"
+type_complexity = "allow"
+
+[workspace.lints.clippy]
+large_enum_variant = "allow"
+new_without_default = "allow"
+overly_complex_bool_expr = "allow"
+too_many_arguments = "allow"
+type_complexity = "allow"
 
 [workspace]
 exclude = ["crates/msrv"]
@@ -96,7 +120,6 @@ members = [
   "examples/wasm-in-wasm",
   "examples/wasm-in-wasm-imports",
   "examples/wasm-in-web-worker",
-  "examples/wasm2js",
   "examples/weather_report",
   "examples/webaudio",
   "examples/webgl",

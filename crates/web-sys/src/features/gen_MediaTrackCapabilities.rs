@@ -98,7 +98,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "deviceId")]
-    pub fn get_device_id(this: &MediaTrackCapabilities) -> Option<String>;
+    pub fn get_device_id(this: &MediaTrackCapabilities) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `deviceId` field of this object."]
     #[doc = ""]
@@ -172,7 +172,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "groupId")]
-    pub fn get_group_id(this: &MediaTrackCapabilities) -> Option<String>;
+    pub fn get_group_id(this: &MediaTrackCapabilities) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `groupId` field of this object."]
     #[doc = ""]

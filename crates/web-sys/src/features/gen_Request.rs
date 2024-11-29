@@ -18,14 +18,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Request/method)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Request`*"]
-    pub fn method(this: &Request) -> String;
+    pub fn method(this: &Request) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "Request" , js_name = url)]
     #[doc = "Getter for the `url` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Request/url)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Request`*"]
-    pub fn url(this: &Request) -> String;
+    pub fn url(this: &Request) -> ::alloc::string::String;
     #[cfg(feature = "Headers")]
     # [wasm_bindgen (structural , method , getter , js_class = "Request" , js_name = headers)]
     #[doc = "Getter for the `headers` field of this object."]
@@ -48,7 +48,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Request/referrer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Request`*"]
-    pub fn referrer(this: &Request) -> String;
+    pub fn referrer(this: &Request) -> ::alloc::string::String;
     #[cfg(feature = "ReferrerPolicy")]
     # [wasm_bindgen (structural , method , getter , js_class = "Request" , js_name = referrerPolicy)]
     #[doc = "Getter for the `referrerPolicy` field of this object."]
@@ -95,7 +95,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Request/integrity)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Request`*"]
-    pub fn integrity(this: &Request) -> String;
+    pub fn integrity(this: &Request) -> ::alloc::string::String;
     #[cfg(feature = "AbortSignal")]
     # [wasm_bindgen (structural , method , getter , js_class = "Request" , js_name = signal)]
     #[doc = "Getter for the `signal` field of this object."]

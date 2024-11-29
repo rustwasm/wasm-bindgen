@@ -60,7 +60,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "codec")]
-    pub fn get_codec(this: &VideoEncoderConfig) -> String;
+    pub fn get_codec(this: &VideoEncoderConfig) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `codec` field of this object."]
     #[doc = ""]
@@ -190,7 +190,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "scalabilityMode")]
-    pub fn get_scalability_mode(this: &VideoEncoderConfig) -> Option<String>;
+    pub fn get_scalability_mode(this: &VideoEncoderConfig) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `scalabilityMode` field of this object."]
     #[doc = ""]
@@ -230,9 +230,9 @@ impl VideoEncoderConfig {
     pub fn new(codec: &str, height: u32, width: u32) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.codec(codec);
-        ret.height(height);
-        ret.width(width);
+        ret.set_codec(codec);
+        ret.set_height(height);
+        ret.set_width(width);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

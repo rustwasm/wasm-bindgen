@@ -103,10 +103,10 @@ impl SerialInputSignals {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.clear_to_send(clear_to_send);
-        ret.data_carrier_detect(data_carrier_detect);
-        ret.data_set_ready(data_set_ready);
-        ret.ring_indicator(ring_indicator);
+        ret.set_clear_to_send(clear_to_send);
+        ret.set_data_carrier_detect(data_carrier_detect);
+        ret.set_data_set_ready(data_set_ready);
+        ret.set_ring_indicator(ring_indicator);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

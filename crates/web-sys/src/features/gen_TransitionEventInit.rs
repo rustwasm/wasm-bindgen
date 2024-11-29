@@ -54,7 +54,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TransitionEventInit`*"]
     #[wasm_bindgen(method, getter = "propertyName")]
-    pub fn get_property_name(this: &TransitionEventInit) -> Option<String>;
+    pub fn get_property_name(this: &TransitionEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `propertyName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TransitionEventInit`*"]
@@ -64,7 +64,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TransitionEventInit`*"]
     #[wasm_bindgen(method, getter = "pseudoElement")]
-    pub fn get_pseudo_element(this: &TransitionEventInit) -> Option<String>;
+    pub fn get_pseudo_element(this: &TransitionEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `pseudoElement` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TransitionEventInit`*"]

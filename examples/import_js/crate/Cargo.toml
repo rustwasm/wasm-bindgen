@@ -10,3 +10,6 @@ crate-type = ["cdylib"]
 
 [dependencies]
 wasm-bindgen = { path = "../../../" }
+
+[lints]
+workspace = true

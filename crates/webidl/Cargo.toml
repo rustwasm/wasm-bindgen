@@ -19,3 +19,6 @@ sourcefile = "0.2"
 syn = { version = '2.0', features = ['extra-traits', 'full'] }
 wasm-bindgen-backend = { path = "../backend" }
 weedle = { git = "https://github.com/rustwasm/weedle.git" }
+
+[lints]
+workspace = true

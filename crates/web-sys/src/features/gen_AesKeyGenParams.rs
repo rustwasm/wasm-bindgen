@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesKeyGenParams`*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &AesKeyGenParams) -> String;
+    pub fn get_name(this: &AesKeyGenParams) -> ::alloc::string::String;
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesKeyGenParams`*"]
@@ -38,8 +38,8 @@ impl AesKeyGenParams {
     pub fn new(name: &str, length: u16) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.length(length);
+        ret.set_name(name);
+        ret.set_length(length);
         ret
     }
     #[deprecated = "Use `set_name()` instead."]

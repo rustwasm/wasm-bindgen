@@ -44,7 +44,7 @@ impl UsbDeviceRequestOptions {
     pub fn new(filters: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.filters(filters);
+        ret.set_filters(filters);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

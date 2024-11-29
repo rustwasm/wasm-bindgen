@@ -44,7 +44,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnectionCloseEventInit`*"]
     #[wasm_bindgen(method, getter = "message")]
-    pub fn get_message(this: &PresentationConnectionCloseEventInit) -> Option<String>;
+    pub fn get_message(
+        this: &PresentationConnectionCloseEventInit,
+    ) -> Option<::alloc::string::String>;
     #[doc = "Change the `message` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnectionCloseEventInit`*"]
@@ -76,7 +78,7 @@ impl PresentationConnectionCloseEventInit {
     pub fn new(reason: PresentationConnectionClosedReason) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.reason(reason);
+        ret.set_reason(reason);
         ret
     }
     #[deprecated = "Use `set_bubbles()` instead."]

@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegistrationOptions`*"]
     #[wasm_bindgen(method, getter = "scope")]
-    pub fn get_scope(this: &RegistrationOptions) -> Option<String>;
+    pub fn get_scope(this: &RegistrationOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `scope` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegistrationOptions`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegistrationOptions`*"]
     #[wasm_bindgen(method, getter = "type")]
-    pub fn get_type(this: &RegistrationOptions) -> Option<String>;
+    pub fn get_type(this: &RegistrationOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegistrationOptions`*"]

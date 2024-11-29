@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderOptions`*"]
     #[wasm_bindgen(method, getter = "peerIdentity")]
-    pub fn get_peer_identity(this: &RtcIdentityProviderOptions) -> Option<String>;
+    pub fn get_peer_identity(this: &RtcIdentityProviderOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `peerIdentity` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderOptions`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderOptions`*"]
     #[wasm_bindgen(method, getter = "protocol")]
-    pub fn get_protocol(this: &RtcIdentityProviderOptions) -> Option<String>;
+    pub fn get_protocol(this: &RtcIdentityProviderOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `protocol` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderOptions`*"]
@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderOptions`*"]
     #[wasm_bindgen(method, getter = "usernameHint")]
-    pub fn get_username_hint(this: &RtcIdentityProviderOptions) -> Option<String>;
+    pub fn get_username_hint(this: &RtcIdentityProviderOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `usernameHint` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderOptions`*"]

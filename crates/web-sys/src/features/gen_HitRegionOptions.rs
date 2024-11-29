@@ -26,7 +26,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HitRegionOptions`*"]
     #[wasm_bindgen(method, getter = "id")]
-    pub fn get_id(this: &HitRegionOptions) -> Option<String>;
+    pub fn get_id(this: &HitRegionOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HitRegionOptions`*"]

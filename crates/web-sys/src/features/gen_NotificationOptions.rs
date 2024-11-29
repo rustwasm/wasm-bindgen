@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
     #[wasm_bindgen(method, getter = "badge")]
-    pub fn get_badge(this: &NotificationOptions) -> Option<String>;
+    pub fn get_badge(this: &NotificationOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `badge` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
     #[wasm_bindgen(method, getter = "body")]
-    pub fn get_body(this: &NotificationOptions) -> Option<String>;
+    pub fn get_body(this: &NotificationOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `body` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
@@ -66,7 +66,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
     #[wasm_bindgen(method, getter = "icon")]
-    pub fn get_icon(this: &NotificationOptions) -> Option<String>;
+    pub fn get_icon(this: &NotificationOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `icon` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
@@ -76,7 +76,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
     #[wasm_bindgen(method, getter = "image")]
-    pub fn get_image(this: &NotificationOptions) -> Option<String>;
+    pub fn get_image(this: &NotificationOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `image` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
@@ -86,7 +86,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
     #[wasm_bindgen(method, getter = "lang")]
-    pub fn get_lang(this: &NotificationOptions) -> Option<String>;
+    pub fn get_lang(this: &NotificationOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `lang` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
@@ -126,7 +126,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]
     #[wasm_bindgen(method, getter = "tag")]
-    pub fn get_tag(this: &NotificationOptions) -> Option<String>;
+    pub fn get_tag(this: &NotificationOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `tag` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationOptions`*"]

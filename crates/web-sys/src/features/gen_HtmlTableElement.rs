@@ -82,7 +82,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/align)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTableElement`*"]
-    pub fn align(this: &HtmlTableElement) -> String;
+    pub fn align(this: &HtmlTableElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLTableElement" , js_name = align)]
     #[doc = "Setter for the `align` field of this object."]
     #[doc = ""]
@@ -96,7 +96,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/border)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTableElement`*"]
-    pub fn border(this: &HtmlTableElement) -> String;
+    pub fn border(this: &HtmlTableElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLTableElement" , js_name = border)]
     #[doc = "Setter for the `border` field of this object."]
     #[doc = ""]
@@ -110,7 +110,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/frame)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTableElement`*"]
-    pub fn frame(this: &HtmlTableElement) -> String;
+    pub fn frame(this: &HtmlTableElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLTableElement" , js_name = frame)]
     #[doc = "Setter for the `frame` field of this object."]
     #[doc = ""]
@@ -124,7 +124,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/rules)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTableElement`*"]
-    pub fn rules(this: &HtmlTableElement) -> String;
+    pub fn rules(this: &HtmlTableElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLTableElement" , js_name = rules)]
     #[doc = "Setter for the `rules` field of this object."]
     #[doc = ""]
@@ -138,7 +138,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/summary)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTableElement`*"]
-    pub fn summary(this: &HtmlTableElement) -> String;
+    pub fn summary(this: &HtmlTableElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLTableElement" , js_name = summary)]
     #[doc = "Setter for the `summary` field of this object."]
     #[doc = ""]
@@ -152,7 +152,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/width)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTableElement`*"]
-    pub fn width(this: &HtmlTableElement) -> String;
+    pub fn width(this: &HtmlTableElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLTableElement" , js_name = width)]
     #[doc = "Setter for the `width` field of this object."]
     #[doc = ""]
@@ -166,7 +166,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/bgColor)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTableElement`*"]
-    pub fn bg_color(this: &HtmlTableElement) -> String;
+    pub fn bg_color(this: &HtmlTableElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLTableElement" , js_name = bgColor)]
     #[doc = "Setter for the `bgColor` field of this object."]
     #[doc = ""]
@@ -180,7 +180,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/cellPadding)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTableElement`*"]
-    pub fn cell_padding(this: &HtmlTableElement) -> String;
+    pub fn cell_padding(this: &HtmlTableElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLTableElement" , js_name = cellPadding)]
     #[doc = "Setter for the `cellPadding` field of this object."]
     #[doc = ""]
@@ -194,7 +194,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableElement/cellSpacing)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTableElement`*"]
-    pub fn cell_spacing(this: &HtmlTableElement) -> String;
+    pub fn cell_spacing(this: &HtmlTableElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLTableElement" , js_name = cellSpacing)]
     #[doc = "Setter for the `cellSpacing` field of this object."]
     #[doc = ""]

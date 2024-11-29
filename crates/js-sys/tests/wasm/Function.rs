@@ -5,13 +5,13 @@ use wasm_bindgen_test::*;
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(thread_local, js_name = max, js_namespace = Math)]
+    #[wasm_bindgen(thread_local_v2, js_name = max, js_namespace = Math)]
     static MAX: Function;
 
     type ArrayPrototype;
     #[wasm_bindgen(method, getter, structural)]
     pub fn push(this: &ArrayPrototype) -> Function;
-    #[wasm_bindgen(thread_local, js_name = prototype, js_namespace = Array)]
+    #[wasm_bindgen(thread_local_v2, js_name = prototype, js_namespace = Array)]
     static ARRAY_PROTOTYPE2: ArrayPrototype;
 }
 

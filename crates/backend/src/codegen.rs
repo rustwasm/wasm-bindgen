@@ -163,7 +163,7 @@ impl TryToTokens for ast::Program {
         let prefix_json_bytes = syn::LitByteStr::new(&prefix_json_bytes, Span::call_site());
 
         (quote! {
-            #[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+            #[cfg(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")))]
             #[automatically_derived]
             const _: () = {
                 use #wasm_bindgen::__rt::{flat_len, flat_byte_slices};
@@ -201,9 +201,10 @@ impl TryToTokens for ast::LinkToModule {
                 #program
                 #extern_fn
 
-                static __VAL: #wasm_bindgen::__rt::Lazy<String> = #wasm_bindgen::__rt::Lazy::new(|| unsafe {
-                    <#wasm_bindgen::__rt::alloc::string::String as #wasm_bindgen::convert::FromWasmAbi>::from_abi(#name().join())
-                });
+                static __VAL: #wasm_bindgen::__rt::once_cell::sync::Lazy<#wasm_bindgen::__rt::alloc::string::String> =
+                    #wasm_bindgen::__rt::once_cell::sync::Lazy::new(|| unsafe {
+                        <#wasm_bindgen::__rt::alloc::string::String as #wasm_bindgen::convert::FromWasmAbi>::from_abi(#name().join())
+                    });
 
                 #wasm_bindgen::__rt::alloc::string::String::clone(&__VAL)
             }
@@ -223,6 +224,7 @@ impl ToTokens for ast::Struct {
         let free_fn = Ident::new(&shared::free_function(&name_str), Span::call_site());
         let unwrap_fn = Ident::new(&shared::unwrap_function(&name_str), Span::call_site());
         let wasm_bindgen = &self.wasm_bindgen;
+        let maybe_no_coverage = coverage();
         (quote! {
             #[automatically_derived]
             impl #wasm_bindgen::marker::SupportsConstructor for #name {}
@@ -282,12 +284,12 @@ impl ToTokens for ast::Struct {
                     let ptr = #wasm_bindgen::convert::IntoWasmAbi::into_abi(value);
 
                     #[link(wasm_import_module = "__wbindgen_placeholder__")]
-                    #[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+                    #[cfg(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")))]
                     extern "C" {
                         fn #new_fn(ptr: u32) -> u32;
                     }
 
-                    #[cfg(not(all(target_arch = "wasm32", target_os = "unknown")))]
+                    #[cfg(not(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none"))))]
                     unsafe fn #new_fn(_: u32) -> u32 {
                         panic!("cannot convert to JsValue outside of the Wasm target")
                     }
@@ -299,14 +301,14 @@ impl ToTokens for ast::Struct {
                 }
             }
 
-            #[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+            #[cfg(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")))]
             #[automatically_derived]
             const _: () = {
                 #[no_mangle]
                 #[doc(hidden)]
                 // `allow_delayed` is whether it's ok to not actually free the `ptr` immediately
                 // if it's still borrowed.
-                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+                #maybe_no_coverage
                 pub unsafe extern "C" fn #free_fn(ptr: u32, allow_delayed: u32) {
                     use #wasm_bindgen::__rt::alloc::rc::Rc;
 
@@ -388,12 +390,12 @@ impl ToTokens for ast::Struct {
                     let idx = #wasm_bindgen::convert::IntoWasmAbi::into_abi(&value);
 
                     #[link(wasm_import_module = "__wbindgen_placeholder__")]
-                    #[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+                    #[cfg(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")))]
                     extern "C" {
                         fn #unwrap_fn(ptr: u32) -> u32;
                     }
 
-                    #[cfg(not(all(target_arch = "wasm32", target_os = "unknown")))]
+                    #[cfg(not(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none"))))]
                     unsafe fn #unwrap_fn(_: u32) -> u32 {
                         panic!("cannot convert from JsValue outside of the Wasm target")
                     }
@@ -482,6 +484,7 @@ impl ToTokens for ast::StructField {
             quote! { assert_copy::<#ty>() }
         };
         let maybe_assert_copy = respan(maybe_assert_copy, ty);
+        let maybe_no_coverage = coverage();
 
         // Split this out so that it isn't affected by `quote_spanned!`.
         //
@@ -500,9 +503,9 @@ impl ToTokens for ast::StructField {
         (quote! {
             #[automatically_derived]
             const _: () = {
-                #[cfg_attr(all(target_arch = "wasm32", target_os = "unknown"), no_mangle)]
+                #[cfg_attr(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")), no_mangle)]
                 #[doc(hidden)]
-                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+                #maybe_no_coverage
                 pub unsafe extern "C" fn #getter(js: u32)
                     -> #wasm_bindgen::convert::WasmRet<<#ty as #wasm_bindgen::convert::IntoWasmAbi>::Abi>
                 {
@@ -539,12 +542,12 @@ impl ToTokens for ast::StructField {
         let (args, names) = splat(wasm_bindgen, &Ident::new("val", rust_name.span()), &abi);
 
         (quote! {
-            #[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+            #[cfg(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")))]
             #[automatically_derived]
             const _: () = {
                 #[no_mangle]
                 #[doc(hidden)]
-                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+                #maybe_no_coverage
                 pub unsafe extern "C" fn #setter(
                     js: u32,
                     #(#args,)*
@@ -824,15 +827,17 @@ impl TryToTokens for ast::Export {
             }
         }
 
+        let maybe_no_coverage = coverage();
+
         (quote! {
             #[automatically_derived]
             const _: () = {
                 #(#attrs)*
                 #[cfg_attr(
-                    all(target_arch = "wasm32", target_os = "unknown"),
+                    all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")),
                     export_name = #export_name,
                 )]
-                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+                #maybe_no_coverage
                 pub unsafe extern "C" fn #generated_name(#(#args),*) -> #wasm_bindgen::convert::WasmRet<#projection::Abi> {
                     #[automatically_derived]
                     const _: () = {
@@ -1107,11 +1112,11 @@ impl ToTokens for ast::ImportType {
                 impl JsCast for #rust_name {
                     fn instanceof(val: &JsValue) -> bool {
                         #[link(wasm_import_module = "__wbindgen_placeholder__")]
-                        #[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+                        #[cfg(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")))]
                         extern "C" {
                             fn #instanceof_shim(val: u32) -> u32;
                         }
-                        #[cfg(not(all(target_arch = "wasm32", target_os = "unknown")))]
+                        #[cfg(not(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none"))))]
                         unsafe fn #instanceof_shim(_: u32) -> u32 {
                             panic!("cannot check instanceof on non-wasm targets");
                         }
@@ -1195,6 +1200,8 @@ impl ToTokens for ast::StringEnum {
         let invalid = variant_count;
         let hole = variant_count + 1;
         let attrs = &self.rust_attrs;
+
+        let maybe_no_coverage = coverage();
 
         let invalid_to_str_msg = format!(
             "Converting an invalid string enum ({}) back to a string is currently not supported",
@@ -1282,7 +1289,7 @@ impl ToTokens for ast::StringEnum {
 
             #[automatically_derived]
             impl #wasm_bindgen::describe::WasmDescribe for #enum_name {
-                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+                #maybe_no_coverage
                 fn describe() {
                     use #wasm_bindgen::describe::*;
                     inform(STRING_ENUM);
@@ -1534,7 +1541,7 @@ struct DescribeImport<'a> {
     wasm_bindgen: &'a syn::Path,
 }
 
-impl<'a> ToTokens for DescribeImport<'a> {
+impl ToTokens for DescribeImport<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         let f = match *self.kind {
             ast::ImportKind::Function(ref f) => f,
@@ -1581,6 +1588,7 @@ impl ToTokens for ast::Enum {
         } else {
             quote! { u32 }
         };
+        let maybe_no_coverage = coverage();
         let cast_clauses = self.variants.iter().map(|variant| {
             let variant_name = &variant.name;
             quote! {
@@ -1628,7 +1636,7 @@ impl ToTokens for ast::Enum {
 
             #[automatically_derived]
             impl #wasm_bindgen::describe::WasmDescribe for #enum_name {
-                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+                #maybe_no_coverage
                 fn describe() {
                     use #wasm_bindgen::describe::*;
                     inform(ENUM);
@@ -1716,7 +1724,7 @@ impl ToTokens for ast::ImportStatic {
     fn to_tokens(&self, into: &mut TokenStream) {
         let ty = &self.ty;
 
-        if self.thread_local {
+        if let Some(thread_local) = self.thread_local {
             thread_local_import(
                 &self.vis,
                 &self.rust_name,
@@ -1724,6 +1732,7 @@ impl ToTokens for ast::ImportStatic {
                 ty,
                 ty,
                 &self.shim,
+                thread_local,
             )
             .to_tokens(into)
         } else {
@@ -1736,7 +1745,7 @@ impl ToTokens for ast::ImportStatic {
 
             into.extend(quote! {
                 #[automatically_derived]
-                #[deprecated = "use with `#[wasm_bindgen(thread_local)]` instead"]
+                #[deprecated = "use with `#[wasm_bindgen(thread_local_v2)]` instead"]
             });
             into.extend(
                 quote_spanned! { name.span() => #vis static #name: #wasm_bindgen::JsStatic<#ty> = {
@@ -1776,6 +1785,7 @@ impl ToTokens for ast::ImportString {
             &actual_ty,
             &self.ty,
             &self.shim,
+            self.thread_local,
         )
         .to_tokens(into);
     }
@@ -1788,15 +1798,52 @@ fn thread_local_import(
     actual_ty: &syn::Type,
     ty: &syn::Type,
     shim_name: &Ident,
+    thread_local: ast::ThreadLocal,
 ) -> TokenStream {
     let init = static_init(wasm_bindgen, ty, shim_name);
 
-    quote! {
-        thread_local! {
-            #[automatically_derived]
-            #vis static #name: #actual_ty = {
-                #init
+    match thread_local {
+        ast::ThreadLocal::V1 => quote! {
+            thread_local! {
+                #[automatically_derived]
+                #[deprecated = "use with `#[wasm_bindgen(thread_local_v2)]` instead"]
+                #vis static #name: #actual_ty = {
+                    #init
+                };
+            }
+        },
+        ast::ThreadLocal::V2 => {
+            #[cfg(feature = "std")]
+            let inner = quote! {
+                thread_local!(static _VAL: #actual_ty = init(););
+                #wasm_bindgen::JsThreadLocal {
+                    __inner: &_VAL,
+                }
             };
+            #[cfg(all(not(feature = "std"), not(feature = "atomics")))]
+            let inner = quote! {
+                static _VAL: #wasm_bindgen::__rt::LazyCell<#actual_ty> = #wasm_bindgen::__rt::LazyCell::new(init);
+                #wasm_bindgen::JsThreadLocal {
+                    __inner: &_VAL,
+                }
+            };
+            #[cfg(all(not(feature = "std"), feature = "atomics"))]
+            let inner = quote! {
+                #[thread_local]
+                static _VAL: #wasm_bindgen::__rt::LazyCell<#actual_ty> = #wasm_bindgen::__rt::LazyCell::new(init);
+                #wasm_bindgen::JsThreadLocal {
+                    __inner: || unsafe {  #wasm_bindgen::__rt::LazyCell::force(&_VAL) as *const #actual_ty },
+                }
+            };
+
+            quote! {
+                #vis static #name: #wasm_bindgen::JsThreadLocal<#actual_ty> = {
+                    fn init() -> #actual_ty {
+                        #init
+                    }
+                    #inner
+                };
+            }
         }
     }
 }
@@ -1807,12 +1854,12 @@ fn static_init(wasm_bindgen: &syn::Path, ty: &syn::Type, shim_name: &Ident) -> T
     };
     quote! {
         #[link(wasm_import_module = "__wbindgen_placeholder__")]
-        #[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+        #[cfg(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")))]
         extern "C" {
             fn #shim_name() -> #abi_ret;
         }
 
-        #[cfg(not(all(target_arch = "wasm32", target_os = "unknown")))]
+        #[cfg(not(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none"))))]
         unsafe fn #shim_name() -> #abi_ret {
             panic!("cannot access imported statics on non-wasm targets")
         }
@@ -1832,7 +1879,7 @@ struct Descriptor<'a, T> {
     wasm_bindgen: &'a syn::Path,
 }
 
-impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
+impl<T: ToTokens> ToTokens for Descriptor<'_, T> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         // It's possible for the same descriptor to be emitted in two different
         // modules (aka a value imported twice in a crate, each in a separate
@@ -1854,18 +1901,20 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
             return;
         }
 
+        let maybe_no_coverage = coverage();
+
         let name = Ident::new(&format!("__wbindgen_describe_{}", ident), ident.span());
         let inner = &self.inner;
         let attrs = &self.attrs;
         let wasm_bindgen = &self.wasm_bindgen;
         (quote! {
-            #[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+            #[cfg(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")))]
             #[automatically_derived]
             const _: () = {
                 #(#attrs)*
                 #[no_mangle]
                 #[doc(hidden)]
-                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+                #maybe_no_coverage
                 pub extern "C" fn #name() {
                     use #wasm_bindgen::describe::*;
                     // See definition of `link_mem_intrinsics` for what this is doing
@@ -1886,14 +1935,14 @@ fn extern_fn(
     abi_ret: TokenStream,
 ) -> TokenStream {
     quote! {
-        #[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+        #[cfg(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")))]
         #(#attrs)*
         #[link(wasm_import_module = "__wbindgen_placeholder__")]
         extern "C" {
             fn #import_name(#(#abi_arguments),*) -> #abi_ret;
         }
 
-        #[cfg(not(all(target_arch = "wasm32", target_os = "unknown")))]
+        #[cfg(not(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none"))))]
         unsafe fn #import_name(#(#abi_arguments),*) -> #abi_ret {
             #(
                 drop(#abi_argument_names);
@@ -1955,4 +2004,11 @@ fn respan(input: TokenStream, span: &dyn ToTokens) -> TokenStream {
         new_tokens.push(token);
     }
     new_tokens.into_iter().collect()
+}
+
+fn coverage() -> Option<TokenStream> {
+    #[cfg(feature = "coverage")]
+    return Some(quote! { #[coverage(off)] });
+    #[cfg(not(feature = "coverage"))]
+    None
 }

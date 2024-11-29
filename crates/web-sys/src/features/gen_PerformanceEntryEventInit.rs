@@ -54,7 +54,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
     #[wasm_bindgen(method, getter = "entryType")]
-    pub fn get_entry_type(this: &PerformanceEntryEventInit) -> Option<String>;
+    pub fn get_entry_type(this: &PerformanceEntryEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `entryType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
@@ -74,7 +74,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &PerformanceEntryEventInit) -> Option<String>;
+    pub fn get_name(this: &PerformanceEntryEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
@@ -84,7 +84,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]
     #[wasm_bindgen(method, getter = "origin")]
-    pub fn get_origin(this: &PerformanceEntryEventInit) -> Option<String>;
+    pub fn get_origin(this: &PerformanceEntryEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `origin` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryEventInit`*"]

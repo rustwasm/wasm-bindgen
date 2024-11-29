@@ -41,8 +41,8 @@ impl ClientRectsAndTexts {
     pub fn new(rect_list: &DomRectList, text_list: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.rect_list(rect_list);
-        ret.text_list(text_list);
+        ret.set_rect_list(rect_list);
+        ret.set_text_list(text_list);
         ret
     }
     #[cfg(feature = "DomRectList")]

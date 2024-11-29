@@ -3,6 +3,8 @@
 //! Currently this is quite simple, rendering the same as the console tests in
 //! node.js. Output here is rendered in a `pre`, however.
 
+use alloc::format;
+use alloc::string::String;
 use js_sys::Error;
 use wasm_bindgen::prelude::*;
 
@@ -19,7 +21,7 @@ pub struct Browser {
 #[wasm_bindgen]
 extern "C" {
     type HTMLDocument;
-    #[wasm_bindgen(thread_local, js_name = document)]
+    #[wasm_bindgen(thread_local_v2, js_name = document)]
     static DOCUMENT: HTMLDocument;
     #[wasm_bindgen(method, structural)]
     fn getElementById(this: &HTMLDocument, id: &str) -> Element;

@@ -141,8 +141,8 @@ impl TouchInit {
     pub fn new(identifier: i32, target: &EventTarget) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.identifier(identifier);
-        ret.target(target);
+        ret.set_identifier(identifier);
+        ret.set_target(target);
         ret
     }
     #[deprecated = "Use `set_client_x()` instead."]

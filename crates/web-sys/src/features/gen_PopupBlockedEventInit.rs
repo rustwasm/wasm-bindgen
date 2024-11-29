@@ -44,7 +44,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEventInit`*"]
     #[wasm_bindgen(method, getter = "popupWindowFeatures")]
-    pub fn get_popup_window_features(this: &PopupBlockedEventInit) -> Option<String>;
+    pub fn get_popup_window_features(
+        this: &PopupBlockedEventInit,
+    ) -> Option<::alloc::string::String>;
     #[doc = "Change the `popupWindowFeatures` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEventInit`*"]
@@ -54,7 +56,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEventInit`*"]
     #[wasm_bindgen(method, getter = "popupWindowName")]
-    pub fn get_popup_window_name(this: &PopupBlockedEventInit) -> Option<String>;
+    pub fn get_popup_window_name(this: &PopupBlockedEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `popupWindowName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEventInit`*"]

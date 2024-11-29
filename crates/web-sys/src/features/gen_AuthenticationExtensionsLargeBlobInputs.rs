@@ -24,7 +24,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsLargeBlobInputs`*"]
     #[wasm_bindgen(method, getter = "support")]
-    pub fn get_support(this: &AuthenticationExtensionsLargeBlobInputs) -> Option<String>;
+    pub fn get_support(
+        this: &AuthenticationExtensionsLargeBlobInputs,
+    ) -> Option<::alloc::string::String>;
     #[doc = "Change the `support` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsLargeBlobInputs`*"]

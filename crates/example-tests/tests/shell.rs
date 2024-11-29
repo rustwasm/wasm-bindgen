@@ -39,8 +39,6 @@ shell_tests! {
     raytrace_parallel = "raytrace-parallel",
     #[cfg(feature = "stable")]
     synchronous_instantiation = "synchronous-instantiation",
-    #[cfg(feature = "stable")]
-    wasm2js = "wasm2js",
     #[cfg(feature = "nightly")]
     #["RUSTUP_TOOLCHAIN" = "nightly"]
     wasm_audio_worklet = "wasm-audio-worklet",

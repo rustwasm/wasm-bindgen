@@ -9,12 +9,7 @@ You can ask the runner to generate coverage data from functions marked as `#[was
 
 ## Enabling the feature
 
-To enable this feature, you need to set `cfg(wasm_bindgen_unstable_test_coverage)` for `wasm-bindgen-test` and its dependencies.
-
-Currently it is particularly difficult to [deliver compile-line arguments to proc-macros when cross-compiling with Cargo][1]. To circumvent this [host-config] can be used.
-
-[1]: https://github.com/rust-lang/cargo/issues/4423
-[host-config]: https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#host-config
+To enable this feature, you need to enable `cfg(wasm_bindgen_unstable_test_coverage)`.
 
 ## Generating the data
 
@@ -26,18 +21,18 @@ Due to the current limitation of `llvm-cov`, we can't collect profiling symbols 
 
 ### Arguments to the test runner
 
-The following environment variables can be used to control the coverage output when [executing the test runner][2]:
+The following environment variables can be used to control the coverage output when [executing the test runner][1]:
 
-- `WASM_BINDGEN_UNSTABLE_TEST_PROFRAW_OUT` to control the file name of the profraw or the directory in which it is placed
+- `WASM_BINDGEN_UNSTABLE_TEST_PROFRAW_OUT` to control the file name of the profraw or the directory in which it is placed. It might be necessary to provide the full path if e.g. running tests in a workspace.
 - `WASM_BINDGEN_UNSTABLE_TEST_PROFRAW_PREFIX` to add a custom prefix to the profraw files. This can be useful if you're running the tests automatically in succession.
 
-[2]: usage.html#appendix-using-wasm-bindgen-test-without-wasm-pack
+[1]: usage.html#appendix-using-wasm-bindgen-test-without-wasm-pack
 
 ### Target features
 
-This feature relies on the [minicov] crate, which provides a profiling runtime for WebAssembly. It in turn uses [cc] to compile the runtime to Wasm, which [currently doesn't support accounting for target feature][3]. Use e.g. `CFLAGS_wasm32_unknown_unknown="-matomics -mbulk-memory"` to account for that.
+This feature relies on the [minicov] crate, which provides a profiling runtime for WebAssembly. It in turn uses [cc] to compile the runtime to Wasm, which [currently doesn't support accounting for target feature][2]. Use e.g. `CFLAGS_wasm32_unknown_unknown="-matomics -mbulk-memory"` to account for that.
 
-[3]: https://github.com/rust-lang/cc-rs/issues/268
+[2]: https://github.com/rust-lang/cc-rs/issues/268
 [cc]: https://crates.io/crates/cc
 [minicov]: https://crates.io/crates/minicov
 
@@ -47,13 +42,10 @@ This adapts code taken from the [Rustc book], see that for more examples and gen
 
 ```sh
 # Run the tests:
-# - `CARGO_HOST_RUSTFLAGS` to pass the configuration to `wasm-bindgen-macro`.
-# - `-Ztarget-applies-to-host -Zhost-config` to enable `CARGO_HOST_RUSTFLAGS`.
-# - `--tests` to not run documentation tests, which is currently not supported.
-CARGO_HOST_RUSTFLAGS=--cfg=wasm_bindgen_unstable_test_coverage \
+# `--tests` to not run documentation tests, which is currently not supported.
 RUSTFLAGS="-Cinstrument-coverage -Zno-profiler-runtime --emit=llvm-ir --cfg=wasm_bindgen_unstable_test_coverage" \
 CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_RUNNER=wasm-bindgen-test-runner \
-cargo +nightly test -Ztarget-applies-to-host -Zhost-config --tests
+cargo +nightly test --tests
 # Compile to object files:
 # - Extract a list of compiled artifacts from Cargo and filter them with `jq`.
 # - Figure out the path to the LLVM IR file corresponding to an artifact.
@@ -62,9 +54,8 @@ crate_name=name_of_the_tested_crate_in_snake_case
 objects=()
 IFS=$'\n'
 for file in $(
-    CARGO_HOST_RUSTFLAGS=--cfg=wasm_bindgen_unstable_test_coverage \
     RUSTFLAGS="-Cinstrument-coverage -Zno-profiler-runtime --emit=llvm-ir --cfg=wasm_bindgen_unstable_test_coverage" \
-    cargo +nightly test -Ztarget-applies-to-host -Zhost-config --tests --no-run --message-format=json | \
+    cargo +nightly test --tests --no-run --message-format=json | \
     jq -r "select(.reason == \"compiler-artifact\") | (select(.target.kind == [\"test\"]) // select(.target.name == \"$crate_name\")) | .filenames[0]"
 )
 do
@@ -89,7 +80,7 @@ llvm-cov-19 show -show-instantiations=false -Xdemangler=rustfilt -output-dir cov
 
 ## Attribution
 
-These methods have originally been pioneered by [Hacken OÜ], see [their guide][4] as well.
+These methods have originally been pioneered by [Hacken OÜ], see [their guide][3] as well.
 
-[4]: https://hknio.github.io/wasmcov
+[3]: https://hknio.github.io/wasmcov
 [Hacken OÜ]: https://hacken.io

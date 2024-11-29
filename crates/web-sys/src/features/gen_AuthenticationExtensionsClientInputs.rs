@@ -14,7 +14,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientInputs`*"]
     #[wasm_bindgen(method, getter = "appid")]
-    pub fn get_appid(this: &AuthenticationExtensionsClientInputs) -> Option<String>;
+    pub fn get_appid(
+        this: &AuthenticationExtensionsClientInputs,
+    ) -> Option<::alloc::string::String>;
     #[doc = "Change the `appid` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientInputs`*"]
@@ -24,7 +26,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientInputs`*"]
     #[wasm_bindgen(method, getter = "appidExclude")]
-    pub fn get_appid_exclude(this: &AuthenticationExtensionsClientInputs) -> Option<String>;
+    pub fn get_appid_exclude(
+        this: &AuthenticationExtensionsClientInputs,
+    ) -> Option<::alloc::string::String>;
     #[doc = "Change the `appidExclude` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticationExtensionsClientInputs`*"]

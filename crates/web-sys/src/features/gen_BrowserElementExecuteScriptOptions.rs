@@ -14,7 +14,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementExecuteScriptOptions`*"]
     #[wasm_bindgen(method, getter = "origin")]
-    pub fn get_origin(this: &BrowserElementExecuteScriptOptions) -> Option<String>;
+    pub fn get_origin(this: &BrowserElementExecuteScriptOptions)
+        -> Option<::alloc::string::String>;
     #[doc = "Change the `origin` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementExecuteScriptOptions`*"]
@@ -24,7 +25,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementExecuteScriptOptions`*"]
     #[wasm_bindgen(method, getter = "url")]
-    pub fn get_url(this: &BrowserElementExecuteScriptOptions) -> Option<String>;
+    pub fn get_url(this: &BrowserElementExecuteScriptOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `url` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BrowserElementExecuteScriptOptions`*"]

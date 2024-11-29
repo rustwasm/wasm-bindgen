@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityAssertionResult`*"]
     #[wasm_bindgen(method, getter = "assertion")]
-    pub fn get_assertion(this: &RtcIdentityAssertionResult) -> String;
+    pub fn get_assertion(this: &RtcIdentityAssertionResult) -> ::alloc::string::String;
     #[doc = "Change the `assertion` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityAssertionResult`*"]
@@ -41,8 +41,8 @@ impl RtcIdentityAssertionResult {
     pub fn new(assertion: &str, idp: &RtcIdentityProviderDetails) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.assertion(assertion);
-        ret.idp(idp);
+        ret.set_assertion(assertion);
+        ret.set_idp(idp);
         ret
     }
     #[deprecated = "Use `set_assertion()` instead."]

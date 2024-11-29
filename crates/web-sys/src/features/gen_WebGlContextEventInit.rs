@@ -44,7 +44,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGlContextEventInit`*"]
     #[wasm_bindgen(method, getter = "statusMessage")]
-    pub fn get_status_message(this: &WebGlContextEventInit) -> Option<String>;
+    pub fn get_status_message(this: &WebGlContextEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `statusMessage` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGlContextEventInit`*"]

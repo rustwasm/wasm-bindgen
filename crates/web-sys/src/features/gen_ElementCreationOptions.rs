@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ElementCreationOptions`*"]
     #[wasm_bindgen(method, getter = "is")]
-    pub fn get_is(this: &ElementCreationOptions) -> Option<String>;
+    pub fn get_is(this: &ElementCreationOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `is` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ElementCreationOptions`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ElementCreationOptions`*"]
     #[wasm_bindgen(method, getter = "pseudo")]
-    pub fn get_pseudo(this: &ElementCreationOptions) -> Option<String>;
+    pub fn get_pseudo(this: &ElementCreationOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `pseudo` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ElementCreationOptions`*"]

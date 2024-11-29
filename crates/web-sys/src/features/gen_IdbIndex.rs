@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IDBIndex/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbIndex`*"]
-    pub fn name(this: &IdbIndex) -> String;
+    pub fn name(this: &IdbIndex) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "IDBIndex" , js_name = name)]
     #[doc = "Setter for the `name` field of this object."]
     #[doc = ""]
@@ -62,7 +62,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IdbIndex`*"]
     #[deprecated]
-    pub fn locale(this: &IdbIndex) -> Option<String>;
+    pub fn locale(this: &IdbIndex) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "IDBIndex" , js_name = isAutoLocale)]
     #[doc = "Getter for the `isAutoLocale` field of this object."]
     #[doc = ""]

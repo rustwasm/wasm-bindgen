@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnectionIceErrorEvent/address)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnectionIceErrorEvent`*"]
-    pub fn address(this: &RtcPeerConnectionIceErrorEvent) -> Option<String>;
+    pub fn address(this: &RtcPeerConnectionIceErrorEvent) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnectionIceErrorEvent" , js_name = port)]
     #[doc = "Getter for the `port` field of this object."]
     #[doc = ""]
@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnectionIceErrorEvent/url)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnectionIceErrorEvent`*"]
-    pub fn url(this: &RtcPeerConnectionIceErrorEvent) -> String;
+    pub fn url(this: &RtcPeerConnectionIceErrorEvent) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "RTCPeerConnectionIceErrorEvent" , js_name = errorCode)]
     #[doc = "Getter for the `errorCode` field of this object."]
     #[doc = ""]
@@ -46,5 +46,5 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnectionIceErrorEvent/errorText)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcPeerConnectionIceErrorEvent`*"]
-    pub fn error_text(this: &RtcPeerConnectionIceErrorEvent) -> String;
+    pub fn error_text(this: &RtcPeerConnectionIceErrorEvent) -> ::alloc::string::String;
 }

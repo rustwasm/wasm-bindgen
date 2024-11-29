@@ -74,7 +74,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisEventInit`*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &SpeechSynthesisEventInit) -> Option<String>;
+    pub fn get_name(this: &SpeechSynthesisEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechSynthesisEventInit`*"]
@@ -101,7 +101,7 @@ impl SpeechSynthesisEventInit {
     pub fn new(utterance: &SpeechSynthesisUtterance) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.utterance(utterance);
+        ret.set_utterance(utterance);
         ret
     }
     #[deprecated = "Use `set_bubbles()` instead."]

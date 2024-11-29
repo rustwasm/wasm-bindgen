@@ -3323,6 +3323,20 @@ mod gen_GpuComputePipelineDescriptor;
 #[allow(unused_imports)]
 pub use gen_GpuComputePipelineDescriptor::*;
 
+#[cfg(feature = "GpuCopyExternalImageDestInfo")]
+#[allow(non_snake_case)]
+mod gen_GpuCopyExternalImageDestInfo;
+#[cfg(feature = "GpuCopyExternalImageDestInfo")]
+#[allow(unused_imports)]
+pub use gen_GpuCopyExternalImageDestInfo::*;
+
+#[cfg(feature = "GpuCopyExternalImageSourceInfo")]
+#[allow(non_snake_case)]
+mod gen_GpuCopyExternalImageSourceInfo;
+#[cfg(feature = "GpuCopyExternalImageSourceInfo")]
+#[allow(unused_imports)]
+pub use gen_GpuCopyExternalImageSourceInfo::*;
+
 #[cfg(feature = "GpuCullMode")]
 #[allow(non_snake_case)]
 mod gen_GpuCullMode;
@@ -3434,41 +3448,6 @@ mod gen_GpuFrontFace;
 #[cfg(feature = "GpuFrontFace")]
 #[allow(unused_imports)]
 pub use gen_GpuFrontFace::*;
-
-#[cfg(feature = "GpuImageCopyBuffer")]
-#[allow(non_snake_case)]
-mod gen_GpuImageCopyBuffer;
-#[cfg(feature = "GpuImageCopyBuffer")]
-#[allow(unused_imports)]
-pub use gen_GpuImageCopyBuffer::*;
-
-#[cfg(feature = "GpuImageCopyExternalImage")]
-#[allow(non_snake_case)]
-mod gen_GpuImageCopyExternalImage;
-#[cfg(feature = "GpuImageCopyExternalImage")]
-#[allow(unused_imports)]
-pub use gen_GpuImageCopyExternalImage::*;
-
-#[cfg(feature = "GpuImageCopyTexture")]
-#[allow(non_snake_case)]
-mod gen_GpuImageCopyTexture;
-#[cfg(feature = "GpuImageCopyTexture")]
-#[allow(unused_imports)]
-pub use gen_GpuImageCopyTexture::*;
-
-#[cfg(feature = "GpuImageCopyTextureTagged")]
-#[allow(non_snake_case)]
-mod gen_GpuImageCopyTextureTagged;
-#[cfg(feature = "GpuImageCopyTextureTagged")]
-#[allow(unused_imports)]
-pub use gen_GpuImageCopyTextureTagged::*;
-
-#[cfg(feature = "GpuImageDataLayout")]
-#[allow(non_snake_case)]
-mod gen_GpuImageDataLayout;
-#[cfg(feature = "GpuImageDataLayout")]
-#[allow(unused_imports)]
-pub use gen_GpuImageDataLayout::*;
 
 #[cfg(feature = "GpuIndexFormat")]
 #[allow(non_snake_case)]
@@ -3826,6 +3805,27 @@ mod gen_GpuSupportedLimits;
 #[cfg(feature = "GpuSupportedLimits")]
 #[allow(unused_imports)]
 pub use gen_GpuSupportedLimits::*;
+
+#[cfg(feature = "GpuTexelCopyBufferInfo")]
+#[allow(non_snake_case)]
+mod gen_GpuTexelCopyBufferInfo;
+#[cfg(feature = "GpuTexelCopyBufferInfo")]
+#[allow(unused_imports)]
+pub use gen_GpuTexelCopyBufferInfo::*;
+
+#[cfg(feature = "GpuTexelCopyBufferLayout")]
+#[allow(non_snake_case)]
+mod gen_GpuTexelCopyBufferLayout;
+#[cfg(feature = "GpuTexelCopyBufferLayout")]
+#[allow(unused_imports)]
+pub use gen_GpuTexelCopyBufferLayout::*;
+
+#[cfg(feature = "GpuTexelCopyTextureInfo")]
+#[allow(non_snake_case)]
+mod gen_GpuTexelCopyTextureInfo;
+#[cfg(feature = "GpuTexelCopyTextureInfo")]
+#[allow(unused_imports)]
+pub use gen_GpuTexelCopyTextureInfo::*;
 
 #[cfg(feature = "GpuTexture")]
 #[allow(non_snake_case)]

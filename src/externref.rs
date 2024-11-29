@@ -106,7 +106,7 @@ fn internal_error(msg: &str) -> ! {
             std::process::abort();
         } else if #[cfg(all(
             target_arch = "wasm32",
-            target_os = "unknown"
+            any(target_os = "unknown", target_os = "none")
         ))] {
             core::arch::wasm32::unreachable();
         } else {
@@ -117,7 +117,12 @@ fn internal_error(msg: &str) -> ! {
 
 // Management of `externref` is always thread local since an `externref` value
 // can't cross threads in wasm. Indices as a result are always thread-local.
-std::thread_local!(pub static HEAP_SLAB: Cell<Slab> = Cell::new(Slab::new()));
+#[cfg(feature = "std")]
+std::thread_local!(static HEAP_SLAB: Cell<Slab> = Cell::new(Slab::new()));
+#[cfg(not(feature = "std"))]
+#[cfg_attr(target_feature = "atomics", thread_local)]
+static HEAP_SLAB: crate::__rt::LazyCell<Cell<Slab>> =
+    crate::__rt::LazyCell::new(|| Cell::new(Slab::new()));
 
 #[no_mangle]
 pub extern "C" fn __externref_table_alloc() -> usize {

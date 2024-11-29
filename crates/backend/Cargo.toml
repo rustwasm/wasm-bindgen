@@ -14,8 +14,12 @@ rust-version = "1.57"
 version = "0.2.95"
 
 [features]
+atomics = []
+coverage = []
+default = ["std"]
 extra-traits = ["syn/extra-traits"]
 spans = []
+std = []
 
 [dependencies]
 bumpalo = "3.0.0"
@@ -25,3 +29,6 @@ proc-macro2 = "1.0"
 quote = '1.0'
 syn = { version = '2.0', features = ['full'] }
 wasm-bindgen-shared = { path = "../shared", version = "=0.2.95" }
+
+[lints]
+workspace = true

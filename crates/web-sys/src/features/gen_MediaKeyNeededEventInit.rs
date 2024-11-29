@@ -54,7 +54,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeyNeededEventInit`*"]
     #[wasm_bindgen(method, getter = "initDataType")]
-    pub fn get_init_data_type(this: &MediaKeyNeededEventInit) -> Option<String>;
+    pub fn get_init_data_type(this: &MediaKeyNeededEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `initDataType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeyNeededEventInit`*"]

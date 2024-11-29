@@ -40,7 +40,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &BluetoothLeScanFilterInit) -> Option<String>;
+    pub fn get_name(this: &BluetoothLeScanFilterInit) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
@@ -58,7 +58,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "namePrefix")]
-    pub fn get_name_prefix(this: &BluetoothLeScanFilterInit) -> Option<String>;
+    pub fn get_name_prefix(this: &BluetoothLeScanFilterInit) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `namePrefix` field of this object."]
     #[doc = ""]

@@ -1,3 +1,5 @@
+#![cfg(test)]
+
 use js_sys::*;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
@@ -69,9 +71,9 @@ fn ends_with() {
     let js = JsString::from(s);
 
     // TODO: remove third parameter once we have optional parameters
-    assert_eq!(js.ends_with("question.", s.len() as i32), true);
-    assert_eq!(js.ends_with("to be", s.len() as i32), false);
-    assert_eq!(js.ends_with("to be", 19), true);
+    assert!(js.ends_with("question.", s.len() as i32));
+    assert!(!js.ends_with("to be", s.len() as i32));
+    assert!(js.ends_with("to be", 19));
 }
 
 #[wasm_bindgen_test]
@@ -93,7 +95,7 @@ fn from_char_code() {
     let codes_u16: Vec<u16> = codes
         .into_iter()
         .map(|code| {
-            assert!(code <= u32::from(u16::max_value()));
+            assert!(code <= u32::from(u16::MAX));
             code as u16
         })
         .collect();
@@ -121,9 +123,9 @@ fn from_code_point() {
     );
     assert_eq!(JsString::from_code_point(&codes).unwrap(), "☃★♲你");
 
-    assert!(!JsString::from_code_point1(0x10FFFF).is_err());
+    assert!(JsString::from_code_point1(0x10FFFF).is_ok());
     assert!(JsString::from_code_point1(0x110000).is_err());
-    assert!(JsString::from_code_point1(u32::max_value()).is_err());
+    assert!(JsString::from_code_point1(u32::MAX).is_err());
 }
 
 #[wasm_bindgen_test]
@@ -131,13 +133,13 @@ fn includes() {
     let str = JsString::from("Blue Whale");
 
     // TODO: remove second parameter once we have optional parameters
-    assert_eq!(str.includes("Blue", 0), true);
-    assert_eq!(str.includes("Blute", 0), false);
-    assert_eq!(str.includes("Whale", 0), true);
-    assert_eq!(str.includes("Whale", 5), true);
-    assert_eq!(str.includes("Whale", 7), false);
-    assert_eq!(str.includes("", 0), true);
-    assert_eq!(str.includes("", 16), true);
+    assert!(str.includes("Blue", 0));
+    assert!(!str.includes("Blute", 0));
+    assert!(str.includes("Whale", 0));
+    assert!(str.includes("Whale", 5));
+    assert!(!str.includes("Whale", 7));
+    assert!(str.includes("", 0));
+    assert!(str.includes("", 16));
 }
 
 #[wasm_bindgen_test]
@@ -225,12 +227,12 @@ fn match_all() {
         .unwrap();
 
     let obj = &result[0];
-    assert_eq!(Reflect::get(obj.as_ref(), &"0".into()).unwrap(), "The");
-    assert_eq!(Reflect::get(obj.as_ref(), &"1".into()).unwrap(), "he");
+    assert_eq!(Reflect::get(obj, &"0".into()).unwrap(), "The");
+    assert_eq!(Reflect::get(obj, &"1".into()).unwrap(), "he");
 
     let obj = &result[1];
-    assert_eq!(Reflect::get(obj.as_ref(), &"0".into()).unwrap(), "It");
-    assert_eq!(Reflect::get(obj.as_ref(), &"1".into()).unwrap(), "t");
+    assert_eq!(Reflect::get(obj, &"0".into()).unwrap(), "It");
+    assert_eq!(Reflect::get(obj, &"1".into()).unwrap(), "t");
 
     let result: Vec<_> = JsString::from("foo")
         .match_all(&re)
@@ -249,29 +251,20 @@ fn match_all() {
 
     let obj = &result[0];
     assert_eq!(
-        Reflect::get(obj.as_ref(), &"0".into()).unwrap(),
+        Reflect::get(obj, &"0".into()).unwrap(),
         "see Chapter 3.4.5.1"
     );
-    assert_eq!(
-        Reflect::get(obj.as_ref(), &"1".into()).unwrap(),
-        "Chapter 3.4.5.1"
-    );
-    assert_eq!(Reflect::get(obj.as_ref(), &"2".into()).unwrap(), ".1");
-    assert_eq!(Reflect::get(obj.as_ref(), &"index".into()).unwrap(), 22);
-    assert_eq!(Reflect::get(obj.as_ref(), &"input".into()).unwrap(), s);
+    assert_eq!(Reflect::get(obj, &"1".into()).unwrap(), "Chapter 3.4.5.1");
+    assert_eq!(Reflect::get(obj, &"2".into()).unwrap(), ".1");
+    assert_eq!(Reflect::get(obj, &"index".into()).unwrap(), 22);
+    assert_eq!(Reflect::get(obj, &"input".into()).unwrap(), s);
 
     let obj = &result[1];
-    assert_eq!(
-        Reflect::get(obj.as_ref(), &"0".into()).unwrap(),
-        "see Chapter 3.1.4"
-    );
-    assert_eq!(
-        Reflect::get(obj.as_ref(), &"1".into()).unwrap(),
-        "Chapter 3.1.4"
-    );
-    assert_eq!(Reflect::get(obj.as_ref(), &"2".into()).unwrap(), ".4");
-    assert_eq!(Reflect::get(obj.as_ref(), &"index".into()).unwrap(), 48);
-    assert_eq!(Reflect::get(obj.as_ref(), &"input".into()).unwrap(), s);
+    assert_eq!(Reflect::get(obj, &"0".into()).unwrap(), "see Chapter 3.1.4");
+    assert_eq!(Reflect::get(obj, &"1".into()).unwrap(), "Chapter 3.1.4");
+    assert_eq!(Reflect::get(obj, &"2".into()).unwrap(), ".4");
+    assert_eq!(Reflect::get(obj, &"index".into()).unwrap(), 48);
+    assert_eq!(Reflect::get(obj, &"input".into()).unwrap(), s);
 }
 
 #[wasm_bindgen_test]
@@ -512,8 +505,8 @@ fn to_locale_lower_case() {
     let js = JsString::from("Mozilla");
     assert_eq!(js.to_locale_lower_case(None), "mozilla");
     let s = JsString::from("\u{0130}");
-    assert_eq!(s.to_locale_lower_case(Some("tr".into())), "i");
-    assert_ne!(s.to_locale_lower_case(Some("en-US".into())), "i");
+    assert_eq!(s.to_locale_lower_case(Some("tr")), "i");
+    assert_ne!(s.to_locale_lower_case(Some("en-US")), "i");
 }
 
 #[wasm_bindgen_test]
@@ -521,8 +514,8 @@ fn to_locale_upper_case() {
     let js = JsString::from("mozilla");
     assert_eq!(js.to_locale_upper_case(None), "MOZILLA");
     let s = JsString::from("i\u{0307}");
-    assert_eq!(s.to_locale_upper_case(Some("lt".into())), "I");
-    assert_ne!(s.to_locale_upper_case(Some("en-US".into())), "I");
+    assert_eq!(s.to_locale_upper_case(Some("lt")), "I");
+    assert_ne!(s.to_locale_upper_case(Some("en-US")), "I");
 }
 
 #[wasm_bindgen_test]
@@ -573,7 +566,7 @@ fn value_of() {
 fn raw() {
     let call_site = Object::new();
     let raw = Array::of3(&"foo".into(), &"bar".into(), &"123".into());
-    Reflect::set(&call_site.as_ref(), &"raw".into(), &raw.into()).unwrap();
+    Reflect::set(call_site.as_ref(), &"raw".into(), &raw.into()).unwrap();
     assert_eq!(
         JsString::raw_2(&call_site, "5", "JavaScript").unwrap(),
         "foo5barJavaScript123"

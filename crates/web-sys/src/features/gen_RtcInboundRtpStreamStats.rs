@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     #[wasm_bindgen(method, getter = "id")]
-    pub fn get_id(this: &RtcInboundRtpStreamStats) -> Option<String>;
+    pub fn get_id(this: &RtcInboundRtpStreamStats) -> Option<::alloc::string::String>;
     #[doc = "Change the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
@@ -66,7 +66,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     #[wasm_bindgen(method, getter = "codecId")]
-    pub fn get_codec_id(this: &RtcInboundRtpStreamStats) -> Option<String>;
+    pub fn get_codec_id(this: &RtcInboundRtpStreamStats) -> Option<::alloc::string::String>;
     #[doc = "Change the `codecId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
@@ -116,7 +116,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     #[wasm_bindgen(method, getter = "mediaTrackId")]
-    pub fn get_media_track_id(this: &RtcInboundRtpStreamStats) -> Option<String>;
+    pub fn get_media_track_id(this: &RtcInboundRtpStreamStats) -> Option<::alloc::string::String>;
     #[doc = "Change the `mediaTrackId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
@@ -126,7 +126,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     #[wasm_bindgen(method, getter = "mediaType")]
-    pub fn get_media_type(this: &RtcInboundRtpStreamStats) -> Option<String>;
+    pub fn get_media_type(this: &RtcInboundRtpStreamStats) -> Option<::alloc::string::String>;
     #[doc = "Change the `mediaType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
@@ -156,7 +156,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     #[wasm_bindgen(method, getter = "remoteId")]
-    pub fn get_remote_id(this: &RtcInboundRtpStreamStats) -> Option<String>;
+    pub fn get_remote_id(this: &RtcInboundRtpStreamStats) -> Option<::alloc::string::String>;
     #[doc = "Change the `remoteId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
@@ -166,7 +166,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     #[wasm_bindgen(method, getter = "ssrc")]
-    pub fn get_ssrc(this: &RtcInboundRtpStreamStats) -> Option<String>;
+    pub fn get_ssrc(this: &RtcInboundRtpStreamStats) -> Option<::alloc::string::String>;
     #[doc = "Change the `ssrc` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
@@ -176,7 +176,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]
     #[wasm_bindgen(method, getter = "transportId")]
-    pub fn get_transport_id(this: &RtcInboundRtpStreamStats) -> Option<String>;
+    pub fn get_transport_id(this: &RtcInboundRtpStreamStats) -> Option<::alloc::string::String>;
     #[doc = "Change the `transportId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcInboundRtpStreamStats`*"]

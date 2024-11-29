@@ -40,7 +40,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFieldSetElement/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFieldSetElement`*"]
-    pub fn name(this: &HtmlFieldSetElement) -> String;
+    pub fn name(this: &HtmlFieldSetElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLFieldSetElement" , js_name = name)]
     #[doc = "Setter for the `name` field of this object."]
     #[doc = ""]
@@ -54,7 +54,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFieldSetElement/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFieldSetElement`*"]
-    pub fn type_(this: &HtmlFieldSetElement) -> String;
+    pub fn type_(this: &HtmlFieldSetElement) -> ::alloc::string::String;
     #[cfg(feature = "HtmlCollection")]
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLFieldSetElement" , js_name = elements)]
     #[doc = "Getter for the `elements` field of this object."]
@@ -84,7 +84,9 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFieldSetElement/validationMessage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFieldSetElement`*"]
-    pub fn validation_message(this: &HtmlFieldSetElement) -> Result<String, JsValue>;
+    pub fn validation_message(
+        this: &HtmlFieldSetElement,
+    ) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (method , structural , js_class = "HTMLFieldSetElement" , js_name = checkValidity)]
     #[doc = "The `checkValidity()` method."]
     #[doc = ""]

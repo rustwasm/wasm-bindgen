@@ -12,16 +12,14 @@ fn test_menu_element() {
     let menu = new_menu();
 
     menu.set_compact(true);
-    assert_eq!(
+    assert!(
         menu.compact(),
-        true,
         "Menu should be compact after we set it to be compact."
     );
 
     menu.set_compact(false);
-    assert_eq!(
-        menu.compact(),
-        false,
+    assert!(
+        !menu.compact(),
         "Menu should not be compact after we set it to be not-compact."
     );
 }

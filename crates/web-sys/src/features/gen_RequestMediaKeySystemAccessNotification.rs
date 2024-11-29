@@ -14,7 +14,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RequestMediaKeySystemAccessNotification`*"]
     #[wasm_bindgen(method, getter = "keySystem")]
-    pub fn get_key_system(this: &RequestMediaKeySystemAccessNotification) -> String;
+    pub fn get_key_system(
+        this: &RequestMediaKeySystemAccessNotification,
+    ) -> ::alloc::string::String;
     #[doc = "Change the `keySystem` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RequestMediaKeySystemAccessNotification`*"]
@@ -41,8 +43,8 @@ impl RequestMediaKeySystemAccessNotification {
     pub fn new(key_system: &str, status: MediaKeySystemStatus) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.key_system(key_system);
-        ret.status(status);
+        ret.set_key_system(key_system);
+        ret.set_status(status);
         ret
     }
     #[deprecated = "Use `set_key_system()` instead."]

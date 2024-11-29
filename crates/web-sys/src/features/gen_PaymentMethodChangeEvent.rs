@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PaymentMethodChangeEvent/methodName)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PaymentMethodChangeEvent`*"]
-    pub fn method_name(this: &PaymentMethodChangeEvent) -> String;
+    pub fn method_name(this: &PaymentMethodChangeEvent) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "PaymentMethodChangeEvent" , js_name = methodDetails)]
     #[doc = "Getter for the `methodDetails` field of this object."]
     #[doc = ""]

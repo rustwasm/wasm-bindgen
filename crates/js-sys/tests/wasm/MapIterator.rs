@@ -9,7 +9,7 @@ fn entries() {
     let entries = map.entries();
 
     let next = entries.next().unwrap();
-    assert_eq!(next.done(), false);
+    assert!(!next.done());
     assert!(next.value().is_object());
     assert_eq!(Reflect::get(&next.value(), &0.into()).unwrap(), "uno");
     assert_eq!(Reflect::get(&next.value(), &1.into()).unwrap(), 1);
@@ -27,7 +27,7 @@ fn keys() {
     let keys = map.keys();
 
     let next = keys.next().unwrap();
-    assert_eq!(next.done(), false);
+    assert!(!next.done());
     assert_eq!(next.value(), "uno");
 
     let next = keys.next().unwrap();
@@ -43,7 +43,7 @@ fn values() {
     let values = map.values();
 
     let next = values.next().unwrap();
-    assert_eq!(next.done(), false);
+    assert!(!next.done());
     assert_eq!(next.value(), 1);
 
     let next = values.next().unwrap();

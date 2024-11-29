@@ -3,6 +3,8 @@
 //! Currently this is quite simple, rendering the same as the console tests in
 //! node.js. Output here is rendered in a `pre`, however.
 
+use alloc::format;
+use alloc::string::String;
 use js_sys::Error;
 use wasm_bindgen::prelude::*;
 

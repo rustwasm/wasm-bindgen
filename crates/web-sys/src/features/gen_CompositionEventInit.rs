@@ -66,7 +66,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CompositionEventInit`*"]
     #[wasm_bindgen(method, getter = "data")]
-    pub fn get_data(this: &CompositionEventInit) -> Option<String>;
+    pub fn get_data(this: &CompositionEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `data` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CompositionEventInit`*"]

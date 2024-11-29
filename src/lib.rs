@@ -7,6 +7,10 @@
 
 #![no_std]
 #![cfg_attr(wasm_bindgen_unstable_test_coverage, feature(coverage_attribute))]
+#![cfg_attr(
+    all(not(feature = "std"), target_feature = "atomics"),
+    feature(thread_local)
+)]
 #![allow(coherence_leak_check)]
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen/0.2")]
 
@@ -33,14 +37,14 @@ macro_rules! if_std {
 
 macro_rules! externs {
     ($(#[$attr:meta])* extern "C" { $(fn $name:ident($($args:tt)*) -> $ret:ty;)* }) => (
-        #[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+        #[cfg(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")))]
         $(#[$attr])*
         extern "C" {
             $(fn $name($($args)*) -> $ret;)*
         }
 
         $(
-            #[cfg(not(all(target_arch = "wasm32", target_os = "unknown")))]
+            #[cfg(not(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none"))))]
             #[allow(unused_variables)]
             unsafe extern fn $name($($args)*) -> $ret {
                 panic!("function not implemented on non-wasm32 targets")
@@ -71,6 +75,7 @@ pub use wasm_bindgen_macro::link_to;
 pub mod closure;
 pub mod convert;
 pub mod describe;
+mod externref;
 mod link;
 pub mod marker;
 
@@ -80,7 +85,6 @@ pub use crate::cast::{JsCast, JsObject};
 if_std! {
     extern crate std;
     use std::prelude::v1::*;
-    mod externref;
     mod cache;
     pub use cache::intern::{intern, unintern};
 }
@@ -1187,7 +1191,7 @@ impl Default for JsValue {
 /// This type implements `Deref` to the inner type so it's typically used as if
 /// it were `&T`.
 #[cfg(feature = "std")]
-#[deprecated = "use with `#[wasm_bindgen(thread_local)]` instead"]
+#[deprecated = "use with `#[wasm_bindgen(thread_local_v2)]` instead"]
 pub struct JsStatic<T: 'static> {
     #[doc(hidden)]
     pub __inner: &'static std::thread::LocalKey<T>,
@@ -1200,6 +1204,50 @@ impl<T: FromWasmAbi + 'static> Deref for JsStatic<T> {
     type Target = T;
     fn deref(&self) -> &T {
         unsafe { self.__inner.with(|ptr| &*(ptr as *const T)) }
+    }
+}
+
+/// Wrapper type for imported statics.
+///
+/// This type is used whenever a `static` is imported from a JS module, for
+/// example this import:
+///
+/// ```ignore
+/// #[wasm_bindgen]
+/// extern "C" {
+///     #[wasm_bindgen(thread_local_v2)]
+///     static console: JsValue;
+/// }
+/// ```
+///
+/// will generate in Rust a value that looks like:
+///
+/// ```ignore
+/// static console: JsThreadLocal<JsValue> = ...;
+/// ```
+pub struct JsThreadLocal<T: 'static> {
+    #[doc(hidden)]
+    #[cfg(feature = "std")]
+    pub __inner: &'static std::thread::LocalKey<T>,
+    #[doc(hidden)]
+    #[cfg(all(not(feature = "std"), not(target_feature = "atomics")))]
+    pub __inner: &'static __rt::LazyCell<T>,
+    #[doc(hidden)]
+    #[cfg(all(not(feature = "std"), target_feature = "atomics"))]
+    pub __inner: fn() -> *const T,
+}
+
+impl<T> JsThreadLocal<T> {
+    pub fn with<F, R>(&'static self, f: F) -> R
+    where
+        F: FnOnce(&T) -> R,
+    {
+        #[cfg(feature = "std")]
+        return self.__inner.with(f);
+        #[cfg(all(not(feature = "std"), not(target_feature = "atomics")))]
+        return f(self.__inner);
+        #[cfg(all(not(feature = "std"), target_feature = "atomics"))]
+        f(unsafe { &*(self.__inner)() })
     }
 }
 
@@ -1337,14 +1385,17 @@ pub trait UnwrapThrowExt<T>: Sized {
     #[cfg_attr(
         any(
             debug_assertions,
-            not(all(target_arch = "wasm32", target_os = "unknown"))
+            not(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")))
         ),
         track_caller
     )]
     fn unwrap_throw(self) -> T {
         if cfg!(all(
             debug_assertions,
-            all(target_arch = "wasm32", target_os = "unknown")
+            all(
+                target_arch = "wasm32",
+                any(target_os = "unknown", target_os = "none")
+            )
         )) {
             let loc = core::panic::Location::caller();
             let msg = alloc::format!(
@@ -1366,7 +1417,7 @@ pub trait UnwrapThrowExt<T>: Sized {
     #[cfg_attr(
         any(
             debug_assertions,
-            not(all(target_arch = "wasm32", target_os = "unknown"))
+            not(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")))
         ),
         track_caller
     )]
@@ -1377,7 +1428,10 @@ impl<T> UnwrapThrowExt<T> for Option<T> {
     fn unwrap_throw(self) -> T {
         const MSG: &str = "called `Option::unwrap_throw()` on a `None` value";
 
-        if cfg!(all(target_arch = "wasm32", target_os = "unknown")) {
+        if cfg!(all(
+            target_arch = "wasm32",
+            any(target_os = "unknown", target_os = "none")
+        )) {
             if let Some(val) = self {
                 val
             } else if cfg!(debug_assertions) {
@@ -1395,7 +1449,10 @@ impl<T> UnwrapThrowExt<T> for Option<T> {
     }
 
     fn expect_throw(self, message: &str) -> T {
-        if cfg!(all(target_arch = "wasm32", target_os = "unknown")) {
+        if cfg!(all(
+            target_arch = "wasm32",
+            any(target_os = "unknown", target_os = "none")
+        )) {
             if let Some(val) = self {
                 val
             } else if cfg!(debug_assertions) {
@@ -1425,7 +1482,10 @@ where
     fn unwrap_throw(self) -> T {
         const MSG: &str = "called `Result::unwrap_throw()` on an `Err` value";
 
-        if cfg!(all(target_arch = "wasm32", target_os = "unknown")) {
+        if cfg!(all(
+            target_arch = "wasm32",
+            any(target_os = "unknown", target_os = "none")
+        )) {
             match self {
                 Ok(val) => val,
                 Err(err) => {
@@ -1452,7 +1512,10 @@ where
     }
 
     fn expect_throw(self, message: &str) -> T {
-        if cfg!(all(target_arch = "wasm32", target_os = "unknown")) {
+        if cfg!(all(
+            target_arch = "wasm32",
+            any(target_os = "unknown", target_os = "none")
+        )) {
             match self {
                 Ok(val) => val,
                 Err(err) => {
@@ -1519,7 +1582,57 @@ pub mod __rt {
     use alloc::alloc::{alloc, dealloc, realloc, Layout};
     use alloc::boxed::Box;
     use alloc::rc::Rc;
-    pub use once_cell::sync::Lazy;
+
+    pub mod once_cell {
+        #[cfg(any(target_feature = "atomics", feature = "std"))]
+        pub use once_cell::*;
+
+        #[cfg(all(not(target_feature = "atomics"), not(feature = "std")))]
+        pub mod sync {
+            pub use super::super::LazyCell as Lazy;
+        }
+    }
+
+    /// Wrapper around [`::once_cell::unsync::Lazy`] adding some compatibility methods with
+    /// [`std::thread::LocalKey`] and adding `Send + Sync` when `atomics` is not enabled.
+    #[cfg(not(feature = "std"))]
+    pub struct LazyCell<T, F = fn() -> T>(::once_cell::unsync::Lazy<T, F>);
+
+    #[cfg(all(not(target_feature = "atomics"), not(feature = "std")))]
+    unsafe impl<T, F> Sync for LazyCell<T, F> {}
+
+    #[cfg(all(not(target_feature = "atomics"), not(feature = "std")))]
+    unsafe impl<T, F> Send for LazyCell<T, F> {}
+
+    #[cfg(not(feature = "std"))]
+    impl<T, F> LazyCell<T, F> {
+        pub const fn new(init: F) -> LazyCell<T, F> {
+            Self(::once_cell::unsync::Lazy::new(init))
+        }
+    }
+
+    #[cfg(not(feature = "std"))]
+    impl<T, F: FnOnce() -> T> LazyCell<T, F> {
+        pub(crate) fn try_with<R>(
+            &self,
+            f: impl FnOnce(&T) -> R,
+        ) -> Result<R, core::convert::Infallible> {
+            Ok(f(&self.0))
+        }
+
+        pub fn force(this: &Self) -> &T {
+            &this.0
+        }
+    }
+
+    #[cfg(not(feature = "std"))]
+    impl<T> Deref for LazyCell<T> {
+        type Target = T;
+
+        fn deref(&self) -> &T {
+            ::once_cell::unsync::Lazy::force(&self.0)
+        }
+    }
 
     #[macro_export]
     #[doc(hidden)]
@@ -1624,7 +1737,7 @@ pub mod __rt {
         borrow: &'b Cell<usize>,
     }
 
-    impl<'b, T: ?Sized> Deref for Ref<'b, T> {
+    impl<T: ?Sized> Deref for Ref<'_, T> {
         type Target = T;
 
         #[inline]
@@ -1633,14 +1746,14 @@ pub mod __rt {
         }
     }
 
-    impl<'b, T: ?Sized> Borrow<T> for Ref<'b, T> {
+    impl<T: ?Sized> Borrow<T> for Ref<'_, T> {
         #[inline]
         fn borrow(&self) -> &T {
             self.value
         }
     }
 
-    impl<'b, T: ?Sized> Drop for Ref<'b, T> {
+    impl<T: ?Sized> Drop for Ref<'_, T> {
         fn drop(&mut self) {
             self.borrow.set(self.borrow.get() - 1);
         }
@@ -1651,7 +1764,7 @@ pub mod __rt {
         borrow: &'b Cell<usize>,
     }
 
-    impl<'b, T: ?Sized> Deref for RefMut<'b, T> {
+    impl<T: ?Sized> Deref for RefMut<'_, T> {
         type Target = T;
 
         #[inline]
@@ -1660,28 +1773,28 @@ pub mod __rt {
         }
     }
 
-    impl<'b, T: ?Sized> DerefMut for RefMut<'b, T> {
+    impl<T: ?Sized> DerefMut for RefMut<'_, T> {
         #[inline]
         fn deref_mut(&mut self) -> &mut T {
             self.value
         }
     }
 
-    impl<'b, T: ?Sized> Borrow<T> for RefMut<'b, T> {
+    impl<T: ?Sized> Borrow<T> for RefMut<'_, T> {
         #[inline]
         fn borrow(&self) -> &T {
             self.value
         }
     }
 
-    impl<'b, T: ?Sized> BorrowMut<T> for RefMut<'b, T> {
+    impl<T: ?Sized> BorrowMut<T> for RefMut<'_, T> {
         #[inline]
         fn borrow_mut(&mut self) -> &mut T {
             self.value
         }
     }
 
-    impl<'b, T: ?Sized> Drop for RefMut<'b, T> {
+    impl<T: ?Sized> Drop for RefMut<'_, T> {
         fn drop(&mut self) {
             self.borrow.set(0);
         }
@@ -1827,7 +1940,7 @@ pub mod __rt {
                 std::process::abort();
             } else if #[cfg(all(
                 target_arch = "wasm32",
-                target_os = "unknown"
+                any(target_os = "unknown", target_os = "none")
             ))] {
                 core::arch::wasm32::unreachable();
             } else {
@@ -1885,30 +1998,64 @@ pub mod __rt {
         crate::link::link_intrinsics();
     }
 
-    if_std! {
-        std::thread_local! {
-            static GLOBAL_EXNDATA: Cell<[u32; 2]> = Cell::new([0; 2]);
+    #[cfg(feature = "std")]
+    std::thread_local! {
+        static GLOBAL_EXNDATA: Cell<[u32; 2]> = Cell::new([0; 2]);
+    }
+    #[cfg(all(not(feature = "std"), not(target_feature = "atomics")))]
+    static mut GLOBAL_EXNDATA: [u32; 2] = [0; 2];
+    #[cfg(all(not(feature = "std"), target_feature = "atomics"))]
+    #[thread_local]
+    static GLOBAL_EXNDATA: Cell<[u32; 2]> = Cell::new([0; 2]);
+
+    struct GlobalExndata;
+
+    impl GlobalExndata {
+        #[cfg(feature = "std")]
+        fn get() -> [u32; 2] {
+            GLOBAL_EXNDATA.with(Cell::get)
         }
 
-        #[no_mangle]
-        pub unsafe extern "C" fn __wbindgen_exn_store(idx: u32) {
-            GLOBAL_EXNDATA.with(|data| {
-                debug_assert_eq!(data.get()[0], 0);
-                data.set([1, idx]);
-            });
+        #[cfg(all(not(feature = "std"), not(target_feature = "atomics")))]
+        fn get() -> [u32; 2] {
+            unsafe { GLOBAL_EXNDATA }
         }
 
-        pub fn take_last_exception() -> Result<(), super::JsValue> {
-            GLOBAL_EXNDATA.with(|data| {
-                let ret = if data.get()[0] == 1 {
-                    Err(super::JsValue::_new(data.get()[1]))
-                } else {
-                    Ok(())
-                };
-                data.set([0, 0]);
-                ret
-            })
+        #[cfg(all(not(feature = "std"), target_feature = "atomics"))]
+        fn get() -> [u32; 2] {
+            GLOBAL_EXNDATA.get()
         }
+
+        #[cfg(feature = "std")]
+        fn set(data: [u32; 2]) {
+            GLOBAL_EXNDATA.with(|d| d.set(data))
+        }
+
+        #[cfg(all(not(feature = "std"), not(target_feature = "atomics")))]
+        fn set(data: [u32; 2]) {
+            unsafe { GLOBAL_EXNDATA = data };
+        }
+
+        #[cfg(all(not(feature = "std"), target_feature = "atomics"))]
+        fn set(data: [u32; 2]) {
+            GLOBAL_EXNDATA.set(data);
+        }
+    }
+
+    #[no_mangle]
+    pub unsafe extern "C" fn __wbindgen_exn_store(idx: u32) {
+        debug_assert_eq!(GlobalExndata::get()[0], 0);
+        GlobalExndata::set([1, idx]);
+    }
+
+    pub fn take_last_exception() -> Result<(), super::JsValue> {
+        let ret = if GlobalExndata::get()[0] == 1 {
+            Err(super::JsValue::_new(GlobalExndata::get()[1]))
+        } else {
+            Ok(())
+        };
+        GlobalExndata::set([0, 0]);
+        ret
     }
 
     /// An internal helper trait for usage in `#[wasm_bindgen]` on `async`

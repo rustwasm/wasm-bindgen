@@ -44,7 +44,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FetchEventInit`*"]
     #[wasm_bindgen(method, getter = "clientId")]
-    pub fn get_client_id(this: &FetchEventInit) -> Option<String>;
+    pub fn get_client_id(this: &FetchEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `clientId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FetchEventInit`*"]
@@ -81,7 +81,7 @@ impl FetchEventInit {
     pub fn new(request: &Request) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.request(request);
+        ret.set_request(request);
         ret
     }
     #[deprecated = "Use `set_bubbles()` instead."]

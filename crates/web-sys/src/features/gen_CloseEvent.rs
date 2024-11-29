@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent/reason)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CloseEvent`*"]
-    pub fn reason(this: &CloseEvent) -> String;
+    pub fn reason(this: &CloseEvent) -> ::alloc::string::String;
     #[wasm_bindgen(catch, constructor, js_class = "CloseEvent")]
     #[doc = "The `new CloseEvent(..)` constructor, creating a new instance of `CloseEvent`."]
     #[doc = ""]

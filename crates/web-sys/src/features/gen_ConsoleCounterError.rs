@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleCounterError`*"]
     #[wasm_bindgen(method, getter = "error")]
-    pub fn get_error(this: &ConsoleCounterError) -> Option<String>;
+    pub fn get_error(this: &ConsoleCounterError) -> Option<::alloc::string::String>;
     #[doc = "Change the `error` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleCounterError`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleCounterError`*"]
     #[wasm_bindgen(method, getter = "label")]
-    pub fn get_label(this: &ConsoleCounterError) -> Option<String>;
+    pub fn get_label(this: &ConsoleCounterError) -> Option<::alloc::string::String>;
     #[doc = "Change the `label` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleCounterError`*"]

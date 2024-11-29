@@ -26,7 +26,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrackCue/id)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextTrackCue`*"]
-    pub fn id(this: &TextTrackCue) -> String;
+    pub fn id(this: &TextTrackCue) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "TextTrackCue" , js_name = id)]
     #[doc = "Setter for the `id` field of this object."]
     #[doc = ""]

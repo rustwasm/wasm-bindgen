@@ -147,9 +147,9 @@ impl GpuRenderPassColorAttachment {
     pub fn new(load_op: GpuLoadOp, store_op: GpuStoreOp, view: &GpuTextureView) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.load_op(load_op);
-        ret.store_op(store_op);
-        ret.view(view);
+        ret.set_load_op(load_op);
+        ret.set_store_op(store_op);
+        ret.set_view(view);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

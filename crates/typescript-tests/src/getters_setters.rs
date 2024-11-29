@@ -10,6 +10,16 @@ pub struct ColorWithGetters {
 
 #[wasm_bindgen]
 impl ColorWithGetters {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Self {
+        Self {
+            r: 0.0,
+            _g: 0.0,
+            _b: 0.0,
+            _a: 0,
+        }
+    }
+
     #[wasm_bindgen(getter)]
     pub fn r(&self) -> f64 {
         self.r
@@ -31,6 +41,16 @@ pub struct ColorWithSetters {
 
 #[wasm_bindgen]
 impl ColorWithSetters {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Self {
+        Self {
+            r: 0.0,
+            _g: 0.0,
+            _b: 0.0,
+            a: 0,
+        }
+    }
+
     #[wasm_bindgen(setter)]
     pub fn set_r(&mut self, r: f64) {
         self.r = r;
@@ -57,6 +77,16 @@ pub struct ColorWithGetterAndSetter {
 
 #[wasm_bindgen]
 impl ColorWithGetterAndSetter {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Self {
+        Self {
+            r: 0.0,
+            _g: 0.0,
+            _b: 0.0,
+            a: 0,
+        }
+    }
+
     #[wasm_bindgen(getter)]
     pub fn r(&self) -> f64 {
         self.r

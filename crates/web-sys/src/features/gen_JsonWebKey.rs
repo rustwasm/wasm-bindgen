@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
     #[wasm_bindgen(method, getter = "alg")]
-    pub fn get_alg(this: &JsonWebKey) -> Option<String>;
+    pub fn get_alg(this: &JsonWebKey) -> Option<::alloc::string::String>;
     #[doc = "Change the `alg` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
     #[wasm_bindgen(method, getter = "crv")]
-    pub fn get_crv(this: &JsonWebKey) -> Option<String>;
+    pub fn get_crv(this: &JsonWebKey) -> Option<::alloc::string::String>;
     #[doc = "Change the `crv` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
     #[wasm_bindgen(method, getter = "d")]
-    pub fn get_d(this: &JsonWebKey) -> Option<String>;
+    pub fn get_d(this: &JsonWebKey) -> Option<::alloc::string::String>;
     #[doc = "Change the `d` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
@@ -44,7 +44,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
     #[wasm_bindgen(method, getter = "dp")]
-    pub fn get_dp(this: &JsonWebKey) -> Option<String>;
+    pub fn get_dp(this: &JsonWebKey) -> Option<::alloc::string::String>;
     #[doc = "Change the `dp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
@@ -54,7 +54,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
     #[wasm_bindgen(method, getter = "dq")]
-    pub fn get_dq(this: &JsonWebKey) -> Option<String>;
+    pub fn get_dq(this: &JsonWebKey) -> Option<::alloc::string::String>;
     #[doc = "Change the `dq` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
@@ -64,7 +64,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
     #[wasm_bindgen(method, getter = "e")]
-    pub fn get_e(this: &JsonWebKey) -> Option<String>;
+    pub fn get_e(this: &JsonWebKey) -> Option<::alloc::string::String>;
     #[doc = "Change the `e` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
@@ -84,7 +84,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
     #[wasm_bindgen(method, getter = "k")]
-    pub fn get_k(this: &JsonWebKey) -> Option<String>;
+    pub fn get_k(this: &JsonWebKey) -> Option<::alloc::string::String>;
     #[doc = "Change the `k` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
@@ -104,7 +104,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
     #[wasm_bindgen(method, getter = "kty")]
-    pub fn get_kty(this: &JsonWebKey) -> String;
+    pub fn get_kty(this: &JsonWebKey) -> ::alloc::string::String;
     #[doc = "Change the `kty` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
@@ -114,7 +114,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
     #[wasm_bindgen(method, getter = "n")]
-    pub fn get_n(this: &JsonWebKey) -> Option<String>;
+    pub fn get_n(this: &JsonWebKey) -> Option<::alloc::string::String>;
     #[doc = "Change the `n` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
@@ -134,7 +134,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
     #[wasm_bindgen(method, getter = "p")]
-    pub fn get_p(this: &JsonWebKey) -> Option<String>;
+    pub fn get_p(this: &JsonWebKey) -> Option<::alloc::string::String>;
     #[doc = "Change the `p` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
@@ -144,7 +144,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
     #[wasm_bindgen(method, getter = "q")]
-    pub fn get_q(this: &JsonWebKey) -> Option<String>;
+    pub fn get_q(this: &JsonWebKey) -> Option<::alloc::string::String>;
     #[doc = "Change the `q` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
@@ -154,7 +154,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
     #[wasm_bindgen(method, getter = "qi")]
-    pub fn get_qi(this: &JsonWebKey) -> Option<String>;
+    pub fn get_qi(this: &JsonWebKey) -> Option<::alloc::string::String>;
     #[doc = "Change the `qi` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
@@ -164,7 +164,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
     #[wasm_bindgen(method, getter = "use")]
-    pub fn get_use(this: &JsonWebKey) -> Option<String>;
+    pub fn get_use(this: &JsonWebKey) -> Option<::alloc::string::String>;
     #[doc = "Change the `use` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
@@ -174,7 +174,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
     #[wasm_bindgen(method, getter = "x")]
-    pub fn get_x(this: &JsonWebKey) -> Option<String>;
+    pub fn get_x(this: &JsonWebKey) -> Option<::alloc::string::String>;
     #[doc = "Change the `x` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
@@ -184,7 +184,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
     #[wasm_bindgen(method, getter = "y")]
-    pub fn get_y(this: &JsonWebKey) -> Option<String>;
+    pub fn get_y(this: &JsonWebKey) -> Option<::alloc::string::String>;
     #[doc = "Change the `y` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `JsonWebKey`*"]
@@ -198,7 +198,7 @@ impl JsonWebKey {
     pub fn new(kty: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.kty(kty);
+        ret.set_kty(kty);
         ret
     }
     #[deprecated = "Use `set_alg()` instead."]

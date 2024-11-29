@@ -18,14 +18,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HashChangeEvent/oldURL)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HashChangeEvent`*"]
-    pub fn old_url(this: &HashChangeEvent) -> String;
+    pub fn old_url(this: &HashChangeEvent) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "HashChangeEvent" , js_name = newURL)]
     #[doc = "Getter for the `newURL` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HashChangeEvent/newURL)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HashChangeEvent`*"]
-    pub fn new_url(this: &HashChangeEvent) -> String;
+    pub fn new_url(this: &HashChangeEvent) -> ::alloc::string::String;
     #[wasm_bindgen(catch, constructor, js_class = "HashChangeEvent")]
     #[doc = "The `new HashChangeEvent(..)` constructor, creating a new instance of `HashChangeEvent`."]
     #[doc = ""]

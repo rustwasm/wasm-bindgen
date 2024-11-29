@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLModElement/cite)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlModElement`*"]
-    pub fn cite(this: &HtmlModElement) -> String;
+    pub fn cite(this: &HtmlModElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLModElement" , js_name = cite)]
     #[doc = "Setter for the `cite` field of this object."]
     #[doc = ""]
@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLModElement/dateTime)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlModElement`*"]
-    pub fn date_time(this: &HtmlModElement) -> String;
+    pub fn date_time(this: &HtmlModElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLModElement" , js_name = dateTime)]
     #[doc = "Setter for the `dateTime` field of this object."]
     #[doc = ""]

@@ -28,7 +28,7 @@ impl QueuingStrategyInit {
     pub fn new(high_water_mark: f64) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.high_water_mark(high_water_mark);
+        ret.set_high_water_mark(high_water_mark);
         ret
     }
     #[deprecated = "Use `set_high_water_mark()` instead."]

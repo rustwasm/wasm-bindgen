@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream/id)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStream`*"]
-    pub fn id(this: &MediaStream) -> String;
+    pub fn id(this: &MediaStream) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "MediaStream" , js_name = active)]
     #[doc = "Getter for the `active` field of this object."]
     #[doc = ""]

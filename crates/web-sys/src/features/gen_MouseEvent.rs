@@ -124,7 +124,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/region)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MouseEvent`*"]
-    pub fn region(this: &MouseEvent) -> Option<String>;
+    pub fn region(this: &MouseEvent) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "MouseEvent" , js_name = movementX)]
     #[doc = "Getter for the `movementX` field of this object."]
     #[doc = ""]

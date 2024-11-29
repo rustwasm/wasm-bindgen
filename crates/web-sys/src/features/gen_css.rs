@@ -11,7 +11,7 @@ pub mod css {
         #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSS/escape)"]
         #[doc = ""]
         #[doc = "*This API requires the following crate features to be activated: `css`*"]
-        pub fn escape(ident: &str) -> String;
+        pub fn escape(ident: &str) -> ::alloc::string::String;
         # [wasm_bindgen (catch , js_namespace = CSS , js_name = supports)]
         #[doc = "The `CSS.supports()` function."]
         #[doc = ""]
