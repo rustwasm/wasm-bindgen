@@ -29,7 +29,7 @@ jobs:
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup component add rustfmt
     - run: cargo fmt --all -- --check
-  
+
   # Check TOML style by using Taplo.
   taplo:
     name: Taplo
@@ -325,7 +325,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - run: rustup update --no-self-update 1.76.0 && rustup default 1.76.0
+    - run: rustup update --no-self-update 1.78.0 && rustup default 1.78.0
     - run: cargo test -p wasm-bindgen-macro
     - run: cargo test -p wasm-bindgen-test-macro
 
