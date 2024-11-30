@@ -61,6 +61,8 @@ pub struct Context<'a> {
 
     exported_classes: Option<BTreeMap<String, ExportedClass>>,
 
+    exported_namespaces: Option<BTreeMap<String, ExportedNamespace>>,
+
     /// A map of the name of npm dependencies we've loaded so far to the path
     /// they're defined in as well as their version specification.
     pub npm_dependencies: HashMap<String, (PathBuf, String)>,
@@ -120,6 +122,35 @@ struct FieldAccessor {
     is_optional: bool,
 }
 
+struct ExportedNamespace {
+    name: String,
+    contents: String,
+    /// The TypeScript for the namespace's methods.
+    typescript: String,
+    /// Whether TypeScript for this namespace should be emitted (i.e., `skip_typescript` wasn't specified).
+    generate_typescript: bool,
+}
+
+enum ClassOrNamespace<'a> {
+    Class(&'a mut ExportedClass),
+    Namespace(&'a mut ExportedNamespace),
+}
+
+/// Different JS constructs that can be exported.
+enum ExportJs<'a> {
+    /// A class of the form `class Name {...}`.
+    Class(&'a str),
+    /// An anonymous function expression of the form `function(...) {...}`.
+    ///
+    /// Note that the function name is not included in the string.
+    Function(&'a str),
+    /// An arbitrary JS expression.
+    Expression(&'a str),
+    /// A namespace as a statement with multiple assignments of the form
+    /// `<namespace name>.prop = value;`
+    Namespace(&'a str),
+}
+
 const INITIAL_HEAP_VALUES: &[&str] = &["undefined", "null", "true", "false"];
 // Must be kept in sync with `src/lib.rs` of the `wasm-bindgen` crate
 const INITIAL_HEAP_OFFSET: usize = 128;
@@ -143,6 +174,7 @@ impl<'a> Context<'a> {
             typescript_refs: Default::default(),
             used_string_enums: Default::default(),
             exported_classes: Some(Default::default()),
+            exported_namespaces: Some(Default::default()),
             config,
             threads_enabled: config.threads.is_enabled(module),
             module,
@@ -163,38 +195,74 @@ impl<'a> Context<'a> {
     fn export(
         &mut self,
         export_name: &str,
-        contents: &str,
+        export: ExportJs,
         comments: Option<&str>,
     ) -> Result<(), Error> {
-        let definition_name = self.generate_identifier(export_name);
-        if contents.starts_with("class") && definition_name != export_name {
+        // The definition is intended to allow for exports to be renamed to
+        // avoid conflicts. Since namespaces intentionally have the same name as
+        // other exports, we must not rename them.
+        let definition_name = if matches!(export, ExportJs::Namespace(_)) {
+            export_name.to_owned()
+        } else {
+            self.generate_identifier(export_name)
+        };
+
+        if matches!(export, ExportJs::Class(_)) && definition_name != export_name {
             bail!("cannot shadow already defined class `{}`", export_name);
         }
 
-        let contents = contents.trim();
+        // write out comments
         if let Some(c) = comments {
             self.globals.push_str(c);
         }
+
+        fn namespace_init_arg(name: &str) -> String {
+            format!("{name} || ({name} = {{}})", name = name)
+        }
+
         let global = match self.config.mode {
-            OutputMode::Node { module: false } => {
-                if contents.starts_with("class") {
-                    format!("{}\nmodule.exports.{1} = {1};\n", contents, export_name)
-                } else {
-                    format!("module.exports.{} = {};\n", export_name, contents)
+            OutputMode::Node { module: false } => match export {
+                ExportJs::Class(class) => {
+                    format!("{}\nmodule.exports.{1} = {1};\n", class, export_name)
                 }
-            }
-            OutputMode::NoModules { .. } => {
-                if contents.starts_with("class") {
-                    format!("{}\n__exports.{1} = {1};\n", contents, export_name)
-                } else {
-                    format!("__exports.{} = {};\n", export_name, contents)
+                ExportJs::Function(expr) | ExportJs::Expression(expr) => {
+                    format!("module.exports.{} = {};\n", export_name, expr)
                 }
-            }
+                ExportJs::Namespace(namespace) => {
+                    format!(
+                        "(function({}) {{\n{}}})({});\n",
+                        export_name,
+                        namespace,
+                        namespace_init_arg(&format!("module.exports.{}", export_name))
+                    )
+                }
+            },
+            OutputMode::NoModules { .. } => match export {
+                ExportJs::Class(class) => {
+                    format!("{}\n__exports.{1} = {1};\n", class, export_name)
+                }
+                ExportJs::Function(expr) | ExportJs::Expression(expr) => {
+                    format!("__exports.{} = {};\n", export_name, expr)
+                }
+                ExportJs::Namespace(namespace) => {
+                    format!(
+                        "(function({}) {{\n{}}})({});\n",
+                        export_name,
+                        namespace,
+                        namespace_init_arg(&format!("__exports.{}", export_name))
+                    )
+                }
+            },
             OutputMode::Bundler { .. }
             | OutputMode::Node { module: true }
             | OutputMode::Web
-            | OutputMode::Deno => {
-                if let Some(body) = contents.strip_prefix("function") {
+            | OutputMode::Deno => match export {
+                ExportJs::Class(class) => {
+                    assert_eq!(export_name, definition_name);
+                    format!("export {}\n", class)
+                }
+                ExportJs::Function(function) => {
+                    let body = function.strip_prefix("function").unwrap();
                     if export_name == definition_name {
                         format!("export function {}{}\n", export_name, body)
                     } else {
@@ -203,14 +271,29 @@ impl<'a> Context<'a> {
                             definition_name, body, definition_name, export_name,
                         )
                     }
-                } else if contents.starts_with("class") {
-                    assert_eq!(export_name, definition_name);
-                    format!("export {}\n", contents)
-                } else {
-                    assert_eq!(export_name, definition_name);
-                    format!("export const {} = {};\n", export_name, contents)
                 }
-            }
+                ExportJs::Expression(expr) => {
+                    assert_eq!(export_name, definition_name);
+                    format!("export const {} = {};\n", export_name, expr)
+                }
+                ExportJs::Namespace(namespace) => {
+                    assert_eq!(export_name, definition_name);
+
+                    // In some cases (e.g. string enums), a namespace may be
+                    // exported without an existing object of the same name.
+                    // In that case, we need to create the object before
+                    // initializing the namespace.
+                    //
+                    // It's only correct to do it like this, because namespaces
+                    // are always the last things to be exported.
+                    let mut definition = String::new();
+                    if !self.defined_identifiers.contains_key(export_name) {
+                        definition = format!("export const {} = {{}};\n", export_name)
+                    }
+                    definition.push_str(namespace);
+                    definition
+                }
+            },
         };
         self.global(&global);
         Ok(())
@@ -224,6 +307,9 @@ impl<'a> Context<'a> {
         // glue for all classes as well as finish up a few final imports like
         // `__wrap` and such.
         self.write_classes()?;
+
+        // Write out generated JS for namespaces.
+        self.write_namespaces()?;
 
         // Initialization is just flat out tricky and not something we
         // understand super well. To try to handle various issues that have come
@@ -1005,6 +1091,22 @@ __wbg_set_wasm(wasm);"
         Ok((js, ts))
     }
 
+    fn require_class_or_namespace(&mut self, name: &str) -> ClassOrNamespace {
+        if self.aux.enums.contains_key(name) || self.aux.string_enums.contains_key(name) {
+            ClassOrNamespace::Namespace(self.require_namespace(name))
+        } else {
+            ClassOrNamespace::Class(self.require_class(name))
+        }
+    }
+
+    fn require_class(&mut self, name: &str) -> &'_ mut ExportedClass {
+        self.exported_classes
+            .as_mut()
+            .expect("classes already written")
+            .entry(name.to_string())
+            .or_default()
+    }
+
     fn write_classes(&mut self) -> Result<(), Error> {
         for (class, exports) in self.exported_classes.take().unwrap() {
             self.write_class(&class, &exports)?;
@@ -1157,10 +1259,10 @@ __wbg_set_wasm(wasm);"
 
         self.write_class_field_types(class, &mut ts_dst);
 
-        dst.push_str("}\n");
+        dst.push('}');
         ts_dst.push_str("}\n");
 
-        self.export(name, &dst, Some(&class.comments))?;
+        self.export(name, ExportJs::Class(&dst), Some(&class.comments))?;
 
         if class.generate_typescript {
             self.typescript.push_str(&class.comments);
@@ -1286,6 +1388,53 @@ __wbg_set_wasm(wasm);"
                 }
             };
         }
+    }
+
+    fn require_namespace(&mut self, name: &str) -> &'_ mut ExportedNamespace {
+        self.exported_namespaces
+            .as_mut()
+            .expect("namespaces already written")
+            .entry(name.to_string())
+            .or_insert_with(|| {
+                let _enum = self.aux.enums.get(name);
+                let string_enum = self.aux.string_enums.get(name);
+
+                let generate_typescript = _enum.map_or(true, |e| e.generate_typescript)
+                    && string_enum.map_or(true, |e| e.generate_typescript);
+
+                ExportedNamespace {
+                    name: name.to_string(),
+                    contents: String::new(),
+                    typescript: String::new(),
+                    generate_typescript,
+                }
+            })
+    }
+
+    fn write_namespaces(&mut self) -> Result<(), Error> {
+        for (class, namespace) in self.exported_namespaces.take().unwrap() {
+            self.write_namespace(&class, &namespace)?;
+        }
+        Ok(())
+    }
+
+    fn write_namespace(&mut self, name: &str, namespace: &ExportedNamespace) -> Result<(), Error> {
+        if namespace.contents.is_empty() {
+            // don't emit empty namespaces
+            return Ok(());
+        }
+
+        self.export(name, ExportJs::Namespace(&namespace.contents), None)?;
+
+        if namespace.generate_typescript {
+            let ts_dst = format!(
+                "export namespace {name} {{\n{ts}}}\n",
+                ts = namespace.typescript
+            );
+            self.typescript.push_str(&ts_dst);
+        }
+
+        Ok(())
     }
 
     fn expose_drop_ref(&mut self) {
@@ -2466,11 +2615,11 @@ __wbg_set_wasm(wasm);"
     }
 
     fn require_class_wrap(&mut self, name: &str) {
-        require_class(&mut self.exported_classes, name).wrap_needed = true;
+        self.require_class(name).wrap_needed = true;
     }
 
     fn require_class_unwrap(&mut self, name: &str) {
-        require_class(&mut self.exported_classes, name).unwrap_needed = true;
+        self.require_class(name).unwrap_needed = true;
     }
 
     fn add_module_import(&mut self, module: String, name: &str, actual: &str) {
@@ -2814,6 +2963,10 @@ __wbg_set_wasm(wasm);"
 
         self.typescript_refs.extend(ts_refs);
 
+        fn warn(message: &str) {
+            println!("warning: {}", message);
+        }
+
         // Once we've got all the JS then put it in the right location depending
         // on what's being exported.
         match kind {
@@ -2836,11 +2989,25 @@ __wbg_set_wasm(wasm);"
                             self.typescript.push_str(";\n");
                         }
 
-                        self.export(name, &format!("function{}", code), Some(&js_docs))?;
+                        self.export(
+                            name,
+                            ExportJs::Function(&format!("function{}", code)),
+                            Some(&js_docs),
+                        )?;
                         self.globals.push('\n');
                     }
                     AuxExportKind::Constructor(class) => {
-                        let exported = require_class(&mut self.exported_classes, class);
+                        let exported = self.require_class_or_namespace(class);
+                        let exported = match exported {
+                            ClassOrNamespace::Class(class) => class,
+                            ClassOrNamespace::Namespace(_) => {
+                                warn(&format!(
+                                    "constructor is not supported on `{}`. Enums do not support exported constructors.",
+                                    class
+                                ));
+                                return Ok(());
+                            }
+                        };
 
                         if exported.has_constructor {
                             bail!("found duplicate constructor for class `{}`", class);
@@ -2855,21 +3022,34 @@ __wbg_set_wasm(wasm);"
                         receiver,
                         kind,
                     } => {
-                        let exported = require_class(&mut self.exported_classes, class);
+                        let is_static = receiver.is_static();
+                        let mut exported = self.require_class_or_namespace(class);
 
                         let mut prefix = String::new();
-                        if receiver.is_static() {
+                        if is_static {
                             prefix += "static ";
                         }
                         let ts = match kind {
                             AuxExportedMethodKind::Method => ts_sig,
                             AuxExportedMethodKind::Getter => {
+                                let class = match exported {
+                                    ClassOrNamespace::Class(ref mut class) => class,
+                                    ClassOrNamespace::Namespace(_) => {
+                                        warn(&format!(
+                                            "the getter `{}` is not supported on `{}`. Enums only support static methods on them.",
+                                            name,
+                                            class
+                                        ));
+                                        return Ok(());
+                                    }
+                                };
+
                                 prefix += "get ";
                                 // For getters and setters, we generate a separate TypeScript definition.
                                 if export.generate_typescript {
                                     let location = FieldLocation {
                                         name: name.clone(),
-                                        is_static: receiver.is_static(),
+                                        is_static,
                                     };
                                     let accessor = FieldAccessor {
                                         // This is only set to `None` when generating a constructor.
@@ -2878,19 +3058,31 @@ __wbg_set_wasm(wasm);"
                                         is_optional: false,
                                     };
 
-                                    exported.push_accessor_ts(location, accessor, false);
+                                    class.push_accessor_ts(location, accessor, false);
                                 }
                                 // Add the getter to the list of readable fields (used to generate `toJSON`)
-                                exported.readable_properties.push(name.clone());
+                                class.readable_properties.push(name.clone());
                                 // Ignore the raw signature.
                                 None
                             }
                             AuxExportedMethodKind::Setter => {
+                                let class = match exported {
+                                    ClassOrNamespace::Class(ref mut class) => class,
+                                    ClassOrNamespace::Namespace(_) => {
+                                        warn(&format!(
+                                           "the setter `{}` is not supported on `{}`. Enums only support static methods on them.",
+                                            name,
+                                            class
+                                        ));
+                                        return Ok(());
+                                    }
+                                };
+
                                 prefix += "set ";
                                 if export.generate_typescript {
                                     let location = FieldLocation {
                                         name: name.clone(),
-                                        is_static: receiver.is_static(),
+                                        is_static,
                                     };
                                     let accessor = FieldAccessor {
                                         ty: ts_arg_tys[0].clone(),
@@ -2898,13 +3090,32 @@ __wbg_set_wasm(wasm);"
                                         is_optional: might_be_optional_field,
                                     };
 
-                                    exported.push_accessor_ts(location, accessor, true);
+                                    class.push_accessor_ts(location, accessor, true);
                                 }
                                 None
                             }
                         };
 
-                        exported.push(name, &prefix, &js_docs, &code, &ts_docs, ts);
+                        match exported {
+                            ClassOrNamespace::Class(class) => {
+                                class.push(name, &prefix, &js_docs, &code, &ts_docs, ts);
+                            }
+                            ClassOrNamespace::Namespace(ns) => {
+                                if !is_static {
+                                    warn(&format!(
+                                        "The enum `{}` cannot support the instance method `{}`. \
+                                        No binding will be generated for this method. \
+                                        Consider moving the method in an `impl` block with the `#[wasm_bindgen]` attribute to avoid exporting it, \
+                                        or making it a static method by replacing `self` with `value: Self`.",
+                                        ns.name,
+                                        name
+                                    ));
+                                    return Ok(());
+                                } else {
+                                    ns.push(name, &js_docs, &code, &ts_docs, ts);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -3959,7 +4170,7 @@ __wbg_set_wasm(wasm);"
 
         self.export(
             &enum_.name,
-            &format!("Object.freeze({{\n{}}})", variants),
+            ExportJs::Expression(&format!("{{\n{}}}", variants)),
             Some(&docs),
         )?;
 
@@ -4010,7 +4221,7 @@ __wbg_set_wasm(wasm);"
     }
 
     fn generate_struct(&mut self, struct_: &AuxStruct) -> Result<(), Error> {
-        let class = require_class(&mut self.exported_classes, &struct_.name);
+        let class = self.require_class(&struct_.name);
         class.comments = format_doc_comments(&struct_.comments, None);
         class.is_inspectable = struct_.is_inspectable;
         class.generate_typescript = struct_.generate_typescript;
@@ -4466,17 +4677,6 @@ fn format_doc_comments(comments: &str, js_doc_comments: Option<String>) -> Strin
     }
 }
 
-fn require_class<'a>(
-    exported_classes: &'a mut Option<BTreeMap<String, ExportedClass>>,
-    name: &str,
-) -> &'a mut ExportedClass {
-    exported_classes
-        .as_mut()
-        .expect("classes already written")
-        .entry(name.to_string())
-        .or_default()
-}
-
 /// Returns whether a character has the Unicode `ID_Start` properly.
 ///
 /// This is only ever-so-slightly different from `XID_Start` in a few edge
@@ -4589,6 +4789,42 @@ impl ExportedClass {
         }
     }
 }
+
+impl ExportedNamespace {
+    fn push(
+        &mut self,
+        function_name: &str,
+        js_docs: &str,
+        js: &str,
+        ts_docs: &str,
+        ts: Option<&str>,
+    ) {
+        self.contents.push_str(js_docs);
+        self.contents.push_str(&self.name);
+        self.contents.push('.');
+        self.contents.push_str(function_name);
+        self.contents.push_str(" = function ");
+        self.contents.push_str(function_name);
+        self.contents.push_str(js);
+        self.contents.push_str(";\n");
+
+        if let Some(ts) = ts {
+            if !ts_docs.is_empty() {
+                for line in ts_docs.lines() {
+                    self.typescript.push_str("  ");
+                    self.typescript.push_str(line);
+                    self.typescript.push('\n');
+                }
+            }
+            self.typescript.push_str("  export function ");
+            self.typescript.push_str(function_name);
+            self.typescript.push_str(ts);
+            self.typescript.push_str(";\n");
+        }
+    }
+}
+
+impl ClassOrNamespace<'_> {}
 
 struct MemView {
     name: Cow<'static, str>,

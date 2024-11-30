@@ -75,7 +75,7 @@ export function option_order(order) {
  * A color.
  * @enum {0 | 1 | 2}
  */
-export const Color = Object.freeze({
+export const Color = {
     /**
      * Green as a leaf.
      */
@@ -88,25 +88,25 @@ export const Color = Object.freeze({
      * Red as a rose.
      */
     Red: 2, "2": "Red",
-});
+};
 /**
  * @enum {0 | 1 | 42 | 43}
  */
-export const ImplicitDiscriminant = Object.freeze({
+export const ImplicitDiscriminant = {
     A: 0, "0": "A",
     B: 1, "1": "B",
     C: 42, "42": "C",
     D: 43, "43": "D",
-});
+};
 /**
  * A C-style enum with negative discriminants.
  * @enum {-1 | 0 | 1}
  */
-export const Ordering = Object.freeze({
+export const Ordering = {
     Less: -1, "-1": "Less",
     Equal: 0, "0": "Equal",
     Greater: 1, "1": "Greater",
-});
+};
 
 const __wbindgen_enum_ColorName = ["green", "yellow", "red"];
 
