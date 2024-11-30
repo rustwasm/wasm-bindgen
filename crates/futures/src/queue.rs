@@ -118,11 +118,19 @@ impl Queue {
 
     #[cfg(not(feature = "std"))]
     pub(crate) fn with<R>(f: impl FnOnce(&Self) -> R) -> R {
-        use wasm_bindgen::__rt::LazyCell;
+        use once_cell::unsync::Lazy;
+
+        struct Wrapper<T>(Lazy<T>);
+
+        #[cfg(not(target_feature = "atomics"))]
+        unsafe impl<T> Sync for Wrapper<T> {}
+
+        #[cfg(not(target_feature = "atomics"))]
+        unsafe impl<T> Send for Wrapper<T> {}
 
         #[cfg_attr(target_feature = "atomics", thread_local)]
-        static QUEUE: LazyCell<Queue> = LazyCell::new(Queue::new);
+        static QUEUE: Wrapper<Queue> = Wrapper(Lazy::new(Queue::new));
 
-        f(&QUEUE)
+        f(&QUEUE.0)
     }
 }
