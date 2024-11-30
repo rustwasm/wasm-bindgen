@@ -22,7 +22,8 @@ export function i_has_docs(arg: number): number;
  * Regular documentation.
  *
  * @param [b=0] Description of `arg`.
- * @param d Another description.
+ * @param c Another description.
+ * @param {} d Another description.
  * @returns
  */
 export function add(a: number, b?: number, c?: number, d?: number): number;

@@ -133,7 +133,7 @@ Output: |
     @param {object[]} obj.locations
     @param {string} obj.locations[].address
     @param {string} [obj.locations[].address]
-    @param {} foo
+    @param foo
 
 Ast: |
     JsDoc {
@@ -354,9 +354,7 @@ Ast: |
             Param(
                 ParamTag {
                     tag: "@param",
-                    ty: Some(
-                        "",
-                    ),
+                    ty: None,
                     name: "foo",
                     optional: Required,
                     description: "",
@@ -381,7 +379,7 @@ Output: |
     @param {string} [foo]
     @param {string} [foo]
     @param {string} [foo=123]
-    @param {} [foo=123]
+    @param [foo=123]
 
 Ast: |
     JsDoc {
@@ -447,9 +445,7 @@ Ast: |
             Param(
                 ParamTag {
                     tag: "@param",
-                    ty: Some(
-                        "",
-                    ),
+                    ty: None,
                     name: "foo",
                     optional: OptionalWithDefault(
                         "123",
@@ -482,7 +478,7 @@ Output: |
     @param {string // comment
     | number} foo
     @param {number} [foo]
-    @param {} [foo]
+    @param [foo]
     @param {{
       name: { first: string, last: string };
     }} foo
@@ -528,9 +524,7 @@ Ast: |
             Param(
                 ParamTag {
                     tag: "@param",
-                    ty: Some(
-                        "",
-                    ),
+                    ty: None,
                     name: "foo",
                     optional: Optional,
                     description: "",

@@ -342,8 +342,13 @@ impl ParamTag {
                 t.to_string()
             });
 
-            if ty.is_some() {
+            if let Some(ty_expr) = &ty {
                 text = trim_left(&text[type_len..]);
+
+                if ty_expr.is_empty() {
+                    // empty type expression
+                    ty = None;
+                }
             } else {
                 // the type expression is not terminated, so the tag is not well-formed
                 return None;

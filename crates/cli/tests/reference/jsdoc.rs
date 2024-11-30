@@ -27,7 +27,8 @@ pub fn i_has_docs(arg: u32) -> u32 {
 /// Regular documentation.
 ///
 /// @param [b=0] Description of `arg`.
-/// @param d Another description.
+/// @param c Another description.
+/// @param {} d Another description.
 /// @returns
 #[wasm_bindgen]
 pub fn add(a: u32, b: Option<u32>, c: Option<u32>, d: Option<u32>) -> u32 {

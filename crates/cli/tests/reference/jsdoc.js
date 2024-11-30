@@ -42,9 +42,9 @@ function isLikeNone(x) {
  * Regular documentation.
  *
  * @param {number | undefined} [b=0] Description of `arg`.
+ * @param {number | undefined} [c] Another description.
  * @param {number | undefined} [d] Another description.
  * @param {number} a
- * @param {number | undefined} [c]
  * @returns {number}
  */
 export function add(a, b, c, d) {
