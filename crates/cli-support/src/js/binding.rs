@@ -401,7 +401,6 @@ impl<'a, 'b> Builder<'a, 'b> {
         let mut omittable = true;
         for (name, ty) in fn_arg_names.iter().zip(arg_tys).rev() {
             tags.push(JsDocTag::Param(ParamTag {
-                tag: "@param".to_string(),
                 ty: Some(to_ts_type(ty)),
                 name: name.to_string(),
                 optional: match ty {
@@ -418,7 +417,6 @@ impl<'a, 'b> Builder<'a, 'b> {
 
         if let (Some(name), Some(ty)) = (variadic_arg, arg_tys.last()) {
             tags.push(JsDocTag::Param(ParamTag {
-                tag: "@param".to_string(),
                 ty: Some(format!("...{}", to_ts_type(ty))),
                 name: name.to_string(),
                 optional: Optionality::Required,
@@ -428,7 +426,6 @@ impl<'a, 'b> Builder<'a, 'b> {
         if let Some(ts) = ts_ret {
             if ts != "void" {
                 tags.push(JsDocTag::Returns(ReturnsTag {
-                    tag: "@returns".to_string(),
                     ty: Some(ts.to_string()),
                     description: String::new(),
                 }));

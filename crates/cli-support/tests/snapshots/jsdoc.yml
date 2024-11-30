@@ -141,7 +141,6 @@ Ast: |
         tags: [
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: None,
                     name: "foo",
                     optional: Required,
@@ -150,7 +149,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: None,
                     name: "foo",
                     optional: Required,
@@ -159,7 +157,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: None,
                     name: "foo",
                     optional: Required,
@@ -168,7 +165,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: None,
                     name: "foo",
                     optional: Optional,
@@ -177,7 +173,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: None,
                     name: "foo",
                     optional: Optional,
@@ -186,7 +181,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: None,
                     name: "foo",
                     optional: Optional,
@@ -195,7 +189,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: None,
                     name: "foo",
                     optional: OptionalWithDefault(
@@ -206,7 +199,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: None,
                     name: "foo",
                     optional: OptionalWithDefault(
@@ -217,7 +209,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: None,
                     name: "foo",
                     optional: OptionalWithDefault(
@@ -228,7 +219,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: Some(
                         "number",
                     ),
@@ -239,7 +229,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: Some(
                         "number",
                     ),
@@ -250,7 +239,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: Some(
                         "number",
                     ),
@@ -261,7 +249,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: Some(
                         "number",
                     ),
@@ -272,7 +259,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: Some(
                         "number",
                     ),
@@ -285,7 +271,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: Some(
                         "number",
                     ),
@@ -298,7 +283,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: Some(
                         "object",
                     ),
@@ -309,7 +293,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: Some(
                         "string",
                     ),
@@ -320,7 +303,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: Some(
                         "object[]",
                     ),
@@ -331,7 +313,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: Some(
                         "string",
                     ),
@@ -342,7 +323,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: Some(
                         "string",
                     ),
@@ -353,7 +333,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: None,
                     name: "foo",
                     optional: Required,
@@ -387,7 +366,6 @@ Ast: |
         tags: [
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: Some(
                         "string",
                     ),
@@ -398,7 +376,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: Some(
                         "string",
                     ),
@@ -409,7 +386,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: Some(
                         "string",
                     ),
@@ -420,7 +396,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: Some(
                         "string",
                     ),
@@ -431,7 +406,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: Some(
                         "string",
                     ),
@@ -444,7 +418,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: None,
                     name: "foo",
                     optional: OptionalWithDefault(
@@ -490,7 +463,6 @@ Ast: |
         tags: [
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: Some(
                         "\nstring\n",
                     ),
@@ -501,7 +473,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: Some(
                         "string // comment\n| number",
                     ),
@@ -512,7 +483,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: Some(
                         "number",
                     ),
@@ -523,7 +493,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: None,
                     name: "foo",
                     optional: Optional,
@@ -532,7 +501,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: Some(
                         "{\n  name: { first: string, last: string };\n}",
                     ),
@@ -543,7 +511,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@param",
                     ty: Some(
                         "'}' | \"}\" | `}${{'}': \"}\"}}}`",
                     ),
@@ -564,10 +531,10 @@ Input: |
     @argument {string} foo
 
 Output: |
-    @arg foo
-    @arg {string} foo
-    @argument foo
-    @argument {string} foo
+    @param foo
+    @param {string} foo
+    @param foo
+    @param {string} foo
 
 Ast: |
     JsDoc {
@@ -575,7 +542,6 @@ Ast: |
         tags: [
             Param(
                 ParamTag {
-                    tag: "@arg",
                     ty: None,
                     name: "foo",
                     optional: Required,
@@ -584,7 +550,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@arg",
                     ty: Some(
                         "string",
                     ),
@@ -595,7 +560,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@argument",
                     ty: None,
                     name: "foo",
                     optional: Required,
@@ -604,7 +568,6 @@ Ast: |
             ),
             Param(
                 ParamTag {
-                    tag: "@argument",
                     ty: Some(
                         "string",
                     ),
@@ -649,28 +612,24 @@ Ast: |
         tags: [
             Returns(
                 ReturnsTag {
-                    tag: "@returns",
                     ty: None,
                     description: "",
                 },
             ),
             Returns(
                 ReturnsTag {
-                    tag: "@returns",
                     ty: None,
                     description: "description",
                 },
             ),
             Returns(
                 ReturnsTag {
-                    tag: "@returns",
                     ty: None,
                     description: "\ndescription",
                 },
             ),
             Returns(
                 ReturnsTag {
-                    tag: "@returns",
                     ty: Some(
                         "string",
                     ),
@@ -679,7 +638,6 @@ Ast: |
             ),
             Returns(
                 ReturnsTag {
-                    tag: "@returns",
                     ty: Some(
                         "number",
                     ),
@@ -688,7 +646,6 @@ Ast: |
             ),
             Returns(
                 ReturnsTag {
-                    tag: "@returns",
                     ty: Some(
                         "string",
                     ),
@@ -697,7 +654,6 @@ Ast: |
             ),
             Returns(
                 ReturnsTag {
-                    tag: "@returns",
                     ty: Some(
                         "string",
                     ),
@@ -729,7 +685,7 @@ Input: |
 Output: |
     @returns
     @returns description
-    @returns {}
+    @returns
     @returns {void}
     @returns {void}
     @returns {void} description
@@ -746,30 +702,24 @@ Ast: |
         tags: [
             Returns(
                 ReturnsTag {
-                    tag: "@returns",
                     ty: None,
                     description: "",
                 },
             ),
             Returns(
                 ReturnsTag {
-                    tag: "@returns",
                     ty: None,
                     description: "description",
                 },
             ),
             Returns(
                 ReturnsTag {
-                    tag: "@returns",
-                    ty: Some(
-                        "",
-                    ),
+                    ty: None,
                     description: "",
                 },
             ),
             Returns(
                 ReturnsTag {
-                    tag: "@returns",
                     ty: Some(
                         "void",
                     ),
@@ -778,7 +728,6 @@ Ast: |
             ),
             Returns(
                 ReturnsTag {
-                    tag: "@returns",
                     ty: Some(
                         "void",
                     ),
@@ -787,7 +736,6 @@ Ast: |
             ),
             Returns(
                 ReturnsTag {
-                    tag: "@returns",
                     ty: Some(
                         "void",
                     ),
@@ -796,7 +744,6 @@ Ast: |
             ),
             Returns(
                 ReturnsTag {
-                    tag: "@returns",
                     ty: Some(
                         "void",
                     ),
@@ -805,7 +752,6 @@ Ast: |
             ),
             Returns(
                 ReturnsTag {
-                    tag: "@returns",
                     ty: Some(
                         "\n\nvoid\n\n",
                     ),
@@ -842,7 +788,7 @@ Input: |
     @return {string} description
 
 Output: |
-    @return {string} description
+    @returns {string} description
 
 Ast: |
     JsDoc {
@@ -850,7 +796,6 @@ Ast: |
         tags: [
             Returns(
                 ReturnsTag {
-                    tag: "@return",
                     ty: Some(
                         "string",
                     ),

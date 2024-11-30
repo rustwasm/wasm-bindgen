@@ -24,7 +24,6 @@ pub enum JsDocTag {
 
 #[derive(Debug, Clone)]
 pub struct ParamTag {
-    pub tag: String,
     pub ty: Option<String>,
     pub name: String,
     pub optional: Optionality,
@@ -44,7 +43,6 @@ pub enum Optionality {
 
 #[derive(Debug, Clone)]
 pub struct ReturnsTag {
-    pub tag: String,
     pub ty: Option<String>,
     /// Description of the return value. Might be empty.
     pub description: String,
@@ -114,12 +112,12 @@ impl JsDoc {
     fn parse_tag(tag_name: &str, rest: &str) -> JsDocTag {
         match tag_name {
             "@param" | "@arg" | "@argument" => {
-                if let Some(tag) = ParamTag::parse(tag_name, rest) {
+                if let Some(tag) = ParamTag::parse(rest) {
                     return JsDocTag::Param(tag);
                 }
             }
             "@returns" | "@return" => {
-                if let Some(tag) = ReturnsTag::parse(tag_name, rest) {
+                if let Some(tag) = ReturnsTag::parse(rest) {
                     return JsDocTag::Returns(tag);
                 }
             }
@@ -198,7 +196,6 @@ impl JsDoc {
             self.tags.insert(
                 pos,
                 JsDocTag::Param(ParamTag {
-                    tag: "@param".to_string(),
                     ty: None,
                     name: name.to_string(),
                     optional: Optionality::Required,
@@ -238,7 +235,6 @@ impl JsDoc {
         if count == 0 {
             // add a new returns tag
             self.tags.push(JsDocTag::Returns(ReturnsTag {
-                tag: "@returns".to_string(),
                 ty: None,
                 description: String::new(),
             }));
@@ -288,7 +284,7 @@ impl std::fmt::Display for JsDocTag {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             JsDocTag::Param(tag) => {
-                write!(f, "{}", tag.tag)?;
+                write!(f, "@param")?;
                 if let Some(ty) = &tag.ty {
                     write!(f, " {{{}}}", ty)?
                 }
@@ -306,7 +302,7 @@ impl std::fmt::Display for JsDocTag {
                 }
             }
             JsDocTag::Returns(tag) => {
-                write!(f, "{}", tag.tag)?;
+                write!(f, "@returns")?;
                 if let Some(ty) = &tag.ty {
                     write!(f, " {{{}}}", ty)?
                 }
@@ -324,7 +320,7 @@ impl std::fmt::Display for JsDocTag {
 }
 
 impl ParamTag {
-    fn parse(tag_name: &str, rest: &str) -> Option<Self> {
+    fn parse(rest: &str) -> Option<Self> {
         let mut text = trim_left(rest);
 
         let mut optional_by_type = false;
@@ -342,18 +338,14 @@ impl ParamTag {
                 t.to_string()
             });
 
-            if let Some(ty_expr) = &ty {
+            if ty.is_some() {
                 text = trim_left(&text[type_len..]);
-
-                if ty_expr.is_empty() {
-                    // empty type expression
-                    ty = None;
-                }
             } else {
                 // the type expression is not terminated, so the tag is not well-formed
                 return None;
             }
         }
+        ty = post_process_typescript_expression(ty);
 
         let (optional, name) = if text.starts_with('[') {
             // skip the `[`
@@ -407,7 +399,6 @@ impl ParamTag {
         };
 
         Some(Self {
-            tag: tag_name.to_string(),
             ty,
             optional,
             name,
@@ -417,7 +408,7 @@ impl ParamTag {
 }
 
 impl ReturnsTag {
-    fn parse(tag_name: &str, rest: &str) -> Option<Self> {
+    fn parse(rest: &str) -> Option<Self> {
         // A bit careful now, because we want to keep the initial new lines of
         // the description.
         let mut text = {
@@ -440,13 +431,17 @@ impl ReturnsTag {
                 return None;
             }
         }
+        ty = post_process_typescript_expression(ty);
 
         Some(Self {
-            tag: tag_name.to_string(),
             ty,
             description: text.to_string(),
         })
     }
+}
+
+fn post_process_typescript_expression(expr: Option<String>) -> Option<String> {
+    expr.and_then(|e| if e.trim().is_empty() { None } else { Some(e) })
 }
 
 /// A version trim_start that ignores text direction.
