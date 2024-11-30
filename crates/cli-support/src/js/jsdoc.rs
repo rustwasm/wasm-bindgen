@@ -600,21 +600,6 @@ fn consume_type_script_expression(comment: &str) -> Option<&str> {
 
         get_line_length(bytes)
     }
-    /// Returns the number of bytes consumed by the multiline comment,
-    /// including the trailing `*/` (if any).
-    fn consume_multiline_comment(bytes: &[u8]) -> usize {
-        debug_assert!(bytes[0] == b'/');
-        debug_assert!(bytes[1] == b'*');
-
-        bytes
-            .windows(2)
-            .position(|w| w == b"*/")
-            .map(|p| p + 2)
-            .unwrap_or(
-                // the comment is not terminated (this is valid)
-                bytes.len(),
-            )
-    }
     /// Returns the number of bytes consumed by braced (`{}`) expression,
     /// including the closing `}`.
     fn consume_string_template(bytes: &[u8]) -> Option<usize> {
@@ -668,11 +653,8 @@ fn consume_type_script_expression(comment: &str) -> Option<&str> {
                 }
                 b'/' => {
                     // might be a comment
-                    let next = bytes.get(index + 1);
-                    if let Some(b'/') = next {
+                    if let Some(b'/') = bytes.get(index + 1) {
                         index += consume_single_line_comment(&bytes[index..]);
-                    } else if let Some(b'*') = next {
-                        index += consume_multiline_comment(&bytes[index..]);
                     } else {
                         index += 1;
                     }
