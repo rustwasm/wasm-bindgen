@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
     #[wasm_bindgen(method, getter = "display")]
-    pub fn get_display(this: &FontFaceDescriptors) -> Option<String>;
+    pub fn get_display(this: &FontFaceDescriptors) -> Option<::alloc::string::String>;
     #[doc = "Change the `display` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
     #[wasm_bindgen(method, getter = "featureSettings")]
-    pub fn get_feature_settings(this: &FontFaceDescriptors) -> Option<String>;
+    pub fn get_feature_settings(this: &FontFaceDescriptors) -> Option<::alloc::string::String>;
     #[doc = "Change the `featureSettings` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
     #[wasm_bindgen(method, getter = "stretch")]
-    pub fn get_stretch(this: &FontFaceDescriptors) -> Option<String>;
+    pub fn get_stretch(this: &FontFaceDescriptors) -> Option<::alloc::string::String>;
     #[doc = "Change the `stretch` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
@@ -44,7 +44,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
     #[wasm_bindgen(method, getter = "style")]
-    pub fn get_style(this: &FontFaceDescriptors) -> Option<String>;
+    pub fn get_style(this: &FontFaceDescriptors) -> Option<::alloc::string::String>;
     #[doc = "Change the `style` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
@@ -54,7 +54,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
     #[wasm_bindgen(method, getter = "unicodeRange")]
-    pub fn get_unicode_range(this: &FontFaceDescriptors) -> Option<String>;
+    pub fn get_unicode_range(this: &FontFaceDescriptors) -> Option<::alloc::string::String>;
     #[doc = "Change the `unicodeRange` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
@@ -64,7 +64,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
     #[wasm_bindgen(method, getter = "variant")]
-    pub fn get_variant(this: &FontFaceDescriptors) -> Option<String>;
+    pub fn get_variant(this: &FontFaceDescriptors) -> Option<::alloc::string::String>;
     #[doc = "Change the `variant` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
@@ -74,7 +74,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
     #[wasm_bindgen(method, getter = "variationSettings")]
-    pub fn get_variation_settings(this: &FontFaceDescriptors) -> Option<String>;
+    pub fn get_variation_settings(this: &FontFaceDescriptors) -> Option<::alloc::string::String>;
     #[doc = "Change the `variationSettings` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
@@ -84,7 +84,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]
     #[wasm_bindgen(method, getter = "weight")]
-    pub fn get_weight(this: &FontFaceDescriptors) -> Option<String>;
+    pub fn get_weight(this: &FontFaceDescriptors) -> Option<::alloc::string::String>;
     #[doc = "Change the `weight` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFaceDescriptors`*"]

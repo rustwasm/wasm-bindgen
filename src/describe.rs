@@ -30,6 +30,8 @@ tys! {
     U32
     I64
     U64
+    I128
+    U128
     F32
     F64
     BOOLEAN
@@ -89,6 +91,8 @@ simple! {
     u32 => U32
     i64 => I64
     u64 => U64
+    i128 => I128
+    u128 => U128
     isize => I32
     usize => U32
     f32 => F32
@@ -140,7 +144,7 @@ impl<T: WasmDescribe> WasmDescribe for [T] {
     }
 }
 
-impl<'a, T: WasmDescribe + ?Sized> WasmDescribe for &'a T {
+impl<T: WasmDescribe + ?Sized> WasmDescribe for &T {
     #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
     fn describe() {
         inform(REF);
@@ -148,7 +152,7 @@ impl<'a, T: WasmDescribe + ?Sized> WasmDescribe for &'a T {
     }
 }
 
-impl<'a, T: WasmDescribe + ?Sized> WasmDescribe for &'a mut T {
+impl<T: WasmDescribe + ?Sized> WasmDescribe for &mut T {
     #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
     fn describe() {
         inform(REFMUT);

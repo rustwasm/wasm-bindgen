@@ -11,19 +11,23 @@ license = "MIT OR Apache-2.0"
 name = "wasm-bindgen-macro"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/macro"
 rust-version = "1.57"
-version = "0.2.95"
+version = "0.2.97"
 
 [lib]
 proc-macro = true
 
 [features]
+atomics = ["wasm-bindgen-macro-support/atomics"]
+coverage = ["wasm-bindgen-macro-support/coverage"]
+default = ["std"]
 spans = ["wasm-bindgen-macro-support/spans"]
+std = ["wasm-bindgen-macro-support/std"]
 strict-macro = ["wasm-bindgen-macro-support/strict-macro"]
 xxx_debug_only_print_generated_code = []
 
 [dependencies]
 quote = "1.0"
-wasm-bindgen-macro-support = { path = "../macro-support", version = "=0.2.95" }
+wasm-bindgen-macro-support = { path = "../macro-support", version = "=0.2.97", default-features = false }
 
 [dev-dependencies]
 js-sys = { path = "../js-sys" }
@@ -32,5 +36,5 @@ wasm-bindgen = { path = "../.." }
 wasm-bindgen-futures = { path = "../futures" }
 web-sys = { path = "../web-sys", features = ["Worker"] }
 
-[lints.rust]
-unexpected_cfgs = { level = "warn", check-cfg = ['cfg(wasm_bindgen_unstable_test_coverage)'] }
+[lints]
+workspace = true

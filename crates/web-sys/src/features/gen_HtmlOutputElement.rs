@@ -34,7 +34,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOutputElement/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOutputElement`*"]
-    pub fn name(this: &HtmlOutputElement) -> String;
+    pub fn name(this: &HtmlOutputElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLOutputElement" , js_name = name)]
     #[doc = "Setter for the `name` field of this object."]
     #[doc = ""]
@@ -48,14 +48,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOutputElement/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOutputElement`*"]
-    pub fn type_(this: &HtmlOutputElement) -> String;
+    pub fn type_(this: &HtmlOutputElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLOutputElement" , js_name = defaultValue)]
     #[doc = "Getter for the `defaultValue` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOutputElement/defaultValue)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOutputElement`*"]
-    pub fn default_value(this: &HtmlOutputElement) -> String;
+    pub fn default_value(this: &HtmlOutputElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLOutputElement" , js_name = defaultValue)]
     #[doc = "Setter for the `defaultValue` field of this object."]
     #[doc = ""]
@@ -69,7 +69,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOutputElement/value)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOutputElement`*"]
-    pub fn value(this: &HtmlOutputElement) -> String;
+    pub fn value(this: &HtmlOutputElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLOutputElement" , js_name = value)]
     #[doc = "Setter for the `value` field of this object."]
     #[doc = ""]
@@ -98,7 +98,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOutputElement/validationMessage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOutputElement`*"]
-    pub fn validation_message(this: &HtmlOutputElement) -> Result<String, JsValue>;
+    pub fn validation_message(this: &HtmlOutputElement)
+        -> Result<::alloc::string::String, JsValue>;
     #[cfg(feature = "NodeList")]
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLOutputElement" , js_name = labels)]
     #[doc = "Getter for the `labels` field of this object."]

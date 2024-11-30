@@ -50,7 +50,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheBatchOperation`*"]
     #[wasm_bindgen(method, getter = "type")]
-    pub fn get_type(this: &CacheBatchOperation) -> Option<String>;
+    pub fn get_type(this: &CacheBatchOperation) -> Option<::alloc::string::String>;
     #[doc = "Change the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheBatchOperation`*"]

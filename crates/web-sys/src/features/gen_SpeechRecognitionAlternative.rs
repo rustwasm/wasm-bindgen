@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognitionAlternative/transcript)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognitionAlternative`*"]
-    pub fn transcript(this: &SpeechRecognitionAlternative) -> String;
+    pub fn transcript(this: &SpeechRecognitionAlternative) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "SpeechRecognitionAlternative" , js_name = confidence)]
     #[doc = "Getter for the `confidence` field of this object."]
     #[doc = ""]

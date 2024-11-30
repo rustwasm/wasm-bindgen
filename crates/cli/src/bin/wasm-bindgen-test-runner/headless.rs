@@ -61,36 +61,49 @@ pub fn run(server: &SocketAddr, shell: &Shell, timeout: u64) -> Result<(), Error
     let driver_url = match driver.location() {
         Locate::Remote(url) => Ok(url.clone()),
         Locate::Local((path, args)) => {
-            // Allow tests to run in parallel (in theory) by finding any open port
-            // available for our driver. We can't bind the port for the driver, but
-            // hopefully the OS gives this invocation unique ports across processes
-            let driver_addr = TcpListener::bind("127.0.0.1:0")?.local_addr()?;
+            // Wait for the driver to come online and bind its port before we try to
+            // connect to it.
+            let start = Instant::now();
+            let max = Duration::new(5, 0);
 
-            // Spawn the driver binary, collecting its stdout/stderr in separate
-            // threads. We'll print this output later.
-            let mut cmd = Command::new(path);
-            cmd.args(args).arg(format!("--port={}", driver_addr.port()));
-            let mut child = BackgroundChild::spawn(path, &mut cmd, shell)?;
+            let (driver_addr, mut child) = 'outer: loop {
+                // Allow tests to run in parallel (in theory) by finding any open port
+                // available for our driver. We can't bind the port for the driver, but
+                // hopefully the OS gives this invocation unique ports across processes
+                let driver_addr = TcpListener::bind("127.0.0.1:0")?.local_addr()?;
+                // Spawn the driver binary, collecting its stdout/stderr in separate
+                // threads. We'll print this output later.
+                let mut cmd = Command::new(path);
+                cmd.args(args).arg(format!("--port={}", driver_addr.port()));
+                let mut child = BackgroundChild::spawn(path, &mut cmd, shell)?;
+
+                // Wait for the driver to come online and bind its port before we try to
+                // connect to it.
+                loop {
+                    if child.has_failed() {
+                        if start.elapsed() >= max {
+                            bail!("driver failed to start")
+                        }
+
+                        println!("Failed to start driver, trying again ...");
+
+                        thread::sleep(Duration::from_millis(100));
+                        break;
+                    } else if TcpStream::connect(driver_addr).is_ok() {
+                        break 'outer (driver_addr, child);
+                    } else if start.elapsed() >= max {
+                        bail!("driver failed to bind port during startup")
+                    } else {
+                        thread::sleep(Duration::from_millis(100));
+                    }
+                }
+            };
+
             drop_log = Box::new(move || {
                 let _ = &child;
                 child.print_stdio_on_drop = false;
             });
 
-            // Wait for the driver to come online and bind its port before we try to
-            // connect to it.
-            let start = Instant::now();
-            let max = Duration::new(5, 0);
-            let mut bound = false;
-            while start.elapsed() < max {
-                if TcpStream::connect(driver_addr).is_ok() {
-                    bound = true;
-                    break;
-                }
-                thread::sleep(Duration::from_millis(100));
-            }
-            if !bound {
-                bail!("driver failed to bind port during startup")
-            }
             Url::parse(&format!("http://{}", driver_addr)).map_err(Error::from)
         }
     }?;
@@ -646,9 +659,17 @@ impl<'a> BackgroundChild<'a> {
             print_stdio_on_drop: true,
         })
     }
+
+    fn has_failed(&mut self) -> bool {
+        match self.child.try_wait() {
+            Ok(Some(status)) => !status.success(),
+            Ok(None) => false,
+            Err(_) => true,
+        }
+    }
 }
 
-impl<'a> Drop for BackgroundChild<'a> {
+impl Drop for BackgroundChild<'_> {
     fn drop(&mut self) {
         self.child.kill().unwrap();
         let status = self.child.wait().unwrap();

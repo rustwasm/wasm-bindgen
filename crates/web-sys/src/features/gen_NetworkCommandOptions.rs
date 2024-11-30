@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "cmd")]
-    pub fn get_cmd(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_cmd(this: &NetworkCommandOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `cmd` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -24,7 +24,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "curExternalIfname")]
-    pub fn get_cur_external_ifname(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_cur_external_ifname(this: &NetworkCommandOptions)
+        -> Option<::alloc::string::String>;
     #[doc = "Change the `curExternalIfname` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -34,7 +35,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "curInternalIfname")]
-    pub fn get_cur_internal_ifname(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_cur_internal_ifname(this: &NetworkCommandOptions)
+        -> Option<::alloc::string::String>;
     #[doc = "Change the `curInternalIfname` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -44,7 +46,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "dns1")]
-    pub fn get_dns1(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_dns1(this: &NetworkCommandOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `dns1` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -64,7 +66,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "dns2")]
-    pub fn get_dns2(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_dns2(this: &NetworkCommandOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `dns2` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -94,7 +96,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "domain")]
-    pub fn get_domain(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_domain(this: &NetworkCommandOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `domain` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -124,7 +126,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "endIp")]
-    pub fn get_end_ip(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_end_ip(this: &NetworkCommandOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `endIp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -134,7 +136,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "externalIfname")]
-    pub fn get_external_ifname(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_external_ifname(this: &NetworkCommandOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `externalIfname` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -144,7 +146,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "gateway")]
-    pub fn get_gateway(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_gateway(this: &NetworkCommandOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `gateway` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -184,7 +186,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "ifname")]
-    pub fn get_ifname(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_ifname(this: &NetworkCommandOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `ifname` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -204,7 +206,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "internalIfname")]
-    pub fn get_internal_ifname(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_internal_ifname(this: &NetworkCommandOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `internalIfname` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -214,7 +216,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "ip")]
-    pub fn get_ip(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_ip(this: &NetworkCommandOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `ip` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -234,7 +236,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "key")]
-    pub fn get_key(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_key(this: &NetworkCommandOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `key` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -244,7 +246,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "link")]
-    pub fn get_link(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_link(this: &NetworkCommandOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `link` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -264,7 +266,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "maskLength")]
-    pub fn get_mask_length(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_mask_length(this: &NetworkCommandOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `maskLength` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -274,7 +276,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "mode")]
-    pub fn get_mode(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_mode(this: &NetworkCommandOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `mode` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -294,7 +296,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "preExternalIfname")]
-    pub fn get_pre_external_ifname(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_pre_external_ifname(this: &NetworkCommandOptions)
+        -> Option<::alloc::string::String>;
     #[doc = "Change the `preExternalIfname` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -304,7 +307,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "preInternalIfname")]
-    pub fn get_pre_internal_ifname(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_pre_internal_ifname(this: &NetworkCommandOptions)
+        -> Option<::alloc::string::String>;
     #[doc = "Change the `preInternalIfname` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -314,7 +318,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "prefix")]
-    pub fn get_prefix(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_prefix(this: &NetworkCommandOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `prefix` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -344,7 +348,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "security")]
-    pub fn get_security(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_security(this: &NetworkCommandOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `security` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -354,7 +358,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "serverIp")]
-    pub fn get_server_ip(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_server_ip(this: &NetworkCommandOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `serverIp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -364,7 +368,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "ssid")]
-    pub fn get_ssid(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_ssid(this: &NetworkCommandOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `ssid` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -374,7 +378,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "startIp")]
-    pub fn get_start_ip(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_start_ip(this: &NetworkCommandOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `startIp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -394,7 +398,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "usbEndIp")]
-    pub fn get_usb_end_ip(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_usb_end_ip(this: &NetworkCommandOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `usbEndIp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -404,7 +408,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "usbStartIp")]
-    pub fn get_usb_start_ip(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_usb_start_ip(this: &NetworkCommandOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `usbStartIp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -414,7 +418,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "wifiEndIp")]
-    pub fn get_wifi_end_ip(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_wifi_end_ip(this: &NetworkCommandOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `wifiEndIp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -424,7 +428,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "wifiStartIp")]
-    pub fn get_wifi_start_ip(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_wifi_start_ip(this: &NetworkCommandOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `wifiStartIp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
@@ -434,7 +438,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]
     #[wasm_bindgen(method, getter = "wifictrlinterfacename")]
-    pub fn get_wifictrlinterfacename(this: &NetworkCommandOptions) -> Option<String>;
+    pub fn get_wifictrlinterfacename(
+        this: &NetworkCommandOptions,
+    ) -> Option<::alloc::string::String>;
     #[doc = "Change the `wifictrlinterfacename` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NetworkCommandOptions`*"]

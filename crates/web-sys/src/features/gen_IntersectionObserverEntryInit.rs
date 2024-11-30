@@ -83,11 +83,11 @@ impl IntersectionObserverEntryInit {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.bounding_client_rect(bounding_client_rect);
-        ret.intersection_rect(intersection_rect);
-        ret.root_bounds(root_bounds);
-        ret.target(target);
-        ret.time(time);
+        ret.set_bounding_client_rect(bounding_client_rect);
+        ret.set_intersection_rect(intersection_rect);
+        ret.set_root_bounds(root_bounds);
+        ret.set_target(target);
+        ret.set_time(time);
         ret
     }
     #[cfg(feature = "DomRectInit")]

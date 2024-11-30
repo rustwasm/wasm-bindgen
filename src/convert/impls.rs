@@ -29,6 +29,43 @@ impl<T: WasmPrimitive> WasmAbi for T {
     }
 }
 
+impl WasmAbi for i128 {
+    type Prim1 = u64;
+    type Prim2 = u64;
+    type Prim3 = ();
+    type Prim4 = ();
+
+    #[inline]
+    fn split(self) -> (u64, u64, (), ()) {
+        let low = self as u64;
+        let high = (self >> 64) as u64;
+        (low, high, (), ())
+    }
+
+    #[inline]
+    fn join(low: u64, high: u64, _: (), _: ()) -> Self {
+        ((high as u128) << 64 | low as u128) as i128
+    }
+}
+impl WasmAbi for u128 {
+    type Prim1 = u64;
+    type Prim2 = u64;
+    type Prim3 = ();
+    type Prim4 = ();
+
+    #[inline]
+    fn split(self) -> (u64, u64, (), ()) {
+        let low = self as u64;
+        let high = (self >> 64) as u64;
+        (low, high, (), ())
+    }
+
+    #[inline]
+    fn join(low: u64, high: u64, _: (), _: ()) -> Self {
+        (high as u128) << 64 | low as u128
+    }
+}
+
 impl<T: WasmAbi<Prim4 = ()>> WasmAbi for Option<T> {
     /// Whether this `Option` is a `Some` value.
     type Prim1 = u32;
@@ -101,6 +138,8 @@ macro_rules! type_wasm_native {
 type_wasm_native!(
     i64 as i64
     u64 as u64
+    i128 as i128
+    u128 as u128
     f64 as f64
 );
 
@@ -398,7 +437,7 @@ impl FromWasmAbi for JsValue {
     }
 }
 
-impl<'a> IntoWasmAbi for &'a JsValue {
+impl IntoWasmAbi for &JsValue {
     type Abi = u32;
 
     #[inline]

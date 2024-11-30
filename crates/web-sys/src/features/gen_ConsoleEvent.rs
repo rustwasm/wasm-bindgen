@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     #[wasm_bindgen(method, getter = "addonId")]
-    pub fn get_addon_id(this: &ConsoleEvent) -> Option<String>;
+    pub fn get_addon_id(this: &ConsoleEvent) -> Option<::alloc::string::String>;
     #[doc = "Change the `addonId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
@@ -54,7 +54,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     #[wasm_bindgen(method, getter = "consoleID")]
-    pub fn get_console_id(this: &ConsoleEvent) -> Option<String>;
+    pub fn get_console_id(this: &ConsoleEvent) -> Option<::alloc::string::String>;
     #[doc = "Change the `consoleID` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
@@ -74,7 +74,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     #[wasm_bindgen(method, getter = "filename")]
-    pub fn get_filename(this: &ConsoleEvent) -> Option<String>;
+    pub fn get_filename(this: &ConsoleEvent) -> Option<::alloc::string::String>;
     #[doc = "Change the `filename` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
@@ -84,7 +84,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     #[wasm_bindgen(method, getter = "functionName")]
-    pub fn get_function_name(this: &ConsoleEvent) -> Option<String>;
+    pub fn get_function_name(this: &ConsoleEvent) -> Option<::alloc::string::String>;
     #[doc = "Change the `functionName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
@@ -94,7 +94,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     #[wasm_bindgen(method, getter = "groupName")]
-    pub fn get_group_name(this: &ConsoleEvent) -> Option<String>;
+    pub fn get_group_name(this: &ConsoleEvent) -> Option<::alloc::string::String>;
     #[doc = "Change the `groupName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
@@ -114,7 +114,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     #[wasm_bindgen(method, getter = "level")]
-    pub fn get_level(this: &ConsoleEvent) -> Option<String>;
+    pub fn get_level(this: &ConsoleEvent) -> Option<::alloc::string::String>;
     #[doc = "Change the `level` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
@@ -134,7 +134,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]
     #[wasm_bindgen(method, getter = "prefix")]
-    pub fn get_prefix(this: &ConsoleEvent) -> Option<String>;
+    pub fn get_prefix(this: &ConsoleEvent) -> Option<::alloc::string::String>;
     #[doc = "Change the `prefix` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleEvent`*"]

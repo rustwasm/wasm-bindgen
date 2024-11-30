@@ -65,8 +65,8 @@ impl ImageDecodeResult {
     pub fn new(complete: bool, image: &VideoFrame) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.complete(complete);
-        ret.image(image);
+        ret.set_complete(complete);
+        ret.set_image(image);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

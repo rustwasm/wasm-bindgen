@@ -3,6 +3,28 @@
 
 ## Unreleased
 
+### Changed
+
+* Optional parameters are now typed as `T | undefined | null` to reflect the actual JS behavior.
+  [#4188](https://github.com/rustwasm/wasm-bindgen/pull/4188)
+
+--------------------------------------------------------------------------------
+
+## [0.2.97](https://github.com/rustwasm/wasm-bindgen/compare/0.2.96...0.2.97)
+
+Released 2024-11-30
+
+### Fixed
+
+* Fixed `js-sys` and `wasm-bindgen-futures` relying on internal paths of `wasm-bindgen` that are not crate feature additive.
+  [#4305](https://github.com/rustwasm/wasm-bindgen/pull/4305)
+
+--------------------------------------------------------------------------------
+
+## [0.2.96](https://github.com/rustwasm/wasm-bindgen/compare/0.2.95...0.2.96)
+
+Released 2024-11-29
+
 ### Added
 
 * Added support for the [`HTMLOrSVGElement`](https://html.spec.whatwg.org/#htmlorsvgelement) `mixin`, which is used for all interfaces deriving from `Element`.
@@ -13,6 +35,27 @@
 
 * Added JSDoc type annotations to C-style enums.
   [#4192](https://github.com/rustwasm/wasm-bindgen/pull/4192)
+
+* Added support for C-style enums with negative discriminants.
+  [#4204](https://github.com/rustwasm/wasm-bindgen/pull/4204)
+
+* Added bindings for `MediaStreamTrack.getCapabilities`.
+  [#4236](https://github.com/rustwasm/wasm-bindgen/pull/4236)
+
+* Added WASM ABI support for `u128` and `i128`
+  [#4222](https://github.com/rustwasm/wasm-bindgen/pull/4222)
+
+* Added support for the `wasm32v1-none` target.
+  [#4277](https://github.com/rustwasm/wasm-bindgen/pull/4277)
+
+* Added support for `no_std` to `js-sys`, `web-sys`, `wasm-bindgen-futures` and `wasm-bindgen-test`.
+  [#4277](https://github.com/rustwasm/wasm-bindgen/pull/4277)
+
+* Added support for `no_std` to `link_to!`, `static_string` (via `thread_local_v2`) and `throw`.
+  [#4277](https://github.com/rustwasm/wasm-bindgen/pull/4277)
+
+* Added environment variables to configure tests: `WASM_BINDGEN_USE_BROWSER`, `WASM_BINDGEN_USE_DEDICATED_WORKER`, `WASM_BINDGEN_USE_SHARED_WORKER` `WASM_BINDGEN_USE_SERVICE_WORKER`, `WASM_BINDGEN_USE_DENO` and `WASM_BINDGEN_USE_NODE_EXPERIMENTAL`. The use of `wasm_bindgen_test_configure!` will overwrite any environment variable.
+  [#4295](https://github.com/rustwasm/wasm-bindgen/pull/4295)
 
 ### Changed
 
@@ -28,14 +71,20 @@
 * Optimized ABI performance for `Option<{i32,u32,isize,usize,f32,*const T,*mut T}>`.
   [#4183](https://github.com/rustwasm/wasm-bindgen/pull/4183)
 
-* Reference type proposal transformations are not applied by default when detecting it in the Wasm module for the bundler target because currently `webpack` doesn't support it.
-  [#4235](https://github.com/rustwasm/wasm-bindgen/pull/4235)
-
 * Deprecate `--reference-types` in favor of automatic target feature detection.
   [#4237](https://github.com/rustwasm/wasm-bindgen/pull/4237)
 
-* Optional parameters are now typed as `T | undefined | null` to reflect the actual JS behavior.
-  [#4188](https://github.com/rustwasm/wasm-bindgen/pull/4188)
+* `wasm-bindgen-test-runner` now tries to restart the WebDriver on failure, instead of spending its timeout period trying to connect to a non-existing WebDriver.
+  [#4267](https://github.com/rustwasm/wasm-bindgen/pull/4267)
+
+* Deprecated `#[wasm_bindgen(thread_local)]` in favor of `#[wasm_bindgen(thread_local_v2)]`, which creates a `wasm_bindgen::JsThreadLocal`. It is similar to `std::thread::LocalKey` but supports `no_std`.
+  [#4277](https://github.com/rustwasm/wasm-bindgen/pull/4277)
+
+* Updated the WebGPU API to the current draft as of 2024-11-22.
+  [#4290](https://github.com/rustwasm/wasm-bindgen/pull/4290)
+
+* Improved error messages for `self` arguments in invalid positions.
+  [#4276](https://github.com/rustwasm/wasm-bindgen/pull/4276)
 
 ### Fixed
 
@@ -65,6 +114,15 @@
 
 * Only emit `table.fill` instructions if the bulk-memory proposal is enabled.
   [#4237](https://github.com/rustwasm/wasm-bindgen/pull/4237)
+
+* Fixed calls to `JsCast::instanceof()` not respecting JavaScript namespaces.
+  [#4241](https://github.com/rustwasm/wasm-bindgen/pull/4241)
+
+* Fixed imports for functions using `this` and late binding.
+  [#4225](https://github.com/rustwasm/wasm-bindgen/pull/4225)
+
+* Don't expose non-functioning implicit constructors to classes when none are provided.
+  [#4282](https://github.com/rustwasm/wasm-bindgen/pull/4282)
 
 --------------------------------------------------------------------------------
 

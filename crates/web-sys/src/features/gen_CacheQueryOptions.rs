@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheQueryOptions`*"]
     #[wasm_bindgen(method, getter = "cacheName")]
-    pub fn get_cache_name(this: &CacheQueryOptions) -> Option<String>;
+    pub fn get_cache_name(this: &CacheQueryOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `cacheName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CacheQueryOptions`*"]

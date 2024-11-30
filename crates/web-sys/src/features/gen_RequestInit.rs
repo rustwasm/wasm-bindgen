@@ -58,7 +58,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RequestInit`*"]
     #[wasm_bindgen(method, getter = "integrity")]
-    pub fn get_integrity(this: &RequestInit) -> Option<String>;
+    pub fn get_integrity(this: &RequestInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `integrity` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RequestInit`*"]
@@ -68,7 +68,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RequestInit`*"]
     #[wasm_bindgen(method, getter = "method")]
-    pub fn get_method(this: &RequestInit) -> Option<String>;
+    pub fn get_method(this: &RequestInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `method` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RequestInit`*"]
@@ -114,7 +114,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RequestInit`*"]
     #[wasm_bindgen(method, getter = "referrer")]
-    pub fn get_referrer(this: &RequestInit) -> Option<String>;
+    pub fn get_referrer(this: &RequestInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `referrer` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RequestInit`*"]

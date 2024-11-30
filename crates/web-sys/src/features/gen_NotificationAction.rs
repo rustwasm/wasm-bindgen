@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationAction`*"]
     #[wasm_bindgen(method, getter = "action")]
-    pub fn get_action(this: &NotificationAction) -> String;
+    pub fn get_action(this: &NotificationAction) -> ::alloc::string::String;
     #[doc = "Change the `action` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationAction`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationAction`*"]
     #[wasm_bindgen(method, getter = "icon")]
-    pub fn get_icon(this: &NotificationAction) -> Option<String>;
+    pub fn get_icon(this: &NotificationAction) -> Option<::alloc::string::String>;
     #[doc = "Change the `icon` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationAction`*"]
@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationAction`*"]
     #[wasm_bindgen(method, getter = "title")]
-    pub fn get_title(this: &NotificationAction) -> String;
+    pub fn get_title(this: &NotificationAction) -> ::alloc::string::String;
     #[doc = "Change the `title` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `NotificationAction`*"]
@@ -48,8 +48,8 @@ impl NotificationAction {
     pub fn new(action: &str, title: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.action(action);
-        ret.title(title);
+        ret.set_action(action);
+        ret.set_title(title);
         ret
     }
     #[deprecated = "Use `set_action()` instead."]

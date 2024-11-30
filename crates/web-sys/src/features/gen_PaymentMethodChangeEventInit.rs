@@ -54,7 +54,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PaymentMethodChangeEventInit`*"]
     #[wasm_bindgen(method, getter = "methodName")]
-    pub fn get_method_name(this: &PaymentMethodChangeEventInit) -> String;
+    pub fn get_method_name(this: &PaymentMethodChangeEventInit) -> ::alloc::string::String;
     #[doc = "Change the `methodName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PaymentMethodChangeEventInit`*"]
@@ -68,7 +68,7 @@ impl PaymentMethodChangeEventInit {
     pub fn new(method_name: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.method_name(method_name);
+        ret.set_method_name(method_name);
         ret
     }
     #[deprecated = "Use `set_bubbles()` instead."]

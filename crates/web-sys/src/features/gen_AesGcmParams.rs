@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesGcmParams`*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &AesGcmParams) -> String;
+    pub fn get_name(this: &AesGcmParams) -> ::alloc::string::String;
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AesGcmParams`*"]
@@ -58,8 +58,8 @@ impl AesGcmParams {
     pub fn new(name: &str, iv: &::js_sys::Object) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.iv(iv);
+        ret.set_name(name);
+        ret.set_iv(iv);
         ret
     }
     #[deprecated = "Use `set_name()` instead."]

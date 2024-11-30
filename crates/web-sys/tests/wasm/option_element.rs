@@ -12,16 +12,14 @@ fn test_option_element() {
     .unwrap();
 
     option.set_disabled(true);
-    assert_eq!(
+    assert!(
         option.disabled(),
-        true,
         "Option should be disabled after we set it to be disabled."
     );
 
     option.set_disabled(false);
-    assert_eq!(
-        option.disabled(),
-        false,
+    assert!(
+        !option.disabled(),
         "Option should not be disabled after we set it to be not-disabled."
     );
 
@@ -38,30 +36,26 @@ fn test_option_element() {
     );
 
     option.set_default_selected(true);
-    assert_eq!(
+    assert!(
         option.default_selected(),
-        true,
         "Option should be default_selected after we set it to be default_selected."
     );
 
     option.set_default_selected(false);
-    assert_eq!(
-        option.default_selected(),
-        false,
+    assert!(
+        !option.default_selected(),
         "Option should not be default_selected after we set it to be not default_selected."
     );
 
     option.set_selected(true);
-    assert_eq!(
+    assert!(
         option.selected(),
-        true,
         "Option should be selected after we set it to be selected."
     );
 
     option.set_selected(false);
-    assert_eq!(
-        option.selected(),
-        false,
+    assert!(
+        !option.selected(),
         "Option should not be selected after we set it to be not selected."
     );
 

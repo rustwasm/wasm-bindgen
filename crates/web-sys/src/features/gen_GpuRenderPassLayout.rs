@@ -22,7 +22,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "label")]
-    pub fn get_label(this: &GpuRenderPassLayout) -> Option<String>;
+    pub fn get_label(this: &GpuRenderPassLayout) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `label` field of this object."]
     #[doc = ""]
@@ -100,7 +100,7 @@ impl GpuRenderPassLayout {
     pub fn new(color_formats: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.color_formats(color_formats);
+        ret.set_color_formats(color_formats);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

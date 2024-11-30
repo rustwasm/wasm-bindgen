@@ -63,6 +63,15 @@ export function option_string_enum_echo(color) {
 }
 
 /**
+ * @param {Ordering | undefined} [order]
+ * @returns {Ordering | undefined}
+ */
+export function option_order(order) {
+    const ret = wasm.option_order(isLikeNone(order) ? 2 : order);
+    return ret === 2 ? undefined : ret;
+}
+
+/**
  * A color.
  * @enum {0 | 1 | 2}
  */
@@ -89,8 +98,28 @@ export const ImplicitDiscriminant = Object.freeze({
     C: 42, "42": "C",
     D: 43, "43": "D",
 });
+/**
+ * A C-style enum with negative discriminants.
+ * @enum {-1 | 0 | 1}
+ */
+export const Ordering = Object.freeze({
+    Less: -1, "-1": "Less",
+    Equal: 0, "0": "Equal",
+    Greater: 1, "1": "Greater",
+});
 
 const __wbindgen_enum_ColorName = ["green", "yellow", "red"];
+
+export function __wbindgen_init_externref_table() {
+    const table = wasm.__wbindgen_export_0;
+    const offset = table.grow(4);
+    table.set(0, undefined);
+    table.set(offset + 0, undefined);
+    table.set(offset + 1, null);
+    table.set(offset + 2, true);
+    table.set(offset + 3, false);
+    ;
+};
 
 export function __wbindgen_throw(arg0, arg1) {
     throw new Error(getStringFromWasm0(arg0, arg1));

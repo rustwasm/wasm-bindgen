@@ -101,7 +101,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CaretStateChangedEventInit`*"]
     #[wasm_bindgen(method, getter = "selectedTextContent")]
-    pub fn get_selected_text_content(this: &CaretStateChangedEventInit) -> Option<String>;
+    pub fn get_selected_text_content(
+        this: &CaretStateChangedEventInit,
+    ) -> Option<::alloc::string::String>;
     #[doc = "Change the `selectedTextContent` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CaretStateChangedEventInit`*"]

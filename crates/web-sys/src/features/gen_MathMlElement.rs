@@ -1196,7 +1196,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MathMLElement/nonce)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MathMlElement`*"]
-    pub fn nonce(this: &MathMlElement) -> String;
+    pub fn nonce(this: &MathMlElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "MathMLElement" , js_name = nonce)]
     #[doc = "Setter for the `nonce` field of this object."]
     #[doc = ""]

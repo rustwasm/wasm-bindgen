@@ -25,7 +25,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaError/message)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaError`*"]
-    pub fn message(this: &MediaError) -> String;
+    pub fn message(this: &MediaError) -> ::alloc::string::String;
 }
 impl MediaError {
     #[doc = "The `MediaError.MEDIA_ERR_ABORTED` const."]

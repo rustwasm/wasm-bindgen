@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcMediaStreamStats`*"]
     #[wasm_bindgen(method, getter = "id")]
-    pub fn get_id(this: &RtcMediaStreamStats) -> Option<String>;
+    pub fn get_id(this: &RtcMediaStreamStats) -> Option<::alloc::string::String>;
     #[doc = "Change the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcMediaStreamStats`*"]
@@ -46,7 +46,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcMediaStreamStats`*"]
     #[wasm_bindgen(method, getter = "streamIdentifier")]
-    pub fn get_stream_identifier(this: &RtcMediaStreamStats) -> Option<String>;
+    pub fn get_stream_identifier(this: &RtcMediaStreamStats) -> Option<::alloc::string::String>;
     #[doc = "Change the `streamIdentifier` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcMediaStreamStats`*"]

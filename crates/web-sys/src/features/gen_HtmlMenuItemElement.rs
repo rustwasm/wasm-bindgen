@@ -20,7 +20,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMenuItemElement`*"]
     #[deprecated(note = "Absent in all major browsers")]
-    pub fn type_(this: &HtmlMenuItemElement) -> String;
+    pub fn type_(this: &HtmlMenuItemElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLMenuItemElement" , js_name = type)]
     #[doc = "Setter for the `type` field of this object."]
     #[doc = ""]
@@ -36,7 +36,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMenuItemElement`*"]
     #[deprecated(note = "Absent in all major browsers")]
-    pub fn label(this: &HtmlMenuItemElement) -> String;
+    pub fn label(this: &HtmlMenuItemElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLMenuItemElement" , js_name = label)]
     #[doc = "Setter for the `label` field of this object."]
     #[doc = ""]
@@ -52,7 +52,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMenuItemElement`*"]
     #[deprecated(note = "Absent in all major browsers")]
-    pub fn icon(this: &HtmlMenuItemElement) -> String;
+    pub fn icon(this: &HtmlMenuItemElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLMenuItemElement" , js_name = icon)]
     #[doc = "Setter for the `icon` field of this object."]
     #[doc = ""]
@@ -100,7 +100,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlMenuItemElement`*"]
     #[deprecated(note = "Absent in all major browsers")]
-    pub fn radiogroup(this: &HtmlMenuItemElement) -> String;
+    pub fn radiogroup(this: &HtmlMenuItemElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLMenuItemElement" , js_name = radiogroup)]
     #[doc = "Setter for the `radiogroup` field of this object."]
     #[doc = ""]

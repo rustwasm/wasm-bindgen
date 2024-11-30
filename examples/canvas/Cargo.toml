@@ -15,3 +15,6 @@ wasm-bindgen = { path = "../../" }
 [dependencies.web-sys]
 features = ['CanvasRenderingContext2d', 'Document', 'Element', 'HtmlCanvasElement', 'Window']
 path = "../../crates/web-sys"
+
+[lints]
+workspace = true

@@ -1,0 +1,16 @@
+error: the `self` argument is only allowed for functions in `impl` blocks.
+
+       If the function is already in an `impl` block, did you perhaps forget to add `#[wasm_bindgen]` to the `impl` block?
+  --> ui-tests/invalid-self.rs:11:17
+   |
+11 |     pub fn foo(&self) {}
+   |                 ^^^^
+
+error: the `self` argument is not allowed for `extern` functions.
+
+       Did you perhaps mean `this`? For more information on importing JavaScript functions, see:
+       https://rustwasm.github.io/docs/wasm-bindgen/examples/import-js.html
+  --> ui-tests/invalid-self.rs:20:15
+   |
+20 |     fn render(self: &MyClass) -> String;
+   |               ^^^^

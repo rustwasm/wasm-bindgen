@@ -127,11 +127,11 @@ impl UsbControlTransferParameters {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.index(index);
-        ret.recipient(recipient);
-        ret.request(request);
-        ret.request_type(request_type);
-        ret.value(value);
+        ret.set_index(index);
+        ret.set_recipient(recipient);
+        ret.set_request(request);
+        ret.set_request_type(request_type);
+        ret.set_value(value);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

@@ -23,6 +23,6 @@ fn string_roundtrip() {
 // See <https://github.com/rust-lang/rustfmt/issues/6267>.
 #[rustfmt::skip]
 extern "C" {
-    #[wasm_bindgen(thread_local, static_string)]
+    #[wasm_bindgen(thread_local_v2, static_string)]
     static STRING: JsString = "foo";
 }

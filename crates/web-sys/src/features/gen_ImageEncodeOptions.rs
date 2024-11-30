@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageEncodeOptions`*"]
     #[wasm_bindgen(method, getter = "type")]
-    pub fn get_type(this: &ImageEncodeOptions) -> Option<String>;
+    pub fn get_type(this: &ImageEncodeOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageEncodeOptions`*"]

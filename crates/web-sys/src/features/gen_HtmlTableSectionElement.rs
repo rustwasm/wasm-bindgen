@@ -26,7 +26,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableSectionElement/align)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTableSectionElement`*"]
-    pub fn align(this: &HtmlTableSectionElement) -> String;
+    pub fn align(this: &HtmlTableSectionElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLTableSectionElement" , js_name = align)]
     #[doc = "Setter for the `align` field of this object."]
     #[doc = ""]
@@ -40,7 +40,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableSectionElement/ch)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTableSectionElement`*"]
-    pub fn ch(this: &HtmlTableSectionElement) -> String;
+    pub fn ch(this: &HtmlTableSectionElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLTableSectionElement" , js_name = ch)]
     #[doc = "Setter for the `ch` field of this object."]
     #[doc = ""]
@@ -54,7 +54,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableSectionElement/chOff)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTableSectionElement`*"]
-    pub fn ch_off(this: &HtmlTableSectionElement) -> String;
+    pub fn ch_off(this: &HtmlTableSectionElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLTableSectionElement" , js_name = chOff)]
     #[doc = "Setter for the `chOff` field of this object."]
     #[doc = ""]
@@ -68,7 +68,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableSectionElement/vAlign)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTableSectionElement`*"]
-    pub fn v_align(this: &HtmlTableSectionElement) -> String;
+    pub fn v_align(this: &HtmlTableSectionElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLTableSectionElement" , js_name = vAlign)]
     #[doc = "Setter for the `vAlign` field of this object."]
     #[doc = ""]

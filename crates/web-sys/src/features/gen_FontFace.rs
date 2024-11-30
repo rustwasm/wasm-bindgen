@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/family)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFace`*"]
-    pub fn family(this: &FontFace) -> String;
+    pub fn family(this: &FontFace) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "FontFace" , js_name = family)]
     #[doc = "Setter for the `family` field of this object."]
     #[doc = ""]
@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/style)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFace`*"]
-    pub fn style(this: &FontFace) -> String;
+    pub fn style(this: &FontFace) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "FontFace" , js_name = style)]
     #[doc = "Setter for the `style` field of this object."]
     #[doc = ""]
@@ -46,7 +46,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/weight)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFace`*"]
-    pub fn weight(this: &FontFace) -> String;
+    pub fn weight(this: &FontFace) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "FontFace" , js_name = weight)]
     #[doc = "Setter for the `weight` field of this object."]
     #[doc = ""]
@@ -60,7 +60,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/stretch)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFace`*"]
-    pub fn stretch(this: &FontFace) -> String;
+    pub fn stretch(this: &FontFace) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "FontFace" , js_name = stretch)]
     #[doc = "Setter for the `stretch` field of this object."]
     #[doc = ""]
@@ -74,7 +74,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/unicodeRange)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFace`*"]
-    pub fn unicode_range(this: &FontFace) -> String;
+    pub fn unicode_range(this: &FontFace) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "FontFace" , js_name = unicodeRange)]
     #[doc = "Setter for the `unicodeRange` field of this object."]
     #[doc = ""]
@@ -88,7 +88,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/variant)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFace`*"]
-    pub fn variant(this: &FontFace) -> String;
+    pub fn variant(this: &FontFace) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "FontFace" , js_name = variant)]
     #[doc = "Setter for the `variant` field of this object."]
     #[doc = ""]
@@ -102,7 +102,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/featureSettings)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFace`*"]
-    pub fn feature_settings(this: &FontFace) -> String;
+    pub fn feature_settings(this: &FontFace) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "FontFace" , js_name = featureSettings)]
     #[doc = "Setter for the `featureSettings` field of this object."]
     #[doc = ""]
@@ -116,7 +116,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/variationSettings)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFace`*"]
-    pub fn variation_settings(this: &FontFace) -> String;
+    pub fn variation_settings(this: &FontFace) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "FontFace" , js_name = variationSettings)]
     #[doc = "Setter for the `variationSettings` field of this object."]
     #[doc = ""]
@@ -130,7 +130,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FontFace/display)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FontFace`*"]
-    pub fn display(this: &FontFace) -> String;
+    pub fn display(this: &FontFace) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "FontFace" , js_name = display)]
     #[doc = "Setter for the `display` field of this object."]
     #[doc = ""]

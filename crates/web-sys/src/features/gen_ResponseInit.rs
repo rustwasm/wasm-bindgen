@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ResponseInit`*"]
     #[wasm_bindgen(method, getter = "statusText")]
-    pub fn get_status_text(this: &ResponseInit) -> Option<String>;
+    pub fn get_status_text(this: &ResponseInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `statusText` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ResponseInit`*"]

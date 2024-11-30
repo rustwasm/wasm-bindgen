@@ -118,15 +118,15 @@ fn relative_time_format() {
     let opts = Object::new();
 
     let c = Intl::RelativeTimeFormat::new(&locales, &opts);
-    assert!(c.format(1_f64.into(), &"seconds").is_string());
+    assert!(c.format(1_f64, "seconds").is_string());
     assert!(c
-        .format_to_parts(1_f64.into(), &"seconds")
+        .format_to_parts(1_f64, "seconds")
         .is_instance_of::<Array>());
     assert!(c.resolved_options().is_instance_of::<Object>());
 
-    assert_eq!(c.format(1_f64.into(), &"seconds"), "in 1 second");
-    assert_eq!(c.format(1.5.into(), &"seconds"), "in 1.5 seconds");
-    assert_eq!(c.format((-1.5).into(), &"seconds"), "1.5 seconds ago");
+    assert_eq!(c.format(1_f64, "seconds"), "in 1 second");
+    assert_eq!(c.format(1.5, "seconds"), "in 1.5 seconds");
+    assert_eq!(c.format(-1.5, "seconds"), "1.5 seconds ago");
 
     let a = Intl::RelativeTimeFormat::supported_locales_of(&locales, &opts);
     assert!(a.is_instance_of::<Array>());

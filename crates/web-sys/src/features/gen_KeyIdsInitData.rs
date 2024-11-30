@@ -28,7 +28,7 @@ impl KeyIdsInitData {
     pub fn new(kids: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.kids(kids);
+        ret.set_kids(kids);
         ret
     }
     #[deprecated = "Use `set_kids()` instead."]

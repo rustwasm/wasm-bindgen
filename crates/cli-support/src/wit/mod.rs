@@ -197,7 +197,6 @@ impl<'a> Context<'a> {
                 // aren't present in the signature but are present in the wasm
                 // signature.
                 let mut function = descriptor.function.clone();
-                let nargs = function.arguments.len();
                 function.arguments.insert(0, Descriptor::I32);
                 function.arguments.insert(0, Descriptor::I32);
                 let adapter = self.table_element_adapter(descriptor.shim_idx, function)?;
@@ -206,7 +205,6 @@ impl<'a> Context<'a> {
                     AuxImport::Closure {
                         dtor: descriptor.dtor_idx,
                         mutable: descriptor.mutable,
-                        nargs,
                         adapter,
                     },
                 );
@@ -894,6 +892,7 @@ impl<'a> Context<'a> {
     }
 
     fn enum_(&mut self, enum_: decode::Enum<'_>) -> Result<(), Error> {
+        let signed = enum_.signed;
         let aux = AuxEnum {
             name: enum_.name.to_string(),
             comments: concatenate_comments(&enum_.comments),
@@ -901,11 +900,12 @@ impl<'a> Context<'a> {
                 .variants
                 .iter()
                 .map(|v| {
-                    (
-                        v.name.to_string(),
-                        v.value,
-                        concatenate_comments(&v.comments),
-                    )
+                    let value = if signed {
+                        v.value as i32 as i64
+                    } else {
+                        v.value as i64
+                    };
+                    (v.name.to_string(), value, concatenate_comments(&v.comments))
                 })
                 .collect(),
             generate_typescript: enum_.generate_typescript,

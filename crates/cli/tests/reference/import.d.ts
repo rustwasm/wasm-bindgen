@@ -1,3 +1,3 @@
 /* tslint:disable */
 /* eslint-disable */
-export function exported(): string;
+export function exported(): void;

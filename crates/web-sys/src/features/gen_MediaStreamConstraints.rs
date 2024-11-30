@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamConstraints`*"]
     #[wasm_bindgen(method, getter = "peerIdentity")]
-    pub fn get_peer_identity(this: &MediaStreamConstraints) -> Option<String>;
+    pub fn get_peer_identity(this: &MediaStreamConstraints) -> Option<::alloc::string::String>;
     #[doc = "Change the `peerIdentity` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaStreamConstraints`*"]

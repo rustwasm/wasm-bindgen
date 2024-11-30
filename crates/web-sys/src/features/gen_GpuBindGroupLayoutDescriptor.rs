@@ -22,7 +22,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "label")]
-    pub fn get_label(this: &GpuBindGroupLayoutDescriptor) -> Option<String>;
+    pub fn get_label(this: &GpuBindGroupLayoutDescriptor) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `label` field of this object."]
     #[doc = ""]
@@ -62,7 +62,7 @@ impl GpuBindGroupLayoutDescriptor {
     pub fn new(entries: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.entries(entries);
+        ret.set_entries(entries);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

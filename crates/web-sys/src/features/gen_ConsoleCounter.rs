@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleCounter`*"]
     #[wasm_bindgen(method, getter = "label")]
-    pub fn get_label(this: &ConsoleCounter) -> Option<String>;
+    pub fn get_label(this: &ConsoleCounter) -> Option<::alloc::string::String>;
     #[doc = "Change the `label` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleCounter`*"]

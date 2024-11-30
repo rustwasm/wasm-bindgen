@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use std::str::Chars;
 
 use ast::OperationKind;
-use backend::ast;
+use backend::ast::{self, ThreadLocal};
 use backend::util::{ident_ty, ShortHash};
 use backend::Diagnostic;
 use proc_macro2::{Ident, Span, TokenStream, TokenTree};
@@ -96,6 +96,7 @@ macro_rules! attrgen {
             (getter_with_clone, GetterWithClone(Span)),
             (static_string, StaticString(Span)),
             (thread_local, ThreadLocal(Span)),
+            (thread_local_v2, ThreadLocalV2(Span)),
 
             // For testing purposes only.
             (assert_no_shim, AssertNoShim(Span)),
@@ -234,6 +235,23 @@ impl BindgenAttrs {
             ret.attrs.append(&mut attrs.attrs);
             attrs.check_used();
         }
+    }
+
+    fn get_thread_local(&self) -> Result<Option<ThreadLocal>, Diagnostic> {
+        let mut thread_local = self.thread_local_v2().map(|_| ThreadLocal::V2);
+
+        if let Some(span) = self.thread_local() {
+            if thread_local.is_some() {
+                return Err(Diagnostic::span_error(
+                    *span,
+                    "`thread_local` can't be used with `thread_local_v2`",
+                ));
+            } else {
+                thread_local = Some(ThreadLocal::V1)
+            }
+        }
+
+        Ok(thread_local)
     }
 
     attrgen!(methods);
@@ -404,7 +422,7 @@ trait ConvertToAst<Ctx> {
     fn convert(self, context: Ctx) -> Result<Self::Target, Diagnostic>;
 }
 
-impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs)> for &'a mut syn::ItemStruct {
+impl ConvertToAst<(&ast::Program, BindgenAttrs)> for &mut syn::ItemStruct {
     type Target = ast::Struct;
 
     fn convert(
@@ -512,9 +530,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             self.sig.clone(),
             self.attrs.clone(),
             self.vis.clone(),
-            false,
-            None,
-            false,
+            FunctionPosition::Extern,
             Some(&["default"]),
         )?
         .0;
@@ -618,7 +634,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
                 ast::ImportFunctionKind::Normal => (0, "n"),
                 ast::ImportFunctionKind::Method { ref class, .. } => (1, &class[..]),
             };
-            let data = (ns, &self.sig.ident, module);
+            let data = (ns, self.sig.to_token_stream().to_string(), module);
             format!(
                 "__wbg_{}_{}",
                 wasm.name
@@ -708,7 +724,11 @@ impl ConvertToAst<(&ast::Program, BindgenAttrs)> for syn::ForeignItemType {
             .map_or_else(|| self.ident.to_string(), |s| s.to_string());
         let typescript_type = attrs.typescript_type().map(|s| s.0.to_string());
         let is_type_of = attrs.is_type_of().cloned();
-        let shim = format!("__wbg_instanceof_{}_{}", self.ident, ShortHash(&self.ident));
+        let shim = format!(
+            "__wbg_instanceof_{}_{}",
+            self.ident,
+            ShortHash((attrs.js_namespace().map(|(ns, _)| ns), &self.ident))
+        );
         let mut extends = Vec::new();
         let mut vendor_prefixes = Vec::new();
         let no_deref = attrs.no_deref().is_some();
@@ -774,7 +794,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             self.ident,
             ShortHash((&js_name, module, &self.ident)),
         );
-        let thread_local = opts.thread_local().is_some();
+        let thread_local = opts.get_thread_local()?;
 
         opts.check_used();
         Ok(ast::ImportKind::Static(ast::ImportStatic {
@@ -822,12 +842,14 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             )
         }
 
-        if opts.thread_local().is_none() {
+        let thread_local = if let Some(thread_local) = opts.get_thread_local()? {
+            thread_local
+        } else {
             bail_span!(
                 self,
-                "static strings require `#[wasm_bindgen(thread_local)]`"
+                "static strings require `#[wasm_bindgen(thread_local_v2)]`"
             )
-        }
+        };
 
         let shim = format!(
             "__wbg_string_{}_{}",
@@ -843,6 +865,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             wasm_bindgen: program.wasm_bindgen.clone(),
             js_sys: program.js_sys.clone(),
             string,
+            thread_local,
         }))
     }
 }
@@ -869,9 +892,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
             self.sig.clone(),
             self.attrs,
             self.vis,
-            false,
-            None,
-            false,
+            FunctionPosition::Free,
             Some(&["default"]),
         )?;
         attrs.check_used();
@@ -906,6 +927,12 @@ fn get_self_method(r: syn::Receiver) -> ast::MethodSelf {
     }
 }
 
+enum FunctionPosition<'a> {
+    Extern,
+    Free,
+    Impl { self_ty: &'a Ident },
+}
+
 /// Construct a function (and gets the self type if appropriate) for our AST from a syn function.
 #[allow(clippy::too_many_arguments)]
 fn function_from_decl(
@@ -914,9 +941,7 @@ fn function_from_decl(
     sig: syn::Signature,
     attrs: Vec<syn::Attribute>,
     vis: syn::Visibility,
-    allow_self: bool,
-    self_ty: Option<&Ident>,
-    is_from_impl: bool,
+    position: FunctionPosition,
     skip_keywords: Option<&[&str]>,
 ) -> Result<(ast::Function, Option<ast::MethodSelf>), Diagnostic> {
     if sig.variadic.is_some() {
@@ -938,7 +963,7 @@ fn function_from_decl(
     // The following comment explains why this is necessary:
     // https://github.com/rustwasm/wasm-bindgen/issues/3105#issuecomment-1275160744
     let replace_self = |mut t: syn::Type| {
-        if let Some(self_ty) = self_ty {
+        if let FunctionPosition::Impl { self_ty } = position {
             // This uses a visitor to replace all occurrences of `Self` with
             // the actual type identifier. The visitor guarantees that we find
             // all occurrences of `Self`, even if deeply nested and even if
@@ -970,30 +995,45 @@ fn function_from_decl(
     };
 
     let mut method_self = None;
-    let arguments = inputs
-        .into_iter()
-        .filter_map(|arg| match arg {
+    let mut arguments = Vec::new();
+    for arg in inputs.into_iter() {
+        match arg {
             syn::FnArg::Typed(mut c) => {
                 // typical arguments like foo: u32
                 replace_colliding_arg(&mut c);
                 c.ty = Box::new(replace_self(*c.ty));
-                Some(c)
+                arguments.push(c);
             }
             syn::FnArg::Receiver(r) => {
                 // the self argument, so self, &self, &mut self, self: Box<Self>, etc.
-                if !allow_self {
-                    panic!("arguments cannot be `self`")
+
+                // `self` is only allowed for `fn`s inside an `impl` block.
+                match position {
+                    FunctionPosition::Free => {
+                        bail_span!(
+                            r.self_token,
+                            "the `self` argument is only allowed for functions in `impl` blocks.\n\n\
+                            If the function is already in an `impl` block, did you perhaps forget to add `#[wasm_bindgen]` to the `impl` block?"
+                        );
+                    }
+                    FunctionPosition::Extern => {
+                        bail_span!(
+                            r.self_token,
+                            "the `self` argument is not allowed for `extern` functions.\n\n\
+                            Did you perhaps mean `this`? For more information on importing JavaScript functions, see:\n\
+                            https://rustwasm.github.io/docs/wasm-bindgen/examples/import-js.html"
+                        );
+                    }
+                    FunctionPosition::Impl { .. } => {}
                 }
 
                 // We need to know *how* `self` is passed to the method (by
                 // value or by reference) to generate the correct JS shim.
                 assert!(method_self.is_none());
                 method_self = Some(get_self_method(r));
-
-                None
             }
-        })
-        .collect::<Vec<_>>();
+        }
+    }
 
     let ret = match output {
         syn::ReturnType::Default => None,
@@ -1017,7 +1057,7 @@ fn function_from_decl(
             };
             (name, js_name_span, true)
         } else {
-            let name = if !is_from_impl
+            let name = if !matches!(position, FunctionPosition::Impl { .. })
                 && opts.method().is_none()
                 && is_js_keyword(&decl_name.to_string(), skip_keywords)
             {
@@ -1163,7 +1203,7 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
     }
 }
 
-impl<'a> MacroParse<BindgenAttrs> for &'a mut syn::ItemImpl {
+impl MacroParse<BindgenAttrs> for &mut syn::ItemImpl {
     fn macro_parse(self, program: &mut ast::Program, opts: BindgenAttrs) -> Result<(), Diagnostic> {
         if self.defaultness.is_some() {
             bail_span!(
@@ -1267,7 +1307,7 @@ fn prepare_for_impl_recursion(
     Ok(())
 }
 
-impl<'a> MacroParse<&ClassMarker> for &'a mut syn::ImplItemFn {
+impl MacroParse<&ClassMarker> for &mut syn::ImplItemFn {
     fn macro_parse(
         self,
         program: &mut ast::Program,
@@ -1303,9 +1343,7 @@ impl<'a> MacroParse<&ClassMarker> for &'a mut syn::ImplItemFn {
             self.sig.clone(),
             self.attrs.clone(),
             self.vis.clone(),
-            true,
-            Some(class),
-            true,
+            FunctionPosition::Impl { self_ty: class },
             None,
         )?;
         let method_kind = if opts.constructor().is_some() {
@@ -1383,6 +1421,46 @@ fn string_enum(
     Ok(())
 }
 
+/// Represents a possibly negative numeric value as base 10 digits.
+struct NumericValue<'a> {
+    negative: bool,
+    base10_digits: &'a str,
+}
+impl<'a> NumericValue<'a> {
+    fn from_expr(expr: &'a syn::Expr) -> Option<Self> {
+        match get_expr(expr) {
+            syn::Expr::Lit(syn::ExprLit {
+                lit: syn::Lit::Int(int_lit),
+                ..
+            }) => Some(Self {
+                negative: false,
+                base10_digits: int_lit.base10_digits(),
+            }),
+            syn::Expr::Unary(syn::ExprUnary {
+                op: syn::UnOp::Neg(_),
+                expr,
+                ..
+            }) => Self::from_expr(expr).map(|n| n.neg()),
+            _ => None,
+        }
+    }
+
+    fn parse(&self) -> Option<i64> {
+        let mut value = self.base10_digits.parse::<i64>().ok()?;
+        if self.negative {
+            value = -value;
+        }
+        Some(value)
+    }
+
+    fn neg(self) -> Self {
+        Self {
+            negative: !self.negative,
+            base10_digits: self.base10_digits,
+        }
+    }
+}
+
 impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
     fn macro_parse(
         self,
@@ -1433,54 +1511,73 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
             _ => bail_span!(self, "only public enums are allowed with #[wasm_bindgen]"),
         }
 
-        let mut last_discriminant: Option<u32> = None;
-        let mut discriminate_map: HashMap<u32, &syn::Variant> = HashMap::new();
+        // Go through all variants once first to determine whether the enum is
+        // signed or unsigned. We don't need to actually parse the discriminant
+        // values yet, we just need to know their sign. The actual parsing is
+        // done in a second pass.
+        let signed = self.variants.iter().any(|v| match &v.discriminant {
+            Some((_, expr)) => NumericValue::from_expr(expr).map_or(false, |n| n.negative),
+            None => false,
+        });
+        let underlying_min = if signed { i32::MIN as i64 } else { 0 };
+        let underlying_max = if signed {
+            i32::MAX as i64
+        } else {
+            u32::MAX as i64
+        };
+
+        let mut last_discriminant: Option<i64> = None;
+        let mut discriminant_map: HashMap<i64, &syn::Variant> = HashMap::new();
 
         let variants = self
             .variants
             .iter()
             .map(|v| {
-                let value = match &v.discriminant {
-                    Some((_, expr)) => match get_expr(expr) {
-                        syn::Expr::Lit(syn::ExprLit {
-                            attrs: _,
-                            lit: syn::Lit::Int(int_lit),
-                        }) => match int_lit.base10_digits().parse::<u32>() {
-                            Ok(v) => v,
-                            Err(_) => {
-                                bail_span!(
-                                    int_lit,
-                                    "C-style enums with #[wasm_bindgen] can only support \
-                                 numbers that can be represented as u32"
-                                );
-                            }
-                        },
-                        expr => bail_span!(
+                let value: i64 = match &v.discriminant {
+                    Some((_, expr)) => match NumericValue::from_expr(expr).and_then(|n| n.parse()) {
+                        Some(value) => value,
+                        _ => bail_span!(
                             expr,
                             "C-style enums with #[wasm_bindgen] may only have \
-                             number literal values",
+                             numeric literal values that fit in a 32-bit integer as discriminants. \
+                             Expressions or variables are not supported.",
                         ),
                     },
                     None => {
                         // Use the same algorithm as rustc to determine the next discriminant
                         // https://doc.rust-lang.org/reference/items/enumerations.html#implicit-discriminants
-                        if let Some(last) = last_discriminant {
-                            if let Some(value) = last.checked_add(1) {
-                                value
-                            } else {
-                                bail_span!(
-                                    v,
-                                    "the discriminants of C-style enums with #[wasm_bindgen] must be representable as u32"
-                                );
-                            }
-                        } else {
-                            0
-                        }
+                        last_discriminant.map_or(0, |last| last + 1)
                     }
                 };
+
                 last_discriminant = Some(value);
 
-                if let Some(old) = discriminate_map.insert(value, v) {
+                // check that the value fits within the underlying type
+                let underlying = if signed { "i32" } else { "u32" };
+                let numbers = if signed { "signed numbers" } else { "unsigned numbers" };
+                if value < underlying_min {
+                    bail_span!(
+                        v,
+                        "C-style enums with #[wasm_bindgen] can only support {0} that can be represented by `{2}`, \
+                        but `{1}` is too small for `{2}`",
+                        numbers,
+                        value,
+                        underlying
+                    );
+                }
+                if value > underlying_max {
+                    bail_span!(
+                        v,
+                        "C-style enums with #[wasm_bindgen] can only support {0} that can be represented by `{2}`, \
+                        but `{1}` is too large for `{2}`",
+                        numbers,
+                        value,
+                        underlying
+                    );
+                }
+
+                // detect duplicate discriminants
+                if let Some(old) = discriminant_map.insert(value, v) {
                     bail_span!(
                         v,
                         "discriminant value `{}` is already used by {} in this enum",
@@ -1492,21 +1589,26 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
                 let comments = extract_doc_comments(&v.attrs);
                 Ok(ast::Variant {
                     name: v.ident.clone(),
-                    value,
+                    // due to the above checks, we know that the value fits
+                    // within 32 bits, so this cast doesn't lose any information
+                    value: value as u32,
                     comments,
                 })
             })
             .collect::<Result<Vec<_>, Diagnostic>>()?;
 
-        let hole = (0..=u32::MAX)
-            .find(|v| !discriminate_map.contains_key(v))
-            .unwrap();
+        // To make all the code handling holes simpler, we only consider
+        // non-negative holes. This allows us to use `u32` to represent holes.
+        let hole = (0..=underlying_max)
+            .find(|v| !discriminant_map.contains_key(v))
+            .unwrap() as u32;
 
         self.to_tokens(tokens);
 
         program.enums.push(ast::Enum {
             rust_name: self.ident,
             js_name,
+            signed,
             variants,
             comments,
             hole,

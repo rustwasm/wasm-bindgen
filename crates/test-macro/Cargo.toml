@@ -7,10 +7,13 @@ license = "MIT OR Apache-2.0"
 name = "wasm-bindgen-test-macro"
 repository = "https://github.com/rustwasm/wasm-bindgen"
 rust-version = "1.57"
-version = "0.3.45"
+version = "0.3.47"
 
 [lib]
 proc-macro = true
+
+[features]
+coverage = []
 
 [dependencies]
 proc-macro2 = "1.0"
@@ -27,5 +30,5 @@ tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 trybuild = "1.0"
 wasm-bindgen-test = { path = "../test" }
 
-[lints.rust]
-unexpected_cfgs = { level = "warn", check-cfg = ['cfg(wasm_bindgen_unstable_test_coverage)'] }
+[lints]
+workspace = true

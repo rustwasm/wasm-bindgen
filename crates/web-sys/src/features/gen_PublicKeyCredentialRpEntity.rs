@@ -15,7 +15,7 @@ extern "C" {
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRpEntity`*"]
     #[deprecated]
     #[wasm_bindgen(method, getter = "icon")]
-    pub fn get_icon(this: &PublicKeyCredentialRpEntity) -> Option<String>;
+    pub fn get_icon(this: &PublicKeyCredentialRpEntity) -> Option<::alloc::string::String>;
     #[doc = "Change the `icon` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRpEntity`*"]
@@ -26,7 +26,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRpEntity`*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &PublicKeyCredentialRpEntity) -> String;
+    pub fn get_name(this: &PublicKeyCredentialRpEntity) -> ::alloc::string::String;
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRpEntity`*"]
@@ -36,7 +36,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRpEntity`*"]
     #[wasm_bindgen(method, getter = "id")]
-    pub fn get_id(this: &PublicKeyCredentialRpEntity) -> Option<String>;
+    pub fn get_id(this: &PublicKeyCredentialRpEntity) -> Option<::alloc::string::String>;
     #[doc = "Change the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PublicKeyCredentialRpEntity`*"]
@@ -50,7 +50,7 @@ impl PublicKeyCredentialRpEntity {
     pub fn new(name: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
+        ret.set_name(name);
         ret
     }
     #[deprecated = "Use `set_icon()` instead."]

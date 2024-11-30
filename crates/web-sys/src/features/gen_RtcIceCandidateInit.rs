@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateInit`*"]
     #[wasm_bindgen(method, getter = "candidate")]
-    pub fn get_candidate(this: &RtcIceCandidateInit) -> String;
+    pub fn get_candidate(this: &RtcIceCandidateInit) -> ::alloc::string::String;
     #[doc = "Change the `candidate` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateInit`*"]
@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateInit`*"]
     #[wasm_bindgen(method, getter = "sdpMid")]
-    pub fn get_sdp_mid(this: &RtcIceCandidateInit) -> Option<String>;
+    pub fn get_sdp_mid(this: &RtcIceCandidateInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `sdpMid` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceCandidateInit`*"]
@@ -48,7 +48,7 @@ impl RtcIceCandidateInit {
     pub fn new(candidate: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.candidate(candidate);
+        ret.set_candidate(candidate);
         ret
     }
     #[deprecated = "Use `set_candidate()` instead."]

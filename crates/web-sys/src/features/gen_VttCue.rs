@@ -186,7 +186,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VTTCue/text)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VttCue`*"]
-    pub fn text(this: &VttCue) -> String;
+    pub fn text(this: &VttCue) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "VTTCue" , js_name = text)]
     #[doc = "Setter for the `text` field of this object."]
     #[doc = ""]

@@ -42,7 +42,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "scope")]
-    pub fn get_scope(this: &MemoryAttribution) -> Option<String>;
+    pub fn get_scope(this: &MemoryAttribution) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `scope` field of this object."]
     #[doc = ""]
@@ -60,7 +60,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "url")]
-    pub fn get_url(this: &MemoryAttribution) -> Option<String>;
+    pub fn get_url(this: &MemoryAttribution) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `url` field of this object."]
     #[doc = ""]

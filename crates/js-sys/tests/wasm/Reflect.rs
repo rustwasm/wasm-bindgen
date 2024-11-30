@@ -1,3 +1,5 @@
+#![allow(deprecated)]
+
 use js_sys::*;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;

@@ -107,7 +107,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/origin)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
-    pub fn origin(this: &WorkerGlobalScope) -> String;
+    pub fn origin(this: &WorkerGlobalScope) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "WorkerGlobalScope" , js_name = isSecureContext)]
     #[doc = "Getter for the `isSecureContext` field of this object."]
     #[doc = ""]
@@ -243,14 +243,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/atob)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
-    pub fn atob(this: &WorkerGlobalScope, atob: &str) -> Result<String, JsValue>;
+    pub fn atob(this: &WorkerGlobalScope, atob: &str) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "WorkerGlobalScope" , js_name = btoa)]
     #[doc = "The `btoa()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/btoa)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WorkerGlobalScope`*"]
-    pub fn btoa(this: &WorkerGlobalScope, btoa: &str) -> Result<String, JsValue>;
+    pub fn btoa(this: &WorkerGlobalScope, btoa: &str) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (method , structural , js_class = "WorkerGlobalScope" , js_name = clearInterval)]
     #[doc = "The `clearInterval()` method."]
     #[doc = ""]

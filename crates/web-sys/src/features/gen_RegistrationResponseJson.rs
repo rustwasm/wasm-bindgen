@@ -22,7 +22,9 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "authenticatorAttachment")]
-    pub fn get_authenticator_attachment(this: &RegistrationResponseJson) -> Option<String>;
+    pub fn get_authenticator_attachment(
+        this: &RegistrationResponseJson,
+    ) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `authenticatorAttachment` field of this object."]
     #[doc = ""]
@@ -65,7 +67,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "id")]
-    pub fn get_id(this: &RegistrationResponseJson) -> String;
+    pub fn get_id(this: &RegistrationResponseJson) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `id` field of this object."]
     #[doc = ""]
@@ -83,7 +85,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "rawId")]
-    pub fn get_raw_id(this: &RegistrationResponseJson) -> String;
+    pub fn get_raw_id(this: &RegistrationResponseJson) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `rawId` field of this object."]
     #[doc = ""]
@@ -124,7 +126,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "type")]
-    pub fn get_type(this: &RegistrationResponseJson) -> String;
+    pub fn get_type(this: &RegistrationResponseJson) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `type` field of this object."]
     #[doc = ""]
@@ -156,11 +158,11 @@ impl RegistrationResponseJson {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.client_extension_results(client_extension_results);
-        ret.id(id);
-        ret.raw_id(raw_id);
-        ret.response(response);
-        ret.type_(type_);
+        ret.set_client_extension_results(client_extension_results);
+        ret.set_id(id);
+        ret.set_raw_id(raw_id);
+        ret.set_response(response);
+        ret.set_type(type_);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

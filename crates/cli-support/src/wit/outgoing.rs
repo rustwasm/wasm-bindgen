@@ -65,6 +65,20 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::U32 => self.outgoing_i32(AdapterType::U32),
             Descriptor::I64 => self.outgoing_i64(AdapterType::I64),
             Descriptor::U64 => self.outgoing_i64(AdapterType::U64),
+            Descriptor::I128 => {
+                self.instruction(
+                    &[AdapterType::I64, AdapterType::I64],
+                    Instruction::WasmToInt128 { signed: true },
+                    &[AdapterType::S128],
+                );
+            }
+            Descriptor::U128 => {
+                self.instruction(
+                    &[AdapterType::I64, AdapterType::I64],
+                    Instruction::WasmToInt128 { signed: false },
+                    &[AdapterType::U128],
+                );
+            }
             Descriptor::F32 => {
                 self.get(AdapterType::F32);
                 self.output.push(AdapterType::F32);
@@ -267,6 +281,20 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::U64 => self.option_native(false, ValType::I64),
             Descriptor::F32 => self.out_option_sentinel64(AdapterType::F32),
             Descriptor::F64 => self.option_native(true, ValType::F64),
+            Descriptor::I128 => {
+                self.instruction(
+                    &[AdapterType::I32, AdapterType::I64, AdapterType::I64],
+                    Instruction::OptionWasmToInt128 { signed: true },
+                    &[AdapterType::S128.option()],
+                );
+            }
+            Descriptor::U128 => {
+                self.instruction(
+                    &[AdapterType::I32, AdapterType::I64, AdapterType::I64],
+                    Instruction::OptionWasmToInt128 { signed: false },
+                    &[AdapterType::U128.option()],
+                );
+            }
             Descriptor::Boolean => {
                 self.instruction(
                     &[AdapterType::I32],
@@ -288,13 +316,10 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::Enum(name.clone()).option()],
                 );
             }
-            Descriptor::StringEnum { name, hole, .. } => {
+            Descriptor::StringEnum { name, .. } => {
                 self.instruction(
                     &[AdapterType::I32],
-                    Instruction::OptionWasmToStringEnum {
-                        name: name.clone(),
-                        hole: *hole,
-                    },
+                    Instruction::OptionWasmToStringEnum { name: name.clone() },
                     &[AdapterType::StringEnum(name.clone()).option()],
                 );
             }
@@ -360,6 +385,8 @@ impl InstructionBuilder<'_, '_> {
             | Descriptor::F64
             | Descriptor::I64
             | Descriptor::U64
+            | Descriptor::I128
+            | Descriptor::U128
             | Descriptor::Boolean
             | Descriptor::Char
             | Descriptor::Enum { .. }
@@ -524,14 +551,6 @@ impl InstructionBuilder<'_, '_> {
         Ok(())
     }
 
-    fn outgoing_i32(&mut self, output: AdapterType) {
-        let instr = Instruction::WasmToInt {
-            input: walrus::ValType::I32,
-            output: output.clone(),
-        };
-        self.instruction(&[AdapterType::I32], instr, &[output]);
-    }
-
     fn outgoing_string_enum(&mut self, name: &str) {
         self.instruction(
             &[AdapterType::I32],
@@ -542,10 +561,15 @@ impl InstructionBuilder<'_, '_> {
         );
     }
 
+    fn outgoing_i32(&mut self, output: AdapterType) {
+        let instr = Instruction::WasmToInt32 {
+            unsigned_32: output == AdapterType::U32 || output == AdapterType::NonNull,
+        };
+        self.instruction(&[AdapterType::I32], instr, &[output]);
+    }
     fn outgoing_i64(&mut self, output: AdapterType) {
-        let instr = Instruction::WasmToInt {
-            input: walrus::ValType::I64,
-            output: output.clone(),
+        let instr = Instruction::WasmToInt64 {
+            unsigned: output == AdapterType::U64,
         };
         self.instruction(&[AdapterType::I64], instr, &[output]);
     }

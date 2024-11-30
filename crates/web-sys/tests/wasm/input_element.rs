@@ -8,6 +8,7 @@ extern "C" {
 }
 
 #[wasm_bindgen_test]
+#[allow(deprecated)]
 fn test_input_element() {
     let element = new_input();
     let location = web_sys::window().unwrap().location().href().unwrap();
@@ -49,8 +50,9 @@ fn test_input_element() {
     assert!(element.disabled(), "Should be disabled");
 
     match element.form() {
-        None => assert!(true, "Shouldn't have a form"),
-        _ => assert!(false, "Shouldn't have a form"),
+        // Shouldn't have a form
+        None => (),
+        _ => unreachable!("Shouldn't have a form"),
     };
 
     assert_eq!(
@@ -179,17 +181,17 @@ fn test_input_element() {
         "The width attribute should be 12"
     );
 
-    assert_eq!(element.will_validate(), false, "Shouldn't validate");
+    assert!(!element.will_validate(), "Shouldn't validate");
     assert_eq!(
         element.validation_message().unwrap(),
         "",
         "Shouldn't have a value"
     );
-    assert_eq!(element.check_validity(), true, "Should be valid");
-    assert_eq!(element.report_validity(), true, "Should be valid");
+    assert!(element.check_validity(), "Should be valid");
+    assert!(element.report_validity(), "Should be valid");
     element.set_custom_validity("Boop"); // Method exists but doesn't impact validity ?!??! TODO look into
-    assert_eq!(element.check_validity(), true, "Should be valid");
-    assert_eq!(element.report_validity(), true, "Should be valid");
+    assert!(element.check_validity(), "Should be valid");
+    assert!(element.report_validity(), "Should be valid");
     /*TODO add tests
     pub fn labels(&self) -> Option<NodeList>
     pub fn select(&self)

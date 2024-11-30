@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/url)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebSocket`*"]
-    pub fn url(this: &WebSocket) -> String;
+    pub fn url(this: &WebSocket) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "WebSocket" , js_name = readyState)]
     #[doc = "Getter for the `readyState` field of this object."]
     #[doc = ""]
@@ -81,14 +81,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/extensions)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebSocket`*"]
-    pub fn extensions(this: &WebSocket) -> String;
+    pub fn extensions(this: &WebSocket) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "WebSocket" , js_name = protocol)]
     #[doc = "Getter for the `protocol` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/protocol)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebSocket`*"]
-    pub fn protocol(this: &WebSocket) -> String;
+    pub fn protocol(this: &WebSocket) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "WebSocket" , js_name = onmessage)]
     #[doc = "Getter for the `onmessage` field of this object."]
     #[doc = ""]

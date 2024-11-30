@@ -26,7 +26,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Response/url)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Response`*"]
-    pub fn url(this: &Response) -> String;
+    pub fn url(this: &Response) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "Response" , js_name = redirected)]
     #[doc = "Getter for the `redirected` field of this object."]
     #[doc = ""]
@@ -54,7 +54,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Response/statusText)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Response`*"]
-    pub fn status_text(this: &Response) -> String;
+    pub fn status_text(this: &Response) -> ::alloc::string::String;
     #[cfg(feature = "Headers")]
     # [wasm_bindgen (structural , method , getter , js_class = "Response" , js_name = headers)]
     #[doc = "Getter for the `headers` field of this object."]

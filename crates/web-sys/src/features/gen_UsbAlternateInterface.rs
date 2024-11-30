@@ -70,7 +70,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn interface_name(this: &UsbAlternateInterface) -> Option<String>;
+    pub fn interface_name(this: &UsbAlternateInterface) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (structural , method , getter , js_class = "USBAlternateInterface" , js_name = endpoints)]
     #[doc = "Getter for the `endpoints` field of this object."]

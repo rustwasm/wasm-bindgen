@@ -15,3 +15,6 @@ wasm-bindgen = { path = "../../" }
 [dependencies.web-sys]
 features = ['CssStyleDeclaration', 'Document', 'Element', 'HtmlElement', 'Window']
 path = "../../crates/web-sys"
+
+[lints]
+workspace = true

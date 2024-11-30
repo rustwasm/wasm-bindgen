@@ -18,14 +18,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Attr/localName)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Attr`*"]
-    pub fn local_name(this: &Attr) -> String;
+    pub fn local_name(this: &Attr) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "Attr" , js_name = value)]
     #[doc = "Getter for the `value` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Attr/value)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Attr`*"]
-    pub fn value(this: &Attr) -> String;
+    pub fn value(this: &Attr) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "Attr" , js_name = value)]
     #[doc = "Setter for the `value` field of this object."]
     #[doc = ""]
@@ -39,21 +39,21 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Attr/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Attr`*"]
-    pub fn name(this: &Attr) -> String;
+    pub fn name(this: &Attr) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "Attr" , js_name = namespaceURI)]
     #[doc = "Getter for the `namespaceURI` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Attr/namespaceURI)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Attr`*"]
-    pub fn namespace_uri(this: &Attr) -> Option<String>;
+    pub fn namespace_uri(this: &Attr) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "Attr" , js_name = prefix)]
     #[doc = "Getter for the `prefix` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Attr/prefix)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Attr`*"]
-    pub fn prefix(this: &Attr) -> Option<String>;
+    pub fn prefix(this: &Attr) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "Attr" , js_name = specified)]
     #[doc = "Getter for the `specified` field of this object."]
     #[doc = ""]

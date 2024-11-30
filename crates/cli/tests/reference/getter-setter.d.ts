@@ -1,6 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export class Foo {
+  private constructor();
   free(): void;
   x: number;
   get y(): number | undefined;

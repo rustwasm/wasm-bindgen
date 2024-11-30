@@ -19,5 +19,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_debug_shaders/getTranslatedShaderSource)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `WebGlShader`, `WebglDebugShaders`*"]
-    pub fn get_translated_shader_source(this: &WebglDebugShaders, shader: &WebGlShader) -> String;
+    pub fn get_translated_shader_source(
+        this: &WebglDebugShaders,
+        shader: &WebGlShader,
+    ) -> ::alloc::string::String;
 }

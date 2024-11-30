@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder/encoding)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextEncoder`*"]
-    pub fn encoding(this: &TextEncoder) -> String;
+    pub fn encoding(this: &TextEncoder) -> ::alloc::string::String;
     #[wasm_bindgen(catch, constructor, js_class = "TextEncoder")]
     #[doc = "The `new TextEncoder(..)` constructor, creating a new instance of `TextEncoder`."]
     #[doc = ""]

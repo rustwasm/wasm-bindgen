@@ -54,7 +54,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageEventInit`*"]
     #[wasm_bindgen(method, getter = "lastEventId")]
-    pub fn get_last_event_id(this: &MessageEventInit) -> Option<String>;
+    pub fn get_last_event_id(this: &MessageEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `lastEventId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageEventInit`*"]
@@ -64,7 +64,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageEventInit`*"]
     #[wasm_bindgen(method, getter = "origin")]
-    pub fn get_origin(this: &MessageEventInit) -> Option<String>;
+    pub fn get_origin(this: &MessageEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `origin` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MessageEventInit`*"]

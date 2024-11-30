@@ -26,7 +26,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn label(this: &GpuQueue) -> String;
+    pub fn label(this: &GpuQueue) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (structural , method , setter , js_class = "GPUQueue" , js_name = label)]
     #[doc = "Setter for the `label` field of this object."]
@@ -40,43 +40,43 @@ extern "C" {
     pub fn set_label(this: &GpuQueue, value: &str);
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(
-        feature = "GpuImageCopyExternalImage",
-        feature = "GpuImageCopyTextureTagged",
+        feature = "GpuCopyExternalImageDestInfo",
+        feature = "GpuCopyExternalImageSourceInfo",
     ))]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = copyExternalImageToTexture)]
     #[doc = "The `copyExternalImageToTexture()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/copyExternalImageToTexture)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyExternalImage`, `GpuImageCopyTextureTagged`, `GpuQueue`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCopyExternalImageDestInfo`, `GpuCopyExternalImageSourceInfo`, `GpuQueue`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn copy_external_image_to_texture_with_u32_sequence(
         this: &GpuQueue,
-        source: &GpuImageCopyExternalImage,
-        destination: &GpuImageCopyTextureTagged,
+        source: &GpuCopyExternalImageSourceInfo,
+        destination: &GpuCopyExternalImageDestInfo,
         copy_size: &::wasm_bindgen::JsValue,
     ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(
+        feature = "GpuCopyExternalImageDestInfo",
+        feature = "GpuCopyExternalImageSourceInfo",
         feature = "GpuExtent3dDict",
-        feature = "GpuImageCopyExternalImage",
-        feature = "GpuImageCopyTextureTagged",
     ))]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = copyExternalImageToTexture)]
     #[doc = "The `copyExternalImageToTexture()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/copyExternalImageToTexture)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuExtent3dDict`, `GpuImageCopyExternalImage`, `GpuImageCopyTextureTagged`, `GpuQueue`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuCopyExternalImageDestInfo`, `GpuCopyExternalImageSourceInfo`, `GpuExtent3dDict`, `GpuQueue`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn copy_external_image_to_texture_with_gpu_extent_3d_dict(
         this: &GpuQueue,
-        source: &GpuImageCopyExternalImage,
-        destination: &GpuImageCopyTextureTagged,
+        source: &GpuCopyExternalImageSourceInfo,
+        destination: &GpuCopyExternalImageDestInfo,
         copy_size: &GpuExtent3dDict,
     ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
@@ -876,123 +876,132 @@ extern "C" {
         size: f64,
     ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(feature = "GpuImageCopyTexture", feature = "GpuImageDataLayout",))]
+    #[cfg(all(
+        feature = "GpuTexelCopyBufferLayout",
+        feature = "GpuTexelCopyTextureInfo",
+    ))]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeTexture)]
     #[doc = "The `writeTexture()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeTexture)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyTexture`, `GpuImageDataLayout`, `GpuQueue`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuQueue`, `GpuTexelCopyBufferLayout`, `GpuTexelCopyTextureInfo`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn write_texture_with_buffer_source_and_u32_sequence(
         this: &GpuQueue,
-        destination: &GpuImageCopyTexture,
+        destination: &GpuTexelCopyTextureInfo,
         data: &::js_sys::Object,
-        data_layout: &GpuImageDataLayout,
+        data_layout: &GpuTexelCopyBufferLayout,
         size: &::wasm_bindgen::JsValue,
     ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(feature = "GpuImageCopyTexture", feature = "GpuImageDataLayout",))]
+    #[cfg(all(
+        feature = "GpuTexelCopyBufferLayout",
+        feature = "GpuTexelCopyTextureInfo",
+    ))]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeTexture)]
     #[doc = "The `writeTexture()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeTexture)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyTexture`, `GpuImageDataLayout`, `GpuQueue`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuQueue`, `GpuTexelCopyBufferLayout`, `GpuTexelCopyTextureInfo`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn write_texture_with_u8_slice_and_u32_sequence(
         this: &GpuQueue,
-        destination: &GpuImageCopyTexture,
+        destination: &GpuTexelCopyTextureInfo,
         data: &[u8],
-        data_layout: &GpuImageDataLayout,
+        data_layout: &GpuTexelCopyBufferLayout,
         size: &::wasm_bindgen::JsValue,
     ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
-    #[cfg(all(feature = "GpuImageCopyTexture", feature = "GpuImageDataLayout",))]
+    #[cfg(all(
+        feature = "GpuTexelCopyBufferLayout",
+        feature = "GpuTexelCopyTextureInfo",
+    ))]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeTexture)]
     #[doc = "The `writeTexture()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeTexture)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuImageCopyTexture`, `GpuImageDataLayout`, `GpuQueue`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuQueue`, `GpuTexelCopyBufferLayout`, `GpuTexelCopyTextureInfo`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn write_texture_with_u8_array_and_u32_sequence(
         this: &GpuQueue,
-        destination: &GpuImageCopyTexture,
+        destination: &GpuTexelCopyTextureInfo,
         data: &::js_sys::Uint8Array,
-        data_layout: &GpuImageDataLayout,
+        data_layout: &GpuTexelCopyBufferLayout,
         size: &::wasm_bindgen::JsValue,
     ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(
         feature = "GpuExtent3dDict",
-        feature = "GpuImageCopyTexture",
-        feature = "GpuImageDataLayout",
+        feature = "GpuTexelCopyBufferLayout",
+        feature = "GpuTexelCopyTextureInfo",
     ))]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeTexture)]
     #[doc = "The `writeTexture()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeTexture)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuExtent3dDict`, `GpuImageCopyTexture`, `GpuImageDataLayout`, `GpuQueue`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuExtent3dDict`, `GpuQueue`, `GpuTexelCopyBufferLayout`, `GpuTexelCopyTextureInfo`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn write_texture_with_buffer_source_and_gpu_extent_3d_dict(
         this: &GpuQueue,
-        destination: &GpuImageCopyTexture,
+        destination: &GpuTexelCopyTextureInfo,
         data: &::js_sys::Object,
-        data_layout: &GpuImageDataLayout,
+        data_layout: &GpuTexelCopyBufferLayout,
         size: &GpuExtent3dDict,
     ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(
         feature = "GpuExtent3dDict",
-        feature = "GpuImageCopyTexture",
-        feature = "GpuImageDataLayout",
+        feature = "GpuTexelCopyBufferLayout",
+        feature = "GpuTexelCopyTextureInfo",
     ))]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeTexture)]
     #[doc = "The `writeTexture()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeTexture)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuExtent3dDict`, `GpuImageCopyTexture`, `GpuImageDataLayout`, `GpuQueue`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuExtent3dDict`, `GpuQueue`, `GpuTexelCopyBufferLayout`, `GpuTexelCopyTextureInfo`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn write_texture_with_u8_slice_and_gpu_extent_3d_dict(
         this: &GpuQueue,
-        destination: &GpuImageCopyTexture,
+        destination: &GpuTexelCopyTextureInfo,
         data: &[u8],
-        data_layout: &GpuImageDataLayout,
+        data_layout: &GpuTexelCopyBufferLayout,
         size: &GpuExtent3dDict,
     ) -> Result<(), JsValue>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(all(
         feature = "GpuExtent3dDict",
-        feature = "GpuImageCopyTexture",
-        feature = "GpuImageDataLayout",
+        feature = "GpuTexelCopyBufferLayout",
+        feature = "GpuTexelCopyTextureInfo",
     ))]
     # [wasm_bindgen (catch , method , structural , js_class = "GPUQueue" , js_name = writeTexture)]
     #[doc = "The `writeTexture()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/writeTexture)"]
     #[doc = ""]
-    #[doc = "*This API requires the following crate features to be activated: `GpuExtent3dDict`, `GpuImageCopyTexture`, `GpuImageDataLayout`, `GpuQueue`*"]
+    #[doc = "*This API requires the following crate features to be activated: `GpuExtent3dDict`, `GpuQueue`, `GpuTexelCopyBufferLayout`, `GpuTexelCopyTextureInfo`*"]
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     pub fn write_texture_with_u8_array_and_gpu_extent_3d_dict(
         this: &GpuQueue,
-        destination: &GpuImageCopyTexture,
+        destination: &GpuTexelCopyTextureInfo,
         data: &::js_sys::Uint8Array,
-        data_layout: &GpuImageDataLayout,
+        data_layout: &GpuTexelCopyBufferLayout,
         size: &GpuExtent3dDict,
     ) -> Result<(), JsValue>;
 }

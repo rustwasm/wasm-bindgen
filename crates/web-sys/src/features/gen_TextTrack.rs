@@ -26,28 +26,28 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrack/label)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextTrack`*"]
-    pub fn label(this: &TextTrack) -> String;
+    pub fn label(this: &TextTrack) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "TextTrack" , js_name = language)]
     #[doc = "Getter for the `language` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrack/language)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextTrack`*"]
-    pub fn language(this: &TextTrack) -> String;
+    pub fn language(this: &TextTrack) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "TextTrack" , js_name = id)]
     #[doc = "Getter for the `id` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrack/id)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextTrack`*"]
-    pub fn id(this: &TextTrack) -> String;
+    pub fn id(this: &TextTrack) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "TextTrack" , js_name = inBandMetadataTrackDispatchType)]
     #[doc = "Getter for the `inBandMetadataTrackDispatchType` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextTrack/inBandMetadataTrackDispatchType)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextTrack`*"]
-    pub fn in_band_metadata_track_dispatch_type(this: &TextTrack) -> String;
+    pub fn in_band_metadata_track_dispatch_type(this: &TextTrack) -> ::alloc::string::String;
     #[cfg(feature = "TextTrackMode")]
     # [wasm_bindgen (structural , method , getter , js_class = "TextTrack" , js_name = mode)]
     #[doc = "Getter for the `mode` field of this object."]

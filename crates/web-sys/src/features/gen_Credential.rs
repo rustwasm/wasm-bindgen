@@ -18,12 +18,12 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Credential/id)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Credential`*"]
-    pub fn id(this: &Credential) -> String;
+    pub fn id(this: &Credential) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "Credential" , js_name = type)]
     #[doc = "Getter for the `type` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Credential/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Credential`*"]
-    pub fn type_(this: &Credential) -> String;
+    pub fn type_(this: &Credential) -> ::alloc::string::String;
 }

@@ -37,7 +37,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn configuration_name(this: &UsbConfiguration) -> Option<String>;
+    pub fn configuration_name(this: &UsbConfiguration) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (structural , method , getter , js_class = "USBConfiguration" , js_name = interfaces)]
     #[doc = "Getter for the `interfaces` field of this object."]

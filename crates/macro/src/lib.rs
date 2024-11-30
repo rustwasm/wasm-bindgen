@@ -1,6 +1,6 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-macro/0.2")]
 #![cfg_attr(
-    wasm_bindgen_unstable_test_coverage,
+    any(feature = "coverage", all(not(feature = "std"), feature = "atomics")),
     feature(allow_internal_unstable),
     allow(internal_features)
 )]
@@ -11,9 +11,10 @@ use proc_macro::TokenStream;
 use quote::quote;
 
 #[proc_macro_attribute]
+#[cfg_attr(feature = "coverage", allow_internal_unstable(coverage_attribute))]
 #[cfg_attr(
-    wasm_bindgen_unstable_test_coverage,
-    allow_internal_unstable(coverage_attribute)
+    all(not(feature = "std"), feature = "atomics"),
+    allow_internal_unstable(thread_local)
 )]
 pub fn wasm_bindgen(attr: TokenStream, input: TokenStream) -> TokenStream {
     match wasm_bindgen_macro_support::expand(attr.into(), input.into()) {
@@ -41,10 +42,7 @@ pub fn wasm_bindgen(attr: TokenStream, input: TokenStream) -> TokenStream {
 /// let worker = Worker::new(&wasm_bindgen::link_to!(module = "/src/worker.js"));
 /// ```
 #[proc_macro]
-#[cfg_attr(
-    wasm_bindgen_unstable_test_coverage,
-    allow_internal_unstable(coverage_attribute)
-)]
+#[cfg_attr(feature = "coverage", allow_internal_unstable(coverage_attribute))]
 pub fn link_to(input: TokenStream) -> TokenStream {
     match wasm_bindgen_macro_support::expand_link_to(input.into()) {
         Ok(tokens) => {
@@ -61,10 +59,7 @@ pub fn link_to(input: TokenStream) -> TokenStream {
 }
 
 #[proc_macro_attribute]
-#[cfg_attr(
-    wasm_bindgen_unstable_test_coverage,
-    allow_internal_unstable(coverage_attribute)
-)]
+#[cfg_attr(feature = "coverage", allow_internal_unstable(coverage_attribute))]
 pub fn __wasm_bindgen_class_marker(attr: TokenStream, input: TokenStream) -> TokenStream {
     match wasm_bindgen_macro_support::expand_class_marker(attr.into(), input.into()) {
         Ok(tokens) => {

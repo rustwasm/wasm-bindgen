@@ -18,14 +18,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocketErrorEvent/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpSocketErrorEvent`*"]
-    pub fn name(this: &TcpSocketErrorEvent) -> String;
+    pub fn name(this: &TcpSocketErrorEvent) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "TCPSocketErrorEvent" , js_name = message)]
     #[doc = "Getter for the `message` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TCPSocketErrorEvent/message)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TcpSocketErrorEvent`*"]
-    pub fn message(this: &TcpSocketErrorEvent) -> String;
+    pub fn message(this: &TcpSocketErrorEvent) -> ::alloc::string::String;
     #[wasm_bindgen(catch, constructor, js_class = "TCPSocketErrorEvent")]
     #[doc = "The `new TcpSocketErrorEvent(..)` constructor, creating a new instance of `TcpSocketErrorEvent`."]
     #[doc = ""]

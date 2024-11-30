@@ -26,7 +26,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasicCardResponse`*"]
     #[wasm_bindgen(method, getter = "cardNumber")]
-    pub fn get_card_number(this: &BasicCardResponse) -> String;
+    pub fn get_card_number(this: &BasicCardResponse) -> ::alloc::string::String;
     #[doc = "Change the `cardNumber` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasicCardResponse`*"]
@@ -36,7 +36,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasicCardResponse`*"]
     #[wasm_bindgen(method, getter = "cardSecurityCode")]
-    pub fn get_card_security_code(this: &BasicCardResponse) -> Option<String>;
+    pub fn get_card_security_code(this: &BasicCardResponse) -> Option<::alloc::string::String>;
     #[doc = "Change the `cardSecurityCode` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasicCardResponse`*"]
@@ -46,7 +46,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasicCardResponse`*"]
     #[wasm_bindgen(method, getter = "cardholderName")]
-    pub fn get_cardholder_name(this: &BasicCardResponse) -> Option<String>;
+    pub fn get_cardholder_name(this: &BasicCardResponse) -> Option<::alloc::string::String>;
     #[doc = "Change the `cardholderName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasicCardResponse`*"]
@@ -56,7 +56,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasicCardResponse`*"]
     #[wasm_bindgen(method, getter = "expiryMonth")]
-    pub fn get_expiry_month(this: &BasicCardResponse) -> Option<String>;
+    pub fn get_expiry_month(this: &BasicCardResponse) -> Option<::alloc::string::String>;
     #[doc = "Change the `expiryMonth` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasicCardResponse`*"]
@@ -66,7 +66,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasicCardResponse`*"]
     #[wasm_bindgen(method, getter = "expiryYear")]
-    pub fn get_expiry_year(this: &BasicCardResponse) -> Option<String>;
+    pub fn get_expiry_year(this: &BasicCardResponse) -> Option<::alloc::string::String>;
     #[doc = "Change the `expiryYear` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `BasicCardResponse`*"]
@@ -80,7 +80,7 @@ impl BasicCardResponse {
     pub fn new(card_number: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.card_number(card_number);
+        ret.set_card_number(card_number);
         ret
     }
     #[cfg(feature = "PaymentAddress")]

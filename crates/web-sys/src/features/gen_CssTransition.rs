@@ -18,5 +18,5 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSTransition/transitionProperty)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssTransition`*"]
-    pub fn transition_property(this: &CssTransition) -> String;
+    pub fn transition_property(this: &CssTransition) -> ::alloc::string::String;
 }

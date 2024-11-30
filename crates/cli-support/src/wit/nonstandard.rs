@@ -170,7 +170,7 @@ pub struct AuxEnum {
     pub comments: String,
     /// A list of variants with their name, value and comments
     /// and whether typescript bindings should be generated for each variant
-    pub variants: Vec<(String, u32, String)>,
+    pub variants: Vec<(String, i64, String)>,
     /// Whether typescript bindings should be generated for this enum.
     pub generate_typescript: bool,
 }
@@ -241,10 +241,12 @@ pub enum AuxImport {
     /// This import is intended to manufacture a JS closure with the given
     /// signature and then return that back to Rust.
     Closure {
-        mutable: bool,      // whether or not this was a `FnMut` closure
-        dtor: u32,          // table element index of the destructor function
-        adapter: AdapterId, // the adapter which translates the types for this closure
-        nargs: usize,
+        /// whether or not this was a `FnMut` closure
+        mutable: bool,
+        /// table element index of the destructor function
+        dtor: u32,
+        /// the adapter which translates the types for this closure
+        adapter: AdapterId,
     },
 
     /// This import is expected to be a shim that simply calls the `foo` method

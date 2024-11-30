@@ -22,7 +22,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "label")]
-    pub fn get_label(this: &GpuBufferDescriptor) -> Option<String>;
+    pub fn get_label(this: &GpuBufferDescriptor) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `label` field of this object."]
     #[doc = ""]
@@ -98,8 +98,8 @@ impl GpuBufferDescriptor {
     pub fn new(size: f64, usage: u32) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.size(size);
-        ret.usage(usage);
+        ret.set_size(size);
+        ret.set_usage(usage);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

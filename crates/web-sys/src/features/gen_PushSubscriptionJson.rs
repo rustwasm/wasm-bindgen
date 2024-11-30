@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionJson`*"]
     #[wasm_bindgen(method, getter = "endpoint")]
-    pub fn get_endpoint(this: &PushSubscriptionJson) -> Option<String>;
+    pub fn get_endpoint(this: &PushSubscriptionJson) -> Option<::alloc::string::String>;
     #[doc = "Change the `endpoint` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionJson`*"]
