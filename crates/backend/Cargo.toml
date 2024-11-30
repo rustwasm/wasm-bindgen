@@ -15,7 +15,6 @@ version = "0.2.96"
 
 [features]
 atomics = []
-coverage = []
 default = ["std"]
 extra-traits = ["syn/extra-traits"]
 spans = []
@@ -30,5 +29,12 @@ quote = '1.0'
 syn = { version = '2.0', features = ['full'] }
 wasm-bindgen-shared = { path = "../shared", version = "=0.2.96" }
 
-[lints]
-workspace = true
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(wasm_bindgen_unstable_test_coverage)'] }
+
+[lints.clippy]
+large_enum_variant = "allow"
+new_without_default = "allow"
+overly_complex_bool_expr = "allow"
+too_many_arguments = "allow"
+type_complexity = "allow"

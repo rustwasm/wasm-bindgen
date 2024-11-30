@@ -52,11 +52,6 @@ wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.96", default-featu
   "atomics",
 ] }
 
-[target.'cfg(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none"), wasm_bindgen_unstable_test_coverage))'.dependencies]
-wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.96", default-features = false, features = [
-  "coverage",
-] }
-
 [dev-dependencies]
 wasm-bindgen-test = { path = 'crates/test' }
 

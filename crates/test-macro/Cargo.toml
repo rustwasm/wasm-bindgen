@@ -12,9 +12,6 @@ version = "0.3.46"
 [lib]
 proc-macro = true
 
-[features]
-coverage = []
-
 [dependencies]
 proc-macro2 = "1.0"
 quote = "1.0"
@@ -30,5 +27,12 @@ tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 trybuild = "1.0"
 wasm-bindgen-test = { path = "../test" }
 
-[lints]
-workspace = true
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(wasm_bindgen_unstable_test_coverage)'] }
+
+[lints.clippy]
+large_enum_variant = "allow"
+new_without_default = "allow"
+overly_complex_bool_expr = "allow"
+too_many_arguments = "allow"
+type_complexity = "allow"

@@ -8,6 +8,9 @@
 * Fixed `js-sys` and `wasm-bindgen-futures` relying on internal paths of `wasm-bindgen` that are not crate feature additive.
   [#4305](https://github.com/rustwasm/wasm-bindgen/pull/4305)
 
+* Fixed `wasm-bindgen` not being compatible with edition 2018.
+  [#4306](https://github.com/rustwasm/wasm-bindgen/pull/4306)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.96](https://github.com/rustwasm/wasm-bindgen/compare/0.2.95...0.2.96)

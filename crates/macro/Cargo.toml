@@ -18,7 +18,6 @@ proc-macro = true
 
 [features]
 atomics = ["wasm-bindgen-macro-support/atomics"]
-coverage = ["wasm-bindgen-macro-support/coverage"]
 default = ["std"]
 spans = ["wasm-bindgen-macro-support/spans"]
 std = ["wasm-bindgen-macro-support/std"]
@@ -36,5 +35,12 @@ wasm-bindgen = { path = "../.." }
 wasm-bindgen-futures = { path = "../futures" }
 web-sys = { path = "../web-sys", features = ["Worker"] }
 
-[lints]
-workspace = true
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(wasm_bindgen_unstable_test_coverage)'] }
+
+[lints.clippy]
+large_enum_variant = "allow"
+new_without_default = "allow"
+overly_complex_bool_expr = "allow"
+too_many_arguments = "allow"
+type_complexity = "allow"

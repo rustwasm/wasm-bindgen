@@ -1966,8 +1966,8 @@ fn respan(input: TokenStream, span: &dyn ToTokens) -> TokenStream {
 }
 
 fn coverage() -> Option<TokenStream> {
-    #[cfg(feature = "coverage")]
+    #[cfg(wasm_bindgen_unstable_test_coverage)]
     return Some(quote! { #[coverage(off)] });
-    #[cfg(not(feature = "coverage"))]
+    #[cfg(not(wasm_bindgen_unstable_test_coverage))]
     None
 }
