@@ -248,13 +248,12 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: '20'
-    - run: cd crates/cli/tests
     - run: npm i -g typescript
     - run: npm i --save @types/node @types/deno
     - name: Check TypeScript output
-      run: tsc --noEmit --skipLibCheck --lib esnext,dom $(echo reference/*.d.ts)
+      run: tsc --noEmit --skipLibCheck --lib esnext,dom $(echo crates/cli/tests/reference/*.d.ts)
     - name: Check JavaScript output
-      run: tsc --noEmit --skipLibCheck --lib esnext,dom --module esnext --allowJs --checkJs $(echo reference/*.js)
+      run: tsc --noEmit --skipLibCheck --lib esnext,dom --module esnext --allowJs --checkJs $(echo crates/cli/tests/reference/*.js)
 
   test_native:
     name: Run native tests
