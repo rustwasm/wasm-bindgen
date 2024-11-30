@@ -7,9 +7,7 @@ Output: |
 
 Ast: |
     JsDoc {
-        description: Some(
-            "This is a description.",
-        ),
+        description: "This is a description.",
         tags: [],
     }
 
@@ -31,9 +29,7 @@ Output: |
 
 Ast: |
     JsDoc {
-        description: Some(
-            "This is\n \n\na multi-line\ndescription.",
-        ),
+        description: "This is\n \n\na multi-line\ndescription.",
         tags: [],
     }
 
@@ -46,13 +42,12 @@ Input: |
 
 Output: |
     This is a description with tag.
+
     @public
 
 Ast: |
     JsDoc {
-        description: Some(
-            "This is a description with tag.",
-        ),
+        description: "This is a description with tag.\n",
         tags: [
             Unknown(
                 UnknownTag {
@@ -75,9 +70,7 @@ Output: |
 
 Ast: |
     JsDoc {
-        description: Some(
-            "This is a description with tag.",
-        ),
+        description: "This is a description with tag.",
         tags: [
             Unknown(
                 UnknownTag {
@@ -144,7 +137,7 @@ Output: |
 
 Ast: |
     JsDoc {
-        description: None,
+        description: "",
         tags: [
             Param(
                 ParamTag {
@@ -392,7 +385,7 @@ Output: |
 
 Ast: |
     JsDoc {
-        description: None,
+        description: "",
         tags: [
             Param(
                 ParamTag {
@@ -497,7 +490,7 @@ Output: |
 
 Ast: |
     JsDoc {
-        description: None,
+        description: "",
         tags: [
             Param(
                 ParamTag {
@@ -584,7 +577,7 @@ Output: |
 
 Ast: |
     JsDoc {
-        description: None,
+        description: "",
         tags: [
             Param(
                 ParamTag {
@@ -658,7 +651,7 @@ Output: |
 
 Ast: |
     JsDoc {
-        description: None,
+        description: "",
         tags: [
             Returns(
                 ReturnsTag {
@@ -755,7 +748,7 @@ Output: |
 
 Ast: |
     JsDoc {
-        description: None,
+        description: "",
         tags: [
             Returns(
                 ReturnsTag {
@@ -838,7 +831,7 @@ Output: |
 
 Ast: |
     JsDoc {
-        description: None,
+        description: "",
         tags: [
             Unknown(
                 UnknownTag {
@@ -859,7 +852,7 @@ Output: |
 
 Ast: |
     JsDoc {
-        description: None,
+        description: "",
         tags: [
             Returns(
                 ReturnsTag {

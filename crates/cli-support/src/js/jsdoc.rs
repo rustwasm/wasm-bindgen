@@ -11,7 +11,7 @@ use super::ident::is_ident_start;
 #[derive(Debug, Clone)]
 pub struct JsDoc {
     /// Optional description at the start of a comment.
-    pub description: Option<String>,
+    pub description: String,
     pub tags: Vec<JsDocTag>,
 }
 
@@ -64,18 +64,25 @@ impl JsDoc {
         let comment = remove_leading_space(comment);
         let comment = trim_right(comment.as_str());
 
-        let mut description = None;
         let mut tags = Vec::new();
 
         let Some(mut block) = find_next_tag(comment) else {
             // there are no tags, the entire comment is the description
-            description = Some(comment.to_string());
-            return Self { description, tags };
+            return Self {
+                description: comment.to_string(),
+                tags,
+            };
         };
 
-        let description_text = comment[..block.0].trim();
-        if !description_text.is_empty() {
-            description = Some(description_text.to_string());
+        let mut description = String::new();
+        let description_text = &comment[..block.0];
+        if !description_text.trim().is_empty() {
+            description = trim_right(description_text).to_string();
+
+            // preserve final new line
+            if description_text.ends_with("\n\n") {
+                description.push('\n');
+            }
         }
 
         loop {
@@ -125,44 +132,148 @@ impl JsDoc {
         })
     }
 
-    pub fn add_return_type(&mut self, ty: &str) {
-        let mut return_tags: Vec<_> = self
-            .tags
-            .iter_mut()
-            .filter_map(|tag| match tag {
-                JsDocTag::Returns(tag) => Some(tag),
-                _ => None,
-            })
-            .collect();
-
-        if return_tags.len() == 1 {
-            return_tags[0].ty = Some(ty.to_string());
-        } else {
-            self.tags.push(JsDocTag::Returns(ReturnsTag {
-                tag: "@returns".to_string(),
-                ty: Some(ty.to_string()),
-                description: String::new(),
-            }));
+    pub fn enhance(&mut self, tags: Vec<JsDocTag>) {
+        for tag in tags {
+            match tag {
+                JsDocTag::Param(tag) => {
+                    if let Some(param_tag) = self.get_or_add_param(&tag.name) {
+                        if param_tag.ty.is_none() {
+                            param_tag.ty = tag.ty;
+                        }
+                        if matches!(param_tag.optional, Optionality::Required) {
+                            param_tag.optional = tag.optional;
+                        }
+                    }
+                }
+                JsDocTag::Returns(tag) => {
+                    if let Some(returns_tag) = self.get_or_add_returns() {
+                        if returns_tag.ty.is_none() {
+                            returns_tag.ty = tag.ty;
+                        }
+                    }
+                }
+                _ => {}
+            }
         }
+    }
+
+    /// If there is a single `@returns` tag, return it. Otherwise, add a new
+    /// `@returns` tag and return it.
+    ///
+    /// If there are multiple `@returns` tags, return `None`.
+    pub fn get_or_add_param<'a>(&'a mut self, name: &str) -> Option<&'a mut ParamTag> {
+        // check that there is exactly one returns tag
+        let returns_count = self
+            .tags
+            .iter()
+            .filter(|tag| match tag {
+                JsDocTag::Param(tag) => {
+                    if tag.name == name {
+                        return true;
+                    }
+                    if tag.name.starts_with(name) {
+                        // account for paths
+                        let after = tag.name[name.len()..].chars().next();
+                        return after == Some('.') || after == Some('[');
+                    }
+                    false
+                }
+                _ => false,
+            })
+            .count();
+
+        if returns_count > 1 {
+            // multiple return tags, we don't know which one to update
+            return None;
+        }
+        if returns_count == 0 {
+            // add a new returns tag
+            // try to insert it before a returns tag
+            let pos = self
+                .tags
+                .iter()
+                .position(|tag| matches!(tag, JsDocTag::Returns(_)))
+                .unwrap_or(self.tags.len());
+
+            self.tags.insert(
+                pos,
+                JsDocTag::Param(ParamTag {
+                    tag: "@param".to_string(),
+                    ty: None,
+                    name: name.to_string(),
+                    optional: Optionality::Required,
+                    description: String::new(),
+                }),
+            );
+        }
+
         for tag in &mut self.tags {
-            if let JsDocTag::Returns(tag) = tag {
-                tag.ty = Some(ty.to_string());
-                return;
+            if let JsDocTag::Param(tag) = tag {
+                if tag.name == name {
+                    // return the existing tag
+                    return Some(tag);
+                }
             }
         }
 
-        self.tags.push(JsDocTag::Returns(ReturnsTag {
-            tag: "@returns".to_string(),
-            ty: Some(ty.to_string()),
-            description: String::new(),
-        }));
+        None
+    }
+
+    /// If there is a single `@returns` tag, return it. Otherwise, add a new
+    /// `@returns` tag and return it.
+    ///
+    /// If there are multiple `@returns` tags, return `None`.
+    pub fn get_or_add_returns(&mut self) -> Option<&mut ReturnsTag> {
+        // check that there is exactly one returns tag
+        let count = self
+            .tags
+            .iter()
+            .filter(|tag| matches!(tag, JsDocTag::Returns(_)))
+            .count();
+
+        if count > 1 {
+            // multiple return tags, we don't know which one to update
+            return None;
+        }
+        if count == 0 {
+            // add a new returns tag
+            self.tags.push(JsDocTag::Returns(ReturnsTag {
+                tag: "@returns".to_string(),
+                ty: None,
+                description: String::new(),
+            }));
+        }
+
+        for tag in &mut self.tags {
+            if let JsDocTag::Returns(tag) = tag {
+                // return the existing tag
+                return Some(tag);
+            }
+        }
+
+        unreachable!()
+    }
+
+    /// Same as `to_string`, but indents the output with 1 space.
+    pub fn to_string_indented(&self) -> String {
+        let mut out = String::new();
+        for (index, line) in self.to_string().lines().enumerate() {
+            if index > 0 {
+                out.push('\n');
+            }
+            if !line.is_empty() {
+                out.push(' ');
+            }
+            out.push_str(line);
+        }
+        out
     }
 }
 
 impl std::fmt::Display for JsDoc {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        if let Some(description) = &self.description {
-            writeln!(f, "{}", description)?;
+        if !self.description.trim().is_empty() {
+            writeln!(f, "{}", self.description)?;
         }
 
         for tag in &self.tags {
@@ -231,7 +342,7 @@ impl ParamTag {
                 t.to_string()
             });
 
-            if let Some(ty) = &ty {
+            if ty.is_some() {
                 text = trim_left(&text[type_len..]);
             } else {
                 // the type expression is not terminated, so the tag is not well-formed
@@ -280,7 +391,14 @@ impl ParamTag {
                 return None;
             };
             text = trim_left_space(&text[name.len()..]);
-            (if optional_by_type {Optionality::Optional} else {Optionality::Required}, name.to_string())
+            (
+                if optional_by_type {
+                    Optionality::Optional
+                } else {
+                    Optionality::Required
+                },
+                name.to_string(),
+            )
         };
 
         Some(Self {
@@ -297,12 +415,13 @@ impl ReturnsTag {
     fn parse(tag_name: &str, rest: &str) -> Option<Self> {
         // A bit careful now, because we want to keep the initial new lines of
         // the description.
-        let mut text ={let trimmed =  trim_left(rest);
-        if trimmed.starts_with('{') {
-            trimmed
-        } else {
-            trim_left_space(rest)
-        }
+        let mut text = {
+            let trimmed = trim_left(rest);
+            if trimmed.starts_with('{') {
+                trimmed
+            } else {
+                trim_left_space(rest)
+            }
         };
 
         let mut ty = None;
@@ -743,7 +862,9 @@ mod tests {
             "| number}  foo",
             "@param { number = } foo",
             "@param {  =  } foo",
-            "@param {{","  name: { first: string, last: string };","}} foo",
+            "@param {{",
+            "  name: { first: string, last: string };",
+            "}} foo",
             "@param {'}' | \"}\" | `}${{'}': \"}\"}}}`} foo",
         ]);
         // alias
