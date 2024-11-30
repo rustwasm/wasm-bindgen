@@ -3,8 +3,8 @@
 export function enum_echo(color: Color): Color;
 export function option_enum_echo(color?: Color | null): Color | undefined;
 export function get_name(color: Color): ColorName;
-export function option_string_enum_echo(color?: ColorName): ColorName | undefined;
-export function option_order(order?: Ordering): Ordering | undefined;
+export function option_string_enum_echo(color?: ColorName | null): ColorName | undefined;
+export function option_order(order?: Ordering | null): Ordering | undefined;
 /**
  * A color.
  */

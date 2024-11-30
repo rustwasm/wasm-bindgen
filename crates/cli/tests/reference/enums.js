@@ -63,7 +63,7 @@ export function option_string_enum_echo(color) {
 }
 
 /**
- * @param {Ordering | undefined} [order]
+ * @param {Ordering | null} [order]
  * @returns {Ordering | undefined}
  */
 export function option_order(order) {
