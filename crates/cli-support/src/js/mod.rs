@@ -3908,6 +3908,17 @@ __wbg_set_wasm(wasm);"
                 }
                 base
             }
+
+            Intrinsic::ShimFormatVariant => match &self.config.mode {
+                OutputMode::Web => 0.to_string(),
+                OutputMode::NoModules { .. } => 1.to_string(),
+                _ => String::from("null"),
+            },
+
+            Intrinsic::ShimFormatString => match &self.config.mode {
+                OutputMode::NoModules { global } => format!("'{global}'"),
+                _ => String::from("undefined"),
+            },
         };
         Ok(expr)
     }

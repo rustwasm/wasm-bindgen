@@ -1119,6 +1119,9 @@ externs! {
         fn __wbindgen_memory() -> u32;
         fn __wbindgen_module() -> u32;
         fn __wbindgen_function_table() -> u32;
+
+        fn __wbindgen_shim_format_variant() -> WasmOption<u32>;
+        fn __wbindgen_shim_format_string() -> WasmSlice;
     }
 }
 
@@ -1562,6 +1565,40 @@ pub fn memory() -> JsValue {
 /// indirect function table used by Rust
 pub fn function_table() -> JsValue {
     unsafe { JsValue::_new(__wbindgen_function_table()) }
+}
+
+/// Represents the format of the shim.
+#[derive(Clone, Debug)]
+#[non_exhaustive]
+pub enum ShimFormat {
+    /// The shim is an ES module.
+    EsModule,
+    /// The shim doesn't use any module system, and instead exposes a global variable
+    /// with its API.
+    ///
+    /// It has to be imported as a script to work properly, as the global variable is
+    /// created by simply declaring a top-level variable, which only works in scripts.
+    NoModules {
+        /// The name of the global variable the shim exposes.
+        ///
+        /// By default, this is `"wasm_bindgen"`.
+        global_name: String,
+    },
+}
+
+/// Returns the format of the generated JS shim.
+///
+/// This will currently return `None` on every target except `web` and `no-modules`.
+pub fn shim_format() -> Option<ShimFormat> {
+    match unsafe { __wbindgen_shim_format_variant() } {
+        WasmOption::Some(0) => Some(ShimFormat::EsModule),
+        WasmOption::Some(1) => {
+            let global_name = unsafe { String::from_abi(__wbindgen_shim_format_string()) };
+            Some(ShimFormat::NoModules { global_name })
+        }
+        WasmOption::Some(_) => unreachable!("unexpected variant identifier"),
+        WasmOption::None => None,
+    }
 }
 
 #[doc(hidden)]
