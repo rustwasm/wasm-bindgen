@@ -58,6 +58,18 @@ pub struct UnknownTag {
 }
 
 impl JsDoc {
+    /// Parses a JSDoc comment.
+    ///
+    /// Any string is valid JSDoc, but not all strings are equally valid. This
+    /// parser only supports a subset of the JSDoc syntax. All tags that are
+    /// not supported as parsed as `JsDocTag::Unknown`, which represents an
+    /// arbitrary block tag. This allows us to parse all comments, even if we
+    /// don't understand all tags.
+    ///
+    /// Note that supported tags that are not well-formed (=not following the
+    /// usual syntax) are also parsed as `JsDocTag::Unknown`. Examples of this
+    /// include `@param` tags with wildly incorrect syntax. E.g.
+    /// `@param { name`.
     pub fn parse(comment: &str) -> Self {
         let comment = remove_leading_space(comment);
         let comment = trim_right(comment.as_str());
