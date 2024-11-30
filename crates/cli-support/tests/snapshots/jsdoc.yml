@@ -113,6 +113,7 @@ Input: |
     @param {string} obj.name
     @param {object[]} obj.locations
     @param {string} obj.locations[].address
+    @param {string} [obj.locations[].address]
     @param {} foo
 
 Output: |
@@ -138,6 +139,7 @@ Output: |
     @param {string} obj.name
     @param {object[]} obj.locations
     @param {string} obj.locations[].address
+    @param {string} [obj.locations[].address]
     @param {} foo
 
 Ast: |
@@ -349,6 +351,17 @@ Ast: |
                 ParamTag {
                     tag: "@param",
                     ty: Some(
+                        "string",
+                    ),
+                    name: "obj.locations[].address",
+                    optional: Optional,
+                    description: "",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: Some(
                         "",
                     ),
                     name: "foo",
@@ -365,11 +378,17 @@ Input: |
     @param {string} foo
     @param{string}foo  
     @param{string}[foo]
+    @param{string}[foo=]
+    @param   {   string   }  [  foo  =  123  ]
+    @param   {      }  [  foo  =  123  ]
 
 Output: |
     @param {string} foo
     @param {string} foo
     @param {string} [foo]
+    @param {string} [foo]
+    @param {string} [foo=123]
+    @param {} [foo=123]
 
 Ast: |
     JsDoc {
@@ -408,6 +427,144 @@ Ast: |
                     description: "",
                 },
             ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: Some(
+                        "string",
+                    ),
+                    name: "foo",
+                    optional: Optional,
+                    description: "",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: Some(
+                        "string",
+                    ),
+                    name: "foo",
+                    optional: OptionalWithDefault(
+                        "123",
+                    ),
+                    description: "",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: Some(
+                        "",
+                    ),
+                    name: "foo",
+                    optional: OptionalWithDefault(
+                        "123",
+                    ),
+                    description: "",
+                },
+            ),
+        ],
+    }
+
+---
+
+Input: |
+    @param   {
+    string
+    } foo
+    @param   {string // comment
+    | number}  foo
+    @param { number = } foo
+    @param {  =  } foo
+    @param {{
+      name: { first: string, last: string };
+    }} foo
+    @param {'}' | "}" | `}${{'}': "}"}}}`} foo
+
+Output: |
+    @param {
+    string
+    } foo
+    @param {string // comment
+    | number} foo
+    @param {number} [foo]
+    @param {} [foo]
+    @param {{
+      name: { first: string, last: string };
+    }} foo
+    @param {'}' | "}" | `}${{'}': "}"}}}`} foo
+
+Ast: |
+    JsDoc {
+        description: None,
+        tags: [
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: Some(
+                        "\nstring\n",
+                    ),
+                    name: "foo",
+                    optional: Required,
+                    description: "",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: Some(
+                        "string // comment\n| number",
+                    ),
+                    name: "foo",
+                    optional: Required,
+                    description: "",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: Some(
+                        "number",
+                    ),
+                    name: "foo",
+                    optional: Optional,
+                    description: "",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: Some(
+                        "",
+                    ),
+                    name: "foo",
+                    optional: Optional,
+                    description: "",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: Some(
+                        "{\n  name: { first: string, last: string };\n}",
+                    ),
+                    name: "foo",
+                    optional: Required,
+                    description: "",
+                },
+            ),
+            Param(
+                ParamTag {
+                    tag: "@param",
+                    ty: Some(
+                        "'}' | \"}\" | `}${{'}': \"}\"}}}`",
+                    ),
+                    name: "foo",
+                    optional: Required,
+                    description: "",
+                },
+            ),
         ],
     }
 
@@ -480,6 +637,10 @@ Input: |
     @returns
     description
     @returns {string}
+    @returns
+
+
+    {number}
     @returns {string} description
     @returns {string}
     description
@@ -487,10 +648,13 @@ Input: |
 Output: |
     @returns
     @returns description
-    @returns description
+    @returns
+    description
     @returns {string}
+    @returns {number}
     @returns {string} description
-    @returns {string} description
+    @returns {string}
+    description
 
 Ast: |
     JsDoc {
@@ -514,7 +678,7 @@ Ast: |
                 ReturnsTag {
                     tag: "@returns",
                     ty: None,
-                    description: "description",
+                    description: "\ndescription",
                 },
             ),
             Returns(
@@ -522,6 +686,15 @@ Ast: |
                     tag: "@returns",
                     ty: Some(
                         "string",
+                    ),
+                    description: "",
+                },
+            ),
+            Returns(
+                ReturnsTag {
+                    tag: "@returns",
+                    ty: Some(
+                        "number",
                     ),
                     description: "",
                 },
@@ -541,7 +714,7 @@ Ast: |
                     ty: Some(
                         "string",
                     ),
-                    description: "description",
+                    description: "\ndescription",
                 },
             ),
         ],

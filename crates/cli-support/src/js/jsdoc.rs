@@ -199,7 +199,9 @@ impl std::fmt::Display for JsDocTag {
                 if let Some(ty) = &tag.ty {
                     write!(f, " {{{}}}", ty)?
                 }
-                if !tag.description.is_empty() {
+                if tag.description.starts_with(['\r', '\n']) {
+                    write!(f, "{}", tag.description)?;
+                } else if !tag.description.is_empty() {
                     write!(f, " {}", tag.description)?;
                 }
             }
@@ -214,12 +216,23 @@ impl ParamTag {
     fn parse(tag_name: &str, rest: &str) -> Option<Self> {
         let mut text = trim_left(rest);
 
+        let mut optional_by_type = false;
+
         let mut ty = None;
         if text.starts_with('{') {
-            ty = consume_type_script_expression(&text[1..]).map(|t| t.to_string());
+            let mut type_len = 0;
+            ty = consume_type_script_expression(&text[1..]).map(|mut t| {
+                type_len = t.len() + 2;
+                t = t.trim_matches(' ');
+                if t.ends_with('=') {
+                    optional_by_type = true;
+                    t = t[..t.len() - 1].trim_matches(' ');
+                }
+                t.to_string()
+            });
 
             if let Some(ty) = &ty {
-                text = trim_left(&text[(ty.len() + 2)..]);
+                text = trim_left(&text[type_len..]);
             } else {
                 // the type expression is not terminated, so the tag is not well-formed
                 return None;
@@ -267,7 +280,7 @@ impl ParamTag {
                 return None;
             };
             text = trim_left_space(&text[name.len()..]);
-            (Optionality::Required, name.to_string())
+            (if optional_by_type {Optionality::Optional} else {Optionality::Required}, name.to_string())
         };
 
         Some(Self {
@@ -282,14 +295,22 @@ impl ParamTag {
 
 impl ReturnsTag {
     fn parse(tag_name: &str, rest: &str) -> Option<Self> {
-        let mut text = trim_left(rest);
+        // A bit careful now, because we want to keep the initial new lines of
+        // the description.
+        let mut text ={let trimmed =  trim_left(rest);
+        if trimmed.starts_with('{') {
+            trimmed
+        } else {
+            trim_left_space(rest)
+        }
+        };
 
         let mut ty = None;
         if text.starts_with('{') {
             ty = consume_type_script_expression(&text[1..]).map(|t| t.to_string());
 
             if let Some(ty) = &ty {
-                text = trim_left(&text[(ty.len() + 2)..]);
+                text = trim_left_space(&text[(ty.len() + 2)..]);
             } else {
                 // the type expression is not terminated, so the tag is not well-formed
                 return None;
@@ -701,6 +722,7 @@ mod tests {
             "@param {string} obj.name",
             "@param {object[]} obj.locations",
             "@param {string} obj.locations[].address",
+            "@param {string} [obj.locations[].address]",
             "@param {} foo",
         ]);
         // weird
@@ -708,6 +730,21 @@ mod tests {
             "@param {string} foo",
             "@param{string}foo  ",
             "@param{string}[foo]",
+            "@param{string}[foo=]",
+            "@param   {   string   }  [  foo  =  123  ]",
+            "@param   {      }  [  foo  =  123  ]",
+        ]);
+        // weird types
+        suite.test_lines(&[
+            "@param   {",
+            "string",
+            "} foo",
+            "@param   {string // comment",
+            "| number}  foo",
+            "@param { number = } foo",
+            "@param {  =  } foo",
+            "@param {{","  name: { first: string, last: string };","}} foo",
+            "@param {'}' | \"}\" | `}${{'}': \"}\"}}}`} foo",
         ]);
         // alias
         suite.test_lines(&[
@@ -723,10 +760,11 @@ mod tests {
         suite.test_lines(&[
             "@returns",
             "@returns description",
-            "@returns\ndescription", // FIXME:
+            "@returns\ndescription",
             "@returns {string}",
+            "@returns\n\n\n{number}",
             "@returns {string} description",
-            "@returns {string}\ndescription", // FIXME:
+            "@returns {string}\ndescription",
         ]);
         // weird
         suite.test_lines(&[
