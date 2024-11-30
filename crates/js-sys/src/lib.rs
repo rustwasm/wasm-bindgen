@@ -6038,12 +6038,20 @@ pub fn global() -> Object {
     }
     #[cfg(not(feature = "std"))]
     {
-        use wasm_bindgen::__rt::LazyCell;
+        use once_cell::unsync::Lazy;
+
+        struct Wrapper<T>(Lazy<T>);
+
+        #[cfg(not(target_feature = "atomics"))]
+        unsafe impl<T> Sync for Wrapper<T> {}
+
+        #[cfg(not(target_feature = "atomics"))]
+        unsafe impl<T> Send for Wrapper<T> {}
 
         #[cfg_attr(target_feature = "atomics", thread_local)]
-        static GLOBAL: LazyCell<Object> = LazyCell::new(get_global_object);
+        static GLOBAL: Wrapper<Object> = Wrapper(Lazy::new(get_global_object));
 
-        return GLOBAL.clone();
+        return GLOBAL.0.clone();
     }
 
     fn get_global_object() -> Object {

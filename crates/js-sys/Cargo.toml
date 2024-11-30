@@ -25,6 +25,7 @@ default = ["std"]
 std = ["wasm-bindgen/std"]
 
 [dependencies]
+once_cell = { version = "1.12", default-features = false }
 wasm-bindgen = { path = "../..", version = "=0.2.96", default-features = false }
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]

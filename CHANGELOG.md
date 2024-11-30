@@ -1,6 +1,15 @@
 # `wasm-bindgen` Change Log
 --------------------------------------------------------------------------------
 
+## Unreleased
+
+### Fixed
+
+* Fixed `js-sys` and `wasm-bindgen-futures` relying on internal paths of `wasm-bindgen` that are not crate feature additive.
+  [#4305](https://github.com/rustwasm/wasm-bindgen/pull/4305)
+
+--------------------------------------------------------------------------------
+
 ## [0.2.96](https://github.com/rustwasm/wasm-bindgen/compare/0.2.95...0.2.96)
 
 Released 2024-11-29
