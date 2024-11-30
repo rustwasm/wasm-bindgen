@@ -15,14 +15,14 @@ Ast: |
 
 Input: |
     This is
-
+     
 
     a multi-line
     description.
 
 Output: |
     This is
-
+     
 
     a multi-line
     description.
@@ -346,7 +346,7 @@ Ast: |
 
 Input: |
     @param {string} foo
-    @param{string}foo
+    @param{string}foo  
     @param{string}[foo]
     @param{string}[foo=]
     @param   {   string   }  [  foo  =  123  ]
@@ -666,11 +666,11 @@ Ast: |
 ---
 
 Input: |
-    @returns
+    @returns   
     @returns   description
-    @returns  {}
+    @returns  {} 
     @returns{void}
-    @returns{void}
+    @returns{void}   
     @returns{void}description
     @returns{void}   description
     @returns
@@ -788,6 +788,7 @@ Input: |
     @return {string} description
 
 Output: |
+    @returns {string} description
 
 Ast: |
     JsDoc {
