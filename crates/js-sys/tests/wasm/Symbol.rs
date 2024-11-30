@@ -1,3 +1,5 @@
+#![cfg(test)]
+
 use js_sys::*;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::JsFuture;
@@ -85,8 +87,11 @@ fn to_string_tag() {
 fn for_() {
     let foo = JsValue::from(Symbol::for_("foo"));
     let bar = JsValue::from(Symbol::for_("bar"));
-    assert_eq!(foo, foo);
-    assert_eq!(bar, bar);
+    #[allow(clippy::eq_op)]
+    {
+        assert_eq!(foo, foo);
+        assert_eq!(bar, bar);
+    }
     assert_ne!(foo, bar);
     assert_ne!(bar, foo);
 

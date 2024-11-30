@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleProfileEvent`*"]
     #[wasm_bindgen(method, getter = "action")]
-    pub fn get_action(this: &ConsoleProfileEvent) -> Option<String>;
+    pub fn get_action(this: &ConsoleProfileEvent) -> Option<::alloc::string::String>;
     #[doc = "Change the `action` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleProfileEvent`*"]

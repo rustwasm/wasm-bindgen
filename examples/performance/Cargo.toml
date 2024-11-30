@@ -15,3 +15,6 @@ wasm-bindgen = { path = "../../" }
 [dependencies.web-sys]
 features = ['Window', 'Performance', 'PerformanceTiming']
 path = "../../crates/web-sys"
+
+[lints]
+workspace = true

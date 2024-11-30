@@ -26,5 +26,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/XMLSerializer/serializeToString)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Node`, `XmlSerializer`*"]
-    pub fn serialize_to_string(this: &XmlSerializer, root: &Node) -> Result<String, JsValue>;
+    pub fn serialize_to_string(
+        this: &XmlSerializer,
+        root: &Node,
+    ) -> Result<::alloc::string::String, JsValue>;
 }

@@ -68,7 +68,7 @@ impl PromiseRejectionEventInit {
     pub fn new(promise: &::js_sys::Promise) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.promise(promise);
+        ret.set_promise(promise);
         ret
     }
     #[deprecated = "Use `set_bubbles()` instead."]

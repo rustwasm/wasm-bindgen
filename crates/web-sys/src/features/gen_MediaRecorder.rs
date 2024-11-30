@@ -34,7 +34,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/mimeType)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorder`*"]
-    pub fn mime_type(this: &MediaRecorder) -> String;
+    pub fn mime_type(this: &MediaRecorder) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "MediaRecorder" , js_name = ondataavailable)]
     #[doc = "Getter for the `ondataavailable` field of this object."]
     #[doc = ""]

@@ -62,8 +62,8 @@ impl VideoDecoderInit {
     pub fn new(error: &::js_sys::Function, output: &::js_sys::Function) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.error(error);
-        ret.output(output);
+        ret.set_error(error);
+        ret.set_output(output);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

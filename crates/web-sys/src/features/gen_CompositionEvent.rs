@@ -18,14 +18,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CompositionEvent/data)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CompositionEvent`*"]
-    pub fn data(this: &CompositionEvent) -> Option<String>;
+    pub fn data(this: &CompositionEvent) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "CompositionEvent" , js_name = locale)]
     #[doc = "Getter for the `locale` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CompositionEvent/locale)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CompositionEvent`*"]
-    pub fn locale(this: &CompositionEvent) -> String;
+    pub fn locale(this: &CompositionEvent) -> ::alloc::string::String;
     #[wasm_bindgen(catch, constructor, js_class = "CompositionEvent")]
     #[doc = "The `new CompositionEvent(..)` constructor, creating a new instance of `CompositionEvent`."]
     #[doc = ""]

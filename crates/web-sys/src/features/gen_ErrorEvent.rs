@@ -18,14 +18,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ErrorEvent/message)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ErrorEvent`*"]
-    pub fn message(this: &ErrorEvent) -> String;
+    pub fn message(this: &ErrorEvent) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "ErrorEvent" , js_name = filename)]
     #[doc = "Getter for the `filename` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ErrorEvent/filename)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ErrorEvent`*"]
-    pub fn filename(this: &ErrorEvent) -> String;
+    pub fn filename(this: &ErrorEvent) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "ErrorEvent" , js_name = lineno)]
     #[doc = "Getter for the `lineno` field of this object."]
     #[doc = ""]

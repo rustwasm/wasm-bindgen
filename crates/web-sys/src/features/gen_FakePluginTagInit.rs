@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, getter = "description")]
-    pub fn get_description(this: &FakePluginTagInit) -> Option<String>;
+    pub fn get_description(this: &FakePluginTagInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `description` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, getter = "fileName")]
-    pub fn get_file_name(this: &FakePluginTagInit) -> Option<String>;
+    pub fn get_file_name(this: &FakePluginTagInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `fileName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, getter = "fullPath")]
-    pub fn get_full_path(this: &FakePluginTagInit) -> Option<String>;
+    pub fn get_full_path(this: &FakePluginTagInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `fullPath` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
@@ -44,7 +44,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, getter = "handlerURI")]
-    pub fn get_handler_uri(this: &FakePluginTagInit) -> String;
+    pub fn get_handler_uri(this: &FakePluginTagInit) -> ::alloc::string::String;
     #[doc = "Change the `handlerURI` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
@@ -64,7 +64,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &FakePluginTagInit) -> Option<String>;
+    pub fn get_name(this: &FakePluginTagInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
@@ -74,7 +74,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, getter = "niceName")]
-    pub fn get_nice_name(this: &FakePluginTagInit) -> Option<String>;
+    pub fn get_nice_name(this: &FakePluginTagInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `niceName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
@@ -84,7 +84,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, getter = "sandboxScript")]
-    pub fn get_sandbox_script(this: &FakePluginTagInit) -> Option<String>;
+    pub fn get_sandbox_script(this: &FakePluginTagInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `sandboxScript` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
@@ -94,7 +94,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
     #[wasm_bindgen(method, getter = "version")]
-    pub fn get_version(this: &FakePluginTagInit) -> Option<String>;
+    pub fn get_version(this: &FakePluginTagInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `version` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FakePluginTagInit`*"]
@@ -108,8 +108,8 @@ impl FakePluginTagInit {
     pub fn new(handler_uri: &str, mime_entries: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.handler_uri(handler_uri);
-        ret.mime_entries(mime_entries);
+        ret.set_handler_uri(handler_uri);
+        ret.set_mime_entries(mime_entries);
         ret
     }
     #[deprecated = "Use `set_description()` instead."]

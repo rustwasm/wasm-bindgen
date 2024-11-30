@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcSessionDescriptionInit`*"]
     #[wasm_bindgen(method, getter = "sdp")]
-    pub fn get_sdp(this: &RtcSessionDescriptionInit) -> Option<String>;
+    pub fn get_sdp(this: &RtcSessionDescriptionInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `sdp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcSessionDescriptionInit`*"]
@@ -41,7 +41,7 @@ impl RtcSessionDescriptionInit {
     pub fn new(type_: RtcSdpType) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.type_(type_);
+        ret.set_type(type_);
         ret
     }
     #[deprecated = "Use `set_sdp()` instead."]

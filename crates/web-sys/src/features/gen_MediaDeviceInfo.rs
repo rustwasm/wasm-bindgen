@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaDeviceInfo/deviceId)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaDeviceInfo`*"]
-    pub fn device_id(this: &MediaDeviceInfo) -> String;
+    pub fn device_id(this: &MediaDeviceInfo) -> ::alloc::string::String;
     #[cfg(feature = "MediaDeviceKind")]
     # [wasm_bindgen (structural , method , getter , js_class = "MediaDeviceInfo" , js_name = kind)]
     #[doc = "Getter for the `kind` field of this object."]
@@ -33,14 +33,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaDeviceInfo/label)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaDeviceInfo`*"]
-    pub fn label(this: &MediaDeviceInfo) -> String;
+    pub fn label(this: &MediaDeviceInfo) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "MediaDeviceInfo" , js_name = groupId)]
     #[doc = "Getter for the `groupId` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaDeviceInfo/groupId)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaDeviceInfo`*"]
-    pub fn group_id(this: &MediaDeviceInfo) -> String;
+    pub fn group_id(this: &MediaDeviceInfo) -> ::alloc::string::String;
     # [wasm_bindgen (method , structural , js_class = "MediaDeviceInfo" , js_name = toJSON)]
     #[doc = "The `toJSON()` method."]
     #[doc = ""]

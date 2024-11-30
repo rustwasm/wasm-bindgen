@@ -46,7 +46,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EffectTiming`*"]
     #[wasm_bindgen(method, getter = "easing")]
-    pub fn get_easing(this: &EffectTiming) -> Option<String>;
+    pub fn get_easing(this: &EffectTiming) -> Option<::alloc::string::String>;
     #[doc = "Change the `easing` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EffectTiming`*"]

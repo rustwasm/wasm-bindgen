@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyAlgorithm`*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &KeyAlgorithm) -> String;
+    pub fn get_name(this: &KeyAlgorithm) -> ::alloc::string::String;
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `KeyAlgorithm`*"]
@@ -28,7 +28,7 @@ impl KeyAlgorithm {
     pub fn new(name: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
+        ret.set_name(name);
         ret
     }
     #[deprecated = "Use `set_name()` instead."]

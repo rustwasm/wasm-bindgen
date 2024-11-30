@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TokenBinding`*"]
     #[wasm_bindgen(method, getter = "id")]
-    pub fn get_id(this: &TokenBinding) -> Option<String>;
+    pub fn get_id(this: &TokenBinding) -> Option<::alloc::string::String>;
     #[doc = "Change the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TokenBinding`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TokenBinding`*"]
     #[wasm_bindgen(method, getter = "status")]
-    pub fn get_status(this: &TokenBinding) -> String;
+    pub fn get_status(this: &TokenBinding) -> ::alloc::string::String;
     #[doc = "Change the `status` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TokenBinding`*"]
@@ -38,7 +38,7 @@ impl TokenBinding {
     pub fn new(status: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.status(status);
+        ret.set_status(status);
         ret
     }
     #[deprecated = "Use `set_id()` instead."]

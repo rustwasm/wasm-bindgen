@@ -25,14 +25,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/InputEvent/inputType)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `InputEvent`*"]
-    pub fn input_type(this: &InputEvent) -> String;
+    pub fn input_type(this: &InputEvent) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "InputEvent" , js_name = data)]
     #[doc = "Getter for the `data` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/InputEvent/data)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `InputEvent`*"]
-    pub fn data(this: &InputEvent) -> Option<String>;
+    pub fn data(this: &InputEvent) -> Option<::alloc::string::String>;
     #[cfg(feature = "DataTransfer")]
     # [wasm_bindgen (structural , method , getter , js_class = "InputEvent" , js_name = dataTransfer)]
     #[doc = "Getter for the `dataTransfer` field of this object."]

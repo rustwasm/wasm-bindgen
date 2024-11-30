@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DedicatedWorkerGlobalScope/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DedicatedWorkerGlobalScope`*"]
-    pub fn name(this: &DedicatedWorkerGlobalScope) -> String;
+    pub fn name(this: &DedicatedWorkerGlobalScope) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "DedicatedWorkerGlobalScope" , js_name = onmessage)]
     #[doc = "Getter for the `onmessage` field of this object."]
     #[doc = ""]

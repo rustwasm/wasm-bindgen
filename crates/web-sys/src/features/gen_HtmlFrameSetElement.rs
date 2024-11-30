@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFrameSetElement/cols)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFrameSetElement`*"]
-    pub fn cols(this: &HtmlFrameSetElement) -> String;
+    pub fn cols(this: &HtmlFrameSetElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLFrameSetElement" , js_name = cols)]
     #[doc = "Setter for the `cols` field of this object."]
     #[doc = ""]
@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFrameSetElement/rows)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlFrameSetElement`*"]
-    pub fn rows(this: &HtmlFrameSetElement) -> String;
+    pub fn rows(this: &HtmlFrameSetElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLFrameSetElement" , js_name = rows)]
     #[doc = "Setter for the `rows` field of this object."]
     #[doc = ""]

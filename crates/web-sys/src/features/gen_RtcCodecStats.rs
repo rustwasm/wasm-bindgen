@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcCodecStats`*"]
     #[wasm_bindgen(method, getter = "id")]
-    pub fn get_id(this: &RtcCodecStats) -> Option<String>;
+    pub fn get_id(this: &RtcCodecStats) -> Option<::alloc::string::String>;
     #[doc = "Change the `id` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcCodecStats`*"]
@@ -66,7 +66,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcCodecStats`*"]
     #[wasm_bindgen(method, getter = "codec")]
-    pub fn get_codec(this: &RtcCodecStats) -> Option<String>;
+    pub fn get_codec(this: &RtcCodecStats) -> Option<::alloc::string::String>;
     #[doc = "Change the `codec` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcCodecStats`*"]
@@ -76,7 +76,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcCodecStats`*"]
     #[wasm_bindgen(method, getter = "parameters")]
-    pub fn get_parameters(this: &RtcCodecStats) -> Option<String>;
+    pub fn get_parameters(this: &RtcCodecStats) -> Option<::alloc::string::String>;
     #[doc = "Change the `parameters` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcCodecStats`*"]

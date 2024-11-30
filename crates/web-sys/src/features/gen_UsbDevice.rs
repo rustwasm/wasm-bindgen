@@ -147,7 +147,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn manufacturer_name(this: &UsbDevice) -> Option<String>;
+    pub fn manufacturer_name(this: &UsbDevice) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (structural , method , getter , js_class = "USBDevice" , js_name = productName)]
     #[doc = "Getter for the `productName` field of this object."]
@@ -158,7 +158,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn product_name(this: &UsbDevice) -> Option<String>;
+    pub fn product_name(this: &UsbDevice) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (structural , method , getter , js_class = "USBDevice" , js_name = serialNumber)]
     #[doc = "Getter for the `serialNumber` field of this object."]
@@ -169,7 +169,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn serial_number(this: &UsbDevice) -> Option<String>;
+    pub fn serial_number(this: &UsbDevice) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "UsbConfiguration")]
     # [wasm_bindgen (structural , method , getter , js_class = "USBDevice" , js_name = configuration)]

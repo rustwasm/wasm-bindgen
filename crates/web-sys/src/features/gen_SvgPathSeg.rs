@@ -25,7 +25,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathSeg/pathSegTypeAsLetter)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgPathSeg`*"]
-    pub fn path_seg_type_as_letter(this: &SvgPathSeg) -> String;
+    pub fn path_seg_type_as_letter(this: &SvgPathSeg) -> ::alloc::string::String;
 }
 impl SvgPathSeg {
     #[doc = "The `SVGPathSeg.PATHSEG_UNKNOWN` const."]

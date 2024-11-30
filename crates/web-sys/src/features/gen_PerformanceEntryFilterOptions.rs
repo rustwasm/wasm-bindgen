@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryFilterOptions`*"]
     #[wasm_bindgen(method, getter = "entryType")]
-    pub fn get_entry_type(this: &PerformanceEntryFilterOptions) -> Option<String>;
+    pub fn get_entry_type(this: &PerformanceEntryFilterOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `entryType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryFilterOptions`*"]
@@ -24,7 +24,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryFilterOptions`*"]
     #[wasm_bindgen(method, getter = "initiatorType")]
-    pub fn get_initiator_type(this: &PerformanceEntryFilterOptions) -> Option<String>;
+    pub fn get_initiator_type(
+        this: &PerformanceEntryFilterOptions,
+    ) -> Option<::alloc::string::String>;
     #[doc = "Change the `initiatorType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryFilterOptions`*"]
@@ -34,7 +36,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryFilterOptions`*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &PerformanceEntryFilterOptions) -> Option<String>;
+    pub fn get_name(this: &PerformanceEntryFilterOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PerformanceEntryFilterOptions`*"]

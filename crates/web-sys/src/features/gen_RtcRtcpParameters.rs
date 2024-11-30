@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtcpParameters`*"]
     #[wasm_bindgen(method, getter = "cname")]
-    pub fn get_cname(this: &RtcRtcpParameters) -> Option<String>;
+    pub fn get_cname(this: &RtcRtcpParameters) -> Option<::alloc::string::String>;
     #[doc = "Change the `cname` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtcpParameters`*"]

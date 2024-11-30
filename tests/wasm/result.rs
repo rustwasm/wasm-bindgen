@@ -63,7 +63,7 @@ struct ResetOnDrop<'a> {
     flag: &'a mut bool,
 }
 
-impl<'a> Drop for ResetOnDrop<'a> {
+impl Drop for ResetOnDrop<'_> {
     fn drop(&mut self) {
         *self.flag = false;
     }

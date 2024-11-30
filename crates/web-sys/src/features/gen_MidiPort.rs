@@ -18,28 +18,28 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIPort/id)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiPort`*"]
-    pub fn id(this: &MidiPort) -> String;
+    pub fn id(this: &MidiPort) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "MIDIPort" , js_name = manufacturer)]
     #[doc = "Getter for the `manufacturer` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIPort/manufacturer)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiPort`*"]
-    pub fn manufacturer(this: &MidiPort) -> Option<String>;
+    pub fn manufacturer(this: &MidiPort) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "MIDIPort" , js_name = name)]
     #[doc = "Getter for the `name` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIPort/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiPort`*"]
-    pub fn name(this: &MidiPort) -> Option<String>;
+    pub fn name(this: &MidiPort) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "MIDIPort" , js_name = version)]
     #[doc = "Getter for the `version` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIPort/version)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiPort`*"]
-    pub fn version(this: &MidiPort) -> Option<String>;
+    pub fn version(this: &MidiPort) -> Option<::alloc::string::String>;
     #[cfg(feature = "MidiPortType")]
     # [wasm_bindgen (structural , method , getter , js_class = "MIDIPort" , js_name = type)]
     #[doc = "Getter for the `type` field of this object."]

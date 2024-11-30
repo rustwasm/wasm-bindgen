@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTitleElement/text)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTitleElement`*"]
-    pub fn text(this: &HtmlTitleElement) -> Result<String, JsValue>;
+    pub fn text(this: &HtmlTitleElement) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (structural , catch , method , setter , js_class = "HTMLTitleElement" , js_name = text)]
     #[doc = "Setter for the `text` field of this object."]
     #[doc = ""]

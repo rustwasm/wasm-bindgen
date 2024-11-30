@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpHeaderExtensionCapability`*"]
     #[wasm_bindgen(method, getter = "uri")]
-    pub fn get_uri(this: &RtcRtpHeaderExtensionCapability) -> String;
+    pub fn get_uri(this: &RtcRtpHeaderExtensionCapability) -> ::alloc::string::String;
     #[doc = "Change the `uri` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcRtpHeaderExtensionCapability`*"]
@@ -28,7 +28,7 @@ impl RtcRtpHeaderExtensionCapability {
     pub fn new(uri: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.uri(uri);
+        ret.set_uri(uri);
         ret
     }
     #[deprecated = "Use `set_uri()` instead."]

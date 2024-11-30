@@ -406,7 +406,7 @@ enum LitOrExpr<'a> {
     Lit(&'a str),
 }
 
-impl<'a> Encode for LitOrExpr<'a> {
+impl Encode for LitOrExpr<'_> {
     fn encode(&self, dst: &mut Encoder) {
         match self {
             LitOrExpr::Expr(expr) => {
@@ -468,14 +468,14 @@ impl Encode for usize {
     }
 }
 
-impl<'a> Encode for &'a [u8] {
+impl Encode for &[u8] {
     fn encode(&self, dst: &mut Encoder) {
         self.len().encode(dst);
         dst.extend_from_slice(self);
     }
 }
 
-impl<'a> Encode for &'a str {
+impl Encode for &str {
     fn encode(&self, dst: &mut Encoder) {
         self.as_bytes().encode(dst);
     }

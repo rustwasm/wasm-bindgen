@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLHeadingElement/align)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlHeadingElement`*"]
-    pub fn align(this: &HtmlHeadingElement) -> String;
+    pub fn align(this: &HtmlHeadingElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLHeadingElement" , js_name = align)]
     #[doc = "Setter for the `align` field of this object."]
     #[doc = ""]

@@ -18,14 +18,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMException/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomException`*"]
-    pub fn name(this: &DomException) -> String;
+    pub fn name(this: &DomException) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "DOMException" , js_name = message)]
     #[doc = "Getter for the `message` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMException/message)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomException`*"]
-    pub fn message(this: &DomException) -> String;
+    pub fn message(this: &DomException) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "DOMException" , js_name = code)]
     #[doc = "Getter for the `code` field of this object."]
     #[doc = ""]
@@ -46,7 +46,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMException/filename)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomException`*"]
-    pub fn filename(this: &DomException) -> String;
+    pub fn filename(this: &DomException) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "DOMException" , js_name = lineNumber)]
     #[doc = "Getter for the `lineNumber` field of this object."]
     #[doc = ""]
@@ -74,7 +74,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMException/stack)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomException`*"]
-    pub fn stack(this: &DomException) -> String;
+    pub fn stack(this: &DomException) -> ::alloc::string::String;
     #[wasm_bindgen(catch, constructor, js_class = "DOMException")]
     #[doc = "The `new DomException(..)` constructor, creating a new instance of `DomException`."]
     #[doc = ""]

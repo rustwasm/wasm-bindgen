@@ -6,13 +6,13 @@ use wasm_bindgen_test::*;
 #[allow(deprecated)]
 #[wasm_bindgen_test]
 fn new_undefined() {
-    assert_eq!(Boolean::new(&JsValue::undefined()).value_of(), false);
+    assert!(!Boolean::new(&JsValue::undefined()).value_of());
 }
 
 #[allow(deprecated)]
 #[wasm_bindgen_test]
 fn new_truly() {
-    assert_eq!(Boolean::new(&JsValue::from("foo")).value_of(), true);
+    assert!(Boolean::new(&JsValue::from("foo")).value_of());
 }
 
 #[allow(deprecated)]

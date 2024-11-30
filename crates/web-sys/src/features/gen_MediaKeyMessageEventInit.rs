@@ -71,8 +71,8 @@ impl MediaKeyMessageEventInit {
     pub fn new(message: &::js_sys::ArrayBuffer, message_type: MediaKeyMessageType) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.message(message);
-        ret.message_type(message_type);
+        ret.set_message(message);
+        ret.set_message_type(message_type);
         ret
     }
     #[deprecated = "Use `set_bubbles()` instead."]

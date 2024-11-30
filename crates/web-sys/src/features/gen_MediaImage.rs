@@ -22,7 +22,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "sizes")]
-    pub fn get_sizes(this: &MediaImage) -> Option<String>;
+    pub fn get_sizes(this: &MediaImage) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `sizes` field of this object."]
     #[doc = ""]
@@ -40,7 +40,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "src")]
-    pub fn get_src(this: &MediaImage) -> String;
+    pub fn get_src(this: &MediaImage) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `src` field of this object."]
     #[doc = ""]
@@ -58,7 +58,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "type")]
-    pub fn get_type(this: &MediaImage) -> Option<String>;
+    pub fn get_type(this: &MediaImage) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `type` field of this object."]
     #[doc = ""]
@@ -80,7 +80,7 @@ impl MediaImage {
     pub fn new(src: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.src(src);
+        ret.set_src(src);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

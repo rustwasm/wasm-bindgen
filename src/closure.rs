@@ -340,7 +340,7 @@ where
         #[inline(never)]
         #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
         unsafe fn breaks_if_inlined<T: WasmClosure + ?Sized>(a: usize, b: usize) -> u32 {
-            super::__wbindgen_describe_closure(a as u32, b as u32, describe::<T> as u32)
+            super::__wbindgen_describe_closure(a as u32, b as u32, describe::<T> as usize as u32)
         }
 
         let idx = unsafe { breaks_if_inlined::<T>(a, b) };
@@ -471,7 +471,7 @@ where
 }
 
 // `Closure` can only be passed by reference to imports.
-impl<'a, T> IntoWasmAbi for &'a Closure<T>
+impl<T> IntoWasmAbi for &Closure<T>
 where
     T: WasmClosure + ?Sized,
 {
@@ -482,7 +482,7 @@ where
     }
 }
 
-impl<'a, T> OptionIntoWasmAbi for &'a Closure<T>
+impl<T> OptionIntoWasmAbi for &Closure<T>
 where
     T: WasmClosure + ?Sized,
 {
@@ -596,7 +596,7 @@ macro_rules! doit {
                     ret.return_abi().into()
                 }
 
-                inform(invoke::<$($var,)* R> as u32);
+                inform(invoke::<$($var,)* R> as usize as u32);
 
                 unsafe extern fn destroy<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
                     a: usize,
@@ -614,7 +614,7 @@ macro_rules! doit {
                         fields: (a, b)
                     }.ptr));
                 }
-                inform(destroy::<$($var,)* R> as u32);
+                inform(destroy::<$($var,)* R> as usize as u32);
 
                 <&Self>::describe();
             }
@@ -656,7 +656,7 @@ macro_rules! doit {
                     ret.return_abi().into()
                 }
 
-                inform(invoke::<$($var,)* R> as u32);
+                inform(invoke::<$($var,)* R> as usize as u32);
 
                 unsafe extern fn destroy<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
                     a: usize,
@@ -670,7 +670,7 @@ macro_rules! doit {
                         fields: (a, b)
                     }.ptr));
                 }
-                inform(destroy::<$($var,)* R> as u32);
+                inform(destroy::<$($var,)* R> as usize as u32);
 
                 <&mut Self>::describe();
             }
@@ -793,7 +793,7 @@ where
             ret.return_abi().into()
         }
 
-        inform(invoke::<A, R> as u32);
+        inform(invoke::<A, R> as usize as u32);
 
         #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
         unsafe extern "C" fn destroy<A: RefFromWasmAbi, R: ReturnWasmAbi>(a: usize, b: usize) {
@@ -805,7 +805,7 @@ where
                 FatPtr::<dyn Fn(&A) -> R> { fields: (a, b) }.ptr,
             ));
         }
-        inform(destroy::<A, R> as u32);
+        inform(destroy::<A, R> as usize as u32);
 
         <&Self>::describe();
     }
@@ -843,7 +843,7 @@ where
             ret.return_abi().into()
         }
 
-        inform(invoke::<A, R> as u32);
+        inform(invoke::<A, R> as usize as u32);
 
         #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
         unsafe extern "C" fn destroy<A: RefFromWasmAbi, R: ReturnWasmAbi>(a: usize, b: usize) {
@@ -855,7 +855,7 @@ where
                 FatPtr::<dyn FnMut(&A) -> R> { fields: (a, b) }.ptr,
             ));
         }
-        inform(destroy::<A, R> as u32);
+        inform(destroy::<A, R> as usize as u32);
 
         <&mut Self>::describe();
     }

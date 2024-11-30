@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionInit`*"]
     #[wasm_bindgen(method, getter = "endpoint")]
-    pub fn get_endpoint(this: &PushSubscriptionInit) -> String;
+    pub fn get_endpoint(this: &PushSubscriptionInit) -> ::alloc::string::String;
     #[doc = "Change the `endpoint` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionInit`*"]
@@ -54,7 +54,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionInit`*"]
     #[wasm_bindgen(method, getter = "scope")]
-    pub fn get_scope(this: &PushSubscriptionInit) -> String;
+    pub fn get_scope(this: &PushSubscriptionInit) -> ::alloc::string::String;
     #[doc = "Change the `scope` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PushSubscriptionInit`*"]
@@ -68,8 +68,8 @@ impl PushSubscriptionInit {
     pub fn new(endpoint: &str, scope: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.endpoint(endpoint);
-        ret.scope(scope);
+        ret.set_endpoint(endpoint);
+        ret.set_scope(scope);
         ret
     }
     #[deprecated = "Use `set_app_server_key()` instead."]

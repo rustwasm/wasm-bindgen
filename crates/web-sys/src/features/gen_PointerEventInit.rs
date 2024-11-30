@@ -328,7 +328,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]
     #[wasm_bindgen(method, getter = "pointerType")]
-    pub fn get_pointer_type(this: &PointerEventInit) -> Option<String>;
+    pub fn get_pointer_type(this: &PointerEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `pointerType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PointerEventInit`*"]

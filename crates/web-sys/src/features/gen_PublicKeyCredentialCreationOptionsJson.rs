@@ -22,7 +22,9 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "attestation")]
-    pub fn get_attestation(this: &PublicKeyCredentialCreationOptionsJson) -> Option<String>;
+    pub fn get_attestation(
+        this: &PublicKeyCredentialCreationOptionsJson,
+    ) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `attestation` field of this object."]
     #[doc = ""]
@@ -88,7 +90,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "challenge")]
-    pub fn get_challenge(this: &PublicKeyCredentialCreationOptionsJson) -> String;
+    pub fn get_challenge(this: &PublicKeyCredentialCreationOptionsJson) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `challenge` field of this object."]
     #[doc = ""]
@@ -271,10 +273,10 @@ impl PublicKeyCredentialCreationOptionsJson {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.challenge(challenge);
-        ret.pub_key_cred_params(pub_key_cred_params);
-        ret.rp(rp);
-        ret.user(user);
+        ret.set_challenge(challenge);
+        ret.set_pub_key_cred_params(pub_key_cred_params);
+        ret.set_rp(rp);
+        ret.set_user(user);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

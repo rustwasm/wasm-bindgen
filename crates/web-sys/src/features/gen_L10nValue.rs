@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nValue`*"]
     #[wasm_bindgen(method, getter = "value")]
-    pub fn get_value(this: &L10nValue) -> Option<String>;
+    pub fn get_value(this: &L10nValue) -> Option<::alloc::string::String>;
     #[doc = "Change the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nValue`*"]

@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/dropEffect)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DataTransfer`*"]
-    pub fn drop_effect(this: &DataTransfer) -> String;
+    pub fn drop_effect(this: &DataTransfer) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "DataTransfer" , js_name = dropEffect)]
     #[doc = "Setter for the `dropEffect` field of this object."]
     #[doc = ""]
@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/effectAllowed)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DataTransfer`*"]
-    pub fn effect_allowed(this: &DataTransfer) -> String;
+    pub fn effect_allowed(this: &DataTransfer) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "DataTransfer" , js_name = effectAllowed)]
     #[doc = "Setter for the `effectAllowed` field of this object."]
     #[doc = ""]
@@ -90,7 +90,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/getData)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DataTransfer`*"]
-    pub fn get_data(this: &DataTransfer, format: &str) -> Result<String, JsValue>;
+    pub fn get_data(this: &DataTransfer, format: &str) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "DataTransfer" , js_name = getFiles)]
     #[doc = "The `getFiles()` method."]
     #[doc = ""]

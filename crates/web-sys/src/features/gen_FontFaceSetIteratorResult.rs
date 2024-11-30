@@ -38,8 +38,8 @@ impl FontFaceSetIteratorResult {
     pub fn new(done: bool, value: &::wasm_bindgen::JsValue) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.done(done);
-        ret.value(value);
+        ret.set_done(done);
+        ret.set_value(value);
         ret
     }
     #[deprecated = "Use `set_done()` instead."]

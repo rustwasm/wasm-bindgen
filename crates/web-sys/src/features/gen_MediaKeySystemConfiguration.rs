@@ -54,7 +54,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`*"]
     #[wasm_bindgen(method, getter = "label")]
-    pub fn get_label(this: &MediaKeySystemConfiguration) -> Option<String>;
+    pub fn get_label(this: &MediaKeySystemConfiguration) -> Option<::alloc::string::String>;
     #[doc = "Change the `label` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemConfiguration`*"]

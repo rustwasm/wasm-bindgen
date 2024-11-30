@@ -26,7 +26,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PresentationConnectionCloseEvent/message)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PresentationConnectionCloseEvent`*"]
-    pub fn message(this: &PresentationConnectionCloseEvent) -> String;
+    pub fn message(this: &PresentationConnectionCloseEvent) -> ::alloc::string::String;
     #[cfg(feature = "PresentationConnectionCloseEventInit")]
     #[wasm_bindgen(catch, constructor, js_class = "PresentationConnectionCloseEvent")]
     #[doc = "The `new PresentationConnectionCloseEvent(..)` constructor, creating a new instance of `PresentationConnectionCloseEvent`."]

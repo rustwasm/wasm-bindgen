@@ -34,7 +34,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ShadowRoot/innerHTML)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ShadowRoot`*"]
-    pub fn inner_html(this: &ShadowRoot) -> String;
+    pub fn inner_html(this: &ShadowRoot) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "ShadowRoot" , js_name = innerHTML)]
     #[doc = "Setter for the `innerHTML` field of this object."]
     #[doc = ""]

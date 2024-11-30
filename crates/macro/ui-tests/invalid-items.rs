@@ -17,7 +17,7 @@ extern "C" {
     #[wasm_bindgen(static_string)]
     static FOO2: JsString;
 
-    #[wasm_bindgen(thread_local, static_string)]
+    #[wasm_bindgen(thread_local_v2, static_string)]
     static FOO3: JsString;
 
     static FOO4: JsString = "test";

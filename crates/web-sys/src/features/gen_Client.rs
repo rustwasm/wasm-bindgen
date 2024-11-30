@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Client/url)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Client`*"]
-    pub fn url(this: &Client) -> String;
+    pub fn url(this: &Client) -> ::alloc::string::String;
     #[cfg(feature = "FrameType")]
     # [wasm_bindgen (structural , method , getter , js_class = "Client" , js_name = frameType)]
     #[doc = "Getter for the `frameType` field of this object."]
@@ -41,7 +41,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Client/id)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Client`*"]
-    pub fn id(this: &Client) -> String;
+    pub fn id(this: &Client) -> ::alloc::string::String;
     # [wasm_bindgen (catch , method , structural , js_class = "Client" , js_name = postMessage)]
     #[doc = "The `postMessage()` method."]
     #[doc = ""]

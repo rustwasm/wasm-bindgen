@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleRule/selectorText)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssStyleRule`*"]
-    pub fn selector_text(this: &CssStyleRule) -> String;
+    pub fn selector_text(this: &CssStyleRule) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "CSSStyleRule" , js_name = selectorText)]
     #[doc = "Setter for the `selectorText` field of this object."]
     #[doc = ""]

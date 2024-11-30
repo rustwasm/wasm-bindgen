@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use std::str::Chars;
 
 use ast::OperationKind;
-use backend::ast;
+use backend::ast::{self, ThreadLocal};
 use backend::util::{ident_ty, ShortHash};
 use backend::Diagnostic;
 use proc_macro2::{Ident, Span, TokenStream, TokenTree};
@@ -96,6 +96,7 @@ macro_rules! attrgen {
             (getter_with_clone, GetterWithClone(Span)),
             (static_string, StaticString(Span)),
             (thread_local, ThreadLocal(Span)),
+            (thread_local_v2, ThreadLocalV2(Span)),
 
             // For testing purposes only.
             (assert_no_shim, AssertNoShim(Span)),
@@ -234,6 +235,23 @@ impl BindgenAttrs {
             ret.attrs.append(&mut attrs.attrs);
             attrs.check_used();
         }
+    }
+
+    fn get_thread_local(&self) -> Result<Option<ThreadLocal>, Diagnostic> {
+        let mut thread_local = self.thread_local_v2().map(|_| ThreadLocal::V2);
+
+        if let Some(span) = self.thread_local() {
+            if thread_local.is_some() {
+                return Err(Diagnostic::span_error(
+                    *span,
+                    "`thread_local` can't be used with `thread_local_v2`",
+                ));
+            } else {
+                thread_local = Some(ThreadLocal::V1)
+            }
+        }
+
+        Ok(thread_local)
     }
 
     attrgen!(methods);
@@ -404,7 +422,7 @@ trait ConvertToAst<Ctx> {
     fn convert(self, context: Ctx) -> Result<Self::Target, Diagnostic>;
 }
 
-impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs)> for &'a mut syn::ItemStruct {
+impl ConvertToAst<(&ast::Program, BindgenAttrs)> for &mut syn::ItemStruct {
     type Target = ast::Struct;
 
     fn convert(
@@ -512,9 +530,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             self.sig.clone(),
             self.attrs.clone(),
             self.vis.clone(),
-            false,
-            None,
-            false,
+            FunctionPosition::Extern,
             Some(&["default"]),
         )?
         .0;
@@ -778,7 +794,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             self.ident,
             ShortHash((&js_name, module, &self.ident)),
         );
-        let thread_local = opts.thread_local().is_some();
+        let thread_local = opts.get_thread_local()?;
 
         opts.check_used();
         Ok(ast::ImportKind::Static(ast::ImportStatic {
@@ -826,12 +842,14 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             )
         }
 
-        if opts.thread_local().is_none() {
+        let thread_local = if let Some(thread_local) = opts.get_thread_local()? {
+            thread_local
+        } else {
             bail_span!(
                 self,
-                "static strings require `#[wasm_bindgen(thread_local)]`"
+                "static strings require `#[wasm_bindgen(thread_local_v2)]`"
             )
-        }
+        };
 
         let shim = format!(
             "__wbg_string_{}_{}",
@@ -847,6 +865,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             wasm_bindgen: program.wasm_bindgen.clone(),
             js_sys: program.js_sys.clone(),
             string,
+            thread_local,
         }))
     }
 }
@@ -873,9 +892,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
             self.sig.clone(),
             self.attrs,
             self.vis,
-            false,
-            None,
-            false,
+            FunctionPosition::Free,
             Some(&["default"]),
         )?;
         attrs.check_used();
@@ -910,6 +927,12 @@ fn get_self_method(r: syn::Receiver) -> ast::MethodSelf {
     }
 }
 
+enum FunctionPosition<'a> {
+    Extern,
+    Free,
+    Impl { self_ty: &'a Ident },
+}
+
 /// Construct a function (and gets the self type if appropriate) for our AST from a syn function.
 #[allow(clippy::too_many_arguments)]
 fn function_from_decl(
@@ -918,9 +941,7 @@ fn function_from_decl(
     sig: syn::Signature,
     attrs: Vec<syn::Attribute>,
     vis: syn::Visibility,
-    allow_self: bool,
-    self_ty: Option<&Ident>,
-    is_from_impl: bool,
+    position: FunctionPosition,
     skip_keywords: Option<&[&str]>,
 ) -> Result<(ast::Function, Option<ast::MethodSelf>), Diagnostic> {
     if sig.variadic.is_some() {
@@ -942,7 +963,7 @@ fn function_from_decl(
     // The following comment explains why this is necessary:
     // https://github.com/rustwasm/wasm-bindgen/issues/3105#issuecomment-1275160744
     let replace_self = |mut t: syn::Type| {
-        if let Some(self_ty) = self_ty {
+        if let FunctionPosition::Impl { self_ty } = position {
             // This uses a visitor to replace all occurrences of `Self` with
             // the actual type identifier. The visitor guarantees that we find
             // all occurrences of `Self`, even if deeply nested and even if
@@ -974,30 +995,45 @@ fn function_from_decl(
     };
 
     let mut method_self = None;
-    let arguments = inputs
-        .into_iter()
-        .filter_map(|arg| match arg {
+    let mut arguments = Vec::new();
+    for arg in inputs.into_iter() {
+        match arg {
             syn::FnArg::Typed(mut c) => {
                 // typical arguments like foo: u32
                 replace_colliding_arg(&mut c);
                 c.ty = Box::new(replace_self(*c.ty));
-                Some(c)
+                arguments.push(c);
             }
             syn::FnArg::Receiver(r) => {
                 // the self argument, so self, &self, &mut self, self: Box<Self>, etc.
-                if !allow_self {
-                    panic!("arguments cannot be `self`")
+
+                // `self` is only allowed for `fn`s inside an `impl` block.
+                match position {
+                    FunctionPosition::Free => {
+                        bail_span!(
+                            r.self_token,
+                            "the `self` argument is only allowed for functions in `impl` blocks.\n\n\
+                            If the function is already in an `impl` block, did you perhaps forget to add `#[wasm_bindgen]` to the `impl` block?"
+                        );
+                    }
+                    FunctionPosition::Extern => {
+                        bail_span!(
+                            r.self_token,
+                            "the `self` argument is not allowed for `extern` functions.\n\n\
+                            Did you perhaps mean `this`? For more information on importing JavaScript functions, see:\n\
+                            https://rustwasm.github.io/docs/wasm-bindgen/examples/import-js.html"
+                        );
+                    }
+                    FunctionPosition::Impl { .. } => {}
                 }
 
                 // We need to know *how* `self` is passed to the method (by
                 // value or by reference) to generate the correct JS shim.
                 assert!(method_self.is_none());
                 method_self = Some(get_self_method(r));
-
-                None
             }
-        })
-        .collect::<Vec<_>>();
+        }
+    }
 
     let ret = match output {
         syn::ReturnType::Default => None,
@@ -1021,7 +1057,7 @@ fn function_from_decl(
             };
             (name, js_name_span, true)
         } else {
-            let name = if !is_from_impl
+            let name = if !matches!(position, FunctionPosition::Impl { .. })
                 && opts.method().is_none()
                 && is_js_keyword(&decl_name.to_string(), skip_keywords)
             {
@@ -1167,7 +1203,7 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
     }
 }
 
-impl<'a> MacroParse<BindgenAttrs> for &'a mut syn::ItemImpl {
+impl MacroParse<BindgenAttrs> for &mut syn::ItemImpl {
     fn macro_parse(self, program: &mut ast::Program, opts: BindgenAttrs) -> Result<(), Diagnostic> {
         if self.defaultness.is_some() {
             bail_span!(
@@ -1271,7 +1307,7 @@ fn prepare_for_impl_recursion(
     Ok(())
 }
 
-impl<'a> MacroParse<&ClassMarker> for &'a mut syn::ImplItemFn {
+impl MacroParse<&ClassMarker> for &mut syn::ImplItemFn {
     fn macro_parse(
         self,
         program: &mut ast::Program,
@@ -1307,9 +1343,7 @@ impl<'a> MacroParse<&ClassMarker> for &'a mut syn::ImplItemFn {
             self.sig.clone(),
             self.attrs.clone(),
             self.vis.clone(),
-            true,
-            Some(class),
-            true,
+            FunctionPosition::Impl { self_ty: class },
             None,
         )?;
         let method_kind = if opts.constructor().is_some() {

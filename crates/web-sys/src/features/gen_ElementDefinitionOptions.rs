@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ElementDefinitionOptions`*"]
     #[wasm_bindgen(method, getter = "extends")]
-    pub fn get_extends(this: &ElementDefinitionOptions) -> Option<String>;
+    pub fn get_extends(this: &ElementDefinitionOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `extends` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ElementDefinitionOptions`*"]

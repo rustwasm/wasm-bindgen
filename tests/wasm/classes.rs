@@ -533,7 +533,7 @@ mod works_in_module {
     use wasm_bindgen::prelude::wasm_bindgen;
 
     #[wasm_bindgen]
-    pub struct WorksInModule(u32);
+    pub struct WorksInModule(#[allow(dead_code)] u32);
 
     #[wasm_bindgen]
     impl WorksInModule {

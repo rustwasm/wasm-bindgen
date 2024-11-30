@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameOptions`*"]
     #[wasm_bindgen(method, getter = "style")]
-    pub fn get_style(this: &DisplayNameOptions) -> Option<String>;
+    pub fn get_style(this: &DisplayNameOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `style` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameOptions`*"]

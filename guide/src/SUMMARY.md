@@ -10,7 +10,6 @@
   - [Small Wasm files](./examples/add.md)
   - [Without a Bundler](./examples/without-a-bundler.md)
   - [Synchronous Instantiation](./examples/synchronous-instantiation.md)
-  - [Converting WebAssembly to JS](./examples/wasm2js.md)
   - [Importing functions from JS](./examples/import-js.md)
   - [Working with `char`](./examples/char.md)
   - [js-sys: WebAssembly in WebAssembly](./examples/wasm-in-wasm.md)

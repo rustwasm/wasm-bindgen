@@ -61,7 +61,7 @@ impl RtcDataChannelEventInit {
     pub fn new(channel: &RtcDataChannel) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.channel(channel);
+        ret.set_channel(channel);
         ret
     }
     #[deprecated = "Use `set_bubbles()` instead."]

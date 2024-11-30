@@ -61,7 +61,7 @@ impl NotificationEventInit {
     pub fn new(notification: &Notification) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.notification(notification);
+        ret.set_notification(notification);
         ret
     }
     #[deprecated = "Use `set_bubbles()` instead."]

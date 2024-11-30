@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaPssParams`*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &RsaPssParams) -> String;
+    pub fn get_name(this: &RsaPssParams) -> ::alloc::string::String;
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaPssParams`*"]
@@ -38,8 +38,8 @@ impl RsaPssParams {
     pub fn new(name: &str, salt_length: u32) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.salt_length(salt_length);
+        ret.set_name(name);
+        ret.set_salt_length(salt_length);
         ret
     }
     #[deprecated = "Use `set_name()` instead."]

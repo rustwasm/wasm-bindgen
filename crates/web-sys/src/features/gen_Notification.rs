@@ -89,7 +89,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/title)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
-    pub fn title(this: &Notification) -> String;
+    pub fn title(this: &Notification) -> ::alloc::string::String;
     #[cfg(feature = "NotificationDirection")]
     # [wasm_bindgen (structural , method , getter , js_class = "Notification" , js_name = dir)]
     #[doc = "Getter for the `dir` field of this object."]
@@ -104,42 +104,42 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/lang)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
-    pub fn lang(this: &Notification) -> Option<String>;
+    pub fn lang(this: &Notification) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "Notification" , js_name = body)]
     #[doc = "Getter for the `body` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/body)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
-    pub fn body(this: &Notification) -> Option<String>;
+    pub fn body(this: &Notification) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "Notification" , js_name = tag)]
     #[doc = "Getter for the `tag` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/tag)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
-    pub fn tag(this: &Notification) -> Option<String>;
+    pub fn tag(this: &Notification) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "Notification" , js_name = image)]
     #[doc = "Getter for the `image` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/image)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
-    pub fn image(this: &Notification) -> String;
+    pub fn image(this: &Notification) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "Notification" , js_name = icon)]
     #[doc = "Getter for the `icon` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/icon)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
-    pub fn icon(this: &Notification) -> Option<String>;
+    pub fn icon(this: &Notification) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "Notification" , js_name = badge)]
     #[doc = "Getter for the `badge` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Notification/badge)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Notification`*"]
-    pub fn badge(this: &Notification) -> String;
+    pub fn badge(this: &Notification) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "Notification" , js_name = vibrate)]
     #[doc = "Getter for the `vibrate` field of this object."]
     #[doc = ""]

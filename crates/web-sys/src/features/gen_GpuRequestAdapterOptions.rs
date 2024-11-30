@@ -22,7 +22,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "featureLevel")]
-    pub fn get_feature_level(this: &GpuRequestAdapterOptions) -> Option<String>;
+    pub fn get_feature_level(this: &GpuRequestAdapterOptions) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `featureLevel` field of this object."]
     #[doc = ""]
@@ -70,6 +70,24 @@ extern "C" {
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, setter = "powerPreference")]
     pub fn set_power_preference(this: &GpuRequestAdapterOptions, val: GpuPowerPreference);
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `xrCompatible` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRequestAdapterOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "xrCompatible")]
+    pub fn get_xr_compatible(this: &GpuRequestAdapterOptions) -> Option<bool>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `xrCompatible` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `GpuRequestAdapterOptions`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, setter = "xrCompatible")]
+    pub fn set_xr_compatible(this: &GpuRequestAdapterOptions, val: bool);
 }
 #[cfg(web_sys_unstable_apis)]
 impl GpuRequestAdapterOptions {
@@ -101,6 +119,12 @@ impl GpuRequestAdapterOptions {
     #[deprecated = "Use `set_power_preference()` instead."]
     pub fn power_preference(&mut self, val: GpuPowerPreference) -> &mut Self {
         self.set_power_preference(val);
+        self
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[deprecated = "Use `set_xr_compatible()` instead."]
+    pub fn xr_compatible(&mut self, val: bool) -> &mut Self {
+        self.set_xr_compatible(val);
         self
     }
 }

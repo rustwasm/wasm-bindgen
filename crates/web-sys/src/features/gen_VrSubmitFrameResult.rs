@@ -25,7 +25,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRSubmitFrameResult/base64Image)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrSubmitFrameResult`*"]
-    pub fn base64_image(this: &VrSubmitFrameResult) -> Option<String>;
+    pub fn base64_image(this: &VrSubmitFrameResult) -> Option<::alloc::string::String>;
     #[wasm_bindgen(catch, constructor, js_class = "VRSubmitFrameResult")]
     #[doc = "The `new VrSubmitFrameResult(..)` constructor, creating a new instance of `VrSubmitFrameResult`."]
     #[doc = ""]

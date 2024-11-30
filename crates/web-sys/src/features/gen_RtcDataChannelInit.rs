@@ -74,7 +74,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcDataChannelInit`*"]
     #[wasm_bindgen(method, getter = "protocol")]
-    pub fn get_protocol(this: &RtcDataChannelInit) -> Option<String>;
+    pub fn get_protocol(this: &RtcDataChannelInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `protocol` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcDataChannelInit`*"]

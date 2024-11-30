@@ -25,6 +25,7 @@ async fn rtc_rtp_transceiver_direction() {
 
     let pc1: RtcPeerConnection = RtcPeerConnection::new().unwrap();
 
+    #[allow(deprecated)]
     let tr1: RtcRtpTransceiver = pc1.add_transceiver_with_str_and_init(
         "audio",
         tr_init.direction(RtcRtpTransceiverDirection::Sendonly),

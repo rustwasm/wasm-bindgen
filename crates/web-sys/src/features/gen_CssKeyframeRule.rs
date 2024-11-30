@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSKeyframeRule/keyText)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssKeyframeRule`*"]
-    pub fn key_text(this: &CssKeyframeRule) -> String;
+    pub fn key_text(this: &CssKeyframeRule) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "CSSKeyframeRule" , js_name = keyText)]
     #[doc = "Setter for the `keyText` field of this object."]
     #[doc = ""]

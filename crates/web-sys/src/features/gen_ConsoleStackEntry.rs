@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
     #[wasm_bindgen(method, getter = "asyncCause")]
-    pub fn get_async_cause(this: &ConsoleStackEntry) -> Option<String>;
+    pub fn get_async_cause(this: &ConsoleStackEntry) -> Option<::alloc::string::String>;
     #[doc = "Change the `asyncCause` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
     #[wasm_bindgen(method, getter = "filename")]
-    pub fn get_filename(this: &ConsoleStackEntry) -> Option<String>;
+    pub fn get_filename(this: &ConsoleStackEntry) -> Option<::alloc::string::String>;
     #[doc = "Change the `filename` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
@@ -44,7 +44,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]
     #[wasm_bindgen(method, getter = "functionName")]
-    pub fn get_function_name(this: &ConsoleStackEntry) -> Option<String>;
+    pub fn get_function_name(this: &ConsoleStackEntry) -> Option<::alloc::string::String>;
     #[doc = "Change the `functionName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleStackEntry`*"]

@@ -669,7 +669,7 @@ impl<'a> BackgroundChild<'a> {
     }
 }
 
-impl<'a> Drop for BackgroundChild<'a> {
+impl Drop for BackgroundChild<'_> {
     fn drop(&mut self) {
         self.child.kill().unwrap();
         let status = self.child.wait().unwrap();

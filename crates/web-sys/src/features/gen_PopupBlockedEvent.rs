@@ -26,14 +26,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PopupBlockedEvent/popupWindowName)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEvent`*"]
-    pub fn popup_window_name(this: &PopupBlockedEvent) -> Option<String>;
+    pub fn popup_window_name(this: &PopupBlockedEvent) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "PopupBlockedEvent" , js_name = popupWindowFeatures)]
     #[doc = "Getter for the `popupWindowFeatures` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PopupBlockedEvent/popupWindowFeatures)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PopupBlockedEvent`*"]
-    pub fn popup_window_features(this: &PopupBlockedEvent) -> Option<String>;
+    pub fn popup_window_features(this: &PopupBlockedEvent) -> Option<::alloc::string::String>;
     #[wasm_bindgen(catch, constructor, js_class = "PopupBlockedEvent")]
     #[doc = "The `new PopupBlockedEvent(..)` constructor, creating a new instance of `PopupBlockedEvent`."]
     #[doc = ""]

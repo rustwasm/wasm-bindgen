@@ -25,7 +25,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSRule/cssText)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssRule`*"]
-    pub fn css_text(this: &CssRule) -> String;
+    pub fn css_text(this: &CssRule) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "CSSRule" , js_name = cssText)]
     #[doc = "Setter for the `cssText` field of this object."]
     #[doc = ""]

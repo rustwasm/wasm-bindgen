@@ -193,7 +193,7 @@ impl WasmBindgenDescriptorsSection {
             found: bool,
         }
 
-        impl<'a> Visitor<'a> for FindDescribeClosure {
+        impl Visitor<'_> for FindDescribeClosure {
             fn visit_call(&mut self, call: &Call) {
                 if call.func == self.wbindgen_describe_closure {
                     self.found = true;

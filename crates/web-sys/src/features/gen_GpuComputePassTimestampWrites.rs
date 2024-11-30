@@ -83,7 +83,7 @@ impl GpuComputePassTimestampWrites {
     pub fn new(query_set: &GpuQuerySet) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.query_set(query_set);
+        ret.set_query_set(query_set);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

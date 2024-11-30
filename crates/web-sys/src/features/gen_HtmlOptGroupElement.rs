@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptGroupElement/label)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlOptGroupElement`*"]
-    pub fn label(this: &HtmlOptGroupElement) -> String;
+    pub fn label(this: &HtmlOptGroupElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLOptGroupElement" , js_name = label)]
     #[doc = "Setter for the `label` field of this object."]
     #[doc = ""]
