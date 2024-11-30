@@ -558,6 +558,26 @@ jobs:
     - run: rustup update --no-self-update 1.57 && rustup default 1.57 && rustup target add ${{ matrix.target }}
     - run: cargo build --target ${{ matrix.target }} ${{ matrix.features }}
 
+  edition-2018:
+    name: Check edition 2018 compatibility
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - x86_64-unknown-linux-gnu
+          - wasm32-unknown-unknown
+        features:
+          - --no-default-features
+          - ""
+    defaults:
+      run:
+        working-directory: crates/msrv/2018
+    steps:
+    - uses: actions/checkout@v4
+    - run: rustup update --no-self-update 1.57 && rustup default 1.57 && rustup target add ${{ matrix.target }}
+    - run: cargo build --target ${{ matrix.target }} ${{ matrix.features }}
+
   msrv-cli:
     name: Check MSRV for CLI tools
     runs-on: ubuntu-latest
