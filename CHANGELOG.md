@@ -1,7 +1,9 @@
 # `wasm-bindgen` Change Log
 --------------------------------------------------------------------------------
 
-## Unreleased
+## [0.2.97](https://github.com/rustwasm/wasm-bindgen/compare/0.2.96...0.2.97)
+
+Released 2024-11-30
 
 ### Fixed
 
