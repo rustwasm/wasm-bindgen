@@ -1,8 +1,9 @@
 use anyhow::{bail, Error};
-use base64::{prelude::BASE64_STANDARD, Engine as _};
 use std::collections::HashSet;
 use std::fmt::Write;
 use walrus::Module;
+
+use crate::js::file_util::create_load_inline_bytes_snippet;
 
 pub struct Config {
     base64: bool,
@@ -229,18 +230,7 @@ impl Output {
         let wasm = self.module.emit_wasm();
         let (bytes, booted) = if self.base64 {
             (
-                format!(
-                    "
-                    let bytes;
-                    const base64 = \"{base64}\";
-                    if (typeof Buffer === 'undefined') {{
-                        bytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
-                    }} else {{
-                        bytes = Buffer.from(base64, 'base64');
-                    }}
-                    ",
-                    base64 = BASE64_STANDARD.encode(&wasm)
-                ),
+                create_load_inline_bytes_snippet(&wasm, "bytes".into()),
                 inst,
             )
         } else if let Some(ref path) = self.fetch_path {

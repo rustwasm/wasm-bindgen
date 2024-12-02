@@ -110,6 +110,7 @@ fn rmain(args: &Args) -> Result<(), Error> {
             "nodejs" => b.nodejs(true)?,
             "deno" => b.deno(true)?,
             "experimental-nodejs-module" => b.nodejs_module(true)?,
+            "experimental-inline-nodejs" => b.inline_nodejs(true)?,
             s => bail!("invalid encode-into mode: `{}`", s),
         };
     }
