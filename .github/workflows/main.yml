@@ -538,6 +538,34 @@ jobs:
         name: doc_api
         path: docs.tar.gz
 
+  msrv-resolver:
+    name: Check for feature resolver v1 error message
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        rust:
+          - 1.57
+          - stable
+        target:
+          - x86_64-unknown-linux-gnu
+          - wasm32-unknown-unknown
+        features:
+          - --no-default-features
+          - ""
+    defaults:
+      run:
+        working-directory: crates/msrv/resolver
+    steps:
+    - uses: actions/checkout@v4
+    - run: rustup update --no-self-update ${{ matrix.rust }} && rustup default ${{ matrix.rust }} && rustup target add ${{ matrix.target }}
+    - if: matrix.rust == '1.57'
+      run: |
+        cargo update -p bumpalo --precise 3.12.0
+        cargo update -p log --precise 0.4.18
+        cargo update -p scoped-tls --precise 1.0.0
+    - run: diff <(cargo build --target ${{ matrix.target }} ${{ matrix.features }} --message-format json | jq -r "select(.reason == \"compiler-message\") | .message.message") error-${{ matrix.rust }}.txt
+
   msrv-lib:
     name: Check MSRV for libraries
     runs-on: ubuntu-latest
