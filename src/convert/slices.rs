@@ -1,6 +1,3 @@
-#[cfg(feature = "std")]
-use std::prelude::v1::*;
-
 use alloc::boxed::Box;
 use alloc::string::String;
 use alloc::vec::Vec;
