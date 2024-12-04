@@ -57,6 +57,11 @@ wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.97", default-featu
   "coverage",
 ] }
 
+[target.'cfg(__wasm_bindgen_resolver_1)'.dependencies]
+wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.97", default-features = false, features = [
+  "xxx_resolver_1",
+] }
+
 [dev-dependencies]
 wasm-bindgen-test = { path = 'crates/test' }
 

@@ -2,7 +2,7 @@
 //! going on here.
 
 #![cfg_attr(
-    feature = "coverage",
+    all(not(feature = "xxx_resolver_1"), feature = "coverage"),
     feature(allow_internal_unstable),
     allow(internal_features)
 )]
@@ -18,7 +18,10 @@ use std::sync::atomic::*;
 static CNT: AtomicUsize = AtomicUsize::new(0);
 
 #[proc_macro_attribute]
-#[cfg_attr(feature = "coverage", allow_internal_unstable(coverage_attribute))]
+#[cfg_attr(
+    all(not(feature = "xxx_resolver_1"), feature = "coverage"),
+    allow_internal_unstable(coverage_attribute)
+)]
 pub fn wasm_bindgen_test(
     attr: proc_macro::TokenStream,
     body: proc_macro::TokenStream,
