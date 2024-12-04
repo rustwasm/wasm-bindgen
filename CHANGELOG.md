@@ -8,6 +8,11 @@
 * Add clear error message to communicate new feature resolver version requirements.
   [#4312](https://github.com/rustwasm/wasm-bindgen/pull/4312)
 
+### Fixed
+
+* Fix macro-hygiene for calls to `std::thread_local!`.
+  [#4315](https://github.com/rustwasm/wasm-bindgen/pull/4315)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.97](https://github.com/rustwasm/wasm-bindgen/compare/0.2.96...0.2.97)

@@ -1711,7 +1711,7 @@ impl ToTokens for ast::ImportStatic {
                         fn init() -> #ty {
                             #init
                         }
-                        thread_local!(static _VAL: #ty = init(););
+                        #wasm_bindgen::__rt::std::thread_local!(static _VAL: #ty = init(););
                         #wasm_bindgen::JsStatic {
                             __inner: &_VAL,
                         }
@@ -1763,7 +1763,7 @@ fn thread_local_import(
 
     match thread_local {
         ast::ThreadLocal::V1 => quote! {
-            thread_local! {
+            #wasm_bindgen::__rt::std::thread_local! {
                 #[automatically_derived]
                 #[deprecated = "use with `#[wasm_bindgen(thread_local_v2)]` instead"]
                 #vis static #name: #actual_ty = {
@@ -1774,7 +1774,7 @@ fn thread_local_import(
         ast::ThreadLocal::V2 => {
             #[cfg(feature = "std")]
             let inner = quote! {
-                thread_local!(static _VAL: #actual_ty = init(););
+                #wasm_bindgen::__rt::std::thread_local!(static _VAL: #actual_ty = init(););
                 #wasm_bindgen::JsThreadLocal {
                     __inner: &_VAL,
                 }
