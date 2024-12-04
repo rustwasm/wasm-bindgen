@@ -1966,8 +1966,8 @@ fn respan(input: TokenStream, span: &dyn ToTokens) -> TokenStream {
 }
 
 fn coverage() -> Option<TokenStream> {
-    #[cfg(feature = "coverage")]
+    #[cfg(all(not(feature = "xxx_resolver_1"), feature = "coverage"))]
     return Some(quote! { #[coverage(off)] });
-    #[cfg(not(feature = "coverage"))]
+    #[cfg(any(feature = "xxx_resolver_1", not(feature = "coverage")))]
     None
 }

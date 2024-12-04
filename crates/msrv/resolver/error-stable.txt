@@ -1,0 +1,4 @@
+Feature resolver version 2 or up is required.
+Please add `resolver = "2"` to your `Cargo.toml`.
+
+See <https://doc.rust-lang.org/1.83.0/cargo/reference/resolver.html#feature-resolver-version-2>.
