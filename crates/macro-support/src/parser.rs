@@ -1484,7 +1484,7 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
         let js_name = opts
             .js_name()
             .map(|s| s.0)
-            .map_or_else(|| self.ident.to_string(), |s| s.to_string());
+            .map_or_else(|| self.ident.unraw().to_string(), |s| s.to_string());
         let comments = extract_doc_comments(&self.attrs);
 
         opts.check_used();
@@ -1588,7 +1588,8 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
 
                 let comments = extract_doc_comments(&v.attrs);
                 Ok(ast::Variant {
-                    name: v.ident.clone(),
+                    rust_name: v.ident.clone(),
+                    js_name: v.ident.unraw().to_string(),
                     // due to the above checks, we know that the value fits
                     // within 32 bits, so this cast doesn't lose any information
                     value: value as u32,

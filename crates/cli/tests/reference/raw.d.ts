@@ -1,6 +1,9 @@
 /* tslint:disable */
 /* eslint-disable */
 export function test1(test: number): number;
+export enum Enum {
+  A = 0,
+}
 export class Test {
   private constructor();
   free(): void;

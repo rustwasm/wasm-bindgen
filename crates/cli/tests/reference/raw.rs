@@ -22,3 +22,8 @@ impl r#Test {
 extern "C" {
     fn r#test2() -> JsValue;
 }
+
+#[wasm_bindgen]
+pub enum r#Enum {
+    r#A,
+}

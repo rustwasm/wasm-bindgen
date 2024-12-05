@@ -32,6 +32,13 @@ export function test1(test) {
     return ret >>> 0;
 }
 
+/**
+ * @enum {0}
+ */
+export const Enum = Object.freeze({
+    A: 0, "0": "A",
+});
+
 const TestFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_test_free(ptr >>> 0, 1));
