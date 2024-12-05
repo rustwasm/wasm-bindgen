@@ -13,6 +13,9 @@
 * Add clear error message to communicate new feature resolver version requirements.
   [#4312](https://github.com/rustwasm/wasm-bindgen/pull/4312)
 
+* Remove `once_cell/critical-section` requirement for `no_std` with atomics.
+  [#4322](https://github.com/rustwasm/wasm-bindgen/pull/4322)
+
 ### Fixed
 
 * Fix macro-hygiene for calls to `std::thread_local!`.

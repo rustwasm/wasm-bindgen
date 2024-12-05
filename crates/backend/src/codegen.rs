@@ -201,8 +201,8 @@ impl TryToTokens for ast::LinkToModule {
                 #program
                 #extern_fn
 
-                static __VAL: #wasm_bindgen::__rt::once_cell::sync::Lazy<#wasm_bindgen::__rt::alloc::string::String> =
-                    #wasm_bindgen::__rt::once_cell::sync::Lazy::new(|| unsafe {
+                static __VAL: #wasm_bindgen::__rt::LazyLock<#wasm_bindgen::__rt::alloc::string::String> =
+                    #wasm_bindgen::__rt::LazyLock::new(|| unsafe {
                         <#wasm_bindgen::__rt::alloc::string::String as #wasm_bindgen::convert::FromWasmAbi>::from_abi(#name().join())
                     });
 

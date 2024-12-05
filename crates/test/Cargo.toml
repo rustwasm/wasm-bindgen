@@ -16,7 +16,6 @@ std = ["wasm-bindgen/std", "js-sys/std", "wasm-bindgen-futures/std", "scoped-tls
 [dependencies]
 gg-alloc = { version = "1.0", optional = true }
 js-sys = { path = '../js-sys', version = '=0.3.74', default-features = false }
-once_cell = { version = "1.12", default-features = false }
 scoped-tls = { version = "1.0", optional = true }
 wasm-bindgen = { path = '../..', version = '=0.2.97', default-features = false }
 wasm-bindgen-futures = { path = '../futures', version = '=0.4.47', default-features = false }
