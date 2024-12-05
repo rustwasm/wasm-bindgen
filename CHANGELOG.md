@@ -3,6 +3,11 @@
 
 ## Unreleased
 
+### Added
+
+* Add support for multi-threading in Node.js.
+  [#4318](https://github.com/rustwasm/wasm-bindgen/pull/4318)
+
 ### Changed
 
 * Add clear error message to communicate new feature resolver version requirements.
