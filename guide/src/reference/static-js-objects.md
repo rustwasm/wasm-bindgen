@@ -7,9 +7,8 @@ a named `static` in the `extern` block with an
 `JsThreadLocal` for these objects, which can be cloned into a `JsValue`.
 
 These values are cached in a thread-local and are meant to bind static values
-or objects only. Binding getters or expecting a new value or object when
-changed in JS is not supported. For these use
-[getters](attributes/on-js-imports/getter-and-setter.md).
+or objects only. For getters which can change their return value or throw see
+[how to import getters](attributes/on-js-imports/getter-and-setter.md).
 
 For example, given the following JavaScript:
 
