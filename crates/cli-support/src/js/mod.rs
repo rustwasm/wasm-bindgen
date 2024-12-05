@@ -2730,7 +2730,7 @@ __wbg_set_wasm(wasm);"
                 | AuxImport::Value(AuxValue::Setter(js, ..))
                 | AuxImport::ValueWithThis(js, ..)
                 | AuxImport::Instanceof(js)
-                | AuxImport::Static(js)
+                | AuxImport::Static { js, .. }
                 | AuxImport::StructuralClassGetter(js, ..)
                 | AuxImport::StructuralClassSetter(js, ..)
                 | AuxImport::IndexingGetterOfClass(js)
@@ -3265,11 +3265,22 @@ __wbg_set_wasm(wasm);"
                 Ok("result".to_owned())
             }
 
-            AuxImport::Static(js) => {
+            AuxImport::Static { js, optional } => {
                 assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 0);
-                self.import_name(js)
+                let js = self.import_name(js)?;
+
+                if *optional {
+                    writeln!(
+                        prelude,
+                        "const result = typeof {js} === 'undefined' ? null : {js};"
+                    )
+                    .unwrap();
+                    Ok("result".to_owned())
+                } else {
+                    Ok(js)
+                }
             }
 
             AuxImport::String(string) => {

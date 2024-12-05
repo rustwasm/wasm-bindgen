@@ -8,13 +8,16 @@
 * Add support for multi-threading in Node.js.
   [#4318](https://github.com/rustwasm/wasm-bindgen/pull/4318)
 
-### Changed
-
 * Add clear error message to communicate new feature resolver version requirements.
   [#4312](https://github.com/rustwasm/wasm-bindgen/pull/4312)
 
 * Remove `once_cell/critical-section` requirement for `no_std` with atomics.
   [#4322](https://github.com/rustwasm/wasm-bindgen/pull/4322)
+
+### Changed
+
+* `static FOO: Option<T>` now returns `None` if undeclared in JS instead of throwing an error in JS.
+  [#4319](https://github.com/rustwasm/wasm-bindgen/pull/4319)
 
 ### Fixed
 

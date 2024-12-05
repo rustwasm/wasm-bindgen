@@ -65,6 +65,20 @@ extern "C" {
 }
 ```
 
+## Undeclared
+
+When accessing an in JS undeclared value, it will throw in JS. This can be accounted for by using `Option`.
+
+```rust
+extern "C" {
+    type Crypto;
+    #[wasm_bindgen(thread_local_v2, js_name = crypto)]
+    static CRYPTO: Option<Crypto>;
+}
+```
+
+If `crypto` is undeclared in JS, it will simply return `None` in Rust.
+
 ## Static strings
 
 Strings can be imported to avoid going through `TextDecoder/Encoder` when requiring just a `JsString`. This can be useful when dealing with environments where `TextDecoder/Encoder` is not available, like in audio worklets.
