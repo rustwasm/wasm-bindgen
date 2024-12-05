@@ -91,16 +91,16 @@ export function __wbg_await_e0a0e75be8b6fef6() {
 };
 
 export function __wbg_new_64246b0041120fec() {
-    A._new();
+    A.new();
 };
 
 export function __wbg_new_d4bfd9add722b492() {
-    const ret = window.__TAURI__.menu.Menu._new();
+    const ret = window.__TAURI__.menu.Menu.new();
     return ret;
 };
 
 export function __wbg_new_e17dd7c5a1cd57d8() {
-    B._new();
+    B.new();
 };
 
 export function __wbindgen_init_externref_table() {

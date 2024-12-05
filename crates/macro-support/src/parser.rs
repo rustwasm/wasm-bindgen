@@ -524,16 +524,14 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
         self,
         (program, opts, module): (&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule>),
     ) -> Result<Self::Target, Diagnostic> {
-        let mut wasm = function_from_decl(
+        let (mut wasm, _) = function_from_decl(
             &self.sig.ident,
             &opts,
             self.sig.clone(),
             self.attrs.clone(),
             self.vis.clone(),
             FunctionPosition::Extern,
-            Some(&["default"]),
-        )?
-        .0;
+        )?;
         let catch = opts.catch().is_some();
         let variadic = opts.variadic().is_some();
         let js_ret = if catch {
@@ -886,25 +884,28 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
             );
         }
 
-        let ret = function_from_decl(
+        let (mut ret, _) = function_from_decl(
             &self.sig.ident,
             &attrs,
             self.sig.clone(),
             self.attrs,
             self.vis,
             FunctionPosition::Free,
-            Some(&["default"]),
         )?;
         attrs.check_used();
-        Ok(ret.0)
+
+        // Due to legacy behavior, we need to escape all keyword identifiers as
+        // `_keyword`, expect `default`
+        if is_js_keyword(&ret.name) && ret.name != "default" {
+            ret.name = format!("_{}", ret.name);
+        }
+
+        Ok(ret)
     }
 }
 
-pub(crate) fn is_js_keyword(keyword: &str, skip: Option<&[&str]>) -> bool {
-    JS_KEYWORDS
-        .iter()
-        .filter(|keyword| skip.filter(|skip| skip.contains(keyword)).is_none())
-        .any(|this| *this == keyword)
+fn is_js_keyword(keyword: &str) -> bool {
+    JS_KEYWORDS.iter().any(|this| *this == keyword)
 }
 
 /// Returns whether `self` is passed by reference or by value.
@@ -942,7 +943,6 @@ fn function_from_decl(
     attrs: Vec<syn::Attribute>,
     vis: syn::Visibility,
     position: FunctionPosition,
-    skip_keywords: Option<&[&str]>,
 ) -> Result<(ast::Function, Option<ast::MethodSelf>), Diagnostic> {
     if sig.variadic.is_some() {
         bail_span!(sig.variadic, "can't #[wasm_bindgen] variadic functions");
@@ -988,7 +988,10 @@ fn function_from_decl(
     let replace_colliding_arg = |i: &mut syn::PatType| {
         if let syn::Pat::Ident(ref mut i) = *i.pat {
             let ident = i.ident.to_string();
-            if is_js_keyword(ident.as_str(), skip_keywords) {
+            // JS keywords are NEVER allowed as argument names. Since argument
+            // names are considered an implementation detail in JS, we can
+            // safely rename them to avoid collisions.
+            if is_js_keyword(ident.as_str()) {
                 i.ident = Ident::new(format!("_{}", ident).as_str(), i.ident.span());
             }
         }
@@ -1047,26 +1050,11 @@ fn function_from_decl(
                 OperationKind::Setter(_) => "set_",
                 _ => "",
             };
-            let name = if prefix.is_empty()
-                && opts.method().is_none()
-                && is_js_keyword(js_name, skip_keywords)
-            {
-                format!("_{}", js_name)
-            } else {
-                format!("{}{}", prefix, js_name)
-            };
-            (name, js_name_span, true)
+            (format!("{}{}", prefix, js_name), js_name_span, true)
         } else {
-            let name = if !matches!(position, FunctionPosition::Impl { .. })
-                && opts.method().is_none()
-                && is_js_keyword(&decl_name.to_string(), skip_keywords)
-            {
-                format!("_{}", decl_name.unraw())
-            } else {
-                decl_name.unraw().to_string()
-            };
-            (name, decl_name.span(), false)
+            (decl_name.unraw().to_string(), decl_name.span(), false)
         };
+
     Ok((
         ast::Function {
             arguments,
@@ -1344,7 +1332,6 @@ impl MacroParse<&ClassMarker> for &mut syn::ImplItemFn {
             self.attrs.clone(),
             self.vis.clone(),
             FunctionPosition::Impl { self_ty: class },
-            None,
         )?;
         let method_kind = if opts.constructor().is_some() {
             ast::MethodKind::Constructor
