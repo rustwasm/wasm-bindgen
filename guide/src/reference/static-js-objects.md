@@ -4,8 +4,14 @@ JavaScript modules will often export arbitrary static objects for use with
 their provided interfaces. These objects can be accessed from Rust by declaring
 a named `static` in the `extern` block with an
 `#[wasm_bindgen(thread_local_v2)]` attribute. `wasm-bindgen` will bind a
-`JsThreadLocal` for these objects, which can be cloned into a `JsValue`. For
-example, given the following JavaScript:
+`JsThreadLocal` for these objects, which can be cloned into a `JsValue`.
+
+These values are cached in a thread-local and are meant to bind static values
+or objects only. Binding getters or expecting a new value or object when
+changed in JS is not supported. For these use
+[getters](attributes/on-js-imports/getter-and-setter.md).
+
+For example, given the following JavaScript:
 
 ```js
 let COLORS = {
