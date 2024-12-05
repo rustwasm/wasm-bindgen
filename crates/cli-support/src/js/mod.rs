@@ -440,6 +440,8 @@ impl<'a> Context<'a> {
             // With normal CommonJS node we need to defer requiring the wasm
             // until the end so most of our own exports are hooked up
             OutputMode::Node { module: false } => {
+                self.nodejs_memory();
+
                 js.push_str(&self.generate_node_imports());
 
                 js.push_str("let wasm;\n");
@@ -483,6 +485,8 @@ impl<'a> Context<'a> {
             // and let the bundler/runtime take care of it.
             // With Node we manually read the Wasm file from the filesystem and instantiate it.
             OutputMode::Bundler { .. } | OutputMode::Node { module: true } => {
+                self.nodejs_memory();
+
                 for (id, js) in iter_by_import(&self.wasm_import_definitions, self.module) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}_bg.js", module_name);
@@ -1003,6 +1007,14 @@ __wbg_set_wasm(wasm);"
         );
 
         Ok((js, ts))
+    }
+
+    fn nodejs_memory(&mut self) {
+        if let Some(mem) = self.module.memories.iter_mut().next() {
+            if let Some(id) = mem.import.take() {
+                self.module.imports.delete(id);
+            }
+        }
     }
 
     fn write_classes(&mut self) -> Result<(), Error> {
