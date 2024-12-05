@@ -39,7 +39,12 @@ export function exported() {
 }
 
 export function __wbg_static_accessor_NAMESPACE_OPTIONAL_c9a4344c544120f4() {
-    const result = typeof test.NAMESPACE_OPTIONAL === 'undefined' ? null : test.NAMESPACE_OPTIONAL;
+    let result;
+    try {
+        result = test.NAMESPACE_OPTIONAL;
+    } catch (_) {
+        result = null;
+    }
     const ret = result;
     return isLikeNone(ret) ? 0 : addToExternrefTable0(ret);
 };
@@ -49,8 +54,29 @@ export function __wbg_static_accessor_NAMESPACE_PLAIN_784c8d7f5bbac62a() {
     return ret;
 };
 
+export function __wbg_static_accessor_NESTED_NAMESPACE_OPTIONAL_a414abbeb018a35a() {
+    let result;
+    try {
+        result = test1.test2.NESTED_NAMESPACE_OPTIONAL;
+    } catch (_) {
+        result = null;
+    }
+    const ret = result;
+    return isLikeNone(ret) ? 0 : addToExternrefTable0(ret);
+};
+
+export function __wbg_static_accessor_NESTED_NAMESPACE_PLAIN_1121b285cb8479df() {
+    const ret = test1.test2.NESTED_NAMESPACE_PLAIN;
+    return ret;
+};
+
 export function __wbg_static_accessor_OPTIONAL_ade71b6402851d0c() {
-    const result = typeof OPTIONAL === 'undefined' ? null : OPTIONAL;
+    let result;
+    try {
+        result = OPTIONAL;
+    } catch (_) {
+        result = null;
+    }
     const ret = result;
     return isLikeNone(ret) ? 0 : addToExternrefTable0(ret);
 };

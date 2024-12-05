@@ -3274,7 +3274,13 @@ __wbg_set_wasm(wasm);"
                 if *optional {
                     writeln!(
                         prelude,
-                        "const result = typeof {js} === 'undefined' ? null : {js};"
+                        "\
+                        let result;
+                        try {{
+                            result = {js};
+                        }} catch (_) {{
+                            result = null;
+                        }}",
                     )
                     .unwrap();
                     Ok("result".to_owned())
