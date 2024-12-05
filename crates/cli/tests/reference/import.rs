@@ -23,6 +23,12 @@ extern "C" {
     fn add(a: f64, b: f64) -> f64;
 }
 
+#[wasm_bindgen(js_namespace = ["a"])]
+extern "C" {
+    #[wasm_bindgen(js_namespace = ["b"])]
+    fn my_function();
+}
+
 #[wasm_bindgen]
 pub fn exported() -> Result<(), JsValue> {
     bar_from_foo();
@@ -30,5 +36,6 @@ pub fn exported() -> Result<(), JsValue> {
     reload();
     write("");
     no_catch();
+    my_function();
     catch_me()
 }

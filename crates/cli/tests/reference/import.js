@@ -65,6 +65,10 @@ export function __wbg_catchme_f7d87ea824a61e87() { return handleError(function (
     catch_me();
 }, arguments) };
 
+export function __wbg_myfunction_8c7b624429f78550() {
+    b.my_function();
+};
+
 export function __wbg_nocatch_be850a8dddd9599d() {
     no_catch();
 };
