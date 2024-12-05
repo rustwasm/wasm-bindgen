@@ -11,6 +11,9 @@
 * Add `WASM_BINDGEN_TEST_DRIVER_TIMEOUT` environment variable to control the timeout to start and connect to the test driver.
   [#4320](https://github.com/rustwasm/wasm-bindgen/pull/4320)
 
+* Add support for number slices of type `MaybeUninit<T>`.
+  [#4316](https://github.com/rustwasm/wasm-bindgen/pull/4316)
+
 ### Changed
 
 * Remove `once_cell/critical-section` requirement for `no_std` with atomics.
