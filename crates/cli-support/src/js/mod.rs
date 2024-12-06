@@ -2586,7 +2586,7 @@ __wbg_set_wasm(wasm);"
 
         // After we've got an actual name handle field projections
         if optional {
-            name = format!("typeof {name} === 'undefined' ? null: {name}");
+            name = format!("typeof {name} === 'undefined' ? null : {name}");
 
             for field in import.fields.iter() {
                 name.push_str("?.");
