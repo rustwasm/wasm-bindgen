@@ -70,9 +70,10 @@ extern "C" {
 }
 ```
 
-## Undeclared
+## Optional statics
 
-When accessing an in JS undeclared value, it will throw in JS. This can be accounted for by using `Option`.
+If you expect the JavaScript value you're trying to access to not always be
+available you can use `Option<T>` to handle this:
 
 ```rust
 extern "C" {
@@ -82,7 +83,9 @@ extern "C" {
 }
 ```
 
-If `crypto` is undeclared in JS, it will simply return `None` in Rust.
+If `crypto` is not declared or nullish (`null` or `undefined`) in JavaScript,
+it will simply return `None` in Rust. This will also account for namespaces: it
+will return `Some(T)` only if all parts are declared and not nullish.
 
 ## Static strings
 
