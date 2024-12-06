@@ -4,6 +4,10 @@
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | No | Yes | Yes | No | No | No | A JavaScript `TypedArray` view of the Wasm memory for the boxed slice of the appropriate type (`Int32Array`, `Uint8Array`, etc) |
 
+> **Note:** Numeric `MaybeUninit<T>` can always be assumed to be initialized
+> upon transmission from Rust to JS and vice-versa. However, uninitialized
+> values coming from Rust might contain unspecified values.
+
 ## Example Rust Usage
 
 ```rust

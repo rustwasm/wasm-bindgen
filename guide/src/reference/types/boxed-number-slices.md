@@ -8,6 +8,10 @@
 from the Wasm linear memory when returning a boxed slice to JavaScript, and vice
 versa when receiving a JavaScript `TypedArray` as a boxed slice in Rust.
 
+> **Note:** Numeric `MaybeUninit<T>` can always be assumed to be initialized
+> upon transmission from Rust to JS and vice-versa. However, uninitialized
+> values coming from Rust might contain unspecified values.
+
 ## Example Rust Usage
 
 ```rust
