@@ -788,6 +788,7 @@ impl<'a> Context<'a> {
             None => return Ok(()),
             Some(d) => d,
         };
+        let optional = matches!(descriptor, Descriptor::Option(_));
 
         // Register the signature of this imported shim
         let id = self.import_adapter(
@@ -803,8 +804,10 @@ impl<'a> Context<'a> {
 
         // And then save off that this function is is an instanceof shim for an
         // imported item.
-        let import = self.determine_import(import, static_.name)?;
-        self.aux.import_map.insert(id, AuxImport::Static(import));
+        let js = self.determine_import(import, static_.name)?;
+        self.aux
+            .import_map
+            .insert(id, AuxImport::Static { js, optional });
         Ok(())
     }
 

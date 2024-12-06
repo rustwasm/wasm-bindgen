@@ -2578,6 +2578,30 @@ __wbg_set_wasm(wasm);"
         Ok(name)
     }
 
+    fn import_static(&mut self, import: &JsImport, optional: bool) -> Result<String, Error> {
+        let mut name = self.import_name(&JsImport {
+            name: import.name.clone(),
+            fields: Vec::new(),
+        })?;
+
+        // After we've got an actual name handle field projections
+        if optional {
+            name = format!("typeof {name} === 'undefined' ? null : {name}");
+
+            for field in import.fields.iter() {
+                name.push_str("?.");
+                name.push_str(field);
+            }
+        } else {
+            for field in import.fields.iter() {
+                name.push('.');
+                name.push_str(field);
+            }
+        }
+
+        Ok(name)
+    }
+
     /// If a start function is present, it removes it from the `start` section
     /// of the Wasm module and then moves it to an exported function, named
     /// `__wbindgen_start`.
@@ -2730,7 +2754,7 @@ __wbg_set_wasm(wasm);"
                 | AuxImport::Value(AuxValue::Setter(js, ..))
                 | AuxImport::ValueWithThis(js, ..)
                 | AuxImport::Instanceof(js)
-                | AuxImport::Static(js)
+                | AuxImport::Static { js, .. }
                 | AuxImport::StructuralClassGetter(js, ..)
                 | AuxImport::StructuralClassSetter(js, ..)
                 | AuxImport::IndexingGetterOfClass(js)
@@ -3265,11 +3289,11 @@ __wbg_set_wasm(wasm);"
                 Ok("result".to_owned())
             }
 
-            AuxImport::Static(js) => {
+            AuxImport::Static { js, optional } => {
                 assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 0);
-                self.import_name(js)
+                self.import_static(js, *optional)
             }
 
             AuxImport::String(string) => {
