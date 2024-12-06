@@ -5,9 +5,6 @@
 
 ### Added
 
-* Add clear error message to communicate new feature resolver version requirements.
-  [#4312](https://github.com/rustwasm/wasm-bindgen/pull/4312)
-
 * Add support for multi-threading in Node.js.
   [#4318](https://github.com/rustwasm/wasm-bindgen/pull/4318)
 
@@ -26,6 +23,9 @@
 
 * Fix macro-hygiene for calls to `std::thread_local!`.
   [#4315](https://github.com/rustwasm/wasm-bindgen/pull/4315)
+
+* Fix feature resolver version 1 compatibility.
+  [#4327](https://github.com/rustwasm/wasm-bindgen/pull/4327)
 
 --------------------------------------------------------------------------------
 

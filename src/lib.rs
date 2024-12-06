@@ -6,10 +6,15 @@
 //! interface.
 
 #![no_std]
-#![cfg_attr(wasm_bindgen_unstable_test_coverage, feature(coverage_attribute))]
+#![cfg_attr(
+    wasm_bindgen_unstable_test_coverage,
+    feature(coverage_attribute, allow_internal_unstable),
+    allow(internal_features)
+)]
 #![cfg_attr(
     all(not(feature = "std"), target_feature = "atomics"),
-    feature(thread_local)
+    feature(thread_local, allow_internal_unstable),
+    allow(internal_features)
 )]
 #![allow(coherence_leak_check)]
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen/0.2")]
@@ -1706,6 +1711,54 @@ pub mod __rt {
                 }
             }
         }
+    }
+
+    #[macro_export]
+    #[doc(hidden)]
+    #[cfg(all(not(feature = "std"), not(target_feature = "atomics")))]
+    macro_rules! __wbindgen_thread_local {
+        ($wasm_bindgen:tt, $actual_ty:ty) => {{
+            static _VAL: $wasm_bindgen::__rt::LazyCell<$actual_ty> =
+                $wasm_bindgen::__rt::LazyCell::new(init);
+            $wasm_bindgen::JsThreadLocal { __inner: &_VAL }
+        }};
+    }
+
+    #[macro_export]
+    #[doc(hidden)]
+    #[cfg(all(not(feature = "std"), target_feature = "atomics"))]
+    #[allow_internal_unstable(thread_local)]
+    macro_rules! __wbindgen_thread_local {
+        ($wasm_bindgen:tt, $actual_ty:ty) => {{
+            #[thread_local]
+            static _VAL: $wasm_bindgen::__rt::LazyCell<$actual_ty> =
+                $wasm_bindgen::__rt::LazyCell::new(init);
+            $wasm_bindgen::JsThreadLocal {
+                __inner: || unsafe {
+                    $wasm_bindgen::__rt::LazyCell::force(&_VAL) as *const $actual_ty
+                },
+            }
+        }};
+    }
+
+    #[macro_export]
+    #[doc(hidden)]
+    #[cfg(not(wasm_bindgen_unstable_test_coverage))]
+    macro_rules! __wbindgen_coverage {
+        ($item:item) => {
+            $item
+        };
+    }
+
+    #[macro_export]
+    #[doc(hidden)]
+    #[cfg(wasm_bindgen_unstable_test_coverage)]
+    #[allow_internal_unstable(coverage_attribute)]
+    macro_rules! __wbindgen_coverage {
+        ($item:item) => {
+            #[coverage(off)]
+            $item
+        };
     }
 
     #[inline]

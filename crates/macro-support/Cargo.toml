@@ -14,14 +14,11 @@ rust-version = "1.57"
 version = "0.2.97"
 
 [features]
-atomics = ["wasm-bindgen-backend/atomics"]
-coverage = ["wasm-bindgen-backend/coverage"]
 default = ["std"]
 extra-traits = ["syn/extra-traits"]
 spans = ["wasm-bindgen-backend/spans"]
 std = ["wasm-bindgen-backend/std"]
 strict-macro = []
-xxx_resolver_1 = ["wasm-bindgen-backend/xxx_resolver_1"]
 
 [dependencies]
 proc-macro2 = "1.0"

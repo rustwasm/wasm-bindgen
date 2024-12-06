@@ -68,12 +68,12 @@ jobs:
     - run: cargo clippy --no-deps --all-features -p example-tests -- -D warnings
     - run: cargo clippy --no-deps --all-features -p wasm-bindgen-externref-xform -- -D warnings
     - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p wasm-bindgen-futures -- -D warnings
-    - run: cargo clippy --no-deps --features spans,strict-macro -p wasm-bindgen-macro -- -D warnings
-    - run: cargo clippy --no-deps --features extra-traits,spans,strict-macro -p wasm-bindgen-macro-support -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-macro -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-macro-support -- -D warnings
     - run: cargo clippy --no-deps --all-features -p wasm-bindgen-multi-value-xform -- -D warnings
     - run: cargo clippy --no-deps --all-features -p wasm-bindgen-shared -- -D warnings
     - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p wasm-bindgen-test -- -D warnings
-    - run: cargo clippy --no-deps -p wasm-bindgen-test-macro -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-test-macro -- -D warnings
     - run: cargo clippy --no-deps --all-features -p wasm-bindgen-threads-xform -- -D warnings
     - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p typescript-tests -- -D warnings
     - run: cargo clippy --no-deps --all-features -p wasm-bindgen-wasm-conventions -- -D warnings
@@ -540,7 +540,7 @@ jobs:
         path: docs.tar.gz
 
   msrv-resolver:
-    name: Check for feature resolver v1 error message
+    name: Check feature resolver version 1 compatibility
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -565,7 +565,7 @@ jobs:
         cargo update -p bumpalo --precise 3.12.0
         cargo update -p log --precise 0.4.18
         cargo update -p scoped-tls --precise 1.0.0
-    - run: diff <(cargo build --target ${{ matrix.target }} ${{ matrix.features }} --message-format json | jq -r "select(.reason == \"compiler-message\") | .message.message") error-${{ matrix.rust }}.txt
+    - run: cargo build --target ${{ matrix.target }} ${{ matrix.features }}
 
   msrv-lib:
     name: Check MSRV for libraries
