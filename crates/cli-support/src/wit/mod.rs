@@ -1205,7 +1205,7 @@ impl<'a> Context<'a> {
         kind: AdapterJsImportKind,
     ) -> Result<AdapterId, Error> {
         let import = self.module.imports.get(import);
-        let (import_module, import_name) = (import.module.clone(), import.name.clone());
+        let import_name = import.name.clone();
         let import_id = import.id();
         let core_id = match import.kind {
             walrus::ImportKind::Function(f) => f,
@@ -1242,7 +1242,6 @@ impl<'a> Context<'a> {
             ret.input,
             vec![],
             AdapterKind::Import {
-                module: import_module,
                 name: import_name,
                 kind,
             },
