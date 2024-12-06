@@ -92,6 +92,7 @@ macro_rules! attrgen {
             (js_sys, JsSys(Span, syn::Path)),
             (wasm_bindgen_futures, WasmBindgenFutures(Span, syn::Path)),
             (skip, Skip(Span)),
+            (no_export, NoExport(Span)),
             (typescript_type, TypeScriptType(Span, String, Span)),
             (getter_with_clone, GetterWithClone(Span)),
             (static_string, StaticString(Span)),
@@ -1375,6 +1376,7 @@ fn string_enum(
     program: &mut ast::Program,
     js_name: String,
     generate_typescript: bool,
+    no_export: bool,
     comments: Vec<String>,
 ) -> Result<(), Diagnostic> {
     let mut variants = vec![];
@@ -1414,6 +1416,7 @@ fn string_enum(
             comments,
             rust_attrs: enum_.attrs,
             generate_typescript,
+            no_export,
             wasm_bindgen: program.wasm_bindgen.clone(),
         }),
     });
@@ -1481,6 +1484,7 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
         }
 
         let generate_typescript = opts.skip_typescript().is_none();
+        let no_export = opts.no_export().is_some();
         let js_name = opts
             .js_name()
             .map(|s| s.0)
@@ -1503,12 +1507,14 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
             false
         });
         if is_string_enum {
-            return string_enum(self, program, js_name, generate_typescript, comments);
-        }
-
-        match self.vis {
-            syn::Visibility::Public(_) => {}
-            _ => bail_span!(self, "only public enums are allowed with #[wasm_bindgen]"),
+            return string_enum(
+                self,
+                program,
+                js_name,
+                generate_typescript,
+                no_export,
+                comments,
+            );
         }
 
         // Go through all variants once first to determine whether the enum is
@@ -1613,6 +1619,7 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
             comments,
             hole,
             generate_typescript,
+            no_export,
             wasm_bindgen: program.wasm_bindgen.clone(),
         });
         Ok(())

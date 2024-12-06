@@ -4,6 +4,7 @@ export function enum_echo(color: Color): Color;
 export function option_enum_echo(color?: Color): Color | undefined;
 export function get_name(color: Color): ColorName;
 export function option_string_enum_echo(color?: ColorName): ColorName | undefined;
+export function use_used(arg0: NoExportButUsedStringEnum, arg1: NoExportButUsedEnum): void;
 export function option_order(order?: Ordering): Ordering | undefined;
 /**
  * A color.
@@ -28,6 +29,10 @@ export enum ImplicitDiscriminant {
   C = 42,
   D = 43,
 }
+enum NoExportButUsedEnum {
+  Foo = 0,
+  Bar = 1,
+}
 /**
  * A C-style enum with negative discriminants.
  */
@@ -36,7 +41,17 @@ export enum Ordering {
   Equal = 0,
   Greater = 1,
 }
+export enum PrivateEnum {
+  Foo = 0,
+  Bar = 1,
+}
 /**
  * The name of a color.
  */
-type ColorName = "green" | "yellow" | "red";
+export type ColorName = "green" | "yellow" | "red";
+/**
+ * An unused string enum.
+ */
+export type FooBar = "foo" | "bar";
+type NoExportButUsedStringEnum = "foo" | "bar";
+export type PrivateStringEnum = "foo" | "bar";

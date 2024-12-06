@@ -63,6 +63,14 @@ export function option_string_enum_echo(color) {
 }
 
 /**
+ * @param {NoExportButUsedStringEnum} arg0
+ * @param {NoExportButUsedEnum} arg1
+ */
+export function use_used(arg0, arg1) {
+    wasm.use_used((__wbindgen_enum_NoExportButUsedStringEnum.indexOf(arg0) + 1 || 3) - 1, arg1);
+}
+
+/**
  * @param {Ordering | undefined} [order]
  * @returns {Ordering | undefined}
  */
@@ -107,8 +115,17 @@ export const Ordering = Object.freeze({
     Equal: 0, "0": "Equal",
     Greater: 1, "1": "Greater",
 });
+/**
+ * @enum {0 | 1}
+ */
+export const PrivateEnum = Object.freeze({
+    Foo: 0, "0": "Foo",
+    Bar: 1, "1": "Bar",
+});
 
 const __wbindgen_enum_ColorName = ["green", "yellow", "red"];
+
+const __wbindgen_enum_NoExportButUsedStringEnum = ["foo", "bar"];
 
 export function __wbindgen_init_externref_table() {
     const table = wasm.__wbindgen_export_0;

@@ -173,6 +173,8 @@ pub struct AuxEnum {
     pub variants: Vec<(String, i64, String)>,
     /// Whether typescript bindings should be generated for this enum.
     pub generate_typescript: bool,
+    /// Whether the type should not be exported in JS/TS.
+    pub no_export: bool,
 }
 
 #[derive(Debug)]
@@ -185,6 +187,8 @@ pub struct AuxStringEnum {
     pub variant_values: Vec<String>,
     /// Whether typescript bindings should be generated for this enum.
     pub generate_typescript: bool,
+    /// Whether the type should not be exported in JS/TS.
+    pub no_export: bool,
 }
 
 #[derive(Debug)]

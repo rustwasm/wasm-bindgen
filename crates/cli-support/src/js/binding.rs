@@ -87,6 +87,7 @@ pub struct JsFunction {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum TsReference {
     StringEnum(String),
+    Enum(String),
 }
 
 impl<'a, 'b> Builder<'a, 'b> {
@@ -1570,7 +1571,13 @@ fn adapter2ts(ty: &AdapterType, dst: &mut String, refs: Option<&mut HashSet<TsRe
         }
         AdapterType::NamedExternref(name) => dst.push_str(name),
         AdapterType::Struct(name) => dst.push_str(name),
-        AdapterType::Enum(name) => dst.push_str(name),
+        AdapterType::Enum(name) => {
+            if let Some(refs) = refs {
+                refs.insert(TsReference::Enum(name.clone()));
+            }
+
+            dst.push_str(name)
+        }
         AdapterType::StringEnum(name) => {
             if let Some(refs) = refs {
                 refs.insert(TsReference::StringEnum(name.clone()));

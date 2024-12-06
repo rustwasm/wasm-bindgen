@@ -3951,12 +3951,21 @@ __wbg_set_wasm(wasm);"
     fn generate_enum(&mut self, enum_: &AuxEnum) -> Result<(), Error> {
         let mut variants = String::new();
 
-        if enum_.generate_typescript {
+        let is_used_in_typescript = self
+            .typescript_refs
+            .contains(&TsReference::Enum(enum_.name.clone()));
+
+        let ts = enum_.generate_typescript && (!enum_.no_export || is_used_in_typescript);
+
+        if ts {
             self.typescript
                 .push_str(&format_doc_comments(&enum_.comments, None));
-            self.typescript
-                .push_str(&format!("export enum {} {{", enum_.name));
+            if !enum_.no_export {
+                self.typescript.push_str("export ");
+            }
+            self.typescript.push_str(&format!("enum {} {{", enum_.name));
         }
+
         for (name, value, comments) in enum_.variants.iter() {
             let variant_docs = if comments.is_empty() {
                 String::new()
@@ -3966,7 +3975,7 @@ __wbg_set_wasm(wasm);"
             variants.push_str(&variant_docs);
             variants.push_str(&format!("{}: {}, ", name, value));
             variants.push_str(&format!("\"{}\": \"{}\",\n", value, name));
-            if enum_.generate_typescript {
+            if ts {
                 self.typescript.push('\n');
                 if !variant_docs.is_empty() {
                     for line in variant_docs.lines() {
@@ -3978,26 +3987,28 @@ __wbg_set_wasm(wasm);"
                 self.typescript.push_str(&format!("  {name} = {value},"));
             }
         }
-        if enum_.generate_typescript {
+        if ts {
             self.typescript.push_str("\n}\n");
         }
 
-        // add an `@enum {1 | 2 | 3}` to ensure that enums type-check even without .d.ts
-        let mut at_enum = "@enum {".to_string();
-        for (i, (_, value, _)) in enum_.variants.iter().enumerate() {
-            if i != 0 {
-                at_enum.push_str(" | ");
+        if !enum_.no_export {
+            // add an `@enum {1 | 2 | 3}` to ensure that enums type-check even without .d.ts
+            let mut at_enum = "@enum {".to_string();
+            for (i, (_, value, _)) in enum_.variants.iter().enumerate() {
+                if i != 0 {
+                    at_enum.push_str(" | ");
+                }
+                at_enum.push_str(&value.to_string());
             }
-            at_enum.push_str(&value.to_string());
-        }
-        at_enum.push('}');
-        let docs = format_doc_comments(&enum_.comments, Some(at_enum));
+            at_enum.push('}');
+            let docs = format_doc_comments(&enum_.comments, Some(at_enum));
 
-        self.export(
-            &enum_.name,
-            &format!("Object.freeze({{\n{}}})", variants),
-            Some(&docs),
-        )?;
+            self.export(
+                &enum_.name,
+                &format!("Object.freeze({{\n{}}})", variants),
+                Some(&docs),
+            )?;
+        }
 
         Ok(())
     }
@@ -4009,11 +4020,11 @@ __wbg_set_wasm(wasm);"
             .map(|v| format!("\"{v}\""))
             .collect();
 
-        if string_enum.generate_typescript
-            && self
-                .typescript_refs
-                .contains(&TsReference::StringEnum(string_enum.name.clone()))
-        {
+        let is_used_in_typescript = self
+            .typescript_refs
+            .contains(&TsReference::StringEnum(string_enum.name.clone()));
+
+        if string_enum.generate_typescript && (!string_enum.no_export || is_used_in_typescript) {
             let docs = format_doc_comments(&string_enum.comments, None);
             let type_expr = if variants.is_empty() {
                 "never".to_string()
@@ -4022,6 +4033,9 @@ __wbg_set_wasm(wasm);"
             };
 
             self.typescript.push_str(&docs);
+            if !string_enum.no_export {
+                self.typescript.push_str("export ");
+            }
             self.typescript.push_str("type ");
             self.typescript.push_str(&string_enum.name);
             self.typescript.push_str(" = ");

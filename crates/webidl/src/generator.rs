@@ -135,7 +135,7 @@ impl Enum {
             use wasm_bindgen::prelude::*;
 
             #unstable_attr
-            #[wasm_bindgen]
+            #[wasm_bindgen(no_export)]
             #doc_comment
             #unstable_docs
             #[derive(Debug, Clone, Copy, PartialEq, Eq)]

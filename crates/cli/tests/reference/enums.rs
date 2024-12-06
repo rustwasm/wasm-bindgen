@@ -57,6 +57,36 @@ enum PrivateStringEnum {
     Foo = "foo",
     Bar = "bar",
 }
+#[wasm_bindgen]
+enum PrivateEnum {
+    Foo,
+    Bar,
+}
+
+#[wasm_bindgen(no_export)]
+pub enum NoExportStringEnum {
+    Foo = "foo",
+    Bar = "bar",
+}
+#[wasm_bindgen(no_export)]
+pub enum NoExportEnum {
+    Foo,
+    Bar,
+}
+
+#[wasm_bindgen(no_export)]
+pub enum NoExportButUsedStringEnum {
+    Foo = "foo",
+    Bar = "bar",
+}
+#[wasm_bindgen(no_export)]
+pub enum NoExportButUsedEnum {
+    Foo,
+    Bar,
+}
+
+#[wasm_bindgen]
+pub fn use_used(arg0: NoExportButUsedStringEnum, arg1: NoExportButUsedEnum) {}
 
 #[wasm_bindgen]
 pub enum ImplicitDiscriminant {
