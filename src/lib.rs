@@ -1558,6 +1558,16 @@ pub fn memory() -> JsValue {
     unsafe { JsValue::_new(__wbindgen_memory()) }
 }
 
+/// Returns [`true`] if this Wasm instance's `WebAssembly.Memory` is shared
+pub fn is_memory_shared() -> bool {
+    #[link(wasm_import_module = "wbg")]
+    extern "C" {
+        fn __wbindgen_is_memory_shared() -> bool;
+    }
+
+    unsafe { __wbindgen_is_memory_shared() }
+}
+
 /// Returns a handle to this Wasm instance's `WebAssembly.Table` which is the
 /// indirect function table used by Rust
 pub fn function_table() -> JsValue {

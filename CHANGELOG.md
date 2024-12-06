@@ -8,6 +8,9 @@
 * Add support for multi-threading in Node.js.
   [#4318](https://github.com/rustwasm/wasm-bindgen/pull/4318)
 
+* Add `wasm_bindgen::is_memory_shared()` for a way to detect if the Wasm instance's `WebAssembly.Memory` is a shared one.
+  [#4325](https://github.com/rustwasm/wasm-bindgen/pull/4325)
+
 ### Changed
 
 * Add clear error message to communicate new feature resolver version requirements.

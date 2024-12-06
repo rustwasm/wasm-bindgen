@@ -1,6 +1,6 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-cli-support/0.2")]
 
-use anyhow::{bail, Context, Error};
+use anyhow::{anyhow, bail, Context, Error};
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::env;
 use std::fs;
@@ -361,6 +361,8 @@ impl Bindgen {
             .producers
             .add_processed_by("wasm-bindgen", &wasm_bindgen_shared::version());
 
+        replace_internal_imports(&mut module)?;
+
         // Parse and remove our custom section before executing descriptors.
         // That includes checking that the binary has the same schema version
         // as this version of the CLI, which is why we do it first - to make
@@ -559,6 +561,36 @@ fn demangle(module: &mut Module) {
             func.name = Some(sym.to_string());
         }
     }
+}
+
+fn replace_internal_imports(module: &mut Module) -> Result<(), Error> {
+    if let Ok(id) = module
+        .imports
+        .get_func("wbg", "__wbindgen_is_memory_shared")
+    {
+        let mut memories = module.memories.iter();
+        let memory = memories
+            .next()
+            .ok_or_else(|| anyhow!("no memory found to return in memory intrinsic"))?;
+        if memories.next().is_some() {
+            bail!(
+                "multiple memories found, unsure which to return \
+                                 from memory intrinsic"
+            );
+        }
+        let shared = memory.shared;
+        drop(memories);
+
+        let _ = module
+            .replace_imported_func(id, |(builder, args)| {
+                assert!(args.is_empty());
+
+                builder.func_body().i32_const(shared.into());
+            })
+            .context("failed to generate `__wbindgen_is_memory_shared`")?;
+    }
+
+    Ok(())
 }
 
 impl OutputMode {
