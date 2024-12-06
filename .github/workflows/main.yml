@@ -121,8 +121,8 @@ jobs:
     - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p wasm-bindgen -Zbuild-std=core,alloc -- -D warnings
     - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p js-sys -Zbuild-std=core,alloc -- -D warnings
     - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p web-sys -Zbuild-std=core,alloc -- -D warnings
-    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p wasm-bindgen-futures --features once_cell/critical-section -Zbuild-std=core,alloc -- -D warnings
-    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p wasm-bindgen-test --features once_cell/critical-section -Zbuild-std=core,alloc -- -D warnings
+    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p wasm-bindgen-futures -Zbuild-std=core,alloc -- -D warnings
+    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p wasm-bindgen-test -Zbuild-std=core,alloc -- -D warnings
 
   # Run `cargo clippy` over the project
   clippy_project:
