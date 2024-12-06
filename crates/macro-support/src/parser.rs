@@ -254,6 +254,15 @@ impl BindgenAttrs {
         Ok(thread_local)
     }
 
+    /// Returns the JS name from the given attributes, or the Rust name if not present.
+    ///
+    /// The returned span will point to the attribute if present, or the identifier if not.
+    fn js_name_or_ident(&self, ident: &Ident) -> String {
+        self.js_name()
+            .map(|(n, _)| n.to_string())
+            .unwrap_or_else(|| ident.unraw().to_string())
+    }
+
     attrgen!(methods);
 }
 
@@ -437,10 +446,7 @@ impl ConvertToAst<(&ast::Program, BindgenAttrs)> for &mut syn::ItemStruct {
             );
         }
         let mut fields = Vec::new();
-        let js_name = attrs
-            .js_name()
-            .map(|s| s.0.to_string())
-            .unwrap_or(self.ident.unraw().to_string());
+        let js_name = attrs.js_name_or_ident(&self.ident);
         let is_inspectable = attrs.inspectable().is_some();
         let getter_with_clone = attrs.getter_with_clone();
         for (i, field) in self.fields.iter_mut().enumerate() {
@@ -718,10 +724,7 @@ impl ConvertToAst<(&ast::Program, BindgenAttrs)> for syn::ForeignItemType {
         self,
         (program, attrs): (&ast::Program, BindgenAttrs),
     ) -> Result<Self::Target, Diagnostic> {
-        let js_name = attrs
-            .js_name()
-            .map(|s| s.0)
-            .map_or_else(|| self.ident.to_string(), |s| s.to_string());
+        let js_name = attrs.js_name_or_ident(&self.ident);
         let typescript_type = attrs.typescript_type().map(|s| s.0.to_string());
         let is_type_of = attrs.is_type_of().cloned();
         let shim = format!(
@@ -783,12 +786,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             ));
         }
 
-        let default_name = self.ident.to_string();
-        let js_name = opts
-            .js_name()
-            .map(|p| p.0)
-            .unwrap_or(&default_name)
-            .to_string();
+        let js_name = opts.js_name_or_ident(&self.ident);
         let shim = format!(
             "__wbg_static_accessor_{}_{}",
             self.ident,
@@ -1481,10 +1479,7 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
         }
 
         let generate_typescript = opts.skip_typescript().is_none();
-        let js_name = opts
-            .js_name()
-            .map(|s| s.0)
-            .map_or_else(|| self.ident.unraw().to_string(), |s| s.to_string());
+        let js_name = opts.js_name_or_ident(&self.ident);
         let comments = extract_doc_comments(&self.attrs);
 
         opts.check_used();
