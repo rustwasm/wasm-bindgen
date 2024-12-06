@@ -114,8 +114,6 @@ Libraries that are released on [crates.io](https://crates.io) have a MSRV of v1.
 
 CLI tools and their corresponding support libraries have a MSRV of v1.76. Changes to the MSRV will be accompanied by a patch version bump.
 
-[Feature resolver version 2](https://doc.rust-lang.org/1.83.0/cargo/reference/resolver.html#feature-resolver-version-2) is required.
-
 ## License
 
 This project is licensed under either of

@@ -14,18 +14,14 @@ rust-version = "1.57"
 version = "0.2.97"
 
 [features]
-atomics = []
-coverage = []
 default = ["std"]
 extra-traits = ["syn/extra-traits"]
 spans = []
 std = []
-xxx_resolver_1 = []
 
 [dependencies]
 bumpalo = "3.0.0"
 log = "0.4"
-once_cell = "1.12"
 proc-macro2 = "1.0"
 quote = '1.0'
 syn = { version = '2.0', features = ['full'] }

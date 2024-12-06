@@ -47,21 +47,6 @@ serde = { version = "1.0", optional = true }
 serde_json = { version = "1.0", optional = true }
 wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.97", default-features = false }
 
-[target.'cfg(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none"), target_feature = "atomics"))'.dependencies]
-wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.97", default-features = false, features = [
-  "atomics",
-] }
-
-[target.'cfg(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none"), wasm_bindgen_unstable_test_coverage))'.dependencies]
-wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.97", default-features = false, features = [
-  "coverage",
-] }
-
-[target.'cfg(__wasm_bindgen_resolver_1)'.dependencies]
-wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.97", default-features = false, features = [
-  "xxx_resolver_1",
-] }
-
 [dev-dependencies]
 wasm-bindgen-test = { path = 'crates/test' }
 
@@ -90,7 +75,7 @@ too_many_arguments = "allow"
 type_complexity = "allow"
 
 [workspace]
-exclude = ["crates/msrv"]
+exclude = ["crates/msrv/resolver", "crates/msrv/lib", "crates/msrv/cli"]
 members = [
   "benchmarks",
   "crates/cli",

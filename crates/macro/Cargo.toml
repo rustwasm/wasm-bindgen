@@ -17,14 +17,11 @@ version = "0.2.97"
 proc-macro = true
 
 [features]
-atomics = ["wasm-bindgen-macro-support/atomics"]
-coverage = ["wasm-bindgen-macro-support/coverage"]
 default = ["std"]
 spans = ["wasm-bindgen-macro-support/spans"]
 std = ["wasm-bindgen-macro-support/std"]
 strict-macro = ["wasm-bindgen-macro-support/strict-macro"]
 xxx_debug_only_print_generated_code = []
-xxx_resolver_1 = ["wasm-bindgen-macro-support/xxx_resolver_1"]
 
 [dependencies]
 quote = "1.0"
