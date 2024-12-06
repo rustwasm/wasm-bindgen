@@ -5,16 +5,19 @@
 
 ### Added
 
-* Add support for multi-threading in Node.js.
-  [#4318](https://github.com/rustwasm/wasm-bindgen/pull/4318)
-
 * Add clear error message to communicate new feature resolver version requirements.
   [#4312](https://github.com/rustwasm/wasm-bindgen/pull/4312)
 
-* Remove `once_cell/critical-section` requirement for `no_std` with atomics.
-  [#4322](https://github.com/rustwasm/wasm-bindgen/pull/4322)
+* Add support for multi-threading in Node.js.
+  [#4318](https://github.com/rustwasm/wasm-bindgen/pull/4318)
+
+* Add `WASM_BINDGEN_TEST_DRIVER_TIMEOUT` environment variable to control the timeout to start and connect to the test driver.
+  [#4320](https://github.com/rustwasm/wasm-bindgen/pull/4320)
 
 ### Changed
+
+* Remove `once_cell/critical-section` requirement for `no_std` with atomics.
+  [#4322](https://github.com/rustwasm/wasm-bindgen/pull/4322)
 
 * `static FOO: Option<T>` now returns `None` if undeclared in JS instead of throwing an error in JS.
   [#4319](https://github.com/rustwasm/wasm-bindgen/pull/4319)
