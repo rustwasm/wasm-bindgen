@@ -255,8 +255,6 @@ impl BindgenAttrs {
     }
 
     /// Returns the JS name from the given attributes, or the Rust name if not present.
-    ///
-    /// The returned span will point to the attribute if present, or the identifier if not.
     fn js_name_or_ident(&self, ident: &Ident) -> String {
         self.js_name()
             .map(|(n, _)| n.to_string())
