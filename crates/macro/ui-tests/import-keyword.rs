@@ -53,4 +53,14 @@ extern "C" {
     fn function();
 }
 
+// Classes and enums
+
+#[wasm_bindgen]
+pub struct class;
+#[wasm_bindgen]
+pub enum switch {
+    A,
+    B,
+}
+
 fn main() {}

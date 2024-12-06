@@ -39,3 +39,15 @@ error: Empty namespace lists are not allowed.
    |
 52 |     #[wasm_bindgen(js_namespace = [])]
    |                                   ^^
+
+error: struct cannot use the JS keyword `class` as its name
+  --> ui-tests/import-keyword.rs:59:12
+   |
+59 | pub struct class;
+   |            ^^^^^
+
+error: enum cannot use the JS keyword `switch` as its name
+  --> ui-tests/import-keyword.rs:61:10
+   |
+61 | pub enum switch {
+   |          ^^^^^^

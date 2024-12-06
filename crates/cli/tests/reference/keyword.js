@@ -47,48 +47,6 @@ export function weird_arguments(_new, _var, _switch, _default, _arguments) {
     wasm.weird_arguments(_new, _var, _switch, _default, _arguments);
 }
 
-/**
- * @enum {0 | 1}
- */
-export const switch = Object.freeze({
-    A: 0, "0": "A",
-    B: 1, "1": "B",
-});
-
-const classFinalization = (typeof FinalizationRegistry === 'undefined')
-    ? { register: () => {}, unregister: () => {} }
-    : new FinalizationRegistry(ptr => wasm.__wbg_class_free(ptr >>> 0, 1));
-
-export class class {
-
-    static __wrap(ptr) {
-        ptr = ptr >>> 0;
-        const obj = Object.create(class.prototype);
-        obj.__wbg_ptr = ptr;
-        classFinalization.register(obj, obj.__wbg_ptr, obj);
-        return obj;
-    }
-
-    __destroy_into_raw() {
-        const ptr = this.__wbg_ptr;
-        this.__wbg_ptr = 0;
-        classFinalization.unregister(this);
-        return ptr;
-    }
-
-    free() {
-        const ptr = this.__destroy_into_raw();
-        wasm.__wbg_class_free(ptr, 0);
-    }
-    /**
-     * @returns {class}
-     */
-    static new() {
-        const ret = wasm.class_new();
-        return class.__wrap(ret);
-    }
-}
-
 export function __wbg_await_e0a0e75be8b6fef6() {
     await();
 };

@@ -488,6 +488,14 @@ impl ConvertToAst<(&ast::Program, BindgenAttrs)> for &mut syn::ItemStruct {
             .js_name()
             .map(|s| s.0.to_string())
             .unwrap_or(self.ident.unraw().to_string());
+        if is_js_keyword(&js_name) {
+            bail_span!(
+                self.ident,
+                "struct cannot use the JS keyword `{}` as its name",
+                js_name
+            );
+        }
+
         let is_inspectable = attrs.inspectable().is_some();
         let getter_with_clone = attrs.getter_with_clone();
         for (i, field) in self.fields.iter_mut().enumerate() {
@@ -1515,11 +1523,18 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
         }
 
         let generate_typescript = opts.skip_typescript().is_none();
+        let comments = extract_doc_comments(&self.attrs);
         let js_name = opts
             .js_name()
             .map(|s| s.0)
             .map_or_else(|| self.ident.to_string(), |s| s.to_string());
-        let comments = extract_doc_comments(&self.attrs);
+        if is_js_keyword(&js_name) {
+            bail_span!(
+                self.ident,
+                "enum cannot use the JS keyword `{}` as its name",
+                js_name
+            );
+        }
 
         opts.check_used();
 
