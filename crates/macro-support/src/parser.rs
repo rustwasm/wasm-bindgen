@@ -90,6 +90,7 @@ pub struct BindgenAttrs {
 /// function or constant.
 ///
 /// The list is guaranteed to be non-empty not start with a JS keyword.
+#[cfg_attr(feature = "extra-traits", derive(Debug))]
 #[derive(Clone)]
 pub struct JsNamespace(Vec<String>);
 
