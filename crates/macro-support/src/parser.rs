@@ -1774,9 +1774,15 @@ impl MacroParse<ForeignItemCtx> for syn::ForeignItem {
         };
 
         // check for JS keywords
+
+        // We only need to check if there isn't a JS namespace or module. If
+        // there is namespace, then we already checked the namespace while
+        // parsing. If there is a module, we can rename the import symbol to
+        // avoid using keywords.
+        let needs_check = js_namespace.is_none() && module.is_none();
         match &kind {
             ast::ImportKind::Function(import_function) => {
-                if js_namespace.is_none()
+                if needs_check
                     && matches!(import_function.kind, ast::ImportFunctionKind::Normal)
                     && is_js_keyword(&import_function.function.name)
                 {
@@ -1788,7 +1794,7 @@ impl MacroParse<ForeignItemCtx> for syn::ForeignItem {
                 }
             }
             ast::ImportKind::Static(import_static) => {
-                if js_namespace.is_none() && is_js_keyword(&import_static.js_name) {
+                if needs_check && is_js_keyword(&import_static.js_name) {
                     bail_span!(
                         import_static.rust_name,
                         "Imported static cannot use the JS keyword `{}` as its name.",
@@ -1800,7 +1806,7 @@ impl MacroParse<ForeignItemCtx> for syn::ForeignItem {
                 // static strings don't have JS names, so we don't need to check for JS keywords
             }
             ast::ImportKind::Type(import_type) => {
-                if js_namespace.is_none() && is_js_keyword(&import_type.js_name) {
+                if needs_check && is_js_keyword(&import_type.js_name) {
                     bail_span!(
                         import_type.rust_name,
                         "Imported type cannot use the JS keyword `{}` as its name.",
