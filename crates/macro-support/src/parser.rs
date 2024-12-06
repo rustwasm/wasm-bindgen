@@ -426,7 +426,9 @@ impl Parse for BindgenAttr {
                     }
                 };
 
-                if is_js_keyword(&vals[0]) {
+                // We need to allow `import`, because of the `import.meta` namespace.
+                let first = &vals[0];
+                if is_js_keyword(first) && first != "import" {
                     let msg = format!("Namespace cannot start with the JS keyword `{}`", vals[0]);
                     return Err(syn::Error::new(spans[0], msg));
                 }
