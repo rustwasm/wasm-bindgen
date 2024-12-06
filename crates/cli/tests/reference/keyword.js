@@ -39,9 +39,12 @@ export function _var() {
 /**
  * @param {number} _new
  * @param {number} _var
+ * @param {number} _switch
+ * @param {number} _default
+ * @param {number} _arguments
  */
-export function weird_arguments(_new, _var) {
-    wasm.weird_arguments(_new, _var);
+export function weird_arguments(_new, _var, _switch, _default, _arguments) {
+    wasm.weird_arguments(_new, _var, _switch, _default, _arguments);
 }
 
 /**

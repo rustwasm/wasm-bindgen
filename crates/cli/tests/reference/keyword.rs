@@ -54,7 +54,7 @@ pub fn function() {}
 pub fn sane_name() {}
 
 #[wasm_bindgen]
-pub fn weird_arguments(new: u32, var: u32) {}
+pub fn weird_arguments(new: u32, var: u32, r#switch: u32, default: u32, arguments: u32) {}
 
 #[wasm_bindgen]
 pub struct class;

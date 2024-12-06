@@ -22,7 +22,8 @@ thread_local!(static ATTRS: AttributeParseState = Default::default());
 /// Javascript keywords.
 ///
 /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#reserved_words
-const JS_KEYWORDS: [&str; 43] = [
+const JS_KEYWORDS: [&str; 44] = [
+    "arguments", // reserved in strict mode, which we are in
     "break",
     "case",
     "catch",
@@ -35,6 +36,7 @@ const JS_KEYWORDS: [&str; 43] = [
     "do",
     "else",
     "enum", // always reserved, but not used
+    // "eval", reserved in strict mode, but behaves like a functions in JS, so we allow it
     "export",
     "extends",
     // "false", false is a keyword, but behaves like a literal in JS
@@ -1032,11 +1034,11 @@ fn function_from_decl(
     // E.g. this will replace `fn foo(class: u32)` to `fn foo(_class: u32)`
     let replace_colliding_arg = |i: &mut syn::PatType| {
         if let syn::Pat::Ident(ref mut i) = *i.pat {
-            let ident = i.ident.to_string();
+            let ident = i.ident.unraw().to_string();
             // JS keywords are NEVER allowed as argument names. Since argument
             // names are considered an implementation detail in JS, we can
             // safely rename them to avoid collisions.
-            if is_js_keyword(ident.as_str()) {
+            if is_js_keyword(&ident) {
                 i.ident = Ident::new(format!("_{}", ident).as_str(), i.ident.span());
             }
         }
