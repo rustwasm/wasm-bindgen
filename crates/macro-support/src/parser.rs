@@ -19,29 +19,57 @@ use crate::ClassMarker;
 
 thread_local!(static ATTRS: AttributeParseState = Default::default());
 
-/// Javascript keywords which are not keywords in Rust.
-const JS_KEYWORDS: [&str; 20] = [
-    "class",
+/// Javascript keywords.
+///
+/// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#reserved_words
+const JS_KEYWORDS: [&str; 43] = [
+    "break",
     "case",
     "catch",
+    "class",
+    "const",
+    "continue",
     "debugger",
     "default",
     "delete",
+    "do",
+    "else",
+    "enum", // always reserved, but not used
     "export",
     "extends",
+    // "false", false is a keyword, but behaves like a literal in JS
     "finally",
+    "for",
     "function",
+    "if",
     "import",
+    "implements", // reserved in strict mode, which we are in
+    "in",
     "instanceof",
+    "interface", // reserved in strict mode, which we are in
+    "let",       // reserved in strict mode, which we are in
     "new",
     "null",
+    "package",   // reserved in strict mode, which we are in
+    "private",   // reserved in strict mode, which we are in
+    "protected", // reserved in strict mode, which we are in
+    "public",    // reserved in strict mode, which we are in
+    "return",
+    "static", // reserved in strict mode, which we are in
+    "super",
     "switch",
     "this",
     "throw",
+    // "true", true is a keyword, but behaves like a literal in JS
+    "try",
+    "typeof",
     "var",
     "void",
+    "while",
     "with",
+    "yield", // reserved in strict mode, which we are in
 ];
+
 #[derive(Default)]
 struct AttributeParseState {
     parsed: Cell<usize>,
@@ -56,6 +84,13 @@ pub struct BindgenAttrs {
     pub attrs: Vec<(Cell<bool>, BindgenAttr)>,
 }
 
+/// A list of identifiers representing the namespace prefix of an imported
+/// function or constant.
+///
+/// The list is guaranteed to be non-empty not start with a JS keyword.
+#[derive(Clone)]
+pub struct JsNamespace(Vec<String>);
+
 macro_rules! attrgen {
     ($mac:ident) => {
         $mac! {
@@ -63,7 +98,7 @@ macro_rules! attrgen {
             (constructor, Constructor(Span)),
             (method, Method(Span)),
             (static_method_of, StaticMethodOf(Span, Ident)),
-            (js_namespace, JsNamespace(Span, Vec<String>, Vec<Span>)),
+            (js_namespace, JsNamespace(Span, JsNamespace, Vec<Span>)),
             (module, Module(Span, String, Span)),
             (raw_module, RawModule(Span, String, Span)),
             (inline_js, InlineJs(Span, String, Span)),
@@ -160,14 +195,14 @@ macro_rules! methods {
         }
     };
 
-    (@method $name:ident, $variant:ident(Span, Vec<String>, Vec<Span>)) => {
-        fn $name(&self) -> Option<(&[String], &[Span])> {
+    (@method $name:ident, $variant:ident(Span, JsNamespace, Vec<Span>)) => {
+        fn $name(&self) -> Option<(JsNamespace, &[Span])> {
             self.attrs
                 .iter()
                 .find_map(|a| match &a.1 {
                     BindgenAttr::$variant(_, ss, spans) => {
                         a.0.set(true);
-                        Some((&ss[..], &spans[..]))
+                        Some((ss.clone(), &spans[..]))
                     }
                     _ => None,
                 })
@@ -358,7 +393,7 @@ impl Parse for BindgenAttr {
                 return Ok(BindgenAttr::$variant(attr_span, val, span))
             });
 
-            (@parser $variant:ident(Span, Vec<String>, Vec<Span>)) => ({
+            (@parser $variant:ident(Span, JsNamespace, Vec<Span>)) => ({
                 input.parse::<Token![=]>()?;
                 let (vals, spans) = match input.parse::<syn::ExprArray>() {
                     Ok(exprs) => {
@@ -377,6 +412,10 @@ impl Parse for BindgenAttr {
                             }
                         }
 
+                        if vals.is_empty() {
+                            return Err(syn::Error::new(exprs.span(), "Empty namespace lists are not allowed."));
+                        }
+
                         (vals, spans)
                     },
                     Err(_) => {
@@ -384,7 +423,13 @@ impl Parse for BindgenAttr {
                         (vec![ident.to_string()], vec![ident.span()])
                     }
                 };
-                return Ok(BindgenAttr::$variant(attr_span, vals, spans))
+
+                if is_js_keyword(&vals[0]) {
+                    let msg = format!("Namespace cannot start with the JS keyword `{}`", vals[0]);
+                    return Err(syn::Error::new(spans[0], msg));
+                }
+
+                return Ok(BindgenAttr::$variant(attr_span, JsNamespace(vals), spans))
             });
         }
 
@@ -725,7 +770,7 @@ impl ConvertToAst<(&ast::Program, BindgenAttrs)> for syn::ForeignItemType {
         let shim = format!(
             "__wbg_instanceof_{}_{}",
             self.ident,
-            ShortHash((attrs.js_namespace().map(|(ns, _)| ns), &self.ident))
+            ShortHash((attrs.js_namespace().map(|(ns, _)| ns.0), &self.ident))
         );
         let mut extends = Vec::new();
         let mut vendor_prefixes = Vec::new();
@@ -1640,7 +1685,7 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
                 "only foreign mods with the `C` ABI are allowed"
             ));
         }
-        let js_namespace = opts.js_namespace().map(|(s, _)| s.to_owned());
+        let js_namespace = opts.js_namespace().map(|(s, _)| s);
         let module = module_from_opts(program, &opts)
             .map_err(|e| errors.push(e))
             .unwrap_or_default();
@@ -1661,7 +1706,7 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
 
 struct ForeignItemCtx {
     module: Option<ast::ImportModule>,
-    js_namespace: Option<Vec<String>>,
+    js_namespace: Option<JsNamespace>,
 }
 
 impl MacroParse<ForeignItemCtx> for syn::ForeignItem {
@@ -1696,8 +1741,9 @@ impl MacroParse<ForeignItemCtx> for syn::ForeignItem {
 
         let js_namespace = item_opts
             .js_namespace()
-            .map(|(s, _)| s.to_owned())
-            .or(ctx.js_namespace);
+            .map(|(s, _)| s)
+            .or(ctx.js_namespace)
+            .map(|s| s.0);
         let module = ctx.module;
 
         let kind = match self {
@@ -1706,6 +1752,46 @@ impl MacroParse<ForeignItemCtx> for syn::ForeignItem {
             syn::ForeignItem::Static(s) => s.convert((program, item_opts, &module))?,
             _ => panic!("only foreign functions/types allowed for now"),
         };
+
+        // check for JS keywords
+        match &kind {
+            ast::ImportKind::Function(import_function) => {
+                if js_namespace.is_none()
+                    && matches!(import_function.kind, ast::ImportFunctionKind::Normal)
+                    && is_js_keyword(&import_function.function.name)
+                {
+                    bail_span!(
+                        import_function.rust_name,
+                        "Imported function cannot use the JS keyword `{}` as its name.",
+                        import_function.function.name
+                    );
+                }
+            }
+            ast::ImportKind::Static(import_static) => {
+                if js_namespace.is_none() && is_js_keyword(&import_static.js_name) {
+                    bail_span!(
+                        import_static.rust_name,
+                        "Imported static cannot use the JS keyword `{}` as its name.",
+                        import_static.js_name
+                    );
+                }
+            }
+            ast::ImportKind::String(_) => {
+                // static strings don't have JS names, so we don't need to check for JS keywords
+            }
+            ast::ImportKind::Type(import_type) => {
+                if js_namespace.is_none() && is_js_keyword(&import_type.js_name) {
+                    bail_span!(
+                        import_type.rust_name,
+                        "Imported type cannot use the JS keyword `{}` as its name.",
+                        import_type.js_name
+                    );
+                }
+            }
+            ast::ImportKind::Enum(_) => {
+                // string enums aren't possible here
+            }
+        }
 
         program.imports.push(ast::Import {
             module,

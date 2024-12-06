@@ -90,8 +90,13 @@ export function __wbg_await_e0a0e75be8b6fef6() {
     await();
 };
 
-export function __wbg_new_64246b0041120fec() {
-    A.new();
+export function __wbg_let_8d461e9e0592bd8c(arg0) {
+    arg0.let();
+};
+
+export function __wbg_new_4b026aaf1c1e4438() {
+    const ret = A.new();
+    return ret;
 };
 
 export function __wbg_new_d4bfd9add722b492() {
@@ -101,6 +106,11 @@ export function __wbg_new_d4bfd9add722b492() {
 
 export function __wbg_new_e17dd7c5a1cd57d8() {
     B.new();
+};
+
+export function __wbg_static_accessor_TRUE_c6b68bf8545d99a3() {
+    const ret = true;
+    return ret;
 };
 
 export function __wbindgen_init_externref_table() {

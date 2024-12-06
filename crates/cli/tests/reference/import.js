@@ -77,6 +77,11 @@ export function __wbg_reload_84c12f152ad689f0() {
     window.location.reload();
 };
 
+export function __wbg_static_accessor_CONST_9e9d5ae758197645() {
+    const ret = a.CONST;
+    return ret;
+};
+
 export function __wbg_write_c2ce0ce33a6087d5(arg0, arg1) {
     window.document.write(getStringFromWasm0(arg0, arg1));
 };

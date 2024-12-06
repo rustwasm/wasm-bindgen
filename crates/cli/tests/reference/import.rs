@@ -27,12 +27,14 @@ extern "C" {
 extern "C" {
     #[wasm_bindgen(js_namespace = ["b"])]
     fn my_function();
+    #[wasm_bindgen(thread_local_v2)]
+    static CONST: f64;
 }
 
 #[wasm_bindgen]
 pub fn exported() -> Result<(), JsValue> {
     bar_from_foo();
-    let _ = add(1.0, 2.0);
+    let _ = add(CONST.with(Clone::clone), 2.0);
     reload();
     write("");
     no_catch();
