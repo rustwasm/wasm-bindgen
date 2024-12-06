@@ -1633,20 +1633,6 @@ pub mod __rt {
         }
     }
 
-    #[macro_export]
-    #[doc(hidden)]
-    #[cfg(feature = "std")]
-    macro_rules! __wbindgen_if_not_std {
-        ($($i:item)*) => {};
-    }
-
-    #[macro_export]
-    #[doc(hidden)]
-    #[cfg(not(feature = "std"))]
-    macro_rules! __wbindgen_if_not_std {
-        ($($i:item)*) => ($($i)*)
-    }
-
     #[inline]
     pub fn assert_not_null<T>(s: *mut T) {
         if s.is_null() {

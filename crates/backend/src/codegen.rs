@@ -229,7 +229,6 @@ impl ToTokens for ast::Struct {
             #[automatically_derived]
             impl #wasm_bindgen::describe::WasmDescribe for #name {
                 fn describe() {
-                    use #wasm_bindgen::__wbindgen_if_not_std;
                     use #wasm_bindgen::describe::*;
                     inform(RUST_STRUCT);
                     inform(#name_len);
