@@ -15,6 +15,7 @@ extern crate rustversion;
     )
 )]
 pub trait SupportsConstructor {}
+pub struct CheckSupportsConstructor<T: SupportsConstructor>(T);
 
 /// Marker trait for types that support `#[wasm_bindgen(getter)]` or
 /// `#[wasm_bindgen(Setter)]` on instance methods.
@@ -30,6 +31,7 @@ pub trait SupportsConstructor {}
     )
 )]
 pub trait SupportsInstanceProperty {}
+pub struct CheckSupportsInstanceProperty<T: SupportsInstanceProperty>(T);
 
 /// Marker trait for types that support `#[wasm_bindgen(getter)]` or
 /// `#[wasm_bindgen(Setter)]` on static methods.
@@ -45,3 +47,4 @@ pub trait SupportsInstanceProperty {}
     )
 )]
 pub trait SupportsStaticProperty {}
+pub struct CheckSupportsStaticProperty<T: SupportsStaticProperty>(T);

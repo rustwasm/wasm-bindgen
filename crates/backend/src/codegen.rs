@@ -804,21 +804,18 @@ impl TryToTokens for ast::Export {
             match &self.method_kind {
                 ast::MethodKind::Constructor => {
                     add_check(quote! {
-                        struct CheckSupportsConstructor<T: #wasm_bindgen::__rt::marker::SupportsConstructor>(T);
-                        let _: CheckSupportsConstructor<#class>;
+                        let _: #wasm_bindgen::__rt::marker::CheckSupportsConstructor<#class>;
                     });
                 }
                 ast::MethodKind::Operation(operation) => match operation.kind {
                     ast::OperationKind::Getter(_) | ast::OperationKind::Setter(_) => {
                         if operation.is_static {
                             add_check(quote! {
-                                struct CheckSupportsStaticProperty<T: #wasm_bindgen::__rt::marker::SupportsStaticProperty>(T);
-                                let _: CheckSupportsStaticProperty<#class>;
+                                let _: #wasm_bindgen::__rt::marker::CheckSupportsStaticProperty<#class>;
                             });
                         } else {
                             add_check(quote! {
-                                struct CheckSupportsInstanceProperty<T: #wasm_bindgen::__rt::marker::SupportsInstanceProperty>(T);
-                                let _: CheckSupportsInstanceProperty<#class>;
+                                let _: #wasm_bindgen::__rt::marker::CheckSupportsInstanceProperty<#class>;
                             });
                         }
                     }
