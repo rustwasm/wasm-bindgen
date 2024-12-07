@@ -1,3 +1,4 @@
+use std::mem::MaybeUninit;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -42,6 +43,14 @@ echo!(
     (echo_vec_i32, Vec<i32>),
     (echo_vec_u64, Vec<u64>),
     (echo_vec_i64, Vec<i64>),
+    (echo_vec_uninit_u8, Vec<MaybeUninit<u8>>),
+    (echo_vec_uninit_i8, Vec<MaybeUninit<i8>>),
+    (echo_vec_uninit_u16, Vec<MaybeUninit<u16>>),
+    (echo_vec_uninit_i16, Vec<MaybeUninit<i16>>),
+    (echo_vec_uninit_u32, Vec<MaybeUninit<u32>>),
+    (echo_vec_uninit_i32, Vec<MaybeUninit<i32>>),
+    (echo_vec_uninit_u64, Vec<MaybeUninit<u64>>),
+    (echo_vec_uninit_i64, Vec<MaybeUninit<i64>>),
     (echo_vec_string, Vec<String>),
     (echo_struct, Foo),
     (echo_vec_struct, Vec<Foo>),
@@ -70,6 +79,14 @@ echo!(
     (echo_option_vec_i32, Option<Vec<i32>>),
     (echo_option_vec_u64, Option<Vec<u64>>),
     (echo_option_vec_i64, Option<Vec<i64>>),
+    (echo_option_vec_uninit_u8, Option<Vec<MaybeUninit<u8>>>),
+    (echo_option_vec_uninit_i8, Option<Vec<MaybeUninit<i8>>>),
+    (echo_option_vec_uninit_u16, Option<Vec<MaybeUninit<u16>>>),
+    (echo_option_vec_uninit_i16, Option<Vec<MaybeUninit<i16>>>),
+    (echo_option_vec_uninit_u32, Option<Vec<MaybeUninit<u32>>>),
+    (echo_option_vec_uninit_i32, Option<Vec<MaybeUninit<i32>>>),
+    (echo_option_vec_uninit_u64, Option<Vec<MaybeUninit<u64>>>),
+    (echo_option_vec_uninit_i64, Option<Vec<MaybeUninit<i64>>>),
     (echo_option_vec_string, Option<Vec<String>>),
     (echo_option_struct, Option<Foo>),
     (echo_option_vec_struct, Option<Vec<Foo>>)

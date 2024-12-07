@@ -233,7 +233,7 @@ pub enum AuxImport {
 
     /// This import is expected to be a shim that returns the JS value named by
     /// `JsImport`.
-    Static(JsImport),
+    Static { js: JsImport, optional: bool },
 
     /// This import is expected to be a shim that returns an exported `JsString`.
     String(String),

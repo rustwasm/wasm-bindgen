@@ -90,6 +90,15 @@ extern "C" {
 
     #[wasm_bindgen(js_name = "\"string'literal\nbreakers\r")]
     fn string_literal_breakers() -> u32;
+
+    #[wasm_bindgen(thread_local_v2)]
+    static UNDECLARED: Option<u32>;
+
+    #[wasm_bindgen(thread_local_v2, js_namespace = test)]
+    static UNDECLARED_NAMESPACE: Option<u32>;
+
+    #[wasm_bindgen(thread_local_v2, js_namespace = ["test1", "test2"])]
+    static UNDECLARED_NESTED_NAMESPACE: Option<u32>;
 }
 
 #[wasm_bindgen(module = "tests/wasm/imports_2.js")]
@@ -335,4 +344,11 @@ fn func_from_two_modules_same_js_namespace() {
 fn invalid_idents() {
     assert_eq!(kebab_case(), 42);
     assert_eq!(string_literal_breakers(), 42);
+}
+
+#[wasm_bindgen_test]
+fn undeclared() {
+    assert_eq!(UNDECLARED.with(Option::clone), None);
+    assert_eq!(UNDECLARED_NAMESPACE.with(Option::clone), None);
+    assert_eq!(UNDECLARED_NESTED_NAMESPACE.with(Option::clone), None);
 }
