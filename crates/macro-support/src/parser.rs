@@ -21,9 +21,12 @@ thread_local!(static ATTRS: AttributeParseState = Default::default());
 
 /// Javascript keywords.
 ///
+/// Note that some of these keywords are only reserved in strict mode. Since we
+/// generate strict mode JS code, we treat all of these as reserved.
+///
 /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#reserved_words
-const JS_KEYWORDS: [&str; 44] = [
-    "arguments", // reserved in strict mode, which we are in
+const JS_KEYWORDS: [&str; 47] = [
+    "arguments",
     "break",
     "case",
     "catch",
@@ -35,42 +38,68 @@ const JS_KEYWORDS: [&str; 44] = [
     "delete",
     "do",
     "else",
-    "enum", // always reserved, but not used
-    // "eval", reserved in strict mode, but behaves like a functions in JS, so we allow it
+    "enum",
+    "eval",
     "export",
     "extends",
-    // "false", false is a keyword, but behaves like a literal in JS
+    "false",
     "finally",
     "for",
     "function",
     "if",
+    "implements",
     "import",
-    "implements", // reserved in strict mode, which we are in
     "in",
     "instanceof",
-    "interface", // reserved in strict mode, which we are in
-    "let",       // reserved in strict mode, which we are in
+    "interface",
+    "let",
     "new",
     "null",
-    "package",   // reserved in strict mode, which we are in
-    "private",   // reserved in strict mode, which we are in
-    "protected", // reserved in strict mode, which we are in
-    "public",    // reserved in strict mode, which we are in
+    "package",
+    "private",
+    "protected",
+    "public",
     "return",
-    "static", // reserved in strict mode, which we are in
+    "static",
     "super",
     "switch",
     "this",
     "throw",
-    // "true", true is a keyword, but behaves like a literal in JS
+    "true",
     "try",
     "typeof",
     "var",
     "void",
     "while",
     "with",
-    "yield", // reserved in strict mode, which we are in
+    "yield",
 ];
+
+/// Javascript keywords that behave like values in that they can be called like
+/// functions or have properties accessed on them.
+const VALUE_LIKE_JS_KEYWORDS: [&str; 7] = [
+    "eval",   // eval is a function-like keyword, so e.g. `eval(...)` is valid
+    "false",  // false resolves to a boolean value, so e.g. `false.toString()` is valid
+    "import", // import.meta and import()
+    "new",    // new.target
+    "super", // super can be used for a function call (`super(...)`) or property lookup (`super.prop`)
+    "this",  // this obviously can be used as a value
+    "true",  // true resolves to a boolean value, so e.g. `false.toString()` is valid
+];
+
+/// Returns whether the given string is a JS keyword.
+fn is_js_keyword(keyword: &str) -> bool {
+    JS_KEYWORDS.contains(&keyword)
+}
+/// Returns whether the given string is a JS keyword that does NOT behave like
+/// a value.
+///
+/// Value-like keywords can be called like functions or have properties
+/// accessed, which makes it possible to use them in imports. In general,
+/// imports should use this function to check for reserved keywords.
+fn is_non_value_js_keyword(keyword: &str) -> bool {
+    JS_KEYWORDS.contains(&keyword) && !VALUE_LIKE_JS_KEYWORDS.contains(&keyword)
+}
 
 #[derive(Default)]
 struct AttributeParseState {
@@ -427,10 +456,9 @@ impl Parse for BindgenAttr {
                     }
                 };
 
-                // We need to allow `import`, because of the `import.meta` namespace.
                 let first = &vals[0];
-                if is_js_keyword(first) && first != "import" {
-                    let msg = format!("Namespace cannot start with the JS keyword `{}`", vals[0]);
+                if is_non_value_js_keyword(first) {
+                    let msg = format!("Namespace cannot start with the JS keyword `{}`", first);
                     return Err(syn::Error::new(spans[0], msg));
                 }
 
@@ -960,10 +988,6 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
 
         Ok(ret)
     }
-}
-
-fn is_js_keyword(keyword: &str) -> bool {
-    JS_KEYWORDS.iter().any(|this| *this == keyword)
 }
 
 /// Returns whether `self` is passed by reference or by value.
@@ -1784,7 +1808,7 @@ impl MacroParse<ForeignItemCtx> for syn::ForeignItem {
             match &kind {
                 ast::ImportKind::Function(import_function) => {
                     if matches!(import_function.kind, ast::ImportFunctionKind::Normal)
-                        && is_js_keyword(&import_function.function.name)
+                        && is_non_value_js_keyword(&import_function.function.name)
                     {
                         bail_span!(
                             import_function.rust_name,
@@ -1794,7 +1818,7 @@ impl MacroParse<ForeignItemCtx> for syn::ForeignItem {
                     }
                 }
                 ast::ImportKind::Static(import_static) => {
-                    if is_js_keyword(&import_static.js_name) {
+                    if is_non_value_js_keyword(&import_static.js_name) {
                         bail_span!(
                             import_static.rust_name,
                             "Imported static cannot use the JS keyword `{}` as its name.",
@@ -1806,7 +1830,7 @@ impl MacroParse<ForeignItemCtx> for syn::ForeignItem {
                     // static strings don't have JS names, so we don't need to check for JS keywords
                 }
                 ast::ImportKind::Type(import_type) => {
-                    if is_js_keyword(&import_type.js_name) {
+                    if is_non_value_js_keyword(&import_type.js_name) {
                         bail_span!(
                             import_type.rust_name,
                             "Imported type cannot use the JS keyword `{}` as its name.",
