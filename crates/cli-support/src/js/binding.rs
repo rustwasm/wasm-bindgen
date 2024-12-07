@@ -460,16 +460,14 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
     /// Creates a new variable with the given name and returns the name.
     ///
     /// If the name is already taken, this function panics.
-    pub fn guarantee_alias(&mut self, name: &str, expression: String) -> String {
+    pub fn guarantee_alias(&mut self, name: &str, expression: String) -> Result<String, Error> {
         let can_use = self.used_identifiers.insert(name.to_string());
-        assert!(
-            can_use,
-            "identifier {} already in use in {}",
-            name, self.debug_name
-        );
+        if !can_use {
+            bail!("identifier {} already in use in {}", name, self.debug_name);
+        }
 
         self.prelude(&format!("const {name} = {expression};"));
-        name.to_string()
+        Ok(name.to_string())
     }
 
     /// Creates a new JS `const` variable with the given name and returns the
@@ -869,7 +867,7 @@ fn instruction(
             let return_ptr = js.guarantee_alias(
                 "retptr",
                 format!("wasm.__wbindgen_add_to_stack_pointer(-{size})"),
-            );
+            )?;
             js.finally(&format!("wasm.__wbindgen_add_to_stack_pointer({});", size));
             js.push(return_ptr);
         }
