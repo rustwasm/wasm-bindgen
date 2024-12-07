@@ -703,7 +703,7 @@ fn instruction(
                 }
                 // If the call is deferred, the arguments to the function still need to be
                 // accessible in the `finally` block, so we declare variables to hold the args
-                // outside of the try-finally block and then set those to the args.
+                // outside of the try-finally block with `var` and then set those to the args.
                 let mut slice = Vec::new();
                 slice.extend(js.stack[js.stack.len() - params..].iter().cloned());
                 for (i, arg) in slice.into_iter().enumerate() {
