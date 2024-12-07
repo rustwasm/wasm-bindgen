@@ -26,7 +26,7 @@ let COLORS = {
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(thread_local_v2)]
-    static COLORS;
+    static COLORS: JsValue;
 }
 
 fn get_colors() -> JsValue {
