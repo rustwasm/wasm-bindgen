@@ -1,29 +1,9 @@
-//! This module contains marker traits used by `wasm-bindgen` to verify its
-//! generated code.
-//!
-//! NOTE: This module is not exported as is. It is re-exported under
-//! `wasm_bindgen::__rt::marker`.
-//!
-//! # ⚠️ Unstable
-//!
-//! This is an internal module, no stability guarantees are provided. Use at
-//! your own risk.
-
-#[cfg(feature = "diagnostic")]
+#[cfg(feature = "msrv")]
 extern crate rustversion;
 
 /// Marker trait for types that support `#[wasm_bindgen(constructor)]`.
-///
-/// **DO NOT** implement this trait manually. It is implemented automatically
-/// for types that support constructors.
-///
-/// # ⚠️ Unstable
-///
-/// This is part of the internal [`convert`](crate::marker) module, **no
-/// stability guarantees** are provided. Use at your own risk. See its
-/// documentation for more details.
 #[cfg_attr(
-    feature = "diagnostic",
+    feature = "msrv",
     rustversion::attr(
         since(1.78),
         diagnostic::on_unimplemented(
@@ -38,17 +18,8 @@ pub trait SupportsConstructor {}
 
 /// Marker trait for types that support `#[wasm_bindgen(getter)]` or
 /// `#[wasm_bindgen(Setter)]` on instance methods.
-///
-/// **DO NOT** implement this trait manually. It is implemented automatically
-/// for types that support instance properties.
-///
-/// # ⚠️ Unstable
-///
-/// This is part of the internal [`convert`](crate::marker) module, **no
-/// stability guarantees** are provided. Use at your own risk. See its
-/// documentation for more details.
 #[cfg_attr(
-    feature = "diagnostic",
+    feature = "msrv",
     rustversion::attr(
         since(1.78),
         diagnostic::on_unimplemented(
@@ -62,17 +33,8 @@ pub trait SupportsInstanceProperty {}
 
 /// Marker trait for types that support `#[wasm_bindgen(getter)]` or
 /// `#[wasm_bindgen(Setter)]` on static methods.
-///
-/// **DO NOT** implement this trait manually. It is implemented automatically
-/// for types that support static properties.
-///
-/// # ⚠️ Unstable
-///
-/// This is part of the internal [`convert`](crate::marker) module, **no
-/// stability guarantees** are provided. Use at your own risk. See its
-/// documentation for more details.
 #[cfg_attr(
-    feature = "diagnostic",
+    feature = "msrv",
     rustversion::attr(
         since(1.78),
         diagnostic::on_unimplemented(

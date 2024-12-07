@@ -22,19 +22,18 @@ features = ["serde-serialize"]
 test = false
 
 [features]
-default = ["spans", "std", "diagnostic"]
+default = ["spans", "std", "msrv"]
 enable-interning = ["std"]
 serde-serialize = ["serde", "serde_json", "std"]
 spans = ["wasm-bindgen-macro/spans"]
 std = ["wasm-bindgen-macro/std", "once_cell/std"]
 
-# Enables the use of Rust's `diagnostic` macro for several traits to provide
-# better error messages when those traits are not implemented.
+# Opt-in for Rust language features that require a higher MSRV.
 #
-# Diagnostic messages are only available since Rust 1.78. Enabling this feature
-# for older compilers will NOT improve error message and will NOT result in a
-# compilation error.
-diagnostic = ["rustversion"]
+# The current rustc version is detected at compile-time, so enabling this
+# feature for older compilers will NOT result in a compilation error. Instead,
+# any unsupported language feature will not be used.
+msrv = ["rustversion"]
 
 # Whether or not the `#[wasm_bindgen]` macro is strict and generates an error on
 # all unused attributes
