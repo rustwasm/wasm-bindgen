@@ -89,7 +89,7 @@ pub struct BindgenAttrs {
 /// A list of identifiers representing the namespace prefix of an imported
 /// function or constant.
 ///
-/// The list is guaranteed to be non-empty not start with a JS keyword.
+/// The list is guaranteed to be non-empty and not start with a JS keyword.
 #[cfg_attr(feature = "extra-traits", derive(Debug))]
 #[derive(Clone)]
 pub struct JsNamespace(Vec<String>);
@@ -953,7 +953,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
         attrs.check_used();
 
         // Due to legacy behavior, we need to escape all keyword identifiers as
-        // `_keyword`, expect `default`
+        // `_keyword`, except `default`
         if is_js_keyword(&ret.name) && ret.name != "default" {
             ret.name = format!("_{}", ret.name);
         }

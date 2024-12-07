@@ -19,7 +19,7 @@ extern "C" {
     pub fn r#await();
 
     // true & false are reserved keywords in JS, but we allow them anyway
-    #[wasm_bindgen(js_name = "true")]
+    #[wasm_bindgen(thread_local_v2, js_name = "true")]
     static TRUE: JsValue;
 }
 
@@ -45,7 +45,7 @@ pub fn exported() {
     let _ = Menu::new();
 }
 
-// Exports with keywords
+// Exports with keywords that we allow and are renamed automatically.
 
 #[wasm_bindgen]
 pub fn function() {}
