@@ -33,7 +33,7 @@ extern "C" {
 // Namespaces
 
 // namespace on extern block
-#[wasm_bindgen(js_namespace = ["new", "foo"])]
+#[wasm_bindgen(js_namespace = ["public", "foo"])]
 extern "C" {}
 
 #[wasm_bindgen]
@@ -57,6 +57,8 @@ extern "C" {
 
 #[wasm_bindgen]
 pub struct class;
+#[wasm_bindgen]
+pub struct r#true; // forbid value-like keywords
 #[wasm_bindgen]
 pub enum switch {
     A,
