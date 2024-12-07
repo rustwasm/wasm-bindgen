@@ -1,1 +1,4 @@
+# Normalize line endings to LF
+* text=auto eol=LF
+
 *.webidl linguist-vendored
