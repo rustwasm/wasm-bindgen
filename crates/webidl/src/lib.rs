@@ -997,14 +997,21 @@ pub fn generate(from: &Path, to: &Path, options: Options) -> Result<String> {
 
     fn rustfmt(paths: impl IntoIterator<Item = PathBuf>) -> Result<()> {
         // run rustfmt on the generated file - really handy for debugging
-        let result = Command::new("rustfmt")
-            .arg("--edition")
-            .arg("2021")
-            .args(paths)
-            .status()
-            .context("rustfmt failed")?;
 
-        assert!(result.success(), "rustfmt failed");
+        // On Windows, the command line length is limited to 32k characters, so
+        // we need to split the command into multiple invocations. I've
+        // arbitrarily chosen to format 400 files at a time, because it works.
+        let paths: Vec<_> = paths.into_iter().collect();
+        for chunk in paths.chunks(400) {
+            let result = Command::new("rustfmt")
+                .arg("--edition")
+                .arg("2021")
+                .args(chunk)
+                .status()
+                .context("rustfmt failed")?;
+
+            assert!(result.success(), "rustfmt failed");
+        }
 
         Ok(())
     }
