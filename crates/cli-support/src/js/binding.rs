@@ -863,6 +863,9 @@ fn instruction(
 
         Instruction::Retptr { size } => {
             js.cx.inject_stack_pointer_shim()?;
+            // This variable name needs to be exactly `retptr` because it's
+            // used in `Instruction::LoadRetptr`. `LoadRetptr` can't access the
+            // variable name through the stack, so it needs to be hardcoded.
             let return_ptr = js.guarantee_alias(
                 "retptr",
                 format!("wasm.__wbindgen_add_to_stack_pointer(-{size})"),
