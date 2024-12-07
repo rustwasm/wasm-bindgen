@@ -1,16 +1,10 @@
-error[E0433]: failed to resolve: could not find `convert` in `test`
+error[E0433]: failed to resolve: could not find `__wbindgen_coverage` in `test`
   --> ui-tests/wasm-bindgen.rs:37:1
    |
 37 | #[wasm_bindgen(wasm_bindgen = test)]
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ could not find `convert` in `test`
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ could not find `__wbindgen_coverage` in `test`
    |
    = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
-help: consider importing one of these items
-   |
-3  + use crate::test::test::convert;
-   |
-3  + use wasm_bindgen::convert;
-   |
 
 error[E0425]: cannot find function `future_to_promise` in module `test`
   --> ui-tests/wasm-bindgen.rs:40:1

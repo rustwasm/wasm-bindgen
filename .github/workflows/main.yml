@@ -68,12 +68,12 @@ jobs:
     - run: cargo clippy --no-deps --all-features -p example-tests -- -D warnings
     - run: cargo clippy --no-deps --all-features -p wasm-bindgen-externref-xform -- -D warnings
     - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p wasm-bindgen-futures -- -D warnings
-    - run: cargo clippy --no-deps --features spans,strict-macro -p wasm-bindgen-macro -- -D warnings
-    - run: cargo clippy --no-deps --features extra-traits,spans,strict-macro -p wasm-bindgen-macro-support -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-macro -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-macro-support -- -D warnings
     - run: cargo clippy --no-deps --all-features -p wasm-bindgen-multi-value-xform -- -D warnings
     - run: cargo clippy --no-deps --all-features -p wasm-bindgen-shared -- -D warnings
     - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p wasm-bindgen-test -- -D warnings
-    - run: cargo clippy --no-deps -p wasm-bindgen-test-macro -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-test-macro -- -D warnings
     - run: cargo clippy --no-deps --all-features -p wasm-bindgen-threads-xform -- -D warnings
     - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p typescript-tests -- -D warnings
     - run: cargo clippy --no-deps --all-features -p wasm-bindgen-wasm-conventions -- -D warnings
@@ -121,8 +121,8 @@ jobs:
     - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p wasm-bindgen -Zbuild-std=core,alloc -- -D warnings
     - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p js-sys -Zbuild-std=core,alloc -- -D warnings
     - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p web-sys -Zbuild-std=core,alloc -- -D warnings
-    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p wasm-bindgen-futures --features once_cell/critical-section -Zbuild-std=core,alloc -- -D warnings
-    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p wasm-bindgen-test --features once_cell/critical-section -Zbuild-std=core,alloc -- -D warnings
+    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p wasm-bindgen-futures -Zbuild-std=core,alloc -- -D warnings
+    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p wasm-bindgen-test -Zbuild-std=core,alloc -- -D warnings
 
   # Run `cargo clippy` over the project
   clippy_project:
@@ -206,15 +206,16 @@ jobs:
   test_threads:
     name: "Run wasm-bindgen crate tests with multithreading"
     runs-on: ubuntu-latest
+    env:
+      WASM_BINDGEN_SPLIT_LINKED_MODULES: 1
     steps:
     - uses: actions/checkout@v4
     - run: rustup default nightly-2024-07-06
     - run: rustup target add wasm32-unknown-unknown
     - run: rustup component add rust-src
-    # Note: we only run the browser tests here, because wasm-bindgen doesn't support threading in Node yet.
     - run: |
         RUSTFLAGS='-C target-feature=+atomics,+bulk-memory,+mutable-globals' \
-          cargo test --target wasm32-unknown-unknown --test headless -Z build-std=std,panic_abort
+          cargo test --target wasm32-unknown-unknown -Z build-std=std,panic_abort
 
   # I don't know why this is failing so comment this out for now, but ideally
   # this would be figured out at some point and solved.
@@ -537,6 +538,34 @@ jobs:
       with:
         name: doc_api
         path: docs.tar.gz
+
+  msrv-resolver:
+    name: Check feature resolver version 1 compatibility
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        rust:
+          - 1.57
+          - stable
+        target:
+          - x86_64-unknown-linux-gnu
+          - wasm32-unknown-unknown
+        features:
+          - --no-default-features
+          - ""
+    defaults:
+      run:
+        working-directory: crates/msrv/resolver
+    steps:
+    - uses: actions/checkout@v4
+    - run: rustup update --no-self-update ${{ matrix.rust }} && rustup default ${{ matrix.rust }} && rustup target add ${{ matrix.target }}
+    - if: matrix.rust == '1.57'
+      run: |
+        cargo update -p bumpalo --precise 3.12.0
+        cargo update -p log --precise 0.4.18
+        cargo update -p scoped-tls --precise 1.0.0
+    - run: cargo build --target ${{ matrix.target }} ${{ matrix.features }}
 
   msrv-lib:
     name: Check MSRV for libraries

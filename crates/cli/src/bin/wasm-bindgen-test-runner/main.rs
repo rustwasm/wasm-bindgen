@@ -214,7 +214,15 @@ fn main() -> anyhow::Result<()> {
         return Ok(());
     }
 
-    let timeout = env::var("WASM_BINDGEN_TEST_TIMEOUT")
+    let driver_timeout = env::var("WASM_BINDGEN_TEST_DRIVER_TIMEOUT")
+        .map(|timeout| {
+            timeout
+                .parse()
+                .expect("Could not parse 'WASM_BINDGEN_TEST_DRIVER_TIMEOUT'")
+        })
+        .unwrap_or(5);
+
+    let browser_timeout = env::var("WASM_BINDGEN_TEST_TIMEOUT")
         .map(|timeout| {
             timeout
                 .parse()
@@ -223,7 +231,7 @@ fn main() -> anyhow::Result<()> {
         .unwrap_or(20);
 
     if debug {
-        println!("Set timeout to {} seconds...", timeout);
+        println!("Set timeout to {} seconds...", browser_timeout);
     }
 
     // Make the generated bindings available for the tests to execute against.
@@ -307,7 +315,7 @@ fn main() -> anyhow::Result<()> {
             }
 
             thread::spawn(|| srv.run());
-            headless::run(&addr, &shell, timeout)?;
+            headless::run(&addr, &shell, driver_timeout, browser_timeout)?;
         }
     }
     Ok(())

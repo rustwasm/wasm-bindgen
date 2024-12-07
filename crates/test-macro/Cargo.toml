@@ -7,13 +7,10 @@ license = "MIT OR Apache-2.0"
 name = "wasm-bindgen-test-macro"
 repository = "https://github.com/rustwasm/wasm-bindgen"
 rust-version = "1.57"
-version = "0.3.46"
+version = "0.3.49"
 
 [lib]
 proc-macro = true
-
-[features]
-coverage = []
 
 [dependencies]
 proc-macro2 = "1.0"

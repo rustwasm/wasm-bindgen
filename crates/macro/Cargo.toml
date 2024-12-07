@@ -11,14 +11,12 @@ license = "MIT OR Apache-2.0"
 name = "wasm-bindgen-macro"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/macro"
 rust-version = "1.57"
-version = "0.2.96"
+version = "0.2.99"
 
 [lib]
 proc-macro = true
 
 [features]
-atomics = ["wasm-bindgen-macro-support/atomics"]
-coverage = ["wasm-bindgen-macro-support/coverage"]
 default = ["std"]
 spans = ["wasm-bindgen-macro-support/spans"]
 std = ["wasm-bindgen-macro-support/std"]
@@ -27,7 +25,7 @@ xxx_debug_only_print_generated_code = []
 
 [dependencies]
 quote = "1.0"
-wasm-bindgen-macro-support = { path = "../macro-support", version = "=0.2.96", default-features = false }
+wasm-bindgen-macro-support = { path = "../macro-support", version = "=0.2.99", default-features = false }
 
 [dev-dependencies]
 js-sys = { path = "../js-sys" }
