@@ -10,6 +10,8 @@ use crate::wit::{JsImport, JsImportName, NonstandardWitSection, WasmBindgenAux};
 use crate::{reset_indentation, Bindgen, EncodeInto, OutputMode, PLACEHOLDER_MODULE};
 use anyhow::{anyhow, bail, Context as _, Error};
 use binding::TsReference;
+use ident::is_valid_ident;
+use jsdoc::JsDoc;
 use std::borrow::Cow;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fmt;
@@ -19,6 +21,8 @@ use std::path::{Path, PathBuf};
 use walrus::{FunctionId, ImportId, MemoryId, Module, TableId, ValType};
 
 mod binding;
+mod ident;
+mod jsdoc;
 
 pub struct Context<'a> {
     globals: String,
@@ -2849,7 +2853,7 @@ __wbg_set_wasm(wasm);"
             ts_arg_tys,
             ts_ret_ty,
             ts_refs,
-            js_doc,
+            js_doc: js_doc_tags,
             code,
             might_be_optional_field,
             catch,
@@ -2877,8 +2881,14 @@ __wbg_set_wasm(wasm);"
 
                 let ts_sig = export.generate_typescript.then_some(ts_sig.as_str());
 
-                let js_docs = format_doc_comments(&export.comments, Some(js_doc));
-                let ts_docs = format_doc_comments(&export.comments, None);
+                let ts_docs = format_doc_comments(&export.comments);
+                let js_docs = if export.generate_jsdoc {
+                    let mut js_doc = JsDoc::parse(&export.comments);
+                    js_doc.enhance(js_doc_tags);
+                    format_doc_comments(&js_doc.to_string_indented())
+                } else {
+                    ts_docs.clone()
+                };
 
                 match &export.kind {
                     AuxExportKind::Function(name) => {
@@ -3975,7 +3985,7 @@ __wbg_set_wasm(wasm);"
 
         if enum_.generate_typescript {
             self.typescript
-                .push_str(&format_doc_comments(&enum_.comments, None));
+                .push_str(&format_doc_comments(&enum_.comments));
             self.typescript
                 .push_str(&format!("export enum {} {{", enum_.name));
         }
@@ -3983,7 +3993,7 @@ __wbg_set_wasm(wasm);"
             let variant_docs = if comments.is_empty() {
                 String::new()
             } else {
-                format_doc_comments(comments, None)
+                format_doc_comments(comments)
             };
             variants.push_str(&variant_docs);
             variants.push_str(&format!("{}: {}, ", name, value));
@@ -4005,15 +4015,19 @@ __wbg_set_wasm(wasm);"
         }
 
         // add an `@enum {1 | 2 | 3}` to ensure that enums type-check even without .d.ts
-        let mut at_enum = "@enum {".to_string();
+        let mut comment = enum_.comments.to_string();
+        if !comment.is_empty() {
+            comment += "\n\n";
+        }
+        comment += "@enum {";
         for (i, (_, value, _)) in enum_.variants.iter().enumerate() {
             if i != 0 {
-                at_enum.push_str(" | ");
+                comment += " | ";
             }
-            at_enum.push_str(&value.to_string());
+            comment += &value.to_string();
         }
-        at_enum.push('}');
-        let docs = format_doc_comments(&enum_.comments, Some(at_enum));
+        comment += "}";
+        let docs = format_doc_comments(&comment);
 
         self.export(
             &enum_.name,
@@ -4036,7 +4050,7 @@ __wbg_set_wasm(wasm);"
                 .typescript_refs
                 .contains(&TsReference::StringEnum(string_enum.name.clone()))
         {
-            let docs = format_doc_comments(&string_enum.comments, None);
+            let docs = format_doc_comments(&string_enum.comments);
             let type_expr = if variants.is_empty() {
                 "never".to_string()
             } else {
@@ -4069,7 +4083,7 @@ __wbg_set_wasm(wasm);"
 
     fn generate_struct(&mut self, struct_: &AuxStruct) -> Result<(), Error> {
         let class = require_class(&mut self.exported_classes, &struct_.name);
-        class.comments = format_doc_comments(&struct_.comments, None);
+        class.comments = format_doc_comments(&struct_.comments);
         class.is_inspectable = struct_.is_inspectable;
         class.generate_typescript = struct_.generate_typescript;
         Ok(())
@@ -4498,7 +4512,12 @@ fn check_duplicated_getter_and_setter_names(
     Ok(())
 }
 
-fn format_doc_comments(comments: &str, js_doc_comments: Option<String>) -> String {
+fn format_doc_comments(comments: &str) -> String {
+    if comments.trim().is_empty() {
+        // don't emit empty doc comments
+        return String::new();
+    }
+
     let body: String = comments.lines().fold(String::new(), |mut output, c| {
         output.push_str(" *");
         if !c.is_empty() && !c.starts_with(' ') {
@@ -4508,20 +4527,8 @@ fn format_doc_comments(comments: &str, js_doc_comments: Option<String>) -> Strin
         output.push('\n');
         output
     });
-    let doc = if let Some(docs) = js_doc_comments {
-        docs.lines().fold(String::new(), |mut output: String, l| {
-            let _ = writeln!(output, " * {}", l);
-            output
-        })
-    } else {
-        String::new()
-    };
-    if body.is_empty() && doc.is_empty() {
-        // don't emit empty doc comments
-        String::new()
-    } else {
-        format!("/**\n{}{} */\n", body, doc)
-    }
+
+    format!("/**\n{} */\n", body)
 }
 
 fn require_class<'a>(
@@ -4533,48 +4540,6 @@ fn require_class<'a>(
         .expect("classes already written")
         .entry(name.to_string())
         .or_default()
-}
-
-/// Returns whether a character has the Unicode `ID_Start` properly.
-///
-/// This is only ever-so-slightly different from `XID_Start` in a few edge
-/// cases, so we handle those edge cases manually and delegate everything else
-/// to `unicode-ident`.
-fn is_id_start(c: char) -> bool {
-    match c {
-        '\u{037A}' | '\u{0E33}' | '\u{0EB3}' | '\u{309B}' | '\u{309C}' | '\u{FC5E}'
-        | '\u{FC5F}' | '\u{FC60}' | '\u{FC61}' | '\u{FC62}' | '\u{FC63}' | '\u{FDFA}'
-        | '\u{FDFB}' | '\u{FE70}' | '\u{FE72}' | '\u{FE74}' | '\u{FE76}' | '\u{FE78}'
-        | '\u{FE7A}' | '\u{FE7C}' | '\u{FE7E}' | '\u{FF9E}' | '\u{FF9F}' => true,
-        _ => unicode_ident::is_xid_start(c),
-    }
-}
-
-/// Returns whether a character has the Unicode `ID_Continue` properly.
-///
-/// This is only ever-so-slightly different from `XID_Continue` in a few edge
-/// cases, so we handle those edge cases manually and delegate everything else
-/// to `unicode-ident`.
-fn is_id_continue(c: char) -> bool {
-    match c {
-        '\u{037A}' | '\u{309B}' | '\u{309C}' | '\u{FC5E}' | '\u{FC5F}' | '\u{FC60}'
-        | '\u{FC61}' | '\u{FC62}' | '\u{FC63}' | '\u{FDFA}' | '\u{FDFB}' | '\u{FE70}'
-        | '\u{FE72}' | '\u{FE74}' | '\u{FE76}' | '\u{FE78}' | '\u{FE7A}' | '\u{FE7C}'
-        | '\u{FE7E}' => true,
-        _ => unicode_ident::is_xid_continue(c),
-    }
-}
-
-/// Returns whether a string is a valid JavaScript identifier.
-/// Defined at https://tc39.es/ecma262/#prod-IdentifierName.
-fn is_valid_ident(name: &str) -> bool {
-    name.chars().enumerate().all(|(i, char)| {
-        if i == 0 {
-            is_id_start(char) || char == '$' || char == '_'
-        } else {
-            is_id_continue(char) || char == '$' || char == '\u{200C}' || char == '\u{200D}'
-        }
-    })
 }
 
 /// Returns a string to tack on to the end of an expression to access a

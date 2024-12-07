@@ -73,6 +73,7 @@ export function option_order(order) {
 
 /**
  * A color.
+ *
  * @enum {0 | 1 | 2}
  */
 export const Color = Object.freeze({
@@ -100,6 +101,7 @@ export const ImplicitDiscriminant = Object.freeze({
 });
 /**
  * A C-style enum with negative discriminants.
+ *
  * @enum {-1 | 0 | 1}
  */
 export const Ordering = Object.freeze({
