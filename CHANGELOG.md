@@ -1,6 +1,17 @@
 # `wasm-bindgen` Change Log
 --------------------------------------------------------------------------------
 
+## [0.2.99](https://github.com/rustwasm/wasm-bindgen/compare/0.2.98...0.2.99)
+
+Released 2024-12-07
+
+### Fixed
+
+- Mark `wasm-bindgen` v0.2.98 only compatible with `wasm-bindgen-cli` of the same version.
+  [#4331](https://github.com/rustwasm/wasm-bindgen/pull/4331)
+
+--------------------------------------------------------------------------------
+
 ## [0.2.98](https://github.com/rustwasm/wasm-bindgen/compare/0.2.97...0.2.98)
 
 Released 2024-12-07
