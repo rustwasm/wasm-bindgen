@@ -248,7 +248,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: 'lts/*'
     - run: npm i -g typescript
     - run: npm i --save @types/node @types/deno
     - name: Check TypeScript output
