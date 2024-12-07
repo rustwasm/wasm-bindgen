@@ -25,6 +25,7 @@ extern "C" {
 
 #[wasm_bindgen(js_namespace = ["a"])]
 extern "C" {
+    // test that namespaces are overwritten and not inherited/concatenated
     #[wasm_bindgen(js_namespace = ["b"])]
     fn my_function();
     #[wasm_bindgen(thread_local_v2)]
