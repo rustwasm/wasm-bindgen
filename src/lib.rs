@@ -6,10 +6,15 @@
 //! interface.
 
 #![no_std]
-#![cfg_attr(wasm_bindgen_unstable_test_coverage, feature(coverage_attribute))]
+#![cfg_attr(
+    wasm_bindgen_unstable_test_coverage,
+    feature(coverage_attribute, allow_internal_unstable),
+    allow(internal_features)
+)]
 #![cfg_attr(
     all(not(feature = "std"), target_feature = "atomics"),
-    feature(thread_local)
+    feature(thread_local, allow_internal_unstable),
+    allow(internal_features)
 )]
 #![allow(coherence_leak_check)]
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen/0.2")]
@@ -1572,6 +1577,8 @@ pub mod __rt {
     use core::convert::Infallible;
     use core::mem;
     use core::ops::{Deref, DerefMut};
+    #[cfg(all(target_feature = "atomics", not(feature = "std")))]
+    use core::sync::atomic::{AtomicU8, Ordering};
 
     pub extern crate alloc;
     pub extern crate core;
@@ -1581,16 +1588,6 @@ pub mod __rt {
     use alloc::alloc::{alloc, dealloc, realloc, Layout};
     use alloc::boxed::Box;
     use alloc::rc::Rc;
-
-    pub mod once_cell {
-        #[cfg(any(target_feature = "atomics", feature = "std"))]
-        pub use once_cell::*;
-
-        #[cfg(all(not(target_feature = "atomics"), not(feature = "std")))]
-        pub mod sync {
-            pub use super::super::LazyCell as Lazy;
-        }
-    }
 
     /// Wrapper around [`::once_cell::unsync::Lazy`] adding some compatibility methods with
     /// [`std::thread::LocalKey`] and adding `Send + Sync` when `atomics` is not enabled.
@@ -1633,18 +1630,135 @@ pub mod __rt {
         }
     }
 
-    #[macro_export]
-    #[doc(hidden)]
     #[cfg(feature = "std")]
-    macro_rules! __wbindgen_if_not_std {
-        ($($i:item)*) => {};
+    pub use once_cell::sync::Lazy as LazyLock;
+
+    #[cfg(all(not(target_feature = "atomics"), not(feature = "std")))]
+    pub use LazyCell as LazyLock;
+
+    #[cfg(all(target_feature = "atomics", not(feature = "std")))]
+    pub struct LazyLock<T, F = fn() -> T> {
+        state: AtomicU8,
+        data: UnsafeCell<Data<T, F>>,
+    }
+
+    #[cfg(all(target_feature = "atomics", not(feature = "std")))]
+    enum Data<T, F> {
+        Value(T),
+        Init(F),
+    }
+
+    #[cfg(all(target_feature = "atomics", not(feature = "std")))]
+    unsafe impl<T, F> Sync for LazyLock<T, F> {}
+
+    #[cfg(all(target_feature = "atomics", not(feature = "std")))]
+    unsafe impl<T, F> Send for LazyLock<T, F> {}
+
+    #[cfg(all(target_feature = "atomics", not(feature = "std")))]
+    impl<T, F> LazyLock<T, F> {
+        const STATE_UNINIT: u8 = 0;
+        const STATE_INITIALIZING: u8 = 1;
+        const STATE_INIT: u8 = 2;
+
+        pub const fn new(init: F) -> LazyLock<T, F> {
+            Self {
+                state: AtomicU8::new(Self::STATE_UNINIT),
+                data: UnsafeCell::new(Data::Init(init)),
+            }
+        }
+    }
+
+    #[cfg(all(target_feature = "atomics", not(feature = "std")))]
+    impl<T> Deref for LazyLock<T> {
+        type Target = T;
+
+        fn deref(&self) -> &T {
+            let mut state = self.state.load(Ordering::Acquire);
+
+            loop {
+                match state {
+                    Self::STATE_INIT => {
+                        let Data::Value(value) = (unsafe { &*self.data.get() }) else {
+                            unreachable!()
+                        };
+                        return value;
+                    }
+                    Self::STATE_UNINIT => {
+                        if let Err(new_state) = self.state.compare_exchange_weak(
+                            Self::STATE_UNINIT,
+                            Self::STATE_INITIALIZING,
+                            Ordering::Acquire,
+                            Ordering::Relaxed,
+                        ) {
+                            state = new_state;
+                            continue;
+                        }
+
+                        let data = unsafe { &mut *self.data.get() };
+                        let Data::Init(init) = data else {
+                            unreachable!()
+                        };
+                        *data = Data::Value(init());
+                        self.state.store(Self::STATE_INIT, Ordering::Release);
+                        state = Self::STATE_INIT;
+                    }
+                    Self::STATE_INITIALIZING => {
+                        // TODO: Block here if possible. This would require
+                        // detecting if we can in the first place.
+                        state = self.state.load(Ordering::Acquire);
+                    }
+                    _ => unreachable!(),
+                }
+            }
+        }
     }
 
     #[macro_export]
     #[doc(hidden)]
-    #[cfg(not(feature = "std"))]
-    macro_rules! __wbindgen_if_not_std {
-        ($($i:item)*) => ($($i)*)
+    #[cfg(all(not(feature = "std"), not(target_feature = "atomics")))]
+    macro_rules! __wbindgen_thread_local {
+        ($wasm_bindgen:tt, $actual_ty:ty) => {{
+            static _VAL: $wasm_bindgen::__rt::LazyCell<$actual_ty> =
+                $wasm_bindgen::__rt::LazyCell::new(init);
+            $wasm_bindgen::JsThreadLocal { __inner: &_VAL }
+        }};
+    }
+
+    #[macro_export]
+    #[doc(hidden)]
+    #[cfg(all(not(feature = "std"), target_feature = "atomics"))]
+    #[allow_internal_unstable(thread_local)]
+    macro_rules! __wbindgen_thread_local {
+        ($wasm_bindgen:tt, $actual_ty:ty) => {{
+            #[thread_local]
+            static _VAL: $wasm_bindgen::__rt::LazyCell<$actual_ty> =
+                $wasm_bindgen::__rt::LazyCell::new(init);
+            $wasm_bindgen::JsThreadLocal {
+                __inner: || unsafe {
+                    $wasm_bindgen::__rt::LazyCell::force(&_VAL) as *const $actual_ty
+                },
+            }
+        }};
+    }
+
+    #[macro_export]
+    #[doc(hidden)]
+    #[cfg(not(wasm_bindgen_unstable_test_coverage))]
+    macro_rules! __wbindgen_coverage {
+        ($item:item) => {
+            $item
+        };
+    }
+
+    #[macro_export]
+    #[doc(hidden)]
+    #[cfg(wasm_bindgen_unstable_test_coverage)]
+    #[allow_internal_unstable(coverage_attribute)]
+    macro_rules! __wbindgen_coverage {
+        ($item:item) => {
+            #[coverage(off)]
+            $item
+        };
     }
 
     #[inline]
