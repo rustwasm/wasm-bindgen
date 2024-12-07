@@ -40,8 +40,6 @@ pub enum AdapterKind {
         instructions: Vec<InstructionData>,
     },
     Import {
-        #[allow(dead_code)]
-        module: String,
         name: String,
         kind: AdapterJsImportKind,
     },
@@ -314,8 +312,6 @@ pub enum Instruction {
     /// pops ptr/length i32, loads string from cache
     CachedStringLoad {
         owned: bool,
-        #[allow(dead_code)]
-        optional: bool,
         mem: walrus::MemoryId,
         free: walrus::FunctionId,
         /// If we're in reference-types mode, the externref table ID to get the cached string from.

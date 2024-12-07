@@ -1246,7 +1246,6 @@ fn instruction(
 
         Instruction::CachedStringLoad {
             owned,
-            optional: _,
             mem,
             free,
             table,

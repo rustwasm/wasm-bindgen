@@ -788,6 +788,7 @@ impl<'a> Context<'a> {
             None => return Ok(()),
             Some(d) => d,
         };
+        let optional = matches!(descriptor, Descriptor::Option(_));
 
         // Register the signature of this imported shim
         let id = self.import_adapter(
@@ -803,8 +804,10 @@ impl<'a> Context<'a> {
 
         // And then save off that this function is is an instanceof shim for an
         // imported item.
-        let import = self.determine_import(import, static_.name)?;
-        self.aux.import_map.insert(id, AuxImport::Static(import));
+        let js = self.determine_import(import, static_.name)?;
+        self.aux
+            .import_map
+            .insert(id, AuxImport::Static { js, optional });
         Ok(())
     }
 
@@ -1202,7 +1205,7 @@ impl<'a> Context<'a> {
         kind: AdapterJsImportKind,
     ) -> Result<AdapterId, Error> {
         let import = self.module.imports.get(import);
-        let (import_module, import_name) = (import.module.clone(), import.name.clone());
+        let import_name = import.name.clone();
         let import_id = import.id();
         let core_id = match import.kind {
             walrus::ImportKind::Function(f) => f,
@@ -1239,7 +1242,6 @@ impl<'a> Context<'a> {
             ret.input,
             vec![],
             AdapterKind::Import {
-                module: import_module,
                 name: import_name,
                 kind,
             },
