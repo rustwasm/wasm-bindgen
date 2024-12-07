@@ -1,6 +1,15 @@
 # `wasm-bindgen` Change Log
 --------------------------------------------------------------------------------
 
+## Unreleased
+
+### Fixed
+
+- Fixed JS keyword-like identifiers not being handled correctly for imports and exports.
+  [#4329](https://github.com/rustwasm/wasm-bindgen/pull/4329)
+
+--------------------------------------------------------------------------------
+
 ## [0.2.99](https://github.com/rustwasm/wasm-bindgen/compare/0.2.98...0.2.99)
 
 Released 2024-12-07
