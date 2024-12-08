@@ -32,7 +32,7 @@ use core::convert::{self, Infallible, TryFrom};
 use core::f64;
 use core::fmt;
 use core::iter::{self, Product, Sum};
-use core::mem;
+use core::mem::{self, MaybeUninit};
 use core::ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub};
 use core::str;
 use core::str::FromStr;
@@ -6334,6 +6334,23 @@ macro_rules! arrays {
             pub fn copy_to(&self, dst: &mut [$ty]) {
                 core::assert_eq!(self.length() as usize, dst.len());
                 unsafe { self.raw_copy_to_ptr(dst.as_mut_ptr()); }
+            }
+
+            /// Copy the contents of this JS typed array into the destination
+            /// Rust slice.
+            ///
+            /// This function will efficiently copy the memory from a typed
+            /// array into this Wasm module's own linear memory, initializing
+            /// the memory destination provided.
+            ///
+            /// # Panics
+            ///
+            /// This function will panic if this typed array's length is
+            /// different than the length of the provided `dst` array.
+            pub fn copy_to_uninit<'dst>(&self, dst: &'dst mut [MaybeUninit<$ty>]) -> &'dst mut [$ty] {
+                core::assert_eq!(self.length() as usize, dst.len());
+                unsafe { self.raw_copy_to_ptr(dst.as_mut_ptr().cast()); }
+                unsafe { &mut *(dst as *mut [MaybeUninit<$ty>] as *mut [$ty]) }
             }
 
             /// Copy the contents of the source Rust slice into this

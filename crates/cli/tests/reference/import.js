@@ -1,3 +1,5 @@
+import { default as default1 } from 'tests/wasm/import_class.js';
+
 let wasm;
 export function __wbg_set_wasm(val) {
     wasm = val;
@@ -65,12 +67,31 @@ export function __wbg_catchme_f7d87ea824a61e87() { return handleError(function (
     catch_me();
 }, arguments) };
 
+export function __wbg_get_56ba567010fb9959(arg0) {
+    const ret = arg0.get();
+    return ret;
+};
+
+export function __wbg_myfunction_8c7b624429f78550() {
+    b.my_function();
+};
+
+export function __wbg_new_d21827b66c7fd25d(arg0) {
+    const ret = new default1(arg0);
+    return ret;
+};
+
 export function __wbg_nocatch_be850a8dddd9599d() {
     no_catch();
 };
 
 export function __wbg_reload_84c12f152ad689f0() {
     window.location.reload();
+};
+
+export function __wbg_static_accessor_CONST_9e9d5ae758197645() {
+    const ret = a.CONST;
+    return ret;
 };
 
 export function __wbg_write_c2ce0ce33a6087d5(arg0, arg1) {

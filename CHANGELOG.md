@@ -1,6 +1,32 @@
 # `wasm-bindgen` Change Log
 --------------------------------------------------------------------------------
 
+## Unreleased
+
+### Added
+
+* Add a `copy_to_uninit()` method to all `TypedArray`s. It takes `&mut [MaybeUninit<T>]` and returns `&mut [T]`.
+  [#4340](https://github.com/rustwasm/wasm-bindgen/pull/4340)
+
+### Changed
+
+* Optional parameters are now typed as `T | undefined | null` to reflect the actual JS behavior.
+  [#4188](https://github.com/rustwasm/wasm-bindgen/pull/4188)
+
+### Fixed
+
+- Fixed using [JavaScript keyword](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#keywords) as identifiers not being handled correctly.
+  [#4329](https://github.com/rustwasm/wasm-bindgen/pull/4329)
+
+  - Using JS keywords as `struct` and `enum` names will now error at compile time, instead of causing invalid JS code gen.
+  - Using JS keywords that are not valid to call or access properties on will now error at compile time, instead of causing invalid JS code gen if used as:
+    1. The first part of a `js_namespace` on imports.
+    2. The name of an imported type or constant if the type or constant does not have a `js_namespace` or `module` attribute.
+    3. The name of an imported function if the function is not a method and does not have a `js_namespace` or `module` attribute.
+  - Using JS keywords on imports in places other than the above will no longer cause the keywords to be escaped as `_{keyword}`.
+
+--------------------------------------------------------------------------------
+
 ## [0.2.99](https://github.com/rustwasm/wasm-bindgen/compare/0.2.98...0.2.99)
 
 Released 2024-12-07

@@ -16,7 +16,6 @@ version = "0.2.99"
 [features]
 default = ["std"]
 extra-traits = ["syn/extra-traits"]
-spans = ["wasm-bindgen-backend/spans"]
 std = ["wasm-bindgen-backend/std"]
 strict-macro = []
 

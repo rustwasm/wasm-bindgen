@@ -19,29 +19,90 @@ use crate::ClassMarker;
 
 thread_local!(static ATTRS: AttributeParseState = Default::default());
 
-/// Javascript keywords which are not keywords in Rust.
-const JS_KEYWORDS: [&str; 20] = [
-    "class",
+/// Javascript keywords.
+///
+/// Note that some of these keywords are only reserved in strict mode. Since we
+/// generate strict mode JS code, we treat all of these as reserved.
+///
+/// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#reserved_words
+const JS_KEYWORDS: [&str; 47] = [
+    "arguments",
+    "break",
     "case",
     "catch",
+    "class",
+    "const",
+    "continue",
     "debugger",
     "default",
     "delete",
+    "do",
+    "else",
+    "enum",
+    "eval",
     "export",
     "extends",
+    "false",
     "finally",
+    "for",
     "function",
+    "if",
+    "implements",
     "import",
+    "in",
     "instanceof",
+    "interface",
+    "let",
     "new",
     "null",
+    "package",
+    "private",
+    "protected",
+    "public",
+    "return",
+    "static",
+    "super",
     "switch",
     "this",
     "throw",
+    "true",
+    "try",
+    "typeof",
     "var",
     "void",
+    "while",
     "with",
+    "yield",
 ];
+
+/// Javascript keywords that behave like values in that they can be called like
+/// functions or have properties accessed on them.
+///
+/// Naturally, this list is a subset of `JS_KEYWORDS`.
+const VALUE_LIKE_JS_KEYWORDS: [&str; 7] = [
+    "eval",   // eval is a function-like keyword, so e.g. `eval(...)` is valid
+    "false",  // false resolves to a boolean value, so e.g. `false.toString()` is valid
+    "import", // import.meta and import()
+    "new",    // new.target
+    "super", // super can be used for a function call (`super(...)`) or property lookup (`super.prop`)
+    "this",  // this obviously can be used as a value
+    "true",  // true resolves to a boolean value, so e.g. `false.toString()` is valid
+];
+
+/// Returns whether the given string is a JS keyword.
+fn is_js_keyword(keyword: &str) -> bool {
+    JS_KEYWORDS.contains(&keyword)
+}
+/// Returns whether the given string is a JS keyword that does NOT behave like
+/// a value.
+///
+/// Value-like keywords can be called like functions or have properties
+/// accessed, which makes it possible to use them in imports. In general,
+/// imports should use this function to check for reserved keywords.
+fn is_non_value_js_keyword(keyword: &str) -> bool {
+    JS_KEYWORDS.contains(&keyword) && !VALUE_LIKE_JS_KEYWORDS.contains(&keyword)
+}
+
 #[derive(Default)]
 struct AttributeParseState {
     parsed: Cell<usize>,
@@ -56,6 +117,14 @@ pub struct BindgenAttrs {
     pub attrs: Vec<(Cell<bool>, BindgenAttr)>,
 }
 
+/// A list of identifiers representing the namespace prefix of an imported
+/// function or constant.
+///
+/// The list is guaranteed to be non-empty and not start with a JS keyword.
+#[cfg_attr(feature = "extra-traits", derive(Debug))]
+#[derive(Clone)]
+pub struct JsNamespace(Vec<String>);
+
 macro_rules! attrgen {
     ($mac:ident) => {
         $mac! {
@@ -63,7 +132,7 @@ macro_rules! attrgen {
             (constructor, Constructor(Span)),
             (method, Method(Span)),
             (static_method_of, StaticMethodOf(Span, Ident)),
-            (js_namespace, JsNamespace(Span, Vec<String>, Vec<Span>)),
+            (js_namespace, JsNamespace(Span, JsNamespace, Vec<Span>)),
             (module, Module(Span, String, Span)),
             (raw_module, RawModule(Span, String, Span)),
             (inline_js, InlineJs(Span, String, Span)),
@@ -160,14 +229,14 @@ macro_rules! methods {
         }
     };
 
-    (@method $name:ident, $variant:ident(Span, Vec<String>, Vec<Span>)) => {
-        fn $name(&self) -> Option<(&[String], &[Span])> {
+    (@method $name:ident, $variant:ident(Span, JsNamespace, Vec<Span>)) => {
+        fn $name(&self) -> Option<(JsNamespace, &[Span])> {
             self.attrs
                 .iter()
                 .find_map(|a| match &a.1 {
                     BindgenAttr::$variant(_, ss, spans) => {
                         a.0.set(true);
-                        Some((&ss[..], &spans[..]))
+                        Some((ss.clone(), &spans[..]))
                     }
                     _ => None,
                 })
@@ -358,7 +427,7 @@ impl Parse for BindgenAttr {
                 return Ok(BindgenAttr::$variant(attr_span, val, span))
             });
 
-            (@parser $variant:ident(Span, Vec<String>, Vec<Span>)) => ({
+            (@parser $variant:ident(Span, JsNamespace, Vec<Span>)) => ({
                 input.parse::<Token![=]>()?;
                 let (vals, spans) = match input.parse::<syn::ExprArray>() {
                     Ok(exprs) => {
@@ -377,6 +446,10 @@ impl Parse for BindgenAttr {
                             }
                         }
 
+                        if vals.is_empty() {
+                            return Err(syn::Error::new(exprs.span(), "Empty namespace lists are not allowed."));
+                        }
+
                         (vals, spans)
                     },
                     Err(_) => {
@@ -384,7 +457,14 @@ impl Parse for BindgenAttr {
                         (vec![ident.to_string()], vec![ident.span()])
                     }
                 };
-                return Ok(BindgenAttr::$variant(attr_span, vals, spans))
+
+                let first = &vals[0];
+                if is_non_value_js_keyword(first) {
+                    let msg = format!("Namespace cannot start with the JS keyword `{}`", first);
+                    return Err(syn::Error::new(spans[0], msg));
+                }
+
+                return Ok(BindgenAttr::$variant(attr_span, JsNamespace(vals), spans))
             });
         }
 
@@ -441,6 +521,14 @@ impl ConvertToAst<(&ast::Program, BindgenAttrs)> for &mut syn::ItemStruct {
             .js_name()
             .map(|s| s.0.to_string())
             .unwrap_or(self.ident.unraw().to_string());
+        if is_js_keyword(&js_name) {
+            bail_span!(
+                self.ident,
+                "struct cannot use the JS keyword `{}` as its name",
+                js_name
+            );
+        }
+
         let is_inspectable = attrs.inspectable().is_some();
         let getter_with_clone = attrs.getter_with_clone();
         for (i, field) in self.fields.iter_mut().enumerate() {
@@ -524,16 +612,14 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
         self,
         (program, opts, module): (&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule>),
     ) -> Result<Self::Target, Diagnostic> {
-        let mut wasm = function_from_decl(
+        let (mut wasm, _) = function_from_decl(
             &self.sig.ident,
             &opts,
             self.sig.clone(),
             self.attrs.clone(),
             self.vis.clone(),
             FunctionPosition::Extern,
-            Some(&["default"]),
-        )?
-        .0;
+        )?;
         let catch = opts.catch().is_some();
         let variadic = opts.variadic().is_some();
         let js_ret = if catch {
@@ -727,7 +813,7 @@ impl ConvertToAst<(&ast::Program, BindgenAttrs)> for syn::ForeignItemType {
         let shim = format!(
             "__wbg_instanceof_{}_{}",
             self.ident,
-            ShortHash((attrs.js_namespace().map(|(ns, _)| ns), &self.ident))
+            ShortHash((attrs.js_namespace().map(|(ns, _)| ns.0), &self.ident))
         );
         let mut extends = Vec::new();
         let mut vendor_prefixes = Vec::new();
@@ -886,25 +972,24 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
             );
         }
 
-        let ret = function_from_decl(
+        let (mut ret, _) = function_from_decl(
             &self.sig.ident,
             &attrs,
             self.sig.clone(),
             self.attrs,
             self.vis,
             FunctionPosition::Free,
-            Some(&["default"]),
         )?;
         attrs.check_used();
-        Ok(ret.0)
-    }
-}
 
-pub(crate) fn is_js_keyword(keyword: &str, skip: Option<&[&str]>) -> bool {
-    JS_KEYWORDS
-        .iter()
-        .filter(|keyword| skip.filter(|skip| skip.contains(keyword)).is_none())
-        .any(|this| *this == keyword)
+        // Due to legacy behavior, we need to escape all keyword identifiers as
+        // `_keyword`, except `default`
+        if is_js_keyword(&ret.name) && ret.name != "default" {
+            ret.name = format!("_{}", ret.name);
+        }
+
+        Ok(ret)
+    }
 }
 
 /// Returns whether `self` is passed by reference or by value.
@@ -942,7 +1027,6 @@ fn function_from_decl(
     attrs: Vec<syn::Attribute>,
     vis: syn::Visibility,
     position: FunctionPosition,
-    skip_keywords: Option<&[&str]>,
 ) -> Result<(ast::Function, Option<ast::MethodSelf>), Diagnostic> {
     if sig.variadic.is_some() {
         bail_span!(sig.variadic, "can't #[wasm_bindgen] variadic functions");
@@ -987,8 +1071,11 @@ fn function_from_decl(
     // E.g. this will replace `fn foo(class: u32)` to `fn foo(_class: u32)`
     let replace_colliding_arg = |i: &mut syn::PatType| {
         if let syn::Pat::Ident(ref mut i) = *i.pat {
-            let ident = i.ident.to_string();
-            if is_js_keyword(ident.as_str(), skip_keywords) {
+            let ident = i.ident.unraw().to_string();
+            // JS keywords are NEVER allowed as argument names. Since argument
+            // names are considered an implementation detail in JS, we can
+            // safely rename them to avoid collisions.
+            if is_js_keyword(&ident) {
                 i.ident = Ident::new(format!("_{}", ident).as_str(), i.ident.span());
             }
         }
@@ -1047,26 +1134,11 @@ fn function_from_decl(
                 OperationKind::Setter(_) => "set_",
                 _ => "",
             };
-            let name = if prefix.is_empty()
-                && opts.method().is_none()
-                && is_js_keyword(js_name, skip_keywords)
-            {
-                format!("_{}", js_name)
-            } else {
-                format!("{}{}", prefix, js_name)
-            };
-            (name, js_name_span, true)
+            (format!("{}{}", prefix, js_name), js_name_span, true)
         } else {
-            let name = if !matches!(position, FunctionPosition::Impl { .. })
-                && opts.method().is_none()
-                && is_js_keyword(&decl_name.to_string(), skip_keywords)
-            {
-                format!("_{}", decl_name.unraw())
-            } else {
-                decl_name.unraw().to_string()
-            };
-            (name, decl_name.span(), false)
+            (decl_name.unraw().to_string(), decl_name.span(), false)
         };
+
     Ok((
         ast::Function {
             arguments,
@@ -1344,7 +1416,6 @@ impl MacroParse<&ClassMarker> for &mut syn::ImplItemFn {
             self.attrs.clone(),
             self.vis.clone(),
             FunctionPosition::Impl { self_ty: class },
-            None,
         )?;
         let method_kind = if opts.constructor().is_some() {
             ast::MethodKind::Constructor
@@ -1481,11 +1552,18 @@ impl<'a> MacroParse<(&'a mut TokenStream, BindgenAttrs)> for syn::ItemEnum {
         }
 
         let generate_typescript = opts.skip_typescript().is_none();
+        let comments = extract_doc_comments(&self.attrs);
         let js_name = opts
             .js_name()
             .map(|s| s.0)
             .map_or_else(|| self.ident.to_string(), |s| s.to_string());
-        let comments = extract_doc_comments(&self.attrs);
+        if is_js_keyword(&js_name) {
+            bail_span!(
+                self.ident,
+                "enum cannot use the JS keyword `{}` as its name",
+                js_name
+            );
+        }
 
         opts.check_used();
 
@@ -1653,7 +1731,7 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
                 "only foreign mods with the `C` ABI are allowed"
             ));
         }
-        let js_namespace = opts.js_namespace().map(|(s, _)| s.to_owned());
+        let js_namespace = opts.js_namespace().map(|(s, _)| s);
         let module = module_from_opts(program, &opts)
             .map_err(|e| errors.push(e))
             .unwrap_or_default();
@@ -1674,7 +1752,7 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
 
 struct ForeignItemCtx {
     module: Option<ast::ImportModule>,
-    js_namespace: Option<Vec<String>>,
+    js_namespace: Option<JsNamespace>,
 }
 
 impl MacroParse<ForeignItemCtx> for syn::ForeignItem {
@@ -1709,8 +1787,9 @@ impl MacroParse<ForeignItemCtx> for syn::ForeignItem {
 
         let js_namespace = item_opts
             .js_namespace()
-            .map(|(s, _)| s.to_owned())
-            .or(ctx.js_namespace);
+            .map(|(s, _)| s)
+            .or(ctx.js_namespace)
+            .map(|s| s.0);
         let module = ctx.module;
 
         let kind = match self {
@@ -1719,6 +1798,53 @@ impl MacroParse<ForeignItemCtx> for syn::ForeignItem {
             syn::ForeignItem::Static(s) => s.convert((program, item_opts, &module))?,
             _ => panic!("only foreign functions/types allowed for now"),
         };
+
+        // check for JS keywords
+
+        // We only need to check if there isn't a JS namespace or module. If
+        // there is namespace, then we already checked the namespace while
+        // parsing. If there is a module, we can rename the import symbol to
+        // avoid using keywords.
+        let needs_check = js_namespace.is_none() && module.is_none();
+        if needs_check {
+            match &kind {
+                ast::ImportKind::Function(import_function) => {
+                    if matches!(import_function.kind, ast::ImportFunctionKind::Normal)
+                        && is_non_value_js_keyword(&import_function.function.name)
+                    {
+                        bail_span!(
+                            import_function.rust_name,
+                            "Imported function cannot use the JS keyword `{}` as its name.",
+                            import_function.function.name
+                        );
+                    }
+                }
+                ast::ImportKind::Static(import_static) => {
+                    if is_non_value_js_keyword(&import_static.js_name) {
+                        bail_span!(
+                            import_static.rust_name,
+                            "Imported static cannot use the JS keyword `{}` as its name.",
+                            import_static.js_name
+                        );
+                    }
+                }
+                ast::ImportKind::String(_) => {
+                    // static strings don't have JS names, so we don't need to check for JS keywords
+                }
+                ast::ImportKind::Type(import_type) => {
+                    if is_non_value_js_keyword(&import_type.js_name) {
+                        bail_span!(
+                            import_type.rust_name,
+                            "Imported type cannot use the JS keyword `{}` as its name.",
+                            import_type.js_name
+                        );
+                    }
+                }
+                ast::ImportKind::Enum(_) => {
+                    // string enums aren't possible here
+                }
+            }
+        }
 
         program.imports.push(ast::Import {
             module,
