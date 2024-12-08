@@ -834,7 +834,6 @@ impl TryToTokens for ast::Export {
                     export_name = #export_name,
                 )]
                 pub unsafe extern "C" fn #generated_name(#(#args),*) -> #wasm_bindgen::convert::WasmRet<#projection::Abi> {
-                    #[automatically_derived]
                     const _: () = {
                         #(#checks)*
                     };
