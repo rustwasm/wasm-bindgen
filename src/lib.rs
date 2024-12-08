@@ -16,7 +16,6 @@
     feature(thread_local, allow_internal_unstable),
     allow(internal_features)
 )]
-#![allow(coherence_leak_check)]
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen/0.2")]
 
 extern crate alloc;
