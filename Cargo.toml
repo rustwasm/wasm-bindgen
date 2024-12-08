@@ -22,10 +22,10 @@ features = ["serde-serialize"]
 test = false
 
 [features]
-default = ["spans", "std", "msrv"]
+default = ["std", "msrv"]
 enable-interning = ["std"]
 serde-serialize = ["serde", "serde_json", "std"]
-spans = ["wasm-bindgen-macro/spans"]
+spans = []
 std = ["wasm-bindgen-macro/std", "once_cell/std"]
 
 # Opt-in for Rust language features that require a higher MSRV.
@@ -39,11 +39,11 @@ msrv = ["rustversion"]
 # all unused attributes
 strict-macro = ["wasm-bindgen-macro/strict-macro"]
 
-# Enables gg-alloc as system allocator when using wasm-bindgen-test to check that large pointers
+# INTERNAL ONLY: Enables gg-alloc as system allocator when using wasm-bindgen-test to check that large pointers
 # are handled correctly
 gg-alloc = ["wasm-bindgen-test/gg-alloc"]
 
-# This is only for debugging wasm-bindgen! No stability guarantees, so enable
+# INTERNAL ONLY: This is only for debugging wasm-bindgen! No stability guarantees, so enable
 # this at your own peril!
 xxx_debug_only_print_generated_code = ["wasm-bindgen-macro/xxx_debug_only_print_generated_code"]
 
