@@ -77,6 +77,8 @@ const JS_KEYWORDS: [&str; 47] = [
 
 /// Javascript keywords that behave like values in that they can be called like
 /// functions or have properties accessed on them.
+///
+/// Naturally, this list is a subset of `JS_KEYWORDS`.
 const VALUE_LIKE_JS_KEYWORDS: [&str; 7] = [
     "eval",   // eval is a function-like keyword, so e.g. `eval(...)` is valid
     "false",  // false resolves to a boolean value, so e.g. `false.toString()` is valid
