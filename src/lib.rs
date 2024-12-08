@@ -117,7 +117,6 @@ pub mod convert;
 pub mod describe;
 mod externref;
 mod link;
-mod marker;
 
 mod cast;
 pub use crate::cast::{JsCast, JsObject};
@@ -130,7 +129,7 @@ if_std! {
 }
 
 #[doc(hidden)]
-#[path = "rt.rs"]
+#[path = "rt/mod.rs"]
 pub mod __rt;
 
 /// Representation of an object owned by JS.

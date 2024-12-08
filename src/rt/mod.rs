@@ -16,6 +16,8 @@ use alloc::alloc::{alloc, dealloc, realloc, Layout};
 use alloc::boxed::Box;
 use alloc::rc::Rc;
 
+pub mod marker;
+
 /// Wrapper around [`::once_cell::unsync::Lazy`] adding some compatibility methods with
 /// [`std::thread::LocalKey`] and adding `Send + Sync` when `atomics` is not enabled.
 #[cfg(not(feature = "std"))]
