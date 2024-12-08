@@ -4,10 +4,12 @@ export class Foo {
   private constructor();
   free(): void;
   x: number;
-  y?: number;
-  z?: number;
+  get y(): number | undefined;
+  set y(value: number | null | undefined);
+  get z(): number | undefined;
+  set z(value: number | null | undefined);
   readonly lone_getter: number | undefined;
-  set lone_setter(value: number | undefined);
+  set lone_setter(value: number | null | undefined);
   /**
    * You will only read numbers.
    */
@@ -17,10 +19,11 @@ export class Foo {
    *
    * Yes, this is totally fine in JS.
    */
-  set weird(value: string | undefined);
+  set weird(value: string | null | undefined);
   /**
    * There can be static getters and setters too, and they can even have the
    * same name as instance getters and setters.
    */
-  static x?: boolean;
+  static get x(): boolean | undefined;
+  static set x(value: boolean | null | undefined);
 }

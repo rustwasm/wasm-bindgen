@@ -29,7 +29,7 @@ jobs:
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup component add rustfmt
     - run: cargo fmt --all -- --check
-  
+
   # Check TOML style by using Taplo.
   taplo:
     name: Taplo
@@ -239,6 +239,22 @@ jobs:
   #     env:
   #       WBINDGEN_I_PROMISE_JS_SYNTAX_WORKS_IN_NODE: 1
   #   - run: cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features "Node Window Document"
+
+  # This checks that the output of the CLI is actually valid JavaScript and TypeScript
+  test_cli_reference_typescript:
+    name: Run CLI reference TypeScript check
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 'lts/*'
+    - run: npm i -g typescript
+    - run: npm i --save @types/node @types/deno
+    - name: Check TypeScript output
+      run: tsc --noEmit --skipLibCheck --lib esnext,dom $(echo crates/cli/tests/reference/*.d.ts)
+    - name: Check JavaScript output
+      run: tsc --noEmit --skipLibCheck --lib esnext,dom --module esnext --allowJs $(echo crates/cli/tests/reference/*.js)
 
   test_native:
     name: Run native tests

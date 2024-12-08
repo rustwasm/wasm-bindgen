@@ -3,9 +3,14 @@
 
 ## Unreleased
 
+### Changed
+
+* Optional parameters are now typed as `T | undefined | null` to reflect the actual JS behavior.
+  [#4188](https://github.com/rustwasm/wasm-bindgen/pull/4188)
+
 ### Fixed
 
-- Fixed JS keyword-like identifiers not being handled correctly for imports and exports.
+- Fixed JS keyword-like identifiers not being handled correctly. Keywords on imports will no longer be escaped. Using keyword identifiers in places that caused invalid JS code gen will now error at compile time.
   [#4329](https://github.com/rustwasm/wasm-bindgen/pull/4329)
 
 --------------------------------------------------------------------------------
