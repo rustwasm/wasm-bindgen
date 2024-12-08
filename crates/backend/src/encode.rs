@@ -150,7 +150,7 @@ fn shared_program<'a>(
             .iter()
             .map(|a| shared_struct(a, intern))
             .collect(),
-        enums: prog.enums.iter().map(|a| shared_enum(a, intern)).collect(),
+        enums: prog.enums.iter().map(|a| shared_enum(a)).collect(),
         imports: prog
             .imports
             .iter()
@@ -236,23 +236,19 @@ fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Functi
     }
 }
 
-fn shared_enum<'a>(e: &'a ast::Enum, intern: &'a Interner) -> Enum<'a> {
+fn shared_enum(e: &ast::Enum) -> Enum {
     Enum {
         name: &e.js_name,
         signed: e.signed,
-        variants: e
-            .variants
-            .iter()
-            .map(|v| shared_variant(v, intern))
-            .collect(),
+        variants: e.variants.iter().map(shared_variant).collect(),
         comments: e.comments.iter().map(|s| &**s).collect(),
         generate_typescript: e.generate_typescript,
     }
 }
 
-fn shared_variant<'a>(v: &'a ast::Variant, intern: &'a Interner) -> EnumVariant<'a> {
+fn shared_variant(v: &ast::Variant) -> EnumVariant {
     EnumVariant {
-        name: intern.intern(&v.name),
+        name: v.js_name.as_str(),
         value: v.value,
         comments: v.comments.iter().map(|s| &**s).collect(),
     }
