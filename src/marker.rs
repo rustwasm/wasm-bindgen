@@ -1,6 +1,3 @@
-#[cfg(feature = "msrv")]
-extern crate rustversion;
-
 /// Marker trait for types that support `#[wasm_bindgen(constructor)]`.
 #[cfg_attr(
     feature = "msrv",
