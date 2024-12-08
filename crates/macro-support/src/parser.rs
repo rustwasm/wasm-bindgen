@@ -261,6 +261,13 @@ impl BindgenAttrs {
             .unwrap_or_else(|| ident.unraw().to_string())
     }
 
+    /// Returns the JS class from the given attributes, or the Rust name if not present.
+    fn js_class_or_ident(&self, ident: &Ident) -> String {
+        self.js_class()
+            .map(|(n, _)| n.to_string())
+            .unwrap_or_else(|| ident.unraw().to_string())
+    }
+
     attrgen!(methods);
 }
 
@@ -577,11 +584,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
                 }) => path,
                 _ => bail_span!(class, "first argument of method must be a path"),
             };
-            let class_name = extract_path_ident(class_name)?;
-            let class_name = opts
-                .js_class()
-                .map(|p| p.0.into())
-                .unwrap_or_else(|| class_name.to_string());
+            let class_name = opts.js_class_or_ident(&extract_path_ident(class_name)?);
 
             let kind = ast::MethodKind::Operation(ast::Operation {
                 is_static: false,
@@ -594,10 +597,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
                 kind,
             }
         } else if let Some(cls) = opts.static_method_of() {
-            let class = opts
-                .js_class()
-                .map(|p| p.0.into())
-                .unwrap_or_else(|| cls.to_string());
+            let class = opts.js_class_or_ident(cls);
             let ty = ident_ty(cls.clone());
 
             let kind = ast::MethodKind::Operation(ast::Operation {
@@ -618,11 +618,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
                 }) => path,
                 _ => bail_span!(self, "return value of constructor must be a bare path"),
             };
-            let class_name = extract_path_ident(class_name)?;
-            let class_name = opts
-                .js_class()
-                .map(|p| p.0.into())
-                .unwrap_or_else(|| class_name.to_string());
+            let class_name = opts.js_class_or_ident(&extract_path_ident(class_name)?);
 
             ast::ImportFunctionKind::Method {
                 class: class_name,
@@ -1281,12 +1277,7 @@ fn prepare_for_impl_recursion(
         other => bail_span!(other, "failed to parse this item as a known item"),
     };
 
-    let ident = extract_path_ident(class)?;
-
-    let js_class = impl_opts
-        .js_class()
-        .map(|s| s.0.to_string())
-        .unwrap_or(ident.to_string());
+    let js_class = impl_opts.js_class_or_ident(&extract_path_ident(class)?);
 
     let wasm_bindgen = &program.wasm_bindgen;
     let wasm_bindgen_futures = &program.wasm_bindgen_futures;
