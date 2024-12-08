@@ -11,15 +11,14 @@
 //!
 //! Enables the internal cache for [`wasm_bindgen::intern`].
 //!
-//! ### `gg-alloc`
-//!
-//! Uses [`gg-allow`](https://crates.io/crates/gg-alloc) as the global allocator
-//! when using `wasm-bindgen-test` to ensure that pointers outside the `i32`
-//! range are handled correctly.
+//! This feature currently enables the `std` feature, meaning that it is not
+//! compatible with `no_std` environments.
 //!
 //! ### `std` (default)
 //!
-//! TODO:
+//! Enabling this feature will make the crate depend on the Rust standard library.
+//!
+//! Disable this feature to use this crate in `no_std` environments.
 //!
 //! ### `strict-macro`
 //!
