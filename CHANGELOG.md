@@ -10,8 +10,15 @@
 
 ### Fixed
 
-- Fixed JS keyword-like identifiers not being handled correctly. Keywords on imports will no longer be escaped. Using keyword identifiers in places that caused invalid JS code gen will now error at compile time.
+- Fixed using [JavaScript keyword](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#keywords) as identifiers not being handled correctly.
   [#4329](https://github.com/rustwasm/wasm-bindgen/pull/4329)
+
+  - Using JS keywords as `struct` and `enum` names will now error at compile time, instead of causing invalid JS code gen.
+  - Using JS keywords that are not valid to call or access properties on will now error at compile time, instead of causing invalid JS code gen if used as:
+    1. The first part of a `js_namespace` on imports.
+    2. The name of an imported type or constant if the type or constant does not have a `js_namespace` or `module` attribute.
+    3. The name of an imported function if the function is not a method and does not have a `js_namespace` or `module` attribute.
+  - Using JS keywords on imports in places other than the above will no longer cause the keywords to be escaped as `_{keyword}`.
 
 --------------------------------------------------------------------------------
 
