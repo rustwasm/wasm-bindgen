@@ -26,7 +26,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/rootMargin)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `IntersectionObserver`*"]
-    pub fn root_margin(this: &IntersectionObserver) -> String;
+    pub fn root_margin(this: &IntersectionObserver) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "IntersectionObserver" , js_name = thresholds)]
     #[doc = "Getter for the `thresholds` field of this object."]
     #[doc = ""]

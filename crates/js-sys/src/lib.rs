@@ -17,16 +17,25 @@
 //! bindings.
 
 #![doc(html_root_url = "https://docs.rs/js-sys/0.2")]
+#![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(
+    all(not(feature = "std"), target_feature = "atomics"),
+    feature(thread_local)
+)]
 
+extern crate alloc;
+
+use alloc::string::String;
+use alloc::vec::Vec;
+use core::cmp::Ordering;
+use core::convert::{self, Infallible, TryFrom};
+use core::f64;
+use core::fmt;
+use core::iter::{self, Product, Sum};
+use core::mem;
 use core::ops::{Add, BitAnd, BitOr, BitXor, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub};
-use std::cmp::Ordering;
-use std::convert::{self, Infallible, TryFrom};
-use std::f64;
-use std::fmt;
-use std::iter::{self, Product, Sum};
-use std::mem;
-use std::str;
-use std::str::FromStr;
+use core::str;
+use core::str::FromStr;
 
 pub use wasm_bindgen;
 use wasm_bindgen::prelude::*;
@@ -636,11 +645,11 @@ extern "C" {
 /// Iterator returned by `Array::into_iter`
 #[derive(Debug, Clone)]
 pub struct ArrayIntoIter {
-    range: std::ops::Range<u32>,
+    range: core::ops::Range<u32>,
     array: Array,
 }
 
-impl std::iter::Iterator for ArrayIntoIter {
+impl core::iter::Iterator for ArrayIntoIter {
     type Item = JsValue;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -676,7 +685,7 @@ impl std::iter::Iterator for ArrayIntoIter {
     }
 }
 
-impl std::iter::DoubleEndedIterator for ArrayIntoIter {
+impl core::iter::DoubleEndedIterator for ArrayIntoIter {
     fn next_back(&mut self) -> Option<Self::Item> {
         let index = self.range.next_back()?;
         Some(self.array.get(index))
@@ -687,18 +696,18 @@ impl std::iter::DoubleEndedIterator for ArrayIntoIter {
     }
 }
 
-impl std::iter::FusedIterator for ArrayIntoIter {}
+impl core::iter::FusedIterator for ArrayIntoIter {}
 
-impl std::iter::ExactSizeIterator for ArrayIntoIter {}
+impl core::iter::ExactSizeIterator for ArrayIntoIter {}
 
 /// Iterator returned by `Array::iter`
 #[derive(Debug, Clone)]
 pub struct ArrayIter<'a> {
-    range: std::ops::Range<u32>,
+    range: core::ops::Range<u32>,
     array: &'a Array,
 }
 
-impl<'a> std::iter::Iterator for ArrayIter<'a> {
+impl core::iter::Iterator for ArrayIter<'_> {
     type Item = JsValue;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -734,7 +743,7 @@ impl<'a> std::iter::Iterator for ArrayIter<'a> {
     }
 }
 
-impl<'a> std::iter::DoubleEndedIterator for ArrayIter<'a> {
+impl core::iter::DoubleEndedIterator for ArrayIter<'_> {
     fn next_back(&mut self) -> Option<Self::Item> {
         let index = self.range.next_back()?;
         Some(self.array.get(index))
@@ -745,9 +754,9 @@ impl<'a> std::iter::DoubleEndedIterator for ArrayIter<'a> {
     }
 }
 
-impl<'a> std::iter::FusedIterator for ArrayIter<'a> {}
+impl core::iter::FusedIterator for ArrayIter<'_> {}
 
-impl<'a> std::iter::ExactSizeIterator for ArrayIter<'a> {}
+impl core::iter::ExactSizeIterator for ArrayIter<'_> {}
 
 impl Array {
     /// Returns an iterator over the values of the JS array.
@@ -772,7 +781,7 @@ impl Array {
     }
 }
 
-impl std::iter::IntoIterator for Array {
+impl core::iter::IntoIterator for Array {
     type Item = JsValue;
     type IntoIter = ArrayIntoIter;
 
@@ -785,7 +794,7 @@ impl std::iter::IntoIterator for Array {
 }
 
 // TODO pre-initialize the Array with the correct length using TrustedLen
-impl<A> std::iter::FromIterator<A> for Array
+impl<A> core::iter::FromIterator<A> for Array
 where
     A: AsRef<JsValue>,
 {
@@ -799,7 +808,7 @@ where
     }
 }
 
-impl<A> std::iter::Extend<A> for Array
+impl<A> core::iter::Extend<A> for Array
 where
     A: AsRef<JsValue>,
 {
@@ -2302,7 +2311,7 @@ impl<'a> IntoIterator for &'a Iterator {
     }
 }
 
-impl<'a> std::iter::Iterator for Iter<'a> {
+impl core::iter::Iterator for Iter<'_> {
     type Item = Result<JsValue, JsValue>;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -2322,7 +2331,7 @@ impl IntoIterator for Iterator {
     }
 }
 
-impl std::iter::Iterator for IntoIter {
+impl core::iter::Iterator for IntoIter {
     type Item = Result<JsValue, JsValue>;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -2836,6 +2845,7 @@ impl fmt::Display for TryFromIntError {
     }
 }
 
+#[cfg(feature = "std")]
 impl std::error::Error for TryFromIntError {}
 
 macro_rules! number_try_from {
@@ -5340,7 +5350,7 @@ impl JsString {
     ///
     /// [docs]: https://rustwasm.github.io/docs/wasm-bindgen/reference/types/str.html
     pub fn is_valid_utf16(&self) -> bool {
-        std::char::decode_utf16(self.iter()).all(|i| i.is_ok())
+        core::char::decode_utf16(self.iter()).all(|i| i.is_ok())
     }
 
     /// Returns an iterator over the `u16` character codes that make up this JS
@@ -5375,7 +5385,7 @@ impl JsString {
         // https://github.com/rustwasm/wasm-bindgen/issues/1362
         let cp = self.code_point_at(0).as_f64().unwrap_throw() as u32;
 
-        let c = std::char::from_u32(cp)?;
+        let c = core::char::from_u32(cp)?;
 
         if c.len_utf16() as u32 == len {
             Some(c)
@@ -6021,19 +6031,30 @@ extern "C" {
 /// This allows access to the global properties and global names by accessing
 /// the `Object` returned.
 pub fn global() -> Object {
-    thread_local!(static GLOBAL: Object = get_global_object());
+    #[cfg(feature = "std")]
+    {
+        thread_local!(static GLOBAL: Object = get_global_object());
+        return GLOBAL.with(|g| g.clone());
+    }
+    #[cfg(not(feature = "std"))]
+    {
+        use once_cell::unsync::Lazy;
 
-    return GLOBAL.with(|g| g.clone());
+        struct Wrapper<T>(Lazy<T>);
+
+        #[cfg(not(target_feature = "atomics"))]
+        unsafe impl<T> Sync for Wrapper<T> {}
+
+        #[cfg(not(target_feature = "atomics"))]
+        unsafe impl<T> Send for Wrapper<T> {}
+
+        #[cfg_attr(target_feature = "atomics", thread_local)]
+        static GLOBAL: Wrapper<Object> = Wrapper(Lazy::new(get_global_object));
+
+        return GLOBAL.0.clone();
+    }
 
     fn get_global_object() -> Object {
-        // This is a bit wonky, but we're basically using `#[wasm_bindgen]`
-        // attributes to synthesize imports so we can access properties of the
-        // form:
-        //
-        // * `globalThis.globalThis`
-        // * `self.self`
-        // * ... (etc)
-        //
         // Accessing the global object is not an easy thing to do, and what we
         // basically want is `globalThis` but we can't rely on that existing
         // everywhere. In the meantime we've got the fallbacks mentioned in:
@@ -6047,26 +6068,27 @@ pub fn global() -> Object {
         extern "C" {
             type Global;
 
-            #[wasm_bindgen(getter, catch, static_method_of = Global, js_class = globalThis, js_name = globalThis)]
-            fn get_global_this() -> Result<Object, JsValue>;
+            #[wasm_bindgen(thread_local_v2, js_name = globalThis)]
+            static GLOBAL_THIS: Option<Object>;
 
-            #[wasm_bindgen(getter, catch, static_method_of = Global, js_class = self, js_name = self)]
-            fn get_self() -> Result<Object, JsValue>;
+            #[wasm_bindgen(thread_local_v2, js_name = self)]
+            static SELF: Option<Object>;
 
-            #[wasm_bindgen(getter, catch, static_method_of = Global, js_class = window, js_name = window)]
-            fn get_window() -> Result<Object, JsValue>;
+            #[wasm_bindgen(thread_local_v2, js_name = window)]
+            static WINDOW: Option<Object>;
 
-            #[wasm_bindgen(getter, catch, static_method_of = Global, js_class = global, js_name = global)]
-            fn get_global() -> Result<Object, JsValue>;
+            #[wasm_bindgen(thread_local_v2, js_name = global)]
+            static GLOBAL: Option<Object>;
         }
 
         // The order is important: in Firefox Extension Content Scripts `globalThis`
         // is a Sandbox (not Window), so `globalThis` must be checked after `window`.
-        let static_object = Global::get_self()
-            .or_else(|_| Global::get_window())
-            .or_else(|_| Global::get_global_this())
-            .or_else(|_| Global::get_global());
-        if let Ok(obj) = static_object {
+        let static_object = SELF
+            .with(Option::clone)
+            .or_else(|| WINDOW.with(Option::clone))
+            .or_else(|| GLOBAL_THIS.with(Option::clone))
+            .or_else(|| GLOBAL.with(Option::clone));
+        if let Some(obj) = static_object {
             if !obj.is_undefined() {
                 return obj;
             }
@@ -6230,7 +6252,7 @@ macro_rules! arrays {
             /// This function returns a new typed array which is a view into
             /// wasm's memory. This view does not copy the underlying data.
             ///
-            /// # Unsafety
+            /// # Safety
             ///
             /// Views into WebAssembly memory are only valid so long as the
             /// backing buffer isn't resized in JS. Once this function is called
@@ -6259,7 +6281,7 @@ macro_rules! arrays {
             /// This function returns a new typed array which is a view into
             /// wasm's memory. This view does not copy the underlying data.
             ///
-            /// # Unsafety
+            /// # Safety
             ///
             /// Views into WebAssembly memory are only valid so long as the
             /// backing buffer isn't resized in JS. Once this function is called
@@ -6286,7 +6308,7 @@ macro_rules! arrays {
             /// array into this Wasm module's own linear memory, initializing
             /// the memory destination provided.
             ///
-            /// # Unsafety
+            /// # Safety
             ///
             /// This function requires `dst` to point to a buffer
             /// large enough to fit this array's contents.
@@ -6310,7 +6332,7 @@ macro_rules! arrays {
             /// This function will panic if this typed array's length is
             /// different than the length of the provided `dst` array.
             pub fn copy_to(&self, dst: &mut [$ty]) {
-                assert_eq!(self.length() as usize, dst.len());
+                core::assert_eq!(self.length() as usize, dst.len());
                 unsafe { self.raw_copy_to_ptr(dst.as_mut_ptr()); }
             }
 
@@ -6325,7 +6347,7 @@ macro_rules! arrays {
             /// This function will panic if this typed array's length is
             /// different than the length of the provided `src` array.
             pub fn copy_from(&self, src: &[$ty]) {
-                assert_eq!(self.length() as usize, src.len());
+                core::assert_eq!(self.length() as usize, src.len());
                 // This is safe because the `set` function copies from its TypedArray argument
                 unsafe { self.set(&$name::view(src), 0) }
             }

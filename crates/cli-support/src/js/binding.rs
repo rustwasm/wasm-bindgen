@@ -37,6 +37,9 @@ pub struct JsBuilder<'a, 'b> {
     /// JS functions, etc.
     cx: &'a mut Context<'b>,
 
+    /// A debug name for the function being generated, used for error messages
+    debug_name: &'a str,
+
     /// The "prelude" of the function, or largely just the JS function we've
     /// built so far.
     prelude: String,
@@ -121,6 +124,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         asyncness: bool,
         variadic: bool,
         generate_jsdoc: bool,
+        debug_name: &str,
     ) -> Result<JsFunction, Error> {
         if self
             .cx
@@ -138,7 +142,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         // If this is a method then we're generating this as part of a class
         // method, so the leading parameter is the this pointer stored on
         // the JS object, so synthesize that here.
-        let mut js = JsBuilder::new(self.cx);
+        let mut js = JsBuilder::new(self.cx, debug_name);
         if let Some(consumes_self) = self.method {
             let _ = params.next();
             if js.cx.config.debug {
@@ -184,7 +188,12 @@ impl<'a, 'b> Builder<'a, 'b> {
             )?;
         }
 
-        assert_eq!(js.stack.len(), adapter.results.len());
+        assert_eq!(
+            js.stack.len(),
+            adapter.results.len(),
+            "stack size mismatch for {}",
+            debug_name
+        );
         match js.stack.len() {
             0 => {}
             1 => {
@@ -312,13 +321,15 @@ impl<'a, 'b> Builder<'a, 'b> {
             let mut ts = String::new();
             match ty {
                 AdapterType::Option(ty) if omittable => {
+                    // e.g. `foo?: string | null`
                     arg.push_str("?: ");
-                    adapter2ts(ty, &mut ts, Some(&mut ts_refs));
+                    adapter2ts(ty, TypePosition::Argument, &mut ts, Some(&mut ts_refs));
+                    ts.push_str(" | null");
                 }
                 ty => {
                     omittable = false;
                     arg.push_str(": ");
-                    adapter2ts(ty, &mut ts, Some(&mut ts_refs));
+                    adapter2ts(ty, TypePosition::Argument, &mut ts, Some(&mut ts_refs));
                 }
             }
             arg.push_str(&ts);
@@ -354,7 +365,12 @@ impl<'a, 'b> Builder<'a, 'b> {
             let mut ret = String::new();
             match result_tys.len() {
                 0 => ret.push_str("void"),
-                1 => adapter2ts(&result_tys[0], &mut ret, Some(&mut ts_refs)),
+                1 => adapter2ts(
+                    &result_tys[0],
+                    TypePosition::Return,
+                    &mut ret,
+                    Some(&mut ts_refs),
+                ),
                 _ => ret.push_str("[any]"),
             }
             if asyncness {
@@ -386,16 +402,18 @@ impl<'a, 'b> Builder<'a, 'b> {
         for (name, ty) in fn_arg_names.iter().zip(arg_tys).rev() {
             let mut arg = "@param {".to_string();
 
-            adapter2ts(ty, &mut arg, None);
-            arg.push_str("} ");
             match ty {
-                AdapterType::Option(..) if omittable => {
+                AdapterType::Option(ty) if omittable => {
+                    adapter2ts(ty, TypePosition::Argument, &mut arg, None);
+                    arg.push_str(" | null} ");
                     arg.push('[');
                     arg.push_str(name);
                     arg.push(']');
                 }
                 _ => {
                     omittable = false;
+                    adapter2ts(ty, TypePosition::Argument, &mut arg, None);
+                    arg.push_str("} ");
                     arg.push_str(name);
                 }
             }
@@ -407,7 +425,7 @@ impl<'a, 'b> Builder<'a, 'b> {
 
         if let (Some(name), Some(ty)) = (variadic_arg, arg_tys.last()) {
             ret.push_str("@param {...");
-            adapter2ts(ty, &mut ret, None);
+            adapter2ts(ty, TypePosition::Argument, &mut ret, None);
             ret.push_str("} ");
             ret.push_str(name);
             ret.push('\n');
@@ -422,9 +440,10 @@ impl<'a, 'b> Builder<'a, 'b> {
 }
 
 impl<'a, 'b> JsBuilder<'a, 'b> {
-    pub fn new(cx: &'a mut Context<'b>) -> JsBuilder<'a, 'b> {
+    pub fn new(cx: &'a mut Context<'b>, debug_name: &'a str) -> JsBuilder<'a, 'b> {
         JsBuilder {
             cx,
+            debug_name,
             args: Vec::new(),
             tmp: 0,
             pre_try: String::new(),
@@ -463,7 +482,10 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
     }
 
     fn pop(&mut self) -> String {
-        self.stack.pop().unwrap()
+        match self.stack.pop() {
+            Some(s) => s,
+            None => panic!("popping an empty stack in {}", self.debug_name),
+        }
     }
 
     fn push(&mut self, arg: String) {
@@ -630,6 +652,23 @@ fn instruction(
         )
     }
 
+    fn int128_to_int64x2(val: &str) -> (String, String) {
+        // we don't need to perform any conversion here, because the JS
+        // WebAssembly API will automatically convert the bigints to 64 bits
+        // for us. This even allows us to ignore signedness.
+        let low = val.to_owned();
+        let high = format!("{val} >> BigInt(64)");
+        (low, high)
+    }
+    fn int64x2_to_int128(low: String, high: String, signed: bool) -> String {
+        let low = format!("BigInt.asUintN(64, {low})");
+        if signed {
+            format!("({low} | ({high} << BigInt(64)))")
+        } else {
+            format!("({low} | (BigInt.asUintN(64, {high}) << BigInt(64)))")
+        }
+    }
+
     match instr {
         Instruction::ArgGet(n) => {
             let arg = js.arg(*n).to_string();
@@ -697,34 +736,70 @@ fn instruction(
             }
         }
 
-        Instruction::IntToWasm { input, .. } => {
-            let mut val = js.pop();
-            if matches!(
-                input,
-                AdapterType::I64 | AdapterType::S64 | AdapterType::U64
-            ) {
-                // Regular JS numbers are commonly used for integers >32 bits,
-                // because they can represent integers up to 2^53 exactly. To
-                // support this, we allow both number and bigint for 64-bit
-                // integers.
-                val = js.number_to_bigint(&val);
-                js.assert_bigint(&val);
-            } else {
-                js.assert_number(&val);
-            }
+        Instruction::Int32ToWasm => {
+            let val = js.pop();
+            js.assert_number(&val);
             js.push(val);
         }
-
-        // When converting to a JS number we need to specially handle the `u32`
-        // case because if the high bit is set then it comes out as a negative
-        // number, but we want to switch that to an unsigned representation.
-        Instruction::WasmToInt { output, .. } => {
+        Instruction::WasmToInt32 { unsigned_32 } => {
             let val = js.pop();
-            match output {
-                AdapterType::U32 | AdapterType::NonNull => js.push(format!("{} >>> 0", val)),
-                AdapterType::U64 => js.push(format!("BigInt.asUintN(64, {val})")),
-                _ => js.push(val),
+            if *unsigned_32 {
+                // When converting to a JS number we need to specially handle the `u32`
+                // case because if the high bit is set then it comes out as a negative
+                // number, but we want to switch that to an unsigned representation.
+                js.push(format!("{} >>> 0", val))
+            } else {
+                js.push(val)
             }
+        }
+
+        Instruction::Int64ToWasm => {
+            let mut val = js.pop();
+            // Regular JS numbers are commonly used for integers >32 bits,
+            // because they can represent integers up to 2^53 exactly. To
+            // support this, we allow both number and bigint for 64-bit
+            // integers.
+            val = js.number_to_bigint(&val);
+            js.assert_bigint(&val);
+            js.push(val);
+        }
+        Instruction::WasmToInt64 { unsigned } => {
+            let val = js.pop();
+            if *unsigned {
+                js.push(format!("BigInt.asUintN(64, {val})"))
+            } else {
+                js.push(val)
+            }
+        }
+
+        Instruction::Int128ToWasm => {
+            let val = js.pop();
+            js.assert_bigint(&val);
+            let (low, high) = int128_to_int64x2(&val);
+            js.push(low);
+            js.push(high);
+        }
+        Instruction::WasmToInt128 { signed } => {
+            let high = js.pop();
+            let low = js.pop();
+            js.push(int64x2_to_int128(low, high, *signed));
+        }
+
+        Instruction::OptionInt128ToWasm => {
+            let val = js.pop();
+            js.cx.expose_is_like_none();
+            js.assert_optional_bigint(&val);
+            let (low, high) = int128_to_int64x2(&val);
+            js.push(format!("!isLikeNone({val})"));
+            js.push(format!("isLikeNone({val}) ? BigInt(0) : {low}"));
+            js.push(format!("isLikeNone({val}) ? BigInt(0) : {high}"));
+        }
+        Instruction::OptionWasmToInt128 { signed } => {
+            let high = js.pop();
+            let low = js.pop();
+            let present = js.pop();
+            let val = int64x2_to_int128(low, high, *signed);
+            js.push(format!("{present} === 0 ? undefined : {val}"));
         }
 
         Instruction::WasmToStringEnum { name } => {
@@ -733,7 +808,7 @@ fn instruction(
             js.push(wasm_to_string_enum(name, &index))
         }
 
-        Instruction::OptionWasmToStringEnum { name, .. } => {
+        Instruction::OptionWasmToStringEnum { name } => {
             // Since hole is currently variant_count+1 and the lookup is
             // ["a","b","c"][index], the lookup will implicitly return map
             // the hole to undefined, because OOB indexes will return undefined.
@@ -948,6 +1023,44 @@ fn instruction(
             js.push(format!("isLikeNone({0}) ? {1} : {0}", val, hole));
         }
 
+        Instruction::F64FromOptionSentinelInt { signed } => {
+            let val = js.pop();
+            js.cx.expose_is_like_none();
+            js.assert_optional_number(&val);
+
+            // We need to convert the given number to a 32-bit integer before
+            // passing it to the ABI for 2 reasons:
+            // 1. Rust's behavior for `value_f64 as i32/u32` is different from
+            //    the WebAssembly behavior for values outside the 32-bit range.
+            //    We could implement this behavior in Rust too, but it's easier
+            //    to do it in JS.
+            // 2. If we allowed values outside the 32-bit range, the sentinel
+            //    value itself would be allowed. This would make it impossible
+            //    to distinguish between the sentinel value and a valid value.
+            //
+            // To perform the actual conversion, we use JS bit shifts. Handily,
+            // >> and >>> perform a conversion to i32 and u32 respectively
+            // to apply the bit shift, so we can use e.g. x >>> 0 to convert to
+            // u32.
+
+            let op = if *signed { ">>" } else { ">>>" };
+            js.push(format!("isLikeNone({val}) ? 0x100000001 : ({val}) {op} 0"));
+        }
+        Instruction::F64FromOptionSentinelF32 => {
+            let val = js.pop();
+            js.cx.expose_is_like_none();
+            js.assert_optional_number(&val);
+
+            // Similar to the above 32-bit integer variant, we convert the
+            // number to a 32-bit *float* before passing it to the ABI. This
+            // ensures consistent behavior with WebAssembly and makes it
+            // possible to use a sentinel value.
+
+            js.push(format!(
+                "isLikeNone({val}) ? 0x100000001 : Math.fround({val})"
+            ));
+        }
+
         Instruction::FromOptionNative { ty } => {
             let mut val = js.pop();
             js.cx.expose_is_like_none();
@@ -962,6 +1075,8 @@ fn instruction(
             js.push(format!(
                 "isLikeNone({val}) ? {zero} : {val}",
                 zero = if *ty == ValType::I64 {
+                    // We can't use bigint literals for now. See:
+                    // https://github.com/rustwasm/wasm-bindgen/issues/4246
                     "BigInt(0)"
                 } else {
                     "0"
@@ -1170,7 +1285,6 @@ fn instruction(
 
         Instruction::CachedStringLoad {
             owned,
-            optional: _,
             mem,
             free,
             table,
@@ -1305,6 +1419,11 @@ fn instruction(
                 len = len,
                 f = f
             ));
+        }
+
+        Instruction::OptionF64Sentinel => {
+            let val = js.pop();
+            js.push(format!("{0} === 0x100000001 ? undefined : {0}", val));
         }
 
         Instruction::OptionU32Sentinel => {
@@ -1462,7 +1581,18 @@ impl Invocation {
     }
 }
 
-fn adapter2ts(ty: &AdapterType, dst: &mut String, refs: Option<&mut HashSet<TsReference>>) {
+#[derive(Debug, Clone, Copy)]
+enum TypePosition {
+    Argument,
+    Return,
+}
+
+fn adapter2ts(
+    ty: &AdapterType,
+    position: TypePosition,
+    dst: &mut String,
+    refs: Option<&mut HashSet<TsReference>>,
+) {
     match ty {
         AdapterType::I32
         | AdapterType::S8
@@ -1474,14 +1604,21 @@ fn adapter2ts(ty: &AdapterType, dst: &mut String, refs: Option<&mut HashSet<TsRe
         | AdapterType::F32
         | AdapterType::F64
         | AdapterType::NonNull => dst.push_str("number"),
-        AdapterType::I64 | AdapterType::S64 | AdapterType::U64 => dst.push_str("bigint"),
+        AdapterType::I64
+        | AdapterType::S64
+        | AdapterType::U64
+        | AdapterType::S128
+        | AdapterType::U128 => dst.push_str("bigint"),
         AdapterType::String => dst.push_str("string"),
         AdapterType::Externref => dst.push_str("any"),
         AdapterType::Bool => dst.push_str("boolean"),
         AdapterType::Vector(kind) => dst.push_str(&kind.js_ty()),
         AdapterType::Option(ty) => {
-            adapter2ts(ty, dst, refs);
-            dst.push_str(" | undefined");
+            adapter2ts(ty, position, dst, refs);
+            dst.push_str(match position {
+                TypePosition::Argument => " | null | undefined",
+                TypePosition::Return => " | undefined",
+            });
         }
         AdapterType::NamedExternref(name) => dst.push_str(name),
         AdapterType::Struct(name) => dst.push_str(name),

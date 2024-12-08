@@ -83,9 +83,9 @@ impl GpuVertexAttribute {
     pub fn new(format: GpuVertexFormat, offset: f64, shader_location: u32) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.format(format);
-        ret.offset(offset);
-        ret.shader_location(shader_location);
+        ret.set_format(format);
+        ret.set_offset(offset);
+        ret.set_shader_location(shader_location);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

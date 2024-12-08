@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]
     #[wasm_bindgen(method, getter = "clientData")]
-    pub fn get_client_data(this: &SignResponse) -> Option<String>;
+    pub fn get_client_data(this: &SignResponse) -> Option<::alloc::string::String>;
     #[doc = "Change the `clientData` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]
@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]
     #[wasm_bindgen(method, getter = "errorMessage")]
-    pub fn get_error_message(this: &SignResponse) -> Option<String>;
+    pub fn get_error_message(this: &SignResponse) -> Option<::alloc::string::String>;
     #[doc = "Change the `errorMessage` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]
@@ -44,7 +44,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]
     #[wasm_bindgen(method, getter = "keyHandle")]
-    pub fn get_key_handle(this: &SignResponse) -> Option<String>;
+    pub fn get_key_handle(this: &SignResponse) -> Option<::alloc::string::String>;
     #[doc = "Change the `keyHandle` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]
@@ -54,7 +54,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]
     #[wasm_bindgen(method, getter = "signatureData")]
-    pub fn get_signature_data(this: &SignResponse) -> Option<String>;
+    pub fn get_signature_data(this: &SignResponse) -> Option<::alloc::string::String>;
     #[doc = "Change the `signatureData` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SignResponse`*"]

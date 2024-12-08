@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &EcKeyAlgorithm) -> String;
+    pub fn get_name(this: &EcKeyAlgorithm) -> ::alloc::string::String;
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
     #[wasm_bindgen(method, getter = "namedCurve")]
-    pub fn get_named_curve(this: &EcKeyAlgorithm) -> String;
+    pub fn get_named_curve(this: &EcKeyAlgorithm) -> ::alloc::string::String;
     #[doc = "Change the `namedCurve` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `EcKeyAlgorithm`*"]
@@ -38,8 +38,8 @@ impl EcKeyAlgorithm {
     pub fn new(name: &str, named_curve: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.named_curve(named_curve);
+        ret.set_name(name);
+        ret.set_named_curve(named_curve);
         ret
     }
     #[deprecated = "Use `set_name()` instead."]

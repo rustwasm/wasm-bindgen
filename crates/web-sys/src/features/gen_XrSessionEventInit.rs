@@ -101,7 +101,7 @@ impl XrSessionEventInit {
     pub fn new(session: &XrSession) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.session(session);
+        ret.set_session(session);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

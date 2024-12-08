@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MediaKeySystemAccess/keySystem)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaKeySystemAccess`*"]
-    pub fn key_system(this: &MediaKeySystemAccess) -> String;
+    pub fn key_system(this: &MediaKeySystemAccess) -> ::alloc::string::String;
     # [wasm_bindgen (method , structural , js_class = "MediaKeySystemAccess" , js_name = createMediaKeys)]
     #[doc = "The `createMediaKeys()` method."]
     #[doc = ""]

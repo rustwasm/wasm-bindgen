@@ -66,7 +66,7 @@ impl PresentationConnectionAvailableEventInit {
     pub fn new(connection: &PresentationConnection) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.connection(connection);
+        ret.set_connection(connection);
         ret
     }
     #[deprecated = "Use `set_bubbles()` instead."]

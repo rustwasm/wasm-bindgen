@@ -41,7 +41,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticatorSelectionCriteria`*"]
     #[wasm_bindgen(method, getter = "residentKey")]
-    pub fn get_resident_key(this: &AuthenticatorSelectionCriteria) -> Option<String>;
+    pub fn get_resident_key(
+        this: &AuthenticatorSelectionCriteria,
+    ) -> Option<::alloc::string::String>;
     #[doc = "Change the `residentKey` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AuthenticatorSelectionCriteria`*"]

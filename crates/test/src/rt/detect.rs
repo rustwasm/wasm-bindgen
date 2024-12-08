@@ -1,5 +1,6 @@
 //! Runtime detection of whether we're in node.js or a browser.
 
+use alloc::string::String;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]

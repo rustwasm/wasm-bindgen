@@ -26,5 +26,5 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/PaintRequest/reason)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `PaintRequest`*"]
-    pub fn reason(this: &PaintRequest) -> String;
+    pub fn reason(this: &PaintRequest) -> ::alloc::string::String;
 }

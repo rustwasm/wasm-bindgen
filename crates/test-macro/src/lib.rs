@@ -1,12 +1,6 @@
 //! See the README for `wasm-bindgen-test` for a bit more info about what's
 //! going on here.
 
-#![cfg_attr(
-    wasm_bindgen_unstable_test_coverage,
-    feature(allow_internal_unstable),
-    allow(internal_features)
-)]
-
 extern crate proc_macro;
 
 use proc_macro2::*;
@@ -18,10 +12,6 @@ use std::sync::atomic::*;
 static CNT: AtomicUsize = AtomicUsize::new(0);
 
 #[proc_macro_attribute]
-#[cfg_attr(
-    wasm_bindgen_unstable_test_coverage,
-    allow_internal_unstable(coverage_attribute)
-)]
 pub fn wasm_bindgen_test(
     attr: proc_macro::TokenStream,
     body: proc_macro::TokenStream,
@@ -112,12 +102,13 @@ pub fn wasm_bindgen_test(
     tokens.extend(
         quote! {
             const _: () = {
+                #wasm_bindgen_path::__rt::wasm_bindgen::__wbindgen_coverage! {
                 #[no_mangle]
-                #[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
-                #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+                #[cfg(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")))]
                 pub extern "C" fn #name(cx: &#wasm_bindgen_path::__rt::Context) {
                     let test_name = ::core::concat!(::core::module_path!(), "::", ::core::stringify!(#ident));
                     #test_body
+                }
                 }
             };
         },
@@ -125,7 +116,7 @@ pub fn wasm_bindgen_test(
 
     if let Some(path) = attributes.unsupported {
         tokens.extend(
-            quote! { #[cfg_attr(not(all(target_arch = "wasm32", target_os = "unknown")), #path)] },
+            quote! { #[cfg_attr(not(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none"))), #path)] },
         );
 
         if let Some(should_panic) = should_panic {
@@ -136,7 +127,7 @@ pub fn wasm_bindgen_test(
             };
 
             tokens.extend(
-                quote! { #[cfg_attr(not(all(target_arch = "wasm32", target_os = "unknown")), #should_panic)] }
+                quote! { #[cfg_attr(not(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none"))), #should_panic)] }
             )
         }
     }

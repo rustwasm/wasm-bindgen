@@ -25,7 +25,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/value)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomTokenList`*"]
-    pub fn value(this: &DomTokenList) -> String;
+    pub fn value(this: &DomTokenList) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "DOMTokenList" , js_name = value)]
     #[doc = "Setter for the `value` field of this object."]
     #[doc = ""]
@@ -158,7 +158,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/item)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomTokenList`*"]
-    pub fn item(this: &DomTokenList, index: u32) -> Option<String>;
+    pub fn item(this: &DomTokenList, index: u32) -> Option<::alloc::string::String>;
     # [wasm_bindgen (method , structural , js_class = "DOMTokenList" , js_name = keys)]
     #[doc = "The `keys()` method."]
     #[doc = ""]
@@ -309,5 +309,5 @@ extern "C" {
     #[doc = ""]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomTokenList`*"]
-    pub fn get(this: &DomTokenList, index: u32) -> Option<String>;
+    pub fn get(this: &DomTokenList, index: u32) -> Option<::alloc::string::String>;
 }

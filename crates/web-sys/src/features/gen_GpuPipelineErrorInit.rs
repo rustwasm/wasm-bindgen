@@ -47,7 +47,7 @@ impl GpuPipelineErrorInit {
     pub fn new(reason: GpuPipelineErrorReason) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.reason(reason);
+        ret.set_reason(reason);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

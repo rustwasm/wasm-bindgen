@@ -34,7 +34,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/RTCSessionDescription/sdp)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcSessionDescription`*"]
-    pub fn sdp(this: &RtcSessionDescription) -> String;
+    pub fn sdp(this: &RtcSessionDescription) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "RTCSessionDescription" , js_name = sdp)]
     #[doc = "Setter for the `sdp` field of this object."]
     #[doc = ""]

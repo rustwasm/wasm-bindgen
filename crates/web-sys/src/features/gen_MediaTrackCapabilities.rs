@@ -53,6 +53,24 @@ extern "C" {
     #[wasm_bindgen(method, setter = "autoGainControl")]
     pub fn set_auto_gain_control(this: &MediaTrackCapabilities, val: &::wasm_bindgen::JsValue);
     #[cfg(web_sys_unstable_apis)]
+    #[doc = "Get the `backgroundBlur` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackCapabilities`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, getter = "backgroundBlur")]
+    pub fn get_background_blur(this: &MediaTrackCapabilities) -> Option<::js_sys::Array>;
+    #[cfg(web_sys_unstable_apis)]
+    #[doc = "Change the `backgroundBlur` field of this object."]
+    #[doc = ""]
+    #[doc = "*This API requires the following crate features to be activated: `MediaTrackCapabilities`*"]
+    #[doc = ""]
+    #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
+    #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
+    #[wasm_bindgen(method, setter = "backgroundBlur")]
+    pub fn set_background_blur(this: &MediaTrackCapabilities, val: &::wasm_bindgen::JsValue);
+    #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "ULongRange")]
     #[doc = "Get the `channelCount` field of this object."]
     #[doc = ""]
@@ -80,7 +98,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "deviceId")]
-    pub fn get_device_id(this: &MediaTrackCapabilities) -> Option<String>;
+    pub fn get_device_id(this: &MediaTrackCapabilities) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `deviceId` field of this object."]
     #[doc = ""]
@@ -154,7 +172,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "groupId")]
-    pub fn get_group_id(this: &MediaTrackCapabilities) -> Option<String>;
+    pub fn get_group_id(this: &MediaTrackCapabilities) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `groupId` field of this object."]
     #[doc = ""]
@@ -325,6 +343,12 @@ impl MediaTrackCapabilities {
     #[deprecated = "Use `set_auto_gain_control()` instead."]
     pub fn auto_gain_control(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
         self.set_auto_gain_control(val);
+        self
+    }
+    #[cfg(web_sys_unstable_apis)]
+    #[deprecated = "Use `set_background_blur()` instead."]
+    pub fn background_blur(&mut self, val: &::wasm_bindgen::JsValue) -> &mut Self {
+        self.set_background_blur(val);
         self
     }
     #[cfg(web_sys_unstable_apis)]

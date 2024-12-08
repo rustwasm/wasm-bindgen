@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
     #[wasm_bindgen(method, getter = "domain")]
-    pub fn get_domain(this: &RtcIdentityProviderDetails) -> String;
+    pub fn get_domain(this: &RtcIdentityProviderDetails) -> ::alloc::string::String;
     #[doc = "Change the `domain` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
     #[wasm_bindgen(method, getter = "protocol")]
-    pub fn get_protocol(this: &RtcIdentityProviderDetails) -> Option<String>;
+    pub fn get_protocol(this: &RtcIdentityProviderDetails) -> Option<::alloc::string::String>;
     #[doc = "Change the `protocol` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIdentityProviderDetails`*"]
@@ -38,7 +38,7 @@ impl RtcIdentityProviderDetails {
     pub fn new(domain: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.domain(domain);
+        ret.set_domain(domain);
         ret
     }
     #[deprecated = "Use `set_domain()` instead."]

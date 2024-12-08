@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOtherPrimesInfo`*"]
     #[wasm_bindgen(method, getter = "d")]
-    pub fn get_d(this: &RsaOtherPrimesInfo) -> String;
+    pub fn get_d(this: &RsaOtherPrimesInfo) -> ::alloc::string::String;
     #[doc = "Change the `d` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOtherPrimesInfo`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOtherPrimesInfo`*"]
     #[wasm_bindgen(method, getter = "r")]
-    pub fn get_r(this: &RsaOtherPrimesInfo) -> String;
+    pub fn get_r(this: &RsaOtherPrimesInfo) -> ::alloc::string::String;
     #[doc = "Change the `r` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOtherPrimesInfo`*"]
@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOtherPrimesInfo`*"]
     #[wasm_bindgen(method, getter = "t")]
-    pub fn get_t(this: &RsaOtherPrimesInfo) -> String;
+    pub fn get_t(this: &RsaOtherPrimesInfo) -> ::alloc::string::String;
     #[doc = "Change the `t` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RsaOtherPrimesInfo`*"]
@@ -48,9 +48,9 @@ impl RsaOtherPrimesInfo {
     pub fn new(d: &str, r: &str, t: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.d(d);
-        ret.r(r);
-        ret.t(t);
+        ret.set_d(d);
+        ret.set_r(r);
+        ret.set_t(t);
         ret
     }
     #[deprecated = "Use `set_d()` instead."]

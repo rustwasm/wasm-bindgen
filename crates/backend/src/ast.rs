@@ -275,8 +275,17 @@ pub struct ImportStatic {
     pub js_name: String,
     /// Path to wasm_bindgen
     pub wasm_bindgen: Path,
-    /// [`true`] if using the new `thread_local` representation.
-    pub thread_local: bool,
+    /// Version of `thread_local`, if any.
+    pub thread_local: Option<ThreadLocal>,
+}
+
+/// Which version of the `thread_local` attribute is enabled.
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+pub enum ThreadLocal {
+    /// V1.
+    V1,
+    /// V2.
+    V2,
 }
 
 /// The type of a static string being imported
@@ -297,6 +306,8 @@ pub struct ImportString {
     pub js_sys: Path,
     /// The string to export.
     pub string: String,
+    /// Version of `thread_local`.
+    pub thread_local: ThreadLocal,
 }
 
 /// The metadata for a type being imported
@@ -445,6 +456,9 @@ pub struct Enum {
     pub rust_name: Ident,
     /// The name of this enum in JS code
     pub js_name: String,
+    /// Whether the variant values and hole are signed, meaning that they
+    /// represent the bits of a `i32` value.
+    pub signed: bool,
     /// The variants provided by this enum
     pub variants: Vec<Variant>,
     /// The doc comments on this enum, if any

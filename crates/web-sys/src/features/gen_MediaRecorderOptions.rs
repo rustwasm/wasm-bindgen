@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorderOptions`*"]
     #[wasm_bindgen(method, getter = "mimeType")]
-    pub fn get_mime_type(this: &MediaRecorderOptions) -> Option<String>;
+    pub fn get_mime_type(this: &MediaRecorderOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `mimeType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaRecorderOptions`*"]

@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSFontFeatureValuesRule/fontFamily)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssFontFeatureValuesRule`*"]
-    pub fn font_family(this: &CssFontFeatureValuesRule) -> String;
+    pub fn font_family(this: &CssFontFeatureValuesRule) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "CSSFontFeatureValuesRule" , js_name = fontFamily)]
     #[doc = "Setter for the `fontFamily` field of this object."]
     #[doc = ""]
@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSFontFeatureValuesRule/valueText)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssFontFeatureValuesRule`*"]
-    pub fn value_text(this: &CssFontFeatureValuesRule) -> String;
+    pub fn value_text(this: &CssFontFeatureValuesRule) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "CSSFontFeatureValuesRule" , js_name = valueText)]
     #[doc = "Setter for the `valueText` field of this object."]
     #[doc = ""]

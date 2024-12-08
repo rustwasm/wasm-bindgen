@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLObjectElement/data)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlObjectElement`*"]
-    pub fn data(this: &HtmlObjectElement) -> String;
+    pub fn data(this: &HtmlObjectElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLObjectElement" , js_name = data)]
     #[doc = "Setter for the `data` field of this object."]
     #[doc = ""]
@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLObjectElement/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlObjectElement`*"]
-    pub fn type_(this: &HtmlObjectElement) -> String;
+    pub fn type_(this: &HtmlObjectElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLObjectElement" , js_name = type)]
     #[doc = "Setter for the `type` field of this object."]
     #[doc = ""]
@@ -60,7 +60,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLObjectElement/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlObjectElement`*"]
-    pub fn name(this: &HtmlObjectElement) -> String;
+    pub fn name(this: &HtmlObjectElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLObjectElement" , js_name = name)]
     #[doc = "Setter for the `name` field of this object."]
     #[doc = ""]
@@ -74,7 +74,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLObjectElement/useMap)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlObjectElement`*"]
-    pub fn use_map(this: &HtmlObjectElement) -> String;
+    pub fn use_map(this: &HtmlObjectElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLObjectElement" , js_name = useMap)]
     #[doc = "Setter for the `useMap` field of this object."]
     #[doc = ""]
@@ -96,7 +96,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLObjectElement/width)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlObjectElement`*"]
-    pub fn width(this: &HtmlObjectElement) -> String;
+    pub fn width(this: &HtmlObjectElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLObjectElement" , js_name = width)]
     #[doc = "Setter for the `width` field of this object."]
     #[doc = ""]
@@ -110,7 +110,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLObjectElement/height)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlObjectElement`*"]
-    pub fn height(this: &HtmlObjectElement) -> String;
+    pub fn height(this: &HtmlObjectElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLObjectElement" , js_name = height)]
     #[doc = "Setter for the `height` field of this object."]
     #[doc = ""]
@@ -155,14 +155,15 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLObjectElement/validationMessage)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlObjectElement`*"]
-    pub fn validation_message(this: &HtmlObjectElement) -> Result<String, JsValue>;
+    pub fn validation_message(this: &HtmlObjectElement)
+        -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (structural , method , getter , js_class = "HTMLObjectElement" , js_name = align)]
     #[doc = "Getter for the `align` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLObjectElement/align)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlObjectElement`*"]
-    pub fn align(this: &HtmlObjectElement) -> String;
+    pub fn align(this: &HtmlObjectElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLObjectElement" , js_name = align)]
     #[doc = "Setter for the `align` field of this object."]
     #[doc = ""]
@@ -176,7 +177,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLObjectElement/archive)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlObjectElement`*"]
-    pub fn archive(this: &HtmlObjectElement) -> String;
+    pub fn archive(this: &HtmlObjectElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLObjectElement" , js_name = archive)]
     #[doc = "Setter for the `archive` field of this object."]
     #[doc = ""]
@@ -190,7 +191,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLObjectElement/code)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlObjectElement`*"]
-    pub fn code(this: &HtmlObjectElement) -> String;
+    pub fn code(this: &HtmlObjectElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLObjectElement" , js_name = code)]
     #[doc = "Setter for the `code` field of this object."]
     #[doc = ""]
@@ -232,7 +233,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLObjectElement/standby)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlObjectElement`*"]
-    pub fn standby(this: &HtmlObjectElement) -> String;
+    pub fn standby(this: &HtmlObjectElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLObjectElement" , js_name = standby)]
     #[doc = "Setter for the `standby` field of this object."]
     #[doc = ""]
@@ -260,7 +261,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLObjectElement/codeBase)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlObjectElement`*"]
-    pub fn code_base(this: &HtmlObjectElement) -> String;
+    pub fn code_base(this: &HtmlObjectElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLObjectElement" , js_name = codeBase)]
     #[doc = "Setter for the `codeBase` field of this object."]
     #[doc = ""]
@@ -274,7 +275,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLObjectElement/codeType)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlObjectElement`*"]
-    pub fn code_type(this: &HtmlObjectElement) -> String;
+    pub fn code_type(this: &HtmlObjectElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLObjectElement" , js_name = codeType)]
     #[doc = "Setter for the `codeType` field of this object."]
     #[doc = ""]
@@ -288,7 +289,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLObjectElement/border)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlObjectElement`*"]
-    pub fn border(this: &HtmlObjectElement) -> String;
+    pub fn border(this: &HtmlObjectElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLObjectElement" , js_name = border)]
     #[doc = "Setter for the `border` field of this object."]
     #[doc = ""]

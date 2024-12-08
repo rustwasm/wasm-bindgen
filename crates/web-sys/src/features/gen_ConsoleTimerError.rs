@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerError`*"]
     #[wasm_bindgen(method, getter = "error")]
-    pub fn get_error(this: &ConsoleTimerError) -> Option<String>;
+    pub fn get_error(this: &ConsoleTimerError) -> Option<::alloc::string::String>;
     #[doc = "Change the `error` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerError`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerError`*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &ConsoleTimerError) -> Option<String>;
+    pub fn get_name(this: &ConsoleTimerError) -> Option<::alloc::string::String>;
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleTimerError`*"]

@@ -34,7 +34,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/lang)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
-    pub fn lang(this: &SpeechRecognition) -> String;
+    pub fn lang(this: &SpeechRecognition) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "SpeechRecognition" , js_name = lang)]
     #[doc = "Setter for the `lang` field of this object."]
     #[doc = ""]
@@ -90,7 +90,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/serviceURI)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SpeechRecognition`*"]
-    pub fn service_uri(this: &SpeechRecognition) -> Result<String, JsValue>;
+    pub fn service_uri(this: &SpeechRecognition) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (structural , catch , method , setter , js_class = "SpeechRecognition" , js_name = serviceURI)]
     #[doc = "Setter for the `serviceURI` field of this object."]
     #[doc = ""]

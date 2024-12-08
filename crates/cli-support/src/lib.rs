@@ -125,6 +125,7 @@ impl Bindgen {
         self
     }
 
+    #[deprecated = "automatically detected via `-Ctarget-feature=+reference-types`"]
     pub fn reference_types(&mut self, enable: bool) -> &mut Bindgen {
         self.externref = enable;
         self
@@ -498,9 +499,22 @@ fn reset_indentation(s: &str) -> String {
 
     for line in s.lines() {
         let line = line.trim();
-        if line.starts_with('}') || (line.ends_with('}') && !is_doc_comment(line)) {
+
+        // handle doc comments separately
+        if is_doc_comment(line) {
+            for _ in 0..indent {
+                dst.push_str("    ");
+            }
+            dst.push(' ');
+            dst.push_str(line);
+            dst.push('\n');
+            continue;
+        }
+
+        if line.starts_with('}') {
             indent = indent.saturating_sub(1);
         }
+
         let extra = if line.starts_with(':') || line.starts_with('?') {
             1
         } else {
@@ -510,14 +524,11 @@ fn reset_indentation(s: &str) -> String {
             for _ in 0..indent + extra {
                 dst.push_str("    ");
             }
-            if is_doc_comment(line) {
-                dst.push(' ');
-            }
             dst.push_str(line);
         }
         dst.push('\n');
-        // Ignore { inside of comments and if it's an exported enum
-        if line.ends_with('{') && !is_doc_comment(line) && !line.ends_with("Object.freeze({") {
+
+        if line.ends_with('{') {
             indent += 1;
         }
     }
@@ -798,16 +809,6 @@ where
     K: Ord,
 {
     let mut pairs = map.iter().collect::<Vec<_>>();
-    pairs.sort_by_key(|(k, _)| *k);
-    pairs.into_iter()
-}
-
-/// Like `sorted_iter`, but produces mutable references to the values
-fn sorted_iter_mut<K, V>(map: &mut HashMap<K, V>) -> impl Iterator<Item = (&K, &mut V)>
-where
-    K: Ord,
-{
-    let mut pairs = map.iter_mut().collect::<Vec<_>>();
     pairs.sort_by_key(|(k, _)| *k);
     pairs.into_iter()
 }

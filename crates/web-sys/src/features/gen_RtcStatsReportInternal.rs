@@ -100,7 +100,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcStatsReportInternal`*"]
     #[wasm_bindgen(method, getter = "localSdp")]
-    pub fn get_local_sdp(this: &RtcStatsReportInternal) -> Option<String>;
+    pub fn get_local_sdp(this: &RtcStatsReportInternal) -> Option<::alloc::string::String>;
     #[doc = "Change the `localSdp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcStatsReportInternal`*"]
@@ -156,7 +156,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcStatsReportInternal`*"]
     #[wasm_bindgen(method, getter = "pcid")]
-    pub fn get_pcid(this: &RtcStatsReportInternal) -> Option<String>;
+    pub fn get_pcid(this: &RtcStatsReportInternal) -> Option<::alloc::string::String>;
     #[doc = "Change the `pcid` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcStatsReportInternal`*"]
@@ -186,7 +186,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcStatsReportInternal`*"]
     #[wasm_bindgen(method, getter = "remoteSdp")]
-    pub fn get_remote_sdp(this: &RtcStatsReportInternal) -> Option<String>;
+    pub fn get_remote_sdp(this: &RtcStatsReportInternal) -> Option<::alloc::string::String>;
     #[doc = "Change the `remoteSdp` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcStatsReportInternal`*"]

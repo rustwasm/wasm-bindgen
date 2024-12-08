@@ -61,7 +61,7 @@ impl MediaStreamTrackEventInit {
     pub fn new(track: &MediaStreamTrack) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.track(track);
+        ret.set_track(track);
         ret
     }
     #[deprecated = "Use `set_bubbles()` instead."]

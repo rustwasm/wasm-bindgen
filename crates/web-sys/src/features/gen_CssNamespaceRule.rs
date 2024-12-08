@@ -18,12 +18,12 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSNamespaceRule/namespaceURI)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssNamespaceRule`*"]
-    pub fn namespace_uri(this: &CssNamespaceRule) -> String;
+    pub fn namespace_uri(this: &CssNamespaceRule) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "CSSNamespaceRule" , js_name = prefix)]
     #[doc = "Getter for the `prefix` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CSSNamespaceRule/prefix)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CssNamespaceRule`*"]
-    pub fn prefix(this: &CssNamespaceRule) -> String;
+    pub fn prefix(this: &CssNamespaceRule) -> ::alloc::string::String;
 }

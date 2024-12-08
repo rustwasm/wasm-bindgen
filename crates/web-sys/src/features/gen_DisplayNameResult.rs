@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
     #[wasm_bindgen(method, getter = "locale")]
-    pub fn get_locale(this: &DisplayNameResult) -> Option<String>;
+    pub fn get_locale(this: &DisplayNameResult) -> Option<::alloc::string::String>;
     #[doc = "Change the `locale` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]
     #[wasm_bindgen(method, getter = "style")]
-    pub fn get_style(this: &DisplayNameResult) -> Option<String>;
+    pub fn get_style(this: &DisplayNameResult) -> Option<::alloc::string::String>;
     #[doc = "Change the `style` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DisplayNameResult`*"]

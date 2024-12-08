@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
     #[wasm_bindgen(method, getter = "l10nAttrs")]
-    pub fn get_l10n_attrs(this: &L10nElement) -> Option<String>;
+    pub fn get_l10n_attrs(this: &L10nElement) -> Option<::alloc::string::String>;
     #[doc = "Change the `l10nAttrs` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
     #[wasm_bindgen(method, getter = "l10nId")]
-    pub fn get_l10n_id(this: &L10nElement) -> String;
+    pub fn get_l10n_id(this: &L10nElement) -> ::alloc::string::String;
     #[doc = "Change the `l10nId` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
@@ -44,7 +44,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
     #[wasm_bindgen(method, getter = "localName")]
-    pub fn get_local_name(this: &L10nElement) -> String;
+    pub fn get_local_name(this: &L10nElement) -> ::alloc::string::String;
     #[doc = "Change the `localName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
@@ -54,7 +54,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
     #[wasm_bindgen(method, getter = "namespaceURI")]
-    pub fn get_namespace_uri(this: &L10nElement) -> String;
+    pub fn get_namespace_uri(this: &L10nElement) -> ::alloc::string::String;
     #[doc = "Change the `namespaceURI` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
@@ -64,7 +64,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
     #[wasm_bindgen(method, getter = "type")]
-    pub fn get_type(this: &L10nElement) -> Option<String>;
+    pub fn get_type(this: &L10nElement) -> Option<::alloc::string::String>;
     #[doc = "Change the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `L10nElement`*"]
@@ -78,9 +78,9 @@ impl L10nElement {
     pub fn new(l10n_id: &str, local_name: &str, namespace_uri: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.l10n_id(l10n_id);
-        ret.local_name(local_name);
-        ret.namespace_uri(namespace_uri);
+        ret.set_l10n_id(l10n_id);
+        ret.set_local_name(local_name);
+        ret.set_namespace_uri(namespace_uri);
         ret
     }
     #[deprecated = "Use `set_l10n_args()` instead."]

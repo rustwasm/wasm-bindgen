@@ -1,7 +1,7 @@
+use alloc::collections::VecDeque;
+use alloc::rc::Rc;
+use core::cell::{Cell, RefCell};
 use js_sys::Promise;
-use std::cell::{Cell, RefCell};
-use std::collections::VecDeque;
-use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -71,6 +71,7 @@ impl Queue {
         }
     }
     // Append a task to the currently running queue, or schedule it
+    #[cfg(not(target_feature = "atomics"))]
     pub(crate) fn push_task(&self, task: Rc<crate::task::Task>) {
         // It would make sense to run this task on the same tick.  For now, we
         // make the simplifying choice of always scheduling tasks for a future tick.
@@ -105,8 +106,31 @@ impl Queue {
             has_queue_microtask,
         }
     }
-}
 
-thread_local! {
-    pub(crate) static QUEUE: Queue = Queue::new();
+    #[cfg(feature = "std")]
+    pub(crate) fn with<R>(f: impl FnOnce(&Self) -> R) -> R {
+        thread_local! {
+            static QUEUE: Queue = Queue::new();
+        }
+
+        QUEUE.with(f)
+    }
+
+    #[cfg(not(feature = "std"))]
+    pub(crate) fn with<R>(f: impl FnOnce(&Self) -> R) -> R {
+        use once_cell::unsync::Lazy;
+
+        struct Wrapper<T>(Lazy<T>);
+
+        #[cfg(not(target_feature = "atomics"))]
+        unsafe impl<T> Sync for Wrapper<T> {}
+
+        #[cfg(not(target_feature = "atomics"))]
+        unsafe impl<T> Send for Wrapper<T> {}
+
+        #[cfg_attr(target_feature = "atomics", thread_local)]
+        static QUEUE: Wrapper<Queue> = Wrapper(Lazy::new(Queue::new));
+
+        f(&QUEUE.0)
+    }
 }

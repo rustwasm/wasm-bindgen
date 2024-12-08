@@ -44,7 +44,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HashChangeEventInit`*"]
     #[wasm_bindgen(method, getter = "newURL")]
-    pub fn get_new_url(this: &HashChangeEventInit) -> Option<String>;
+    pub fn get_new_url(this: &HashChangeEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `newURL` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HashChangeEventInit`*"]
@@ -54,7 +54,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HashChangeEventInit`*"]
     #[wasm_bindgen(method, getter = "oldURL")]
-    pub fn get_old_url(this: &HashChangeEventInit) -> Option<String>;
+    pub fn get_old_url(this: &HashChangeEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `oldURL` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HashChangeEventInit`*"]

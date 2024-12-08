@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `LocaleInfo`*"]
     #[wasm_bindgen(method, getter = "direction")]
-    pub fn get_direction(this: &LocaleInfo) -> Option<String>;
+    pub fn get_direction(this: &LocaleInfo) -> Option<::alloc::string::String>;
     #[doc = "Change the `direction` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `LocaleInfo`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `LocaleInfo`*"]
     #[wasm_bindgen(method, getter = "locale")]
-    pub fn get_locale(this: &LocaleInfo) -> Option<String>;
+    pub fn get_locale(this: &LocaleInfo) -> Option<::alloc::string::String>;
     #[doc = "Change the `locale` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `LocaleInfo`*"]

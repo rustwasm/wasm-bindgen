@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MutationRecord`*"]
-    pub fn type_(this: &MutationRecord) -> String;
+    pub fn type_(this: &MutationRecord) -> ::alloc::string::String;
     #[cfg(feature = "Node")]
     # [wasm_bindgen (structural , method , getter , js_class = "MutationRecord" , js_name = target)]
     #[doc = "Getter for the `target` field of this object."]
@@ -65,19 +65,19 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord/attributeName)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MutationRecord`*"]
-    pub fn attribute_name(this: &MutationRecord) -> Option<String>;
+    pub fn attribute_name(this: &MutationRecord) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "MutationRecord" , js_name = attributeNamespace)]
     #[doc = "Getter for the `attributeNamespace` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord/attributeNamespace)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MutationRecord`*"]
-    pub fn attribute_namespace(this: &MutationRecord) -> Option<String>;
+    pub fn attribute_namespace(this: &MutationRecord) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "MutationRecord" , js_name = oldValue)]
     #[doc = "Getter for the `oldValue` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord/oldValue)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MutationRecord`*"]
-    pub fn old_value(this: &MutationRecord) -> Option<String>;
+    pub fn old_value(this: &MutationRecord) -> Option<::alloc::string::String>;
 }

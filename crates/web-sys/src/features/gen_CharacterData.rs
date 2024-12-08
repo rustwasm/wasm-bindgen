@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/data)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CharacterData`*"]
-    pub fn data(this: &CharacterData) -> String;
+    pub fn data(this: &CharacterData) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "CharacterData" , js_name = data)]
     #[doc = "Setter for the `data` field of this object."]
     #[doc = ""]
@@ -88,8 +88,11 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CharacterData/substringData)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `CharacterData`*"]
-    pub fn substring_data(this: &CharacterData, offset: u32, count: u32)
-        -> Result<String, JsValue>;
+    pub fn substring_data(
+        this: &CharacterData,
+        offset: u32,
+        count: u32,
+    ) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (catch , method , structural , variadic , js_class = "CharacterData" , js_name = after)]
     #[doc = "The `after()` method."]
     #[doc = ""]

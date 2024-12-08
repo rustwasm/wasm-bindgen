@@ -18,14 +18,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItem/kind)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DataTransferItem`*"]
-    pub fn kind(this: &DataTransferItem) -> String;
+    pub fn kind(this: &DataTransferItem) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "DataTransferItem" , js_name = type)]
     #[doc = "Getter for the `type` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItem/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DataTransferItem`*"]
-    pub fn type_(this: &DataTransferItem) -> String;
+    pub fn type_(this: &DataTransferItem) -> ::alloc::string::String;
     #[cfg(feature = "File")]
     # [wasm_bindgen (catch , method , structural , js_class = "DataTransferItem" , js_name = getAsFile)]
     #[doc = "The `getAsFile()` method."]

@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystem/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystem`*"]
-    pub fn name(this: &FileSystem) -> String;
+    pub fn name(this: &FileSystem) -> ::alloc::string::String;
     #[cfg(feature = "FileSystemDirectoryEntry")]
     # [wasm_bindgen (structural , method , getter , js_class = "FileSystem" , js_name = root)]
     #[doc = "Getter for the `root` field of this object."]

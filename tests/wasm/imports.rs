@@ -23,7 +23,7 @@ extern "C" {
 
     fn assert_valid_error(val: JsValue);
 
-    #[wasm_bindgen(thread_local)]
+    #[wasm_bindgen(thread_local_v2)]
     static IMPORT: JsValue;
 
     #[wasm_bindgen(js_name = return_three)]
@@ -36,7 +36,7 @@ extern "C" {
 
     #[allow(non_camel_case_types)]
     type bar;
-    #[wasm_bindgen(thread_local, js_namespace = bar, js_name = foo)]
+    #[wasm_bindgen(thread_local_v2, js_namespace = bar, js_name = foo)]
     static FOO: JsValue;
 
     fn take_custom_type(f: CustomType) -> CustomType;
@@ -47,7 +47,7 @@ extern "C" {
 
     #[wasm_bindgen(js_name = "baz$")]
     fn renamed_with_dollar_sign();
-    #[wasm_bindgen(thread_local, js_name = "$foo")]
+    #[wasm_bindgen(thread_local_v2, js_name = "$foo")]
     static RENAMED: JsValue;
 
     fn unused_import();
@@ -58,7 +58,7 @@ extern "C" {
     #[wasm_bindgen(static_method_of = StaticMethodCheck)]
     fn static_method_of_right_this();
 
-    #[wasm_bindgen(thread_local)]
+    #[wasm_bindgen(thread_local_v2)]
     static STATIC_STRING: String;
 
     #[derive(Clone)]
@@ -90,6 +90,15 @@ extern "C" {
 
     #[wasm_bindgen(js_name = "\"string'literal\nbreakers\r")]
     fn string_literal_breakers() -> u32;
+
+    #[wasm_bindgen(thread_local_v2)]
+    static UNDECLARED: Option<u32>;
+
+    #[wasm_bindgen(thread_local_v2, js_namespace = test)]
+    static UNDECLARED_NAMESPACE: Option<u32>;
+
+    #[wasm_bindgen(thread_local_v2, js_namespace = ["test1", "test2"])]
+    static UNDECLARED_NESTED_NAMESPACE: Option<u32>;
 }
 
 #[wasm_bindgen(module = "tests/wasm/imports_2.js")]
@@ -335,4 +344,11 @@ fn func_from_two_modules_same_js_namespace() {
 fn invalid_idents() {
     assert_eq!(kebab_case(), 42);
     assert_eq!(string_literal_breakers(), 42);
+}
+
+#[wasm_bindgen_test]
+fn undeclared() {
+    assert_eq!(UNDECLARED.with(Option::clone), None);
+    assert_eq!(UNDECLARED_NAMESPACE.with(Option::clone), None);
+    assert_eq!(UNDECLARED_NESTED_NAMESPACE.with(Option::clone), None);
 }

@@ -14,7 +14,7 @@ fn test_xpath_result() {
         xpath_result.result_type(),
         XPathResult::UNORDERED_NODE_ITERATOR_TYPE
     );
-    assert_eq!(xpath_result.invalid_iterator_state(), false);
+    assert!(!xpath_result.invalid_iterator_state());
     assert_eq!(
         xpath_result
             .iterate_next()

@@ -14,14 +14,19 @@ name = "js-sys"
 readme = "./README.md"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/js-sys"
 rust-version = "1.57"
-version = "0.3.72"
+version = "0.3.76"
 
 [lib]
 doctest = false
 test = false
 
+[features]
+default = ["std"]
+std = ["wasm-bindgen/std"]
+
 [dependencies]
-wasm-bindgen = { path = "../..", version = "0.2.95" }
+once_cell = { version = "1.12", default-features = false }
+wasm-bindgen = { path = "../..", version = "=0.2.99", default-features = false }
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
 wasm-bindgen-futures = { path = '../futures' }
@@ -30,3 +35,10 @@ web-sys = { path = "../web-sys", features = ["Headers", "Response", "ResponseIni
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(js_sys_unstable_apis)'] }
+
+[lints.clippy]
+large_enum_variant = "allow"
+new_without_default = "allow"
+overly_complex_bool_expr = "allow"
+too_many_arguments = "allow"
+type_complexity = "allow"

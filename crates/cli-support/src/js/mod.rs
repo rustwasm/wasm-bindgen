@@ -1,8 +1,8 @@
 use crate::descriptor::VectorKind;
 use crate::intrinsic::Intrinsic;
 use crate::wit::{
-    Adapter, AdapterId, AdapterJsImportKind, AdapterType, AuxExportedMethodKind, AuxReceiverKind,
-    AuxStringEnum, AuxValue,
+    Adapter, AdapterId, AdapterJsImportKind, AuxExportedMethodKind, AuxReceiverKind, AuxStringEnum,
+    AuxValue,
 };
 use crate::wit::{AdapterKind, Instruction, InstructionData};
 use crate::wit::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
@@ -81,7 +81,7 @@ pub struct Context<'a> {
 }
 
 #[derive(Default)]
-pub struct ExportedClass {
+struct ExportedClass {
     comments: String,
     contents: String,
     /// The TypeScript for the class's methods.
@@ -95,9 +95,41 @@ pub struct ExportedClass {
     is_inspectable: bool,
     /// All readable properties of the class
     readable_properties: Vec<String>,
-    /// Map from field name to type as a string, docs plus whether it has a setter,
-    /// whether it's optional and whether it's static.
-    typescript_fields: HashMap<String, (String, String, bool, bool, bool)>,
+    /// Map from field to information about those fields
+    typescript_fields: HashMap<FieldLocation, FieldInfo>,
+}
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+struct FieldLocation {
+    name: String,
+    is_static: bool,
+}
+#[derive(Debug)]
+struct FieldInfo {
+    name: String,
+    is_static: bool,
+    order: usize,
+    getter: Option<FieldAccessor>,
+    setter: Option<FieldAccessor>,
+}
+/// A getter or setter for a field.
+#[derive(Debug)]
+struct FieldAccessor {
+    ty: String,
+    docs: String,
+    is_optional: bool,
+}
+
+/// Different JS constructs that can be exported.
+enum ExportJs<'a> {
+    /// A class of the form `class Name {...}`.
+    Class(&'a str),
+    /// An anonymous function expression of the form `function(...) {...}`.
+    ///
+    /// Note that the function name is not included in the string.
+    Function(&'a str),
+    /// An arbitrary JS expression.
+    Expression(&'a str),
 }
 
 const INITIAL_HEAP_VALUES: &[&str] = &["undefined", "null", "true", "false"];
@@ -143,38 +175,46 @@ impl<'a> Context<'a> {
     fn export(
         &mut self,
         export_name: &str,
-        contents: &str,
+        export: ExportJs,
         comments: Option<&str>,
     ) -> Result<(), Error> {
         let definition_name = self.generate_identifier(export_name);
-        if contents.starts_with("class") && definition_name != export_name {
+        if matches!(export, ExportJs::Class(_)) && definition_name != export_name {
             bail!("cannot shadow already defined class `{}`", export_name);
         }
 
-        let contents = contents.trim();
+        // write out comments
         if let Some(c) = comments {
             self.globals.push_str(c);
         }
+
         let global = match self.config.mode {
-            OutputMode::Node { module: false } => {
-                if contents.starts_with("class") {
-                    format!("{}\nmodule.exports.{1} = {1};\n", contents, export_name)
-                } else {
-                    format!("module.exports.{} = {};\n", export_name, contents)
+            OutputMode::Node { module: false } => match export {
+                ExportJs::Class(class) => {
+                    format!("{}\nmodule.exports.{1} = {1};\n", class, export_name)
                 }
-            }
-            OutputMode::NoModules { .. } => {
-                if contents.starts_with("class") {
-                    format!("{}\n__exports.{1} = {1};\n", contents, export_name)
-                } else {
-                    format!("__exports.{} = {};\n", export_name, contents)
+                ExportJs::Function(expr) | ExportJs::Expression(expr) => {
+                    format!("module.exports.{} = {};\n", export_name, expr)
                 }
-            }
+            },
+            OutputMode::NoModules { .. } => match export {
+                ExportJs::Class(class) => {
+                    format!("{}\n__exports.{1} = {1};\n", class, export_name)
+                }
+                ExportJs::Function(expr) | ExportJs::Expression(expr) => {
+                    format!("__exports.{} = {};\n", export_name, expr)
+                }
+            },
             OutputMode::Bundler { .. }
             | OutputMode::Node { module: true }
             | OutputMode::Web
-            | OutputMode::Deno => {
-                if let Some(body) = contents.strip_prefix("function") {
+            | OutputMode::Deno => match export {
+                ExportJs::Class(class) => {
+                    assert_eq!(export_name, definition_name);
+                    format!("export {}\n", class)
+                }
+                ExportJs::Function(function) => {
+                    let body = function.strip_prefix("function").unwrap();
                     if export_name == definition_name {
                         format!("export function {}{}\n", export_name, body)
                     } else {
@@ -183,14 +223,12 @@ impl<'a> Context<'a> {
                             definition_name, body, definition_name, export_name,
                         )
                     }
-                } else if contents.starts_with("class") {
-                    assert_eq!(export_name, definition_name);
-                    format!("export {}\n", contents)
-                } else {
-                    assert_eq!(export_name, definition_name);
-                    format!("export const {} = {};\n", export_name, contents)
                 }
-            }
+                ExportJs::Expression(expr) => {
+                    assert_eq!(export_name, definition_name);
+                    format!("export const {} = {};\n", export_name, expr)
+                }
+            },
         };
         self.global(&global);
         Ok(())
@@ -420,6 +458,8 @@ impl<'a> Context<'a> {
             // With normal CommonJS node we need to defer requiring the wasm
             // until the end so most of our own exports are hooked up
             OutputMode::Node { module: false } => {
+                self.nodejs_memory();
+
                 js.push_str(&self.generate_node_imports());
 
                 js.push_str("let wasm;\n");
@@ -463,6 +503,8 @@ impl<'a> Context<'a> {
             // and let the bundler/runtime take care of it.
             // With Node we manually read the Wasm file from the filesystem and instantiate it.
             OutputMode::Bundler { .. } | OutputMode::Node { module: true } => {
+                self.nodejs_memory();
+
                 for (id, js) in iter_by_import(&self.wasm_import_definitions, self.module) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}_bg.js", module_name);
@@ -985,6 +1027,14 @@ __wbg_set_wasm(wasm);"
         Ok((js, ts))
     }
 
+    fn nodejs_memory(&mut self) {
+        if let Some(mem) = self.module.memories.iter_mut().next() {
+            if let Some(id) = mem.import.take() {
+                self.module.imports.delete(id);
+            }
+        }
+    }
+
     fn write_classes(&mut self) -> Result<(), Error> {
         for (class, exports) in self.exported_classes.take().unwrap() {
             self.write_class(&class, &exports)?;
@@ -996,14 +1046,19 @@ __wbg_set_wasm(wasm);"
         let mut dst = format!("class {} {{\n", name);
         let mut ts_dst = format!("export {}", dst);
 
-        if self.config.debug && !class.has_constructor {
-            dst.push_str(
-                "
-                    constructor() {
-                        throw new Error('cannot invoke `new` directly');
-                    }
-                ",
-            );
+        if !class.has_constructor {
+            // declare the constructor as private to prevent direct instantiation
+            ts_dst.push_str("  private constructor();\n");
+
+            if self.config.debug {
+                dst.push_str(
+                    "
+                        constructor() {
+                            throw new Error('cannot invoke `new` directly');
+                        }
+                    ",
+                );
+            }
         }
 
         if class.wrap_needed {
@@ -1130,31 +1185,12 @@ __wbg_set_wasm(wasm);"
         dst.push_str(&class.contents);
         ts_dst.push_str(&class.typescript);
 
-        let mut fields = class.typescript_fields.keys().collect::<Vec<_>>();
-        fields.sort(); // make sure we have deterministic output
-        for name in fields {
-            let (ty, docs, has_setter, is_optional, is_static) = &class.typescript_fields[name];
-            ts_dst.push_str(docs);
-            ts_dst.push_str("  ");
-            if *is_static {
-                ts_dst.push_str("static ");
-            }
-            if !has_setter {
-                ts_dst.push_str("readonly ");
-            }
-            ts_dst.push_str(name);
-            if *is_optional {
-                ts_dst.push_str("?: ");
-            } else {
-                ts_dst.push_str(": ");
-            }
-            ts_dst.push_str(ty);
-            ts_dst.push_str(";\n");
-        }
-        dst.push_str("}\n");
+        self.write_class_field_types(class, &mut ts_dst);
+
+        dst.push('}');
         ts_dst.push_str("}\n");
 
-        self.export(name, &dst, Some(&class.comments))?;
+        self.export(name, ExportJs::Class(&dst), Some(&class.comments))?;
 
         if class.generate_typescript {
             self.typescript.push_str(&class.comments);
@@ -1162,6 +1198,124 @@ __wbg_set_wasm(wasm);"
         }
 
         Ok(())
+    }
+
+    fn write_class_field_types(&mut self, class: &ExportedClass, ts_dst: &mut String) {
+        let mut fields: Vec<&FieldInfo> = class.typescript_fields.values().collect();
+        fields.sort_by_key(|f| f.order); // make sure we have deterministic output
+
+        for FieldInfo {
+            name,
+            is_static,
+            getter,
+            setter,
+            ..
+        } in fields
+        {
+            let is_static = if *is_static { "static " } else { "" };
+
+            let write_docs = |ts_dst: &mut String, docs: &str| {
+                if docs.is_empty() {
+                    return;
+                }
+                // indent by 2 spaces
+                for line in docs.lines() {
+                    ts_dst.push_str("  ");
+                    ts_dst.push_str(line);
+                    ts_dst.push('\n');
+                }
+            };
+            let write_getter = |ts_dst: &mut String, getter: &FieldAccessor| {
+                write_docs(ts_dst, &getter.docs);
+                ts_dst.push_str("  ");
+                ts_dst.push_str(is_static);
+                ts_dst.push_str("get ");
+                ts_dst.push_str(name);
+                ts_dst.push_str("(): ");
+                ts_dst.push_str(&getter.ty);
+                ts_dst.push_str(";\n");
+            };
+            let write_setter = |ts_dst: &mut String, setter: &FieldAccessor| {
+                write_docs(ts_dst, &setter.docs);
+                ts_dst.push_str("  ");
+                ts_dst.push_str(is_static);
+                ts_dst.push_str("set ");
+                ts_dst.push_str(name);
+                ts_dst.push_str("(value: ");
+                ts_dst.push_str(&setter.ty);
+                if setter.is_optional {
+                    ts_dst.push_str(" | undefined");
+                }
+                ts_dst.push_str(");\n");
+            };
+
+            match (getter, setter) {
+                (None, None) => unreachable!("field without getter or setter"),
+                (Some(getter), None) => {
+                    // readonly property
+                    write_docs(ts_dst, &getter.docs);
+                    ts_dst.push_str("  ");
+                    ts_dst.push_str(is_static);
+                    ts_dst.push_str("readonly ");
+                    ts_dst.push_str(name);
+                    ts_dst.push_str(if getter.is_optional { "?: " } else { ": " });
+                    ts_dst.push_str(&getter.ty);
+                    ts_dst.push_str(";\n");
+                }
+                (None, Some(setter)) => {
+                    // write-only property
+
+                    // Note: TypeScript does not handle the types of write-only
+                    // properties correctly and will allow reads from write-only
+                    // properties. This isn't a wasm-bindgen issue, but a
+                    // TypeScript issue.
+                    write_setter(ts_dst, setter);
+                }
+                (Some(getter), Some(setter)) => {
+                    // read-write property
+
+                    // Here's the tricky part. The getter and setter might have
+                    // different types. Obviously, we can only declare a
+                    // property as `foo: T` if both the getter and setter have
+                    // the same type `T`. If they don't, we have to declare the
+                    // getter and setter separately.
+
+                    // We current generate types for optional arguments and
+                    // return values differently. This is why for the field
+                    // `foo: Option<T>`, the setter will have type `T` with
+                    // `is_optional` set, while the getter has type
+                    // `T | undefined`. Because of this difference, we have to
+                    // "normalize" the type of the setter.
+                    let same_type = if setter.is_optional {
+                        getter.ty == setter.ty.clone() + " | undefined"
+                    } else {
+                        getter.ty == setter.ty
+                    };
+
+                    if same_type {
+                        // simple property, e.g. foo: T
+
+                        // Prefer the docs of the getter over the setter's
+                        let docs = if !getter.docs.is_empty() {
+                            &getter.docs
+                        } else {
+                            &setter.docs
+                        };
+                        write_docs(ts_dst, docs);
+                        ts_dst.push_str("  ");
+                        ts_dst.push_str(is_static);
+                        ts_dst.push_str(name);
+                        ts_dst.push_str(if setter.is_optional { "?: " } else { ": " });
+                        ts_dst.push_str(&setter.ty);
+                        ts_dst.push_str(";\n");
+                    } else {
+                        // separate getter and setter
+                        write_getter(ts_dst, getter);
+                        write_setter(ts_dst, setter);
+                    }
+                }
+            };
+        }
     }
 
     fn expose_drop_ref(&mut self) {
@@ -2442,6 +2596,30 @@ __wbg_set_wasm(wasm);"
         Ok(name)
     }
 
+    fn import_static(&mut self, import: &JsImport, optional: bool) -> Result<String, Error> {
+        let mut name = self.import_name(&JsImport {
+            name: import.name.clone(),
+            fields: Vec::new(),
+        })?;
+
+        // After we've got an actual name handle field projections
+        if optional {
+            name = format!("typeof {name} === 'undefined' ? null : {name}");
+
+            for field in import.fields.iter() {
+                name.push_str("?.");
+                name.push_str(field);
+            }
+        } else {
+            for field in import.fields.iter() {
+                name.push('.');
+                name.push_str(field);
+            }
+        }
+
+        Ok(name)
+    }
+
     /// If a start function is present, it removes it from the `start` section
     /// of the Wasm module and then moves it to an exported function, named
     /// `__wbindgen_start`.
@@ -2594,7 +2772,7 @@ __wbg_set_wasm(wasm);"
                 | AuxImport::Value(AuxValue::Setter(js, ..))
                 | AuxImport::ValueWithThis(js, ..)
                 | AuxImport::Instanceof(js)
-                | AuxImport::Static(js)
+                | AuxImport::Static { js, .. }
                 | AuxImport::StructuralClassGetter(js, ..)
                 | AuxImport::StructuralClassSetter(js, ..)
                 | AuxImport::IndexingGetterOfClass(js)
@@ -2655,6 +2833,16 @@ __wbg_set_wasm(wasm);"
             ContextAdapterKind::Adapter => {}
         }
 
+        // an internal debug name to help with error messages
+        let debug_name = match kind {
+            ContextAdapterKind::Import(i) => {
+                let i = builder.cx.module.imports.get(i);
+                format!("import of `{}::{}`", i.module, i.name)
+            }
+            ContextAdapterKind::Export(e) => format!("`{}`", e.debug_name),
+            ContextAdapterKind::Adapter => format!("adapter {}", id.0),
+        };
+
         // Process the `binding` and generate a bunch of JS/TypeScript/etc.
         let binding::JsFunction {
             ts_sig,
@@ -2674,22 +2862,9 @@ __wbg_set_wasm(wasm);"
                 asyncness,
                 variadic,
                 generate_jsdoc,
+                &debug_name,
             )
-            .with_context(|| match kind {
-                ContextAdapterKind::Export(e) => {
-                    format!("failed to generate bindings for `{}`", e.debug_name)
-                }
-                ContextAdapterKind::Import(i) => {
-                    let i = builder.cx.module.imports.get(i);
-                    format!(
-                        "failed to generate bindings for import of `{}::{}`",
-                        i.module, i.name
-                    )
-                }
-                ContextAdapterKind::Adapter => {
-                    "failed to generates bindings for adapter".to_string()
-                }
-            })?;
+            .with_context(|| "failed to generates bindings for ".to_string() + &debug_name)?;
 
         self.typescript_refs.extend(ts_refs);
 
@@ -2715,7 +2890,11 @@ __wbg_set_wasm(wasm);"
                             self.typescript.push_str(";\n");
                         }
 
-                        self.export(name, &format!("function{}", code), Some(&js_docs))?;
+                        self.export(
+                            name,
+                            ExportJs::Function(&format!("function{}", code)),
+                            Some(&js_docs),
+                        )?;
                         self.globals.push('\n');
                     }
                     AuxExportKind::Constructor(class) => {
@@ -2746,16 +2925,18 @@ __wbg_set_wasm(wasm);"
                                 prefix += "get ";
                                 // For getters and setters, we generate a separate TypeScript definition.
                                 if export.generate_typescript {
-                                    exported.push_accessor_ts(
-                                        &ts_docs,
-                                        name,
+                                    let location = FieldLocation {
+                                        name: name.clone(),
+                                        is_static: receiver.is_static(),
+                                    };
+                                    let accessor = FieldAccessor {
                                         // This is only set to `None` when generating a constructor.
-                                        ts_ret_ty
-                                            .as_deref()
-                                            .expect("missing return type for getter"),
-                                        false,
-                                        receiver.is_static(),
-                                    );
+                                        ty: ts_ret_ty.expect("missing return type for getter"),
+                                        docs: ts_docs.clone(),
+                                        is_optional: false,
+                                    };
+
+                                    exported.push_accessor_ts(location, accessor, false);
                                 }
                                 // Add the getter to the list of readable fields (used to generate `toJSON`)
                                 exported.readable_properties.push(name.clone());
@@ -2765,15 +2946,17 @@ __wbg_set_wasm(wasm);"
                             AuxExportedMethodKind::Setter => {
                                 prefix += "set ";
                                 if export.generate_typescript {
-                                    let is_optional = exported.push_accessor_ts(
-                                        &ts_docs,
-                                        name,
-                                        &ts_arg_tys[0],
-                                        true,
-                                        receiver.is_static(),
-                                    );
-                                    // Set whether the field is optional.
-                                    *is_optional = might_be_optional_field;
+                                    let location = FieldLocation {
+                                        name: name.clone(),
+                                        is_static: receiver.is_static(),
+                                    };
+                                    let accessor = FieldAccessor {
+                                        ty: ts_arg_tys[0].clone(),
+                                        docs: ts_docs.clone(),
+                                        is_optional: might_be_optional_field,
+                                    };
+
+                                    exported.push_accessor_ts(location, accessor, true);
                                 }
                                 None
                             }
@@ -2942,6 +3125,21 @@ __wbg_set_wasm(wasm);"
             }
         }
 
+        if let JsImportName::Global { .. } | JsImportName::VendorPrefixed { .. } = js.name {
+            // We generally cannot import globals directly, because users can
+            // change most globals at runtime.
+            //
+            // An obvious example of this when the object literally changes
+            // (e.g. binding `foo.bar`), but polyfills can also change the
+            // object or fundtion.
+            //
+            // Late binding is another issue. The function might not even be
+            // defined when the Wasm module is instantiated. In such cases,
+            // there is an observable difference between a direct import and a
+            // JS shim calling the function.
+            return Ok(false);
+        }
+
         self.expose_not_defined();
         let name = self.import_name(js)?;
         let js = format!(
@@ -2979,16 +3177,14 @@ __wbg_set_wasm(wasm);"
 
                 // Conversions to Wasm integers are always supported since
                 // they're coerced into i32/f32/f64 appropriately.
-                IntToWasm { .. } => {}
+                Int32ToWasm => {}
+                Int64ToWasm => {}
 
-                // Converts from Wasm to JS, however, only supports most
-                // integers. Converting into a u32 isn't supported because we
+                // Converting into a u32 isn't supported because we
                 // need to generate glue to change the sign.
-                WasmToInt {
-                    output: AdapterType::U32,
-                    ..
-                } => return false,
-                WasmToInt { .. } => {}
+                WasmToInt32 { unsigned_32: false } => {}
+                // A Wasm `i64` is already a signed JS BigInt, so no glue needed.
+                WasmToInt64 { unsigned: false } => {}
 
                 // JS spec automatically coerces boolean values to i32 of 0 or 1
                 // depending on true/false
@@ -3115,11 +3311,11 @@ __wbg_set_wasm(wasm);"
                 Ok("result".to_owned())
             }
 
-            AuxImport::Static(js) => {
+            AuxImport::Static { js, optional } => {
                 assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 0);
-                self.import_name(js)
+                self.import_static(js, *optional)
             }
 
             AuxImport::String(string) => {
@@ -3139,7 +3335,6 @@ __wbg_set_wasm(wasm);"
                 dtor,
                 mutable,
                 adapter,
-                nargs: _,
             } => {
                 assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
@@ -3776,11 +3971,11 @@ __wbg_set_wasm(wasm);"
     }
 
     fn generate_enum(&mut self, enum_: &AuxEnum) -> Result<(), Error> {
-        let docs = format_doc_comments(&enum_.comments, None);
         let mut variants = String::new();
 
         if enum_.generate_typescript {
-            self.typescript.push_str(&docs);
+            self.typescript
+                .push_str(&format_doc_comments(&enum_.comments, None));
             self.typescript
                 .push_str(&format!("export enum {} {{", enum_.name));
         }
@@ -3790,12 +3985,9 @@ __wbg_set_wasm(wasm);"
             } else {
                 format_doc_comments(comments, None)
             };
-            if !variant_docs.is_empty() {
-                variants.push('\n');
-                variants.push_str(&variant_docs);
-            }
-            variants.push_str(&format!("{}:{},", name, value));
-            variants.push_str(&format!("\"{}\":\"{}\",", value, name));
+            variants.push_str(&variant_docs);
+            variants.push_str(&format!("{}: {}, ", name, value));
+            variants.push_str(&format!("\"{}\": \"{}\",\n", value, name));
             if enum_.generate_typescript {
                 self.typescript.push('\n');
                 if !variant_docs.is_empty() {
@@ -3811,9 +4003,21 @@ __wbg_set_wasm(wasm);"
         if enum_.generate_typescript {
             self.typescript.push_str("\n}\n");
         }
+
+        // add an `@enum {1 | 2 | 3}` to ensure that enums type-check even without .d.ts
+        let mut at_enum = "@enum {".to_string();
+        for (i, (_, value, _)) in enum_.variants.iter().enumerate() {
+            if i != 0 {
+                at_enum.push_str(" | ");
+            }
+            at_enum.push_str(&value.to_string());
+        }
+        at_enum.push('}');
+        let docs = format_doc_comments(&enum_.comments, Some(at_enum));
+
         self.export(
             &enum_.name,
-            &format!("Object.freeze({{ {} }})", variants),
+            ExportJs::Expression(&format!("Object.freeze({{\n{}}})", variants)),
             Some(&docs),
         )?;
 
@@ -3833,18 +4037,17 @@ __wbg_set_wasm(wasm);"
                 .contains(&TsReference::StringEnum(string_enum.name.clone()))
         {
             let docs = format_doc_comments(&string_enum.comments, None);
+            let type_expr = if variants.is_empty() {
+                "never".to_string()
+            } else {
+                variants.join(" | ")
+            };
 
             self.typescript.push_str(&docs);
             self.typescript.push_str("type ");
             self.typescript.push_str(&string_enum.name);
             self.typescript.push_str(" = ");
-
-            if variants.is_empty() {
-                self.typescript.push_str("never");
-            } else {
-                self.typescript.push_str(&variants.join(" | "));
-            }
-
+            self.typescript.push_str(&type_expr);
             self.typescript.push_str(";\n");
         }
 
@@ -4297,7 +4500,12 @@ fn check_duplicated_getter_and_setter_names(
 
 fn format_doc_comments(comments: &str, js_doc_comments: Option<String>) -> String {
     let body: String = comments.lines().fold(String::new(), |mut output, c| {
-        let _ = writeln!(output, " *{}", c);
+        output.push_str(" *");
+        if !c.is_empty() && !c.starts_with(' ') {
+            output.push(' ');
+        }
+        output.push_str(c);
+        output.push('\n');
         output
     });
     let doc = if let Some(docs) = js_doc_comments {
@@ -4414,26 +4622,29 @@ impl ExportedClass {
         }
     }
 
-    #[allow(clippy::assigning_clones)] // Clippy's suggested fix doesn't work at MSRV.
     fn push_accessor_ts(
         &mut self,
-        docs: &str,
-        field: &str,
-        ty: &str,
+        location: FieldLocation,
+        accessor: FieldAccessor,
         is_setter: bool,
-        is_static: bool,
-    ) -> &mut bool {
-        let (ty_dst, accessor_docs, has_setter, is_optional, is_static_dst) =
-            self.typescript_fields.entry(field.to_string()).or_default();
+    ) {
+        let size = self.typescript_fields.len();
+        let field = self
+            .typescript_fields
+            .entry(location)
+            .or_insert_with_key(|location| FieldInfo {
+                name: location.name.to_string(),
+                is_static: location.is_static,
+                order: size,
+                getter: None,
+                setter: None,
+            });
 
-        *ty_dst = ty.to_string();
-        // Deterministic output: always use the getter's docs if available
-        if !docs.is_empty() && (accessor_docs.is_empty() || !is_setter) {
-            *accessor_docs = docs.to_owned();
+        if is_setter {
+            field.setter = Some(accessor);
+        } else {
+            field.getter = Some(accessor);
         }
-        *has_setter |= is_setter;
-        *is_static_dst = is_static;
-        is_optional
     }
 }
 

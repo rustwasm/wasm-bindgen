@@ -13,6 +13,8 @@ exports.optional_i16_js_identity = a => a;
 exports.optional_u16_js_identity = a => a;
 exports.optional_i64_js_identity = a => a;
 exports.optional_u64_js_identity = a => a;
+exports.optional_i128_js_identity = a => a;
+exports.optional_u128_js_identity = a => a;
 exports.optional_bool_js_identity = a => a;
 exports.optional_char_js_identity = a => a;
 
@@ -23,12 +25,16 @@ exports.js_works = () => {
     assert.strictEqual(wasm.optional_i32_identity(wasm.optional_i32_neg_one()), -1);
     assert.strictEqual(wasm.optional_i32_identity(wasm.optional_i32_min()), -2147483648);
     assert.strictEqual(wasm.optional_i32_identity(wasm.optional_i32_max()), 2147483647);
+    assert.strictEqual(wasm.optional_i32_identity(2 ** 32), 0); // overflows 32 bits
+    assert.strictEqual(wasm.optional_i32_identity(2 ** 32 + 1), 1); // overflows and wraps back around
 
     assert.strictEqual(wasm.optional_u32_identity(wasm.optional_u32_none()), undefined);
     assert.strictEqual(wasm.optional_u32_identity(wasm.optional_u32_zero()), 0);
     assert.strictEqual(wasm.optional_u32_identity(wasm.optional_u32_one()), 1);
     assert.strictEqual(wasm.optional_u32_identity(wasm.optional_u32_min()), 0);
     assert.strictEqual(wasm.optional_u32_identity(wasm.optional_u32_max()), 4294967295);
+    assert.strictEqual(wasm.optional_u32_identity(2 ** 32), 0); // overflows 32 bits
+    assert.strictEqual(wasm.optional_u32_identity(2 ** 32 + 1), 1); // overflows and wraps back around
 
     assert.strictEqual(wasm.optional_isize_identity(wasm.optional_isize_none()), undefined);
     assert.strictEqual(wasm.optional_isize_identity(wasm.optional_isize_zero()), 0);
@@ -36,17 +42,23 @@ exports.js_works = () => {
     assert.strictEqual(wasm.optional_isize_identity(wasm.optional_isize_neg_one()), -1);
     assert.strictEqual(wasm.optional_isize_identity(wasm.optional_isize_min()), -2147483648);
     assert.strictEqual(wasm.optional_isize_identity(wasm.optional_isize_max()), 2147483647);
+    assert.strictEqual(wasm.optional_isize_identity(2 ** 32), 0); // isize is 32 bit, so it behaves the same as i32
+    assert.strictEqual(wasm.optional_isize_identity(2 ** 32 + 1), 1);
 
     assert.strictEqual(wasm.optional_usize_identity(wasm.optional_usize_none()), undefined);
     assert.strictEqual(wasm.optional_usize_identity(wasm.optional_usize_zero()), 0);
     assert.strictEqual(wasm.optional_usize_identity(wasm.optional_usize_one()), 1);
     assert.strictEqual(wasm.optional_usize_identity(wasm.optional_usize_min()), 0);
     assert.strictEqual(wasm.optional_usize_identity(wasm.optional_usize_max()), 4294967295);
+    assert.strictEqual(wasm.optional_usize_identity(2 ** 32), 0); // usize is 32 bit, so it behaves the same as i32
+    assert.strictEqual(wasm.optional_usize_identity(2 ** 32 + 1), 1);
 
     assert.strictEqual(wasm.optional_f32_identity(wasm.optional_f32_none()), undefined);
     assert.strictEqual(wasm.optional_f32_identity(wasm.optional_f32_zero()), 0);
     assert.strictEqual(wasm.optional_f32_identity(wasm.optional_f32_one()), 1);
     assert.strictEqual(wasm.optional_f32_identity(wasm.optional_f32_neg_one()), -1);
+    assert.strictEqual(wasm.optional_f32_identity(2 ** 32), 2 ** 32); // 2^32 is exactly representable
+    assert.strictEqual(wasm.optional_f32_identity(2 ** 32 + 1), 2 ** 32); // 2^32 + 1 is not and gets rounded
 
     assert.strictEqual(wasm.optional_f64_identity(wasm.optional_f64_none()), undefined);
     assert.strictEqual(wasm.optional_f64_identity(wasm.optional_f64_zero()), 0);
@@ -102,6 +114,22 @@ exports.js_works = () => {
     assert.strictEqual(wasm.optional_u64_identity(-1.99), BigInt('18446744073709551615')); // because modulo 2^64
     assert.throws(() => wasm.optional_u64_identity(NaN));
     assert.throws(() => wasm.optional_u64_identity(Infinity));
+
+    assert.strictEqual(wasm.optional_i128_identity(wasm.optional_i128_none()), undefined);
+    assert.strictEqual(wasm.optional_i128_identity(wasm.optional_i128_zero()), BigInt('0'));
+    assert.strictEqual(wasm.optional_i128_identity(wasm.optional_i128_one()), BigInt('1'));
+    assert.strictEqual(wasm.optional_i128_identity(wasm.optional_i128_neg_one()), BigInt('-1'));
+    assert.strictEqual(wasm.optional_i128_identity(wasm.optional_i128_min()), -0x8000_0000_0000_0000_0000_0000_0000_0000n);
+    assert.strictEqual(wasm.optional_i128_identity(wasm.optional_i128_max()), 0x7FFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFFn);
+    assert.strictEqual(wasm.optional_i128_identity(0x3_1415_9265_3598_7932_3846n), 0x3_1415_9265_3598_7932_3846n);
+    assert.strictEqual(wasm.optional_i128_identity(-0x3_1415_9265_3598_7932_3846n), -0x3_1415_9265_3598_7932_3846n);
+
+    assert.strictEqual(wasm.optional_u128_identity(wasm.optional_u128_none()), undefined);
+    assert.strictEqual(wasm.optional_u128_identity(wasm.optional_u128_zero()), BigInt('0'));
+    assert.strictEqual(wasm.optional_u128_identity(wasm.optional_u128_one()), BigInt('1'));
+    assert.strictEqual(wasm.optional_u128_identity(wasm.optional_u128_min()), BigInt('0'));
+    assert.strictEqual(wasm.optional_u128_identity(wasm.optional_u128_max()), 0xFFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFFn);
+    assert.strictEqual(wasm.optional_u128_identity(0x3_1415_9265_3598_7932_3846n), 0x3_1415_9265_3598_7932_3846n);
 
     assert.strictEqual(wasm.optional_bool_identity(wasm.optional_bool_none()), undefined);
     assert.strictEqual(wasm.optional_bool_identity(wasm.optional_bool_false()), false);

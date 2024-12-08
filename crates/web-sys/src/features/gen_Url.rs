@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/href)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Url`*"]
-    pub fn href(this: &Url) -> String;
+    pub fn href(this: &Url) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "URL" , js_name = href)]
     #[doc = "Setter for the `href` field of this object."]
     #[doc = ""]
@@ -32,14 +32,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/origin)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Url`*"]
-    pub fn origin(this: &Url) -> String;
+    pub fn origin(this: &Url) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "URL" , js_name = protocol)]
     #[doc = "Getter for the `protocol` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/protocol)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Url`*"]
-    pub fn protocol(this: &Url) -> String;
+    pub fn protocol(this: &Url) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "URL" , js_name = protocol)]
     #[doc = "Setter for the `protocol` field of this object."]
     #[doc = ""]
@@ -53,7 +53,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/username)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Url`*"]
-    pub fn username(this: &Url) -> String;
+    pub fn username(this: &Url) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "URL" , js_name = username)]
     #[doc = "Setter for the `username` field of this object."]
     #[doc = ""]
@@ -67,7 +67,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/password)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Url`*"]
-    pub fn password(this: &Url) -> String;
+    pub fn password(this: &Url) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "URL" , js_name = password)]
     #[doc = "Setter for the `password` field of this object."]
     #[doc = ""]
@@ -81,7 +81,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/host)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Url`*"]
-    pub fn host(this: &Url) -> String;
+    pub fn host(this: &Url) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "URL" , js_name = host)]
     #[doc = "Setter for the `host` field of this object."]
     #[doc = ""]
@@ -95,7 +95,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/hostname)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Url`*"]
-    pub fn hostname(this: &Url) -> String;
+    pub fn hostname(this: &Url) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "URL" , js_name = hostname)]
     #[doc = "Setter for the `hostname` field of this object."]
     #[doc = ""]
@@ -109,7 +109,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/port)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Url`*"]
-    pub fn port(this: &Url) -> String;
+    pub fn port(this: &Url) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "URL" , js_name = port)]
     #[doc = "Setter for the `port` field of this object."]
     #[doc = ""]
@@ -123,7 +123,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/pathname)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Url`*"]
-    pub fn pathname(this: &Url) -> String;
+    pub fn pathname(this: &Url) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "URL" , js_name = pathname)]
     #[doc = "Setter for the `pathname` field of this object."]
     #[doc = ""]
@@ -137,7 +137,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/search)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Url`*"]
-    pub fn search(this: &Url) -> String;
+    pub fn search(this: &Url) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "URL" , js_name = search)]
     #[doc = "Setter for the `search` field of this object."]
     #[doc = ""]
@@ -159,7 +159,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/hash)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Url`*"]
-    pub fn hash(this: &Url) -> String;
+    pub fn hash(this: &Url) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "URL" , js_name = hash)]
     #[doc = "Setter for the `hash` field of this object."]
     #[doc = ""]
@@ -188,7 +188,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL_static)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Blob`, `Url`*"]
-    pub fn create_object_url_with_blob(blob: &Blob) -> Result<String, JsValue>;
+    pub fn create_object_url_with_blob(blob: &Blob) -> Result<::alloc::string::String, JsValue>;
     #[cfg(feature = "MediaSource")]
     # [wasm_bindgen (catch , static_method_of = Url , js_class = "URL" , js_name = createObjectURL)]
     #[doc = "The `createObjectURL()` method."]
@@ -196,7 +196,9 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL_static)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MediaSource`, `Url`*"]
-    pub fn create_object_url_with_source(source: &MediaSource) -> Result<String, JsValue>;
+    pub fn create_object_url_with_source(
+        source: &MediaSource,
+    ) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (catch , static_method_of = Url , js_class = "URL" , js_name = revokeObjectURL)]
     #[doc = "The `revokeObjectURL()` method."]
     #[doc = ""]
@@ -210,5 +212,5 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/URL/toJSON)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Url`*"]
-    pub fn to_json(this: &Url) -> String;
+    pub fn to_json(this: &Url) -> ::alloc::string::String;
 }

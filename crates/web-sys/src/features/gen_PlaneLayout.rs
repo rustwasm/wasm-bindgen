@@ -62,8 +62,8 @@ impl PlaneLayout {
     pub fn new(offset: u32, stride: u32) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.offset(offset);
-        ret.stride(stride);
+        ret.set_offset(offset);
+        ret.set_stride(stride);
         ret
     }
     #[cfg(web_sys_unstable_apis)]

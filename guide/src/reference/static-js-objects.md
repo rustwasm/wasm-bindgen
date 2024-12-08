@@ -2,9 +2,15 @@
 
 JavaScript modules will often export arbitrary static objects for use with
 their provided interfaces. These objects can be accessed from Rust by declaring
-a named `static` in the `extern` block. `wasm-bindgen` will bind a `JsStatic`
-for these objects, which can be cloned into a `JsValue`. For example, given the
-following JavaScript:
+a named `static` in the `extern` block with an
+`#[wasm_bindgen(thread_local_v2)]` attribute. `wasm-bindgen` will bind a
+`JsThreadLocal` for these objects, which can be cloned into a `JsValue`.
+
+These values are cached in a thread-local and are meant to bind static values
+or objects only. For getters which can change their return value or throw see
+[how to import getters](attributes/on-js-imports/getter-and-setter.md).
+
+For example, given the following JavaScript:
 
 ```js
 let COLORS = {
@@ -19,8 +25,8 @@ let COLORS = {
 ```rust
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(thread_local)]
-    static COLORS;
+    #[wasm_bindgen(thread_local_v2)]
+    static COLORS: JsValue;
 }
 
 fn get_colors() -> JsValue {
@@ -50,11 +56,11 @@ The binding for this module:
 #[wasm_bindgen(module = "/js/some-rollup.js")]
 extern "C" {
     // Likewise with the namespace--this refers to the object directly.
-    #[wasm_bindgen(thread_local, js_name = namespace)]
+    #[wasm_bindgen(thread_local_v2, js_name = namespace)]
     static NAMESPACE: JsValue;
 
     // Refer to SomeType's class
-    #[wasm_bindgen(thread_local, js_name = SomeType)]
+    #[wasm_bindgen(thread_local_v2, js_name = SomeType)]
     static SOME_TYPE: JsValue;
 
     // Other bindings for SomeType
@@ -64,6 +70,23 @@ extern "C" {
 }
 ```
 
+## Optional statics
+
+If you expect the JavaScript value you're trying to access to not always be
+available you can use `Option<T>` to handle this:
+
+```rust
+extern "C" {
+    type Crypto;
+    #[wasm_bindgen(thread_local_v2, js_name = crypto)]
+    static CRYPTO: Option<Crypto>;
+}
+```
+
+If `crypto` is not declared or nullish (`null` or `undefined`) in JavaScript,
+it will simply return `None` in Rust. This will also account for namespaces: it
+will return `Some(T)` only if all parts are declared and not nullish.
+
 ## Static strings
 
 Strings can be imported to avoid going through `TextDecoder/Encoder` when requiring just a `JsString`. This can be useful when dealing with environments where `TextDecoder/Encoder` is not available, like in audio worklets.
@@ -71,7 +94,7 @@ Strings can be imported to avoid going through `TextDecoder/Encoder` when requir
 ```rust
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(thread_local, static_string)]
+    #[wasm_bindgen(thread_local_v2, static_string)]
     static STRING: JsString = "a string literal";
 }
 ```

@@ -40,7 +40,6 @@ pub enum AdapterKind {
         instructions: Vec<InstructionData>,
     },
     Import {
-        module: String,
         name: String,
         kind: AdapterJsImportKind,
     },
@@ -75,10 +74,12 @@ pub enum AdapterType {
     S16,
     S32,
     S64,
+    S128,
     U8,
     U16,
     U32,
     U64,
+    U128,
     F32,
     F64,
     String,
@@ -134,15 +135,31 @@ pub enum Instruction {
         size: u32,
     },
 
-    /// Pops a typed integer (`u8`, `s16`, etc.) and pushes a plain Wasm `i32` or `i64` equivalent.
-    IntToWasm {
-        input: AdapterType,
-        output: walrus::ValType,
+    /// Pops a 32/16/8-bit integer (`u8`, `s16`, etc.) and pushes a Wasm `i32`.
+    Int32ToWasm,
+    /// Pops a Wasm `i32` and pushes a 32-bit integer.
+    WasmToInt32 {
+        /// Whether the integer represents an unsigned 32-bit value.
+        unsigned_32: bool,
     },
-    /// Pops a Wasm `i32` or `i64` and pushes a typed integer (`u8`, `s16`, etc.) equivalent.
-    WasmToInt {
-        input: walrus::ValType,
-        output: AdapterType,
+
+    /// Pops a 64-bit integer and pushes a Wasm `i64`.
+    Int64ToWasm,
+    /// Pops a Wasm `i64` and pushes a 64-bit integer.
+    WasmToInt64 {
+        unsigned: bool,
+    },
+
+    /// Pops a 128-bit integer and pushes 2 Wasm 64-bit ints.
+    Int128ToWasm,
+    /// Pops 2 Wasm 64-bit ints and pushes a 128-bit integer.
+    WasmToInt128 {
+        signed: bool,
+    },
+
+    OptionInt128ToWasm,
+    OptionWasmToInt128 {
+        signed: bool,
     },
 
     /// Pops a Wasm `i32` and pushes the enum variant as a string
@@ -152,7 +169,6 @@ pub enum Instruction {
 
     OptionWasmToStringEnum {
         name: String,
-        hole: u32,
     },
 
     /// pops a string and pushes the enum variant as an `i32`
@@ -214,6 +230,14 @@ pub enum Instruction {
     I32FromOptionEnum {
         hole: u32,
     },
+    /// Pops an `externref` from the stack, pushes either a sentinel value if it's
+    /// "none" or the integer value of it if it's "some"
+    F64FromOptionSentinelInt {
+        signed: bool,
+    },
+    /// Pops an `externref` from the stack, pushes either a sentinel value if it's
+    /// "none" or the f32 value of it if it's "some"
+    F64FromOptionSentinelF32,
     /// Pops any externref from the stack and then pushes two values. First is a
     /// 0/1 if it's none/some and second is `ty` value if it was there or 0 if
     /// it wasn't there.
@@ -288,7 +312,6 @@ pub enum Instruction {
     /// pops ptr/length i32, loads string from cache
     CachedStringLoad {
         owned: bool,
-        optional: bool,
         mem: walrus::MemoryId,
         free: walrus::FunctionId,
         /// If we're in reference-types mode, the externref table ID to get the cached string from.
@@ -324,6 +347,8 @@ pub enum Instruction {
         kind: VectorKind,
         mem: walrus::MemoryId,
     },
+    /// pops f64, pushes it viewed as an optional value with a known sentinel
+    OptionF64Sentinel,
     /// pops i32, pushes it viewed as an optional value with a known sentinel
     OptionU32Sentinel,
     /// pops an i32, then `ty`, then pushes externref

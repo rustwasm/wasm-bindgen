@@ -102,7 +102,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/getScopeForUrl)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ServiceWorkerContainer`*"]
-    pub fn get_scope_for_url(this: &ServiceWorkerContainer, url: &str) -> Result<String, JsValue>;
+    pub fn get_scope_for_url(
+        this: &ServiceWorkerContainer,
+        url: &str,
+    ) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (method , structural , js_class = "ServiceWorkerContainer" , js_name = register)]
     #[doc = "The `register()` method."]
     #[doc = ""]

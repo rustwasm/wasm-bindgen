@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceServer`*"]
     #[wasm_bindgen(method, getter = "credential")]
-    pub fn get_credential(this: &RtcIceServer) -> Option<String>;
+    pub fn get_credential(this: &RtcIceServer) -> Option<::alloc::string::String>;
     #[doc = "Change the `credential` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceServer`*"]
@@ -36,7 +36,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceServer`*"]
     #[wasm_bindgen(method, getter = "url")]
-    pub fn get_url(this: &RtcIceServer) -> Option<String>;
+    pub fn get_url(this: &RtcIceServer) -> Option<::alloc::string::String>;
     #[doc = "Change the `url` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceServer`*"]
@@ -56,7 +56,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceServer`*"]
     #[wasm_bindgen(method, getter = "username")]
-    pub fn get_username(this: &RtcIceServer) -> Option<String>;
+    pub fn get_username(this: &RtcIceServer) -> Option<::alloc::string::String>;
     #[doc = "Change the `username` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RtcIceServer`*"]

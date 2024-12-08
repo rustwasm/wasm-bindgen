@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Event/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Event`*"]
-    pub fn type_(this: &Event) -> String;
+    pub fn type_(this: &Event) -> ::alloc::string::String;
     #[cfg(feature = "EventTarget")]
     # [wasm_bindgen (structural , method , getter , js_class = "Event" , js_name = target)]
     #[doc = "Getter for the `target` field of this object."]

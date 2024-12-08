@@ -29,7 +29,7 @@ jobs:
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup component add rustfmt
     - run: cargo fmt --all -- --check
-  
+
   # Check TOML style by using Taplo.
   taplo:
     name: Taplo
@@ -62,6 +62,7 @@ jobs:
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
     - run: cargo clippy --no-deps --all-features -p wasm-bindgen-backend -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen -- -D warnings
     - run: cargo clippy --no-deps --all-features -p wasm-bindgen-cli -- -D warnings
     - run: cargo clippy --no-deps --all-features -p wasm-bindgen-cli-support -- -D warnings
     - run: cargo clippy --no-deps --all-features -p example-tests -- -D warnings
@@ -89,8 +90,39 @@ jobs:
     - uses: actions/checkout@v4
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
-    - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p js-sys -- -D warnings
-    - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p web-sys -- -D warnings
+    - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p js-sys --all-targets -- -D warnings
+    - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p web-sys --all-targets -- -D warnings
+
+  # Run `cargo clippy` over crates that support `no_std`
+  clippy_no_std:
+    name: Clippy `no_std`
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - run: rustup update --no-self-update stable && rustup default stable
+    - run: rustup target add wasm32-unknown-unknown
+    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p wasm-bindgen -- -D warnings
+    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p js-sys -- -D warnings
+    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p web-sys -- -D warnings
+    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p wasm-bindgen-futures -- -D warnings
+    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p wasm-bindgen-test -- -D warnings
+
+  # Run `cargo clippy` over crates that support `no_std` with `target_feature = "atomics"` support.
+  clippy_no_std_atomics:
+    name: Clippy `no_std` with `atomics`
+    runs-on: ubuntu-latest
+    env:
+      RUSTFLAGS: -Ctarget-feature=+atomics,+bulk-memory
+    steps:
+    - uses: actions/checkout@v4
+    - run: rustup default nightly-2024-07-06
+    - run: rustup target add wasm32-unknown-unknown
+    - run: rustup component add clippy rust-src
+    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p wasm-bindgen -Zbuild-std=core,alloc -- -D warnings
+    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p js-sys -Zbuild-std=core,alloc -- -D warnings
+    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p web-sys -Zbuild-std=core,alloc -- -D warnings
+    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p wasm-bindgen-futures -Zbuild-std=core,alloc -- -D warnings
+    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -p wasm-bindgen-test -Zbuild-std=core,alloc -- -D warnings
 
   # Run `cargo clippy` over the project
   clippy_project:
@@ -100,7 +132,6 @@ jobs:
     - uses: actions/checkout@v4
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
-    - run: cargo clippy --no-deps --no-default-features --target wasm32-unknown-unknown -- -D warnings
     - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -- -D warnings
     - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown --tests -- -D warnings
     - run: for i in examples/*/; do cd "$i"; cargo +stable clippy --no-deps --all-features --target wasm32-unknown-unknown -- -D warnings || exit 1; cd ../..; done
@@ -175,15 +206,16 @@ jobs:
   test_threads:
     name: "Run wasm-bindgen crate tests with multithreading"
     runs-on: ubuntu-latest
+    env:
+      WASM_BINDGEN_SPLIT_LINKED_MODULES: 1
     steps:
     - uses: actions/checkout@v4
     - run: rustup default nightly-2024-07-06
     - run: rustup target add wasm32-unknown-unknown
     - run: rustup component add rust-src
-    # Note: we only run the browser tests here, because wasm-bindgen doesn't support threading in Node yet.
     - run: |
         RUSTFLAGS='-C target-feature=+atomics,+bulk-memory,+mutable-globals' \
-          cargo test --target wasm32-unknown-unknown --test headless -Z build-std=std,panic_abort
+          cargo test --target wasm32-unknown-unknown -Z build-std=std,panic_abort
 
   # I don't know why this is failing so comment this out for now, but ideally
   # this would be figured out at some point and solved.
@@ -207,6 +239,22 @@ jobs:
   #     env:
   #       WBINDGEN_I_PROMISE_JS_SYNTAX_WORKS_IN_NODE: 1
   #   - run: cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features "Node Window Document"
+
+  # This checks that the output of the CLI is actually valid JavaScript and TypeScript
+  test_cli_reference_typescript:
+    name: Run CLI reference TypeScript check
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 'lts/*'
+    - run: npm i -g typescript
+    - run: npm i --save @types/node @types/deno
+    - name: Check TypeScript output
+      run: tsc --noEmit --skipLibCheck --lib esnext,dom $(echo crates/cli/tests/reference/*.d.ts)
+    - name: Check JavaScript output
+      run: tsc --noEmit --skipLibCheck --lib esnext,dom --module esnext --allowJs $(echo crates/cli/tests/reference/*.js)
 
   test_native:
     name: Run native tests
@@ -314,10 +362,6 @@ jobs:
     - run: rustup update --no-self-update stable && rustup default stable
     - run: rustup target add wasm32-unknown-unknown
     - run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh -s -- -f
-    - run: |
-        curl -L https://github.com/WebAssembly/binaryen/releases/download/version_112/binaryen-version_112-x86_64-linux.tar.gz -sSf > binaryen-version_112-x86_64-linux.tar.gz
-        tar -xz -f binaryen-version_112-x86_64-linux.tar.gz binaryen-version_112/bin/wasm2js
-        echo "$PWD/binaryen-version_112/bin" >> $GITHUB_PATH
     - run: |
         cargo build -p wasm-bindgen-cli
         ln -snf `pwd`/target/debug/wasm-bindgen $(dirname `which cargo`)/wasm-bindgen
@@ -511,16 +555,53 @@ jobs:
         name: doc_api
         path: docs.tar.gz
 
+  msrv-resolver:
+    name: Check feature resolver version 1 compatibility
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        rust:
+          - 1.57
+          - stable
+        target:
+          - x86_64-unknown-linux-gnu
+          - wasm32-unknown-unknown
+        features:
+          - --no-default-features
+          - ""
+    defaults:
+      run:
+        working-directory: crates/msrv/resolver
+    steps:
+    - uses: actions/checkout@v4
+    - run: rustup update --no-self-update ${{ matrix.rust }} && rustup default ${{ matrix.rust }} && rustup target add ${{ matrix.target }}
+    - if: matrix.rust == '1.57'
+      run: |
+        cargo update -p bumpalo --precise 3.12.0
+        cargo update -p log --precise 0.4.18
+        cargo update -p scoped-tls --precise 1.0.0
+    - run: cargo build --target ${{ matrix.target }} ${{ matrix.features }}
+
   msrv-lib:
     name: Check MSRV for libraries
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - x86_64-unknown-linux-gnu
+          - wasm32-unknown-unknown
+        features:
+          - --no-default-features
+          - ""
     defaults:
       run:
         working-directory: crates/msrv/lib
     steps:
     - uses: actions/checkout@v4
-    - run: rustup update --no-self-update 1.57 && rustup default 1.57
-    - run: cargo build
+    - run: rustup update --no-self-update 1.57 && rustup default 1.57 && rustup target add ${{ matrix.target }}
+    - run: cargo build --target ${{ matrix.target }} ${{ matrix.features }}
 
   msrv-cli:
     name: Check MSRV for CLI tools

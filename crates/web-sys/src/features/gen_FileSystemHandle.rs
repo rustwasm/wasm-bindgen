@@ -26,7 +26,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/FileSystemHandle/name)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FileSystemHandle`*"]
-    pub fn name(this: &FileSystemHandle) -> String;
+    pub fn name(this: &FileSystemHandle) -> ::alloc::string::String;
     # [wasm_bindgen (method , structural , js_class = "FileSystemHandle" , js_name = isSameEntry)]
     #[doc = "The `isSameEntry()` method."]
     #[doc = ""]

@@ -11,6 +11,6 @@ extern "C" {
 fn title_element() {
     let element = new_title();
     assert_eq!(element.text().unwrap(), "", "Shouldn't have an text");
-    assert_eq!(element.set_text("page text").unwrap(), ());
+    let _: () = element.set_text("page text").unwrap();
     assert_eq!(element.text().unwrap(), "page text", "Should have an text");
 }

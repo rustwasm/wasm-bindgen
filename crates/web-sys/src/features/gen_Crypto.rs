@@ -56,5 +56,5 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Crypto/randomUUID)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `Crypto`*"]
-    pub fn random_uuid(this: &Crypto) -> String;
+    pub fn random_uuid(this: &Crypto) -> ::alloc::string::String;
 }

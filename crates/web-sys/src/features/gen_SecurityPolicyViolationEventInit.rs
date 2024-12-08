@@ -44,7 +44,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
     #[wasm_bindgen(method, getter = "blockedURI")]
-    pub fn get_blocked_uri(this: &SecurityPolicyViolationEventInit) -> Option<String>;
+    pub fn get_blocked_uri(
+        this: &SecurityPolicyViolationEventInit,
+    ) -> Option<::alloc::string::String>;
     #[doc = "Change the `blockedURI` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
@@ -81,7 +83,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
     #[wasm_bindgen(method, getter = "documentURI")]
-    pub fn get_document_uri(this: &SecurityPolicyViolationEventInit) -> Option<String>;
+    pub fn get_document_uri(
+        this: &SecurityPolicyViolationEventInit,
+    ) -> Option<::alloc::string::String>;
     #[doc = "Change the `documentURI` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
@@ -91,7 +95,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
     #[wasm_bindgen(method, getter = "effectiveDirective")]
-    pub fn get_effective_directive(this: &SecurityPolicyViolationEventInit) -> Option<String>;
+    pub fn get_effective_directive(
+        this: &SecurityPolicyViolationEventInit,
+    ) -> Option<::alloc::string::String>;
     #[doc = "Change the `effectiveDirective` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
@@ -111,7 +117,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
     #[wasm_bindgen(method, getter = "originalPolicy")]
-    pub fn get_original_policy(this: &SecurityPolicyViolationEventInit) -> Option<String>;
+    pub fn get_original_policy(
+        this: &SecurityPolicyViolationEventInit,
+    ) -> Option<::alloc::string::String>;
     #[doc = "Change the `originalPolicy` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
@@ -121,7 +129,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
     #[wasm_bindgen(method, getter = "referrer")]
-    pub fn get_referrer(this: &SecurityPolicyViolationEventInit) -> Option<String>;
+    pub fn get_referrer(this: &SecurityPolicyViolationEventInit)
+        -> Option<::alloc::string::String>;
     #[doc = "Change the `referrer` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
@@ -131,7 +140,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
     #[wasm_bindgen(method, getter = "sample")]
-    pub fn get_sample(this: &SecurityPolicyViolationEventInit) -> Option<String>;
+    pub fn get_sample(this: &SecurityPolicyViolationEventInit) -> Option<::alloc::string::String>;
     #[doc = "Change the `sample` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
@@ -141,7 +150,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
     #[wasm_bindgen(method, getter = "sourceFile")]
-    pub fn get_source_file(this: &SecurityPolicyViolationEventInit) -> Option<String>;
+    pub fn get_source_file(
+        this: &SecurityPolicyViolationEventInit,
+    ) -> Option<::alloc::string::String>;
     #[doc = "Change the `sourceFile` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
@@ -161,7 +172,9 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]
     #[wasm_bindgen(method, getter = "violatedDirective")]
-    pub fn get_violated_directive(this: &SecurityPolicyViolationEventInit) -> Option<String>;
+    pub fn get_violated_directive(
+        this: &SecurityPolicyViolationEventInit,
+    ) -> Option<::alloc::string::String>;
     #[doc = "Change the `violatedDirective` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SecurityPolicyViolationEventInit`*"]

@@ -59,7 +59,7 @@ fn test_script_element() {
     );
 
     assert_eq!(element.text().unwrap(), "", "Shouldn't have text");
-    assert_eq!(element.set_text("text").unwrap(), ());
+    let _: () = element.set_text("text").unwrap();
     assert_eq!(element.text().unwrap(), "text", "Should have text");
 
     assert_eq!(element.event(), "", "Shouldn't have an event");

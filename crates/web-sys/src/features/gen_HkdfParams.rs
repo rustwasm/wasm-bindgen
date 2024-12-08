@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &HkdfParams) -> String;
+    pub fn get_name(this: &HkdfParams) -> ::alloc::string::String;
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HkdfParams`*"]
@@ -63,10 +63,10 @@ impl HkdfParams {
     ) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.hash(hash);
-        ret.info(info);
-        ret.salt(salt);
+        ret.set_name(name);
+        ret.set_hash(hash);
+        ret.set_info(info);
+        ret.set_salt(salt);
         ret
     }
     #[deprecated = "Use `set_name()` instead."]

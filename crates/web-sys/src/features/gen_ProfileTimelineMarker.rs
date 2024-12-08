@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
     #[wasm_bindgen(method, getter = "causeName")]
-    pub fn get_cause_name(this: &ProfileTimelineMarker) -> Option<String>;
+    pub fn get_cause_name(this: &ProfileTimelineMarker) -> Option<::alloc::string::String>;
     #[doc = "Change the `causeName` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
@@ -91,7 +91,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &ProfileTimelineMarker) -> Option<String>;
+    pub fn get_name(this: &ProfileTimelineMarker) -> Option<::alloc::string::String>;
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
@@ -141,7 +141,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]
     #[wasm_bindgen(method, getter = "type")]
-    pub fn get_type(this: &ProfileTimelineMarker) -> Option<String>;
+    pub fn get_type(this: &ProfileTimelineMarker) -> Option<::alloc::string::String>;
     #[doc = "Change the `type` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ProfileTimelineMarker`*"]

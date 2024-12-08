@@ -36,7 +36,7 @@ function isLikeNone(x) {
     return x === undefined || x === null;
 }
 /**
- * @param {Color | undefined} [color]
+ * @param {Color | null} [color]
  * @returns {Color | undefined}
  */
 export function option_enum_echo(color) {
@@ -54,7 +54,7 @@ export function get_name(color) {
 }
 
 /**
- * @param {ColorName | undefined} [color]
+ * @param {ColorName | null} [color]
  * @returns {ColorName | undefined}
  */
 export function option_string_enum_echo(color) {
@@ -63,25 +63,63 @@ export function option_string_enum_echo(color) {
 }
 
 /**
+ * @param {Ordering | null} [order]
+ * @returns {Ordering | undefined}
+ */
+export function option_order(order) {
+    const ret = wasm.option_order(isLikeNone(order) ? 2 : order);
+    return ret === 2 ? undefined : ret;
+}
+
+/**
  * A color.
+ * @enum {0 | 1 | 2}
  */
 export const Color = Object.freeze({
+    /**
+     * Green as a leaf.
+     */
+    Green: 0, "0": "Green",
+    /**
+     * Yellow as the sun.
+     */
+    Yellow: 1, "1": "Yellow",
+    /**
+     * Red as a rose.
+     */
+    Red: 2, "2": "Red",
+});
 /**
- * Green as a leaf.
+ * @enum {0 | 1 | 42 | 43}
  */
-Green:0,"0":"Green",
+export const ImplicitDiscriminant = Object.freeze({
+    A: 0, "0": "A",
+    B: 1, "1": "B",
+    C: 42, "42": "C",
+    D: 43, "43": "D",
+});
 /**
- * Yellow as the sun.
+ * A C-style enum with negative discriminants.
+ * @enum {-1 | 0 | 1}
  */
-Yellow:1,"1":"Yellow",
-/**
- * Red as a rose.
- */
-Red:2,"2":"Red", });
-
-export const ImplicitDiscriminant = Object.freeze({ A:0,"0":"A",B:1,"1":"B",C:42,"42":"C",D:43,"43":"D", });
+export const Ordering = Object.freeze({
+    Less: -1, "-1": "Less",
+    Equal: 0, "0": "Equal",
+    Greater: 1, "1": "Greater",
+});
 
 const __wbindgen_enum_ColorName = ["green", "yellow", "red"];
+
+export function __wbindgen_init_externref_table() {
+    const table = wasm.__wbindgen_export_0;
+    const offset = table.grow(4);
+    table.set(0, undefined);
+    table.set(offset + 0, undefined);
+    table.set(offset + 1, null);
+    table.set(offset + 2, true);
+    table.set(offset + 3, false);
+    ;
+};
 
 export function __wbindgen_throw(arg0, arg1) {
     throw new Error(getStringFromWasm0(arg0, arg1));

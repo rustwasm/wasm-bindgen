@@ -87,14 +87,19 @@
 // Overall this is all somewhat in flux as it's pretty new, and feedback is
 // always of course welcome!
 
+use alloc::borrow::ToOwned;
+use alloc::boxed::Box;
+use alloc::format;
+use alloc::rc::Rc;
+use alloc::string::{String, ToString};
+use alloc::vec::Vec;
+use core::cell::{Cell, RefCell};
+use core::fmt::{self, Display};
+use core::future::Future;
+use core::pin::Pin;
+use core::task::{self, Poll};
 use js_sys::{Array, Function, Promise};
-use std::cell::{Cell, RefCell};
-use std::fmt::{self, Display};
-use std::future::Future;
-use std::pin::Pin;
-use std::rc::Rc;
-use std::sync::Once;
-use std::task::{self, Poll};
+pub use wasm_bindgen;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::future_to_promise;
 
@@ -109,6 +114,8 @@ const CONCURRENCY: usize = 1;
 pub mod browser;
 pub mod detect;
 pub mod node;
+#[cfg(not(feature = "std"))]
+mod scoped_tls;
 pub mod worker;
 
 /// Runtime test harness support instantiated in JS.
@@ -267,20 +274,54 @@ impl Context {
     /// tests.
     #[wasm_bindgen(constructor)]
     pub fn new() -> Context {
-        static SET_HOOK: Once = Once::new();
+        fn panic_handling(mut message: String) {
+            let should_panic = CURRENT_OUTPUT.with(|output| {
+                let mut output = output.borrow_mut();
+                output.panic.push_str(&message);
+                output.should_panic
+            });
+
+            // See https://github.com/rustwasm/console_error_panic_hook/blob/4dc30a5448ed3ffcfb961b1ad54d000cca881b84/src/lib.rs#L83-L123.
+            if !should_panic {
+                #[wasm_bindgen]
+                extern "C" {
+                    type Error;
+
+                    #[wasm_bindgen(constructor)]
+                    fn new() -> Error;
+
+                    #[wasm_bindgen(method, getter)]
+                    fn stack(error: &Error) -> String;
+                }
+
+                message.push_str("\n\nStack:\n\n");
+                let e = Error::new();
+                let stack = e.stack();
+                message.push_str(&stack);
+
+                message.push_str("\n\n");
+
+                js_console_error(&message);
+            }
+        }
+        #[cfg(feature = "std")]
+        static SET_HOOK: std::sync::Once = std::sync::Once::new();
+        #[cfg(feature = "std")]
         SET_HOOK.call_once(|| {
             std::panic::set_hook(Box::new(|panic_info| {
-                let should_panic = CURRENT_OUTPUT.with(|output| {
-                    let mut output = output.borrow_mut();
-                    output.panic.push_str(&panic_info.to_string());
-                    output.should_panic
-                });
-
-                if !should_panic {
-                    console_error_panic_hook::hook(panic_info);
-                }
+                panic_handling(panic_info.to_string());
             }));
         });
+        #[cfg(all(
+            not(feature = "std"),
+            target_arch = "wasm32",
+            any(target_os = "unknown", target_os = "none")
+        ))]
+        #[panic_handler]
+        fn panic_handler(panic_info: &core::panic::PanicInfo<'_>) -> ! {
+            panic_handling(panic_info.to_string());
+            core::arch::wasm32::unreachable();
+        }
 
         let formatter = match detect::detect() {
             detect::Runtime::Browser => Box::new(browser::Browser::new()) as Box<dyn Formatter>,
@@ -379,7 +420,7 @@ impl Context {
     }
 }
 
-scoped_tls::scoped_thread_local!(static CURRENT_OUTPUT: RefCell<Output>);
+crate::scoped_thread_local!(static CURRENT_OUTPUT: RefCell<Output>);
 
 /// Handler for `console.log` invocations.
 ///
@@ -452,7 +493,7 @@ impl Termination for () {
     }
 }
 
-impl<E: std::fmt::Debug> Termination for Result<(), E> {
+impl<E: core::fmt::Debug> Termination for Result<(), E> {
     fn into_js_result(self) -> Result<(), JsValue> {
         self.map_err(|e| JsError::new(&format!("{:?}", e)).into())
     }

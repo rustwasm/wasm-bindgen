@@ -93,10 +93,10 @@ fn test_html_element() {
     assert_eq!(element.tab_index(), 1, "Should be tab_index");
 
     // TODO add a focus handler here
-    assert_eq!(element.focus().unwrap(), (), "No result");
+    let _: () = element.focus().unwrap();
 
     // TODO add a blur handler here
-    assert_eq!(element.blur().unwrap(), (), "No result");
+    let _: () = element.blur().unwrap();
 
     assert_eq!(element.access_key(), "", "Shouldn't have a access_key");
     element.set_access_key("a");
@@ -128,8 +128,9 @@ fn test_html_element() {
 
     // TODO verify case where we have an offset_parent
     match element.offset_parent() {
-        None => assert!(true, "Shouldn't have an offset_parent set"),
-        _ => assert!(false, "Shouldn't have a offset_parent set"),
+        // Shouldn't have an offset_parent set
+        None => (),
+        _ => unreachable!("Shouldn't have a offset_parent set"),
     };
 
     // TODO verify when we have offsets

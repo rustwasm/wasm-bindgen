@@ -1,10 +1,7 @@
-#[cfg(feature = "std")]
-use std::prelude::v1::*;
-
 use alloc::boxed::Box;
 use alloc::string::String;
 use alloc::vec::Vec;
-use core::mem;
+use core::mem::{self, MaybeUninit};
 use core::ops::{Deref, DerefMut};
 use core::str;
 
@@ -121,12 +118,19 @@ impl<T> DerefMut for MutSlice<T> {
 }
 
 macro_rules! vectors {
-    ($($t:ident)*) => ($(
+    ($($t:ty)*) => ($(
+        vectors_internal!($t);
+        vectors_internal!(MaybeUninit<$t>);
+    )*)
+}
+
+macro_rules! vectors_internal {
+    ($t:ty) => {
         impl WasmDescribeVector for $t {
             #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
             fn describe_vector() {
                 inform(VECTOR);
-                $t::describe();
+                <$t>::describe();
             }
         }
 
@@ -170,7 +174,9 @@ macro_rules! vectors {
 
         impl<'a> OptionIntoWasmAbi for &'a [$t] {
             #[inline]
-            fn none() -> WasmSlice { null_slice() }
+            fn none() -> WasmSlice {
+                null_slice()
+            }
         }
 
         impl<'a> IntoWasmAbi for &'a mut [$t] {
@@ -184,7 +190,9 @@ macro_rules! vectors {
 
         impl<'a> OptionIntoWasmAbi for &'a mut [$t] {
             #[inline]
-            fn none() -> WasmSlice { null_slice() }
+            fn none() -> WasmSlice {
+                null_slice()
+            }
         }
 
         impl RefFromWasmAbi for [$t] {
@@ -218,7 +226,7 @@ macro_rules! vectors {
                 Self::ref_from_abi(js)
             }
         }
-    )*)
+    };
 }
 
 vectors! {
@@ -362,7 +370,7 @@ impl<'a> IntoWasmAbi for &'a str {
     }
 }
 
-impl<'a> OptionIntoWasmAbi for &'a str {
+impl OptionIntoWasmAbi for &str {
     #[inline]
     fn none() -> Self::Abi {
         null_slice()

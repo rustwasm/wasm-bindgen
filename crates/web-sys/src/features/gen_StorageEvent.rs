@@ -18,28 +18,28 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/StorageEvent/key)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageEvent`*"]
-    pub fn key(this: &StorageEvent) -> Option<String>;
+    pub fn key(this: &StorageEvent) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "StorageEvent" , js_name = oldValue)]
     #[doc = "Getter for the `oldValue` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/StorageEvent/oldValue)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageEvent`*"]
-    pub fn old_value(this: &StorageEvent) -> Option<String>;
+    pub fn old_value(this: &StorageEvent) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "StorageEvent" , js_name = newValue)]
     #[doc = "Getter for the `newValue` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/StorageEvent/newValue)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageEvent`*"]
-    pub fn new_value(this: &StorageEvent) -> Option<String>;
+    pub fn new_value(this: &StorageEvent) -> Option<::alloc::string::String>;
     # [wasm_bindgen (structural , method , getter , js_class = "StorageEvent" , js_name = url)]
     #[doc = "Getter for the `url` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/StorageEvent/url)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `StorageEvent`*"]
-    pub fn url(this: &StorageEvent) -> Option<String>;
+    pub fn url(this: &StorageEvent) -> Option<::alloc::string::String>;
     #[cfg(feature = "Storage")]
     # [wasm_bindgen (structural , method , getter , js_class = "StorageEvent" , js_name = storageArea)]
     #[doc = "Getter for the `storageArea` field of this object."]

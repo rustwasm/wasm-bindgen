@@ -1,7 +1,4 @@
-use std::{
-    convert::TryFrom,
-    f64::{INFINITY, NAN},
-};
+use std::convert::TryFrom;
 
 use js_sys::*;
 use wasm_bindgen::prelude::*;
@@ -23,8 +20,8 @@ fn is_finite() {
     assert!(Number::is_finite(&42.into()));
     assert!(Number::is_finite(&42.1.into()));
     assert!(!Number::is_finite(&"42".into()));
-    assert!(!Number::is_finite(&NAN.into()));
-    assert!(!Number::is_finite(&INFINITY.into()));
+    assert!(!Number::is_finite(&f64::NAN.into()));
+    assert!(!Number::is_finite(&f64::INFINITY.into()));
 }
 
 #[wasm_bindgen_test]
@@ -35,7 +32,7 @@ fn is_integer() {
 
 #[wasm_bindgen_test]
 fn is_nan() {
-    assert!(Number::is_nan(&NAN.into()));
+    assert!(Number::is_nan(&f64::NAN.into()));
 
     assert!(!Number::is_nan(&JsValue::TRUE));
     assert!(!Number::is_nan(&JsValue::NULL));
@@ -53,16 +50,13 @@ fn is_nan() {
 
 #[wasm_bindgen_test]
 fn is_safe_integer() {
-    assert_eq!(Number::is_safe_integer(&42.into()), true);
-    assert_eq!(
-        Number::is_safe_integer(&(Math::pow(2., 53.) - 1.).into()),
-        true
-    );
-    assert_eq!(Number::is_safe_integer(&Math::pow(2., 53.).into()), false);
-    assert_eq!(Number::is_safe_integer(&"42".into()), false);
-    assert_eq!(Number::is_safe_integer(&42.1.into()), false);
-    assert_eq!(Number::is_safe_integer(&NAN.into()), false);
-    assert_eq!(Number::is_safe_integer(&INFINITY.into()), false);
+    assert!(Number::is_safe_integer(&42.into()));
+    assert!(Number::is_safe_integer(&(Math::pow(2., 53.) - 1.).into()));
+    assert!(!Number::is_safe_integer(&Math::pow(2., 53.).into()));
+    assert!(!Number::is_safe_integer(&"42".into()));
+    assert!(!Number::is_safe_integer(&42.1.into()));
+    assert!(!Number::is_safe_integer(&f64::NAN.into()));
+    assert!(!Number::is_safe_integer(&f64::INFINITY.into()));
 }
 
 #[allow(deprecated)]

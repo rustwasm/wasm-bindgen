@@ -65,7 +65,10 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TreeView/getRowProperties)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TreeView`*"]
-    pub fn get_row_properties(this: &TreeView, row: i32) -> Result<String, JsValue>;
+    pub fn get_row_properties(
+        this: &TreeView,
+        row: i32,
+    ) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "TreeView" , js_name = hasNextSibling)]
     #[doc = "The `hasNextSibling()` method."]
     #[doc = ""]

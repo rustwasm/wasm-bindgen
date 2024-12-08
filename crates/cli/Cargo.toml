@@ -14,7 +14,7 @@ license = "MIT OR Apache-2.0"
 name = "wasm-bindgen-cli"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/cli"
 rust-version = "1.76"
-version = "0.2.95"
+version = "0.2.99"
 
 [package.metadata.binstall]
 bin-dir = "wasm-bindgen-{ version }-{ target }/{ bin }{ binary-ext }"
@@ -31,9 +31,9 @@ serde = { version = "1.0", features = ['derive'] }
 serde_derive = "1.0"
 serde_json = "1.0"
 ureq = { version = "2.7", default-features = false, features = ["brotli", "gzip"] }
-walrus = { version = "0.22", features = ['parallel'] }
-wasm-bindgen-cli-support = { path = "../cli-support", version = "=0.2.95" }
-wasm-bindgen-shared = { path = "../shared", version = "=0.2.95" }
+walrus = "0.23"
+wasm-bindgen-cli-support = { path = "../cli-support", version = "=0.2.99" }
+wasm-bindgen-shared = { path = "../shared", version = "=0.2.99" }
 
 [dev-dependencies]
 assert_cmd = "2"
@@ -41,8 +41,8 @@ diff = "0.1"
 predicates = "3"
 rayon = "1.0"
 tempfile = "3.0"
-wasmparser = "0.212"
-wasmprinter = "0.212"
+wasmparser = "0.214"
+wasmprinter = "0.214"
 
 [[test]]
 harness = false
@@ -57,3 +57,6 @@ rustls-tls = ["ureq/tls"]
 # Legacy support
 openssl = ["dep:native-tls"]
 vendored-openssl = ["openssl", "native-tls/vendored"]
+
+[lints]
+workspace = true

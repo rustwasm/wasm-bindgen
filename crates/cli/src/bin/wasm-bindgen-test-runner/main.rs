@@ -54,6 +54,17 @@ impl TestMode {
             | Self::ServiceWorker { no_modules } => no_modules,
         }
     }
+
+    fn env(self) -> &'static str {
+        match self {
+            TestMode::Node { .. } => "WASM_BINDGEN_USE_NODE_EXPERIMENTAL",
+            TestMode::Deno => "WASM_BINDGEN_USE_DENO",
+            TestMode::Browser { .. } => "WASM_BINDGEN_USE_BROWSER",
+            TestMode::DedicatedWorker { .. } => "WASM_BINDGEN_USE_DEDICATED_WORKER",
+            TestMode::SharedWorker { .. } => "WASM_BINDGEN_USE_SHARED_WORKER",
+            TestMode::ServiceWorker { .. } => "WASM_BINDGEN_USE_SERVICE_WORKER",
+        }
+    }
 }
 
 struct TmpDirDeleteGuard(PathBuf);
@@ -138,25 +149,40 @@ fn main() -> anyhow::Result<()> {
     // to read later on.
 
     let custom_section = wasm.customs.remove_raw("__wasm_bindgen_test_unstable");
+    let no_modules = std::env::var("WASM_BINDGEN_USE_NO_MODULE").is_ok();
     let test_mode = match custom_section {
-        Some(section) if section.data.contains(&0x01) => TestMode::Browser {
-            no_modules: std::env::var("WASM_BINDGEN_USE_NO_MODULE").is_ok(),
-        },
-        Some(section) if section.data.contains(&0x02) => TestMode::DedicatedWorker {
-            no_modules: std::env::var("WASM_BINDGEN_USE_NO_MODULE").is_ok(),
-        },
-        Some(section) if section.data.contains(&0x03) => TestMode::SharedWorker {
-            no_modules: std::env::var("WASM_BINDGEN_USE_NO_MODULE").is_ok(),
-        },
-        Some(section) if section.data.contains(&0x04) => TestMode::ServiceWorker {
-            no_modules: std::env::var("WASM_BINDGEN_USE_NO_MODULE").is_ok(),
-        },
-        Some(section) if section.data.contains(&0x05) => TestMode::Node {
-            no_modules: std::env::var("WASM_BINDGEN_USE_NO_MODULE").is_ok(),
-        },
+        Some(section) if section.data.contains(&0x01) => TestMode::Browser { no_modules },
+        Some(section) if section.data.contains(&0x02) => TestMode::DedicatedWorker { no_modules },
+        Some(section) if section.data.contains(&0x03) => TestMode::SharedWorker { no_modules },
+        Some(section) if section.data.contains(&0x04) => TestMode::ServiceWorker { no_modules },
+        Some(section) if section.data.contains(&0x05) => TestMode::Node { no_modules },
         Some(_) => bail!("invalid __wasm_bingen_test_unstable value"),
-        None if std::env::var("WASM_BINDGEN_USE_DENO").is_ok() => TestMode::Deno,
-        None => TestMode::Node { no_modules: true },
+        None => {
+            let mut modes = Vec::new();
+            let mut add_mode =
+                |mode: TestMode| std::env::var(mode.env()).is_ok().then(|| modes.push(mode));
+            add_mode(TestMode::Deno);
+            add_mode(TestMode::Browser { no_modules });
+            add_mode(TestMode::DedicatedWorker { no_modules });
+            add_mode(TestMode::SharedWorker { no_modules });
+            add_mode(TestMode::ServiceWorker { no_modules });
+            add_mode(TestMode::Node { no_modules });
+
+            match modes.len() {
+                0 => TestMode::Node { no_modules: true },
+                1 => modes[0],
+                _ => {
+                    bail!(
+                        "only one test mode must be set, found: `{}`",
+                        modes
+                            .into_iter()
+                            .map(TestMode::env)
+                            .collect::<Vec<_>>()
+                            .join("`, `")
+                    )
+                }
+            }
+        }
     };
 
     let headless = env::var("NO_HEADLESS").is_err();
@@ -188,7 +214,15 @@ fn main() -> anyhow::Result<()> {
         return Ok(());
     }
 
-    let timeout = env::var("WASM_BINDGEN_TEST_TIMEOUT")
+    let driver_timeout = env::var("WASM_BINDGEN_TEST_DRIVER_TIMEOUT")
+        .map(|timeout| {
+            timeout
+                .parse()
+                .expect("Could not parse 'WASM_BINDGEN_TEST_DRIVER_TIMEOUT'")
+        })
+        .unwrap_or(5);
+
+    let browser_timeout = env::var("WASM_BINDGEN_TEST_TIMEOUT")
         .map(|timeout| {
             timeout
                 .parse()
@@ -197,7 +231,7 @@ fn main() -> anyhow::Result<()> {
         .unwrap_or(20);
 
     if debug {
-        println!("Set timeout to {} seconds...", timeout);
+        println!("Set timeout to {} seconds...", browser_timeout);
     }
 
     // Make the generated bindings available for the tests to execute against.
@@ -281,7 +315,7 @@ fn main() -> anyhow::Result<()> {
             }
 
             thread::spawn(|| srv.run());
-            headless::run(&addr, &shell, timeout)?;
+            headless::run(&addr, &shell, driver_timeout, browser_timeout)?;
         }
     }
     Ok(())

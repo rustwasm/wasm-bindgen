@@ -26,7 +26,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
     #[wasm_bindgen(method, getter = "easing")]
-    pub fn get_easing(this: &AnimationPropertyValueDetails) -> Option<String>;
+    pub fn get_easing(this: &AnimationPropertyValueDetails) -> Option<::alloc::string::String>;
     #[doc = "Change the `easing` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
@@ -46,7 +46,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
     #[wasm_bindgen(method, getter = "value")]
-    pub fn get_value(this: &AnimationPropertyValueDetails) -> Option<String>;
+    pub fn get_value(this: &AnimationPropertyValueDetails) -> Option<::alloc::string::String>;
     #[doc = "Change the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AnimationPropertyValueDetails`*"]
@@ -61,8 +61,8 @@ impl AnimationPropertyValueDetails {
     pub fn new(composite: CompositeOperation, offset: f64) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.composite(composite);
-        ret.offset(offset);
+        ret.set_composite(composite);
+        ret.set_offset(offset);
         ret
     }
     #[cfg(feature = "CompositeOperation")]

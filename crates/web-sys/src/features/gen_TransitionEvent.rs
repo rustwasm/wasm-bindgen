@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TransitionEvent/propertyName)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TransitionEvent`*"]
-    pub fn property_name(this: &TransitionEvent) -> String;
+    pub fn property_name(this: &TransitionEvent) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "TransitionEvent" , js_name = elapsedTime)]
     #[doc = "Getter for the `elapsedTime` field of this object."]
     #[doc = ""]
@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TransitionEvent/pseudoElement)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TransitionEvent`*"]
-    pub fn pseudo_element(this: &TransitionEvent) -> String;
+    pub fn pseudo_element(this: &TransitionEvent) -> ::alloc::string::String;
     #[wasm_bindgen(catch, constructor, js_class = "TransitionEvent")]
     #[doc = "The `new TransitionEvent(..)` constructor, creating a new instance of `TransitionEvent`."]
     #[doc = ""]

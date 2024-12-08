@@ -15,6 +15,8 @@ extern "C" {
     fn optional_u16_js_identity(a: Option<u16>) -> Option<u16>;
     fn optional_i64_js_identity(a: Option<i64>) -> Option<i64>;
     fn optional_u64_js_identity(a: Option<u64>) -> Option<u64>;
+    fn optional_i128_js_identity(a: Option<i128>) -> Option<i128>;
+    fn optional_u128_js_identity(a: Option<u128>) -> Option<u128>;
     fn optional_bool_js_identity(a: Option<bool>) -> Option<bool>;
     fn optional_char_js_identity(a: Option<char>) -> Option<char>;
 
@@ -394,6 +396,71 @@ pub fn optional_u64_max() -> Option<u64> {
 #[wasm_bindgen]
 pub fn optional_u64_identity(a: Option<u64>) -> Option<u64> {
     optional_u64_js_identity(a)
+}
+
+#[wasm_bindgen]
+pub fn optional_i128_none() -> Option<i128> {
+    None
+}
+
+#[wasm_bindgen]
+pub fn optional_i128_zero() -> Option<i128> {
+    Some(0)
+}
+
+#[wasm_bindgen]
+pub fn optional_i128_one() -> Option<i128> {
+    Some(1)
+}
+
+#[wasm_bindgen]
+pub fn optional_i128_neg_one() -> Option<i128> {
+    Some(-1)
+}
+
+#[wasm_bindgen]
+pub fn optional_i128_min() -> Option<i128> {
+    Some(i128::MIN)
+}
+
+#[wasm_bindgen]
+pub fn optional_i128_max() -> Option<i128> {
+    Some(i128::MAX)
+}
+
+#[wasm_bindgen]
+pub fn optional_i128_identity(a: Option<i128>) -> Option<i128> {
+    optional_i128_js_identity(a)
+}
+
+#[wasm_bindgen]
+pub fn optional_u128_none() -> Option<u128> {
+    None
+}
+
+#[wasm_bindgen]
+pub fn optional_u128_zero() -> Option<u128> {
+    Some(0)
+}
+
+#[wasm_bindgen]
+pub fn optional_u128_one() -> Option<u128> {
+    Some(1)
+}
+
+#[wasm_bindgen]
+pub fn optional_u128_min() -> Option<u128> {
+    Some(u128::MIN)
+}
+
+#[wasm_bindgen]
+pub fn optional_u128_max() -> Option<u128> {
+    Some(u128::MAX)
+}
+
+#[wasm_bindgen]
+pub fn optional_u128_identity(a: Option<u128>) -> Option<u128> {
+    optional_u128_js_identity(a)
 }
 
 #[wasm_bindgen]

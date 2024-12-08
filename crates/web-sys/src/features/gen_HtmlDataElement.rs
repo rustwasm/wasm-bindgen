@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDataElement/value)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlDataElement`*"]
-    pub fn value(this: &HtmlDataElement) -> String;
+    pub fn value(this: &HtmlDataElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLDataElement" , js_name = value)]
     #[doc = "Setter for the `value` field of this object."]
     #[doc = ""]

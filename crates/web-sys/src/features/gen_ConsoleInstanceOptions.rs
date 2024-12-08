@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleInstanceOptions`*"]
     #[wasm_bindgen(method, getter = "consoleID")]
-    pub fn get_console_id(this: &ConsoleInstanceOptions) -> Option<String>;
+    pub fn get_console_id(this: &ConsoleInstanceOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `consoleID` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleInstanceOptions`*"]
@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleInstanceOptions`*"]
     #[wasm_bindgen(method, getter = "innerID")]
-    pub fn get_inner_id(this: &ConsoleInstanceOptions) -> Option<String>;
+    pub fn get_inner_id(this: &ConsoleInstanceOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `innerID` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleInstanceOptions`*"]
@@ -56,7 +56,8 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleInstanceOptions`*"]
     #[wasm_bindgen(method, getter = "maxLogLevelPref")]
-    pub fn get_max_log_level_pref(this: &ConsoleInstanceOptions) -> Option<String>;
+    pub fn get_max_log_level_pref(this: &ConsoleInstanceOptions)
+        -> Option<::alloc::string::String>;
     #[doc = "Change the `maxLogLevelPref` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleInstanceOptions`*"]
@@ -66,7 +67,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleInstanceOptions`*"]
     #[wasm_bindgen(method, getter = "prefix")]
-    pub fn get_prefix(this: &ConsoleInstanceOptions) -> Option<String>;
+    pub fn get_prefix(this: &ConsoleInstanceOptions) -> Option<::alloc::string::String>;
     #[doc = "Change the `prefix` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ConsoleInstanceOptions`*"]

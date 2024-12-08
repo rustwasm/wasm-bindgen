@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AttributeNameValue`*"]
     #[wasm_bindgen(method, getter = "name")]
-    pub fn get_name(this: &AttributeNameValue) -> String;
+    pub fn get_name(this: &AttributeNameValue) -> ::alloc::string::String;
     #[doc = "Change the `name` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AttributeNameValue`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AttributeNameValue`*"]
     #[wasm_bindgen(method, getter = "value")]
-    pub fn get_value(this: &AttributeNameValue) -> String;
+    pub fn get_value(this: &AttributeNameValue) -> ::alloc::string::String;
     #[doc = "Change the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AttributeNameValue`*"]
@@ -38,8 +38,8 @@ impl AttributeNameValue {
     pub fn new(name: &str, value: &str) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.name(name);
-        ret.value(value);
+        ret.set_name(name);
+        ret.set_value(value);
         ret
     }
     #[deprecated = "Use `set_name()` instead."]

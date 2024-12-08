@@ -26,7 +26,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn id(this: &BluetoothDevice) -> String;
+    pub fn id(this: &BluetoothDevice) -> ::alloc::string::String;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (structural , method , getter , js_class = "BluetoothDevice" , js_name = name)]
     #[doc = "Getter for the `name` field of this object."]
@@ -37,7 +37,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn name(this: &BluetoothDevice) -> Option<String>;
+    pub fn name(this: &BluetoothDevice) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[cfg(feature = "BluetoothRemoteGattServer")]
     # [wasm_bindgen (structural , method , getter , js_class = "BluetoothDevice" , js_name = gatt)]

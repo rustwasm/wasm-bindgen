@@ -9,12 +9,15 @@ license = "MIT OR Apache-2.0"
 name = "wasm-bindgen-wasm-conventions"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/wasm-conventions"
 rust-version = "1.76"
-version = "0.2.95"
+version = "0.2.99"
 
 [dependencies]
 leb128 = "0.2"
-walrus = "0.22"
+walrus = "0.23"
 # Matching the version `walrus` depends on.
 anyhow = "1.0"
 log = "0.4"
 wasmparser = "0.212"
+
+[lints]
+workspace = true

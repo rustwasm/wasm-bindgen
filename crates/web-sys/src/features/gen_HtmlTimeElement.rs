@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTimeElement/dateTime)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `HtmlTimeElement`*"]
-    pub fn date_time(this: &HtmlTimeElement) -> String;
+    pub fn date_time(this: &HtmlTimeElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "HTMLTimeElement" , js_name = dateTime)]
     #[doc = "Setter for the `dateTime` field of this object."]
     #[doc = ""]

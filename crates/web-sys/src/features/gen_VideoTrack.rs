@@ -18,28 +18,28 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoTrack/id)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VideoTrack`*"]
-    pub fn id(this: &VideoTrack) -> String;
+    pub fn id(this: &VideoTrack) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "VideoTrack" , js_name = kind)]
     #[doc = "Getter for the `kind` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoTrack/kind)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VideoTrack`*"]
-    pub fn kind(this: &VideoTrack) -> String;
+    pub fn kind(this: &VideoTrack) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "VideoTrack" , js_name = label)]
     #[doc = "Getter for the `label` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoTrack/label)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VideoTrack`*"]
-    pub fn label(this: &VideoTrack) -> String;
+    pub fn label(this: &VideoTrack) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "VideoTrack" , js_name = language)]
     #[doc = "Getter for the `language` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VideoTrack/language)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VideoTrack`*"]
-    pub fn language(this: &VideoTrack) -> String;
+    pub fn language(this: &VideoTrack) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , getter , js_class = "VideoTrack" , js_name = selected)]
     #[doc = "Getter for the `selected` field of this object."]
     #[doc = ""]

@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterRequest`*"]
     #[wasm_bindgen(method, getter = "challenge")]
-    pub fn get_challenge(this: &RegisterRequest) -> Option<String>;
+    pub fn get_challenge(this: &RegisterRequest) -> Option<::alloc::string::String>;
     #[doc = "Change the `challenge` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterRequest`*"]
@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterRequest`*"]
     #[wasm_bindgen(method, getter = "version")]
-    pub fn get_version(this: &RegisterRequest) -> Option<String>;
+    pub fn get_version(this: &RegisterRequest) -> Option<::alloc::string::String>;
     #[doc = "Change the `version` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `RegisterRequest`*"]

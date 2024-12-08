@@ -24,7 +24,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VideoConfiguration`*"]
     #[wasm_bindgen(method, getter = "contentType")]
-    pub fn get_content_type(this: &VideoConfiguration) -> Option<String>;
+    pub fn get_content_type(this: &VideoConfiguration) -> Option<::alloc::string::String>;
     #[doc = "Change the `contentType` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VideoConfiguration`*"]
@@ -34,7 +34,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VideoConfiguration`*"]
     #[wasm_bindgen(method, getter = "framerate")]
-    pub fn get_framerate(this: &VideoConfiguration) -> Option<String>;
+    pub fn get_framerate(this: &VideoConfiguration) -> Option<::alloc::string::String>;
     #[doc = "Change the `framerate` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VideoConfiguration`*"]

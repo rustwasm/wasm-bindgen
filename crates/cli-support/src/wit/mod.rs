@@ -197,7 +197,6 @@ impl<'a> Context<'a> {
                 // aren't present in the signature but are present in the wasm
                 // signature.
                 let mut function = descriptor.function.clone();
-                let nargs = function.arguments.len();
                 function.arguments.insert(0, Descriptor::I32);
                 function.arguments.insert(0, Descriptor::I32);
                 let adapter = self.table_element_adapter(descriptor.shim_idx, function)?;
@@ -206,7 +205,6 @@ impl<'a> Context<'a> {
                     AuxImport::Closure {
                         dtor: descriptor.dtor_idx,
                         mutable: descriptor.mutable,
-                        nargs,
                         adapter,
                     },
                 );
@@ -790,6 +788,7 @@ impl<'a> Context<'a> {
             None => return Ok(()),
             Some(d) => d,
         };
+        let optional = matches!(descriptor, Descriptor::Option(_));
 
         // Register the signature of this imported shim
         let id = self.import_adapter(
@@ -805,8 +804,10 @@ impl<'a> Context<'a> {
 
         // And then save off that this function is is an instanceof shim for an
         // imported item.
-        let import = self.determine_import(import, static_.name)?;
-        self.aux.import_map.insert(id, AuxImport::Static(import));
+        let js = self.determine_import(import, static_.name)?;
+        self.aux
+            .import_map
+            .insert(id, AuxImport::Static { js, optional });
         Ok(())
     }
 
@@ -894,6 +895,7 @@ impl<'a> Context<'a> {
     }
 
     fn enum_(&mut self, enum_: decode::Enum<'_>) -> Result<(), Error> {
+        let signed = enum_.signed;
         let aux = AuxEnum {
             name: enum_.name.to_string(),
             comments: concatenate_comments(&enum_.comments),
@@ -901,11 +903,12 @@ impl<'a> Context<'a> {
                 .variants
                 .iter()
                 .map(|v| {
-                    (
-                        v.name.to_string(),
-                        v.value,
-                        concatenate_comments(&v.comments),
-                    )
+                    let value = if signed {
+                        v.value as i32 as i64
+                    } else {
+                        v.value as i64
+                    };
+                    (v.name.to_string(), value, concatenate_comments(&v.comments))
                 })
                 .collect(),
             generate_typescript: enum_.generate_typescript,
@@ -1202,7 +1205,7 @@ impl<'a> Context<'a> {
         kind: AdapterJsImportKind,
     ) -> Result<AdapterId, Error> {
         let import = self.module.imports.get(import);
-        let (import_module, import_name) = (import.module.clone(), import.name.clone());
+        let import_name = import.name.clone();
         let import_id = import.id();
         let core_id = match import.kind {
             walrus::ImportKind::Function(f) => f,
@@ -1239,7 +1242,6 @@ impl<'a> Context<'a> {
             ret.input,
             vec![],
             AdapterKind::Import {
-                module: import_module,
                 name: import_name,
                 kind,
             },

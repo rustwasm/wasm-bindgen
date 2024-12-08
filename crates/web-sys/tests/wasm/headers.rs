@@ -1,4 +1,4 @@
-use js_sys::{Array, Function, JsString};
+use js_sys::Array;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 use web_sys::Headers;
@@ -65,6 +65,6 @@ fn headers_for_each() {
         }
         count += 1;
     }) as Box<dyn FnMut(JsValue)>);
-    let res = new_headers_2().for_each(&cb.as_ref().unchecked_ref());
+    let res = new_headers_2().for_each(cb.as_ref().unchecked_ref());
     assert!(res.is_ok());
 }

@@ -26,7 +26,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAElement/download)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgaElement`*"]
-    pub fn download(this: &SvgaElement) -> String;
+    pub fn download(this: &SvgaElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "SVGAElement" , js_name = download)]
     #[doc = "Setter for the `download` field of this object."]
     #[doc = ""]
@@ -40,7 +40,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAElement/ping)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgaElement`*"]
-    pub fn ping(this: &SvgaElement) -> String;
+    pub fn ping(this: &SvgaElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "SVGAElement" , js_name = ping)]
     #[doc = "Setter for the `ping` field of this object."]
     #[doc = ""]
@@ -54,7 +54,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAElement/rel)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgaElement`*"]
-    pub fn rel(this: &SvgaElement) -> String;
+    pub fn rel(this: &SvgaElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "SVGAElement" , js_name = rel)]
     #[doc = "Setter for the `rel` field of this object."]
     #[doc = ""]
@@ -68,7 +68,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAElement/referrerPolicy)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgaElement`*"]
-    pub fn referrer_policy(this: &SvgaElement) -> String;
+    pub fn referrer_policy(this: &SvgaElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "SVGAElement" , js_name = referrerPolicy)]
     #[doc = "Setter for the `referrerPolicy` field of this object."]
     #[doc = ""]
@@ -90,7 +90,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAElement/hreflang)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgaElement`*"]
-    pub fn hreflang(this: &SvgaElement) -> String;
+    pub fn hreflang(this: &SvgaElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "SVGAElement" , js_name = hreflang)]
     #[doc = "Setter for the `hreflang` field of this object."]
     #[doc = ""]
@@ -104,7 +104,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAElement/type)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgaElement`*"]
-    pub fn type_(this: &SvgaElement) -> String;
+    pub fn type_(this: &SvgaElement) -> ::alloc::string::String;
     # [wasm_bindgen (structural , method , setter , js_class = "SVGAElement" , js_name = type)]
     #[doc = "Setter for the `type` field of this object."]
     #[doc = ""]
@@ -118,7 +118,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/SVGAElement/text)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `SvgaElement`*"]
-    pub fn text(this: &SvgaElement) -> Result<String, JsValue>;
+    pub fn text(this: &SvgaElement) -> Result<::alloc::string::String, JsValue>;
     # [wasm_bindgen (structural , catch , method , setter , js_class = "SVGAElement" , js_name = text)]
     #[doc = "Setter for the `text` field of this object."]
     #[doc = ""]

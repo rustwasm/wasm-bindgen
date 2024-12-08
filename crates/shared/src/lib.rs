@@ -6,7 +6,7 @@ mod schema_hash_approval;
 // This gets changed whenever our schema changes.
 // At this time versions of wasm-bindgen and wasm-bindgen-cli are required to have the exact same
 // SCHEMA_VERSION in order to work together.
-pub const SCHEMA_VERSION: &str = "0.2.95";
+pub const SCHEMA_VERSION: &str = "0.2.98";
 
 #[macro_export]
 macro_rules! shared_api {
@@ -122,6 +122,7 @@ macro_rules! shared_api {
 
         struct Enum<'a> {
             name: &'a str,
+            signed: bool,
             variants: Vec<EnumVariant<'a>>,
             comments: Vec<&'a str>,
             generate_typescript: bool,

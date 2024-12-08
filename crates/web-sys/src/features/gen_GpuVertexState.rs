@@ -40,7 +40,7 @@ extern "C" {
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
     #[wasm_bindgen(method, getter = "entryPoint")]
-    pub fn get_entry_point(this: &GpuVertexState) -> Option<String>;
+    pub fn get_entry_point(this: &GpuVertexState) -> Option<::alloc::string::String>;
     #[cfg(web_sys_unstable_apis)]
     #[doc = "Change the `entryPoint` field of this object."]
     #[doc = ""]
@@ -101,7 +101,7 @@ impl GpuVertexState {
     pub fn new(module: &GpuShaderModule) -> Self {
         #[allow(unused_mut)]
         let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret.module(module);
+        ret.set_module(module);
         ret
     }
     #[cfg(web_sys_unstable_apis)]
