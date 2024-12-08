@@ -4,6 +4,39 @@
 //! attribute and tool. Crates pull in the `#[wasm_bindgen]` attribute through
 //! this crate and this crate also provides JS bindings through the `JsValue`
 //! interface.
+//!
+//! ## Features
+//!
+//! ### `enable-interning`
+//!
+//! Enables the internal cache for [`wasm_bindgen::intern`].
+//!
+//! This feature currently enables the `std` feature, meaning that it is not
+//! compatible with `no_std` environments.
+//!
+//! ### `std` (default)
+//!
+//! Enabling this feature will make the crate depend on the Rust standard library.
+//!
+//! Disable this feature to use this crate in `no_std` environments.
+//!
+//! ### `strict-macro`
+//!
+//! All warnings the `#[wasm_bindgen]` macro emits are turned into hard errors.
+//! This mainly affects unused attribute options.
+//!
+//! ### Deprecated features
+//!
+//! #### `serde-serialize`
+//!
+//! **Deprecated:** Use the [`serde-wasm-bindgen`](https://docs.rs/serde-wasm-bindgen/latest/serde_wasm_bindgen/) crate instead.
+//!
+//! Enables the `JsValue::from_serde` and `JsValue::into_serde` methods for
+//! serializing and deserializing Rust types to and from JavaScript.
+//!
+//! #### `spans`
+//!
+//! **Deprecated:** This feature became a no-op in wasm-bindgen v0.2.20 (Sep 7, 2018).
 
 #![no_std]
 #![cfg_attr(wasm_bindgen_unstable_test_coverage, feature(coverage_attribute))]
