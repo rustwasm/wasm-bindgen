@@ -16,13 +16,11 @@
 //!
 //! ### `msrv` (default)
 //!
-//! Enables Rust language features that requires a higher MSRV. Enabling this
+//! Enables Rust language features that require a higher MSRV. Enabling this
 //! feature on older compilers will NOT result in a compilation error, the newer
 //! language features will simply not be used.
 //!
-//! Right now, this feature only enables the use of
-//! `diagnostic::on_unimplemented` (Rust 1.78 or later) to provide better error
-//! messages.
+//! When compiling with Rust v1.78 or later, this feature enables better error messages for invalid methods on structs and enums.
 //!
 //! ### `std` (default)
 //!
