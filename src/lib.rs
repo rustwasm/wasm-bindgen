@@ -6,14 +6,17 @@
 //! interface.
 
 #![no_std]
-#![cfg_attr(
-    wasm_bindgen_unstable_test_coverage,
-    feature(coverage_attribute, allow_internal_unstable),
-    allow(internal_features)
-)]
+#![cfg_attr(wasm_bindgen_unstable_test_coverage, feature(coverage_attribute))]
 #![cfg_attr(
     all(not(feature = "std"), target_feature = "atomics"),
-    feature(thread_local, allow_internal_unstable),
+    feature(thread_local)
+)]
+#![cfg_attr(
+    any(
+        all(not(feature = "std"), target_feature = "atomics"),
+        wasm_bindgen_unstable_test_coverage
+    ),
+    feature(allow_internal_unstable),
     allow(internal_features)
 )]
 #![allow(coherence_leak_check)]
