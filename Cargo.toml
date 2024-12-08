@@ -22,10 +22,10 @@ features = ["serde-serialize"]
 test = false
 
 [features]
-default = ["spans", "std"]
+default = ["std"]
 enable-interning = ["std"]
 serde-serialize = ["serde", "serde_json", "std"]
-spans = ["wasm-bindgen-macro/spans"]
+spans = []
 std = ["wasm-bindgen-macro/std", "once_cell/std"]
 
 # Whether or not the `#[wasm_bindgen]` macro is strict and generates an error on
