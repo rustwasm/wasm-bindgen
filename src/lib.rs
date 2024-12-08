@@ -14,6 +14,16 @@
 //! This feature currently enables the `std` feature, meaning that it is not
 //! compatible with `no_std` environments.
 //!
+//! ### `msrv` (default)
+//!
+//! Enables Rust language features that requires a higher MSRV. Enabling this
+//! feature on older compilers will NOT result in a compilation error, the newer
+//! language features will simply not be used.
+//!
+//! Right now, this feature only enables the use of
+//! `diagnostic::on_unimplemented` (Rust 1.78 or later) to provide better error
+//! messages.
+//!
 //! ### `std` (default)
 //!
 //! Enabling this feature will make the crate depend on the Rust standard library.
