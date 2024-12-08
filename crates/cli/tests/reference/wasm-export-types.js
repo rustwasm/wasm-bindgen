@@ -75,7 +75,7 @@ function passStringToWasm0(arg, malloc, realloc) {
 }
 /**
  * @param {number} a
- * @param {bigint} b
+ * @param {bigint | number} b
  * @param {any} c
  * @param {string} d
  * @returns {string}

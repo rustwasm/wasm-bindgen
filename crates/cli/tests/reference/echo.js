@@ -214,7 +214,7 @@ export function echo_i32(a) {
 }
 
 /**
- * @param {bigint} a
+ * @param {bigint | number} a
  * @returns {bigint}
  */
 export function echo_u64(a) {
@@ -224,7 +224,7 @@ export function echo_u64(a) {
 }
 
 /**
- * @param {bigint} a
+ * @param {bigint | number} a
  * @returns {bigint}
  */
 export function echo_i64(a) {
@@ -783,7 +783,7 @@ export function echo_option_i32(a) {
 }
 
 /**
- * @param {bigint | null} [a]
+ * @param {bigint | number | null} [a]
  * @returns {bigint | undefined}
  */
 export function echo_option_u64(a) {
@@ -793,7 +793,7 @@ export function echo_option_u64(a) {
 }
 
 /**
- * @param {bigint | null} [a]
+ * @param {bigint | number | null} [a]
  * @returns {bigint | undefined}
  */
 export function echo_option_i64(a) {

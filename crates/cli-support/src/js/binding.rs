@@ -1606,9 +1606,11 @@ fn adapter2ts(
         | AdapterType::NonNull => dst.push_str("number"),
         AdapterType::I64
         | AdapterType::S64
-        | AdapterType::U64
-        | AdapterType::S128
-        | AdapterType::U128 => dst.push_str("bigint"),
+        | AdapterType::U64 => dst.push_str(match position {
+            TypePosition::Argument => "bigint | number",
+            TypePosition::Return => "bigint",
+        }),
+        AdapterType::S128 | AdapterType::U128 => dst.push_str("bigint"),
         AdapterType::String => dst.push_str("string"),
         AdapterType::Externref => dst.push_str("any"),
         AdapterType::Bool => dst.push_str("boolean"),

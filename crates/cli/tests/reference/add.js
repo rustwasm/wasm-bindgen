@@ -24,8 +24,8 @@ export function add_i32(a, b) {
 }
 
 /**
- * @param {bigint} a
- * @param {bigint} b
+ * @param {bigint | number} a
+ * @param {bigint | number} b
  * @returns {bigint}
  */
 export function add_u64(a, b) {
@@ -36,8 +36,8 @@ export function add_u64(a, b) {
 }
 
 /**
- * @param {bigint} a
- * @param {bigint} b
+ * @param {bigint | number} a
+ * @param {bigint | number} b
  * @returns {bigint}
  */
 export function add_i64(a, b) {
@@ -51,8 +51,8 @@ function isLikeNone(x) {
     return x === undefined || x === null;
 }
 /**
- * @param {bigint | null | undefined} a
- * @param {bigint} b
+ * @param {bigint | number | null | undefined} a
+ * @param {bigint | number} b
  * @returns {bigint | undefined}
  */
 export function add_option_u64(a, b) {
@@ -63,8 +63,8 @@ export function add_option_u64(a, b) {
 }
 
 /**
- * @param {bigint | null | undefined} a
- * @param {bigint} b
+ * @param {bigint | number | null | undefined} a
+ * @param {bigint | number} b
  * @returns {bigint | undefined}
  */
 export function add_option_i64(a, b) {
