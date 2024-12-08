@@ -3,20 +3,54 @@
 
 ## Unreleased
 
+### Changed
+
+* Optional parameters are now typed as `T | undefined | null` to reflect the actual JS behavior.
+  [#4188](https://github.com/rustwasm/wasm-bindgen/pull/4188)
+
+--------------------------------------------------------------------------------
+
+## [0.2.99](https://github.com/rustwasm/wasm-bindgen/compare/0.2.98...0.2.99)
+
+Released 2024-12-07
+
+### Fixed
+
+- Mark `wasm-bindgen` v0.2.98 only compatible with `wasm-bindgen-cli` of the same version.
+  [#4331](https://github.com/rustwasm/wasm-bindgen/pull/4331)
+
+--------------------------------------------------------------------------------
+
+## [0.2.98](https://github.com/rustwasm/wasm-bindgen/compare/0.2.97...0.2.98)
+
+Released 2024-12-07
+
 ### Added
 
 * Add support for multi-threading in Node.js.
   [#4318](https://github.com/rustwasm/wasm-bindgen/pull/4318)
 
+* Add `WASM_BINDGEN_TEST_DRIVER_TIMEOUT` environment variable to control the timeout to start and connect to the test driver.
+  [#4320](https://github.com/rustwasm/wasm-bindgen/pull/4320)
+
+* Add support for number slices of type `MaybeUninit<T>`.
+  [#4316](https://github.com/rustwasm/wasm-bindgen/pull/4316)
+
 ### Changed
 
-* Add clear error message to communicate new feature resolver version requirements.
-  [#4312](https://github.com/rustwasm/wasm-bindgen/pull/4312)
+* Remove `once_cell/critical-section` requirement for `no_std` with atomics.
+  [#4322](https://github.com/rustwasm/wasm-bindgen/pull/4322)
+
+* `static FOO: Option<T>` now returns `None` if undeclared in JS instead of throwing an error in JS.
+  [#4319](https://github.com/rustwasm/wasm-bindgen/pull/4319)
 
 ### Fixed
 
 * Fix macro-hygiene for calls to `std::thread_local!`.
   [#4315](https://github.com/rustwasm/wasm-bindgen/pull/4315)
+
+* Fix feature resolver version 1 compatibility.
+  [#4327](https://github.com/rustwasm/wasm-bindgen/pull/4327)
 
 --------------------------------------------------------------------------------
 

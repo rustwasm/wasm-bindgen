@@ -4,8 +4,13 @@ JavaScript modules will often export arbitrary static objects for use with
 their provided interfaces. These objects can be accessed from Rust by declaring
 a named `static` in the `extern` block with an
 `#[wasm_bindgen(thread_local_v2)]` attribute. `wasm-bindgen` will bind a
-`JsThreadLocal` for these objects, which can be cloned into a `JsValue`. For
-example, given the following JavaScript:
+`JsThreadLocal` for these objects, which can be cloned into a `JsValue`.
+
+These values are cached in a thread-local and are meant to bind static values
+or objects only. For getters which can change their return value or throw see
+[how to import getters](attributes/on-js-imports/getter-and-setter.md).
+
+For example, given the following JavaScript:
 
 ```js
 let COLORS = {
@@ -21,7 +26,7 @@ let COLORS = {
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(thread_local_v2)]
-    static COLORS;
+    static COLORS: JsValue;
 }
 
 fn get_colors() -> JsValue {
@@ -64,6 +69,23 @@ extern "C" {
     fn new() -> SomeType;
 }
 ```
+
+## Optional statics
+
+If you expect the JavaScript value you're trying to access to not always be
+available you can use `Option<T>` to handle this:
+
+```rust
+extern "C" {
+    type Crypto;
+    #[wasm_bindgen(thread_local_v2, js_name = crypto)]
+    static CRYPTO: Option<Crypto>;
+}
+```
+
+If `crypto` is not declared or nullish (`null` or `undefined`) in JavaScript,
+it will simply return `None` in Rust. This will also account for namespaces: it
+will return `Some(T)` only if all parts are declared and not nullish.
 
 ## Static strings
 

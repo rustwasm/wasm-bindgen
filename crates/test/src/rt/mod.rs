@@ -99,6 +99,7 @@ use core::future::Future;
 use core::pin::Pin;
 use core::task::{self, Poll};
 use js_sys::{Array, Function, Promise};
+pub use wasm_bindgen;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::future_to_promise;
 

@@ -1,6 +1,6 @@
 [package]
 edition = "2021"
-name = "msrv-library-test"
+name = "msrv-resolver-test"
 publish = false
 resolver = "1"
 version = "0.0.0"

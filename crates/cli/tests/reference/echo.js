@@ -554,6 +554,110 @@ export function echo_vec_i64(a) {
     return v2;
 }
 
+/**
+ * @param {Uint8Array} a
+ * @returns {Uint8Array}
+ */
+export function echo_vec_uninit_u8(a) {
+    const ptr0 = passArray8ToWasm0(a, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.echo_vec_uninit_u8(ptr0, len0);
+    var v2 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+    wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+    return v2;
+}
+
+/**
+ * @param {Int8Array} a
+ * @returns {Int8Array}
+ */
+export function echo_vec_uninit_i8(a) {
+    const ptr0 = passArray8ToWasm0(a, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.echo_vec_uninit_i8(ptr0, len0);
+    var v2 = getArrayI8FromWasm0(ret[0], ret[1]).slice();
+    wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+    return v2;
+}
+
+/**
+ * @param {Uint16Array} a
+ * @returns {Uint16Array}
+ */
+export function echo_vec_uninit_u16(a) {
+    const ptr0 = passArray16ToWasm0(a, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.echo_vec_uninit_u16(ptr0, len0);
+    var v2 = getArrayU16FromWasm0(ret[0], ret[1]).slice();
+    wasm.__wbindgen_free(ret[0], ret[1] * 2, 2);
+    return v2;
+}
+
+/**
+ * @param {Int16Array} a
+ * @returns {Int16Array}
+ */
+export function echo_vec_uninit_i16(a) {
+    const ptr0 = passArray16ToWasm0(a, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.echo_vec_uninit_i16(ptr0, len0);
+    var v2 = getArrayI16FromWasm0(ret[0], ret[1]).slice();
+    wasm.__wbindgen_free(ret[0], ret[1] * 2, 2);
+    return v2;
+}
+
+/**
+ * @param {Uint32Array} a
+ * @returns {Uint32Array}
+ */
+export function echo_vec_uninit_u32(a) {
+    const ptr0 = passArray32ToWasm0(a, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.echo_vec_uninit_u32(ptr0, len0);
+    var v2 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+    wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+    return v2;
+}
+
+/**
+ * @param {Int32Array} a
+ * @returns {Int32Array}
+ */
+export function echo_vec_uninit_i32(a) {
+    const ptr0 = passArray32ToWasm0(a, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.echo_vec_uninit_i32(ptr0, len0);
+    var v2 = getArrayI32FromWasm0(ret[0], ret[1]).slice();
+    wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+    return v2;
+}
+
+/**
+ * @param {BigUint64Array} a
+ * @returns {BigUint64Array}
+ */
+export function echo_vec_uninit_u64(a) {
+    const ptr0 = passArray64ToWasm0(a, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.echo_vec_uninit_u64(ptr0, len0);
+    var v2 = getArrayU64FromWasm0(ret[0], ret[1]).slice();
+    wasm.__wbindgen_free(ret[0], ret[1] * 8, 8);
+    return v2;
+}
+
+/**
+ * @param {BigInt64Array} a
+ * @returns {BigInt64Array}
+ */
+export function echo_vec_uninit_i64(a) {
+    const ptr0 = passArray64ToWasm0(a, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.echo_vec_uninit_i64(ptr0, len0);
+    var v2 = getArrayI64FromWasm0(ret[0], ret[1]).slice();
+    wasm.__wbindgen_free(ret[0], ret[1] * 8, 8);
+    return v2;
+}
+
 function addToExternrefTable0(obj) {
     const idx = wasm.__externref_table_alloc();
     wasm.__wbindgen_export_2.set(idx, obj);
@@ -623,7 +727,7 @@ export function echo_vec_struct(a) {
 }
 
 /**
- * @param {number | undefined} [a]
+ * @param {number | null} [a]
  * @returns {number | undefined}
  */
 export function echo_option_u8(a) {
@@ -632,7 +736,7 @@ export function echo_option_u8(a) {
 }
 
 /**
- * @param {number | undefined} [a]
+ * @param {number | null} [a]
  * @returns {number | undefined}
  */
 export function echo_option_i8(a) {
@@ -641,7 +745,7 @@ export function echo_option_i8(a) {
 }
 
 /**
- * @param {number | undefined} [a]
+ * @param {number | null} [a]
  * @returns {number | undefined}
  */
 export function echo_option_u16(a) {
@@ -650,7 +754,7 @@ export function echo_option_u16(a) {
 }
 
 /**
- * @param {number | undefined} [a]
+ * @param {number | null} [a]
  * @returns {number | undefined}
  */
 export function echo_option_i16(a) {
@@ -659,7 +763,7 @@ export function echo_option_i16(a) {
 }
 
 /**
- * @param {number | undefined} [a]
+ * @param {number | null} [a]
  * @returns {number | undefined}
  */
 export function echo_option_u32(a) {
@@ -668,7 +772,7 @@ export function echo_option_u32(a) {
 }
 
 /**
- * @param {number | undefined} [a]
+ * @param {number | null} [a]
  * @returns {number | undefined}
  */
 export function echo_option_i32(a) {
@@ -677,7 +781,7 @@ export function echo_option_i32(a) {
 }
 
 /**
- * @param {bigint | undefined} [a]
+ * @param {bigint | null} [a]
  * @returns {bigint | undefined}
  */
 export function echo_option_u64(a) {
@@ -686,7 +790,7 @@ export function echo_option_u64(a) {
 }
 
 /**
- * @param {bigint | undefined} [a]
+ * @param {bigint | null} [a]
  * @returns {bigint | undefined}
  */
 export function echo_option_i64(a) {
@@ -695,7 +799,7 @@ export function echo_option_i64(a) {
 }
 
 /**
- * @param {bigint | undefined} [a]
+ * @param {bigint | null} [a]
  * @returns {bigint | undefined}
  */
 export function echo_option_u128(a) {
@@ -704,7 +808,7 @@ export function echo_option_u128(a) {
 }
 
 /**
- * @param {bigint | undefined} [a]
+ * @param {bigint | null} [a]
  * @returns {bigint | undefined}
  */
 export function echo_option_i128(a) {
@@ -713,7 +817,7 @@ export function echo_option_i128(a) {
 }
 
 /**
- * @param {number | undefined} [a]
+ * @param {number | null} [a]
  * @returns {number | undefined}
  */
 export function echo_option_usize(a) {
@@ -722,7 +826,7 @@ export function echo_option_usize(a) {
 }
 
 /**
- * @param {number | undefined} [a]
+ * @param {number | null} [a]
  * @returns {number | undefined}
  */
 export function echo_option_isize(a) {
@@ -731,7 +835,7 @@ export function echo_option_isize(a) {
 }
 
 /**
- * @param {number | undefined} [a]
+ * @param {number | null} [a]
  * @returns {number | undefined}
  */
 export function echo_option_f32(a) {
@@ -740,7 +844,7 @@ export function echo_option_f32(a) {
 }
 
 /**
- * @param {number | undefined} [a]
+ * @param {number | null} [a]
  * @returns {number | undefined}
  */
 export function echo_option_f64(a) {
@@ -749,7 +853,7 @@ export function echo_option_f64(a) {
 }
 
 /**
- * @param {boolean | undefined} [a]
+ * @param {boolean | null} [a]
  * @returns {boolean | undefined}
  */
 export function echo_option_bool(a) {
@@ -758,7 +862,7 @@ export function echo_option_bool(a) {
 }
 
 /**
- * @param {string | undefined} [a]
+ * @param {string | null} [a]
  * @returns {string | undefined}
  */
 export function echo_option_char(a) {
@@ -769,7 +873,7 @@ export function echo_option_char(a) {
 }
 
 /**
- * @param {string | undefined} [a]
+ * @param {string | null} [a]
  * @returns {string | undefined}
  */
 export function echo_option_string(a) {
@@ -785,7 +889,7 @@ export function echo_option_string(a) {
 }
 
 /**
- * @param {Uint8Array | undefined} [a]
+ * @param {Uint8Array | null} [a]
  * @returns {Uint8Array | undefined}
  */
 export function echo_option_vec_u8(a) {
@@ -801,7 +905,7 @@ export function echo_option_vec_u8(a) {
 }
 
 /**
- * @param {Int8Array | undefined} [a]
+ * @param {Int8Array | null} [a]
  * @returns {Int8Array | undefined}
  */
 export function echo_option_vec_i8(a) {
@@ -817,7 +921,7 @@ export function echo_option_vec_i8(a) {
 }
 
 /**
- * @param {Uint16Array | undefined} [a]
+ * @param {Uint16Array | null} [a]
  * @returns {Uint16Array | undefined}
  */
 export function echo_option_vec_u16(a) {
@@ -833,7 +937,7 @@ export function echo_option_vec_u16(a) {
 }
 
 /**
- * @param {Int16Array | undefined} [a]
+ * @param {Int16Array | null} [a]
  * @returns {Int16Array | undefined}
  */
 export function echo_option_vec_i16(a) {
@@ -849,7 +953,7 @@ export function echo_option_vec_i16(a) {
 }
 
 /**
- * @param {Uint32Array | undefined} [a]
+ * @param {Uint32Array | null} [a]
  * @returns {Uint32Array | undefined}
  */
 export function echo_option_vec_u32(a) {
@@ -865,7 +969,7 @@ export function echo_option_vec_u32(a) {
 }
 
 /**
- * @param {Int32Array | undefined} [a]
+ * @param {Int32Array | null} [a]
  * @returns {Int32Array | undefined}
  */
 export function echo_option_vec_i32(a) {
@@ -881,7 +985,7 @@ export function echo_option_vec_i32(a) {
 }
 
 /**
- * @param {BigUint64Array | undefined} [a]
+ * @param {BigUint64Array | null} [a]
  * @returns {BigUint64Array | undefined}
  */
 export function echo_option_vec_u64(a) {
@@ -897,7 +1001,7 @@ export function echo_option_vec_u64(a) {
 }
 
 /**
- * @param {BigInt64Array | undefined} [a]
+ * @param {BigInt64Array | null} [a]
  * @returns {BigInt64Array | undefined}
  */
 export function echo_option_vec_i64(a) {
@@ -913,7 +1017,135 @@ export function echo_option_vec_i64(a) {
 }
 
 /**
- * @param {(string)[] | undefined} [a]
+ * @param {Uint8Array | null} [a]
+ * @returns {Uint8Array | undefined}
+ */
+export function echo_option_vec_uninit_u8(a) {
+    var ptr0 = isLikeNone(a) ? 0 : passArray8ToWasm0(a, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    const ret = wasm.echo_option_vec_uninit_u8(ptr0, len0);
+    let v2;
+    if (ret[0] !== 0) {
+        v2 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+    }
+    return v2;
+}
+
+/**
+ * @param {Int8Array | null} [a]
+ * @returns {Int8Array | undefined}
+ */
+export function echo_option_vec_uninit_i8(a) {
+    var ptr0 = isLikeNone(a) ? 0 : passArray8ToWasm0(a, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    const ret = wasm.echo_option_vec_uninit_i8(ptr0, len0);
+    let v2;
+    if (ret[0] !== 0) {
+        v2 = getArrayI8FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+    }
+    return v2;
+}
+
+/**
+ * @param {Uint16Array | null} [a]
+ * @returns {Uint16Array | undefined}
+ */
+export function echo_option_vec_uninit_u16(a) {
+    var ptr0 = isLikeNone(a) ? 0 : passArray16ToWasm0(a, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    const ret = wasm.echo_option_vec_uninit_u16(ptr0, len0);
+    let v2;
+    if (ret[0] !== 0) {
+        v2 = getArrayU16FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 2, 2);
+    }
+    return v2;
+}
+
+/**
+ * @param {Int16Array | null} [a]
+ * @returns {Int16Array | undefined}
+ */
+export function echo_option_vec_uninit_i16(a) {
+    var ptr0 = isLikeNone(a) ? 0 : passArray16ToWasm0(a, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    const ret = wasm.echo_option_vec_uninit_i16(ptr0, len0);
+    let v2;
+    if (ret[0] !== 0) {
+        v2 = getArrayI16FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 2, 2);
+    }
+    return v2;
+}
+
+/**
+ * @param {Uint32Array | null} [a]
+ * @returns {Uint32Array | undefined}
+ */
+export function echo_option_vec_uninit_u32(a) {
+    var ptr0 = isLikeNone(a) ? 0 : passArray32ToWasm0(a, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    const ret = wasm.echo_option_vec_uninit_u32(ptr0, len0);
+    let v2;
+    if (ret[0] !== 0) {
+        v2 = getArrayU32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+    }
+    return v2;
+}
+
+/**
+ * @param {Int32Array | null} [a]
+ * @returns {Int32Array | undefined}
+ */
+export function echo_option_vec_uninit_i32(a) {
+    var ptr0 = isLikeNone(a) ? 0 : passArray32ToWasm0(a, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    const ret = wasm.echo_option_vec_uninit_i32(ptr0, len0);
+    let v2;
+    if (ret[0] !== 0) {
+        v2 = getArrayI32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+    }
+    return v2;
+}
+
+/**
+ * @param {BigUint64Array | null} [a]
+ * @returns {BigUint64Array | undefined}
+ */
+export function echo_option_vec_uninit_u64(a) {
+    var ptr0 = isLikeNone(a) ? 0 : passArray64ToWasm0(a, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    const ret = wasm.echo_option_vec_uninit_u64(ptr0, len0);
+    let v2;
+    if (ret[0] !== 0) {
+        v2 = getArrayU64FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 8, 8);
+    }
+    return v2;
+}
+
+/**
+ * @param {BigInt64Array | null} [a]
+ * @returns {BigInt64Array | undefined}
+ */
+export function echo_option_vec_uninit_i64(a) {
+    var ptr0 = isLikeNone(a) ? 0 : passArray64ToWasm0(a, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    const ret = wasm.echo_option_vec_uninit_i64(ptr0, len0);
+    let v2;
+    if (ret[0] !== 0) {
+        v2 = getArrayI64FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 8, 8);
+    }
+    return v2;
+}
+
+/**
+ * @param {(string)[] | null} [a]
  * @returns {(string)[] | undefined}
  */
 export function echo_option_vec_string(a) {
@@ -929,7 +1161,7 @@ export function echo_option_vec_string(a) {
 }
 
 /**
- * @param {Foo | undefined} [a]
+ * @param {Foo | null} [a]
  * @returns {Foo | undefined}
  */
 export function echo_option_struct(a) {
@@ -943,7 +1175,7 @@ export function echo_option_struct(a) {
 }
 
 /**
- * @param {(Foo)[] | undefined} [a]
+ * @param {(Foo)[] | null} [a]
  * @returns {(Foo)[] | undefined}
  */
 export function echo_option_vec_struct(a) {

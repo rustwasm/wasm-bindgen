@@ -6,7 +6,7 @@
 use alloc::boxed::Box;
 use alloc::string::String;
 use alloc::vec::Vec;
-use core::ptr::NonNull;
+use core::{mem::MaybeUninit, ptr::NonNull};
 
 use crate::{Clamped, JsError, JsObject, JsValue};
 use cfg_if::cfg_if;
@@ -225,6 +225,13 @@ impl<T: WasmDescribe, E: Into<JsValue>> WasmDescribe for Result<T, E> {
     #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
     fn describe() {
         inform(RESULT);
+        T::describe();
+    }
+}
+
+impl<T: WasmDescribe> WasmDescribe for MaybeUninit<T> {
+    #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+    fn describe() {
         T::describe();
     }
 }
