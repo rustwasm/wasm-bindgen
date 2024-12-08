@@ -13,6 +13,9 @@
 * Optional parameters are now typed as `T | undefined | null` to reflect the actual JS behavior.
   [#4188](https://github.com/rustwasm/wasm-bindgen/pull/4188)
 
+* Adding `getter`, `setter`, and `constructor` methods to enums now results in a compiler error. This was previously erroneously allowed and resulted in invalid JS code gen.
+  [#4278](https://github.com/rustwasm/wasm-bindgen/pull/4278)
+
 ### Fixed
 
 - Fixed using [JavaScript keyword](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#keywords) as identifiers not being handled correctly.
