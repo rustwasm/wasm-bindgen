@@ -569,6 +569,8 @@ jobs:
           - wasm32-unknown-unknown
         features:
           - --no-default-features
+          - --no-default-features --features std
+          - --no-default-features --features msrv
           - ""
     defaults:
       run:
@@ -594,6 +596,8 @@ jobs:
           - wasm32-unknown-unknown
         features:
           - --no-default-features
+          - --no-default-features --features std
+          - --no-default-features --features msrv
           - ""
     defaults:
       run:

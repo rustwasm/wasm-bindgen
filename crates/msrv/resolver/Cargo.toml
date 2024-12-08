@@ -6,7 +6,14 @@ resolver = "1"
 version = "0.0.0"
 
 [features]
-default = ["std"]
+default = [
+  "wasm-bindgen/default",
+  "js-sys/default",
+  "wasm-bindgen-futures/default",
+  "web-sys/default",
+  "wasm-bindgen-test/default",
+]
+msrv = ["wasm-bindgen/msrv"]
 std = [
   "wasm-bindgen/std",
   "js-sys/std",
