@@ -14,16 +14,14 @@ rust-version = "1.57"
 version = "0.2.99"
 
 [features]
-default = ["std"]
 extra-traits = ["syn/extra-traits"]
-std = ["wasm-bindgen-backend/std"]
 strict-macro = []
 
 [dependencies]
 proc-macro2 = "1.0"
 quote = '1.0'
 syn = { version = '2.0', features = ['visit', 'visit-mut', 'full'] }
-wasm-bindgen-backend = { path = "../backend", version = "=0.2.99", default-features = false }
+wasm-bindgen-backend = { path = "../backend", version = "=0.2.99" }
 wasm-bindgen-shared = { path = "../shared", version = "=0.2.99" }
 
 [lints]

@@ -31,4 +31,3 @@ web-sys = { path = "../../web-sys", default-features = false }
 # Pinned sub-dependencies for MSRV
 bumpalo = "=3.12.0"
 log = "=0.4.18"
-scoped-tls = { version = "=1.0.0", optional = false }

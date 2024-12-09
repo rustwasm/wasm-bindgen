@@ -1803,24 +1803,12 @@ fn thread_local_import(
             }
         },
         ast::ThreadLocal::V2 => {
-            #[cfg(feature = "std")]
-            let inner = quote! {
-                #wasm_bindgen::__rt::std::thread_local!(static _VAL: #actual_ty = init(););
-                #wasm_bindgen::JsThreadLocal {
-                    __inner: &_VAL,
-                }
-            };
-            #[cfg(not(feature = "std"))]
-            let inner = quote! {
-                #wasm_bindgen::__wbindgen_thread_local!(#wasm_bindgen, #actual_ty)
-            };
-
             quote! {
                 #vis static #name: #wasm_bindgen::JsThreadLocal<#actual_ty> = {
                     fn init() -> #actual_ty {
                         #init
                     }
-                    #inner
+                    #wasm_bindgen::__wbindgen_thread_local!(#wasm_bindgen, #actual_ty)
                 };
             }
         }

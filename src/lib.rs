@@ -48,21 +48,17 @@
 
 #![no_std]
 #![cfg_attr(wasm_bindgen_unstable_test_coverage, feature(coverage_attribute))]
+#![cfg_attr(target_feature = "atomics", feature(thread_local))]
 #![cfg_attr(
-    all(not(feature = "std"), target_feature = "atomics"),
-    feature(thread_local)
-)]
-#![cfg_attr(
-    any(
-        all(not(feature = "std"), target_feature = "atomics"),
-        wasm_bindgen_unstable_test_coverage
-    ),
+    any(target_feature = "atomics", wasm_bindgen_unstable_test_coverage),
     feature(allow_internal_unstable),
     allow(internal_features)
 )]
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen/0.2")]
 
 extern crate alloc;
+#[cfg(feature = "std")]
+extern crate std;
 
 use alloc::boxed::Box;
 use alloc::string::String;
@@ -76,12 +72,6 @@ use core::ops::{
 use core::ptr::NonNull;
 
 use crate::convert::{FromWasmAbi, TryFromJsValue, WasmRet, WasmSlice};
-
-macro_rules! if_std {
-    ($($i:item)*) => ($(
-        #[cfg(feature = "std")] $i
-    )*)
-}
 
 macro_rules! externs {
     ($(#[$attr:meta])* extern "C" { $(fn $name:ident($($args:tt)*) -> $ret:ty;)* }) => (
@@ -129,12 +119,8 @@ mod link;
 mod cast;
 pub use crate::cast::{JsCast, JsObject};
 
-if_std! {
-    extern crate std;
-    use std::prelude::v1::*;
-    mod cache;
-    pub use cache::intern::{intern, unintern};
-}
+mod cache;
+pub use cache::intern::{intern, unintern};
 
 #[doc(hidden)]
 #[path = "rt/mod.rs"]
@@ -447,7 +433,6 @@ impl JsValue {
     }
 
     /// Get a string representation of the JavaScript object for debugging.
-    #[cfg(feature = "std")]
     fn as_debug_string(&self) -> String {
         unsafe {
             let mut ret = [0; 2];
@@ -1184,17 +1169,9 @@ impl Clone for JsValue {
     }
 }
 
-#[cfg(feature = "std")]
 impl core::fmt::Debug for JsValue {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(f, "JsValue({})", self.as_debug_string())
-    }
-}
-
-#[cfg(not(feature = "std"))]
-impl core::fmt::Debug for JsValue {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        f.write_str("JsValue")
     }
 }
 
@@ -1278,13 +1255,10 @@ impl<T: FromWasmAbi + 'static> Deref for JsStatic<T> {
 /// ```
 pub struct JsThreadLocal<T: 'static> {
     #[doc(hidden)]
-    #[cfg(feature = "std")]
-    pub __inner: &'static std::thread::LocalKey<T>,
-    #[doc(hidden)]
-    #[cfg(all(not(feature = "std"), not(target_feature = "atomics")))]
+    #[cfg(not(target_feature = "atomics"))]
     pub __inner: &'static __rt::LazyCell<T>,
     #[doc(hidden)]
-    #[cfg(all(not(feature = "std"), target_feature = "atomics"))]
+    #[cfg(target_feature = "atomics")]
     pub __inner: fn() -> *const T,
 }
 
@@ -1293,11 +1267,9 @@ impl<T> JsThreadLocal<T> {
     where
         F: FnOnce(&T) -> R,
     {
-        #[cfg(feature = "std")]
-        return self.__inner.with(f);
-        #[cfg(all(not(feature = "std"), not(target_feature = "atomics")))]
+        #[cfg(not(target_feature = "atomics"))]
         return f(self.__inner);
-        #[cfg(all(not(feature = "std"), target_feature = "atomics"))]
+        #[cfg(target_feature = "atomics")]
         f(unsafe { &*(self.__inner)() })
     }
 }
@@ -1716,14 +1688,15 @@ impl JsError {
     }
 }
 
-if_std! {
-    impl<E> From<E> for JsError
-    where
-        E: std::error::Error,
-    {
-        fn from(error: E) -> Self {
-            JsError::new(&error.to_string())
-        }
+#[cfg(feature = "std")]
+impl<E> From<E> for JsError
+where
+    E: std::error::Error,
+{
+    fn from(error: E) -> Self {
+        use std::string::ToString;
+
+        JsError::new(&error.to_string())
     }
 }
 

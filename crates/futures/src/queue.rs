@@ -107,16 +107,6 @@ impl Queue {
         }
     }
 
-    #[cfg(feature = "std")]
-    pub(crate) fn with<R>(f: impl FnOnce(&Self) -> R) -> R {
-        thread_local! {
-            static QUEUE: Queue = Queue::new();
-        }
-
-        QUEUE.with(f)
-    }
-
-    #[cfg(not(feature = "std"))]
     pub(crate) fn with<R>(f: impl FnOnce(&Self) -> R) -> R {
         use once_cell::unsync::Lazy;
 

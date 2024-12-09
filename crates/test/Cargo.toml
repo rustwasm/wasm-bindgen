@@ -11,12 +11,11 @@ version = "0.3.49"
 
 [features]
 default = ["std"]
-std = ["wasm-bindgen/std", "js-sys/std", "wasm-bindgen-futures/std", "scoped-tls"]
+std = ["wasm-bindgen/std", "js-sys/std", "wasm-bindgen-futures/std"]
 
 [dependencies]
 gg-alloc = { version = "1.0", optional = true }
 js-sys = { path = '../js-sys', version = '=0.3.76', default-features = false }
-scoped-tls = { version = "1.0", optional = true }
 wasm-bindgen = { path = '../..', version = '=0.2.99', default-features = false }
 wasm-bindgen-futures = { path = '../futures', version = '=0.4.49', default-features = false }
 wasm-bindgen-test-macro = { path = '../test-macro', version = '=0.3.49' }
