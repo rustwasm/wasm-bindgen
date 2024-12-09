@@ -85,9 +85,51 @@ function passStringToWasm0(arg, malloc, realloc) {
  * @param {string} a
  */
 export function foo(a) {
-    const ptr0 = passStringToWasm0(a, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    wasm.foo(ptr0, len0);
+    const ptr = passStringToWasm0(a, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len = WASM_VECTOR_LEN;
+    wasm.foo(ptr, len);
+}
+
+/**
+ * @param {string} a
+ * @param {string} b
+ * @returns {string}
+ */
+export function two_strings(a, b) {
+    try {
+        const ptr = passStringToWasm0(a, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len = WASM_VECTOR_LEN;
+        const ptr1 = passStringToWasm0(b, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len2 = WASM_VECTOR_LEN;
+        const ret = wasm.two_strings(ptr, len, ptr1, len2);
+        var deferred0 = ret[0];
+        var deferred1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred0, deferred1, 1);
+    }
+}
+
+/**
+ * @param {string} a
+ * @param {string} b
+ * @param {number} ptr
+ * @param {number} len
+ * @returns {string}
+ */
+export function two_strings_and_some_more(a, b, ptr, len) {
+    try {
+        const ptr1 = passStringToWasm0(a, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len2 = WASM_VECTOR_LEN;
+        const ptr3 = passStringToWasm0(b, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len4 = WASM_VECTOR_LEN;
+        const ret = wasm.two_strings_and_some_more(ptr1, len2, ptr3, len4, ptr, len);
+        var deferred0 = ret[0];
+        var deferred1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred0, deferred1, 1);
+    }
 }
 
 export function __wbindgen_init_externref_table() {
