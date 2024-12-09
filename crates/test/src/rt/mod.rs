@@ -114,7 +114,6 @@ const CONCURRENCY: usize = 1;
 pub mod browser;
 pub mod detect;
 pub mod node;
-#[cfg(not(feature = "std"))]
 mod scoped_tls;
 pub mod worker;
 

@@ -4,86 +4,73 @@ use core::cell::{Cell, UnsafeCell};
 use core::convert::Infallible;
 use core::mem;
 use core::ops::{Deref, DerefMut};
-#[cfg(all(target_feature = "atomics", not(feature = "std")))]
+#[cfg(target_feature = "atomics")]
 use core::sync::atomic::{AtomicU8, Ordering};
+
+use alloc::alloc::{alloc, dealloc, realloc, Layout};
+use alloc::boxed::Box;
+use alloc::rc::Rc;
+use once_cell::unsync::Lazy;
 
 pub extern crate alloc;
 pub extern crate core;
 #[cfg(feature = "std")]
 pub extern crate std;
 
-use alloc::alloc::{alloc, dealloc, realloc, Layout};
-use alloc::boxed::Box;
-use alloc::rc::Rc;
-
 pub mod marker;
 
-/// Wrapper around [`::once_cell::unsync::Lazy`] adding some compatibility methods with
-/// [`std::thread::LocalKey`] and adding `Send + Sync` when `atomics` is not enabled.
-#[cfg(not(feature = "std"))]
-pub struct LazyCell<T, F = fn() -> T>(::once_cell::unsync::Lazy<T, F>);
+/// Wrapper around [`Lazy`] adding `Send + Sync` when `atomics` is not enabled.
+pub struct LazyCell<T, F = fn() -> T>(Wrapper<Lazy<T, F>>);
 
-#[cfg(all(not(target_feature = "atomics"), not(feature = "std")))]
-unsafe impl<T, F> Sync for LazyCell<T, F> {}
+struct Wrapper<T>(T);
 
-#[cfg(all(not(target_feature = "atomics"), not(feature = "std")))]
-unsafe impl<T, F> Send for LazyCell<T, F> {}
+unsafe impl<T> Sync for Wrapper<T> {}
 
-#[cfg(not(feature = "std"))]
+unsafe impl<T> Send for Wrapper<T> {}
+
 impl<T, F> LazyCell<T, F> {
     pub const fn new(init: F) -> LazyCell<T, F> {
-        Self(::once_cell::unsync::Lazy::new(init))
+        Self(Wrapper(Lazy::new(init)))
     }
 }
 
-#[cfg(not(feature = "std"))]
 impl<T, F: FnOnce() -> T> LazyCell<T, F> {
     pub(crate) fn try_with<R>(
         &self,
         f: impl FnOnce(&T) -> R,
     ) -> Result<R, core::convert::Infallible> {
-        Ok(f(&self.0))
+        Ok(f(&self.0 .0))
     }
 
     pub fn force(this: &Self) -> &T {
-        &this.0
+        &this.0 .0
     }
 }
 
-#[cfg(not(feature = "std"))]
 impl<T> Deref for LazyCell<T> {
     type Target = T;
 
     fn deref(&self) -> &T {
-        ::once_cell::unsync::Lazy::force(&self.0)
+        ::once_cell::unsync::Lazy::force(&self.0 .0)
     }
 }
 
-#[cfg(feature = "std")]
-pub use once_cell::sync::Lazy as LazyLock;
-
-#[cfg(all(not(target_feature = "atomics"), not(feature = "std")))]
+#[cfg(not(target_feature = "atomics"))]
 pub use LazyCell as LazyLock;
 
-#[cfg(all(target_feature = "atomics", not(feature = "std")))]
+#[cfg(target_feature = "atomics")]
 pub struct LazyLock<T, F = fn() -> T> {
     state: AtomicU8,
-    data: UnsafeCell<Data<T, F>>,
+    data: Wrapper<UnsafeCell<Data<T, F>>>,
 }
 
-#[cfg(all(target_feature = "atomics", not(feature = "std")))]
+#[cfg(target_feature = "atomics")]
 enum Data<T, F> {
     Value(T),
     Init(F),
 }
 
-#[cfg(all(target_feature = "atomics", not(feature = "std")))]
-unsafe impl<T, F> Sync for LazyLock<T, F> {}
-
-#[cfg(all(target_feature = "atomics", not(feature = "std")))]
-unsafe impl<T, F> Send for LazyLock<T, F> {}
-
-#[cfg(all(target_feature = "atomics", not(feature = "std")))]
+#[cfg(target_feature = "atomics")]
 impl<T, F> LazyLock<T, F> {
     const STATE_UNINIT: u8 = 0;
     const STATE_INITIALIZING: u8 = 1;
@@ -92,12 +79,12 @@ impl<T, F> LazyLock<T, F> {
     pub const fn new(init: F) -> LazyLock<T, F> {
         Self {
             state: AtomicU8::new(Self::STATE_UNINIT),
-            data: UnsafeCell::new(Data::Init(init)),
+            data: Wrapper(UnsafeCell::new(Data::Init(init))),
         }
     }
 }
 
-#[cfg(all(target_feature = "atomics", not(feature = "std")))]
+#[cfg(target_feature = "atomics")]
 impl<T> Deref for LazyLock<T> {
     type Target = T;
 
@@ -107,7 +94,7 @@ impl<T> Deref for LazyLock<T> {
         loop {
             match state {
                 Self::STATE_INIT => {
-                    let Data::Value(value) = (unsafe { &*self.data.get() }) else {
+                    let Data::Value(value) = (unsafe { &*self.data.0.get() }) else {
                         unreachable!()
                     };
                     return value;
@@ -123,7 +110,7 @@ impl<T> Deref for LazyLock<T> {
                         continue;
                     }
 
-                    let data = unsafe { &mut *self.data.get() };
+                    let data = unsafe { &mut *self.data.0.get() };
                     let Data::Init(init) = data else {
                         unreachable!()
                     };
@@ -144,7 +131,7 @@ impl<T> Deref for LazyLock<T> {
 
 #[macro_export]
 #[doc(hidden)]
-#[cfg(all(not(feature = "std"), not(target_feature = "atomics")))]
+#[cfg(not(target_feature = "atomics"))]
 macro_rules! __wbindgen_thread_local {
     ($wasm_bindgen:tt, $actual_ty:ty) => {{
         static _VAL: $wasm_bindgen::__rt::LazyCell<$actual_ty> =
@@ -155,7 +142,7 @@ macro_rules! __wbindgen_thread_local {
 
 #[macro_export]
 #[doc(hidden)]
-#[cfg(all(not(feature = "std"), target_feature = "atomics"))]
+#[cfg(target_feature = "atomics")]
 #[allow_internal_unstable(thread_local)]
 macro_rules! __wbindgen_thread_local {
     ($wasm_bindgen:tt, $actual_ty:ty) => {{
@@ -538,63 +525,22 @@ pub fn link_mem_intrinsics() {
     crate::link::link_intrinsics();
 }
 
-#[cfg(feature = "std")]
-std::thread_local! {
-    static GLOBAL_EXNDATA: Cell<[u32; 2]> = Cell::new([0; 2]);
-}
-#[cfg(all(not(feature = "std"), not(target_feature = "atomics")))]
-static mut GLOBAL_EXNDATA: [u32; 2] = [0; 2];
-#[cfg(all(not(feature = "std"), target_feature = "atomics"))]
-#[thread_local]
-static GLOBAL_EXNDATA: Cell<[u32; 2]> = Cell::new([0; 2]);
-
-struct GlobalExndata;
-
-impl GlobalExndata {
-    #[cfg(feature = "std")]
-    fn get() -> [u32; 2] {
-        GLOBAL_EXNDATA.with(Cell::get)
-    }
-
-    #[cfg(all(not(feature = "std"), not(target_feature = "atomics")))]
-    fn get() -> [u32; 2] {
-        unsafe { GLOBAL_EXNDATA }
-    }
-
-    #[cfg(all(not(feature = "std"), target_feature = "atomics"))]
-    fn get() -> [u32; 2] {
-        GLOBAL_EXNDATA.get()
-    }
-
-    #[cfg(feature = "std")]
-    fn set(data: [u32; 2]) {
-        GLOBAL_EXNDATA.with(|d| d.set(data))
-    }
-
-    #[cfg(all(not(feature = "std"), not(target_feature = "atomics")))]
-    fn set(data: [u32; 2]) {
-        unsafe { GLOBAL_EXNDATA = data };
-    }
-
-    #[cfg(all(not(feature = "std"), target_feature = "atomics"))]
-    fn set(data: [u32; 2]) {
-        GLOBAL_EXNDATA.set(data);
-    }
-}
+#[cfg_attr(target_feature = "atomics", thread_local)]
+static GLOBAL_EXNDATA: Wrapper<Cell<[u32; 2]>> = Wrapper(Cell::new([0; 2]));
 
 #[no_mangle]
 pub unsafe extern "C" fn __wbindgen_exn_store(idx: u32) {
-    debug_assert_eq!(GlobalExndata::get()[0], 0);
-    GlobalExndata::set([1, idx]);
+    debug_assert_eq!(GLOBAL_EXNDATA.0.get()[0], 0);
+    GLOBAL_EXNDATA.0.set([1, idx]);
 }
 
 pub fn take_last_exception() -> Result<(), super::JsValue> {
-    let ret = if GlobalExndata::get()[0] == 1 {
-        Err(super::JsValue::_new(GlobalExndata::get()[1]))
+    let ret = if GLOBAL_EXNDATA.0.get()[0] == 1 {
+        Err(super::JsValue::_new(GLOBAL_EXNDATA.0.get()[1]))
     } else {
         Ok(())
     };
-    GlobalExndata::set([0, 0]);
+    GLOBAL_EXNDATA.0.set([0, 0]);
     ret
 }
 

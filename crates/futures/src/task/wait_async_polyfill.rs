@@ -46,44 +46,22 @@ use js_sys::{Array, Promise};
 use wasm_bindgen::prelude::*;
 use web_sys::{MessageEvent, Worker};
 
-struct Helpers;
-
-impl Helpers {
-    #[cfg(feature = "std")]
-    pub(crate) fn with<R>(f: impl FnOnce(&RefCell<Vec<Worker>>) -> R) -> R {
-        thread_local! {
-            static HELPERS: RefCell<Vec<Worker>> = RefCell::new(vec![]);
-        }
-
-        HELPERS.with(f)
-    }
-
-    #[cfg(not(feature = "std"))]
-    pub(crate) fn with<R>(f: impl FnOnce(&RefCell<Vec<Worker>>) -> R) -> R {
-        #[thread_local]
-        static HELPERS: RefCell<Vec<Worker>> = RefCell::new(vec![]);
-
-        f(&HELPERS)
-    }
-}
+#[thread_local]
+static HELPERS: RefCell<Vec<Worker>> = RefCell::new(vec![]);
 
 fn alloc_helper() -> Worker {
-    Helpers::with(|helpers| {
-        if let Some(helper) = helpers.borrow_mut().pop() {
-            return helper;
-        }
+    if let Some(helper) = HELPERS.borrow_mut().pop() {
+        return helper;
+    }
 
-        let worker_url = wasm_bindgen::link_to!(module = "/src/task/worker.js");
-        Worker::new(&worker_url).unwrap_or_else(|js| wasm_bindgen::throw_val(js))
-    })
+    let worker_url = wasm_bindgen::link_to!(module = "/src/task/worker.js");
+    Worker::new(&worker_url).unwrap_or_else(|js| wasm_bindgen::throw_val(js))
 }
 
 fn free_helper(helper: Worker) {
-    Helpers::with(move |helpers| {
-        let mut helpers = helpers.borrow_mut();
-        helpers.push(helper.clone());
-        helpers.truncate(10); // random arbitrary limit chosen here
-    });
+    let mut helpers = HELPERS.borrow_mut();
+    helpers.push(helper.clone());
+    helpers.truncate(10); // random arbitrary limit chosen here
 }
 
 pub fn wait_async(ptr: &AtomicI32, value: i32) -> Promise {

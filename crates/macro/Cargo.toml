@@ -17,14 +17,12 @@ version = "0.2.99"
 proc-macro = true
 
 [features]
-default = ["std"]
-std = ["wasm-bindgen-macro-support/std"]
 strict-macro = ["wasm-bindgen-macro-support/strict-macro"]
 xxx_debug_only_print_generated_code = []
 
 [dependencies]
 quote = "1.0"
-wasm-bindgen-macro-support = { path = "../macro-support", version = "=0.2.99", default-features = false }
+wasm-bindgen-macro-support = { path = "../macro-support", version = "=0.2.99" }
 
 [dev-dependencies]
 js-sys = { path = "../js-sys" }

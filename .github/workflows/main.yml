@@ -582,7 +582,6 @@ jobs:
       run: |
         cargo update -p bumpalo --precise 3.12.0
         cargo update -p log --precise 0.4.18
-        cargo update -p scoped-tls --precise 1.0.0
     - run: cargo build --target ${{ matrix.target }} ${{ matrix.features }}
 
   msrv-lib:
