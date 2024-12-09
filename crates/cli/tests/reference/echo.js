@@ -685,8 +685,8 @@ function getArrayJsValueFromWasm0(ptr, len) {
     return result;
 }
 /**
- * @param {(string)[]} a
- * @returns {(string)[]}
+ * @param {string[]} a
+ * @returns {string[]}
  */
 export function echo_vec_string(a) {
     const ptr0 = passArrayJsValueToWasm0(a, wasm.__wbindgen_malloc);
@@ -714,8 +714,8 @@ export function echo_struct(a) {
 }
 
 /**
- * @param {(Foo)[]} a
- * @returns {(Foo)[]}
+ * @param {Foo[]} a
+ * @returns {Foo[]}
  */
 export function echo_vec_struct(a) {
     const ptr0 = passArrayJsValueToWasm0(a, wasm.__wbindgen_malloc);
@@ -1145,8 +1145,8 @@ export function echo_option_vec_uninit_i64(a) {
 }
 
 /**
- * @param {(string)[] | null} [a]
- * @returns {(string)[] | undefined}
+ * @param {string[] | null} [a]
+ * @returns {string[] | undefined}
  */
 export function echo_option_vec_string(a) {
     var ptr0 = isLikeNone(a) ? 0 : passArrayJsValueToWasm0(a, wasm.__wbindgen_malloc);
@@ -1175,8 +1175,8 @@ export function echo_option_struct(a) {
 }
 
 /**
- * @param {(Foo)[] | null} [a]
- * @returns {(Foo)[] | undefined}
+ * @param {Foo[] | null} [a]
+ * @returns {Foo[] | undefined}
  */
 export function echo_option_vec_struct(a) {
     var ptr0 = isLikeNone(a) ? 0 : passArrayJsValueToWasm0(a, wasm.__wbindgen_malloc);

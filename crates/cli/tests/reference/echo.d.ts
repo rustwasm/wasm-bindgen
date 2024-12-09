@@ -33,9 +33,9 @@ export function echo_vec_uninit_u32(a: Uint32Array): Uint32Array;
 export function echo_vec_uninit_i32(a: Int32Array): Int32Array;
 export function echo_vec_uninit_u64(a: BigUint64Array): BigUint64Array;
 export function echo_vec_uninit_i64(a: BigInt64Array): BigInt64Array;
-export function echo_vec_string(a: (string)[]): (string)[];
+export function echo_vec_string(a: string[]): string[];
 export function echo_struct(a: Foo): Foo;
-export function echo_vec_struct(a: (Foo)[]): (Foo)[];
+export function echo_vec_struct(a: Foo[]): Foo[];
 export function echo_option_u8(a?: number | null): number | undefined;
 export function echo_option_i8(a?: number | null): number | undefined;
 export function echo_option_u16(a?: number | null): number | undefined;
@@ -69,9 +69,9 @@ export function echo_option_vec_uninit_u32(a?: Uint32Array | null): Uint32Array 
 export function echo_option_vec_uninit_i32(a?: Int32Array | null): Int32Array | undefined;
 export function echo_option_vec_uninit_u64(a?: BigUint64Array | null): BigUint64Array | undefined;
 export function echo_option_vec_uninit_i64(a?: BigInt64Array | null): BigInt64Array | undefined;
-export function echo_option_vec_string(a?: (string)[] | null): (string)[] | undefined;
+export function echo_option_vec_string(a?: string[] | null): string[] | undefined;
 export function echo_option_struct(a?: Foo | null): Foo | undefined;
-export function echo_option_vec_struct(a?: (Foo)[] | null): (Foo)[] | undefined;
+export function echo_option_vec_struct(a?: Foo[] | null): Foo[] | undefined;
 export class Foo {
   private constructor();
   free(): void;
