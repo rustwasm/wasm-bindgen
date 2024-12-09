@@ -489,6 +489,17 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
         ident
     }
 
+    /// Creates a mutable JS variable with the given name and returns the
+    /// name. The create variable will use the `let` binding and will not be
+    /// visible in the `finally` block.
+    ///
+    /// If the name is already taken, a different name is generated.
+    pub fn r#let(&mut self, name: &str, initial_value: String) -> String {
+        let ident = self.unique_name(name);
+        self.prelude(&format!("let {} = {};", ident, initial_value));
+        ident
+    }
+
     /// Creates a mutable JS `var`iable with the given name and returns the
     /// name. The create variable is also visible in the `finally` block.
     ///
@@ -925,8 +936,8 @@ fn instruction(
                 "{}().{}(retptr + {} * {}, true)",
                 mem, method, size, scaled_offset
             );
-            js.prelude(&format!("var r{} = {};", offset, expr));
-            js.push(format!("r{}", offset));
+            let r = js.alias(&format!("r{offset}"), expr);
+            js.push(r);
         }
 
         Instruction::I32FromBool => {
@@ -975,7 +986,7 @@ fn instruction(
         Instruction::I32FromOptionRust { class } => {
             let val = js.pop();
             js.cx.expose_is_like_none();
-            let ptr = js.var("ptr", "0".to_string());
+            let ptr = js.r#let("ptr", "0".to_string());
             js.prelude(&format!("if (!isLikeNone({0})) {{", val));
             js.assert_class(&val, class);
             js.assert_not_moved(&val);
@@ -1146,8 +1157,8 @@ fn instruction(
             let len = js.pop();
             let ptr = js.pop();
 
-            let ptr = js.var("ptr", ptr);
-            let len = js.var("len", len);
+            let ptr = js.r#let("ptr", ptr);
+            let len = js.r#let("len", len);
             js.prelude(&format!(
                 "
                 if ({is_err}) {{
@@ -1356,7 +1367,7 @@ fn instruction(
             let ptr = js.pop();
             let f = js.cx.expose_get_vector_from_wasm(kind.clone(), *mem)?;
             let free = js.cx.export_name_of(*free);
-            let val = js.var("v", "undefined".to_string());
+            let val = js.r#let("v", "undefined".to_string());
             js.prelude(&format!("if ({} !== 0) {{", ptr));
             js.prelude(&format!("{val} = {f}({ptr}, {len}).slice();"));
             js.prelude(&format!(

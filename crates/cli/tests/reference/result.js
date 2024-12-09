@@ -35,8 +35,8 @@ function takeFromExternrefTable0(idx) {
 export function result_string() {
     try {
         const ret = wasm.result_string();
-        var ptr = ret[0];
-        var len = ret[1];
+        let ptr = ret[0];
+        let len = ret[1];
         if (ret[3]) {
             ptr = 0; len = 0;
             throw takeFromExternrefTable0(ret[2]);

@@ -878,7 +878,7 @@ export function echo_option_string(a) {
     const ptr = isLikeNone(a) ? 0 : passStringToWasm0(a, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len = WASM_VECTOR_LEN;
     const ret = wasm.echo_option_string(ptr, len);
-    var v = undefined;
+    let v = undefined;
     if (ret[0] !== 0) {
         v = getStringFromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
@@ -894,7 +894,7 @@ export function echo_option_vec_u8(a) {
     const ptr = isLikeNone(a) ? 0 : passArray8ToWasm0(a, wasm.__wbindgen_malloc);
     const len = WASM_VECTOR_LEN;
     const ret = wasm.echo_option_vec_u8(ptr, len);
-    var v = undefined;
+    let v = undefined;
     if (ret[0] !== 0) {
         v = getArrayU8FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
@@ -910,7 +910,7 @@ export function echo_option_vec_i8(a) {
     const ptr = isLikeNone(a) ? 0 : passArray8ToWasm0(a, wasm.__wbindgen_malloc);
     const len = WASM_VECTOR_LEN;
     const ret = wasm.echo_option_vec_i8(ptr, len);
-    var v = undefined;
+    let v = undefined;
     if (ret[0] !== 0) {
         v = getArrayI8FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
@@ -926,7 +926,7 @@ export function echo_option_vec_u16(a) {
     const ptr = isLikeNone(a) ? 0 : passArray16ToWasm0(a, wasm.__wbindgen_malloc);
     const len = WASM_VECTOR_LEN;
     const ret = wasm.echo_option_vec_u16(ptr, len);
-    var v = undefined;
+    let v = undefined;
     if (ret[0] !== 0) {
         v = getArrayU16FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 2, 2);
@@ -942,7 +942,7 @@ export function echo_option_vec_i16(a) {
     const ptr = isLikeNone(a) ? 0 : passArray16ToWasm0(a, wasm.__wbindgen_malloc);
     const len = WASM_VECTOR_LEN;
     const ret = wasm.echo_option_vec_i16(ptr, len);
-    var v = undefined;
+    let v = undefined;
     if (ret[0] !== 0) {
         v = getArrayI16FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 2, 2);
@@ -958,7 +958,7 @@ export function echo_option_vec_u32(a) {
     const ptr = isLikeNone(a) ? 0 : passArray32ToWasm0(a, wasm.__wbindgen_malloc);
     const len = WASM_VECTOR_LEN;
     const ret = wasm.echo_option_vec_u32(ptr, len);
-    var v = undefined;
+    let v = undefined;
     if (ret[0] !== 0) {
         v = getArrayU32FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
@@ -974,7 +974,7 @@ export function echo_option_vec_i32(a) {
     const ptr = isLikeNone(a) ? 0 : passArray32ToWasm0(a, wasm.__wbindgen_malloc);
     const len = WASM_VECTOR_LEN;
     const ret = wasm.echo_option_vec_i32(ptr, len);
-    var v = undefined;
+    let v = undefined;
     if (ret[0] !== 0) {
         v = getArrayI32FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
@@ -990,7 +990,7 @@ export function echo_option_vec_u64(a) {
     const ptr = isLikeNone(a) ? 0 : passArray64ToWasm0(a, wasm.__wbindgen_malloc);
     const len = WASM_VECTOR_LEN;
     const ret = wasm.echo_option_vec_u64(ptr, len);
-    var v = undefined;
+    let v = undefined;
     if (ret[0] !== 0) {
         v = getArrayU64FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 8, 8);
@@ -1006,7 +1006,7 @@ export function echo_option_vec_i64(a) {
     const ptr = isLikeNone(a) ? 0 : passArray64ToWasm0(a, wasm.__wbindgen_malloc);
     const len = WASM_VECTOR_LEN;
     const ret = wasm.echo_option_vec_i64(ptr, len);
-    var v = undefined;
+    let v = undefined;
     if (ret[0] !== 0) {
         v = getArrayI64FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 8, 8);
@@ -1022,7 +1022,7 @@ export function echo_option_vec_uninit_u8(a) {
     const ptr = isLikeNone(a) ? 0 : passArray8ToWasm0(a, wasm.__wbindgen_malloc);
     const len = WASM_VECTOR_LEN;
     const ret = wasm.echo_option_vec_uninit_u8(ptr, len);
-    var v = undefined;
+    let v = undefined;
     if (ret[0] !== 0) {
         v = getArrayU8FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
@@ -1038,7 +1038,7 @@ export function echo_option_vec_uninit_i8(a) {
     const ptr = isLikeNone(a) ? 0 : passArray8ToWasm0(a, wasm.__wbindgen_malloc);
     const len = WASM_VECTOR_LEN;
     const ret = wasm.echo_option_vec_uninit_i8(ptr, len);
-    var v = undefined;
+    let v = undefined;
     if (ret[0] !== 0) {
         v = getArrayI8FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
@@ -1054,7 +1054,7 @@ export function echo_option_vec_uninit_u16(a) {
     const ptr = isLikeNone(a) ? 0 : passArray16ToWasm0(a, wasm.__wbindgen_malloc);
     const len = WASM_VECTOR_LEN;
     const ret = wasm.echo_option_vec_uninit_u16(ptr, len);
-    var v = undefined;
+    let v = undefined;
     if (ret[0] !== 0) {
         v = getArrayU16FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 2, 2);
@@ -1070,7 +1070,7 @@ export function echo_option_vec_uninit_i16(a) {
     const ptr = isLikeNone(a) ? 0 : passArray16ToWasm0(a, wasm.__wbindgen_malloc);
     const len = WASM_VECTOR_LEN;
     const ret = wasm.echo_option_vec_uninit_i16(ptr, len);
-    var v = undefined;
+    let v = undefined;
     if (ret[0] !== 0) {
         v = getArrayI16FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 2, 2);
@@ -1086,7 +1086,7 @@ export function echo_option_vec_uninit_u32(a) {
     const ptr = isLikeNone(a) ? 0 : passArray32ToWasm0(a, wasm.__wbindgen_malloc);
     const len = WASM_VECTOR_LEN;
     const ret = wasm.echo_option_vec_uninit_u32(ptr, len);
-    var v = undefined;
+    let v = undefined;
     if (ret[0] !== 0) {
         v = getArrayU32FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
@@ -1102,7 +1102,7 @@ export function echo_option_vec_uninit_i32(a) {
     const ptr = isLikeNone(a) ? 0 : passArray32ToWasm0(a, wasm.__wbindgen_malloc);
     const len = WASM_VECTOR_LEN;
     const ret = wasm.echo_option_vec_uninit_i32(ptr, len);
-    var v = undefined;
+    let v = undefined;
     if (ret[0] !== 0) {
         v = getArrayI32FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
@@ -1118,7 +1118,7 @@ export function echo_option_vec_uninit_u64(a) {
     const ptr = isLikeNone(a) ? 0 : passArray64ToWasm0(a, wasm.__wbindgen_malloc);
     const len = WASM_VECTOR_LEN;
     const ret = wasm.echo_option_vec_uninit_u64(ptr, len);
-    var v = undefined;
+    let v = undefined;
     if (ret[0] !== 0) {
         v = getArrayU64FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 8, 8);
@@ -1134,7 +1134,7 @@ export function echo_option_vec_uninit_i64(a) {
     const ptr = isLikeNone(a) ? 0 : passArray64ToWasm0(a, wasm.__wbindgen_malloc);
     const len = WASM_VECTOR_LEN;
     const ret = wasm.echo_option_vec_uninit_i64(ptr, len);
-    var v = undefined;
+    let v = undefined;
     if (ret[0] !== 0) {
         v = getArrayI64FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 8, 8);
@@ -1150,7 +1150,7 @@ export function echo_option_vec_string(a) {
     const ptr = isLikeNone(a) ? 0 : passArrayJsValueToWasm0(a, wasm.__wbindgen_malloc);
     const len = WASM_VECTOR_LEN;
     const ret = wasm.echo_option_vec_string(ptr, len);
-    var v = undefined;
+    let v = undefined;
     if (ret[0] !== 0) {
         v = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
@@ -1163,7 +1163,7 @@ export function echo_option_vec_string(a) {
  * @returns {Foo | undefined}
  */
 export function echo_option_struct(a) {
-    var ptr = 0;
+    let ptr = 0;
     if (!isLikeNone(a)) {
         _assertClass(a, Foo);
         ptr = a.__destroy_into_raw();
@@ -1180,7 +1180,7 @@ export function echo_option_vec_struct(a) {
     const ptr = isLikeNone(a) ? 0 : passArrayJsValueToWasm0(a, wasm.__wbindgen_malloc);
     const len = WASM_VECTOR_LEN;
     const ret = wasm.echo_option_vec_struct(ptr, len);
-    var v = undefined;
+    let v = undefined;
     if (ret[0] !== 0) {
         v = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
