@@ -225,6 +225,13 @@ impl ToTokens for ast::Struct {
         let wasm_bindgen = &self.wasm_bindgen;
         (quote! {
             #[automatically_derived]
+            impl #wasm_bindgen::__rt::marker::SupportsConstructor for #name {}
+            #[automatically_derived]
+            impl #wasm_bindgen::__rt::marker::SupportsInstanceProperty for #name {}
+            #[automatically_derived]
+            impl #wasm_bindgen::__rt::marker::SupportsStaticProperty for #name {}
+
+            #[automatically_derived]
             impl #wasm_bindgen::describe::WasmDescribe for #name {
                 fn describe() {
                     use #wasm_bindgen::describe::*;
@@ -782,11 +789,40 @@ impl TryToTokens for ast::Export {
         let nargs = self.function.arguments.len() as u32;
         let attrs = &self.function.rust_attrs;
 
-        let start_check = if self.start {
-            quote! { const _ASSERT: fn() = || -> #projection::Abi { loop {} }; }
-        } else {
-            quote! {}
+        let mut checks = Vec::new();
+        if self.start {
+            checks.push(quote! { const _ASSERT: fn() = || -> #projection::Abi { loop {} }; });
         };
+
+        if let Some(class) = self.rust_class.as_ref() {
+            // little helper function to make sure the check points to the
+            // location of the function causing the assert to fail
+            let mut add_check = |token_stream| {
+                checks.push(respan(token_stream, &self.rust_name));
+            };
+
+            match &self.method_kind {
+                ast::MethodKind::Constructor => {
+                    add_check(quote! {
+                        let _: #wasm_bindgen::__rt::marker::CheckSupportsConstructor<#class>;
+                    });
+                }
+                ast::MethodKind::Operation(operation) => match operation.kind {
+                    ast::OperationKind::Getter(_) | ast::OperationKind::Setter(_) => {
+                        if operation.is_static {
+                            add_check(quote! {
+                                let _: #wasm_bindgen::__rt::marker::CheckSupportsStaticProperty<#class>;
+                            });
+                        } else {
+                            add_check(quote! {
+                                let _: #wasm_bindgen::__rt::marker::CheckSupportsInstanceProperty<#class>;
+                            });
+                        }
+                    }
+                    _ => {}
+                },
+            }
+        }
 
         (quote! {
             #[automatically_derived]
@@ -798,7 +834,9 @@ impl TryToTokens for ast::Export {
                     export_name = #export_name,
                 )]
                 pub unsafe extern "C" fn #generated_name(#(#args),*) -> #wasm_bindgen::convert::WasmRet<#projection::Abi> {
-                    #start_check
+                    const _: () = {
+                        #(#checks)*
+                    };
 
                     let #ret = #call;
                     #convert_ret

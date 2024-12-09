@@ -14,6 +14,14 @@
 //! This feature currently enables the `std` feature, meaning that it is not
 //! compatible with `no_std` environments.
 //!
+//! ### `msrv` (default)
+//!
+//! Enables Rust language features that require a higher MSRV. Enabling this
+//! feature on older compilers will NOT result in a compilation error, the newer
+//! language features will simply not be used.
+//!
+//! When compiling with Rust v1.78 or later, this feature enables better error messages for invalid methods on structs and enums.
+//!
 //! ### `std` (default)
 //!
 //! Enabling this feature will make the crate depend on the Rust standard library.
@@ -60,7 +68,7 @@ use alloc::boxed::Box;
 use alloc::string::String;
 use alloc::vec::Vec;
 use core::convert::TryFrom;
-use core::marker;
+use core::marker::PhantomData;
 use core::mem;
 use core::ops::{
     Add, BitAnd, BitOr, BitXor, Deref, DerefMut, Div, Mul, Neg, Not, Rem, Shl, Shr, Sub,
@@ -129,7 +137,7 @@ if_std! {
 }
 
 #[doc(hidden)]
-#[path = "rt.rs"]
+#[path = "rt/mod.rs"]
 pub mod __rt;
 
 /// Representation of an object owned by JS.
@@ -140,7 +148,7 @@ pub mod __rt;
 /// but for now it may be slightly slow.
 pub struct JsValue {
     idx: u32,
-    _marker: marker::PhantomData<*mut u8>, // not at all threadsafe
+    _marker: PhantomData<*mut u8>, // not at all threadsafe
 }
 
 const JSIDX_OFFSET: u32 = 128; // keep in sync with js/mod.rs
@@ -167,7 +175,7 @@ impl JsValue {
     const fn _new(idx: u32) -> JsValue {
         JsValue {
             idx,
-            _marker: marker::PhantomData,
+            _marker: PhantomData,
         }
     }
 

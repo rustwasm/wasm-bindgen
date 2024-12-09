@@ -22,7 +22,7 @@ error[E0277]: the trait bound `wasm_bindgen::JsValue: From<BadType>` is not sati
   --> ui-tests/async-errors.rs:35:24
    |
 35 | pub async fn bad3() -> BadType { loop {} }
-   |                        ^^^^^^^ the trait `From<BadType>` is not implemented for `wasm_bindgen::JsValue`
+   |                        ^^^^^^^ the trait `From<BadType>` is not implemented for `wasm_bindgen::JsValue`, which is required by `BadType: IntoJsResult`
    |
    = help: the following other types implement trait `From<T>`:
              <wasm_bindgen::JsValue as From<bool>>

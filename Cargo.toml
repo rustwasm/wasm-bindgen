@@ -22,11 +22,18 @@ features = ["serde-serialize"]
 test = false
 
 [features]
-default = ["std"]
+default = ["std", "msrv"]
 enable-interning = ["std"]
 serde-serialize = ["serde", "serde_json", "std"]
 spans = []
 std = ["wasm-bindgen-macro/std", "once_cell/std"]
+
+# Opt-in for Rust language features that require a higher MSRV.
+#
+# The current rustc version is detected at compile-time, so enabling this
+# feature for older compilers will NOT result in a compilation error. Instead,
+# any unsupported language feature will not be used.
+msrv = ["rustversion"]
 
 # Whether or not the `#[wasm_bindgen]` macro is strict and generates an error on
 # all unused attributes
@@ -43,6 +50,7 @@ xxx_debug_only_print_generated_code = ["wasm-bindgen-macro/xxx_debug_only_print_
 [dependencies]
 cfg-if = "1.0.0"
 once_cell = { version = "1.12", default-features = false }
+rustversion = { version = "1.0", optional = true }
 serde = { version = "1.0", optional = true }
 serde_json = { version = "1.0", optional = true }
 wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.99", default-features = false }
