@@ -1319,7 +1319,7 @@ fn instruction(
                 .collect::<Vec<_>>()
                 .join(", ");
             let wrapper = js.cx.adapter_name(*adapter);
-            let cb = js.var(
+            let cb = js.alias(
                 "cb",
                 if *mutable {
                     // Mutable closures need protection against being called
