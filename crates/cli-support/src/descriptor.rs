@@ -1,5 +1,7 @@
 use std::char;
 
+use crate::js::identifier::is_valid_ident;
+
 macro_rules! tys {
     ($($a:ident)*) => (tys! { @ ($($a)*) 0 });
     (@ () $v:expr) => {};
@@ -306,7 +308,11 @@ impl VectorKind {
             VectorKind::F64 => "Float64Array".to_string(),
             VectorKind::Externref => "any[]".to_string(),
             VectorKind::NamedExternref(ref name) => {
-                format!("({})[]", name)
+                if is_valid_ident(name.as_str()) {
+                    format!("{}[]", name)
+                } else {
+                    format!("({})[]", name)
+                }
             }
         }
     }
