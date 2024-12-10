@@ -8,6 +8,9 @@
 * Add a `copy_to_uninit()` method to all `TypedArray`s. It takes `&mut [MaybeUninit<T>]` and returns `&mut [T]`.
   [#4340](https://github.com/rustwasm/wasm-bindgen/pull/4340)
 
+* Support importing memory and using `wasm_bindgen::module()` in Node.js.
+  [#4349](https://github.com/rustwasm/wasm-bindgen/pull/4349)
+
 ### Changed
 
 * Optional parameters are now typed as `T | undefined | null` to reflect the actual JS behavior.
@@ -47,7 +50,7 @@ Released 2024-12-07
 
 ### Added
 
-* Add support for multi-threading in Node.js.
+* Add support for compiling with `atomics` for Node.js.
   [#4318](https://github.com/rustwasm/wasm-bindgen/pull/4318)
 
 * Add `WASM_BINDGEN_TEST_DRIVER_TIMEOUT` environment variable to control the timeout to start and connect to the test driver.

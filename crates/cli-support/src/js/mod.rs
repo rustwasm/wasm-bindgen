@@ -261,7 +261,12 @@ impl<'a> Context<'a> {
 
     fn generate_node_imports(&self) -> String {
         let mut imports = BTreeSet::new();
-        for import in self.module.imports.iter() {
+        for import in self
+            .module
+            .imports
+            .iter()
+            .filter(|i| !(matches!(i.kind, walrus::ImportKind::Memory(_))))
+        {
             imports.insert(&import.module);
         }
 
@@ -296,8 +301,26 @@ impl<'a> Context<'a> {
         reset_indentation(&shim)
     }
 
-    fn generate_node_wasm_loading(&self, path: &Path) -> String {
+    fn generate_node_wasm_loading(&mut self, path: &Path) -> String {
         let mut shim = String::new();
+
+        let module_name = "wbg";
+        if let Some(mem) = self.module.memories.iter().next() {
+            if let Some(id) = mem.import {
+                self.module.imports.get_mut(id).module = module_name.to_string();
+                shim.push_str(&format!(
+                    "imports.{module_name} = {{ memory: new WebAssembly.Memory({{"
+                ));
+                shim.push_str(&format!("initial:{}", mem.initial));
+                if let Some(max) = mem.maximum {
+                    shim.push_str(&format!(",maximum:{}", max));
+                }
+                if mem.shared {
+                    shim.push_str(",shared:true");
+                }
+                shim.push_str("}) };");
+            }
+        }
 
         if self.config.mode.uses_es_modules() {
             // On windows skip the leading `/` which comes out when we parse a
@@ -460,8 +483,6 @@ impl<'a> Context<'a> {
             // With normal CommonJS node we need to defer requiring the wasm
             // until the end so most of our own exports are hooked up
             OutputMode::Node { module: false } => {
-                self.nodejs_memory();
-
                 js.push_str(&self.generate_node_imports());
 
                 js.push_str("let wasm;\n");
@@ -505,8 +526,6 @@ impl<'a> Context<'a> {
             // and let the bundler/runtime take care of it.
             // With Node we manually read the Wasm file from the filesystem and instantiate it.
             OutputMode::Bundler { .. } | OutputMode::Node { module: true } => {
-                self.nodejs_memory();
-
                 for (id, js) in iter_by_import(&self.wasm_import_definitions, self.module) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}_bg.js", module_name);
@@ -524,26 +543,17 @@ impl<'a> Context<'a> {
                     }
                 }
 
-                self.imports_post.push_str(
-                    "\
-                    let wasm;
-                    export function __wbg_set_wasm(val) {
-                        wasm = val;
-                    }
-                    ",
-                );
-
-                if matches!(self.config.mode, OutputMode::Node { module: true }) {
-                    let start = start.get_or_insert_with(String::new);
-                    start.push_str(&self.generate_node_imports());
-                    start.push_str(&self.generate_node_wasm_loading(Path::new(&format!(
-                        "./{}_bg.wasm",
-                        module_name
-                    ))));
-                }
-
                 match self.config.mode {
                     OutputMode::Bundler { .. } => {
+                        self.imports_post.push_str(
+                            "\
+                            let wasm;
+                            export function __wbg_set_wasm(val) {
+                                wasm = val;
+                            }
+                            ",
+                        );
+
                         start.get_or_insert_with(String::new).push_str(&format!(
                             "\
 import {{ __wbg_set_wasm }} from \"./{module_name}_bg.js\";
@@ -552,8 +562,26 @@ __wbg_set_wasm(wasm);"
                     }
 
                     OutputMode::Node { module: true } => {
-                        start.get_or_insert_with(String::new).push_str(&format!(
-                            "imports[\"./{module_name}_bg.js\"].__wbg_set_wasm(wasm);"
+                        self.imports_post.push_str(
+                            "\
+                            let wasm;
+                            let wasmModule;
+                            export function __wbg_set_wasm(exports, module) {
+                                wasm = exports;
+                                wasmModule = module;
+                            }
+                            ",
+                        );
+
+                        let start = start.get_or_insert_with(String::new);
+                        start.push_str(&self.generate_node_imports());
+                        start.push_str(&self.generate_node_wasm_loading(Path::new(&format!(
+                            "./{}_bg.wasm",
+                            module_name
+                        ))));
+
+                        start.push_str(&format!(
+                            "imports[\"./{module_name}_bg.js\"].__wbg_set_wasm(wasm, wasmModule);"
                         ));
                     }
 
@@ -1027,14 +1055,6 @@ __wbg_set_wasm(wasm);"
         );
 
         Ok((js, ts))
-    }
-
-    fn nodejs_memory(&mut self) {
-        if let Some(mem) = self.module.memories.iter_mut().next() {
-            if let Some(id) = mem.import.take() {
-                self.module.imports.delete(id);
-            }
-        }
     }
 
     fn write_classes(&mut self) -> Result<(), Error> {
@@ -3833,13 +3853,18 @@ __wbg_set_wasm(wasm);"
 
             Intrinsic::Module => {
                 assert_eq!(args.len(), 0);
-                if !self.config.mode.no_modules() && !self.config.mode.web() {
-                    bail!(
+
+                match self.config.mode {
+                    OutputMode::Web | OutputMode::NoModules { .. } => {
+                        "__wbg_init.__wbindgen_wasm_module"
+                    }
+                    OutputMode::Node { .. } => "wasmModule",
+                    _ => bail!(
                         "`wasm_bindgen::module` is currently only supported with \
-                         `--target no-modules` and `--target web`"
-                    );
+                         `--target no-modules`, `--target web` and `--target nodejs`"
+                    ),
                 }
-                "__wbg_init.__wbindgen_wasm_module".to_string()
+                .to_string()
             }
 
             Intrinsic::Exports => {
