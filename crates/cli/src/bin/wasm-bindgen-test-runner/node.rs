@@ -1,7 +1,7 @@
 use std::env;
 use std::ffi::OsString;
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use anyhow::{Context, Error};
@@ -44,10 +44,12 @@ pub fn execute(
     args: &[OsString],
     tests: &[String],
     module_format: bool,
+    coverage: PathBuf,
 ) -> Result<(), Error> {
     let mut js_to_execute = format!(
         r#"
         {exit};
+        {fs};
         {wasm};
 
         {console_override}
@@ -62,6 +64,11 @@ pub fn execute(
             cx.args(process.argv.slice(2));
 
             const ok = await cx.run(tests.map(n => wasm.__wasm[n]));
+
+            const coverage = wasm.__wbgtest_cov_dump();
+            if (coverage !== undefined)
+                await fs.writeFile('{coverage}', coverage);
+
             if (!ok)
                 exit(1);
         }}
@@ -78,6 +85,12 @@ pub fn execute(
         } else {
             r"import { exit } from 'node:process'".to_string()
         },
+        fs = if !module_format {
+            r"const fs = require('node:fs/promises')".to_string()
+        } else {
+            r"import fs from 'node:fs/promises'".to_string()
+        },
+        coverage = coverage.display(),
         console_override = SHARED_SETUP,
     );
 
