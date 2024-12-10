@@ -8,6 +8,9 @@
 * Add a `copy_to_uninit()` method to all `TypedArray`s. It takes `&mut [MaybeUninit<T>]` and returns `&mut [T]`.
   [#4340](https://github.com/rustwasm/wasm-bindgen/pull/4340)
 
+* Add test coverage support for Node.js.
+  [#4348](https://github.com/rustwasm/wasm-bindgen/pull/4348)
+
 ### Changed
 
 * Optional parameters are now typed as `T | undefined | null` to reflect the actual JS behavior.

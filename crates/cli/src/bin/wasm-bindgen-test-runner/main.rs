@@ -271,7 +271,7 @@ fn main() -> anyhow::Result<()> {
 
     match test_mode {
         TestMode::Node { no_modules } => {
-            node::execute(module, &tmpdir, &args, &tests, !no_modules)?
+            node::execute(module, &tmpdir, &args, &tests, !no_modules, coverage)?
         }
         TestMode::Deno => deno::execute(module, &tmpdir, &args, &tests)?,
         TestMode::Browser { .. }
