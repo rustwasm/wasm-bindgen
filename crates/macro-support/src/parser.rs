@@ -493,7 +493,7 @@ impl Parse for AnyIdent {
 ///
 /// Used to convert syn tokens into an AST, that we can then use to generate glue code. The context
 /// (`Ctx`) is used to pass in the attributes from the `#[wasm_bindgen]`, if needed.
-trait ConvertToAst<Ctx> {
+pub(crate) trait ConvertToAst<Ctx> {
     /// What we are converting to.
     type Target;
     /// Convert into our target.
@@ -502,13 +502,10 @@ trait ConvertToAst<Ctx> {
     fn convert(self, context: Ctx) -> Result<Self::Target, Diagnostic>;
 }
 
-impl ConvertToAst<(&ast::Program, BindgenAttrs)> for &mut syn::ItemStruct {
+impl ConvertToAst<&ast::Program> for &mut syn::ItemStruct {
     type Target = ast::Struct;
 
-    fn convert(
-        self,
-        (program, attrs): (&ast::Program, BindgenAttrs),
-    ) -> Result<Self::Target, Diagnostic> {
+    fn convert(self, program: &ast::Program) -> Result<Self::Target, Diagnostic> {
         if !self.generics.params.is_empty() {
             bail_span!(
                 self.generics,
@@ -516,8 +513,10 @@ impl ConvertToAst<(&ast::Program, BindgenAttrs)> for &mut syn::ItemStruct {
                  type parameters currently"
             );
         }
+        let struct_attrs = BindgenAttrs::find(&mut self.attrs)?;
+
         let mut fields = Vec::new();
-        let js_name = attrs
+        let js_name = struct_attrs
             .js_name()
             .map(|s| s.0.to_string())
             .unwrap_or(self.ident.unraw().to_string());
@@ -529,8 +528,8 @@ impl ConvertToAst<(&ast::Program, BindgenAttrs)> for &mut syn::ItemStruct {
             );
         }
 
-        let is_inspectable = attrs.inspectable().is_some();
-        let getter_with_clone = attrs.getter_with_clone();
+        let is_inspectable = struct_attrs.inspectable().is_some();
+        let getter_with_clone = struct_attrs.getter_with_clone();
         for (i, field) in self.fields.iter_mut().enumerate() {
             match field.vis {
                 syn::Visibility::Public(..) => {}
@@ -572,9 +571,9 @@ impl ConvertToAst<(&ast::Program, BindgenAttrs)> for &mut syn::ItemStruct {
             });
             attrs.check_used();
         }
-        let generate_typescript = attrs.skip_typescript().is_none();
+        let generate_typescript = struct_attrs.skip_typescript().is_none();
         let comments: Vec<String> = extract_doc_comments(&self.attrs);
-        attrs.check_used();
+        struct_attrs.check_used();
         Ok(ast::Struct {
             rust_name: self.ident.clone(),
             js_name,
@@ -1230,11 +1229,6 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                     wasm_bindgen: program.wasm_bindgen.clone(),
                     wasm_bindgen_futures: program.wasm_bindgen_futures.clone(),
                 });
-            }
-            syn::Item::Struct(mut s) => {
-                let opts = opts.unwrap_or_default();
-                program.structs.push((&mut s).convert((program, opts))?);
-                s.to_tokens(tokens);
             }
             syn::Item::Impl(mut i) => {
                 let opts = opts.unwrap_or_default();
