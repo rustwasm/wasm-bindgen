@@ -561,6 +561,7 @@ macro_rules! doit {
     ($(
         ($($var:ident $arg1:ident $arg2:ident $arg3:ident $arg4:ident)*)
     )*) => ($(
+        #[allow(coherence_leak_check)]
         unsafe impl<$($var,)* R> WasmClosure for dyn Fn($($var),*) -> R + 'static
             where $($var: FromWasmAbi + 'static,)*
                   R: ReturnWasmAbi + 'static,
@@ -620,6 +621,7 @@ macro_rules! doit {
             }
         }
 
+        #[allow(coherence_leak_check)]
         unsafe impl<$($var,)* R> WasmClosure for dyn FnMut($($var),*) -> R + 'static
             where $($var: FromWasmAbi + 'static,)*
                   R: ReturnWasmAbi + 'static,

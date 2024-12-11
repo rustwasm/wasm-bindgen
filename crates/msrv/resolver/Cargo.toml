@@ -1,0 +1,30 @@
+[package]
+edition = "2021"
+name = "msrv-resolver-test"
+publish = false
+resolver = "1"
+version = "0.0.0"
+
+[features]
+default = [
+  "wasm-bindgen/default",
+  "js-sys/default",
+  "wasm-bindgen-futures/default",
+  "web-sys/default",
+  "wasm-bindgen-test/default",
+]
+msrv = ["wasm-bindgen/msrv"]
+std = [
+  "wasm-bindgen/std",
+  "js-sys/std",
+  "wasm-bindgen-futures/std",
+  "web-sys/std",
+  "wasm-bindgen-test/std",
+]
+
+[dependencies]
+js-sys = { path = "../../js-sys", default-features = false }
+wasm-bindgen = { path = "../../../", default-features = false }
+wasm-bindgen-futures = { path = "../../futures", default-features = false }
+wasm-bindgen-test = { path = "../../test", default-features = false }
+web-sys = { path = "../../web-sys", default-features = false }

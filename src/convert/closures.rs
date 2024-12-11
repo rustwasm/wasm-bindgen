@@ -10,7 +10,8 @@ use crate::throw_str;
 
 macro_rules! stack_closures {
     ($( ($cnt:tt $invoke:ident $invoke_mut:ident $($var:ident $arg1:ident $arg2:ident $arg3:ident $arg4:ident)*) )*) => ($(
-        impl<'a, 'b, $($var,)* R> IntoWasmAbi for &'a (dyn Fn($($var),*) -> R + 'b)
+        #[allow(coherence_leak_check)]
+        impl<$($var,)* R> IntoWasmAbi for &'_ (dyn Fn($($var),*) -> R + '_)
             where $($var: FromWasmAbi,)*
                   R: ReturnWasmAbi
         {
@@ -50,7 +51,8 @@ macro_rules! stack_closures {
             ret.return_abi().into()
         }
 
-        impl<'a, $($var,)* R> WasmDescribe for dyn Fn($($var),*) -> R + 'a
+        #[allow(coherence_leak_check)]
+        impl<$($var,)* R> WasmDescribe for dyn Fn($($var),*) -> R + '_
             where $($var: FromWasmAbi,)*
                   R: ReturnWasmAbi
         {
@@ -65,7 +67,8 @@ macro_rules! stack_closures {
             }
         }
 
-        impl<'a, 'b, $($var,)* R> IntoWasmAbi for &'a mut (dyn FnMut($($var),*) -> R + 'b)
+        #[allow(coherence_leak_check)]
+        impl<$($var,)* R> IntoWasmAbi for &'_ mut (dyn FnMut($($var),*) -> R + '_)
             where $($var: FromWasmAbi,)*
                   R: ReturnWasmAbi
         {
@@ -105,7 +108,8 @@ macro_rules! stack_closures {
             ret.return_abi().into()
         }
 
-        impl<'a, $($var,)* R> WasmDescribe for dyn FnMut($($var),*) -> R + 'a
+        #[allow(coherence_leak_check)]
+        impl<$($var,)* R> WasmDescribe for dyn FnMut($($var),*) -> R + '_
             where $($var: FromWasmAbi,)*
                   R: ReturnWasmAbi
         {

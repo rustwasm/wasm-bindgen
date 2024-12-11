@@ -321,13 +321,15 @@ impl<'a, 'b> Builder<'a, 'b> {
             let mut ts = String::new();
             match ty {
                 AdapterType::Option(ty) if omittable => {
+                    // e.g. `foo?: string | null`
                     arg.push_str("?: ");
-                    adapter2ts(ty, &mut ts, Some(&mut ts_refs));
+                    adapter2ts(ty, TypePosition::Argument, &mut ts, Some(&mut ts_refs));
+                    ts.push_str(" | null");
                 }
                 ty => {
                     omittable = false;
                     arg.push_str(": ");
-                    adapter2ts(ty, &mut ts, Some(&mut ts_refs));
+                    adapter2ts(ty, TypePosition::Argument, &mut ts, Some(&mut ts_refs));
                 }
             }
             arg.push_str(&ts);
@@ -363,7 +365,12 @@ impl<'a, 'b> Builder<'a, 'b> {
             let mut ret = String::new();
             match result_tys.len() {
                 0 => ret.push_str("void"),
-                1 => adapter2ts(&result_tys[0], &mut ret, Some(&mut ts_refs)),
+                1 => adapter2ts(
+                    &result_tys[0],
+                    TypePosition::Return,
+                    &mut ret,
+                    Some(&mut ts_refs),
+                ),
                 _ => ret.push_str("[any]"),
             }
             if asyncness {
@@ -395,16 +402,18 @@ impl<'a, 'b> Builder<'a, 'b> {
         for (name, ty) in fn_arg_names.iter().zip(arg_tys).rev() {
             let mut arg = "@param {".to_string();
 
-            adapter2ts(ty, &mut arg, None);
-            arg.push_str("} ");
             match ty {
-                AdapterType::Option(..) if omittable => {
+                AdapterType::Option(ty) if omittable => {
+                    adapter2ts(ty, TypePosition::Argument, &mut arg, None);
+                    arg.push_str(" | null} ");
                     arg.push('[');
                     arg.push_str(name);
                     arg.push(']');
                 }
                 _ => {
                     omittable = false;
+                    adapter2ts(ty, TypePosition::Argument, &mut arg, None);
+                    arg.push_str("} ");
                     arg.push_str(name);
                 }
             }
@@ -416,7 +425,7 @@ impl<'a, 'b> Builder<'a, 'b> {
 
         if let (Some(name), Some(ty)) = (variadic_arg, arg_tys.last()) {
             ret.push_str("@param {...");
-            adapter2ts(ty, &mut ret, None);
+            adapter2ts(ty, TypePosition::Argument, &mut ret, None);
             ret.push_str("} ");
             ret.push_str(name);
             ret.push('\n');
@@ -1246,7 +1255,6 @@ fn instruction(
 
         Instruction::CachedStringLoad {
             owned,
-            optional: _,
             mem,
             free,
             table,
@@ -1543,7 +1551,18 @@ impl Invocation {
     }
 }
 
-fn adapter2ts(ty: &AdapterType, dst: &mut String, refs: Option<&mut HashSet<TsReference>>) {
+#[derive(Debug, Clone, Copy)]
+enum TypePosition {
+    Argument,
+    Return,
+}
+
+fn adapter2ts(
+    ty: &AdapterType,
+    position: TypePosition,
+    dst: &mut String,
+    refs: Option<&mut HashSet<TsReference>>,
+) {
     match ty {
         AdapterType::I32
         | AdapterType::S8
@@ -1565,8 +1584,11 @@ fn adapter2ts(ty: &AdapterType, dst: &mut String, refs: Option<&mut HashSet<TsRe
         AdapterType::Bool => dst.push_str("boolean"),
         AdapterType::Vector(kind) => dst.push_str(&kind.js_ty()),
         AdapterType::Option(ty) => {
-            adapter2ts(ty, dst, refs);
-            dst.push_str(" | undefined");
+            adapter2ts(ty, position, dst, refs);
+            dst.push_str(match position {
+                TypePosition::Argument => " | null | undefined",
+                TypePosition::Return => " | undefined",
+            });
         }
         AdapterType::NamedExternref(name) => dst.push_str(name),
         AdapterType::Struct(name) => dst.push_str(name),

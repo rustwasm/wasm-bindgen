@@ -31,10 +31,9 @@
 //! asynchronous and I/O work.
 
 #![cfg_attr(not(feature = "std"), no_std)]
-#![cfg_attr(target_feature = "atomics", feature(stdarch_wasm_atomic_wait))]
 #![cfg_attr(
-    all(not(feature = "std"), target_feature = "atomics"),
-    feature(thread_local)
+    target_feature = "atomics",
+    feature(thread_local, stdarch_wasm_atomic_wait)
 )]
 #![deny(missing_docs)]
 #![cfg_attr(docsrs, feature(doc_cfg))]

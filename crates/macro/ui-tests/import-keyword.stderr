@@ -1,0 +1,59 @@
+error: Imported function cannot use the JS keyword `function` as its name.
+ --> ui-tests/import-keyword.rs:9:8
+  |
+9 |     fn function();
+  |        ^^^^^^^^
+
+error: Imported function cannot use the JS keyword `var` as its name.
+  --> ui-tests/import-keyword.rs:12:8
+   |
+12 |     fn keyword_var();
+   |        ^^^^^^^^^^^
+
+error: Imported static cannot use the JS keyword `const` as its name.
+  --> ui-tests/import-keyword.rs:23:12
+   |
+23 |     static CONST: u32;
+   |            ^^^^^
+
+error: Imported type cannot use the JS keyword `throw` as its name.
+  --> ui-tests/import-keyword.rs:27:10
+   |
+27 |     type B;
+   |          ^
+
+error: Namespace cannot start with the JS keyword `public`
+  --> ui-tests/import-keyword.rs:36:32
+   |
+36 | #[wasm_bindgen(js_namespace = ["public", "foo"])]
+   |                                ^^^^^^^^
+
+error: Namespace cannot start with the JS keyword `const`
+  --> ui-tests/import-keyword.rs:42:36
+   |
+42 |     #[wasm_bindgen(js_namespace = ["const", "bar"])]
+   |                                    ^^^^^^^
+
+error: Empty namespace lists are not allowed.
+  --> ui-tests/import-keyword.rs:52:35
+   |
+52 |     #[wasm_bindgen(js_namespace = [])]
+   |                                   ^^
+
+error: struct cannot use the JS keyword `class` as its name
+  --> ui-tests/import-keyword.rs:59:12
+   |
+59 | pub struct class;
+   |            ^^^^^
+
+error: struct cannot use the JS keyword `true` as its name
+  --> ui-tests/import-keyword.rs:61:12
+   |
+61 | pub struct r#true; // forbid value-like keywords
+   |            ^^^^^^
+
+error: enum cannot use the JS keyword `switch` as its name
+  --> ui-tests/import-keyword.rs:63:10
+   |
+63 | pub enum switch {
+   |          ^^^^^^

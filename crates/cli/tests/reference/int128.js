@@ -45,7 +45,7 @@ function isLikeNone(x) {
     return x === undefined || x === null;
 }
 /**
- * @param {bigint | undefined} [a]
+ * @param {bigint | null} [a]
  * @returns {bigint | undefined}
  */
 export function echo_option_i128(a) {
@@ -54,7 +54,7 @@ export function echo_option_i128(a) {
 }
 
 /**
- * @param {bigint | undefined} [a]
+ * @param {bigint | null} [a]
  * @returns {bigint | undefined}
  */
 export function echo_option_u128(a) {

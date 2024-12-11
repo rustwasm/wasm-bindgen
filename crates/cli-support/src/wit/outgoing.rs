@@ -110,7 +110,7 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::Ref(d) => self.outgoing_ref(false, d)?,
             Descriptor::RefMut(d) => self.outgoing_ref(true, d)?,
 
-            Descriptor::CachedString => self.cached_string(false, true)?,
+            Descriptor::CachedString => self.cached_string(true)?,
 
             Descriptor::String => {
                 // fetch the ptr/length ...
@@ -193,7 +193,7 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::NamedExternref(name.clone())],
                 );
             }
-            Descriptor::CachedString => self.cached_string(false, false)?,
+            Descriptor::CachedString => self.cached_string(false)?,
 
             Descriptor::String => {
                 self.instruction(
@@ -335,7 +335,7 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::Ref(d) => self.outgoing_option_ref(false, d)?,
             Descriptor::RefMut(d) => self.outgoing_option_ref(true, d)?,
 
-            Descriptor::CachedString => self.cached_string(true, true)?,
+            Descriptor::CachedString => self.cached_string(true)?,
 
             Descriptor::String | Descriptor::Vector(_) => {
                 let kind = arg.vector_kind().ok_or_else(|| {
@@ -525,7 +525,7 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::NamedExternref(name.clone()).option()],
                 );
             }
-            Descriptor::CachedString => self.cached_string(true, false)?,
+            Descriptor::CachedString => self.cached_string(false)?,
             Descriptor::String | Descriptor::Slice(_) => {
                 let kind = arg.vector_kind().ok_or_else(|| {
                     format_err!(
@@ -574,14 +574,13 @@ impl InstructionBuilder<'_, '_> {
         self.instruction(&[AdapterType::I64], instr, &[output]);
     }
 
-    fn cached_string(&mut self, optional: bool, owned: bool) -> Result<(), Error> {
+    fn cached_string(&mut self, owned: bool) -> Result<(), Error> {
         let mem = self.cx.memory()?;
         let free = self.cx.free()?;
         self.instruction(
             &[AdapterType::I32, AdapterType::I32],
             Instruction::CachedStringLoad {
                 owned,
-                optional,
                 mem,
                 free,
                 table: None,

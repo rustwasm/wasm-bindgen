@@ -1,3 +1,5 @@
+use std::mem::MaybeUninit;
+
 use js_sys::*;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
@@ -169,6 +171,17 @@ fn copy_to() {
     let array = Int32Array::new(&10.into());
     array.fill(5, 0, 10);
     array.copy_to(&mut x);
+    for i in x.iter() {
+        assert_eq!(*i, 5);
+    }
+}
+
+#[wasm_bindgen_test]
+fn copy_to_uninit() {
+    let mut x = [MaybeUninit::uninit(); 10];
+    let array = Int32Array::new(&10.into());
+    array.fill(5, 0, 10);
+    let x = array.copy_to_uninit(&mut x);
     for i in x.iter() {
         assert_eq!(*i, 5);
     }

@@ -23,12 +23,36 @@ extern "C" {
     fn add(a: f64, b: f64) -> f64;
 }
 
+#[wasm_bindgen(js_namespace = ["a"])]
+extern "C" {
+    // test that namespaces are overwritten and not inherited/concatenated
+    #[wasm_bindgen(js_namespace = ["b"])]
+    fn my_function();
+    #[wasm_bindgen(thread_local_v2)]
+    static CONST: f64;
+}
+
+#[wasm_bindgen(module = "tests/wasm/import_class.js")]
+extern "C" {
+    #[wasm_bindgen(js_name = default)]
+    type RenamedTypes;
+    #[wasm_bindgen(constructor, js_class = default)]
+    fn new(arg: i32) -> RenamedTypes;
+    #[wasm_bindgen(method, js_class = default)]
+    fn get(this: &RenamedTypes) -> i32;
+}
+
 #[wasm_bindgen]
 pub fn exported() -> Result<(), JsValue> {
     bar_from_foo();
-    let _ = add(1.0, 2.0);
+    let _ = add(CONST.with(Clone::clone), 2.0);
     reload();
     write("");
     no_catch();
+    my_function();
+
+    let f = RenamedTypes::new(1);
+    assert_eq!(f.get(), 2);
+
     catch_me()
 }

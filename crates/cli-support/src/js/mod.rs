@@ -10,6 +10,7 @@ use crate::wit::{JsImport, JsImportName, NonstandardWitSection, WasmBindgenAux};
 use crate::{reset_indentation, Bindgen, EncodeInto, OutputMode, PLACEHOLDER_MODULE};
 use anyhow::{anyhow, bail, Context as _, Error};
 use binding::TsReference;
+use identifier::is_valid_ident;
 use std::borrow::Cow;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fmt;
@@ -19,6 +20,7 @@ use std::path::{Path, PathBuf};
 use walrus::{FunctionId, ImportId, MemoryId, Module, TableId, ValType};
 
 mod binding;
+pub mod identifier;
 
 pub struct Context<'a> {
     globals: String,
@@ -120,6 +122,18 @@ struct FieldAccessor {
     is_optional: bool,
 }
 
+/// Different JS constructs that can be exported.
+enum ExportJs<'a> {
+    /// A class of the form `class Name {...}`.
+    Class(&'a str),
+    /// An anonymous function expression of the form `function(...) {...}`.
+    ///
+    /// Note that the function name is not included in the string.
+    Function(&'a str),
+    /// An arbitrary JS expression.
+    Expression(&'a str),
+}
+
 const INITIAL_HEAP_VALUES: &[&str] = &["undefined", "null", "true", "false"];
 // Must be kept in sync with `src/lib.rs` of the `wasm-bindgen` crate
 const INITIAL_HEAP_OFFSET: usize = 128;
@@ -163,38 +177,46 @@ impl<'a> Context<'a> {
     fn export(
         &mut self,
         export_name: &str,
-        contents: &str,
+        export: ExportJs,
         comments: Option<&str>,
     ) -> Result<(), Error> {
         let definition_name = self.generate_identifier(export_name);
-        if contents.starts_with("class") && definition_name != export_name {
+        if matches!(export, ExportJs::Class(_)) && definition_name != export_name {
             bail!("cannot shadow already defined class `{}`", export_name);
         }
 
-        let contents = contents.trim();
+        // write out comments
         if let Some(c) = comments {
             self.globals.push_str(c);
         }
+
         let global = match self.config.mode {
-            OutputMode::Node { module: false } => {
-                if contents.starts_with("class") {
-                    format!("{}\nmodule.exports.{1} = {1};\n", contents, export_name)
-                } else {
-                    format!("module.exports.{} = {};\n", export_name, contents)
+            OutputMode::Node { module: false } => match export {
+                ExportJs::Class(class) => {
+                    format!("{}\nmodule.exports.{1} = {1};\n", class, export_name)
                 }
-            }
-            OutputMode::NoModules { .. } => {
-                if contents.starts_with("class") {
-                    format!("{}\n__exports.{1} = {1};\n", contents, export_name)
-                } else {
-                    format!("__exports.{} = {};\n", export_name, contents)
+                ExportJs::Function(expr) | ExportJs::Expression(expr) => {
+                    format!("module.exports.{} = {};\n", export_name, expr)
                 }
-            }
+            },
+            OutputMode::NoModules { .. } => match export {
+                ExportJs::Class(class) => {
+                    format!("{}\n__exports.{1} = {1};\n", class, export_name)
+                }
+                ExportJs::Function(expr) | ExportJs::Expression(expr) => {
+                    format!("__exports.{} = {};\n", export_name, expr)
+                }
+            },
             OutputMode::Bundler { .. }
             | OutputMode::Node { module: true }
             | OutputMode::Web
-            | OutputMode::Deno => {
-                if let Some(body) = contents.strip_prefix("function") {
+            | OutputMode::Deno => match export {
+                ExportJs::Class(class) => {
+                    assert_eq!(export_name, definition_name);
+                    format!("export {}\n", class)
+                }
+                ExportJs::Function(function) => {
+                    let body = function.strip_prefix("function").unwrap();
                     if export_name == definition_name {
                         format!("export function {}{}\n", export_name, body)
                     } else {
@@ -203,14 +225,12 @@ impl<'a> Context<'a> {
                             definition_name, body, definition_name, export_name,
                         )
                     }
-                } else if contents.starts_with("class") {
-                    assert_eq!(export_name, definition_name);
-                    format!("export {}\n", contents)
-                } else {
-                    assert_eq!(export_name, definition_name);
-                    format!("export const {} = {};\n", export_name, contents)
                 }
-            }
+                ExportJs::Expression(expr) => {
+                    assert_eq!(export_name, definition_name);
+                    format!("export const {} = {};\n", export_name, expr)
+                }
+            },
         };
         self.global(&global);
         Ok(())
@@ -440,6 +460,8 @@ impl<'a> Context<'a> {
             // With normal CommonJS node we need to defer requiring the wasm
             // until the end so most of our own exports are hooked up
             OutputMode::Node { module: false } => {
+                self.nodejs_memory();
+
                 js.push_str(&self.generate_node_imports());
 
                 js.push_str("let wasm;\n");
@@ -483,6 +505,8 @@ impl<'a> Context<'a> {
             // and let the bundler/runtime take care of it.
             // With Node we manually read the Wasm file from the filesystem and instantiate it.
             OutputMode::Bundler { .. } | OutputMode::Node { module: true } => {
+                self.nodejs_memory();
+
                 for (id, js) in iter_by_import(&self.wasm_import_definitions, self.module) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}_bg.js", module_name);
@@ -1005,6 +1029,14 @@ __wbg_set_wasm(wasm);"
         Ok((js, ts))
     }
 
+    fn nodejs_memory(&mut self) {
+        if let Some(mem) = self.module.memories.iter_mut().next() {
+            if let Some(id) = mem.import.take() {
+                self.module.imports.delete(id);
+            }
+        }
+    }
+
     fn write_classes(&mut self) -> Result<(), Error> {
         for (class, exports) in self.exported_classes.take().unwrap() {
             self.write_class(&class, &exports)?;
@@ -1157,10 +1189,10 @@ __wbg_set_wasm(wasm);"
 
         self.write_class_field_types(class, &mut ts_dst);
 
-        dst.push_str("}\n");
+        dst.push('}');
         ts_dst.push_str("}\n");
 
-        self.export(name, &dst, Some(&class.comments))?;
+        self.export(name, ExportJs::Class(&dst), Some(&class.comments))?;
 
         if class.generate_typescript {
             self.typescript.push_str(&class.comments);
@@ -2566,6 +2598,30 @@ __wbg_set_wasm(wasm);"
         Ok(name)
     }
 
+    fn import_static(&mut self, import: &JsImport, optional: bool) -> Result<String, Error> {
+        let mut name = self.import_name(&JsImport {
+            name: import.name.clone(),
+            fields: Vec::new(),
+        })?;
+
+        // After we've got an actual name handle field projections
+        if optional {
+            name = format!("typeof {name} === 'undefined' ? null : {name}");
+
+            for field in import.fields.iter() {
+                name.push_str("?.");
+                name.push_str(field);
+            }
+        } else {
+            for field in import.fields.iter() {
+                name.push('.');
+                name.push_str(field);
+            }
+        }
+
+        Ok(name)
+    }
+
     /// If a start function is present, it removes it from the `start` section
     /// of the Wasm module and then moves it to an exported function, named
     /// `__wbindgen_start`.
@@ -2718,7 +2774,7 @@ __wbg_set_wasm(wasm);"
                 | AuxImport::Value(AuxValue::Setter(js, ..))
                 | AuxImport::ValueWithThis(js, ..)
                 | AuxImport::Instanceof(js)
-                | AuxImport::Static(js)
+                | AuxImport::Static { js, .. }
                 | AuxImport::StructuralClassGetter(js, ..)
                 | AuxImport::StructuralClassSetter(js, ..)
                 | AuxImport::IndexingGetterOfClass(js)
@@ -2836,7 +2892,11 @@ __wbg_set_wasm(wasm);"
                             self.typescript.push_str(";\n");
                         }
 
-                        self.export(name, &format!("function{}", code), Some(&js_docs))?;
+                        self.export(
+                            name,
+                            ExportJs::Function(&format!("function{}", code)),
+                            Some(&js_docs),
+                        )?;
                         self.globals.push('\n');
                     }
                     AuxExportKind::Constructor(class) => {
@@ -3253,11 +3313,11 @@ __wbg_set_wasm(wasm);"
                 Ok("result".to_owned())
             }
 
-            AuxImport::Static(js) => {
+            AuxImport::Static { js, optional } => {
                 assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 0);
-                self.import_name(js)
+                self.import_static(js, *optional)
             }
 
             AuxImport::String(string) => {
@@ -3959,7 +4019,7 @@ __wbg_set_wasm(wasm);"
 
         self.export(
             &enum_.name,
-            &format!("Object.freeze({{\n{}}})", variants),
+            ExportJs::Expression(&format!("Object.freeze({{\n{}}})", variants)),
             Some(&docs),
         )?;
 
@@ -4475,48 +4535,6 @@ fn require_class<'a>(
         .expect("classes already written")
         .entry(name.to_string())
         .or_default()
-}
-
-/// Returns whether a character has the Unicode `ID_Start` properly.
-///
-/// This is only ever-so-slightly different from `XID_Start` in a few edge
-/// cases, so we handle those edge cases manually and delegate everything else
-/// to `unicode-ident`.
-fn is_id_start(c: char) -> bool {
-    match c {
-        '\u{037A}' | '\u{0E33}' | '\u{0EB3}' | '\u{309B}' | '\u{309C}' | '\u{FC5E}'
-        | '\u{FC5F}' | '\u{FC60}' | '\u{FC61}' | '\u{FC62}' | '\u{FC63}' | '\u{FDFA}'
-        | '\u{FDFB}' | '\u{FE70}' | '\u{FE72}' | '\u{FE74}' | '\u{FE76}' | '\u{FE78}'
-        | '\u{FE7A}' | '\u{FE7C}' | '\u{FE7E}' | '\u{FF9E}' | '\u{FF9F}' => true,
-        _ => unicode_ident::is_xid_start(c),
-    }
-}
-
-/// Returns whether a character has the Unicode `ID_Continue` properly.
-///
-/// This is only ever-so-slightly different from `XID_Continue` in a few edge
-/// cases, so we handle those edge cases manually and delegate everything else
-/// to `unicode-ident`.
-fn is_id_continue(c: char) -> bool {
-    match c {
-        '\u{037A}' | '\u{309B}' | '\u{309C}' | '\u{FC5E}' | '\u{FC5F}' | '\u{FC60}'
-        | '\u{FC61}' | '\u{FC62}' | '\u{FC63}' | '\u{FDFA}' | '\u{FDFB}' | '\u{FE70}'
-        | '\u{FE72}' | '\u{FE74}' | '\u{FE76}' | '\u{FE78}' | '\u{FE7A}' | '\u{FE7C}'
-        | '\u{FE7E}' => true,
-        _ => unicode_ident::is_xid_continue(c),
-    }
-}
-
-/// Returns whether a string is a valid JavaScript identifier.
-/// Defined at https://tc39.es/ecma262/#prod-IdentifierName.
-fn is_valid_ident(name: &str) -> bool {
-    name.chars().enumerate().all(|(i, char)| {
-        if i == 0 {
-            is_id_start(char) || char == '$' || char == '_'
-        } else {
-            is_id_continue(char) || char == '$' || char == '\u{200C}' || char == '\u{200D}'
-        }
-    })
 }
 
 /// Returns a string to tack on to the end of an expression to access a
