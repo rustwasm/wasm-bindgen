@@ -40,7 +40,6 @@ pub fn expand(attr: TokenStream, input: TokenStream) -> Result<TokenStream, Diag
             },
         );
         if !attr.is_empty() {
-            let meta: syn::Meta = syn::parse2(attr)?;
             s.attrs.insert(
                 1,
                 syn::Attribute {
@@ -48,7 +47,7 @@ pub fn expand(attr: TokenStream, input: TokenStream) -> Result<TokenStream, Diag
                     style: syn::AttrStyle::Outer,
                     bracket_token: Default::default(),
                     meta: syn::parse_quote! {
-                        wasm_bindgen(#meta)
+                        wasm_bindgen(#attr)
                     },
                 },
             );
