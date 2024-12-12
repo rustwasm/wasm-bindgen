@@ -480,6 +480,19 @@ fn renamed_field() {
     js_renamed_field();
 }
 
+#[cfg_attr(
+    target_arch = "wasm32",
+    wasm_bindgen(inspectable, js_name = "ConditionalSkipClass")
+)]
+pub struct ConditionalSkip {
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen(skip))]
+    pub skipped_field: [u8; 8],
+
+    /// cfg_attr annotated field
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen(getter_with_clone))]
+    pub needs_clone: String,
+}
+
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 pub struct ConditionalBindings {}
 

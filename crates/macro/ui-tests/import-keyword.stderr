@@ -57,3 +57,17 @@ error: enum cannot use the JS keyword `switch` as its name
    |
 63 | pub enum switch {
    |          ^^^^^^
+
+warning: type `class` should have an upper camel case name
+  --> ui-tests/import-keyword.rs:59:12
+   |
+59 | pub struct class;
+   |            ^^^^^ help: convert the identifier to upper camel case (notice the capitalization): `Class`
+   |
+   = note: `#[warn(non_camel_case_types)]` on by default
+
+warning: type `true` should have an upper camel case name
+  --> ui-tests/import-keyword.rs:61:12
+   |
+61 | pub struct r#true; // forbid value-like keywords
+   |            ^^^^^^ help: convert the identifier to upper camel case: `True`
