@@ -28,6 +28,9 @@
     3. The name of an imported function if the function is not a method and does not have a `js_namespace` or `module` attribute.
   - Using JS keywords on imports in places other than the above will no longer cause the keywords to be escaped as `_{keyword}`.
 
+* Fixed passing large arrays into Rust failing because of internal memory allocations invalidating the memory buffer.
+  [#4353](https://github.com/rustwasm/wasm-bindgen/pull/4353)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.99](https://github.com/rustwasm/wasm-bindgen/compare/0.2.98...0.2.99)

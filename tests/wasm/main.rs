@@ -40,6 +40,7 @@ pub mod inner_self;
 pub mod intrinsics;
 pub mod js_keywords;
 pub mod js_objects;
+pub mod js_vec;
 pub mod jscast;
 pub mod link_to;
 pub mod macro_rules;

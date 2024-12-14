@@ -1621,26 +1621,25 @@ __wbg_set_wasm(wasm);"
                 let add = self.expose_add_to_externref_table(table, alloc)?;
                 self.global(&format!(
                     "
-                        function {}(array, malloc) {{
+                        function {ret}(array, malloc) {{
                             const ptr = malloc(array.length * 4, 4) >>> 0;
-                            const mem = {}();
                             for (let i = 0; i < array.length; i++) {{
-                                mem.setUint32(ptr + 4 * i, {}(array[i]), true);
+                                const add = {add}(array[i]);
+                                {mem}().setUint32(ptr + 4 * i, add, true);
                             }}
                             WASM_VECTOR_LEN = array.length;
                             return ptr;
                         }}
                     ",
-                    ret, mem, add,
                 ));
             }
             _ => {
                 self.expose_add_heap_object();
                 self.global(&format!(
                     "
-                        function {}(array, malloc) {{
+                        function {ret}(array, malloc) {{
                             const ptr = malloc(array.length * 4, 4) >>> 0;
-                            const mem = {}();
+                            const mem = {mem}();
                             for (let i = 0; i < array.length; i++) {{
                                 mem.setUint32(ptr + 4 * i, addHeapObject(array[i]), true);
                             }}
@@ -1648,7 +1647,6 @@ __wbg_set_wasm(wasm);"
                             return ptr;
                         }}
                     ",
-                    ret, mem,
                 ));
             }
         }
