@@ -1,90 +1,94 @@
 use anyhow::{bail, Error};
-use docopt::Docopt;
-use serde::Deserialize;
+use clap::Parser;
 use std::path::PathBuf;
 use std::process;
 use wasm_bindgen_cli_support::{Bindgen, EncodeInto};
 
-const USAGE: &str = "
-Generating JS bindings for a Wasm file
-
-Usage:
-    wasm-bindgen [options] <input>
-    wasm-bindgen -h | --help
-    wasm-bindgen -V | --version
-
-Options:
-    -h --help                    Show this screen.
-    --out-dir DIR                Output directory
-    --out-name VAR               Set a custom output filename (Without extension. Defaults to crate name)
-    --target TARGET              What type of output to generate, valid
-                                 values are [web, bundler, nodejs, no-modules, deno, experimental-nodejs-module],
-                                 and the default is [bundler]
-    --no-modules-global VAR      Name of the global variable to initialize
-    --browser                    Hint that JS should only be compatible with a browser
-    --typescript                 Output a TypeScript definition file (on by default)
-    --no-typescript              Don't emit a *.d.ts file
-    --omit-imports               Don't emit imports in generated JavaScript
-    --debug                      Include otherwise-extraneous debug checks in output
-    --no-demangle                Don't demangle Rust symbol names
-    --keep-lld-exports           Keep exports synthesized by LLD
-    --keep-debug                 Keep debug sections in Wasm files
-    --remove-name-section        Remove the debugging `name` section of the file
-    --remove-producers-section   Remove the telemetry `producers` section
-    --omit-default-module-path   Don't add WebAssembly fallback imports in generated JavaScript
-    --split-linked-modules       Split linked modules out into their own files. Recommended if possible.
-                                 If a bundler is used, it needs to be set up accordingly.
-    --encode-into MODE           Whether or not to use TextEncoder#encodeInto,
-                                 valid values are [test, always, never]
-    --nodejs                     Deprecated, use `--target nodejs`
-    --web                        Deprecated, use `--target web`
-    --no-modules                 Deprecated, use `--target no-modules`
-    --weak-refs                  Deprecated, is runtime-detected
-    --reference-types            Deprecated, use `-Ctarget-feature=+reference-types`
-    -V --version                 Print the version number of wasm-bindgen
-
-Additional documentation: https://rustwasm.github.io/wasm-bindgen/reference/cli.html
-";
-
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Parser)]
+#[command(
+    version,
+    about,
+    long_about = None,
+    after_help = "Additional documentation: https://rustwasm.github.io/wasm-bindgen/reference/cli.html",
+)]
 struct Args {
-    flag_nodejs: bool,
-    flag_browser: bool,
-    flag_web: bool,
-    flag_no_modules: bool,
-    flag_typescript: bool,
-    flag_no_typescript: bool,
-    flag_omit_imports: bool,
-    flag_out_dir: Option<PathBuf>,
-    flag_out_name: Option<String>,
-    flag_debug: bool,
-    flag_version: bool,
-    flag_no_demangle: bool,
-    flag_no_modules_global: Option<String>,
-    flag_remove_name_section: bool,
-    flag_remove_producers_section: bool,
+    #[arg(long, help = "Deprecated, use `--target nodejs`")]
+    nodejs: bool,
+    #[arg(long, help = "Hint that JS should only be compatible with a browser")]
+    browser: bool,
+    #[arg(long, help = "Deprecated, use `--target web`")]
+    web: bool,
+    #[arg(long, help = "Deprecated, use `--target no-modules`")]
+    no_modules: bool,
+    #[arg(long, help = "Output a TypeScript definition file (on by default)")]
+    typescript: bool,
+    #[arg(long, help = "Don't emit a *.d.ts file")]
+    no_typescript: bool,
+    #[arg(long, help = "Don't emit imports in generated JavaScript")]
+    omit_imports: bool,
+    #[arg(long, value_name = "DIR", help = "Output directory")]
+    out_dir: Option<PathBuf>,
+    #[arg(
+        long,
+        value_name = "VAR",
+        help = "Set a custom output filename (Without extension. Defaults to crate name)"
+    )]
+    out_name: Option<String>,
+    #[arg(long, help = "Include otherwise-extraneous debug checks in output")]
+    debug: bool,
+    #[arg(long, help = "Don't demangle Rust symbol names")]
+    no_demangle: bool,
+    #[arg(
+        long,
+        value_name = "VAR",
+        help = "Name of the global variable to initialize"
+    )]
+    no_modules_global: Option<String>,
+    #[arg(long, help = "Remove the debugging `name` section of the file")]
+    remove_name_section: bool,
+    #[arg(long, help = "Remove the telemetry `producers` section")]
+    remove_producers_section: bool,
+    #[arg(long, help = "Deprecated, is runtime-detected")]
     #[allow(dead_code)]
-    flag_weak_refs: Option<bool>,
-    flag_reference_types: Option<bool>,
-    flag_keep_lld_exports: bool,
-    flag_keep_debug: bool,
-    flag_encode_into: Option<String>,
-    flag_target: Option<String>,
-    flag_omit_default_module_path: bool,
-    flag_split_linked_modules: bool,
-    arg_input: Option<PathBuf>,
+    weak_refs: bool,
+    #[arg(long, help = "Deprecated, use `-Ctarget-feature=+reference-types`")]
+    reference_types: bool,
+    #[arg(long, help = "Keep exports synthesized by LLD")]
+    keep_lld_exports: bool,
+    #[arg(long, help = "Keep debug sections in Wasm files")]
+    keep_debug: bool,
+    #[arg(
+        long,
+        value_name = "MODE",
+        help = "Whether or not to use TextEncoder#encodeInto, valid values are [test, always, never]"
+    )]
+    encode_into: Option<String>,
+    #[arg(
+        long,
+        value_name = "TARGET",
+        help = "What type of output to generate, valid\n\
+                values are [web, bundler, nodejs, no-modules, deno, experimental-nodejs-module],\n\
+                and the default is [bundler]"
+    )]
+    target: Option<String>,
+    #[arg(
+        long,
+        help = "Don't add WebAssembly fallback imports in generated JavaScript"
+    )]
+    omit_default_module_path: bool,
+    #[arg(
+        long,
+        help = "Split linked modules out into their own files. Recommended if possible.\n\
+                If a bundler is used, it needs to be set up accordingly."
+    )]
+    split_linked_modules: bool,
+    input: PathBuf,
 }
 
 fn main() {
     env_logger::init();
-    let args: Args = Docopt::new(USAGE)
-        .and_then(|d| d.deserialize())
-        .unwrap_or_else(|e| e.exit());
+    let args = Args::parse();
 
-    if args.flag_version {
-        println!("wasm-bindgen {}", wasm_bindgen_shared::version());
-        return;
-    }
     let err = match rmain(&args) {
         Ok(()) => return,
         Err(e) => e,
@@ -94,15 +98,10 @@ fn main() {
 }
 
 fn rmain(args: &Args) -> Result<(), Error> {
-    let input = match args.arg_input {
-        Some(ref s) => s,
-        None => bail!("input file expected"),
-    };
-
-    let typescript = args.flag_typescript || !args.flag_no_typescript;
+    let typescript = args.typescript || !args.no_typescript;
 
     let mut b = Bindgen::new();
-    if let Some(name) = &args.flag_target {
+    if let Some(name) = &args.target {
         match name.as_str() {
             "bundler" => b.bundler(true)?,
             "web" => b.web(true)?,
@@ -113,32 +112,32 @@ fn rmain(args: &Args) -> Result<(), Error> {
             s => bail!("invalid encode-into mode: `{}`", s),
         };
     }
-    b.input_path(input)
-        .nodejs(args.flag_nodejs)?
-        .web(args.flag_web)?
-        .browser(args.flag_browser)?
-        .no_modules(args.flag_no_modules)?
-        .debug(args.flag_debug)
-        .demangle(!args.flag_no_demangle)
-        .keep_lld_exports(args.flag_keep_lld_exports)
-        .keep_debug(args.flag_keep_debug)
-        .remove_name_section(args.flag_remove_name_section)
-        .remove_producers_section(args.flag_remove_producers_section)
+    b.input_path(&args.input)
+        .nodejs(args.nodejs)?
+        .web(args.web)?
+        .browser(args.browser)?
+        .no_modules(args.no_modules)?
+        .debug(args.debug)
+        .demangle(!args.no_demangle)
+        .keep_lld_exports(args.keep_lld_exports)
+        .keep_debug(args.keep_debug)
+        .remove_name_section(args.remove_name_section)
+        .remove_producers_section(args.remove_producers_section)
         .typescript(typescript)
-        .omit_imports(args.flag_omit_imports)
-        .omit_default_module_path(args.flag_omit_default_module_path)
-        .split_linked_modules(args.flag_split_linked_modules);
-    if let Some(true) = args.flag_reference_types {
+        .omit_imports(args.omit_imports)
+        .omit_default_module_path(args.omit_default_module_path)
+        .split_linked_modules(args.split_linked_modules);
+    if args.reference_types {
         #[allow(deprecated)]
         b.reference_types(true);
     }
-    if let Some(ref name) = args.flag_no_modules_global {
+    if let Some(ref name) = args.no_modules_global {
         b.no_modules_global(name)?;
     }
-    if let Some(ref name) = args.flag_out_name {
+    if let Some(ref name) = args.out_name {
         b.out_name(name);
     }
-    if let Some(mode) = &args.flag_encode_into {
+    if let Some(mode) = &args.encode_into {
         match mode.as_str() {
             "test" => b.encode_into(EncodeInto::Test),
             "always" => b.encode_into(EncodeInto::Always),
@@ -147,7 +146,7 @@ fn rmain(args: &Args) -> Result<(), Error> {
         };
     }
 
-    let out_dir = match args.flag_out_dir {
+    let out_dir = match args.out_dir {
         Some(ref p) => p,
         None => bail!("the `--out-dir` argument is now required"),
     };
