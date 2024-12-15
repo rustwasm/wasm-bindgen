@@ -1,5 +1,4 @@
 use std::borrow::Cow;
-use std::ffi::OsString;
 use std::fs;
 use std::io::{Read, Write};
 use std::net::SocketAddr;
@@ -8,14 +7,14 @@ use std::path::{Path, PathBuf};
 use anyhow::{anyhow, Context, Error};
 use rouille::{Request, Response, Server};
 
-use crate::TestMode;
+use crate::{Cli, TestMode};
 
 pub(crate) fn spawn(
     addr: &SocketAddr,
     headless: bool,
     module: &'static str,
     tmpdir: &Path,
-    args: &[OsString],
+    cli: Cli,
     tests: &[String],
     test_mode: TestMode,
     isolate_origin: bool,
@@ -71,6 +70,8 @@ pub(crate) fn spawn(
         )
     };
 
+    let args = cli.into_args();
+
     if test_mode.is_worker() {
         let mut worker_script = if test_mode.no_modules() {
             format!(r#"importScripts("{0}.js");"#, module)
@@ -125,7 +126,7 @@ pub(crate) fn spawn(
             wrap("error");
 
             async function run_in_worker(tests) {{
-                const wasm = await init("./{0}_bg.wasm");
+                const wasm = await init("./{module}_bg.wasm");
                 const t = self;
                 const cx = new Context();
 
@@ -134,8 +135,9 @@ pub(crate) fn spawn(
                 self.on_console_info = __wbgtest_console_info;
                 self.on_console_warn = __wbgtest_console_warn;
                 self.on_console_error = __wbgtest_console_error;
+                
+                {args}
 
-                cx.args({1:?});
                 await cx.run(tests.map(s => wasm[s]));
                 {cov_dump}
             }}
@@ -145,7 +147,6 @@ pub(crate) fn spawn(
                 run_in_worker(tests);
             }}
             "#,
-            module, args,
         ));
 
         if matches!(
@@ -256,7 +257,7 @@ pub(crate) fn spawn(
             document.getElementById('output').textContent = "Loading Wasm module...";
 
             async function main(test) {{
-                const wasm = await init('./{0}_bg.wasm');
+                const wasm = await init('./{module}_bg.wasm');
 
                 const cx = new Context();
                 window.on_console_debug = __wbgtest_console_debug;
@@ -265,11 +266,7 @@ pub(crate) fn spawn(
                 window.on_console_warn = __wbgtest_console_warn;
                 window.on_console_error = __wbgtest_console_error;
 
-                // Forward runtime arguments. These arguments are also arguments to the
-                // `wasm-bindgen-test-runner` which forwards them to node which we
-                // forward to the test harness. this is basically only used for test
-                // filters for now.
-                cx.args({1:?});
+                {args}
 
                 await cx.run(test.map(s => wasm[s]));
                 {cov_dump}
@@ -277,7 +274,6 @@ pub(crate) fn spawn(
 
             const tests = [];
             "#,
-            module, args,
         ));
     }
     for test in tests {

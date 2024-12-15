@@ -1,10 +1,11 @@
 use std::env;
-use std::ffi::OsString;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use anyhow::{Context, Error};
+
+use crate::Cli;
 
 // depends on the variable 'wasm' and initializes te WasmBindgenTestContext cx
 pub const SHARED_SETUP: &str = r#"
@@ -41,7 +42,7 @@ handlers.on_console_error = wasm.__wbgtest_console_error;
 pub fn execute(
     module: &str,
     tmpdir: &Path,
-    args: &[OsString],
+    cli: Cli,
     tests: &[String],
     module_format: bool,
     coverage: PathBuf,
@@ -57,11 +58,7 @@ pub fn execute(
         global.__wbg_test_invoke = f => f();
 
         async function main(tests) {{
-            // Forward runtime arguments. These arguments are also arguments to the
-            // `wasm-bindgen-test-runner` which forwards them to node which we
-            // forward to the test harness. this is basically only used for test
-            // filters for now.
-            cx.args(process.argv.slice(2));
+            {args}
 
             const ok = await cx.run(tests.map(n => wasm.__wasm[n]));
 
@@ -92,6 +89,7 @@ pub fn execute(
         },
         coverage = coverage.display(),
         console_override = SHARED_SETUP,
+        args = cli.into_args(),
     );
 
     // Note that we're collecting *JS objects* that represent the functions to
@@ -139,8 +137,7 @@ pub fn execute(
             .env("NODE_PATH", env::join_paths(&path).unwrap())
             .arg("--expose-gc")
             .args(&extra_node_args)
-            .arg(&js_path)
-            .args(args),
+            .arg(&js_path),
     )
 }
 

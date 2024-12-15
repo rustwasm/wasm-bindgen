@@ -1,35 +1,28 @@
-use std::ffi::OsString;
 use std::fs;
 use std::path::Path;
 use std::process::Command;
 
 use anyhow::{Context, Error};
 
-use crate::node::{exec, SHARED_SETUP};
+use crate::{
+    node::{exec, SHARED_SETUP},
+    Cli,
+};
 
-pub fn execute(
-    module: &str,
-    tmpdir: &Path,
-    args: &[OsString],
-    tests: &[String],
-) -> Result<(), Error> {
+pub fn execute(module: &str, tmpdir: &Path, cli: Cli, tests: &[String]) -> Result<(), Error> {
     let mut js_to_execute = format!(
-        r#"import * as wasm from "./{0}.js";
+        r#"import * as wasm from "./{module}.js";
 
         {console_override}
 
         window.__wbg_test_invoke = f => f();
 
-        // Forward runtime arguments. These arguments are also arguments to the
-        // `wasm-bindgen-test-runner` which forwards them to deno which we
-        // forward to the test harness. this is basically only used for test
-        // filters for now.
-        cx.args(Deno.args);
+        {args}
 
         const tests = [];
     "#,
-        module,
         console_override = SHARED_SETUP,
+        args = cli.into_args(),
     );
 
     for test in tests {
@@ -69,7 +62,6 @@ if (!ok) Deno.exit(1);"#,
         Command::new("deno")
             .arg("run")
             .arg("--allow-read")
-            .arg(&js_path)
-            .args(args),
+            .arg(&js_path),
     )
 }

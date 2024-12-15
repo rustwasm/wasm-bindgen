@@ -120,7 +120,7 @@ fn version_useful() {
         .arg("-V")
         .assert()
         .stdout(str::ends_with("\n"))
-        .stdout(str::starts_with("wasm-bindgen "))
+        .stdout(str::starts_with("wasm-bindgen-cli "))
         .success();
 }
 

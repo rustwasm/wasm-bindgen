@@ -1,52 +1,46 @@
 use anyhow::{Context, Error};
-use docopt::Docopt;
-use serde::Deserialize;
+use clap::Parser;
 use std::fs;
 use std::path::PathBuf;
 
-const USAGE: &str = "
-Converts a Wasm file to an ES6 JS module
-
-Usage:
-    wasm2es6js [options] <input>
-    wasm2es6js -h | --help
-
-Options:
-    -h --help               Show this screen.
-    -o --output FILE        File to place output in
-    --out-dir DIR           Directory to place output in
-    --typescript            Output a `*.d.ts` file next to the JS output
-    --base64                Inline the Wasm module using base64 encoding
-    --fetch PATH            Load module by passing the PATH argument to `fetch()`
-
-Note that this is not intended to produce a production-ready output module
-but rather is intended purely as a temporary \"hack\" until it's standard in
-bundlers for working with wasm. Use this program with care!
-";
-
-#[derive(Debug, Deserialize)]
+#[derive(Parser, Debug)]
+#[command(
+    version,
+    about,
+    long_about = None,
+    after_help = "Note that this is not intended to produce a production-ready output module but rather\n\
+                  is intended purely as a temporary \"hack\" until it's standard in\n\
+                  bundlers for working with wasm. Use this program with care!",
+)]
 struct Args {
-    flag_output: Option<PathBuf>,
-    flag_out_dir: Option<PathBuf>,
-    flag_typescript: bool,
-    flag_base64: bool,
-    flag_fetch: Option<String>,
-    arg_input: PathBuf,
+    #[arg(long, short, value_name = "FILE", help = "File to place output in")]
+    output: Option<PathBuf>,
+    #[arg(long, value_name = "DIR", help = "Directory to place output in")]
+    out_dir: Option<PathBuf>,
+    #[arg(long, help = "Output a `*.d.ts` file next to the JS output")]
+    typescript: bool,
+    #[arg(long, help = "Inline the Wasm module using base64 encoding")]
+    base64: bool,
+    #[arg(
+        long,
+        value_name = "PATH",
+        help = "Load module by passing the PATH argument to `fetch()`"
+    )]
+    fetch: Option<String>,
+    input: PathBuf,
 }
 
 fn main() -> anyhow::Result<()> {
-    let args: Args = Docopt::new(USAGE)
-        .and_then(|d| d.deserialize())
-        .unwrap_or_else(|e| e.exit());
-    let wasm = fs::read(&args.arg_input)
-        .with_context(|| format!("failed to read `{}`", args.arg_input.display()))?;
+    let args = Args::parse();
+    let wasm = fs::read(&args.input)
+        .with_context(|| format!("failed to read `{}`", args.input.display()))?;
 
     let object = wasm_bindgen_cli_support::wasm2es6js::Config::new()
-        .base64(args.flag_base64)
-        .fetch(args.flag_fetch.clone())
+        .base64(args.base64)
+        .fetch(args.fetch.clone())
         .generate(&wasm)?;
 
-    if args.flag_typescript {
+    if args.typescript {
         let ts = object.typescript()?;
         write(&args, "d.ts", ts.as_bytes(), false)?;
     }
@@ -61,12 +55,12 @@ fn main() -> anyhow::Result<()> {
 }
 
 fn write(args: &Args, extension: &str, contents: &[u8], print_fallback: bool) -> Result<(), Error> {
-    if let Some(p) = &args.flag_output {
+    if let Some(p) = &args.output {
         let dst = p.with_extension(extension);
         fs::write(&dst, contents)
             .with_context(|| format!("failed to write `{}`", dst.display()))?;
-    } else if let Some(p) = &args.flag_out_dir {
-        let filename = args.arg_input.file_name().unwrap();
+    } else if let Some(p) = &args.out_dir {
+        let filename = args.input.file_name().unwrap();
         let dst = p.join(filename).with_extension(extension);
         fs::write(&dst, contents)
             .with_context(|| format!("failed to write `{}`", dst.display()))?;

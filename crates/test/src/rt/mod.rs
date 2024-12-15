@@ -344,35 +344,19 @@ impl Context {
         }
     }
 
-    /// Inform this context about runtime arguments passed to the test
-    /// harness.
-    pub fn args(&mut self, args: Vec<JsValue>) {
-        let mut filter = self.state.filter.borrow_mut();
-        let mut skip = self.state.skip.borrow_mut();
+    /// Handle `--include-ignored` flag.
+    pub fn include_ignored(&mut self, include_ignored: bool) {
+        self.state.include_ignored.set(include_ignored);
+    }
 
-        let mut args = args.into_iter();
+    /// Handle `--skip` arguments.
+    pub fn skip(&mut self, skip: Vec<String>) {
+        *self.state.skip.borrow_mut() = skip;
+    }
 
-        while let Some(arg) = args.next() {
-            let arg = arg.as_string().unwrap();
-            if arg == "--include-ignored" {
-                self.state.include_ignored.set(true);
-            } else if arg == "--skip" {
-                skip.push(
-                    args.next()
-                        .expect("Argument to option 'skip' missing")
-                        .as_string()
-                        .unwrap(),
-                );
-            } else if let Some(arg) = arg.strip_prefix("--skip=") {
-                skip.push(arg.to_owned())
-            } else if arg.starts_with('-') {
-                panic!("flag {} not supported", arg);
-            } else if filter.is_some() {
-                panic!("more than one filter argument cannot be passed");
-            } else {
-                *filter = Some(arg);
-            }
-        }
+    /// Handle filter argument.
+    pub fn filter(&mut self, filter: Option<String>) {
+        *self.state.filter.borrow_mut() = filter;
     }
 
     /// Executes a list of tests, returning a promise representing their
