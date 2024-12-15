@@ -580,10 +580,6 @@ impl OutputMode {
         matches!(self, OutputMode::NoModules { .. })
     }
 
-    fn web(&self) -> bool {
-        matches!(self, OutputMode::Web)
-    }
-
     fn esm_integration(&self) -> bool {
         matches!(
             self,
