@@ -14,6 +14,9 @@
 * Support importing memory and using `wasm_bindgen::module()` in Node.js.
   [#4349](https://github.com/rustwasm/wasm-bindgen/pull/4349)
 
+* Add `--list` argument to `wasm-bindgen-test-runner`.
+  [#4356](https://github.com/rustwasm/wasm-bindgen/pull/4356)
+
 ### Changed
 
 * Optional parameters are now typed as `T | undefined | null` to reflect the actual JS behavior.
