@@ -28,7 +28,7 @@ mod server;
 mod shell;
 
 #[derive(Parser)]
-#[command(version, about, long_about = None)]
+#[command(name = "wasm-bindgen-test-runner", version, about, long_about = None)]
 struct Cli {
     #[arg(
         index = 1,

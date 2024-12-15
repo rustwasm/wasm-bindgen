@@ -6,6 +6,7 @@ use wasm_bindgen_cli_support::{Bindgen, EncodeInto};
 
 #[derive(Debug, Parser)]
 #[command(
+    name = "wasm-bindgen",
     version,
     about,
     long_about = None,
