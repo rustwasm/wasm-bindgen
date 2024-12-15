@@ -6,10 +6,12 @@ use serde::{Deserialize, Serialize};
 use serde_json::{json, Map, Value as Json};
 use std::env;
 use std::fs::File;
-use std::io::{self, Read};
+use std::io::{self, Cursor, ErrorKind, Read, Write};
 use std::net::{SocketAddr, TcpListener, TcpStream};
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
 use std::thread;
 use std::time::{Duration, Instant};
 use ureq::Agent;
@@ -615,12 +617,6 @@ impl Drop for Client {
     }
 }
 
-fn read<R: Read>(r: &mut R) -> io::Result<Vec<u8>> {
-    let mut dst = Vec::new();
-    r.read_to_end(&mut dst)?;
-    Ok(dst)
-}
-
 fn tab(s: &str) -> String {
     let mut result = String::new();
     for line in s.lines() {
@@ -635,6 +631,7 @@ struct BackgroundChild<'a> {
     child: Child,
     stdout: Option<thread::JoinHandle<io::Result<Vec<u8>>>>,
     stderr: Option<thread::JoinHandle<io::Result<Vec<u8>>>>,
+    any_stderr: Arc<AtomicBool>,
     shell: &'a Shell,
     print_stdio_on_drop: bool,
 }
@@ -654,12 +651,36 @@ impl<'a> BackgroundChild<'a> {
             .context(format!("failed to spawn {:?} binary", path))?;
         let mut stdout = child.stdout.take().unwrap();
         let mut stderr = child.stderr.take().unwrap();
-        let stdout = Some(thread::spawn(move || read(&mut stdout)));
-        let stderr = Some(thread::spawn(move || read(&mut stderr)));
+        let stdout = Some(thread::spawn(move || {
+            let mut dst = Vec::new();
+            stdout.read_to_end(&mut dst)?;
+            Ok(dst)
+        }));
+        let any_stderr = Arc::new(AtomicBool::new(false));
+        let any_stderr_clone = Arc::clone(&any_stderr);
+        let stderr = Some(thread::spawn(move || {
+            let mut dst = Cursor::new(Vec::new());
+            let mut buffer = [0];
+
+            match stderr.read_exact(&mut buffer) {
+                Ok(()) => {
+                    dst.write_all(&buffer).unwrap();
+                    any_stderr_clone.store(true, Ordering::Relaxed);
+                }
+                Err(error) if error.kind() == ErrorKind::UnexpectedEof => {
+                    return Ok(dst.into_inner())
+                }
+                Err(error) => return Err(error),
+            }
+
+            io::copy(&mut stderr, &mut dst)?;
+            Ok(dst.into_inner())
+        }));
         Ok(BackgroundChild {
             child,
             stdout,
             stderr,
+            any_stderr,
             shell,
             print_stdio_on_drop: true,
         })
@@ -668,7 +689,7 @@ impl<'a> BackgroundChild<'a> {
     fn has_failed(&mut self) -> bool {
         match self.child.try_wait() {
             Ok(Some(status)) => !status.success(),
-            Ok(None) => false,
+            Ok(None) => self.any_stderr.load(Ordering::Relaxed),
             Err(_) => true,
         }
     }
