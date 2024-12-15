@@ -5,6 +5,7 @@ use std::path::PathBuf;
 
 #[derive(Parser, Debug)]
 #[command(
+    name = "wasm2es6js",
     version,
     about,
     long_about = None,
