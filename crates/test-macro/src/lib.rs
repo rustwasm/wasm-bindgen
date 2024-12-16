@@ -80,7 +80,7 @@ pub fn wasm_bindgen_test(
         None => quote! { ::core::option::Option::None },
     };
 
-    let ignore = match ignore {
+    let ignore_par = match &ignore {
         Some(Some(lit)) => {
             quote! { ::core::option::Option::Some(::core::option::Option::Some(#lit)) }
         }
@@ -89,9 +89,9 @@ pub fn wasm_bindgen_test(
     };
 
     let test_body = if attributes.r#async {
-        quote! { cx.execute_async(test_name, #ident, #should_panic_par, #ignore); }
+        quote! { cx.execute_async(test_name, #ident, #should_panic_par, #ignore_par); }
     } else {
-        quote! { cx.execute_sync(test_name, #ident, #should_panic_par, #ignore); }
+        quote! { cx.execute_sync(test_name, #ident, #should_panic_par, #ignore_par); }
     };
 
     // We generate a `#[no_mangle]` with a known prefix so the test harness can
@@ -128,6 +128,18 @@ pub fn wasm_bindgen_test(
 
             tokens.extend(
                 quote! { #[cfg_attr(not(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none"))), #should_panic)] }
+            )
+        }
+
+        if let Some(ignore) = ignore {
+            let ignore = if let Some(lit) = ignore {
+                quote! { ignore = #lit }
+            } else {
+                quote! { ignore }
+            };
+
+            tokens.extend(
+                quote! { #[cfg_attr(not(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none"))), #ignore)] }
             )
         }
     }
