@@ -136,17 +136,20 @@ struct State {
     /// Include ignored tests.
     include_ignored: Cell<bool>,
 
+    /// Include ignored tests.
+    ignored: Cell<bool>,
+
     /// Tests to skip.
     skip: RefCell<Vec<String>>,
 
     /// Counter of the number of tests that have succeeded.
-    succeeded: Cell<usize>,
+    succeeded_count: Cell<usize>,
 
     /// Counter of the number of tests that have been filtered
-    filtered: Cell<usize>,
+    filtered_count: Cell<usize>,
 
     /// Counter of the number of tests that have been ignored
-    ignored: Cell<usize>,
+    ignored_count: Cell<usize>,
 
     /// A list of all tests which have failed.
     ///
@@ -349,13 +352,14 @@ impl Context {
             state: Rc::new(State {
                 filter: Default::default(),
                 include_ignored: Default::default(),
+                ignored: Default::default(),
                 skip: Default::default(),
                 failures: Default::default(),
-                filtered: Default::default(),
-                ignored: Default::default(),
+                filtered_count: Default::default(),
+                ignored_count: Default::default(),
                 remaining: Default::default(),
                 running: Default::default(),
-                succeeded: Default::default(),
+                succeeded_count: Default::default(),
                 formatter,
                 timer,
             }),
@@ -365,6 +369,11 @@ impl Context {
     /// Handle `--include-ignored` flag.
     pub fn include_ignored(&mut self, include_ignored: bool) {
         self.state.include_ignored.set(include_ignored);
+    }
+
+    /// Handle `--ignored` flag.
+    pub fn ignored(&mut self, ignored: bool) {
+        self.state.ignored.set(ignored);
     }
 
     /// Handle `--skip` arguments.
@@ -547,27 +556,33 @@ impl Context {
         let filter = self.state.filter.borrow();
         if let Some(filter) = &*filter {
             if !name.contains(filter) {
-                let filtered = self.state.filtered.get();
-                self.state.filtered.set(filtered + 1);
+                let filtered = self.state.filtered_count.get();
+                self.state.filtered_count.set(filtered + 1);
                 return;
             }
         }
 
         for skip in &*self.state.skip.borrow() {
             if name.contains(skip) {
-                let filtered = self.state.filtered.get();
-                self.state.filtered.set(filtered + 1);
+                let filtered = self.state.filtered_count.get();
+                self.state.filtered_count.set(filtered + 1);
                 return;
             }
         }
 
-        if !self.state.include_ignored.get() {
+        if self.state.ignored.get() && ignore.is_none() {
+            let filtered = self.state.filtered_count.get();
+            self.state.filtered_count.set(filtered + 1);
+            return;
+        }
+
+        if !self.state.include_ignored.get() && !self.state.ignored.get() {
             if let Some(ignore) = ignore {
                 self.state
                     .formatter
                     .log_test(name, &TestResult::Ignored(ignore.map(str::to_owned)));
-                let ignored = self.state.ignored.get();
-                self.state.ignored.set(ignored + 1);
+                let ignored = self.state.ignored_count.get();
+                self.state.ignored_count.set(ignored + 1);
                 return;
             }
         }
@@ -665,7 +680,7 @@ impl State {
                 }
 
                 self.formatter.log_test(&test.name, &TestResult::Ok);
-                self.succeeded.set(self.succeeded.get() + 1);
+                self.succeeded_count.set(self.succeeded_count.get() + 1);
             } else {
                 self.formatter
                     .log_test(&test.name, &TestResult::Err(JsValue::NULL));
@@ -677,7 +692,7 @@ impl State {
             self.formatter.log_test(&test.name, &result);
 
             match result {
-                TestResult::Ok => self.succeeded.set(self.succeeded.get() + 1),
+                TestResult::Ok => self.succeeded_count.set(self.succeeded_count.get() + 1),
                 TestResult::Err(e) => self.failures.borrow_mut().push((test, Failure::Error(e))),
                 _ => (),
             }
@@ -710,10 +725,10 @@ impl State {
              {} filtered out\
              {}\n",
             if failures.len() == 0 { "ok" } else { "FAILED" },
-            self.succeeded.get(),
+            self.succeeded_count.get(),
             failures.len(),
-            self.ignored.get(),
-            self.filtered.get(),
+            self.ignored_count.get(),
+            self.filtered_count.get(),
             finished_in,
         ));
     }

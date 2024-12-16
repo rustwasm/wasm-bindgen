@@ -35,8 +35,10 @@ struct Cli {
         help = "The file to test. `cargo test` passes this argument for you."
     )]
     file: PathBuf,
-    #[arg(long, help = "Run ignored tests")]
+    #[arg(long, conflicts_with = "ignored", help = "Run ignored tests")]
     include_ignored: bool,
+    #[arg(long, conflicts_with = "include_ignored", help = "Run ignored tests")]
+    ignored: bool,
     #[arg(
         long,
         value_name = "FILTER",
@@ -64,6 +66,7 @@ struct Cli {
 impl Cli {
     fn into_args(self) -> String {
         let include_ignored = self.include_ignored;
+        let ignored = self.ignored;
         let skip = self.skip;
         let filter = if let Some(filter) = self.filter {
             &format!("\"{filter}\"")
@@ -75,6 +78,7 @@ impl Cli {
             r#"
             // Forward runtime arguments.
             cx.include_ignored({include_ignored:?});
+            cx.ignored({ignored:?});
             cx.skip({skip:?});
             cx.filter({filter});
         "#
@@ -111,19 +115,21 @@ fn main() -> anyhow::Result<()> {
 
     if cli.list {
         'outer: for test in tests {
-            if let Some(filter) = &cli.filter {
-                if !test.contains(filter) {
-                    continue;
+            if !cli.ignored || test.starts_with("__wbgt_$") {
+                if let Some(filter) = &cli.filter {
+                    if !test.contains(filter) {
+                        continue;
+                    }
                 }
-            }
 
-            for skip in &cli.skip {
-                if test.contains(skip) {
-                    continue 'outer;
+                for skip in &cli.skip {
+                    if test.contains(skip) {
+                        continue 'outer;
+                    }
                 }
-            }
 
-            println!("{}: test", test.split_once("::").unwrap().1);
+                println!("{}: test", test.split_once("::").unwrap().1);
+            }
         }
 
         // Returning cleanly has the strange effect of outputting
