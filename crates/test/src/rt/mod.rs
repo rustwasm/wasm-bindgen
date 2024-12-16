@@ -165,6 +165,9 @@ struct State {
     /// How to actually format output, either node.js or browser-specific
     /// implementation.
     formatter: Box<dyn Formatter>,
+
+    /// Timing the total duration.
+    timer: Option<Timer>,
 }
 
 /// Failure reasons.
@@ -252,6 +255,18 @@ extern "C" {
     // General-purpose conversion into a `String`.
     #[wasm_bindgen(js_name = String)]
     fn stringify(val: &JsValue) -> String;
+
+    type Global;
+
+    #[wasm_bindgen(method, getter)]
+    fn performance(this: &Global) -> JsValue;
+
+    /// Type for the [`Performance` object](https://developer.mozilla.org/en-US/docs/Web/API/Performance).
+    type Performance;
+
+    /// Binding to [`Performance.now()`](https://developer.mozilla.org/en-US/docs/Web/API/Performance/now).
+    #[wasm_bindgen(method)]
+    fn now(this: &Performance) -> f64;
 }
 
 /// Internal implementation detail of the `console_log!` macro.
@@ -328,6 +343,8 @@ impl Context {
             detect::Runtime::Worker => Box::new(worker::Worker::new()) as Box<dyn Formatter>,
         };
 
+        let timer = Timer::new();
+
         Context {
             state: Rc::new(State {
                 filter: Default::default(),
@@ -340,6 +357,7 @@ impl Context {
                 running: Default::default(),
                 succeeded: Default::default(),
                 formatter,
+                timer,
             }),
         }
     }
@@ -373,7 +391,6 @@ impl Context {
         self.state
             .formatter
             .writeln(&format!("running {} {}", tests.len(), noun));
-        self.state.formatter.writeln("");
 
         // Execute all our test functions through their Wasm shims (unclear how
         // to pass native function pointers around here). Each test will
@@ -523,6 +540,8 @@ impl Context {
         should_panic: Option<Option<&'static str>>,
         ignore: Option<Option<&'static str>>,
     ) {
+        // Split away
+        let name = name.split_once("::").unwrap().1;
         // If our test is filtered out, record that it was filtered and move
         // on, nothing to do here.
         let filter = self.state.filter.borrow();
@@ -677,18 +696,25 @@ impl State {
                 self.formatter.writeln(&format!("    {}", test.name));
             }
         }
+        let finished_in = if let Some(timer) = &self.timer {
+            format!("; finished in {:.2?}s", timer.elapsed())
+        } else {
+            String::new()
+        };
         self.formatter.writeln("");
         self.formatter.writeln(&format!(
             "test result: {}. \
              {} passed; \
              {} failed; \
              {} ignored; \
-             {} filtered out\n",
+             {} filtered out\
+             {}\n",
             if failures.len() == 0 { "ok" } else { "FAILED" },
             self.succeeded.get(),
             failures.len(),
             self.ignored.get(),
             self.filtered.get(),
+            finished_in,
         ));
     }
 
@@ -812,4 +838,28 @@ fn tab(s: &str) -> String {
         result.push('\n');
     }
     result
+}
+
+struct Timer {
+    performance: Performance,
+    started: f64,
+}
+
+impl Timer {
+    fn new() -> Option<Self> {
+        let global: Global = js_sys::global().unchecked_into();
+        let performance = global.performance();
+        (!performance.is_undefined()).then(|| {
+            let performance: Performance = performance.unchecked_into();
+            let started = performance.now();
+            Self {
+                performance,
+                started,
+            }
+        })
+    }
+
+    fn elapsed(&self) -> f64 {
+        (self.performance.now() - self.started) / 1000.
+    }
 }

@@ -216,15 +216,13 @@ fn main() -> anyhow::Result<()> {
 
     let browser_timeout = env::var("WASM_BINDGEN_TEST_TIMEOUT")
         .map(|timeout| {
-            timeout
+            let timeout = timeout
                 .parse()
-                .expect("Could not parse 'WASM_BINDGEN_TEST_TIMEOUT'")
+                .expect("Could not parse 'WASM_BINDGEN_TEST_TIMEOUT'");
+            println!("Set timeout to {} seconds...", timeout);
+            timeout
         })
         .unwrap_or(20);
-
-    if debug {
-        println!("Set timeout to {} seconds...", browser_timeout);
-    }
 
     // Make the generated bindings available for the tests to execute against.
     shell.status("Executing bindgen...");
