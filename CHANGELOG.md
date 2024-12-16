@@ -43,6 +43,9 @@
 * Fixed passing large arrays into Rust failing because of internal memory allocations invalidating the memory buffer.
   [#4353](https://github.com/rustwasm/wasm-bindgen/pull/4353)
 
+* Pass along an `ignore` attribute to `unsupported` tests.
+  [#4360](https://github.com/rustwasm/wasm-bindgen/pull/4360)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.99](https://github.com/rustwasm/wasm-bindgen/compare/0.2.98...0.2.99)
