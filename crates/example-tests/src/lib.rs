@@ -203,7 +203,7 @@ impl WebDriver {
         self.next_id += 1;
         let json = serde_json::to_string(&BidiCommand { id, method, params })
             .context("failed to serialize message")?;
-        self.ws.send(Message::Text(json)).await?;
+        self.ws.send(Message::Text(json.into())).await?;
         loop {
             let msg = self
                 .ws
@@ -211,7 +211,7 @@ impl WebDriver {
                 .await
                 .unwrap_or(Err(tungstenite::Error::AlreadyClosed))?;
 
-            let message: BidiMessage<R> = serde_json::from_str(&msg.into_text()?)?;
+            let message: BidiMessage<R> = serde_json::from_str(msg.to_text()?)?;
             match message {
                 BidiMessage::CommandResponse {
                     id: response_id,
@@ -237,7 +237,7 @@ impl WebDriver {
                 .await
                 .unwrap_or(Err(tungstenite::Error::AlreadyClosed))?;
 
-            let message: BidiMessage<Value> = serde_json::from_str(&msg.into_text()?)?;
+            let message: BidiMessage<Value> = serde_json::from_str(msg.to_text()?)?;
             match message {
                 BidiMessage::CommandResponse { .. } => bail!("unexpected command response"),
                 BidiMessage::Event(event) => Ok(event),
