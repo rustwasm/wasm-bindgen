@@ -25,6 +25,9 @@
 * Handle stuck and failed WebDriver processes when re-trying to start them.
   [#4340](https://github.com/rustwasm/wasm-bindgen/pull/4340)
 
+* Align test output closer to native `cargo test`.
+  [#4358](https://github.com/rustwasm/wasm-bindgen/pull/4358)
+
 ### Fixed
 
 - Fixed using [JavaScript keyword](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#keywords) as identifiers not being handled correctly.
