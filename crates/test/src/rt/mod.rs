@@ -139,6 +139,9 @@ struct State {
     /// Include ignored tests.
     ignored: Cell<bool>,
 
+    /// Only execute with exactly matching name.
+    exact: Cell<bool>,
+
     /// Tests to skip.
     skip: RefCell<Vec<String>>,
 
@@ -353,6 +356,7 @@ impl Context {
                 filter: Default::default(),
                 include_ignored: Default::default(),
                 ignored: Default::default(),
+                exact: Default::default(),
                 skip: Default::default(),
                 failures: Default::default(),
                 filtered_count: Default::default(),
@@ -374,6 +378,11 @@ impl Context {
     /// Handle `--ignored` flag.
     pub fn ignored(&mut self, ignored: bool) {
         self.state.ignored.set(ignored);
+    }
+
+    /// Handle `--exact` flag.
+    pub fn exact(&mut self, exact: bool) {
+        self.state.exact.set(exact);
     }
 
     /// Handle `--skip` arguments.
@@ -555,7 +564,15 @@ impl Context {
         // on, nothing to do here.
         let filter = self.state.filter.borrow();
         if let Some(filter) = &*filter {
-            if !name.contains(filter) {
+            let exact = self.state.exact.get();
+
+            let matches = if exact {
+                name == filter
+            } else {
+                name.contains(filter)
+            };
+
+            if !matches {
                 let filtered = self.state.filtered_count.get();
                 self.state.filtered_count.set(filtered + 1);
                 return;

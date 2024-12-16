@@ -14,7 +14,7 @@
 * Support importing memory and using `wasm_bindgen::module()` in Node.js.
   [#4349](https://github.com/rustwasm/wasm-bindgen/pull/4349)
 
-* Add `--list` and `ignored` to `wasm-bindgen-test-runner`, analogous to `cargo test`.
+* Add `--list`, `--ignored` and `--exact` to `wasm-bindgen-test-runner`, analogous to `cargo test`.
   [#4356](https://github.com/rustwasm/wasm-bindgen/pull/4356)
 
 ### Changed

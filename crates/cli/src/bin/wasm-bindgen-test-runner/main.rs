@@ -39,6 +39,8 @@ struct Cli {
     include_ignored: bool,
     #[arg(long, conflicts_with = "include_ignored", help = "Run ignored tests")]
     ignored: bool,
+    #[arg(long, help = "Exactly match filters rather than by substring")]
+    exact: bool,
     #[arg(
         long,
         value_name = "FILTER",
@@ -67,6 +69,7 @@ impl Cli {
     fn into_args(self) -> String {
         let include_ignored = self.include_ignored;
         let ignored = self.ignored;
+        let exact = self.exact;
         let skip = self.skip;
         let filter = if let Some(filter) = self.filter {
             &format!("\"{filter}\"")
@@ -79,6 +82,7 @@ impl Cli {
             // Forward runtime arguments.
             cx.include_ignored({include_ignored:?});
             cx.ignored({ignored:?});
+            cx.exact({exact:?});
             cx.skip({skip:?});
             cx.filter({filter});
         "#
@@ -117,7 +121,13 @@ fn main() -> anyhow::Result<()> {
         'outer: for test in tests {
             if !cli.ignored || test.starts_with("__wbgt_$") {
                 if let Some(filter) = &cli.filter {
-                    if !test.contains(filter) {
+                    let matches = if cli.exact {
+                        test == *filter
+                    } else {
+                        test.contains(filter)
+                    };
+
+                    if !matches {
                         continue;
                     }
                 }
