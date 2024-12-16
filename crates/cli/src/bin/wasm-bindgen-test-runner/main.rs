@@ -34,10 +34,10 @@ struct Cli {
         help = "The file to test. `cargo test` passes this argument for you."
     )]
     file: PathBuf,
-    #[arg(long = "include-ignored", help = "Run ignored tests")]
+    #[arg(long, help = "Run ignored tests")]
     include_ignored: bool,
     #[arg(
-        long = "skip",
+        long,
         value_name = "FILTER",
         help = "Skip tests whose names contain FILTER (this flag can be used multiple times)"
     )]
