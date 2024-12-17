@@ -46,6 +46,9 @@
 * Pass along an `ignore` attribute to `unsupported` tests.
   [#4360](https://github.com/rustwasm/wasm-bindgen/pull/4360)
 
+* Use OS provided temporary directory for tests instead of Cargo's `target` directory.
+  [#4361](https://github.com/rustwasm/wasm-bindgen/pull/4361)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.99](https://github.com/rustwasm/wasm-bindgen/compare/0.2.98...0.2.99)
