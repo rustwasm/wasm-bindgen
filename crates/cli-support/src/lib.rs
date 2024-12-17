@@ -35,9 +35,6 @@ pub struct Bindgen {
     remove_producers_section: bool,
     omit_default_module_path: bool,
     emit_start: bool,
-    // Support for the Wasm threads proposal, transforms the Wasm module to be
-    // "ready to be instantiated on any thread"
-    threads: wasm_bindgen_threads_xform::Config,
     externref: bool,
     multi_value: bool,
     encode_into: EncodeInto,
@@ -105,7 +102,6 @@ impl Bindgen {
             remove_name_section: false,
             remove_producers_section: false,
             emit_start: true,
-            threads: threads_config(),
             externref,
             multi_value,
             encode_into: EncodeInto::Test,
@@ -342,9 +338,7 @@ impl Bindgen {
             bail!("exported symbol \"default\" not allowed for --target web")
         }
 
-        let thread_count = self
-            .threads
-            .run(&mut module)
+        let thread_count = wasm_bindgen_threads_xform::run(&mut module)
             .with_context(|| "failed to prepare module for threading")?;
 
         // If requested, turn all mangled symbols into prettier unmangled
@@ -533,20 +527,6 @@ fn reset_indentation(s: &str) -> String {
         }
     }
     dst
-}
-
-// Eventually these will all be CLI options, but while they're unstable features
-// they're left as environment variables. We don't guarantee anything about
-// backwards-compatibility with these options.
-fn threads_config() -> wasm_bindgen_threads_xform::Config {
-    let mut cfg = wasm_bindgen_threads_xform::Config::new();
-    if let Ok(s) = env::var("WASM_BINDGEN_THREADS_MAX_MEMORY") {
-        cfg.maximum_memory(s.parse().unwrap());
-    }
-    if let Ok(s) = env::var("WASM_BINDGEN_THREADS_STACK_SIZE") {
-        cfg.thread_stack_size(s.parse().unwrap());
-    }
-    cfg
 }
 
 fn demangle(module: &mut Module) {

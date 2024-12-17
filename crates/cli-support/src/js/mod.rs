@@ -158,7 +158,7 @@ impl<'a> Context<'a> {
             used_string_enums: Default::default(),
             exported_classes: Some(Default::default()),
             config,
-            threads_enabled: config.threads.is_enabled(module),
+            threads_enabled: wasm_bindgen_threads_xform::is_enabled(module),
             module,
             npm_dependencies: Default::default(),
             next_export_idx: 0,

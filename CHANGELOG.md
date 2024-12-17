@@ -31,6 +31,9 @@
 * Error if URL in `<WEBDRIVER>_REMOTE` can't be parsed instead of just ignoring it.
   [#4362](https://github.com/rustwasm/wasm-bindgen/pull/4362)
 
+* Remove `WASM_BINDGEN_THREADS_MAX_MEMORY` and `WASM_BINDGEN_THREADS_STACK_SIZE`. The maximum memory size can be set via `-Clink-arg=--max-memory=<size>`. The stack size of a thread can be set when initializing the thread via the `default` function.
+  [#4363](https://github.com/rustwasm/wasm-bindgen/pull/4363)
+
 ### Fixed
 
 - Fixed using [JavaScript keyword](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#keywords) as identifiers not being handled correctly.

@@ -1,6 +1,5 @@
 use anyhow::{anyhow, bail, Error};
 use std::cmp;
-use std::env;
 use walrus::ir::Value;
 use walrus::FunctionBuilder;
 use walrus::{
@@ -10,189 +9,128 @@ use walrus::{
 use wasm_bindgen_wasm_conventions as wasm_conventions;
 
 pub const PAGE_SIZE: u32 = 1 << 16;
+const DEFAULT_THREAD_STACK_SIZE: u32 = 1 << 21; // 2MB
 const ATOMIC_MEM_ARG: MemArg = MemArg {
     align: 4,
     offset: 0,
 };
 
-/// Configuration for the transformation pass in this module.
-///
-/// Created primarily through `new` and then executed through `run`.
-pub struct Config {
-    maximum_memory: u32,
-    thread_stack_size: u32,
-    enabled: bool,
-}
-
 #[derive(Clone, Copy)]
 pub struct ThreadCount(walrus::LocalId);
 
-impl Config {
-    /// Create a new configuration with default settings.
-    pub fn new() -> Config {
-        Config {
-            maximum_memory: 1 << 30,    // 1GB
-            thread_stack_size: 1 << 21, // 2MB
-            enabled: env::var("WASM_BINDGEN_THREADS").is_ok(),
-        }
+/// Is threaded Wasm enabled?
+pub fn is_enabled(module: &Module) -> bool {
+    // Compatibility with older LLVM outputs. Newer LLVM outputs, when
+    // atomics are enabled, emit a shared memory. That's a good indicator
+    // that we have work to do. If shared memory isn't enabled, though then
+    // this isn't an atomic module so there's nothing to do. We still allow,
+    // though, an environment variable to force us to go down this path to
+    // remain compatible with older LLVM outputs.
+    match wasm_conventions::get_memory(module) {
+        Ok(memory) => module.memories.get(memory).shared,
+        Err(_) => false,
+    }
+}
+
+/// Execute the transformation on the parsed Wasm module specified.
+///
+/// This function will prepare `Module` to be run on multiple threads,
+/// performing steps such as:
+///
+/// * All data segments are switched to "passive" data segments to ensure
+///   they're only initialized once (coming later)
+/// * If memory is exported from this module, it is instead switched to
+///   being imported (with the same parameters).
+/// * The imported memory is required to be `shared`, ensuring it's backed
+///   by a `SharedArrayBuffer` on the web.
+/// * A `global` for a thread ID is injected.
+/// * Four bytes in linear memory are reserved for the counter of thread
+///   IDs.
+/// * A `start` function is injected (or prepended if one already exists)
+///   which initializes memory for the first thread and otherwise allocates
+///   thread ids for all threads.
+/// * Some stack space is prepared for each thread after the first one.
+///
+/// More and/or less may happen here over time, stay tuned!
+pub fn run(module: &mut Module) -> Result<Option<ThreadCount>, Error> {
+    if !is_enabled(module) {
+        return Ok(None);
     }
 
-    /// Is threaded Wasm enabled?
-    pub fn is_enabled(&self, module: &Module) -> bool {
-        if self.enabled {
-            return true;
-        }
+    let memory = wasm_conventions::get_memory(module)?;
 
-        // Compatibility with older LLVM outputs. Newer LLVM outputs, when
-        // atomics are enabled, emit a shared memory. That's a good indicator
-        // that we have work to do. If shared memory isn't enabled, though then
-        // this isn't an atomic module so there's nothing to do. We still allow,
-        // though, an environment variable to force us to go down this path to
-        // remain compatible with older LLVM outputs.
-        match wasm_conventions::get_memory(module) {
-            Ok(memory) => module.memories.get(memory).shared,
-            Err(_) => false,
-        }
-    }
+    // Now we need to allocate extra static memory for:
+    // - A thread id counter.
+    // - A temporary stack for calls to `malloc()` and `free()`.
+    // - A lock to synchronize usage of the above stack.
+    // For this, we allocate 1 extra page of memory (should be enough as temporary
+    // stack) and grab the first 2 _aligned_ i32 words to use as counter and lock.
+    let static_data_align = 4;
+    let static_data_pages = 1;
+    let (base, addr) = allocate_static_data(module, memory, static_data_pages, static_data_align)?;
 
-    /// Specify the maximum amount of memory the Wasm module can ever have.
-    ///
-    /// We'll be specifying that the memory for this Wasm module is shared, and
-    /// all shared memories must have their maximum limit specified (whereas
-    /// by default Rust/LLVM/LLD don't specify a maximum).
-    ///
-    /// The default for this option is 16MB, and this can be used to change
-    /// the maximum memory we'll be specifying.
-    ///
-    /// The `max` argument is in units of bytes.
-    ///
-    /// If the maximum memory is already specified this setting won't have any
-    /// affect.
-    pub fn maximum_memory(&mut self, max: u32) -> &mut Config {
-        self.maximum_memory = max;
-        self
-    }
+    let mem = module.memories.get(memory);
+    assert!(mem.shared);
+    assert!(mem.import.is_some());
+    assert!(mem.data_segments.is_empty());
 
-    /// Specify the stack size for all threads spawned.
-    ///
-    /// The stack size is typically set by rustc as an argument to LLD and
-    /// defaults to 1MB for the main thread. All threads spawned by the
-    /// main thread, however, need to allocate their own stack!
-    ///
-    /// This configuration option indicates how large the stack of each child
-    /// thread will be. This will be allocated as part of the `start` function
-    /// and will be stored in LLVM's global stack pointer.
-    pub fn thread_stack_size(&mut self, size: u32) -> &mut Config {
-        self.thread_stack_size = size;
-        self
-    }
+    let tls = Tls {
+        init: delete_synthetic_func(module, "__wasm_init_tls")?,
+        size: delete_synthetic_global(module, "__tls_size")?,
+        align: delete_synthetic_global(module, "__tls_align")?,
+        base: wasm_conventions::get_tls_base(module)
+            .ok_or_else(|| anyhow!("failed to find tls base"))?,
+    };
 
-    /// Execute the transformation on the parsed Wasm module specified.
-    ///
-    /// This function will prepare `Module` to be run on multiple threads,
-    /// performing steps such as:
-    ///
-    /// * All data segments are switched to "passive" data segments to ensure
-    ///   they're only initialized once (coming later)
-    /// * If memory is exported from this module, it is instead switched to
-    ///   being imported (with the same parameters).
-    /// * The imported memory is required to be `shared`, ensuring it's backed
-    ///   by a `SharedArrayBuffer` on the web.
-    /// * A `global` for a thread ID is injected.
-    /// * Four bytes in linear memory are reserved for the counter of thread
-    ///   IDs.
-    /// * A `start` function is injected (or prepended if one already exists)
-    ///   which initializes memory for the first thread and otherwise allocates
-    ///   thread ids for all threads.
-    /// * Some stack space is prepared for each thread after the first one.
-    ///
-    /// More and/or less may happen here over time, stay tuned!
-    pub fn run(&self, module: &mut Module) -> Result<Option<ThreadCount>, Error> {
-        if !self.is_enabled(module) {
-            return Ok(None);
-        }
+    let thread_counter_addr = addr as i32;
 
-        let memory = wasm_conventions::get_memory(module)?;
+    let stack_alloc =
+        module
+            .globals
+            .add_local(ValType::I32, true, false, ConstExpr::Value(Value::I32(0)));
 
-        // Now we need to allocate extra static memory for:
-        // - A thread id counter.
-        // - A temporary stack for calls to `malloc()` and `free()`.
-        // - A lock to synchronize usage of the above stack.
-        // For this, we allocate 1 extra page of memory (should be enough as temporary
-        // stack) and grab the first 2 _aligned_ i32 words to use as counter and lock.
-        let static_data_align = 4;
-        let static_data_pages = 1;
-        let (base, addr) =
-            allocate_static_data(module, memory, static_data_pages, static_data_align)?;
+    // Make sure the temporary stack is aligned down
+    let temp_stack = (base + static_data_pages * PAGE_SIZE) & !(static_data_align - 1);
 
-        let mem = module.memories.get_mut(memory);
-        assert!(mem.shared);
-        let prev_max = mem.maximum.unwrap();
-        assert!(mem.import.is_some());
-        mem.maximum = Some(cmp::max(
-            u64::from(self.maximum_memory / PAGE_SIZE),
-            prev_max,
-        ));
-        assert!(mem.data_segments.is_empty());
+    const _: () = assert!(DEFAULT_THREAD_STACK_SIZE % PAGE_SIZE == 0);
 
-        let tls = Tls {
-            init: delete_synthetic_func(module, "__wasm_init_tls")?,
-            size: delete_synthetic_global(module, "__tls_size")?,
-            align: delete_synthetic_global(module, "__tls_align")?,
-            base: wasm_conventions::get_tls_base(module)
-                .ok_or_else(|| anyhow!("failed to find tls base"))?,
-        };
+    let stack = Stack {
+        pointer: wasm_conventions::get_stack_pointer(module)
+            .ok_or_else(|| anyhow!("failed to find stack pointer"))?,
+        temp: temp_stack as i32,
+        temp_lock: thread_counter_addr + 4,
+        alloc: stack_alloc,
+        size: module.globals.add_local(
+            ValType::I32,
+            true,
+            false,
+            ConstExpr::Value(Value::I32(DEFAULT_THREAD_STACK_SIZE as i32)),
+        ),
+    };
 
-        let thread_counter_addr = addr as i32;
+    let _ = module.exports.add("__stack_alloc", stack.alloc);
 
-        let stack_alloc =
-            module
-                .globals
-                .add_local(ValType::I32, true, false, ConstExpr::Value(Value::I32(0)));
+    let thread_count = inject_start(module, &tls, &stack, thread_counter_addr, memory)?;
 
-        // Make sure the temporary stack is aligned down
-        let temp_stack = (base + static_data_pages * PAGE_SIZE) & !(static_data_align - 1);
+    // we expose a `__wbindgen_thread_destroy()` helper function that deallocates stack space.
+    //
+    // ## Safety
+    // After calling this function in a given agent, the instance should be considered
+    // "destroyed" and any further invocations into it will trigger UB. This function
+    // should not be called from an agent that cannot block (e.g. the main document thread).
+    //
+    // You can also call it from a "leader" agent, passing appropriate values, if said leader
+    // is in charge of cleaning up after a "follower" agent. In that case:
+    // - The "appropriate values" are the values of the `__tls_base` and `__stack_alloc` globals
+    //   and the stack size from the follower thread, after initialization.
+    // - The leader does _not_ need to block.
+    // - Similar restrictions apply: the follower thread should be considered unusable afterwards,
+    //   the leader should not call this function with the same set of parameters twice.
+    // - Moreover, concurrent calls can lead to UB: the follower could be in the middle of a
+    //   call while the leader is destroying its stack! You should make sure that this cannot happen.
+    inject_destroy(module, &tls, &stack, memory)?;
 
-        assert!(self.thread_stack_size % PAGE_SIZE == 0);
-
-        let stack = Stack {
-            pointer: wasm_conventions::get_stack_pointer(module)
-                .ok_or_else(|| anyhow!("failed to find stack pointer"))?,
-            temp: temp_stack as i32,
-            temp_lock: thread_counter_addr + 4,
-            alloc: stack_alloc,
-            size: module.globals.add_local(
-                ValType::I32,
-                true,
-                false,
-                ConstExpr::Value(Value::I32(self.thread_stack_size as i32)),
-            ),
-        };
-
-        let _ = module.exports.add("__stack_alloc", stack.alloc);
-
-        let thread_count = inject_start(module, &tls, &stack, thread_counter_addr, memory)?;
-
-        // we expose a `__wbindgen_thread_destroy()` helper function that deallocates stack space.
-        //
-        // ## Safety
-        // After calling this function in a given agent, the instance should be considered
-        // "destroyed" and any further invocations into it will trigger UB. This function
-        // should not be called from an agent that cannot block (e.g. the main document thread).
-        //
-        // You can also call it from a "leader" agent, passing appropriate values, if said leader
-        // is in charge of cleaning up after a "follower" agent. In that case:
-        // - The "appropriate values" are the values of the `__tls_base` and `__stack_alloc` globals
-        //   and the stack size from the follower thread, after initialization.
-        // - The leader does _not_ need to block.
-        // - Similar restrictions apply: the follower thread should be considered unusable afterwards,
-        //   the leader should not call this function with the same set of parameters twice.
-        // - Moreover, concurrent calls can lead to UB: the follower could be in the middle of a
-        //   call while the leader is destroying its stack! You should make sure that this cannot happen.
-        inject_destroy(self, module, &tls, &stack, memory)?;
-
-        Ok(Some(thread_count))
-    }
+    Ok(Some(thread_count))
 }
 
 impl ThreadCount {
@@ -403,7 +341,6 @@ fn inject_start(
 }
 
 fn inject_destroy(
-    config: &Config,
     module: &mut Module,
     tls: &Tls,
     stack: &Stack,
@@ -457,7 +394,7 @@ fn inject_destroy(
             // we're destroying somebody else's stack, so we can use our own
             body.local_get(stack_alloc)
                 .local_get(stack_size)
-                .i32_const(config.thread_stack_size as i32)
+                .i32_const(DEFAULT_THREAD_STACK_SIZE as i32)
                 .local_get(stack_size)
                 .select(None)
                 .i32_const(16)

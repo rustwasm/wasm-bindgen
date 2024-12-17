@@ -23,9 +23,7 @@ fn runtest(test: &Test) -> Result<String> {
         .generate_producers_section(false)
         .parse(&wasm)?;
 
-    let config = wasm_bindgen_threads_xform::Config::new();
-
-    config.run(&mut module)?;
+    wasm_bindgen_threads_xform::run(&mut module)?;
     walrus::passes::gc::run(&mut module);
 
     let features = wasmparser::WasmFeatures::default() | wasmparser::WasmFeatures::THREADS;
