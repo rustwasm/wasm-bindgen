@@ -28,6 +28,9 @@
 * Align test output closer to native `cargo test`.
   [#4358](https://github.com/rustwasm/wasm-bindgen/pull/4358)
 
+* Error if URL in `<WEBDRIVER>_REMOTE` can't be parsed instead of just ignoring it.
+  [#4362](https://github.com/rustwasm/wasm-bindgen/pull/4362)
+
 ### Fixed
 
 - Fixed using [JavaScript keyword](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#keywords) as identifiers not being handled correctly.
@@ -48,6 +51,9 @@
 
 * Use OS provided temporary directory for tests instead of Cargo's `target` directory.
   [#4361](https://github.com/rustwasm/wasm-bindgen/pull/4361)
+
+* Error if URL in `<WEBDRIVER>_REMOTE` can't be parsed.
+  [#4362](https://github.com/rustwasm/wasm-bindgen/pull/4362)
 
 --------------------------------------------------------------------------------
 

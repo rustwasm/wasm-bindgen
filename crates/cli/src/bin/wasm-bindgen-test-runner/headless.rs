@@ -269,10 +269,7 @@ impl Driver {
         for (driver, ctor) in drivers.iter() {
             let env = format!("{}_REMOTE", driver.to_uppercase());
             let url = match env::var(&env) {
-                Ok(var) => match Url::parse(&var) {
-                    Ok(url) => url,
-                    Err(_) => continue,
-                },
+                Ok(var) => Url::parse(&var).context(format!("failed to parse `{env}`"))?,
                 Err(_) => continue,
             };
             return Ok(ctor(Locate::Remote(url)));
