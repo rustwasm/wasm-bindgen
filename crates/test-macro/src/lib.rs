@@ -4,12 +4,8 @@
 extern crate proc_macro;
 
 use proc_macro2::*;
-use quote::format_ident;
 use quote::quote;
 use quote::quote_spanned;
-use std::sync::atomic::*;
-
-static CNT: AtomicUsize = AtomicUsize::new(0);
 
 #[proc_macro_attribute]
 pub fn wasm_bindgen_test(
@@ -94,18 +90,16 @@ pub fn wasm_bindgen_test(
         quote! { cx.execute_sync(test_name, #ident, #should_panic_par, #ignore_par); }
     };
 
-    // We generate a `#[no_mangle]` with a known prefix so the test harness can
-    // later slurp up all of these functions and pass them as arguments to the
-    // main test harness. This is the entry point for all tests.
-    let name = format_ident!("__wbgt_{}_{}", ident, CNT.fetch_add(1, Ordering::SeqCst));
+    let ignore_name = if ignore.is_some() { "$" } else { "" };
+
     let wasm_bindgen_path = attributes.wasm_bindgen_path;
     tokens.extend(
         quote! {
             const _: () = {
                 #wasm_bindgen_path::__rt::wasm_bindgen::__wbindgen_coverage! {
-                #[no_mangle]
+                #[export_name = ::core::concat!("__wbgt_", #ignore_name, ::core::module_path!(), "::", ::core::stringify!(#ident))]
                 #[cfg(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")))]
-                pub extern "C" fn #name(cx: &#wasm_bindgen_path::__rt::Context) {
+                extern "C" fn __wbgt_test(cx: &#wasm_bindgen_path::__rt::Context) {
                     let test_name = ::core::concat!(::core::module_path!(), "::", ::core::stringify!(#ident));
                     #test_body
                 }

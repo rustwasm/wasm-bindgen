@@ -210,14 +210,15 @@ pub fn run(
             println!("output div contained:\n{}", tab(&output));
         }
     }
-    if !logs.is_empty() {
-        println!("console.log div contained:\n{}", tab(&logs));
-    }
-    if !errors.is_empty() {
-        println!("console.log div contained:\n{}", tab(&errors));
-    }
 
     if !output.contains("test result: ok") {
+        if !logs.is_empty() {
+            println!("console.log div contained:\n{}", tab(&logs));
+        }
+        if !errors.is_empty() {
+            println!("console.log div contained:\n{}", tab(&errors));
+        }
+
         bail!("some tests failed")
     }
 

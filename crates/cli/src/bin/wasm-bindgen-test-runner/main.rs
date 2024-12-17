@@ -13,6 +13,7 @@
 
 use anyhow::{bail, Context};
 use clap::Parser;
+use clap::ValueEnum;
 use std::env;
 use std::fs;
 use std::path::Path;
@@ -34,14 +35,32 @@ struct Cli {
         help = "The file to test. `cargo test` passes this argument for you."
     )]
     file: PathBuf,
-    #[arg(long = "include-ignored", help = "Run ignored tests")]
+    #[arg(long, conflicts_with = "ignored", help = "Run ignored tests")]
     include_ignored: bool,
+    #[arg(long, conflicts_with = "include_ignored", help = "Run ignored tests")]
+    ignored: bool,
+    #[arg(long, help = "Exactly match filters rather than by substring")]
+    exact: bool,
     #[arg(
-        long = "skip",
+        long,
         value_name = "FILTER",
         help = "Skip tests whose names contain FILTER (this flag can be used multiple times)"
     )]
     skip: Vec<String>,
+    #[arg(long, help = "List all tests and benchmarks")]
+    list: bool,
+    #[arg(
+        long,
+        help = "don't capture `console.*()` of each task, allow printing directly"
+    )]
+    nocapture: bool,
+    #[arg(
+        long,
+        value_enum,
+        value_name = "terse",
+        help = "Configure formatting of output"
+    )]
+    format: Option<FormatSetting>,
     #[arg(
         index = 2,
         value_name = "FILTER",
@@ -54,6 +73,8 @@ struct Cli {
 impl Cli {
     fn into_args(self) -> String {
         let include_ignored = self.include_ignored;
+        let ignored = self.ignored;
+        let exact = self.exact;
         let skip = self.skip;
         let filter = if let Some(filter) = self.filter {
             &format!("\"{filter}\"")
@@ -65,6 +86,8 @@ impl Cli {
             r#"
             // Forward runtime arguments.
             cx.include_ignored({include_ignored:?});
+            cx.ignored({ignored:?});
+            cx.exact({exact:?});
             cx.skip({skip:?});
             cx.filter({filter});
         "#
@@ -85,10 +108,6 @@ fn main() -> anyhow::Result<()> {
         .map(Path::new)
         .context("file to test is not a valid file, can't extract file name")?;
 
-    let tmpdir = tempfile::tempdir()?;
-
-    let module = "wasm-bindgen-test";
-
     // Collect all tests that the test harness is supposed to run. We assume
     // that any exported function with the prefix `__wbg_test` is a test we need
     // to execute.
@@ -98,11 +117,44 @@ fn main() -> anyhow::Result<()> {
     let mut tests = Vec::new();
 
     for export in wasm.exports.iter() {
-        if !export.name.starts_with("__wbgt_") {
-            continue;
+        if export.name.starts_with("__wbgt_") {
+            tests.push(export.name.to_string());
         }
-        tests.push(export.name.to_string());
     }
+
+    if cli.list {
+        'outer: for test in tests {
+            if !cli.ignored || test.starts_with("__wbgt_$") {
+                if let Some(filter) = &cli.filter {
+                    let matches = if cli.exact {
+                        test == *filter
+                    } else {
+                        test.contains(filter)
+                    };
+
+                    if !matches {
+                        continue;
+                    }
+                }
+
+                for skip in &cli.skip {
+                    if test.contains(skip) {
+                        continue 'outer;
+                    }
+                }
+
+                println!("{}: test", test.split_once("::").unwrap().1);
+            }
+        }
+
+        // Returning cleanly has the strange effect of outputting
+        // an additional empty line with spaces in it.
+        std::process::exit(0);
+    }
+
+    let tmpdir = tempfile::tempdir()?;
+
+    let module = "wasm-bindgen-test";
 
     // Right now there's a bug where if no tests are present then the
     // `wasm-bindgen-test` runtime support isn't linked in, so just bail out
@@ -347,4 +399,11 @@ fn coverage_args(file_name: &Path) -> PathBuf {
         }
         None => PathBuf::from(generated(file_name, &prefix)),
     }
+}
+
+/// Possible values for the `--format` option.
+#[derive(Debug, Clone, Copy, ValueEnum)]
+enum FormatSetting {
+    /// Display one character per test
+    Terse,
 }

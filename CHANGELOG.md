@@ -14,6 +14,9 @@
 * Support importing memory and using `wasm_bindgen::module()` in Node.js.
   [#4349](https://github.com/rustwasm/wasm-bindgen/pull/4349)
 
+* Add `--list`, `--ignored`, `--exact` and `--nocapture` to `wasm-bindgen-test-runner`, analogous to `cargo test`.
+  [#4356](https://github.com/rustwasm/wasm-bindgen/pull/4356)
+
 ### Changed
 
 * Optional parameters are now typed as `T | undefined | null` to reflect the actual JS behavior.
@@ -33,6 +36,9 @@
 
 * Remove `WASM_BINDGEN_THREADS_MAX_MEMORY` and `WASM_BINDGEN_THREADS_STACK_SIZE`. The maximum memory size can be set via `-Clink-arg=--max-memory=<size>`. The stack size of a thread can be set when initializing the thread via the `default` function.
   [#4363](https://github.com/rustwasm/wasm-bindgen/pull/4363)
+
+* `console.*()` calls in tests are now always intercepted by default. To show them use `--nocapture`. When shown they are always printed in-place instead of after test results, analogous to `cargo test`.
+  [#4356](https://github.com/rustwasm/wasm-bindgen/pull/4356)
 
 ### Fixed
 

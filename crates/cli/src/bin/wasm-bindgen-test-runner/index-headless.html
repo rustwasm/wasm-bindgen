@@ -18,10 +18,14 @@
          }
      };
 
+     // {NOCAPTURE}
      const wrap = method => {
          const og = orig(`console_${method}`);
          const on_method = `on_console_${method}`;
          console[method] = function (...args) {
+             if (nocapture) {
+                 orig("output").apply(this, args);
+             }
              if (window[on_method]) {
                  window[on_method](args);
              }

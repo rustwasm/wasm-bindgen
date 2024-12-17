@@ -15,13 +15,17 @@ const wrap = method => {
     const og = console[method];
     const on_method = `on_console_${method}`;
     console[method] = function (...args) {
-        og.apply(this, args);
+        if (nocapture) {
+            og.apply(this, args);
+        }
         if (handlers[on_method]) {
             handlers[on_method](args);
         }
     };
 };
 
+// save original `console.log`
+global.__wbgtest_og_console_log = console.log;
 // override `console.log` and `console.error` etc... before we import tests to
 // ensure they're bound correctly in wasm. This'll allow us to intercept
 // all these calls and capture the output of tests
@@ -53,6 +57,7 @@ pub fn execute(
         {fs};
         {wasm};
 
+        const nocapture = {nocapture};
         {console_override}
 
         global.__wbg_test_invoke = f => f();
@@ -88,6 +93,7 @@ pub fn execute(
             r"import fs from 'node:fs/promises'".to_string()
         },
         coverage = coverage.display(),
+        nocapture = cli.nocapture.clone(),
         console_override = SHARED_SETUP,
         args = cli.into_args(),
     );

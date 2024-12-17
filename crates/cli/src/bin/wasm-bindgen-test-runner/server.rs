@@ -70,6 +70,7 @@ pub(crate) fn spawn(
         )
     };
 
+    let nocapture = cli.nocapture;
     let args = cli.into_args();
 
     if test_mode.is_worker() {
@@ -102,9 +103,13 @@ pub(crate) fn spawn(
 
         worker_script.push_str(&format!(
             r#"
+            const nocapture = {nocapture};
             const wrap = method => {{
                 const on_method = `on_console_${{method}}`;
                 self.console[method] = function (...args) {{
+                    if (nocapture) {{
+                        self.__wbg_test_output_writeln(args);
+                    }}
                     if (self[on_method]) {{
                         self[on_method](args);
                     }}
@@ -297,6 +302,7 @@ pub(crate) fn spawn(
             } else {
                 include_str!("index.html")
             };
+            let s = s.replace("// {NOCAPTURE}", &format!("const nocapture = {nocapture};"));
             let s = if !test_mode.is_worker() && test_mode.no_modules() {
                 s.replace(
                     "<!-- {IMPORT_SCRIPTS} -->",

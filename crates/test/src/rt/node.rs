@@ -19,6 +19,8 @@ extern "C" {
     type NodeError;
     #[wasm_bindgen(method, getter, js_class = "Error", structural)]
     fn stack(this: &NodeError) -> String;
+    #[wasm_bindgen(js_name = __wbgtest_og_console_log)]
+    fn og_console_log(s: &str);
 }
 
 impl Node {
@@ -30,7 +32,7 @@ impl Node {
 
 impl super::Formatter for Node {
     fn writeln(&self, line: &str) {
-        super::js_console_log(line);
+        og_console_log(line);
     }
 
     fn log_test(&self, name: &str, result: &TestResult) {

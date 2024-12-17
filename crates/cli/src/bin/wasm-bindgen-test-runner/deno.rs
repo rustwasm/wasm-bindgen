@@ -13,6 +13,7 @@ pub fn execute(module: &str, tmpdir: &Path, cli: Cli, tests: &[String]) -> Resul
     let mut js_to_execute = format!(
         r#"import * as wasm from "./{module}.js";
 
+        const nocapture = {nocapture};
         {console_override}
 
         window.__wbg_test_invoke = f => f();
@@ -21,6 +22,7 @@ pub fn execute(module: &str, tmpdir: &Path, cli: Cli, tests: &[String]) -> Resul
 
         const tests = [];
     "#,
+        nocapture = cli.nocapture.clone(),
         console_override = SHARED_SETUP,
         args = cli.into_args(),
     );
