@@ -51,6 +51,11 @@ struct Cli {
     list: bool,
     #[arg(
         long,
+        help = "don't capture `console.*()` of each task, allow printing directly"
+    )]
+    nocapture: bool,
+    #[arg(
+        long,
         value_enum,
         value_name = "terse",
         help = "Configure formatting of output"
