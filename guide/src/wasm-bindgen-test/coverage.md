@@ -9,7 +9,7 @@ You can ask the runner to generate coverage data from functions marked as `#[was
 
 ## Enabling the feature
 
-To enable this feature, you need to enable `cfg(wasm_bindgen_unstable_test_coverage)`.
+To enable this feature, you need to enable the crate feature `unstable-test-coverage` on `wasm-bindgen-test`. Additionally its recommended to use the `msrv` crate feature on `wasm-bindgen-test` as well to disable profiling on internal functions, significantly improving the accuracy of the test coverage results.
 
 ## Generating the data
 
@@ -43,7 +43,7 @@ This adapts code taken from the [Rustc book], see that for more examples and gen
 ```sh
 # Run the tests:
 # `--tests` to not run documentation tests, which is currently not supported.
-RUSTFLAGS="-Cinstrument-coverage -Zno-profiler-runtime --emit=llvm-ir --cfg=wasm_bindgen_unstable_test_coverage" \
+RUSTFLAGS="-Cinstrument-coverage -Zno-profiler-runtime --emit=llvm-ir" \
 CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_RUNNER=wasm-bindgen-test-runner \
 cargo +nightly test --tests
 # Compile to object files:
@@ -54,7 +54,7 @@ crate_name=name_of_the_tested_crate_in_snake_case
 objects=()
 IFS=$'\n'
 for file in $(
-    RUSTFLAGS="-Cinstrument-coverage -Zno-profiler-runtime --emit=llvm-ir --cfg=wasm_bindgen_unstable_test_coverage" \
+    RUSTFLAGS="-Cinstrument-coverage -Zno-profiler-runtime --emit=llvm-ir" \
     cargo +nightly test --tests --no-run --message-format=json | \
     jq -r "select(.reason == \"compiler-artifact\") | (select(.target.kind == [\"test\"]) // select(.target.name == \"$crate_name\")) | .filenames[0]"
 )

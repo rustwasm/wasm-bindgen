@@ -15,6 +15,7 @@ version = "0.2.99"
 
 [features]
 extra-traits = ["syn/extra-traits"]
+msrv = ["wasm-bindgen-backend/msrv"]
 strict-macro = []
 
 [dependencies]

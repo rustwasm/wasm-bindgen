@@ -40,6 +40,12 @@
 * `console.*()` calls in tests are now always intercepted by default. To show them use `--nocapture`. When shown they are always printed in-place instead of after test results, analogous to `cargo test`.
   [#4356](https://github.com/rustwasm/wasm-bindgen/pull/4356)
 
+* Instrumentation is now disabled on internal functions with the `msrv` crate feature instead of `cfg(wasm_bindgen_unstable_test_coverage)`.
+  [#4369](https://github.com/rustwasm/wasm-bindgen/pull/4369)
+
+* Replaced `cfg(wasm_bindgen_unstable_test_coverage)` with crate feature `unstable-test-coverage` on `wasm-bindgen-test`.
+  [#4369](https://github.com/rustwasm/wasm-bindgen/pull/4369)
+
 ### Fixed
 
 - Fixed using [JavaScript keyword](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#keywords) as identifiers not being handled correctly.
@@ -66,6 +72,9 @@
 
 * Internal functions are now removed instead of invalidly imported if they are unused.
   [#4366](https://github.com/rustwasm/wasm-bindgen/pull/4366)
+
+* No coverage data is emitted when the module is not instrumented even if `unstable-test-coverage` is enabled.
+  [#4369](https://github.com/rustwasm/wasm-bindgen/pull/4369)
 
 --------------------------------------------------------------------------------
 

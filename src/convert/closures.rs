@@ -56,7 +56,7 @@ macro_rules! stack_closures {
             where $($var: FromWasmAbi,)*
                   R: ReturnWasmAbi
         {
-            #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+            #[cfg_attr(feature = "msrv", rustversion::attr(since(2024-12-18), coverage(off)))]
             fn describe() {
                 inform(FUNCTION);
                 inform($invoke::<$($var,)* R> as usize as u32);
@@ -113,7 +113,7 @@ macro_rules! stack_closures {
             where $($var: FromWasmAbi,)*
                   R: ReturnWasmAbi
         {
-            #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+            #[cfg_attr(feature = "msrv", rustversion::attr(since(2024-12-18), coverage(off)))]
             fn describe() {
                 inform(FUNCTION);
                 inform($invoke_mut::<$($var,)* R> as usize as u32);
@@ -157,7 +157,7 @@ where
 }
 
 #[allow(non_snake_case)]
-#[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+#[cfg_attr(feature = "msrv", rustversion::attr(since(2024-12-18), coverage(off)))]
 unsafe extern "C" fn invoke1_ref<A: RefFromWasmAbi, R: ReturnWasmAbi>(
     a: usize,
     b: usize,
@@ -184,7 +184,7 @@ where
     A: RefFromWasmAbi,
     R: ReturnWasmAbi,
 {
-    #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+    #[cfg_attr(feature = "msrv", rustversion::attr(since(2024-12-18), coverage(off)))]
     fn describe() {
         inform(FUNCTION);
         inform(invoke1_ref::<A, R> as usize as u32);
@@ -214,7 +214,7 @@ where
 }
 
 #[allow(non_snake_case)]
-#[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+#[cfg_attr(feature = "msrv", rustversion::attr(since(2024-12-18), coverage(off)))]
 unsafe extern "C" fn invoke1_mut_ref<A: RefFromWasmAbi, R: ReturnWasmAbi>(
     a: usize,
     b: usize,
@@ -241,7 +241,7 @@ where
     A: RefFromWasmAbi,
     R: ReturnWasmAbi,
 {
-    #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+    #[cfg_attr(feature = "msrv", rustversion::attr(since(2024-12-18), coverage(off)))]
     fn describe() {
         inform(FUNCTION);
         inform(invoke1_mut_ref::<A, R> as usize as u32);

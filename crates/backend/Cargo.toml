@@ -15,6 +15,7 @@ version = "0.2.99"
 
 [features]
 extra-traits = ["syn/extra-traits"]
+msrv = []
 
 [dependencies]
 bumpalo = "3.0.0"

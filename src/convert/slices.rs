@@ -127,7 +127,7 @@ macro_rules! vectors {
 macro_rules! vectors_internal {
     ($t:ty) => {
         impl WasmDescribeVector for $t {
-            #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+            #[cfg_attr(feature = "msrv", rustversion::attr(since(2024-12-18), coverage(off)))]
             fn describe_vector() {
                 inform(VECTOR);
                 <$t>::describe();
@@ -234,7 +234,7 @@ vectors! {
 }
 
 impl WasmDescribeVector for String {
-    #[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+    #[cfg_attr(feature = "msrv", rustversion::attr(since(2024-12-18), coverage(off)))]
     fn describe_vector() {
         inform(VECTOR);
         inform(NAMED_EXTERNREF);

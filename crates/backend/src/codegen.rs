@@ -223,6 +223,7 @@ impl ToTokens for ast::Struct {
         let free_fn = Ident::new(&shared::free_function(&name_str), Span::call_site());
         let unwrap_fn = Ident::new(&shared::unwrap_function(&name_str), Span::call_site());
         let wasm_bindgen = &self.wasm_bindgen;
+        let coverage = coverage(wasm_bindgen);
         (quote! {
             #[automatically_derived]
             impl #wasm_bindgen::__rt::marker::SupportsConstructor for #name {}
@@ -301,9 +302,9 @@ impl ToTokens for ast::Struct {
             #[cfg(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")))]
             #[automatically_derived]
             const _: () = {
-                #wasm_bindgen::__wbindgen_coverage! {
                 #[no_mangle]
                 #[doc(hidden)]
+                #coverage
                 // `allow_delayed` is whether it's ok to not actually free the `ptr` immediately
                 // if it's still borrowed.
                 pub unsafe extern "C" fn #free_fn(ptr: u32, allow_delayed: u32) {
@@ -319,7 +320,6 @@ impl ToTokens for ast::Struct {
                         // Claim ownership of the value, which will panic if it's borrowed.
                         let _ = <#name as #wasm_bindgen::convert::FromWasmAbi>::from_abi(ptr);
                     }
-                }
                 }
             };
 
@@ -496,13 +496,14 @@ impl ToTokens for ast::StructField {
         }
 
         let wasm_bindgen = &self.wasm_bindgen;
+        let coverage = coverage(wasm_bindgen);
 
         (quote! {
             #[automatically_derived]
             const _: () = {
-                #wasm_bindgen::__wbindgen_coverage! {
                 #[cfg_attr(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")), no_mangle)]
                 #[doc(hidden)]
+                #coverage
                 pub unsafe extern "C" fn #getter(js: u32)
                     -> #wasm_bindgen::convert::WasmRet<<#ty as #wasm_bindgen::convert::IntoWasmAbi>::Abi>
                 {
@@ -516,7 +517,6 @@ impl ToTokens for ast::StructField {
                     assert_not_null(js);
                     let val = #val;
                     <#ty as IntoWasmAbi>::into_abi(val).into()
-                }
                 }
             };
         })
@@ -543,9 +543,9 @@ impl ToTokens for ast::StructField {
             #[cfg(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")))]
             #[automatically_derived]
             const _: () = {
-                #wasm_bindgen::__wbindgen_coverage! {
                 #[no_mangle]
                 #[doc(hidden)]
+                #coverage
                 pub unsafe extern "C" fn #setter(
                     js: u32,
                     #(#args,)*
@@ -558,7 +558,6 @@ impl ToTokens for ast::StructField {
                     let val = <#abi as #wasm_bindgen::convert::WasmAbi>::join(#(#names),*);
                     let val = <#ty as FromWasmAbi>::from_abi(val);
                     (*js).borrow_mut().#rust_name = val;
-                }
                 }
             };
         })
@@ -584,6 +583,7 @@ impl TryToTokens for ast::Export {
 
         let name = &self.rust_name;
         let wasm_bindgen = &self.wasm_bindgen;
+        let coverage = coverage(wasm_bindgen);
         let wasm_bindgen_futures = &self.wasm_bindgen_futures;
         let receiver = match self.method_self {
             Some(ast::MethodSelf::ByValue) => {
@@ -827,12 +827,12 @@ impl TryToTokens for ast::Export {
         (quote! {
             #[automatically_derived]
             const _: () = {
-                #wasm_bindgen::__wbindgen_coverage! {
                 #(#attrs)*
                 #[cfg_attr(
                     all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")),
                     export_name = #export_name,
                 )]
+                #coverage
                 pub unsafe extern "C" fn #generated_name(#(#args),*) -> #wasm_bindgen::convert::WasmRet<#projection::Abi> {
                     const _: () = {
                         #(#checks)*
@@ -840,7 +840,6 @@ impl TryToTokens for ast::Export {
 
                     let #ret = #call;
                     #convert_ret
-                }
                 }
             };
         })
@@ -1870,20 +1869,20 @@ impl<T: ToTokens> ToTokens for Descriptor<'_, T> {
         let inner = &self.inner;
         let attrs = &self.attrs;
         let wasm_bindgen = &self.wasm_bindgen;
+        let coverage = coverage(wasm_bindgen);
         (quote! {
             #[cfg(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")))]
             #[automatically_derived]
             const _: () = {
-                #wasm_bindgen::__wbindgen_coverage! {
                 #(#attrs)*
                 #[no_mangle]
                 #[doc(hidden)]
+                #coverage
                 pub extern "C" fn #name() {
                     use #wasm_bindgen::describe::*;
                     // See definition of `link_mem_intrinsics` for what this is doing
                     #wasm_bindgen::__rt::link_mem_intrinsics();
                     #inner
-                }
                 }
             };
         })
@@ -1968,4 +1967,16 @@ fn respan(input: TokenStream, span: &dyn ToTokens) -> TokenStream {
         new_tokens.push(token);
     }
     new_tokens.into_iter().collect()
+}
+
+#[cfg(feature = "msrv")]
+fn coverage(wasm_bindgen: &syn::Path) -> TokenStream {
+    quote! {
+        #[#wasm_bindgen::__rt::rustversion::attr(since(2024-12-18), coverage(off))]
+    }
+}
+
+#[cfg(not(feature = "msrv"))]
+fn coverage(_: &syn::Path) -> TokenStream {
+    TokenStream::new()
 }
