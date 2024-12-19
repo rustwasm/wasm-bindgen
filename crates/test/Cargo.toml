@@ -19,6 +19,7 @@ js-sys = { path = '../js-sys', version = '=0.3.76', default-features = false }
 wasm-bindgen = { path = '../..', version = '=0.2.99', default-features = false }
 wasm-bindgen-futures = { path = '../futures', version = '=0.4.49', default-features = false }
 wasm-bindgen-test-macro = { path = '../test-macro', version = '=0.3.49' }
+wasm-bindgen-test-shared = { path = "../test-shared", version = "=0.2.99" }
 
 [target.'cfg(all(target_arch = "wasm32", wasm_bindgen_unstable_test_coverage))'.dependencies]
 minicov = "0.3"
