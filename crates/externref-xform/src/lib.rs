@@ -302,12 +302,6 @@ impl Transform<'_> {
         self.process_elements(module)?;
         assert!(self.cx.new_elements.is_empty());
 
-        // If we didn't actually transform anything, no need to inject or
-        // rewrite anything from below.
-        if self.shims.is_empty() {
-            return Ok(());
-        }
-
         // Perform all instruction transformations to rewrite calls between
         // functions and make sure everything is still hooked up right.
         self.rewrite_calls(module)?;
