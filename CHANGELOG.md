@@ -64,6 +64,9 @@
 * Error if URL in `<WEBDRIVER>_REMOTE` can't be parsed.
   [#4362](https://github.com/rustwasm/wasm-bindgen/pull/4362)
 
+* Internal functions are now removed instead of invalidly imported if they are unused.
+  [#4366](https://github.com/rustwasm/wasm-bindgen/pull/4366)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.99](https://github.com/rustwasm/wasm-bindgen/compare/0.2.98...0.2.99)
