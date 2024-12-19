@@ -22,7 +22,7 @@ wasm-bindgen-wasm-conventions = { path = "../wasm-conventions", version = "=0.2.
 rayon = "1.0"
 wasmprinter = "0.214"
 wast = "214"
-wat = "1.0"
+wat = "~1.214"
 
 [lints]
 workspace = true
