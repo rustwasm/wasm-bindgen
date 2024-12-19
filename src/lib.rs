@@ -22,6 +22,8 @@
 //!
 //! When compiling with Rust v1.78 or later, this feature enables better error messages for invalid methods on structs and enums.
 //!
+//! When compiling with Rust nightly 2024-12-18 or later, this feature disables instrumentation on internal function to improve test coverage results for users.
+//!
 //! ### `std` (default)
 //!
 //! Enabling this feature will make the crate depend on the Rust standard library.
@@ -47,10 +49,9 @@
 //! **Deprecated:** This feature became a no-op in wasm-bindgen v0.2.20 (Sep 7, 2018).
 
 #![no_std]
-#![cfg_attr(wasm_bindgen_unstable_test_coverage, feature(coverage_attribute))]
 #![cfg_attr(target_feature = "atomics", feature(thread_local))]
 #![cfg_attr(
-    any(target_feature = "atomics", wasm_bindgen_unstable_test_coverage),
+    target_feature = "atomics",
     feature(allow_internal_unstable),
     allow(internal_features)
 )]

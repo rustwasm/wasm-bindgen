@@ -93,16 +93,21 @@ pub fn wasm_bindgen_test(
     let ignore_name = if ignore.is_some() { "$" } else { "" };
 
     let wasm_bindgen_path = attributes.wasm_bindgen_path;
+    #[cfg(feature = "msrv")]
+    let coverage = quote! {
+        #[#wasm_bindgen_path::__rt::wasm_bindgen::__rt::rustversion::attr(since(2024-12-18), coverage(off))]
+    };
+    #[cfg(not(feature = "msrv"))]
+    let coverage = TokenStream::new();
     tokens.extend(
         quote! {
             const _: () = {
-                #wasm_bindgen_path::__rt::wasm_bindgen::__wbindgen_coverage! {
                 #[export_name = ::core::concat!("__wbgt_", #ignore_name, ::core::module_path!(), "::", ::core::stringify!(#ident))]
                 #[cfg(all(target_arch = "wasm32", any(target_os = "unknown", target_os = "none")))]
+                #coverage
                 extern "C" fn __wbgt_test(cx: &#wasm_bindgen_path::__rt::Context) {
                     let test_name = ::core::concat!(::core::module_path!(), "::", ::core::stringify!(#ident));
                     #test_body
-                }
                 }
             };
         },

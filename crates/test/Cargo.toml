@@ -11,6 +11,7 @@ version = "0.3.49"
 
 [features]
 default = ["std"]
+msrv = ["wasm-bindgen/msrv", "wasm-bindgen-test-macro/msrv"]
 std = ["wasm-bindgen/std", "js-sys/std", "wasm-bindgen-futures/std"]
 
 [dependencies]
@@ -20,18 +21,11 @@ wasm-bindgen = { path = '../..', version = '=0.2.99', default-features = false }
 wasm-bindgen-futures = { path = '../futures', version = '=0.4.49', default-features = false }
 wasm-bindgen-test-macro = { path = '../test-macro', version = '=0.3.49' }
 
-[target.'cfg(all(target_arch = "wasm32", wasm_bindgen_unstable_test_coverage))'.dependencies]
-minicov = "0.3"
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+unstable-test-coverage = { package = "minicov", version = "0.3", optional = true }
 
-[lints.rust]
-unexpected_cfgs = { level = "warn", check-cfg = ['cfg(wasm_bindgen_unstable_test_coverage)'] }
-
-[lints.clippy]
-large_enum_variant = "allow"
-new_without_default = "allow"
-overly_complex_bool_expr = "allow"
-too_many_arguments = "allow"
-type_complexity = "allow"
+[lints]
+workspace = true
 
 [lib]
 test = false

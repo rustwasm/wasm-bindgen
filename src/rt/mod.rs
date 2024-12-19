@@ -12,6 +12,9 @@ use alloc::boxed::Box;
 use alloc::rc::Rc;
 use once_cell::unsync::Lazy;
 
+#[cfg(feature = "msrv")]
+pub use rustversion;
+
 pub extern crate alloc;
 pub extern crate core;
 #[cfg(feature = "std")]
@@ -153,26 +156,6 @@ macro_rules! __wbindgen_thread_local {
             __inner: || unsafe { $wasm_bindgen::__rt::LazyCell::force(&_VAL) as *const $actual_ty },
         }
     }};
-}
-
-#[macro_export]
-#[doc(hidden)]
-#[cfg(not(wasm_bindgen_unstable_test_coverage))]
-macro_rules! __wbindgen_coverage {
-    ($item:item) => {
-        $item
-    };
-}
-
-#[macro_export]
-#[doc(hidden)]
-#[cfg(wasm_bindgen_unstable_test_coverage)]
-#[allow_internal_unstable(coverage_attribute)]
-macro_rules! __wbindgen_coverage {
-    ($item:item) => {
-        #[coverage(off)]
-        $item
-    };
 }
 
 #[inline]
@@ -520,7 +503,7 @@ pub unsafe extern "C" fn __wbindgen_free(ptr: *mut u8, size: usize, align: usize
 /// in the object file and link the intrinsics.
 ///
 /// Ideas for how to improve this are most welcome!
-#[cfg_attr(wasm_bindgen_unstable_test_coverage, coverage(off))]
+#[cfg_attr(feature = "msrv", rustversion::attr(since(2024-12-18), coverage(off)))]
 pub fn link_mem_intrinsics() {
     crate::link::link_intrinsics();
 }

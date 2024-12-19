@@ -17,6 +17,7 @@ version = "0.2.99"
 proc-macro = true
 
 [features]
+msrv = ["wasm-bindgen-macro-support/msrv"]
 strict-macro = ["wasm-bindgen-macro-support/strict-macro"]
 xxx_debug_only_print_generated_code = []
 
