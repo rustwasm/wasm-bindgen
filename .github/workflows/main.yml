@@ -72,6 +72,7 @@ jobs:
     - run: cargo clippy --no-deps --all-features -p wasm-bindgen-macro-support -- -D warnings
     - run: cargo clippy --no-deps --all-features -p wasm-bindgen-multi-value-xform -- -D warnings
     - run: cargo clippy --no-deps --all-features -p wasm-bindgen-shared -- -D warnings
+    - run: cargo clippy --no-deps --all-features -p wasm-bindgen-test-shared -- -D warnings
     - run: cargo clippy --no-deps --all-features --target wasm32-unknown-unknown -p wasm-bindgen-test -- -D warnings
     - run: cargo clippy --no-deps --all-features -p wasm-bindgen-test-macro -- -D warnings
     - run: cargo clippy --no-deps --all-features -p wasm-bindgen-threads-xform -- -D warnings
@@ -275,6 +276,7 @@ jobs:
     - run: cargo test -p wasm-bindgen-wasm-interpreter
     - run: cargo test -p wasm-bindgen-futures
     - run: cargo test -p wasm-bindgen-shared
+    - run: cargo test -p wasm-bindgen-test-shared
 
   test_with_geckodriver:
     strategy:

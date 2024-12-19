@@ -23,6 +23,7 @@ const CRATES_TO_PUBLISH: &[&str] = &[
     "wasm-bindgen-macro-support",
     "wasm-bindgen-macro",
     "wasm-bindgen-test-macro",
+    "wasm-bindgen-test-shared",
     "wasm-bindgen-test",
     "wasm-bindgen-wasm-interpreter",
     "wasm-bindgen-wasm-conventions",

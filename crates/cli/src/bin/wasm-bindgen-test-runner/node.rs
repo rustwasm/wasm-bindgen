@@ -1,6 +1,7 @@
 use std::env;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
+use std::process;
 use std::process::Command;
 
 use anyhow::{Context, Error};
@@ -49,8 +50,18 @@ pub fn execute(
     cli: Cli,
     tests: &[String],
     module_format: bool,
-    coverage: PathBuf,
 ) -> Result<(), Error> {
+    let coverage_env = if let Ok(env) = env::var("LLVM_PROFILE_FILE") {
+        &format!("\"{env}\"")
+    } else {
+        "undefined"
+    };
+    let coverage_pid = process::id();
+    let coverage_temp_dir = env::temp_dir()
+        .to_str()
+        .map(String::from)
+        .context("failed to parse path to temporary directory")?;
+
     let mut js_to_execute = format!(
         r#"
         {exit};
@@ -68,8 +79,10 @@ pub fn execute(
             const ok = await cx.run(tests.map(n => wasm.__wasm[n]));
 
             const coverage = wasm.__wbgtest_cov_dump();
-            if (coverage !== undefined)
-                await fs.writeFile('{coverage}', coverage);
+            if (coverage !== undefined) {{
+                const path = wasm.__wbgtest_coverage_path({coverage_env}, {coverage_pid}, {coverage_temp_dir:?}, wasm.__wbgtest_module_signature());
+                await fs.writeFile(path, coverage);
+            }}
 
             if (!ok)
                 exit(1);
@@ -92,7 +105,6 @@ pub fn execute(
         } else {
             r"import fs from 'node:fs/promises'".to_string()
         },
-        coverage = coverage.display(),
         nocapture = cli.nocapture.clone(),
         console_override = SHARED_SETUP,
         args = cli.into_args(),
