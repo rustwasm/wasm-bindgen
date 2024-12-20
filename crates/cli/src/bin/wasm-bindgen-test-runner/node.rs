@@ -1,6 +1,7 @@
 use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::process;
 use std::process::Command;
 
 use anyhow::{Context, Error};
@@ -138,27 +139,17 @@ pub fn execute(
         .map(|s| s.to_string())
         .filter(|s| !s.is_empty())
         .collect::<Vec<_>>();
-    exec(
-        Command::new("node")
-            .env("NODE_PATH", env::join_paths(&path).unwrap())
-            .arg("--expose-gc")
-            .args(&extra_node_args)
-            .arg(&js_path),
-    )
-}
 
-#[cfg(unix)]
-pub fn exec(cmd: &mut Command) -> Result<(), Error> {
-    use std::os::unix::prelude::*;
-    Err(Error::from(cmd.exec()).context(format!(
-        "failed to execute `{}`",
-        cmd.get_program().to_string_lossy()
-    )))
-}
+    let status = Command::new("node")
+        .env("NODE_PATH", env::join_paths(&path).unwrap())
+        .arg("--expose-gc")
+        .args(&extra_node_args)
+        .arg(&js_path)
+        .status()?;
 
-#[cfg(windows)]
-pub fn exec(cmd: &mut Command) -> Result<(), Error> {
-    use std::process;
-    let status = cmd.status()?;
-    process::exit(status.code().unwrap_or(3));
+    if !status.success() {
+        process::exit(status.code().unwrap_or(1))
+    } else {
+        Ok(())
+    }
 }

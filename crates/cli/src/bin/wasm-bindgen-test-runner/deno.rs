@@ -1,13 +1,10 @@
-use std::fs;
 use std::path::Path;
 use std::process::Command;
+use std::{fs, process};
 
 use anyhow::{Context, Error};
 
-use crate::{
-    node::{exec, SHARED_SETUP},
-    Cli,
-};
+use crate::{node::SHARED_SETUP, Cli};
 
 pub fn execute(module: &str, tmpdir: &Path, cli: Cli, tests: &[String]) -> Result<(), Error> {
     let mut js_to_execute = format!(
@@ -60,10 +57,15 @@ if (!ok) Deno.exit(1);"#,
             .arg(&js_path)
             .args(args),
     )*/
-    exec(
-        Command::new("deno")
-            .arg("run")
-            .arg("--allow-read")
-            .arg(&js_path),
-    )
+    let status = Command::new("deno")
+        .arg("run")
+        .arg("--allow-read")
+        .arg(&js_path)
+        .status()?;
+
+    if !status.success() {
+        process::exit(status.code().unwrap_or(1))
+    } else {
+        Ok(())
+    }
 }
