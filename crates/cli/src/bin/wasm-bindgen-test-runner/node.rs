@@ -7,6 +7,7 @@ use std::process::Command;
 use anyhow::{Context, Error};
 
 use crate::Cli;
+use crate::Tests;
 
 // depends on the variable 'wasm' and initializes te WasmBindgenTestContext cx
 pub const SHARED_SETUP: &str = r#"
@@ -48,7 +49,7 @@ pub fn execute(
     module: &str,
     tmpdir: &Path,
     cli: Cli,
-    tests: &[String],
+    tests: Tests,
     module_format: bool,
     coverage: PathBuf,
 ) -> Result<(), Error> {
@@ -96,14 +97,14 @@ pub fn execute(
         coverage = coverage.display(),
         nocapture = cli.nocapture.clone(),
         console_override = SHARED_SETUP,
-        args = cli.into_args(),
+        args = cli.into_args(&tests),
     );
 
     // Note that we're collecting *JS objects* that represent the functions to
     // execute, and then those objects are passed into Wasm for it to execute
     // when it sees fit.
-    for test in tests {
-        js_to_execute.push_str(&format!("tests.push('{}')\n", test));
+    for test in tests.tests {
+        js_to_execute.push_str(&format!("tests.push('{}')\n", test.name));
     }
     // And as a final addendum, exit with a nonzero code if any tests fail.
     js_to_execute.push_str(

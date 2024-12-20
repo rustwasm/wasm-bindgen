@@ -71,28 +71,39 @@ struct Cli {
 }
 
 impl Cli {
-    fn into_args(self) -> String {
+    fn into_args(self, tests: &Tests) -> String {
         let include_ignored = self.include_ignored;
         let ignored = self.ignored;
-        let exact = self.exact;
-        let skip = self.skip;
-        let filter = if let Some(filter) = self.filter {
-            &format!("\"{filter}\"")
-        } else {
-            "undefined"
-        };
+        let filtered = tests.filtered;
 
         format!(
             r#"
             // Forward runtime arguments.
             cx.include_ignored({include_ignored:?});
             cx.ignored({ignored:?});
-            cx.exact({exact:?});
-            cx.skip({skip:?});
-            cx.filter({filter});
+            cx.filtered_count({filtered});
         "#
         )
     }
+}
+
+struct Tests {
+    tests: Vec<Test>,
+    filtered: usize,
+}
+
+impl Tests {
+    fn new() -> Self {
+        Self {
+            tests: Vec::new(),
+            filtered: 0,
+        }
+    }
+}
+
+struct Test {
+    name: String,
+    ignored: bool,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -114,36 +125,55 @@ fn main() -> anyhow::Result<()> {
     let wasm = fs::read(&cli.file).context("failed to read Wasm file")?;
     let mut wasm =
         walrus::Module::from_buffer(&wasm).context("failed to deserialize Wasm module")?;
-    let mut tests = Vec::new();
+    let mut tests = Tests::new();
 
-    for export in wasm.exports.iter() {
-        if export.name.starts_with("__wbgt_") {
-            tests.push(export.name.to_string());
+    'outer: for export in wasm.exports.iter() {
+        let Some(name) = export.name.strip_prefix("__wbgt_") else {
+            continue;
+        };
+        let modifiers = name.split_once('_').expect("found invalid identifier").0;
+        let test = Test {
+            name: export.name.clone(),
+            ignored: modifiers.contains('$'),
+        };
+
+        if let Some(filter) = &cli.filter {
+            let matches = if cli.exact {
+                name == *filter
+            } else {
+                name.contains(filter)
+            };
+
+            if !matches {
+                tests.filtered += 1;
+                continue;
+            }
+        }
+
+        for skip in &cli.skip {
+            let matches = if cli.exact {
+                name == *skip
+            } else {
+                name.contains(skip)
+            };
+
+            if matches {
+                tests.filtered += 1;
+                continue 'outer;
+            }
+        }
+
+        if !test.ignored && cli.ignored {
+            tests.filtered += 1;
+        } else {
+            tests.tests.push(test);
         }
     }
 
     if cli.list {
-        'outer: for test in tests {
-            if !cli.ignored || test.starts_with("__wbgt_$") {
-                if let Some(filter) = &cli.filter {
-                    let matches = if cli.exact {
-                        test == *filter
-                    } else {
-                        test.contains(filter)
-                    };
-
-                    if !matches {
-                        continue;
-                    }
-                }
-
-                for skip in &cli.skip {
-                    if test.contains(skip) {
-                        continue 'outer;
-                    }
-                }
-
-                println!("{}: test", test.split_once("::").unwrap().1);
+        for test in tests.tests {
+            if !cli.ignored || test.ignored {
+                println!("{}: test", test.name.split_once("::").unwrap().1);
             }
         }
 
@@ -159,7 +189,7 @@ fn main() -> anyhow::Result<()> {
     // Right now there's a bug where if no tests are present then the
     // `wasm-bindgen-test` runtime support isn't linked in, so just bail out
     // early saying everything is ok.
-    if tests.is_empty() {
+    if tests.tests.is_empty() {
         println!("no tests to run!");
         return Ok(());
     }
@@ -288,9 +318,9 @@ fn main() -> anyhow::Result<()> {
 
     match test_mode {
         TestMode::Node { no_modules } => {
-            node::execute(module, tmpdir.path(), cli, &tests, !no_modules, coverage)?
+            node::execute(module, tmpdir.path(), cli, tests, !no_modules, coverage)?
         }
-        TestMode::Deno => deno::execute(module, tmpdir.path(), cli, &tests)?,
+        TestMode::Deno => deno::execute(module, tmpdir.path(), cli, tests)?,
         TestMode::Browser { .. }
         | TestMode::DedicatedWorker { .. }
         | TestMode::SharedWorker { .. }
@@ -307,7 +337,7 @@ fn main() -> anyhow::Result<()> {
                 module,
                 tmpdir.path(),
                 cli,
-                &tests,
+                tests,
                 test_mode,
                 std::env::var("WASM_BINDGEN_TEST_NO_ORIGIN_ISOLATION").is_err(),
                 coverage,

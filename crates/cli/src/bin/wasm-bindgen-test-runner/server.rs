@@ -7,7 +7,7 @@ use std::path::{Path, PathBuf};
 use anyhow::{anyhow, Context, Error};
 use rouille::{Request, Response, Server};
 
-use crate::{Cli, TestMode};
+use crate::{Cli, TestMode, Tests};
 
 pub(crate) fn spawn(
     addr: &SocketAddr,
@@ -15,7 +15,7 @@ pub(crate) fn spawn(
     module: &'static str,
     tmpdir: &Path,
     cli: Cli,
-    tests: &[String],
+    tests: Tests,
     test_mode: TestMode,
     isolate_origin: bool,
     coverage: PathBuf,
@@ -71,7 +71,7 @@ pub(crate) fn spawn(
     };
 
     let nocapture = cli.nocapture;
-    let args = cli.into_args();
+    let args = cli.into_args(&tests);
 
     if test_mode.is_worker() {
         let mut worker_script = if test_mode.no_modules() {
@@ -281,8 +281,8 @@ pub(crate) fn spawn(
             "#,
         ));
     }
-    for test in tests {
-        js_to_execute.push_str(&format!("tests.push('{}');\n", test));
+    for test in tests.tests {
+        js_to_execute.push_str(&format!("tests.push('{}');\n", test.name));
     }
     js_to_execute.push_str("main(tests);\n");
 
