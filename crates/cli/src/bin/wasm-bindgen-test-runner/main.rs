@@ -73,14 +73,12 @@ struct Cli {
 impl Cli {
     fn into_args(self, tests: &Tests) -> String {
         let include_ignored = self.include_ignored;
-        let ignored = self.ignored;
         let filtered = tests.filtered;
 
         format!(
             r#"
             // Forward runtime arguments.
             cx.include_ignored({include_ignored:?});
-            cx.ignored({ignored:?});
             cx.filtered_count({filtered});
         "#
         )
@@ -172,9 +170,7 @@ fn main() -> anyhow::Result<()> {
 
     if cli.list {
         for test in tests.tests {
-            if !cli.ignored || test.ignored {
-                println!("{}: test", test.name.split_once("::").unwrap().1);
-            }
+            println!("{}: test", test.name.split_once("::").unwrap().1);
         }
 
         // Returning cleanly has the strange effect of outputting
