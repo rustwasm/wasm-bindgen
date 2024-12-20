@@ -127,31 +127,19 @@ pub struct Context {
 }
 
 struct State {
-    /// An optional filter used to restrict which tests are actually executed
-    /// and which are ignored. This is passed via the `args` function which
-    /// comes from the command line of `wasm-bindgen-test-runner`. Currently
-    /// this is the only "CLI option"
-    filter: RefCell<Option<String>>,
-
     /// Include ignored tests.
     include_ignored: Cell<bool>,
 
-    /// Include ignored tests.
+    /// Only run ignored tests.
     ignored: Cell<bool>,
-
-    /// Only execute with exactly matching name.
-    exact: Cell<bool>,
-
-    /// Tests to skip.
-    skip: RefCell<Vec<String>>,
 
     /// Counter of the number of tests that have succeeded.
     succeeded_count: Cell<usize>,
 
-    /// Counter of the number of tests that have been filtered
+    /// Number of tests that have been filtered.
     filtered_count: Cell<usize>,
 
-    /// Counter of the number of tests that have been ignored
+    /// Number of tests that have been ignored.
     ignored_count: Cell<usize>,
 
     /// A list of all tests which have failed.
@@ -353,17 +341,14 @@ impl Context {
 
         Context {
             state: Rc::new(State {
-                filter: Default::default(),
                 include_ignored: Default::default(),
                 ignored: Default::default(),
-                exact: Default::default(),
-                skip: Default::default(),
                 failures: Default::default(),
+                succeeded_count: Default::default(),
                 filtered_count: Default::default(),
                 ignored_count: Default::default(),
                 remaining: Default::default(),
                 running: Default::default(),
-                succeeded_count: Default::default(),
                 formatter,
                 timer,
             }),
@@ -380,19 +365,9 @@ impl Context {
         self.state.ignored.set(ignored);
     }
 
-    /// Handle `--exact` flag.
-    pub fn exact(&mut self, exact: bool) {
-        self.state.exact.set(exact);
-    }
-
-    /// Handle `--skip` arguments.
-    pub fn skip(&mut self, skip: Vec<String>) {
-        *self.state.skip.borrow_mut() = skip;
-    }
-
     /// Handle filter argument.
-    pub fn filter(&mut self, filter: Option<String>) {
-        *self.state.filter.borrow_mut() = filter;
+    pub fn filtered_count(&mut self, filtered: usize) {
+        self.state.filtered_count.set(filtered);
     }
 
     /// Executes a list of tests, returning a promise representing their
@@ -558,34 +533,9 @@ impl Context {
         should_panic: Option<Option<&'static str>>,
         ignore: Option<Option<&'static str>>,
     ) {
-        // Split away
+        // Remove the crate name to mimic libtest more closely.
+        // This also removes our `__wbgt_` prefix and the `ignored` and `should_panic` modifiers.
         let name = name.split_once("::").unwrap().1;
-        // If our test is filtered out, record that it was filtered and move
-        // on, nothing to do here.
-        let filter = self.state.filter.borrow();
-        if let Some(filter) = &*filter {
-            let exact = self.state.exact.get();
-
-            let matches = if exact {
-                name == filter
-            } else {
-                name.contains(filter)
-            };
-
-            if !matches {
-                let filtered = self.state.filtered_count.get();
-                self.state.filtered_count.set(filtered + 1);
-                return;
-            }
-        }
-
-        for skip in &*self.state.skip.borrow() {
-            if name.contains(skip) {
-                let filtered = self.state.filtered_count.get();
-                self.state.filtered_count.set(filtered + 1);
-                return;
-            }
-        }
 
         if self.state.ignored.get() && ignore.is_none() {
             let filtered = self.state.filtered_count.get();
