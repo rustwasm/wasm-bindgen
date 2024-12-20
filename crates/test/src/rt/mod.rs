@@ -130,9 +130,6 @@ struct State {
     /// Include ignored tests.
     include_ignored: Cell<bool>,
 
-    /// Only run ignored tests.
-    ignored: Cell<bool>,
-
     /// Counter of the number of tests that have succeeded.
     succeeded_count: Cell<usize>,
 
@@ -342,7 +339,6 @@ impl Context {
         Context {
             state: Rc::new(State {
                 include_ignored: Default::default(),
-                ignored: Default::default(),
                 failures: Default::default(),
                 succeeded_count: Default::default(),
                 filtered_count: Default::default(),
@@ -358,11 +354,6 @@ impl Context {
     /// Handle `--include-ignored` flag.
     pub fn include_ignored(&mut self, include_ignored: bool) {
         self.state.include_ignored.set(include_ignored);
-    }
-
-    /// Handle `--ignored` flag.
-    pub fn ignored(&mut self, ignored: bool) {
-        self.state.ignored.set(ignored);
     }
 
     /// Handle filter argument.
@@ -537,14 +528,8 @@ impl Context {
         // This also removes our `__wbgt_` prefix and the `ignored` and `should_panic` modifiers.
         let name = name.split_once("::").unwrap().1;
 
-        if self.state.ignored.get() && ignore.is_none() {
-            let filtered = self.state.filtered_count.get();
-            self.state.filtered_count.set(filtered + 1);
-            return;
-        }
-
-        if !self.state.include_ignored.get() && !self.state.ignored.get() {
-            if let Some(ignore) = ignore {
+        if let Some(ignore) = ignore {
+            if !self.state.include_ignored.get() {
                 self.state
                     .formatter
                     .log_test(name, &TestResult::Ignored(ignore.map(str::to_owned)));
