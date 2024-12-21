@@ -170,9 +170,9 @@ export class Foo {
      * @param {string | null} [value]
      */
     set weird(value) {
-        var ptr0 = isLikeNone(value) ? 0 : passStringToWasm0(value, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        var len0 = WASM_VECTOR_LEN;
-        wasm.foo_set_weird(this.__wbg_ptr, ptr0, len0);
+        const ptr = isLikeNone(value) ? 0 : passStringToWasm0(value, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len = WASM_VECTOR_LEN;
+        wasm.foo_set_weird(this.__wbg_ptr, ptr, len);
     }
     /**
      * There can be static getters and setters too, and they can even have the
