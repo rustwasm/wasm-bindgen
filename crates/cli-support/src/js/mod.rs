@@ -4270,8 +4270,18 @@ __wbg_set_wasm(wasm);"
                 "memory".to_owned()
             }
             walrus::ExportItem::Function(f) => match &self.module.funcs.get(f).name {
-                Some(s) => to_js_identifier(s),
-                None => default_name,
+                Some(s) => {
+                    let mut name = to_js_identifier(s);
+
+                    // Account for duplicate export names.
+                    // See https://github.com/rustwasm/wasm-bindgen/issues/4371.
+                    if self.module.exports.get_func(&name).is_ok() {
+                        name.push_str(&self.next_export_idx.to_string());
+                    }
+
+                    name
+                }
+                _ => default_name,
             },
             _ => default_name,
         };
