@@ -12,7 +12,7 @@
 //! require.
 
 #![doc(html_root_url = "https://docs.rs/web-sys/0.3")]
-#![cfg_attr(not(feature = "std"), no_std)]
+#![no_std]
 #![allow(deprecated)]
 
 extern crate alloc;
