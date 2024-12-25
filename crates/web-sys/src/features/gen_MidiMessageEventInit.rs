@@ -44,7 +44,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiMessageEventInit`*"]
     #[wasm_bindgen(method, getter = "data")]
-    pub fn get_data(this: &MidiMessageEventInit) -> Option<Vec<u8>>;
+    pub fn get_data(this: &MidiMessageEventInit) -> Option<::alloc::vec::Vec<u8>>;
     #[doc = "Change the `data` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiMessageEventInit`*"]

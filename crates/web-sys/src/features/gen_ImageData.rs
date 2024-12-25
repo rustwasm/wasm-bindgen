@@ -32,7 +32,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/ImageData/data)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `ImageData`*"]
-    pub fn data(this: &ImageData) -> ::wasm_bindgen::Clamped<Vec<u8>>;
+    pub fn data(this: &ImageData) -> ::wasm_bindgen::Clamped<::alloc::vec::Vec<u8>>;
     #[wasm_bindgen(catch, constructor, js_class = "ImageData")]
     #[doc = "The `new ImageData(..)` constructor, creating a new instance of `ImageData`."]
     #[doc = ""]

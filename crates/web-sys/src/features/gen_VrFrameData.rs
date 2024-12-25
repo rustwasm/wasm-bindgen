@@ -25,28 +25,28 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRFrameData/leftProjectionMatrix)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrFrameData`*"]
-    pub fn left_projection_matrix(this: &VrFrameData) -> Result<Vec<f32>, JsValue>;
+    pub fn left_projection_matrix(this: &VrFrameData) -> Result<::alloc::vec::Vec<f32>, JsValue>;
     # [wasm_bindgen (structural , catch , method , getter , js_class = "VRFrameData" , js_name = leftViewMatrix)]
     #[doc = "Getter for the `leftViewMatrix` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRFrameData/leftViewMatrix)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrFrameData`*"]
-    pub fn left_view_matrix(this: &VrFrameData) -> Result<Vec<f32>, JsValue>;
+    pub fn left_view_matrix(this: &VrFrameData) -> Result<::alloc::vec::Vec<f32>, JsValue>;
     # [wasm_bindgen (structural , catch , method , getter , js_class = "VRFrameData" , js_name = rightProjectionMatrix)]
     #[doc = "Getter for the `rightProjectionMatrix` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRFrameData/rightProjectionMatrix)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrFrameData`*"]
-    pub fn right_projection_matrix(this: &VrFrameData) -> Result<Vec<f32>, JsValue>;
+    pub fn right_projection_matrix(this: &VrFrameData) -> Result<::alloc::vec::Vec<f32>, JsValue>;
     # [wasm_bindgen (structural , catch , method , getter , js_class = "VRFrameData" , js_name = rightViewMatrix)]
     #[doc = "Getter for the `rightViewMatrix` field of this object."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VRFrameData/rightViewMatrix)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrFrameData`*"]
-    pub fn right_view_matrix(this: &VrFrameData) -> Result<Vec<f32>, JsValue>;
+    pub fn right_view_matrix(this: &VrFrameData) -> Result<::alloc::vec::Vec<f32>, JsValue>;
     #[cfg(feature = "VrPose")]
     # [wasm_bindgen (structural , method , getter , js_class = "VRFrameData" , js_name = pose)]
     #[doc = "Getter for the `pose` field of this object."]

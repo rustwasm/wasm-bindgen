@@ -7,6 +7,7 @@ use std::ptr;
 use heck::{ToShoutySnakeCase, ToSnakeCase, ToUpperCamelCase};
 use proc_macro2::{Ident, TokenStream};
 use quote::quote;
+use syn::punctuated::Punctuated;
 use wasm_bindgen_backend::util::{ident_ty, raw_ident, rust_ident};
 use weedle::attribute::{
     ExtendedAttribute, ExtendedAttributeIdent, ExtendedAttributeList, ExtendedAttributeNoArgs,
@@ -177,7 +178,7 @@ pub(crate) fn slice_ty(t: syn::Type) -> syn::Type {
     .into()
 }
 
-/// From `T` create `Vec<T>`.
+/// From `T` create `alloc::Vec<T>`.
 pub(crate) fn vec_ty(t: syn::Type) -> syn::Type {
     let arguments = syn::PathArguments::AngleBracketed(syn::AngleBracketedGenericArguments {
         colon2_token: None,
@@ -186,9 +187,16 @@ pub(crate) fn vec_ty(t: syn::Type) -> syn::Type {
         gt_token: Default::default(),
     });
 
-    let ident = raw_ident("Vec");
-    let seg = syn::PathSegment { ident, arguments };
-    let path: syn::Path = seg.into();
+    let mut path = syn::Path {
+        leading_colon: Some(Default::default()),
+        segments: Punctuated::new(),
+    };
+    path.segments.push(raw_ident("alloc").into());
+    path.segments.push(raw_ident("vec").into());
+    path.segments.push(syn::PathSegment {
+        ident: raw_ident("Vec"),
+        arguments,
+    });
     let ty = syn::TypePath { qself: None, path };
     ty.into()
 }

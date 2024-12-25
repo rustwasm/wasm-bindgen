@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/VREyeParameters/offset)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `VrEyeParameters`*"]
-    pub fn offset(this: &VrEyeParameters) -> Result<Vec<f32>, JsValue>;
+    pub fn offset(this: &VrEyeParameters) -> Result<::alloc::vec::Vec<f32>, JsValue>;
     #[cfg(feature = "VrFieldOfView")]
     # [wasm_bindgen (structural , method , getter , js_class = "VREyeParameters" , js_name = fieldOfView)]
     #[doc = "Getter for the `fieldOfView` field of this object."]
