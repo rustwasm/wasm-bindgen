@@ -70,6 +70,9 @@
 * Fixed `no_std` support for all APIs in `web-sys`.
   [#4378](https://github.com/rustwasm/wasm-bindgen/pull/4378)
 
+* Prevent generating duplicate exports for closure conversions.
+  [#4380](https://github.com/rustwasm/wasm-bindgen/pull/4380)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.99](https://github.com/rustwasm/wasm-bindgen/compare/0.2.98...0.2.99)
