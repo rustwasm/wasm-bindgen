@@ -67,7 +67,7 @@
 * Internal functions are now removed instead of invalidly imported if they are unused.
   [#4366](https://github.com/rustwasm/wasm-bindgen/pull/4366)
 
-* `web-sys` crate now fully works on `no_std`.
+* Fixed `no_std` support for all APIs in `web-sys`.
   [#4378](https://github.com/rustwasm/wasm-bindgen/pull/4378)
 
 --------------------------------------------------------------------------------
