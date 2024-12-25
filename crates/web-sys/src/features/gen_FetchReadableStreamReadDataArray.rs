@@ -14,7 +14,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FetchReadableStreamReadDataArray`*"]
     #[wasm_bindgen(method, getter = "value")]
-    pub fn get_value(this: &FetchReadableStreamReadDataArray) -> Option<Vec<u8>>;
+    pub fn get_value(this: &FetchReadableStreamReadDataArray) -> Option<::alloc::vec::Vec<u8>>;
     #[doc = "Change the `value` field of this object."]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `FetchReadableStreamReadDataArray`*"]

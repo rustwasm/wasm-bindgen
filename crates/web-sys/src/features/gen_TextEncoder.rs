@@ -32,12 +32,12 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder/encode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextEncoder`*"]
-    pub fn encode(this: &TextEncoder) -> Vec<u8>;
+    pub fn encode(this: &TextEncoder) -> ::alloc::vec::Vec<u8>;
     # [wasm_bindgen (method , structural , js_class = "TextEncoder" , js_name = encode)]
     #[doc = "The `encode()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder/encode)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `TextEncoder`*"]
-    pub fn encode_with_input(this: &TextEncoder, input: &str) -> Vec<u8>;
+    pub fn encode_with_input(this: &TextEncoder, input: &str) -> ::alloc::vec::Vec<u8>;
 }

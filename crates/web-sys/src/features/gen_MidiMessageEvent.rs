@@ -18,7 +18,7 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/MIDIMessageEvent/data)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `MidiMessageEvent`*"]
-    pub fn data(this: &MidiMessageEvent) -> Result<Vec<u8>, JsValue>;
+    pub fn data(this: &MidiMessageEvent) -> Result<::alloc::vec::Vec<u8>, JsValue>;
     #[wasm_bindgen(catch, constructor, js_class = "MIDIMessageEvent")]
     #[doc = "The `new MidiMessageEvent(..)` constructor, creating a new instance of `MidiMessageEvent`."]
     #[doc = ""]

@@ -48,7 +48,7 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn position(this: &GamepadTouch) -> Vec<f32>;
+    pub fn position(this: &GamepadTouch) -> ::alloc::vec::Vec<f32>;
     #[cfg(web_sys_unstable_apis)]
     # [wasm_bindgen (structural , method , getter , js_class = "GamepadTouch" , js_name = surfaceDimensions)]
     #[doc = "Getter for the `surfaceDimensions` field of this object."]
@@ -59,5 +59,5 @@ extern "C" {
     #[doc = ""]
     #[doc = "*This API is unstable and requires `--cfg=web_sys_unstable_apis` to be activated, as"]
     #[doc = "[described in the `wasm-bindgen` guide](https://rustwasm.github.io/docs/wasm-bindgen/web-sys/unstable-apis.html)*"]
-    pub fn surface_dimensions(this: &GamepadTouch) -> Option<Vec<u32>>;
+    pub fn surface_dimensions(this: &GamepadTouch) -> Option<::alloc::vec::Vec<u32>>;
 }

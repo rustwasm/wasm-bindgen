@@ -146,5 +146,8 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer/getChannelData)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `AudioBuffer`*"]
-    pub fn get_channel_data(this: &AudioBuffer, channel: u32) -> Result<Vec<f32>, JsValue>;
+    pub fn get_channel_data(
+        this: &AudioBuffer,
+        channel: u32,
+    ) -> Result<::alloc::vec::Vec<f32>, JsValue>;
 }

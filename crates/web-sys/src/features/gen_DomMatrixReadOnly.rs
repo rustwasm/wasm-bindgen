@@ -458,14 +458,14 @@ extern "C" {
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrixReadOnly/toFloat32Array)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomMatrixReadOnly`*"]
-    pub fn to_float32_array(this: &DomMatrixReadOnly) -> Result<Vec<f32>, JsValue>;
+    pub fn to_float32_array(this: &DomMatrixReadOnly) -> Result<::alloc::vec::Vec<f32>, JsValue>;
     # [wasm_bindgen (catch , method , structural , js_class = "DOMMatrixReadOnly" , js_name = toFloat64Array)]
     #[doc = "The `toFloat64Array()` method."]
     #[doc = ""]
     #[doc = "[MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrixReadOnly/toFloat64Array)"]
     #[doc = ""]
     #[doc = "*This API requires the following crate features to be activated: `DomMatrixReadOnly`*"]
-    pub fn to_float64_array(this: &DomMatrixReadOnly) -> Result<Vec<f64>, JsValue>;
+    pub fn to_float64_array(this: &DomMatrixReadOnly) -> Result<::alloc::vec::Vec<f64>, JsValue>;
     # [wasm_bindgen (method , structural , js_class = "DOMMatrixReadOnly" , js_name = toJSON)]
     #[doc = "The `toJSON()` method."]
     #[doc = ""]
