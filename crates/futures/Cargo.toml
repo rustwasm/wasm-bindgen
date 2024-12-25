@@ -35,8 +35,8 @@ web-sys = { path = "../web-sys", version = "=0.3.76", default-features = false, 
 ] }
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
-futures-channel-preview = { version = "0.3.0-alpha.18" }
-futures-lite = { version = "1.11.3", default-features = false }
+futures-channel = "0.3"
+futures-lite = { version = "2", default-features = false }
 wasm-bindgen-test = { path = '../test' }
 
 [lints]
