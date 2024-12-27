@@ -28,7 +28,7 @@
 
 ## Install `wasm-bindgen-cli`
 
-You can install it using `cargo install`:
+You can install it using `cargo install`: 
 
 ```
 cargo install wasm-bindgen-cli
