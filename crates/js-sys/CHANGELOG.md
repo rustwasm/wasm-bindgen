@@ -1,6 +1,12 @@
 # `js-sys` Change Log
 
 --------------------------------------------------------------------------------
+## Unreleased
+
+### Changed
+
+* Added `options` parameter to `Date.to_local_time_string` 
+  [#4384](https://github.com/rustwasm/wasm-bindgen/pull/4384)
 
 ## 0.2.1
 

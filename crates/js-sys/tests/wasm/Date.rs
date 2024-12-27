@@ -484,7 +484,7 @@ fn to_locale_string() {
 fn to_locale_time_string() {
     let date = Date::new(&"August 19, 1975 23:15:30".into());
     assert_eq!(
-        JsValue::from(date.to_locale_time_string("en-US")),
+        JsValue::from(date.to_locale_time_string("en-US", &JsValue::undefined())),
         "11:15:30 PM",
     );
 }
