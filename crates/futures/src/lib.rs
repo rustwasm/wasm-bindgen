@@ -85,6 +85,12 @@ mod task {
 /// # Panics
 ///
 /// This function has the same panic behavior as `future_to_promise`.
+///
+/// # Special considerations
+///
+/// If this function is called from a worker (or non-main thread), the worker must remain running
+/// in order for the passed future to make forward progress.  For more information see
+/// [this](https://github.com/rustwasm/wasm-bindgen/issues/2945) issue.
 #[inline]
 pub fn spawn_local<F>(future: F)
 where
