@@ -3390,7 +3390,10 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString)
     #[wasm_bindgen(method, js_name = toLocaleTimeString)]
-    pub fn to_locale_time_string(this: &Date, locale: &str, options: &JsValue) -> JsString;
+    pub fn to_locale_time_string(this: &Date, locale: &str) -> JsString;
+
+    #[wasm_bindgen(method, js_name = toLocaleTimeString)]
+    pub fn to_locale_time_string_with_options(this: &Date, locale: &str, options: &JsValue) -> JsString;
 
     /// The `toString()` method returns a string representing
     /// the specified Date object.
