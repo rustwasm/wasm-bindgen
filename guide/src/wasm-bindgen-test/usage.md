@@ -127,3 +127,15 @@ Run the tests by passing `--target wasm32-unknown-unknown` to `cargo test`:
 ```
 cargo test --target wasm32-unknown-unknown
 ```
+
+If you also need to run doctests, add the [`-Zdoctest-xcompile`](https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#doctest-xcompile) flag:
+
+```
+cargo -Zdoctest-xcompile test --target wasm32-unknown-unknown
+```
+
+If you are in the stable channel, you can switch to nightly like this:
+
+```
+cargo +nightly -Zdoctest-xcompile test --target wasm32-unknown-unknown
+```
