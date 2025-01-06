@@ -533,6 +533,22 @@ impl<'a> Context<'a> {
                 generate_typescript: export.function.generate_typescript,
                 generate_jsdoc: export.function.generate_jsdoc,
                 variadic: export.function.variadic,
+                export_fn_attrs: export.function.fn_attrs.map(|attrs| AuxExportFnAttrs {
+                    ret: AuxExportFnCompAttrs {
+                        ty: attrs.ret.ty.map(String::from),
+                        desc: attrs.ret.desc.map(String::from),
+                        optional: false,
+                    },
+                    args: attrs
+                        .args
+                        .iter()
+                        .map(|arg_attr| AuxExportFnCompAttrs {
+                            ty: arg_attr.ty.map(String::from),
+                            desc: arg_attr.desc.map(String::from),
+                            optional: arg_attr.optional,
+                        })
+                        .collect::<Vec<_>>(),
+                }),
             },
         );
         Ok(())
@@ -958,6 +974,7 @@ impl<'a> Context<'a> {
                     generate_typescript: field.generate_typescript,
                     generate_jsdoc: field.generate_jsdoc,
                     variadic: false,
+                    export_fn_attrs: None,
                 },
             );
 
@@ -990,6 +1007,7 @@ impl<'a> Context<'a> {
                     generate_typescript: field.generate_typescript,
                     generate_jsdoc: field.generate_jsdoc,
                     variadic: false,
+                    export_fn_attrs: None,
                 },
             );
         }

@@ -392,6 +392,32 @@ pub struct Function {
     pub generate_jsdoc: bool,
     /// Whether this is a function with a variadict parameter
     pub variadic: bool,
+    /// Function attributes used to provide extra information about function's components
+    pub fn_attrs: Option<FunctionAttributes>,
+}
+
+/// Extra information about a function's components
+#[cfg_attr(feature = "extra-traits", derive(Debug))]
+#[derive(Clone, Default)]
+pub struct FunctionAttributes {
+    /// Function's return attributes
+    pub ret: FunctionComponentAttributes,
+    /// Function's arguments attributes
+    pub args: Vec<FunctionComponentAttributes>,
+}
+
+/// Information about a function's component
+#[cfg_attr(feature = "extra-traits", derive(Debug))]
+#[derive(Clone, Default)]
+pub struct FunctionComponentAttributes {
+    /// Specifies the type for a function component
+    pub ty: Option<String>,
+    /// Description of the function component
+    pub desc: Option<String>,
+    /// Specifies a name of the function argument
+    pub name: Option<String>,
+    /// Specifies if the component is optional (used for function arguments)
+    pub optional: bool,
 }
 
 /// Information about a Struct being exported

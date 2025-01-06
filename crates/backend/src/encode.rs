@@ -220,12 +220,36 @@ fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Functi
         .iter()
         .enumerate()
         .map(|(idx, arg)| {
+            // use argument's "js_name" if it was provided in attributes
+            if let Some(arg_js_name) = func
+                .fn_attrs
+                .as_ref()
+                .and_then(|attrs| attrs.args.get(idx).and_then(|v| v.name.clone()))
+            {
+                return arg_js_name;
+            }
             if let syn::Pat::Ident(x) = &*arg.pat {
                 return x.ident.unraw().to_string();
             }
             format!("arg{}", idx)
         })
         .collect::<Vec<_>>();
+    let fn_attrs = func.fn_attrs.as_ref().map(|attrs| FunctionAttributes {
+        ret: FunctionComponentAttributes {
+            ty: attrs.ret.ty.as_deref(),
+            desc: attrs.ret.desc.as_deref(),
+            optional: false,
+        },
+        args: attrs
+            .args
+            .iter()
+            .map(|arg_attr| FunctionComponentAttributes {
+                ty: arg_attr.ty.as_deref(),
+                desc: arg_attr.desc.as_deref(),
+                optional: arg_attr.optional,
+            })
+            .collect::<Vec<_>>(),
+    });
     Function {
         arg_names,
         asyncness: func.r#async,
@@ -233,6 +257,7 @@ fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Functi
         generate_typescript: func.generate_typescript,
         generate_jsdoc: func.generate_jsdoc,
         variadic: func.variadic,
+        fn_attrs,
     }
 }
 

@@ -2833,12 +2833,14 @@ __wbg_set_wasm(wasm);"
         let mut asyncness = false;
         let mut variadic = false;
         let mut generate_jsdoc = false;
+        let mut export_fn_attrs = &None;
         match kind {
             ContextAdapterKind::Export(export) => {
                 arg_names = &export.arg_names;
                 asyncness = export.asyncness;
                 variadic = export.variadic;
                 generate_jsdoc = export.generate_jsdoc;
+                export_fn_attrs = &export.export_fn_attrs;
                 match &export.kind {
                     AuxExportKind::Function(_) => {}
                     AuxExportKind::Constructor(class) => builder.constructor(class),
@@ -2870,6 +2872,7 @@ __wbg_set_wasm(wasm);"
             ts_ret_ty,
             ts_refs,
             js_doc,
+            ts_doc,
             code,
             might_be_optional_field,
             catch,
@@ -2883,6 +2886,7 @@ __wbg_set_wasm(wasm);"
                 variadic,
                 generate_jsdoc,
                 &debug_name,
+                export_fn_attrs,
             )
             .with_context(|| "failed to generates bindings for ".to_string() + &debug_name)?;
 
@@ -2897,8 +2901,16 @@ __wbg_set_wasm(wasm);"
 
                 let ts_sig = export.generate_typescript.then_some(ts_sig.as_str());
 
+                // only include ts_doc for format if there was arguments or return var description
+                // this is because if there are no arguments or return var description, ts_doc
+                // provides no additional info on top of what ts_sig already does
+                let ts_doc_opts = export_fn_attrs.as_ref().and_then(|v| {
+                    (v.ret.desc.is_some() || v.args.iter().any(|e| e.desc.is_some()))
+                        .then_some(ts_doc)
+                });
+
                 let js_docs = format_doc_comments(&export.comments, Some(js_doc));
-                let ts_docs = format_doc_comments(&export.comments, None);
+                let ts_docs = format_doc_comments(&export.comments, ts_doc_opts);
 
                 match &export.kind {
                     AuxExportKind::Function(name) => {

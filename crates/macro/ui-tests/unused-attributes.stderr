@@ -39,3 +39,51 @@ error: unused variable: `final`
    |
 24 | #[wasm_bindgen(getter_with_clone, final)]
    |                                   ^^^^^ help: if this is intentional, prefix it with an underscore: `_final`
+
+error: unused variable: `return_type`
+  --> ui-tests/unused-attributes.rs:32:16
+   |
+32 | #[wasm_bindgen(return_type = "something", return_description = "something")]
+   |                ^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_return_type`
+
+error: unused variable: `return_description`
+  --> ui-tests/unused-attributes.rs:32:43
+   |
+32 | #[wasm_bindgen(return_type = "something", return_description = "something")]
+   |                                           ^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_return_description`
+
+error: unused variable: `return_type`
+  --> ui-tests/unused-attributes.rs:35:16
+   |
+35 | #[wasm_bindgen(return_type = "something", return_description = "something")]
+   |                ^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_return_type`
+
+error: unused variable: `return_description`
+  --> ui-tests/unused-attributes.rs:35:43
+   |
+35 | #[wasm_bindgen(return_type = "something", return_description = "something")]
+   |                                           ^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_return_description`
+
+error: unused variable: `return_type`
+  --> ui-tests/unused-attributes.rs:41:16
+   |
+41 | #[wasm_bindgen(return_type = "something", return_description = "something")]
+   |                ^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_return_type`
+
+error: unused variable: `return_description`
+  --> ui-tests/unused-attributes.rs:41:43
+   |
+41 | #[wasm_bindgen(return_type = "something", return_description = "something")]
+   |                                           ^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_return_description`
+
+error: unused variable: `return_type`
+  --> ui-tests/unused-attributes.rs:46:16
+   |
+46 | #[wasm_bindgen(return_type = "something", return_description = "something")]
+   |                ^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_return_type`
+
+error: unused variable: `return_description`
+  --> ui-tests/unused-attributes.rs:46:43
+   |
+46 | #[wasm_bindgen(return_type = "something", return_description = "something")]
+   |                                           ^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_return_description`

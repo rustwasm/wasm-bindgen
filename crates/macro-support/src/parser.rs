@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use std::str::Chars;
 
 use ast::OperationKind;
-use backend::ast::{self, ThreadLocal};
+use backend::ast::{self, FunctionAttributes, FunctionComponentAttributes, ThreadLocal};
 use backend::util::{ident_ty, ShortHash};
 use backend::Diagnostic;
 use proc_macro2::{Ident, Span, TokenStream, TokenTree};
@@ -166,6 +166,8 @@ macro_rules! attrgen {
             (static_string, StaticString(Span)),
             (thread_local, ThreadLocal(Span)),
             (thread_local_v2, ThreadLocalV2(Span)),
+            (return_type, ReturnType(Span, String, Span)),
+            (return_description, ReturnDesc(Span, String, Span)),
 
             // For testing purposes only.
             (assert_no_shim, AssertNoShim(Span)),
@@ -619,6 +621,7 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             self.attrs.clone(),
             self.vis.clone(),
             FunctionPosition::Extern,
+            None,
         )?;
         let catch = opts.catch().is_some();
         let variadic = opts.variadic().is_some();
@@ -979,6 +982,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
             self.attrs,
             self.vis,
             FunctionPosition::Free,
+            None,
         )?;
         attrs.check_used();
 
@@ -1027,6 +1031,7 @@ fn function_from_decl(
     attrs: Vec<syn::Attribute>,
     vis: syn::Visibility,
     position: FunctionPosition,
+    fn_attrs: Option<FunctionAttributes>,
 ) -> Result<(ast::Function, Option<ast::MethodSelf>), Diagnostic> {
     if sig.variadic.is_some() {
         bail_span!(sig.variadic, "can't #[wasm_bindgen] variadic functions");
@@ -1153,9 +1158,106 @@ fn function_from_decl(
             generate_typescript: opts.skip_typescript().is_none(),
             generate_jsdoc: opts.skip_jsdoc().is_none(),
             variadic: opts.variadic().is_some(),
+            fn_attrs,
         },
         method_self,
     ))
+}
+
+/// Extracts function attributes
+fn extract_fn_attrs(
+    sig: &mut syn::Signature,
+    attrs: &BindgenAttrs,
+) -> Result<FunctionAttributes, Diagnostic> {
+    let mut args_attrs = vec![];
+    for input in sig.inputs.iter_mut() {
+        if let syn::FnArg::Typed(pat_type) = input {
+            let mut keep = vec![];
+            let mut arg_attrs = FunctionComponentAttributes {
+                ty: None,
+                desc: None,
+                name: None,
+                optional: false,
+            };
+            for attr in pat_type.attrs.iter() {
+                if !attr.path().is_ident("wasm_bindgen") {
+                    keep.push(true);
+                    continue;
+                }
+                keep.push(false);
+                attr.parse_nested_meta(|meta| {
+                    if meta.path.is_ident("js_name") {
+                        if arg_attrs.name.is_some() {
+                            return Err(meta.error("duplicate attribute"));
+                        }
+                        let value = meta.value()?.parse::<syn::LitStr>()?.value();
+                        if is_js_keyword(&value) {
+                            return Err(meta.error("collides with js/ts keywords"));
+                        }
+                        arg_attrs.name = Some(value);
+                        return Ok(());
+                    }
+                    if meta.path.is_ident("param_type") {
+                        if arg_attrs.ty.is_some() {
+                            return Err(meta.error("duplicate attribute"));
+                        }
+                        let value = meta.value()?.parse::<syn::LitStr>()?.value();
+                        if is_js_keyword(&value) {
+                            return Err(meta.error("collides with js/ts keywords"));
+                        }
+                        arg_attrs.ty = Some(value);
+                        return Ok(());
+                    }
+                    if meta.path.is_ident("param_description") {
+                        if arg_attrs.desc.is_some() {
+                            return Err(meta.error("duplicate attribute"));
+                        }
+                        arg_attrs.desc = Some(meta.value()?.parse::<syn::LitStr>()?.value());
+                        return Ok(());
+                    }
+                    if meta.path.is_ident("optional") {
+                        if arg_attrs.optional {
+                            return Err(meta.error("duplicate attribute"));
+                        }
+                        arg_attrs.optional = true;
+                        return Ok(());
+                    }
+
+                    Err(meta.error("unrecognized wasm_bindgen param attribute, expected any of 'param_type', 'param_description', 'js_name' or 'optional'"))
+                })?;
+            }
+
+            // in ts, non-optional args cannot come after an optional one
+            // this enforces the correct and valid use of "optional" attr
+            if !arg_attrs.optional
+                && args_attrs
+                    .last()
+                    .map(|v: &FunctionComponentAttributes| v.optional)
+                    .unwrap_or(false)
+            {
+                bail_span!(
+                    pat_type,
+                    "non-optional arguments cannot be followed after an optional one"
+                )
+            }
+
+            // remove extracted attributes
+            let mut keep = keep.iter();
+            pat_type.attrs.retain(|_| *keep.next().unwrap());
+
+            args_attrs.push(arg_attrs);
+        }
+    }
+
+    Ok(FunctionAttributes {
+        args: args_attrs,
+        ret: FunctionComponentAttributes {
+            ty: attrs.return_type().map(|v| v.0.to_string()),
+            desc: attrs.return_description().map(|v| v.0.to_string()),
+            name: None,
+            optional: false,
+        },
+    })
 }
 
 pub(crate) trait MacroParse<Ctx> {
@@ -1198,6 +1300,8 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 if let Some((i, _)) = no_mangle {
                     f.attrs.remove(i);
                 }
+                // extract fn components attributes before parsing to tokens stream
+                let fn_attrs = extract_fn_attrs(&mut f.sig, &opts)?;
                 let comments = extract_doc_comments(&f.attrs);
                 // If the function isn't used for anything other than being exported to JS,
                 // it'll be unused when not building for the Wasm target and produce a
@@ -1218,9 +1322,13 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 });
                 let rust_name = f.sig.ident.clone();
                 let start = opts.start().is_some();
+                let mut function = f.convert(opts)?;
+                // set fn components attributes that was extracted previously
+                function.fn_attrs = Some(fn_attrs);
+
                 program.exports.push(ast::Export {
                     comments,
-                    function: f.convert(opts)?,
+                    function,
                     js_class: None,
                     method_kind,
                     method_self: None,
@@ -1409,6 +1517,7 @@ impl MacroParse<&ClassMarker> for &mut syn::ImplItemFn {
 
         let opts = BindgenAttrs::find(&mut self.attrs)?;
         let comments = extract_doc_comments(&self.attrs);
+        let fn_attrs = extract_fn_attrs(&mut self.sig, &opts)?;
         let (function, method_self) = function_from_decl(
             &self.sig.ident,
             &opts,
@@ -1416,6 +1525,7 @@ impl MacroParse<&ClassMarker> for &mut syn::ImplItemFn {
             self.attrs.clone(),
             self.vis.clone(),
             FunctionPosition::Impl { self_ty: class },
+            Some(fn_attrs),
         )?;
         let method_kind = if opts.constructor().is_some() {
             ast::MethodKind::Constructor

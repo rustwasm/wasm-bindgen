@@ -1,0 +1,5 @@
+error: non-optional arguments cannot be followed after an optional one
+ --> ui-tests/optional-function-arg-attr.rs:9:5
+  |
+9 |     c: bool,
+  |     ^^^^^^^

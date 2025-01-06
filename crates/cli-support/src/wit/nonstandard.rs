@@ -86,6 +86,26 @@ pub struct AuxExport {
     pub generate_jsdoc: bool,
     /// Whether typescript bindings should be generated for this export.
     pub variadic: bool,
+    /// Extra info about an exporting function components attributes
+    pub export_fn_attrs: Option<AuxExportFnAttrs>,
+}
+
+#[derive(Clone, Debug)]
+pub struct AuxExportFnAttrs {
+    /// Exporting function's return attributes
+    pub ret: AuxExportFnCompAttrs,
+    /// Exporting function's arguments attributes
+    pub args: Vec<AuxExportFnCompAttrs>,
+}
+
+#[derive(Clone, Debug)]
+pub struct AuxExportFnCompAttrs {
+    /// Specifies the type for a function component
+    pub ty: Option<String>,
+    /// Description of the function component
+    pub desc: Option<String>,
+    /// Specifies if the component is optional (used for function arguments)
+    pub optional: bool,
 }
 
 /// All possible kinds of exports from a Wasm module.
