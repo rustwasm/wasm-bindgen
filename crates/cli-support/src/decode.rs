@@ -96,13 +96,17 @@ impl<'src, T: Decode<'src>> Decode<'src> for Option<T> {
 
 impl Debug for FunctionAttributes {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_fmt(format_args!("ret {:?}, args {:?}", self.ret, self.args))
+        f.write_fmt(format_args!(
+            "FunctionAttributes {{ ret: {:?}, args: {:?} }}",
+            self.ret, self.args
+        ))
     }
 }
+
 impl Debug for FunctionComponentAttributes {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_fmt(format_args!(
-            "ty {:?}, desc {:?}, optional {}",
+            "FunctionComponentAttributes {{ ty: {:?}, desc: {:?}, optional: {} }}",
             self.ty, self.desc, self.optional
         ))
     }
