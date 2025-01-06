@@ -1,12 +1,12 @@
 # `function-attributes`
 
 By default, exported Rust functions and methods generate function signature from equivalent rust types identifiers without any arguments and return var documentations unless completely handcoded using `skip-jsdoc` and `typescript-custom-section` with `skip_typescript` which does not provide the best solution, specially when one needs to do a lot of those handcodings.
-It's fair to say that being able to write specific documentation for each argument and return variable of the function, or override an argument or return variable type to a custom one on generated js/ts bindings and many more examples like this is essential for creating a well defined, structured and typed bindings.
+It's fair to say that being able to write specific documentation for each argument and return variable of the function, or override an argument or return variable type to a custom one for generated js/ts bindings and many more use cases are essential for creating a well defined, structured and typed bindings.
 
-Function attributes addresses these issues and limitations by providing attributes to override a function's return variable and arguments names and types on generated bindings as well as ability to write specific documentation for each of them individually as desired:
-- `#[wasm_bindgen(return_type)]` and `#[wasm_bindgen(return_description)]` used to override function's return type and to specify description on generated js/ts bindings.
-- `#[wasm_bindgen(js_name)]`, `#[wasm_bindgen(param_type)]` and `#[wasm_bindgen(param_description)]` applied to a rust function argument to override that argument's name and type and to specify description on generated js/ts bindings.
-- `#[wasm_bindgen(optional)]` used to tag a function's argument as optional (typescript `?` operator) on function's generated typescript signature.
+Function attributes addresses these issues and limitations by providing an ability to override a function's return type and arguments names and types for generated bindings as well as ability to write specific documentation for each of them individually as desired:
+- `#[wasm_bindgen(return_type)]` and `#[wasm_bindgen(return_description)]` used to override function's return type and to specify description for generated js/ts bindings.
+- `#[wasm_bindgen(js_name)]`, `#[wasm_bindgen(param_type)]` and `#[wasm_bindgen(param_description)]` applied to a rust function argument to override that argument's name and type and to specify description for generated js/ts bindings.
+- `#[wasm_bindgen(optional)]` used to tag a function's argument as optional (typescript `?` operator) for function's generated typescript signature.
 
 For example a rust function can return `JsValue` by serializing a rust type using serde, yet on generated ts bindings instead of `any` as the return type, it can be overriden to the ts interface of the serialized rust type equivalent defined using `typescript-custom-section` (or using [Tsify Crate](https://crates.io/crates/tsify)):
 ```rust
