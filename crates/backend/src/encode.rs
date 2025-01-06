@@ -236,16 +236,16 @@ fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Functi
         .collect::<Vec<_>>();
     let fn_attrs = func.fn_attrs.as_ref().map(|attrs| FunctionAttributes {
         ret: FunctionComponentAttributes {
-            ty: attrs.ret.ty.as_deref(),
-            desc: attrs.ret.desc.as_deref(),
+            ty: attrs.ret.ty.clone(),
+            desc: attrs.ret.desc.clone(),
             optional: false,
         },
         args: attrs
             .args
             .iter()
             .map(|arg_attr| FunctionComponentAttributes {
-                ty: arg_attr.ty.as_deref(),
-                desc: arg_attr.desc.as_deref(),
+                ty: arg_attr.ty.clone(),
+                desc: arg_attr.desc.clone(),
                 optional: arg_attr.optional,
             })
             .collect::<Vec<_>>(),

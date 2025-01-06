@@ -141,17 +141,17 @@ macro_rules! shared_api {
             generate_typescript: bool,
             generate_jsdoc: bool,
             variadic: bool,
-            fn_attrs: Option<FunctionAttributes<'a>>,
+            fn_attrs: Option<FunctionAttributes>,
         }
 
-        struct FunctionAttributes<'a> {
-            ret: FunctionComponentAttributes<'a>,
-            args: Vec<FunctionComponentAttributes<'a>>,
+        struct FunctionAttributes {
+            ret: FunctionComponentAttributes,
+            args: Vec<FunctionComponentAttributes>,
         }
 
-        struct FunctionComponentAttributes<'a> {
-            ty: Option<&'a str>,
-            desc: Option<&'a str>,
+        struct FunctionComponentAttributes {
+            ty: Option<String>,
+            desc: Option<String>,
             optional: bool,
         }
 

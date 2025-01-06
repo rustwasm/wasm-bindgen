@@ -1,7 +1,9 @@
+use crate::decode::FunctionAttributes;
 use crate::intrinsic::Intrinsic;
 use crate::wit::AdapterId;
 use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
+use std::fmt::Debug;
 use std::path::PathBuf;
 use walrus::TypedCustomSectionId;
 
@@ -87,25 +89,7 @@ pub struct AuxExport {
     /// Whether typescript bindings should be generated for this export.
     pub variadic: bool,
     /// Extra info about an exporting function components attributes
-    pub export_fn_attrs: Option<AuxExportFnAttrs>,
-}
-
-#[derive(Clone, Debug)]
-pub struct AuxExportFnAttrs {
-    /// Exporting function's return attributes
-    pub ret: AuxExportFnCompAttrs,
-    /// Exporting function's arguments attributes
-    pub args: Vec<AuxExportFnCompAttrs>,
-}
-
-#[derive(Clone, Debug)]
-pub struct AuxExportFnCompAttrs {
-    /// Specifies the type for a function component
-    pub ty: Option<String>,
-    /// Description of the function component
-    pub desc: Option<String>,
-    /// Specifies if the component is optional (used for function arguments)
-    pub optional: bool,
+    pub export_fn_attrs: Option<FunctionAttributes>,
 }
 
 /// All possible kinds of exports from a Wasm module.
