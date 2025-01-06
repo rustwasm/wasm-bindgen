@@ -63,7 +63,7 @@ This will generate the following js bindings:
 ```js
 /**
 * Description for foo
-* @param {string} firstArg - some description for arg1
+* @param {string} firstArg - some description for firstArg
 * @param {Bar} [secondArg]
 * @returns {Promise<Foo>} some description for return type
 */
@@ -73,7 +73,7 @@ And will generate the following ts bindings:
 ```ts
 /**
 * Description for foo
-* @param firstArg - some description for arg1
+* @param firstArg - some description for firstArg
 * @param secondArg
 * @returns some description for return type
 */
@@ -112,7 +112,7 @@ This will generate the following js bindings:
 export class Foo {
     /**
     * Description for foo
-    * @param {string} firstArg - some description for arg1
+    * @param {string} firstArg - some description for firstArg
     * @param {Bar} [secondArg]
     * @returns {Baz} some description for return type
     */
@@ -128,7 +128,7 @@ And will generate the following ts bindings:
 export class Foo {
     /**
     * Description for foo
-    * @param firstArg - some description for arg1
+    * @param firstArg - some description for firstArg
     * @param secondArg
     * @returns some description for return type
     */
