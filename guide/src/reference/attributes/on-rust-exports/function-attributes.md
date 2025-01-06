@@ -44,7 +44,7 @@ export interface Person { name: string; }
 */
 export function build_person(personName: string): Promise<Person>;
 ```
-As you can see, using function attributes, we can now return a js/ts object without ever using `wasm_bindgen` macro on `Person` struct that would have generated a js/ts class object in the bindings which might not be the desired outcome in every case, also you can see, instead of handcoding the full documentation for `build_person()` with all js_doc/ts_doc tags and syntax, we can just write specific docs for each individual component of the function.
+As you can see, using function attributes, we can now return a js/ts object without ever using `wasm_bindgen` macro on `Person` struct that would have generated a js/ts class object in the bindings which might not be the desired outcome for every case, you can see as well that instead of handcoding the full documentation for `build_person()` with all js_doc/ts_doc tags and syntax, we can just write specific docs for each individual component of the function and as a result end up with a fully typed and documented function in the bindings.
 
 Let's look at some more exmaples in details:
 ```rust
