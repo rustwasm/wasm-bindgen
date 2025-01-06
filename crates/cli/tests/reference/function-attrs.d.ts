@@ -6,7 +6,7 @@
  * @param secondArg
  * @returns returns 1 if arg2 is true, or arg1 if arg2 is undefined or false
  */
-export function fn_with_attr(firstArg: number, secondArg?: boolean): number;
+export function fn_with_attr(firstArg: number, secondArg?: boolean): Promise<number>;
 /**
  * Description for HoldsNumber
  */

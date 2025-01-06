@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
     return_type = "number",
     return_description = "returns 1 if arg2 is true, or arg1 if arg2 is undefined or false"
 )]
-pub fn fn_with_attr(
+pub async fn fn_with_attr(
     #[wasm_bindgen(js_name = "firstArg", param_description = "some number")] arg1: u32,
     #[wasm_bindgen(js_name = "secondArg", param_type = "boolean", optional)] arg2: JsValue,
 ) -> Result<JsValue, JsValue> {
