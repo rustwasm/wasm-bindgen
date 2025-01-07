@@ -487,6 +487,10 @@ fn to_locale_time_string() {
         JsValue::from(date.to_locale_time_string("en-US")),
         "11:15:30 PM",
     );
+    assert_eq!(
+        JsValue::from(date.to_locale_time_string_with_options("en-US", &JsValue::undefined())),
+        "11:15:30 PM",
+    );
 }
 
 #[wasm_bindgen_test]
