@@ -278,13 +278,12 @@ impl<'a, 'b> Builder<'a, 'b> {
             export_fn_attrs,
         );
         let js_doc = if generate_jsdoc {
-            self.js_ts_doc_comments(
+            self.js_doc_comments(
                 &function_args,
                 &arg_tys,
                 &ts_ret_ty,
                 variadic,
                 export_fn_attrs,
-                false,
             )
         } else {
             String::new()
@@ -296,14 +295,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         // casings for arguments names such as "@param {string} [arg]" that
         // tags the argument as optional, for ts doc we only need arg names
         // and rest are just derived from function ts signature
-        let ts_doc = self.js_ts_doc_comments(
-            &function_args,
-            &arg_tys,
-            &ts_ret_ty,
-            variadic,
-            export_fn_attrs,
-            true,
-        );
+        let ts_doc = self.ts_doc_comments(&function_args, variadic, export_fn_attrs);
 
         Ok(JsFunction {
             code,
@@ -337,40 +329,25 @@ impl<'a, 'b> Builder<'a, 'b> {
         // flatten args types overrides
         let args_overrides = export_fn_attrs
             .as_ref()
-            .map(|v| {
-                v.args
-                    .iter()
-                    .map(|e| (e.ty.as_ref(), e.optional))
-                    .collect::<Vec<_>>()
-            })
-            .unwrap_or(vec![(None, false); arg_names.len()]);
+            .map(|v| v.args.iter().map(|e| e.ty.as_ref()).collect::<Vec<_>>())
+            .unwrap_or(vec![None; arg_names.len()]);
 
         // Build up the typescript signature as well
         let mut omittable = true;
         let mut ts_args = Vec::new();
         let mut ts_arg_tys = Vec::new();
         let mut ts_refs = HashSet::new();
-        for ((name, ty), (ty_override, optional)) in
-            arg_names.iter().zip(arg_tys).zip(args_overrides).rev()
-        {
+        for ((name, ty), ty_override) in arg_names.iter().zip(arg_tys).zip(args_overrides).rev() {
             // In TypeScript, we can mark optional parameters as omittable
             // using the `?` suffix, but only if they're not followed by
             // non-omittable parameters. Therefore iterate the parameter list
             // in reverse and stop using the `?` suffix for optional params as
             // soon as a non-optional parameter is encountered.
-            //
-            // "optional" attr already enforces this rule for all override
-            // attrs so we dont need to do the omittable check for args tagged
-            // with "optional" attr
             let mut arg = name.to_string();
             let mut ts = String::new();
             if let Some(v) = ty_override {
-                if optional {
-                    arg.push_str("?: ");
-                } else {
-                    omittable = false;
-                    arg.push_str(": ");
-                }
+                omittable = false;
+                arg.push_str(": ");
                 ts.push_str(v);
             } else {
                 match ty {
@@ -382,12 +359,8 @@ impl<'a, 'b> Builder<'a, 'b> {
                     }
                     ty => {
                         adapter2ts(ty, TypePosition::Argument, &mut ts, Some(&mut ts_refs));
-                        if optional {
-                            arg.push_str("?: ");
-                        } else {
-                            omittable = false;
-                            arg.push_str(": ");
-                        }
+                        omittable = false;
+                        arg.push_str(": ");
                     }
                 }
             }
@@ -446,16 +419,15 @@ impl<'a, 'b> Builder<'a, 'b> {
         (ts, ts_arg_tys, ts_ret, ts_refs)
     }
 
-    /// Returns a helpful JS/TS doc comment which lists types for all parameters
+    /// Returns a helpful JS doc comment which lists types for all parameters
     /// and the return value.
-    fn js_ts_doc_comments(
+    fn js_doc_comments(
         &self,
         arg_names: &[String],
         arg_tys: &[&AdapterType],
         ts_ret: &Option<String>,
         variadic: bool,
         export_fn_attrs: &Option<FunctionAttributes>,
-        is_ts: bool,
     ) -> String {
         // flatten args attributes overrides
         let args_overrides = &export_fn_attrs
@@ -463,10 +435,10 @@ impl<'a, 'b> Builder<'a, 'b> {
             .map(|v| {
                 v.args
                     .iter()
-                    .map(|e| (e.ty.as_ref(), e.desc.as_ref(), e.optional))
+                    .map(|e| (e.ty.as_ref(), e.desc.as_ref()))
                     .collect::<Vec<_>>()
             })
-            .unwrap_or(vec![(None, None, false); arg_names.len()]);
+            .unwrap_or(vec![(None, None); arg_names.len()]);
 
         let (variadic_arg, fn_arg_names) = match arg_names.split_last() {
             Some((last, args)) if variadic => (Some(last), args),
@@ -476,29 +448,19 @@ impl<'a, 'b> Builder<'a, 'b> {
         let mut omittable = true;
         let mut js_doc_args = Vec::new();
 
-        for ((name, ty), (ty_override, desc, optional)) in
+        for ((name, ty), (ty_override, desc)) in
             fn_arg_names.iter().zip(arg_tys).zip(args_overrides).rev()
         {
-            let mut arg = "@param ".to_string();
-            if is_ts {
-                // we dont need arg type for ts doc, only arg name
-                arg.push_str(name);
-            } else if let Some(v) = ty_override {
-                arg.push('{');
+            let mut arg = "@param {".to_string();
+
+            if let Some(v) = ty_override {
+                omittable = false;
                 arg.push_str(v);
                 arg.push_str("} ");
-                if *optional {
-                    arg.push('[');
-                    arg.push_str(name);
-                    arg.push(']');
-                } else {
-                    omittable = false;
-                    arg.push_str(name);
-                }
+                arg.push_str(name);
             } else {
                 match ty {
                     AdapterType::Option(ty) if omittable => {
-                        arg.push('{');
                         adapter2ts(ty, TypePosition::Argument, &mut arg, None);
                         arg.push_str(" | null} ");
                         arg.push('[');
@@ -506,21 +468,14 @@ impl<'a, 'b> Builder<'a, 'b> {
                         arg.push(']');
                     }
                     _ => {
-                        arg.push('{');
+                        omittable = false;
                         adapter2ts(ty, TypePosition::Argument, &mut arg, None);
-                        if *optional {
-                            arg.push_str("} ");
-                            arg.push('[');
-                            arg.push_str(name);
-                            arg.push(']');
-                        } else {
-                            omittable = false;
-                            arg.push_str("} ");
-                            arg.push_str(name);
-                        }
+                        arg.push_str("} ");
+                        arg.push_str(name);
                     }
                 }
             }
+            // append description
             if let Some(v) = desc {
                 arg.push_str(" - ");
                 arg.push_str(v);
@@ -531,23 +486,19 @@ impl<'a, 'b> Builder<'a, 'b> {
 
         let mut ret: String = js_doc_args.into_iter().rev().collect();
 
-        if let (Some(name), Some(ty), Some((ty_override, desc, _))) =
+        if let (Some(name), Some(ty), Some((ty_override, desc))) =
             (variadic_arg, arg_tys.last(), args_overrides.last())
         {
-            ret.push_str("@param ");
-            if is_ts {
-                // we dont need arg type for ts doc, so only include arg name
-                ret.push_str(name);
+            ret.push_str("@param {...");
+            if let Some(v) = ty_override {
+                ret.push_str(v);
             } else {
-                ret.push_str("{...");
-                if let Some(v) = ty_override {
-                    ret.push_str(v);
-                } else {
-                    adapter2ts(ty, TypePosition::Argument, &mut ret, None);
-                }
-                ret.push_str("} ");
-                ret.push_str(name);
+                adapter2ts(ty, TypePosition::Argument, &mut ret, None);
             }
+            ret.push_str("} ");
+            ret.push_str(name);
+
+            // append desc
             if let Some(v) = desc {
                 ret.push_str(" - ");
                 ret.push_str(v);
@@ -561,21 +512,74 @@ impl<'a, 'b> Builder<'a, 'b> {
         if let Some(ts) = ret_ty_override.or(ts_ret.as_ref()) {
             // skip if type is void and there is no description
             if ts != "void" || ret_desc.is_some() {
-                if is_ts {
-                    // only if there is return description as we dont want empty @return tag
-                    if ret_desc.is_some() {
-                        ret.push_str("@returns");
-                    }
-                } else {
-                    ret.push_str(&format!("@returns {{{}}}", ts));
-                }
-
-                // append return description
-                if let Some(v) = ret_desc {
-                    ret.push(' ');
-                    ret.push_str(v);
-                }
+                ret.push_str(&format!("@returns {{{}}}", ts));
             }
+            // append return description
+            if let Some(v) = ret_desc {
+                ret.push(' ');
+                ret.push_str(v);
+            }
+        }
+        ret
+    }
+
+    /// Returns a helpful TS doc comment which lists all parameters and
+    /// the return value descriptions.
+    fn ts_doc_comments(
+        &self,
+        arg_names: &[String],
+        variadic: bool,
+        export_fn_attrs: &Option<FunctionAttributes>,
+    ) -> String {
+        // flatten args desc
+        let args_desc = &export_fn_attrs
+            .as_ref()
+            .map(|v| v.args.iter().map(|e| e.desc.as_ref()).collect::<Vec<_>>())
+            .unwrap_or(vec![None; arg_names.len()]);
+
+        let (variadic_arg, fn_arg_names) = match arg_names.split_last() {
+            Some((last, args)) if variadic => (Some(last), args),
+            _ => (None, arg_names),
+        };
+
+        let mut ts_doc_args = Vec::new();
+        // ofc we dont need arg type for ts doc, only arg name
+        for (name, desc) in fn_arg_names.iter().zip(args_desc).rev() {
+            let mut arg = "@param ".to_string();
+            arg.push_str(name);
+
+            // append desc
+            if let Some(v) = desc {
+                arg.push_str(" - ");
+                arg.push_str(v);
+            }
+
+            arg.push('\n');
+            ts_doc_args.push(arg);
+        }
+
+        let mut ret: String = ts_doc_args.into_iter().rev().collect();
+
+        if let (Some(name), Some(desc)) = (variadic_arg, args_desc.last()) {
+            ret.push_str("@param ");
+            ret.push_str(name);
+
+            // append desc
+            if let Some(v) = desc {
+                ret.push_str(" - ");
+                ret.push_str(v);
+            }
+            ret.push('\n');
+        }
+
+        // only if there is return description as we dont want empty @return tag
+        if let Some(ret_desc) = export_fn_attrs
+            .as_ref()
+            .map(|v| v.ret.desc.as_ref())
+            .unwrap_or(None)
+        {
+            ret.push_str("@returns ");
+            ret.push_str(ret_desc);
         }
         ret
     }

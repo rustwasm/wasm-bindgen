@@ -238,7 +238,6 @@ fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Functi
         ret: FunctionComponentAttributes {
             ty: attrs.ret.ty.clone(),
             desc: attrs.ret.desc.clone(),
-            optional: false,
         },
         args: attrs
             .args
@@ -246,7 +245,6 @@ fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Functi
             .map(|arg_attr| FunctionComponentAttributes {
                 ty: arg_attr.ty.clone(),
                 desc: arg_attr.desc.clone(),
-                optional: arg_attr.optional,
             })
             .collect::<Vec<_>>(),
     });

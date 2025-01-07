@@ -416,8 +416,6 @@ pub struct FunctionComponentAttributes {
     pub desc: Option<String>,
     /// Specifies a name of the function argument
     pub name: Option<String>,
-    /// Specifies if the component is optional (used for function arguments)
-    pub optional: bool,
 }
 
 /// Information about a Struct being exported

@@ -6,7 +6,7 @@
  * @param secondArg
  * @returns returns 1 if arg2 is true, or arg1 if arg2 is undefined or false
  */
-export function fn_with_attr(firstArg: number, secondArg?: boolean): Promise<number>;
+export function fn_with_attr(firstArg: number, secondArg: boolean | undefined): Promise<number>;
 /**
  * Description for HoldsNumber
  */
@@ -19,14 +19,14 @@ export class HoldsNumber {
    * @param secondArg
    * @returns returns an instance of HoldsNumber, holding arg1 if arg2 is undefined and holding arg2 if not
    */
-  static static_fn_with_attr(firstArg: number, secondArg?: number): HoldsNumber;
+  static static_fn_with_attr(firstArg: number, secondArg: number | undefined): HoldsNumber;
   /**
    * Description for method_with_attr
    * @param firstArg - some number
    * @param secondArg
    * @returns returns arg1 if arg2 is true, or holding value of self if arg2 is undefined or false
    */
-  method_with_attr(firstArg: number, secondArg?: boolean): number;
+  method_with_attr(firstArg: number, secondArg: boolean | undefined): number;
   /**
    * Inner value
    */

@@ -1,14 +1,10 @@
 # `function-attributes`
 
-By default, exported Rust functions and methods generate function signature from equivalent rust types identifiers without any arguments and return var documentations unless completely handcoded using `skip-jsdoc` and `typescript-custom-section` with `skip_typescript` which does not provide the best solution, specially when one needs to do a lot of those handcodings.
-It's fair to say that being able to write specific documentation for each argument and return variable of the function, or override an argument or return variable type to a custom one for generated js/ts bindings and many more use cases are essential for creating a well defined, structured and typed bindings.
+By default, exported Rust functions and methods generate function signature from equivalent Rust types identifiers without any arguments and return var documentations unless completely handcoded using `skip-jsdoc` and `typescript-custom-section` with `skip_typescript`, however by using function attributes, it's possible to override a function's return type and arguments names and types for generated bindings as well as the ability to write specific documentation for each of them individually as desired:
+- `#[wasm_bindgen(return_type)]` and `#[wasm_bindgen(return_description)]` used to override a function's return type and to specify descriptions for generated JS/TS bindings.
+- `#[wasm_bindgen(js_name)]`, `#[wasm_bindgen(param_type)]` and `#[wasm_bindgen(param_description)]` applied to a Rust function argument to override that argument's name and type and to specify descriptions for generated JS/TS bindings.
 
-Function attributes addresses these issues and limitations by providing an ability to override a function's return type and arguments names and types for generated bindings as well as ability to write specific documentation for each of them individually as desired:
-- `#[wasm_bindgen(return_type)]` and `#[wasm_bindgen(return_description)]` used to override function's return type and to specify description for generated js/ts bindings.
-- `#[wasm_bindgen(js_name)]`, `#[wasm_bindgen(param_type)]` and `#[wasm_bindgen(param_description)]` applied to a rust function argument to override that argument's name and type and to specify description for generated js/ts bindings.
-- `#[wasm_bindgen(optional)]` used to tag a function's argument as optional (typescript `?` operator) for function's generated typescript signature.
-
-For example a rust function can return `JsValue` by serializing a rust type using serde, yet on generated ts bindings instead of `any` as the return type, it can be overriden to the ts interface of the serialized rust type equivalent defined using `typescript-custom-section` (or using [Tsify Crate](https://crates.io/crates/tsify)):
+For example a Rust function can return `JsValue` by serializing a Rust type using serde, yet on generated TS bindings instead of `any` as the return type, it can be overridden to the TS interface of the serialized Rust type equivalent defined using `typescript-custom-section`:
 ```rust
 // we wont use "#[wasm_bindgen]" for this struct
 #[derive(serde::Serialize, serde::Deserialize)]
@@ -16,11 +12,10 @@ pub struct Person {
     pub name: String;
 }
 
-// define a ts interface equivalent of Person struct
-// alternatively Tsify crate can be used to generate ts interface from rust types
+// define a TS interface equivalent of Person struct
 #[wasm_bindgen(typescript_custom_section)]
 const TS_INTERFACE_EXPORT: &'static str = r"
-  export interface Person { name: string; }
+export interface Person { name: string; }
 ";
 
 #[wasm_bindgen(return_type = "Person", return_description = "a Person object")]
@@ -34,7 +29,7 @@ pub async fn build_person(
     Ok(serde_wasm_bindgen::to_value(&Person { name: person_name })?)
 }
 ```
-this will generate the following ts bindings:
+this will generate the following TS bindings:
 ```ts
 export interface Person { name: string; }
 
@@ -44,7 +39,7 @@ export interface Person { name: string; }
 */
 export function build_person(personName: string): Promise<Person>;
 ```
-As you can see, using function attributes, we can now return a js/ts object without ever using `wasm_bindgen` macro on `Person` struct that would have generated a js/ts class object in the bindings which might not be the desired outcome for every case, you can see as well that instead of handcoding the full documentation for `build_person()` with all js_doc/ts_doc tags and syntax, we can just write specific docs for each individual component of the function and as a result end up with a fully typed and documented function in the bindings.
+As you can see, using function attributes, we can now return a JS/TS object without ever using `wasm_bindgen` macro on `Person` struct that would have generated a JS/TS class object in the bindings which might not be the desired outcome for every case, you can see as well that instead of handcoding the full documentation for `build_person()` with all jsDoc/tsDoc tags and syntax, we can just write specific docs for each individual component of the function and as a result end up with a fully typed and documented function in the bindings.
 
 Let's look at some more exmaples in details:
 ```rust
@@ -53,23 +48,23 @@ Let's look at some more exmaples in details:
 pub async fn foo(
     #[wasm_bindgen(js_name = "firstArg", param_description = "some description for firstArg")]
     arg1: String,
-    #[wasm_bindgen(js_name = "secondArg", param_type = "Bar", optional)]
+    #[wasm_bindgen(js_name = "secondArg", param_type = "Bar")]
     arg2: JsValue,
 ) -> Result<JsValue, JsValue> {
     // function body
 }
 ```
-This will generate the following js bindings:
+This will generate the following JS bindings:
 ```js
 /**
 * Description for foo
 * @param {string} firstArg - some description for firstArg
-* @param {Bar} [secondArg]
+* @param {Bar} secondArg
 * @returns {Promise<Foo>} some description for return type
 */
 export function foo(firstArg, secondArg) {};
 ```
-And will generate the following ts bindings:
+And will generate the following TS bindings:
 ```ts
 /**
 * Description for foo
@@ -77,10 +72,10 @@ And will generate the following ts bindings:
 * @param secondArg
 * @returns some description for return type
 */
-export function foo(firstArg: string, secondArg?: Bar): Promise<Foo>;
+export function foo(firstArg: string, secondArg: Bar): Promise<Foo>;
 ```
 
-Same thing applies to rust struct's (and enums) impl methods and their equivalent js/ts class methods:
+Same thing applies to Rust struct's (and enums) impl methods and their equivalent JS/TS/TS class methods:
 ```rust
 /// Description for Foo
 #[wasm_bindgen]
@@ -96,7 +91,7 @@ impl Foo {
         &self,
         #[wasm_bindgen(js_name = "firstArg", param_description = "some description for firstArg")]
         arg1: String,
-        #[wasm_bindgen(js_name = "secondArg", param_type = "Bar", optional)]
+        #[wasm_bindgen(js_name = "secondArg", param_type = "Bar")]
         arg2: JsValue,
     ) -> JsValue {
         // function body
@@ -104,7 +99,7 @@ impl Foo {
 }
 ```
 
-This will generate the following js bindings:
+This will generate the following JS bindings:
 ```js
 /**
 * Description for Foo
@@ -113,14 +108,14 @@ export class Foo {
     /**
     * Description for foo
     * @param {string} firstArg - some description for firstArg
-    * @param {Bar} [secondArg]
+    * @param {Bar} secondArg
     * @returns {Baz} some description for return type
     */
     foo(firstArg, secondArg) {};
 }
 ```
 
-And will generate the following ts bindings:
+And will generate the following TS bindings:
 ```ts
 /**
 * Description for Foo
@@ -132,8 +127,11 @@ export class Foo {
     * @param secondArg
     * @returns some description for return type
     */
-    foo(firstArg: string, secondArg?: Bar): Baz;
+    foo(firstArg: string, secondArg: Bar): Baz;
 }
 ```
 
-As shown in exmaples, these attributes allows for great level of control and customization over generated bindings but note that they can only be used on functions and methods that are being exported to js/ts and cannot be used on `self` argument of rust structs/enums methods.
+As shown in these examples, these attributes allows for a great level of control and customization over generated bindings. But note that they can only be used on functions and methods that are being exported to JS/TS/TS and cannot be used on the `self` argument of Rust struct/enum methods.
+
+**IMPORTANT NOTE**
+Types that are provided using `#[wasm_bindgen(return_type)]` and `#[wasm_bindgen(param_type)]` aren't checked, meaning they will end up in the bindings as they have been specified and there are no checks for them in place, so only because a user uses '#[wasm_bindgen(param_type = "number")]', it doesn't mean its actually going to be a number type we are expecting here, so the responsibility of using these attributes and making sure that they are used correctly and carefully relies solely on the user.

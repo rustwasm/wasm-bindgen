@@ -3,7 +3,6 @@ use crate::intrinsic::Intrinsic;
 use crate::wit::AdapterId;
 use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
-use std::fmt::Debug;
 use std::path::PathBuf;
 use walrus::TypedCustomSectionId;
 

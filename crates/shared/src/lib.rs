@@ -152,7 +152,6 @@ macro_rules! shared_api {
         struct FunctionComponentAttributes {
             ty: Option<String>,
             desc: Option<String>,
-            optional: bool,
         }
 
         struct Struct<'a> {

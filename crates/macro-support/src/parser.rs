@@ -1177,7 +1177,6 @@ fn extract_fn_attrs(
                 ty: None,
                 desc: None,
                 name: None,
-                optional: false,
             };
             for attr in pat_type.attrs.iter() {
                 if !attr.path().is_ident("wasm_bindgen") {
@@ -1215,30 +1214,9 @@ fn extract_fn_attrs(
                         arg_attrs.desc = Some(meta.value()?.parse::<syn::LitStr>()?.value());
                         return Ok(());
                     }
-                    if meta.path.is_ident("optional") {
-                        if arg_attrs.optional {
-                            return Err(meta.error("duplicate attribute"));
-                        }
-                        arg_attrs.optional = true;
-                        return Ok(());
-                    }
 
                     Err(meta.error("unrecognized wasm_bindgen param attribute, expected any of 'param_type', 'param_description', 'js_name' or 'optional'"))
                 })?;
-            }
-
-            // in ts, non-optional args cannot come after an optional one
-            // this enforces the correct and valid use of "optional" attr
-            if !arg_attrs.optional
-                && args_attrs
-                    .last()
-                    .map(|v: &FunctionComponentAttributes| v.optional)
-                    .unwrap_or(false)
-            {
-                bail_span!(
-                    pat_type,
-                    "non-optional arguments cannot be followed after an optional one"
-                )
             }
 
             // remove extracted attributes
@@ -1255,7 +1233,6 @@ fn extract_fn_attrs(
             ty: attrs.return_type().map(|v| v.0.to_string()),
             desc: attrs.return_description().map(|v| v.0.to_string()),
             name: None,
-            optional: false,
         },
     })
 }

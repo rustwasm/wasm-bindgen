@@ -106,8 +106,8 @@ impl Debug for FunctionAttributes {
 impl Debug for FunctionComponentAttributes {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_fmt(format_args!(
-            "FunctionComponentAttributes {{ ty: {:?}, desc: {:?}, optional: {} }}",
-            self.ty, self.desc, self.optional
+            "FunctionComponentAttributes {{ ty: {:?}, desc: {:?} }}",
+            self.ty, self.desc
         ))
     }
 }
