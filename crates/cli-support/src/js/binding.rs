@@ -295,7 +295,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         // casings for arguments names such as "@param {string} [arg]" that
         // tags the argument as optional, for ts doc we only need arg names
         // and rest are just derived from function ts signature
-        let ts_doc = self.ts_doc_comments(&function_args, variadic, export_fn_attrs);
+        let ts_doc = self.ts_doc_comments(&function_args, export_fn_attrs);
 
         Ok(JsFunction {
             code,
@@ -528,7 +528,6 @@ impl<'a, 'b> Builder<'a, 'b> {
     fn ts_doc_comments(
         &self,
         arg_names: &[String],
-        variadic: bool,
         export_fn_attrs: &Option<FunctionAttributes>,
     ) -> String {
         // flatten args desc
@@ -537,14 +536,9 @@ impl<'a, 'b> Builder<'a, 'b> {
             .map(|v| v.args.iter().map(|e| e.desc.as_ref()).collect::<Vec<_>>())
             .unwrap_or(vec![None; arg_names.len()]);
 
-        let (variadic_arg, fn_arg_names) = match arg_names.split_last() {
-            Some((last, args)) if variadic => (Some(last), args),
-            _ => (None, arg_names),
-        };
-
         let mut ts_doc_args = Vec::new();
         // ofc we dont need arg type for ts doc, only arg name
-        for (name, desc) in fn_arg_names.iter().zip(args_desc).rev() {
+        for (name, desc) in arg_names.iter().zip(args_desc) {
             let mut arg = "@param ".to_string();
             arg.push_str(name);
 
@@ -558,19 +552,7 @@ impl<'a, 'b> Builder<'a, 'b> {
             ts_doc_args.push(arg);
         }
 
-        let mut ret: String = ts_doc_args.into_iter().rev().collect();
-
-        if let (Some(name), Some(desc)) = (variadic_arg, args_desc.last()) {
-            ret.push_str("@param ");
-            ret.push_str(name);
-
-            // append desc
-            if let Some(v) = desc {
-                ret.push_str(" - ");
-                ret.push_str(v);
-            }
-            ret.push('\n');
-        }
+        let mut ret: String = ts_doc_args.into_iter().collect();
 
         // only if there is return description as we dont want empty @return tag
         if let Some(ret_desc) = export_fn_attrs
