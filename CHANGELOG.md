@@ -17,6 +17,9 @@
 * Add `--list`, `--ignored`, `--exact` and `--nocapture` to `wasm-bindgen-test-runner`, analogous to `cargo test`.
   [#4356](https://github.com/rustwasm/wasm-bindgen/pull/4356)
 
+* Add bindings to `Date.to_locale_time_string_with_options`.
+  [#4384](https://github.com/rustwasm/wasm-bindgen/pull/4384)
+
 ### Changed
 
 * Optional parameters are now typed as `T | undefined | null` to reflect the actual JS behavior.

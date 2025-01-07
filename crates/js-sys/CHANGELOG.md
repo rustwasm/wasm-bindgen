@@ -1,12 +1,6 @@
 # `js-sys` Change Log
 
 --------------------------------------------------------------------------------
-## Unreleased
-
-### Added
-
-* Added bindings to `Date.to_locale_time_string_with_options` 
-  [#4384](https://github.com/rustwasm/wasm-bindgen/pull/4384)
 
 ## 0.2.1
 
