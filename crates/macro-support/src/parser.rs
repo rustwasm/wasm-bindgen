@@ -166,8 +166,10 @@ macro_rules! attrgen {
             (static_string, StaticString(Span)),
             (thread_local, ThreadLocal(Span)),
             (thread_local_v2, ThreadLocalV2(Span)),
-            (return_type, ReturnType(Span, String, Span)),
+            (unchecked_return_type, ReturnType(Span, String, Span)),
             (return_description, ReturnDesc(Span, String, Span)),
+            (unchecked_param_type, ParamType(Span, String, Span)),
+            (param_description, ParamDesc(Span, String, Span)),
 
             // For testing purposes only.
             (assert_no_shim, AssertNoShim(Span)),
@@ -1172,65 +1174,20 @@ fn extract_fn_attrs(
     let mut args_attrs = vec![];
     for input in sig.inputs.iter_mut() {
         if let syn::FnArg::Typed(pat_type) = input {
-            let mut keep = vec![];
-            let mut arg_attrs = FunctionComponentAttributes {
-                ty: None,
-                desc: None,
-                name: None,
+            let attrs = BindgenAttrs::find(&mut pat_type.attrs)?;
+            let arg_attrs = FunctionComponentAttributes {
+                ty: attrs.unchecked_param_type().map(|v| v.0.to_string()),
+                desc: attrs.param_description().map(|v| v.0.to_string()),
+                name: attrs.js_name().map(|v| v.0.to_string()),
             };
-            for attr in pat_type.attrs.iter() {
-                if !attr.path().is_ident("wasm_bindgen") {
-                    keep.push(true);
-                    continue;
-                }
-                keep.push(false);
-                attr.parse_nested_meta(|meta| {
-                    if meta.path.is_ident("js_name") {
-                        if arg_attrs.name.is_some() {
-                            return Err(meta.error("duplicate attribute"));
-                        }
-                        let value = meta.value()?.parse::<syn::LitStr>()?.value();
-                        if is_js_keyword(&value) {
-                            return Err(meta.error("collides with js/ts keywords"));
-                        }
-                        arg_attrs.name = Some(value);
-                        return Ok(());
-                    }
-                    if meta.path.is_ident("param_type") {
-                        if arg_attrs.ty.is_some() {
-                            return Err(meta.error("duplicate attribute"));
-                        }
-                        let value = meta.value()?.parse::<syn::LitStr>()?.value();
-                        if is_js_keyword(&value) {
-                            return Err(meta.error("collides with js/ts keywords"));
-                        }
-                        arg_attrs.ty = Some(value);
-                        return Ok(());
-                    }
-                    if meta.path.is_ident("param_description") {
-                        if arg_attrs.desc.is_some() {
-                            return Err(meta.error("duplicate attribute"));
-                        }
-                        arg_attrs.desc = Some(meta.value()?.parse::<syn::LitStr>()?.value());
-                        return Ok(());
-                    }
-
-                    Err(meta.error("unrecognized wasm_bindgen param attribute, expected any of 'param_type', 'param_description', 'js_name' or 'optional'"))
-                })?;
-            }
-
-            // remove extracted attributes
-            let mut keep = keep.iter();
-            pat_type.attrs.retain(|_| *keep.next().unwrap());
-
+            attrs.check_used();
             args_attrs.push(arg_attrs);
         }
     }
-
     Ok(FunctionAttributes {
         args: args_attrs,
         ret: FunctionComponentAttributes {
-            ty: attrs.return_type().map(|v| v.0.to_string()),
+            ty: attrs.unchecked_return_type().map(|v| v.0.to_string()),
             desc: attrs.return_description().map(|v| v.0.to_string()),
             name: None,
         },
