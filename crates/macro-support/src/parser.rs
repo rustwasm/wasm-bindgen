@@ -961,12 +961,12 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
     }
 }
 
-impl ConvertToAst<(BindgenAttrs, Vec<FunctionArgAttributes>)> for syn::ItemFn {
+impl ConvertToAst<(BindgenAttrs, Vec<FnArgAttrs>)> for syn::ItemFn {
     type Target = ast::Function;
 
     fn convert(
         self,
-        (attrs, args_attrs): (BindgenAttrs, Vec<FunctionArgAttributes>),
+        (attrs, args_attrs): (BindgenAttrs, Vec<FnArgAttrs>),
     ) -> Result<Self::Target, Diagnostic> {
         match self.vis {
             syn::Visibility::Public(_) => {}
@@ -1036,7 +1036,7 @@ fn function_from_decl(
     attrs: Vec<syn::Attribute>,
     vis: syn::Visibility,
     position: FunctionPosition,
-    args_attrs: Option<Vec<FunctionArgAttributes>>,
+    args_attrs: Option<Vec<FnArgAttrs>>,
 ) -> Result<(ast::Function, Option<ast::MethodSelf>), Diagnostic> {
     if sig.variadic.is_some() {
         bail_span!(sig.variadic, "can't #[wasm_bindgen] variadic functions");
@@ -1172,7 +1172,7 @@ fn function_from_decl(
             },
             arguments: arguments
                 .into_iter()
-                .zip(args_attrs.unwrap_or(vec![FunctionArgAttributes::default(); args_len]))
+                .zip(args_attrs.unwrap_or(vec![FnArgAttrs::default(); args_len]))
                 .map(|(arg_pat_type, arg_attrs)| FunctionArgumentData {
                     pat_type: arg_pat_type,
                     js_name: arg_attrs.name,
@@ -1186,19 +1186,19 @@ fn function_from_decl(
 }
 
 #[derive(Default, Clone)]
-struct FunctionArgAttributes {
+struct FnArgAttrs {
     ty: Option<String>,
     desc: Option<String>,
     name: Option<String>,
 }
 
 /// Extracts function arguments attributes
-fn extract_args_attrs(sig: &mut syn::Signature) -> Result<Vec<FunctionArgAttributes>, Diagnostic> {
+fn extract_args_attrs(sig: &mut syn::Signature) -> Result<Vec<FnArgAttrs>, Diagnostic> {
     let mut args_attrs = vec![];
     for input in sig.inputs.iter_mut() {
         if let syn::FnArg::Typed(pat_type) = input {
             let attrs = BindgenAttrs::find(&mut pat_type.attrs)?;
-            let arg_attrs = FunctionArgAttributes {
+            let arg_attrs = FnArgAttrs {
                 ty: attrs.unchecked_param_type().map(|v| v.0.to_string()),
                 desc: attrs.param_description().map(|v| v.0.to_string()),
                 name: attrs.js_name().map(|v| v.0.to_string()),
@@ -1464,7 +1464,7 @@ impl MacroParse<&ClassMarker> for &mut syn::ImplItemFn {
 
         let opts = BindgenAttrs::find(&mut self.attrs)?;
         let comments = extract_doc_comments(&self.attrs);
-        let args_attrs: Vec<FunctionArgAttributes> = extract_args_attrs(&mut self.sig)?;
+        let args_attrs: Vec<FnArgAttrs> = extract_args_attrs(&mut self.sig)?;
         let (function, method_self) = function_from_decl(
             &self.sig.ident,
             &opts,
