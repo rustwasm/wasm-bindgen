@@ -961,12 +961,12 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
     }
 }
 
-impl ConvertToAst<(BindgenAttrs, Vec<FnArgAttrs>)> for syn::ItemFn {
+impl ConvertToAst<(BindgenAttrs, Option<Vec<FnArgAttrs>>)> for syn::ItemFn {
     type Target = ast::Function;
 
     fn convert(
         self,
-        (attrs, args_attrs): (BindgenAttrs, Vec<FnArgAttrs>),
+        (attrs, args_attrs): (BindgenAttrs, Option<Vec<FnArgAttrs>>),
     ) -> Result<Self::Target, Diagnostic> {
         match self.vis {
             syn::Visibility::Public(_) => {}
@@ -987,7 +987,7 @@ impl ConvertToAst<(BindgenAttrs, Vec<FnArgAttrs>)> for syn::ItemFn {
             self.attrs,
             self.vis,
             FunctionPosition::Free,
-            Some(args_attrs),
+            args_attrs,
         )?;
         attrs.check_used();
 
@@ -1275,7 +1275,7 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
 
                 program.exports.push(ast::Export {
                     comments,
-                    function: f.convert((opts, args_attrs))?,
+                    function: f.convert((opts, Some(args_attrs)))?,
                     js_class: None,
                     method_kind,
                     method_self: None,
