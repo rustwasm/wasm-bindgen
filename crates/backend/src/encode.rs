@@ -221,29 +221,25 @@ fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Functi
         .enumerate()
         .map(|(idx, arg)| {
             // use argument's "js_name" if it was provided in attributes
-            if let Some(arg_js_name) = func
-                .fn_attrs
-                .as_ref()
-                .and_then(|attrs| attrs.args.get(idx).and_then(|v| v.name.clone()))
-            {
-                return arg_js_name;
+            if let Some(name) = &arg.js_name {
+                return name.clone();
             }
-            if let syn::Pat::Ident(x) = &*arg.pat {
+            if let syn::Pat::Ident(x) = &*arg.pat_type.pat {
                 return x.ident.unraw().to_string();
             }
             format!("arg{}", idx)
         })
         .collect::<Vec<_>>();
-    let fn_attrs = func.fn_attrs.as_ref().map(|attrs| FunctionAttributes {
+    let fn_attrs = Some(FunctionAttributes {
         ret: FunctionComponentAttributes {
-            ty: attrs.ret.ty.clone(),
-            desc: attrs.ret.desc.clone(),
+            ty: func.ret.ty_override.clone(),
+            desc: func.ret.desc.clone(),
         },
-        args: attrs
-            .args
+        args: func
+            .arguments
             .iter()
             .map(|arg_attr| FunctionComponentAttributes {
-                ty: arg_attr.ty.clone(),
+                ty: arg_attr.ty_override.clone(),
                 desc: arg_attr.desc.clone(),
             })
             .collect::<Vec<_>>(),

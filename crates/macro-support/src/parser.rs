@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use std::str::Chars;
 
 use ast::OperationKind;
-use backend::ast::{self, FunctionAttributes, FunctionComponentAttributes, ThreadLocal};
+use backend::ast::{self, FunctionArgumentData, ThreadLocal};
 use backend::util::{ident_ty, ShortHash};
 use backend::Diagnostic;
 use proc_macro2::{Ident, Span, TokenStream, TokenTree};
@@ -635,9 +635,9 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             // * The actual type is the first type parameter
             //
             // should probably fix this one day...
-            extract_first_ty_param(wasm.ret.as_ref())?
+            extract_first_ty_param(wasm.ret.r#type.as_ref())?
         } else {
-            wasm.ret.clone()
+            wasm.ret.r#type.clone()
         };
 
         let operation_kind = operation_kind(&opts);
@@ -646,14 +646,14 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             let class = wasm.arguments.first().ok_or_else(|| {
                 err_span!(self, "imported methods must have at least one argument")
             })?;
-            let class = match get_ty(&class.ty) {
+            let class = match get_ty(&class.pat_type.ty) {
                 syn::Type::Reference(syn::TypeReference {
                     mutability: None,
                     elem,
                     ..
                 }) => &**elem,
                 _ => bail_span!(
-                    class.ty,
+                    class.pat_type.ty,
                     "first argument of method must be a shared reference"
                 ),
             };
@@ -961,10 +961,13 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
     }
 }
 
-impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
+impl ConvertToAst<(BindgenAttrs, Vec<FunctionArgAttributes>)> for syn::ItemFn {
     type Target = ast::Function;
 
-    fn convert(self, attrs: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
+    fn convert(
+        self,
+        (attrs, args_attrs): (BindgenAttrs, Vec<FunctionArgAttributes>),
+    ) -> Result<Self::Target, Diagnostic> {
         match self.vis {
             syn::Visibility::Public(_) => {}
             _ if attrs.start().is_some() => {}
@@ -984,7 +987,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
             self.attrs,
             self.vis,
             FunctionPosition::Free,
-            None,
+            Some(args_attrs),
         )?;
         attrs.check_used();
 
@@ -1033,7 +1036,7 @@ fn function_from_decl(
     attrs: Vec<syn::Attribute>,
     vis: syn::Visibility,
     position: FunctionPosition,
-    fn_attrs: Option<FunctionAttributes>,
+    args_attrs: Option<Vec<FunctionArgAttributes>>,
 ) -> Result<(ast::Function, Option<ast::MethodSelf>), Diagnostic> {
     if sig.variadic.is_some() {
         bail_span!(sig.variadic, "can't #[wasm_bindgen] variadic functions");
@@ -1146,13 +1149,15 @@ fn function_from_decl(
             (decl_name.unraw().to_string(), decl_name.span(), false)
         };
 
+    let ret_ty_override = opts.unchecked_return_type().map(|v| v.0.to_string());
+    let ret_desc = opts.return_description().map(|v| v.0.to_string());
+
+    let args_len = arguments.len();
     Ok((
         ast::Function {
-            arguments,
             name_span,
             name,
             renamed_via_js_name,
-            ret,
             rust_attrs: attrs,
             rust_vis: vis,
             r#unsafe: sig.unsafety.is_some(),
@@ -1160,22 +1165,40 @@ fn function_from_decl(
             generate_typescript: opts.skip_typescript().is_none(),
             generate_jsdoc: opts.skip_jsdoc().is_none(),
             variadic: opts.variadic().is_some(),
-            fn_attrs,
+            ret: ast::FunctionReturnData {
+                r#type: ret,
+                ty_override: ret_ty_override,
+                desc: ret_desc,
+            },
+            arguments: arguments
+                .into_iter()
+                .zip(args_attrs.unwrap_or(vec![FunctionArgAttributes::default(); args_len]))
+                .map(|(arg_pat_type, arg_attrs)| FunctionArgumentData {
+                    pat_type: arg_pat_type,
+                    js_name: arg_attrs.name,
+                    desc: arg_attrs.desc,
+                    ty_override: arg_attrs.ty,
+                })
+                .collect::<Vec<_>>(),
         },
         method_self,
     ))
 }
 
-/// Extracts function attributes
-fn extract_fn_attrs(
-    sig: &mut syn::Signature,
-    attrs: &BindgenAttrs,
-) -> Result<FunctionAttributes, Diagnostic> {
+#[derive(Default, Clone)]
+struct FunctionArgAttributes {
+    ty: Option<String>,
+    desc: Option<String>,
+    name: Option<String>,
+}
+
+/// Extracts function arguments attributes
+fn extract_args_attrs(sig: &mut syn::Signature) -> Result<Vec<FunctionArgAttributes>, Diagnostic> {
     let mut args_attrs = vec![];
     for input in sig.inputs.iter_mut() {
         if let syn::FnArg::Typed(pat_type) = input {
             let attrs = BindgenAttrs::find(&mut pat_type.attrs)?;
-            let arg_attrs = FunctionComponentAttributes {
+            let arg_attrs = FunctionArgAttributes {
                 ty: attrs.unchecked_param_type().map(|v| v.0.to_string()),
                 desc: attrs.param_description().map(|v| v.0.to_string()),
                 name: attrs.js_name().map(|v| v.0.to_string()),
@@ -1184,14 +1207,7 @@ fn extract_fn_attrs(
             args_attrs.push(arg_attrs);
         }
     }
-    Ok(FunctionAttributes {
-        args: args_attrs,
-        ret: FunctionComponentAttributes {
-            ty: attrs.unchecked_return_type().map(|v| v.0.to_string()),
-            desc: attrs.return_description().map(|v| v.0.to_string()),
-            name: None,
-        },
-    })
+    Ok(args_attrs)
 }
 
 pub(crate) trait MacroParse<Ctx> {
@@ -1234,8 +1250,8 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 if let Some((i, _)) = no_mangle {
                     f.attrs.remove(i);
                 }
-                // extract fn components attributes before parsing to tokens stream
-                let fn_attrs = extract_fn_attrs(&mut f.sig, &opts)?;
+                // extract fn args attributes before parsing to tokens stream
+                let args_attrs = extract_args_attrs(&mut f.sig)?;
                 let comments = extract_doc_comments(&f.attrs);
                 // If the function isn't used for anything other than being exported to JS,
                 // it'll be unused when not building for the Wasm target and produce a
@@ -1256,13 +1272,10 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 });
                 let rust_name = f.sig.ident.clone();
                 let start = opts.start().is_some();
-                let mut function = f.convert(opts)?;
-                // set fn components attributes that was extracted previously
-                function.fn_attrs = Some(fn_attrs);
 
                 program.exports.push(ast::Export {
                     comments,
-                    function,
+                    function: f.convert((opts, args_attrs))?,
                     js_class: None,
                     method_kind,
                     method_self: None,
@@ -1451,7 +1464,7 @@ impl MacroParse<&ClassMarker> for &mut syn::ImplItemFn {
 
         let opts = BindgenAttrs::find(&mut self.attrs)?;
         let comments = extract_doc_comments(&self.attrs);
-        let fn_attrs = extract_fn_attrs(&mut self.sig, &opts)?;
+        let args_attrs: Vec<FunctionArgAttributes> = extract_args_attrs(&mut self.sig)?;
         let (function, method_self) = function_from_decl(
             &self.sig.ident,
             &opts,
@@ -1459,7 +1472,7 @@ impl MacroParse<&ClassMarker> for &mut syn::ImplItemFn {
             self.attrs.clone(),
             self.vis.clone(),
             FunctionPosition::Impl { self_ty: class },
-            Some(fn_attrs),
+            Some(args_attrs),
         )?;
         let method_kind = if opts.constructor().is_some() {
             ast::MethodKind::Constructor

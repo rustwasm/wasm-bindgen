@@ -375,9 +375,9 @@ pub struct Function {
     /// Whether the function has a js_name attribute
     pub renamed_via_js_name: bool,
     /// The arguments to the function
-    pub arguments: Vec<syn::PatType>,
+    pub arguments: Vec<FunctionArgumentData>,
     /// The return type of the function, if provided
-    pub ret: Option<syn::Type>,
+    pub ret: FunctionReturnData,
     /// Any custom attributes being applied to the function
     pub rust_attrs: Vec<syn::Attribute>,
     /// The visibility of this function in Rust
@@ -392,30 +392,32 @@ pub struct Function {
     pub generate_jsdoc: bool,
     /// Whether this is a function with a variadict parameter
     pub variadic: bool,
-    /// Function attributes used to provide extra information about function's components
-    pub fn_attrs: Option<FunctionAttributes>,
 }
 
-/// Extra information about a function's components
+/// Information about a function's return
 #[cfg_attr(feature = "extra-traits", derive(Debug))]
-#[derive(Clone, Default)]
-pub struct FunctionAttributes {
-    /// Function's return attributes
-    pub ret: FunctionComponentAttributes,
-    /// Function's arguments attributes
-    pub args: Vec<FunctionComponentAttributes>,
-}
-
-/// Information about a function's component
-#[cfg_attr(feature = "extra-traits", derive(Debug))]
-#[derive(Clone, Default)]
-pub struct FunctionComponentAttributes {
-    /// Specifies the type for a function component
-    pub ty: Option<String>,
-    /// Description of the function component
+#[derive(Clone)]
+pub struct FunctionReturnData {
+    /// Specifies the type of the function's return
+    pub r#type: Option<syn::Type>,
+    /// Specifies the return type override provided by attributes
+    pub ty_override: Option<String>,
+    /// Specifies the return description
     pub desc: Option<String>,
-    /// Specifies a name of the function argument
-    pub name: Option<String>,
+}
+
+/// Information about a function's argument
+#[cfg_attr(feature = "extra-traits", derive(Debug))]
+#[derive(Clone)]
+pub struct FunctionArgumentData {
+    /// Specifies the argument name
+    pub js_name: Option<String>,
+    /// Specifies the type of the function's argument
+    pub pat_type: syn::PatType,
+    /// Specifies the argument type override provided by attributes
+    pub ty_override: Option<String>,
+    /// Specifies the argument description
+    pub desc: Option<String>,
 }
 
 /// Information about a Struct being exported
