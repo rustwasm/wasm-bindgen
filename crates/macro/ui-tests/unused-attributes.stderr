@@ -43,47 +43,95 @@ error: unused variable: `final`
 error: unused variable: `unchecked_return_type`
   --> ui-tests/unused-attributes.rs:32:16
    |
-32 | #[wasm_bindgen(unchecked_return_type = "something", return_description = "something")]
+32 | #[wasm_bindgen(unchecked_return_type = "something", return_description = "something", unchecked_param_type = "something", param_descripti...
    |                ^^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_unchecked_return_type`
 
 error: unused variable: `return_description`
   --> ui-tests/unused-attributes.rs:32:53
    |
-32 | #[wasm_bindgen(unchecked_return_type = "something", return_description = "something")]
-   |                                                     ^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_return_description`
+32 | ...e = "something", return_description = "something", unchecked_param_type = "something", param_description = "somthing")]
+   |                     ^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_return_description`
+
+error: unused variable: `unchecked_param_type`
+  --> ui-tests/unused-attributes.rs:32:87
+   |
+32 | ...= "something", unchecked_param_type = "something", param_description = "somthing")]
+   |                   ^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_unchecked_param_type`
+
+error: unused variable: `param_description`
+  --> ui-tests/unused-attributes.rs:32:123
+   |
+32 | ...pe = "something", param_description = "somthing")]
+   |                      ^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_param_description`
 
 error: unused variable: `unchecked_return_type`
   --> ui-tests/unused-attributes.rs:35:16
    |
-35 | #[wasm_bindgen(unchecked_return_type = "something", return_description = "something")]
+35 | #[wasm_bindgen(unchecked_return_type = "something", return_description = "something", unchecked_param_type = "something", param_descripti...
    |                ^^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_unchecked_return_type`
 
 error: unused variable: `return_description`
   --> ui-tests/unused-attributes.rs:35:53
    |
-35 | #[wasm_bindgen(unchecked_return_type = "something", return_description = "something")]
-   |                                                     ^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_return_description`
+35 | ...e = "something", return_description = "something", unchecked_param_type = "something", param_description = "somthing")]
+   |                     ^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_return_description`
+
+error: unused variable: `unchecked_param_type`
+  --> ui-tests/unused-attributes.rs:35:87
+   |
+35 | ...= "something", unchecked_param_type = "something", param_description = "somthing")]
+   |                   ^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_unchecked_param_type`
+
+error: unused variable: `param_description`
+  --> ui-tests/unused-attributes.rs:35:123
+   |
+35 | ...pe = "something", param_description = "somthing")]
+   |                      ^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_param_description`
 
 error: unused variable: `unchecked_return_type`
   --> ui-tests/unused-attributes.rs:41:16
    |
-41 | #[wasm_bindgen(unchecked_return_type = "something", return_description = "something")]
+41 | #[wasm_bindgen(unchecked_return_type = "something", return_description = "something", unchecked_param_type = "something", param_descripti...
    |                ^^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_unchecked_return_type`
 
 error: unused variable: `return_description`
   --> ui-tests/unused-attributes.rs:41:53
    |
-41 | #[wasm_bindgen(unchecked_return_type = "something", return_description = "something")]
-   |                                                     ^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_return_description`
+41 | ...e = "something", return_description = "something", unchecked_param_type = "something", param_description = "somthing")]
+   |                     ^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_return_description`
+
+error: unused variable: `unchecked_param_type`
+  --> ui-tests/unused-attributes.rs:41:87
+   |
+41 | ...= "something", unchecked_param_type = "something", param_description = "somthing")]
+   |                   ^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_unchecked_param_type`
+
+error: unused variable: `param_description`
+  --> ui-tests/unused-attributes.rs:41:123
+   |
+41 | ...pe = "something", param_description = "somthing")]
+   |                      ^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_param_description`
 
 error: unused variable: `unchecked_return_type`
   --> ui-tests/unused-attributes.rs:46:16
    |
-46 | #[wasm_bindgen(unchecked_return_type = "something", return_description = "something")]
+46 | #[wasm_bindgen(unchecked_return_type = "something", return_description = "something", unchecked_param_type = "something", param_descripti...
    |                ^^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_unchecked_return_type`
 
 error: unused variable: `return_description`
   --> ui-tests/unused-attributes.rs:46:53
    |
-46 | #[wasm_bindgen(unchecked_return_type = "something", return_description = "something")]
-   |                                                     ^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_return_description`
+46 | ...e = "something", return_description = "something", unchecked_param_type = "something", param_description = "somthing")]
+   |                     ^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_return_description`
+
+error: unused variable: `unchecked_param_type`
+  --> ui-tests/unused-attributes.rs:46:87
+   |
+46 | ...= "something", unchecked_param_type = "something", param_description = "somthing")]
+   |                   ^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_unchecked_param_type`
+
+error: unused variable: `param_description`
+  --> ui-tests/unused-attributes.rs:46:123
+   |
+46 | ...pe = "something", param_description = "somthing")]
+   |                      ^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_param_description`
