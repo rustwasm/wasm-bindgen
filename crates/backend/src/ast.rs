@@ -376,7 +376,7 @@ pub struct Function {
     pub renamed_via_js_name: bool,
     /// The arguments to the function
     pub arguments: Vec<FunctionArgumentData>,
-    /// The return type of the function, if provided
+    /// The data of return type of the function
     pub ret: FunctionReturnData,
     /// Any custom attributes being applied to the function
     pub rust_attrs: Vec<syn::Attribute>,
