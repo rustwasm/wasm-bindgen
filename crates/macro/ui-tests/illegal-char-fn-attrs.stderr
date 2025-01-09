@@ -1,13 +1,13 @@
 error: contains illegal comment close syntax
  --> ui-tests/illegal-char-fn-attrs.rs:5:30
   |
-5 |     #[wasm_bindgen(js_name = "/*firstArg")] arg1: u32,
-  |                              ^^^^^^^^^^^^
+5 |     #[wasm_bindgen(js_name = "abcd */firstArg")] arg1: u32,
+  |                              ^^^^^^^^^^^^^^^^^
 
 error: contains illegal comment close syntax
   --> ui-tests/illegal-char-fn-attrs.rs:12:43
    |
-12 |     #[wasm_bindgen(unchecked_param_type = "number*/")] arg1: u32,
+12 |     #[wasm_bindgen(unchecked_param_type = "num*/ber")] arg1: u32,
    |                                           ^^^^^^^^^^
 
 error: contains illegal comment close syntax
@@ -25,5 +25,5 @@ error: contains illegal comment close syntax
 error: contains illegal comment close syntax
   --> ui-tests/illegal-char-fn-attrs.rs:29:40
    |
-29 | #[wasm_bindgen(unchecked_return_type = "*/ number")]
-   |                                        ^^^^^^^^^^^
+29 | #[wasm_bindgen(unchecked_return_type = "number */ abcd")]
+   |                                        ^^^^^^^^^^^^^^^^
