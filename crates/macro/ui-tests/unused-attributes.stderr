@@ -1,3 +1,211 @@
+error: invalid attribute unchecked_return_type in this position
+  --> ui-tests/unused-attributes.rs:32:1
+   |
+32 | / #[wasm_bindgen(
+33 | |     unchecked_return_type = "something",
+34 | |     return_description = "something",
+35 | |     unchecked_param_type = "something",
+36 | |     param_description = "somthing"
+37 | | )]
+   | |__^
+   |
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: invalid attribute return_description in this position
+  --> ui-tests/unused-attributes.rs:32:1
+   |
+32 | / #[wasm_bindgen(
+33 | |     unchecked_return_type = "something",
+34 | |     return_description = "something",
+35 | |     unchecked_param_type = "something",
+36 | |     param_description = "somthing"
+37 | | )]
+   | |__^
+   |
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: invalid attribute unchecked_param_type in this position
+  --> ui-tests/unused-attributes.rs:32:1
+   |
+32 | / #[wasm_bindgen(
+33 | |     unchecked_return_type = "something",
+34 | |     return_description = "something",
+35 | |     unchecked_param_type = "something",
+36 | |     param_description = "somthing"
+37 | | )]
+   | |__^
+   |
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: invalid attribute param_description in this position
+  --> ui-tests/unused-attributes.rs:32:1
+   |
+32 | / #[wasm_bindgen(
+33 | |     unchecked_return_type = "something",
+34 | |     return_description = "something",
+35 | |     unchecked_param_type = "something",
+36 | |     param_description = "somthing"
+37 | | )]
+   | |__^
+   |
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: invalid attribute unchecked_return_type in this position
+  --> ui-tests/unused-attributes.rs:40:1
+   |
+40 | / #[wasm_bindgen(
+41 | |     unchecked_return_type = "something",
+42 | |     return_description = "something",
+43 | |     unchecked_param_type = "something",
+44 | |     param_description = "somthing"
+45 | | )]
+   | |__^
+   |
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: invalid attribute return_description in this position
+  --> ui-tests/unused-attributes.rs:40:1
+   |
+40 | / #[wasm_bindgen(
+41 | |     unchecked_return_type = "something",
+42 | |     return_description = "something",
+43 | |     unchecked_param_type = "something",
+44 | |     param_description = "somthing"
+45 | | )]
+   | |__^
+   |
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: invalid attribute unchecked_param_type in this position
+  --> ui-tests/unused-attributes.rs:40:1
+   |
+40 | / #[wasm_bindgen(
+41 | |     unchecked_return_type = "something",
+42 | |     return_description = "something",
+43 | |     unchecked_param_type = "something",
+44 | |     param_description = "somthing"
+45 | | )]
+   | |__^
+   |
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: invalid attribute param_description in this position
+  --> ui-tests/unused-attributes.rs:40:1
+   |
+40 | / #[wasm_bindgen(
+41 | |     unchecked_return_type = "something",
+42 | |     return_description = "something",
+43 | |     unchecked_param_type = "something",
+44 | |     param_description = "somthing"
+45 | | )]
+   | |__^
+   |
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: invalid attribute unchecked_return_type in this position
+  --> ui-tests/unused-attributes.rs:51:1
+   |
+51 | / #[wasm_bindgen(
+52 | |     unchecked_return_type = "something",
+53 | |     return_description = "something",
+54 | |     unchecked_param_type = "something",
+55 | |     param_description = "somthing"
+56 | | )]
+   | |__^
+   |
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: invalid attribute return_description in this position
+  --> ui-tests/unused-attributes.rs:51:1
+   |
+51 | / #[wasm_bindgen(
+52 | |     unchecked_return_type = "something",
+53 | |     return_description = "something",
+54 | |     unchecked_param_type = "something",
+55 | |     param_description = "somthing"
+56 | | )]
+   | |__^
+   |
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: invalid attribute unchecked_param_type in this position
+  --> ui-tests/unused-attributes.rs:51:1
+   |
+51 | / #[wasm_bindgen(
+52 | |     unchecked_return_type = "something",
+53 | |     return_description = "something",
+54 | |     unchecked_param_type = "something",
+55 | |     param_description = "somthing"
+56 | | )]
+   | |__^
+   |
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: invalid attribute param_description in this position
+  --> ui-tests/unused-attributes.rs:51:1
+   |
+51 | / #[wasm_bindgen(
+52 | |     unchecked_return_type = "something",
+53 | |     return_description = "something",
+54 | |     unchecked_param_type = "something",
+55 | |     param_description = "somthing"
+56 | | )]
+   | |__^
+   |
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: invalid attribute unchecked_return_type in this position
+  --> ui-tests/unused-attributes.rs:61:1
+   |
+61 | / #[wasm_bindgen(
+62 | |     unchecked_return_type = "something",
+63 | |     return_description = "something",
+64 | |     unchecked_param_type = "something",
+65 | |     param_description = "somthing"
+66 | | )]
+   | |__^
+   |
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: invalid attribute return_description in this position
+  --> ui-tests/unused-attributes.rs:61:1
+   |
+61 | / #[wasm_bindgen(
+62 | |     unchecked_return_type = "something",
+63 | |     return_description = "something",
+64 | |     unchecked_param_type = "something",
+65 | |     param_description = "somthing"
+66 | | )]
+   | |__^
+   |
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: invalid attribute unchecked_param_type in this position
+  --> ui-tests/unused-attributes.rs:61:1
+   |
+61 | / #[wasm_bindgen(
+62 | |     unchecked_return_type = "something",
+63 | |     return_description = "something",
+64 | |     unchecked_param_type = "something",
+65 | |     param_description = "somthing"
+66 | | )]
+   | |__^
+   |
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: invalid attribute param_description in this position
+  --> ui-tests/unused-attributes.rs:61:1
+   |
+61 | / #[wasm_bindgen(
+62 | |     unchecked_return_type = "something",
+63 | |     return_description = "something",
+64 | |     unchecked_param_type = "something",
+65 | |     param_description = "somthing"
+66 | | )]
+   | |__^
+   |
+   = note: this error originates in the attribute macro `wasm_bindgen` (in Nightly builds, run with -Z macro-backtrace for more info)
+
 error: unused variable: `method`
  --> ui-tests/unused-attributes.rs:9:20
   |
@@ -39,99 +247,3 @@ error: unused variable: `final`
    |
 24 | #[wasm_bindgen(getter_with_clone, final)]
    |                                   ^^^^^ help: if this is intentional, prefix it with an underscore: `_final`
-
-error: unused variable: `unchecked_return_type`
-  --> ui-tests/unused-attributes.rs:33:5
-   |
-33 |     unchecked_return_type = "something",
-   |     ^^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_unchecked_return_type`
-
-error: unused variable: `return_description`
-  --> ui-tests/unused-attributes.rs:34:5
-   |
-34 |     return_description = "something",
-   |     ^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_return_description`
-
-error: unused variable: `unchecked_param_type`
-  --> ui-tests/unused-attributes.rs:35:5
-   |
-35 |     unchecked_param_type = "something",
-   |     ^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_unchecked_param_type`
-
-error: unused variable: `param_description`
-  --> ui-tests/unused-attributes.rs:36:5
-   |
-36 |     param_description = "somthing"
-   |     ^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_param_description`
-
-error: unused variable: `unchecked_return_type`
-  --> ui-tests/unused-attributes.rs:41:5
-   |
-41 |     unchecked_return_type = "something",
-   |     ^^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_unchecked_return_type`
-
-error: unused variable: `return_description`
-  --> ui-tests/unused-attributes.rs:42:5
-   |
-42 |     return_description = "something",
-   |     ^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_return_description`
-
-error: unused variable: `unchecked_param_type`
-  --> ui-tests/unused-attributes.rs:43:5
-   |
-43 |     unchecked_param_type = "something",
-   |     ^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_unchecked_param_type`
-
-error: unused variable: `param_description`
-  --> ui-tests/unused-attributes.rs:44:5
-   |
-44 |     param_description = "somthing"
-   |     ^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_param_description`
-
-error: unused variable: `unchecked_return_type`
-  --> ui-tests/unused-attributes.rs:52:5
-   |
-52 |     unchecked_return_type = "something",
-   |     ^^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_unchecked_return_type`
-
-error: unused variable: `return_description`
-  --> ui-tests/unused-attributes.rs:53:5
-   |
-53 |     return_description = "something",
-   |     ^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_return_description`
-
-error: unused variable: `unchecked_param_type`
-  --> ui-tests/unused-attributes.rs:54:5
-   |
-54 |     unchecked_param_type = "something",
-   |     ^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_unchecked_param_type`
-
-error: unused variable: `param_description`
-  --> ui-tests/unused-attributes.rs:55:5
-   |
-55 |     param_description = "somthing"
-   |     ^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_param_description`
-
-error: unused variable: `unchecked_return_type`
-  --> ui-tests/unused-attributes.rs:62:5
-   |
-62 |     unchecked_return_type = "something",
-   |     ^^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_unchecked_return_type`
-
-error: unused variable: `return_description`
-  --> ui-tests/unused-attributes.rs:63:5
-   |
-63 |     return_description = "something",
-   |     ^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_return_description`
-
-error: unused variable: `unchecked_param_type`
-  --> ui-tests/unused-attributes.rs:64:5
-   |
-64 |     unchecked_param_type = "something",
-   |     ^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_unchecked_param_type`
-
-error: unused variable: `param_description`
-  --> ui-tests/unused-attributes.rs:65:5
-   |
-65 |     param_description = "somthing"
-   |     ^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_param_description`

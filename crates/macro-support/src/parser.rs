@@ -107,7 +107,12 @@ fn is_non_value_js_keyword(keyword: &str) -> bool {
 struct AttributeParseState {
     parsed: Cell<usize>,
     checks: Cell<usize>,
-    unused_attrs: RefCell<Vec<Ident>>,
+    unused_attrs: RefCell<Vec<UnusedState>>,
+}
+
+struct UnusedState {
+    error: bool,
+    ident: Ident,
 }
 
 /// Parsed attributes from a `#[wasm_bindgen(..)]`.
@@ -128,57 +133,57 @@ pub struct JsNamespace(Vec<String>);
 macro_rules! attrgen {
     ($mac:ident) => {
         $mac! {
-            (catch, Catch(Span)),
-            (constructor, Constructor(Span)),
-            (method, Method(Span)),
-            (static_method_of, StaticMethodOf(Span, Ident)),
-            (js_namespace, JsNamespace(Span, JsNamespace, Vec<Span>)),
-            (module, Module(Span, String, Span)),
-            (raw_module, RawModule(Span, String, Span)),
-            (inline_js, InlineJs(Span, String, Span)),
-            (getter, Getter(Span, Option<String>)),
-            (setter, Setter(Span, Option<String>)),
-            (indexing_getter, IndexingGetter(Span)),
-            (indexing_setter, IndexingSetter(Span)),
-            (indexing_deleter, IndexingDeleter(Span)),
-            (structural, Structural(Span)),
-            (r#final, Final(Span)),
-            (readonly, Readonly(Span)),
-            (js_name, JsName(Span, String, Span)),
-            (js_class, JsClass(Span, String, Span)),
-            (inspectable, Inspectable(Span)),
-            (is_type_of, IsTypeOf(Span, syn::Expr)),
-            (extends, Extends(Span, syn::Path)),
-            (no_deref, NoDeref(Span)),
-            (vendor_prefix, VendorPrefix(Span, Ident)),
-            (variadic, Variadic(Span)),
-            (typescript_custom_section, TypescriptCustomSection(Span)),
-            (skip_typescript, SkipTypescript(Span)),
-            (skip_jsdoc, SkipJsDoc(Span)),
-            (main, Main(Span)),
-            (start, Start(Span)),
-            (wasm_bindgen, WasmBindgen(Span, syn::Path)),
-            (js_sys, JsSys(Span, syn::Path)),
-            (wasm_bindgen_futures, WasmBindgenFutures(Span, syn::Path)),
-            (skip, Skip(Span)),
-            (typescript_type, TypeScriptType(Span, String, Span)),
-            (getter_with_clone, GetterWithClone(Span)),
-            (static_string, StaticString(Span)),
-            (thread_local, ThreadLocal(Span)),
-            (thread_local_v2, ThreadLocalV2(Span)),
-            (unchecked_return_type, ReturnType(Span, String, Span)),
-            (return_description, ReturnDesc(Span, String, Span)),
-            (unchecked_param_type, ParamType(Span, String, Span)),
-            (param_description, ParamDesc(Span, String, Span)),
+            (catch, false, Catch(Span)),
+            (constructor, false, Constructor(Span)),
+            (method, false, Method(Span)),
+            (static_method_of, false, StaticMethodOf(Span, Ident)),
+            (js_namespace, false, JsNamespace(Span, JsNamespace, Vec<Span>)),
+            (module, false, Module(Span, String, Span)),
+            (raw_module, false, RawModule(Span, String, Span)),
+            (inline_js, false, InlineJs(Span, String, Span)),
+            (getter, false, Getter(Span, Option<String>)),
+            (setter, false, Setter(Span, Option<String>)),
+            (indexing_getter, false, IndexingGetter(Span)),
+            (indexing_setter, false, IndexingSetter(Span)),
+            (indexing_deleter, false, IndexingDeleter(Span)),
+            (structural, false, Structural(Span)),
+            (r#final, false, Final(Span)),
+            (readonly, false, Readonly(Span)),
+            (js_name, false, JsName(Span, String, Span)),
+            (js_class, false, JsClass(Span, String, Span)),
+            (inspectable, false, Inspectable(Span)),
+            (is_type_of, false, IsTypeOf(Span, syn::Expr)),
+            (extends, false, Extends(Span, syn::Path)),
+            (no_deref, false, NoDeref(Span)),
+            (vendor_prefix, false, VendorPrefix(Span, Ident)),
+            (variadic, false, Variadic(Span)),
+            (typescript_custom_section, false, TypescriptCustomSection(Span)),
+            (skip_typescript, false, SkipTypescript(Span)),
+            (skip_jsdoc, false, SkipJsDoc(Span)),
+            (main, false, Main(Span)),
+            (start, false, Start(Span)),
+            (wasm_bindgen, false, WasmBindgen(Span, syn::Path)),
+            (js_sys, false, JsSys(Span, syn::Path)),
+            (wasm_bindgen_futures, false, WasmBindgenFutures(Span, syn::Path)),
+            (skip, false, Skip(Span)),
+            (typescript_type, false, TypeScriptType(Span, String, Span)),
+            (getter_with_clone, false, GetterWithClone(Span)),
+            (static_string, false, StaticString(Span)),
+            (thread_local, false, ThreadLocal(Span)),
+            (thread_local_v2, false, ThreadLocalV2(Span)),
+            (unchecked_return_type, true, ReturnType(Span, String, Span)),
+            (return_description, true, ReturnDesc(Span, String, Span)),
+            (unchecked_param_type, true, ParamType(Span, String, Span)),
+            (param_description, true, ParamDesc(Span, String, Span)),
 
             // For testing purposes only.
-            (assert_no_shim, AssertNoShim(Span)),
+            (assert_no_shim, false, AssertNoShim(Span)),
         }
     };
 }
 
 macro_rules! methods {
-    ($(($name:ident, $variant:ident($($contents:tt)*)),)*) => {
+    ($(($name:ident, $invalid_unused:literal, $variant:ident($($contents:tt)*)),)*) => {
         $(methods!(@method $name, $variant($($contents)*));)*
 
         fn enforce_used(self) -> Result<(), Diagnostic> {
@@ -210,7 +215,10 @@ macro_rules! methods {
                     .map(|attr| {
                         match attr {
                             $(BindgenAttr::$variant(span, ..) => {
-                                syn::parse_quote_spanned!(*span => $name)
+                                UnusedState {
+                                    error: $invalid_unused,
+                                    ident: syn::parse_quote_spanned!(*span => $name)
+                                }
                             })*
                         }
                     })
@@ -354,7 +362,7 @@ impl Parse for BindgenAttrs {
 }
 
 macro_rules! gen_bindgen_attr {
-    ($(($method:ident, $($variants:tt)*),)*) => {
+    ($(($method:ident, $_:literal, $($variants:tt)*),)*) => {
         /// The possible attributes in the `#[wasm_bindgen]`.
         #[cfg_attr(feature = "extra-traits", derive(Debug))]
         pub enum BindgenAttr {
@@ -374,7 +382,7 @@ impl Parse for BindgenAttr {
         let raw_attr_string = format!("r#{}", attr_string);
 
         macro_rules! parsers {
-            ($(($name:ident, $($contents:tt)*),)*) => {
+            ($(($name:ident, $_:literal, $($contents:tt)*),)*) => {
                 $(
                     if attr_string == stringify!($name) || raw_attr_string == stringify!($name) {
                         parsers!(
@@ -2206,10 +2214,18 @@ pub fn check_unused_attrs(tokens: &mut TokenStream) {
         assert_eq!(state.parsed.get(), state.checks.get());
         let unused_attrs = &*state.unused_attrs.borrow();
         if !unused_attrs.is_empty() {
+            let unused_attrs = unused_attrs.iter().map(|UnusedState { error, ident }| {
+                if *error {
+                    let text = format!("invalid attribute {ident} in this position");
+                    quote::quote! { ::core::compile_error!(#text); }
+                } else {
+                    quote::quote! { let #ident: (); }
+                }
+            });
             tokens.extend(quote::quote! {
                 // Anonymous scope to prevent name clashes.
                 const _: () = {
-                    #(let #unused_attrs: ();)*
+                    #(#unused_attrs)*
                 };
             });
         }
