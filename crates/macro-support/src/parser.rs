@@ -1549,6 +1549,11 @@ impl MacroParse<&ClassMarker> for &mut syn::ImplItemFn {
             Some(args_attrs),
         )?;
         let method_kind = if opts.constructor().is_some() {
+            if function.r#async {
+                self.attrs.push(syn::parse_quote! {
+                    #[deprecated(note = "constructors cannot be async")]
+                });
+            }
             ast::MethodKind::Constructor
         } else {
             let is_static = method_self.is_none();
