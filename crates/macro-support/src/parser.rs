@@ -1146,13 +1146,19 @@ fn function_from_decl(
                     ));
                 }
                 if contains_js_comment_close(ty) {
-                    return Err(Diagnostic::span_error(*span, "contains illegal comment close syntax"));
+                    return Err(Diagnostic::span_error(
+                        *span,
+                        "contains illegal comment close syntax",
+                    ));
                 }
                 Ok(Some(ty.to_string()))
             })?,
             desc: desc.as_ref().map_or(Ok(None), |(desc, span)| {
                 if contains_js_comment_close(desc) {
-                    return Err(Diagnostic::span_error(*span, "contains illegal comment close syntax"));
+                    return Err(Diagnostic::span_error(
+                        *span,
+                        "contains illegal comment close syntax",
+                    ));
                 }
                 Ok(Some(desc.to_string()))
             })?,
@@ -1240,7 +1246,10 @@ fn extract_args_attrs(sig: &mut syn::Signature) -> Result<Vec<FnArgAttrs>, Diagn
                             ));
                         }
                         if contains_js_comment_close(js_name_override) {
-                            return Err(Diagnostic::span_error(span, "contains illegal comment close syntax"));
+                            return Err(Diagnostic::span_error(
+                                span,
+                                "contains illegal comment close syntax",
+                            ));
                         }
                         Ok(Some(js_name_override.to_string()))
                     })?,
@@ -1254,7 +1263,10 @@ fn extract_args_attrs(sig: &mut syn::Signature) -> Result<Vec<FnArgAttrs>, Diagn
                             ));
                         }
                         if contains_js_comment_close(ty) {
-                            return Err(Diagnostic::span_error(span, "contains illegal comment close syntax"));
+                            return Err(Diagnostic::span_error(
+                                span,
+                                "contains illegal comment close syntax",
+                            ));
                         }
                         Ok(Some(ty.to_string()))
                     })?,
@@ -1262,7 +1274,10 @@ fn extract_args_attrs(sig: &mut syn::Signature) -> Result<Vec<FnArgAttrs>, Diagn
                     .param_description()
                     .map_or(Ok(None), |(description, span)| {
                         if contains_js_comment_close(description) {
-                            return Err(Diagnostic::span_error(span, "contains illegal comment close syntax"));
+                            return Err(Diagnostic::span_error(
+                                span,
+                                "contains illegal comment close syntax",
+                            ));
                         }
                         Ok(Some(description.to_string()))
                     })?,
