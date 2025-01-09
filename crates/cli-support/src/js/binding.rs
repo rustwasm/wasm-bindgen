@@ -234,13 +234,16 @@ impl<'a, 'b> Builder<'a, 'b> {
         code.push('(');
         if variadic {
             if let Some((last, non_variadic_args)) = function_args.split_last() {
-                code.push_str(
-                    &non_variadic_args
-                        .iter()
-                        .map(|v| v.name.as_str())
-                        .collect::<Vec<_>>()
-                        .join(", "),
-                );
+                code.push_str(&non_variadic_args.iter().enumerate().fold(
+                    String::new(),
+                    |acc, (i, v)| {
+                        if i == 0 {
+                            v.name.clone()
+                        } else {
+                            format!("{}, {}", acc, v.name.as_str())
+                        }
+                    },
+                ));
                 if !non_variadic_args.is_empty() {
                     code.push_str(", ");
                 }
@@ -250,9 +253,14 @@ impl<'a, 'b> Builder<'a, 'b> {
             code.push_str(
                 &function_args
                     .iter()
-                    .map(|v| v.name.as_str())
-                    .collect::<Vec<_>>()
-                    .join(", "),
+                    .enumerate()
+                    .fold(String::new(), |acc, (i, v)| {
+                        if i == 0 {
+                            v.name.clone()
+                        } else {
+                            format!("{}, {}", acc, v.name.as_str())
+                        }
+                    }),
             );
         }
         code.push_str(") {\n");
