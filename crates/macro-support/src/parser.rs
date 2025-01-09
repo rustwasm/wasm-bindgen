@@ -1142,7 +1142,7 @@ fn function_from_decl(
                 if is_js_keyword(ty) {
                     return Err(Diagnostic::span_error(
                         *span,
-                        "colliades with js/ts keyword",
+                        "collides with js/ts keyword",
                     ));
                 }
                 if contains_js_comment_close(ty) {
@@ -1242,7 +1242,7 @@ fn extract_args_attrs(sig: &mut syn::Signature) -> Result<Vec<FnArgAttrs>, Diagn
                         if is_js_keyword(js_name_override) {
                             return Err(Diagnostic::span_error(
                                 span,
-                                "colliades with js/ts keyword",
+                                "collides with js/ts keyword",
                             ));
                         }
                         if contains_js_comment_close(js_name_override) {
@@ -1259,7 +1259,7 @@ fn extract_args_attrs(sig: &mut syn::Signature) -> Result<Vec<FnArgAttrs>, Diagn
                         if is_js_keyword(ty) {
                             return Err(Diagnostic::span_error(
                                 span,
-                                "colliades with js/ts keyword",
+                                "collides with js/ts keyword",
                             ));
                         }
                         if contains_js_comment_close(ty) {
