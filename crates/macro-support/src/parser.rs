@@ -1176,7 +1176,7 @@ fn function_from_decl(
         }),
     };
     // error if there were description or type override specified for
-    // function return while the it doesn't return anything
+    // function return while it doesn't return anything
     if ret.is_none() && (ty_override.is_some() || desc.is_some()) {
         if let Some((_, span)) = ty_override {
             return Err(Diagnostic::span_error(
