@@ -1,8 +1,8 @@
 error: contains illegal comment close syntax
- --> ui-tests/illegal-char-fn-attrs.rs:5:30
+ --> ui-tests/illegal-char-fn-attrs.rs:5:43
   |
-5 |     #[wasm_bindgen(js_name = "abcd */firstArg")] arg1: u32,
-  |                              ^^^^^^^^^^^^^^^^^
+5 |     #[wasm_bindgen(unchecked_param_type = "abcd */firstArg")] arg1: u32,
+  |                                           ^^^^^^^^^^^^^^^^^
 
 error: contains illegal comment close syntax
   --> ui-tests/illegal-char-fn-attrs.rs:12:43

@@ -2,7 +2,7 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 pub fn fn_with_illegal_char_attr1(
-    #[wasm_bindgen(js_name = "abcd */firstArg")] arg1: u32,
+    #[wasm_bindgen(unchecked_param_type = "abcd */firstArg")] arg1: u32,
 ) -> JsValue {
     arg1.into()
 }

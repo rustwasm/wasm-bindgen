@@ -29,44 +29,4 @@ impl MyStruct {
     }
 }
 
-#[wasm_bindgen(
-    unchecked_return_type = "something",
-    return_description = "something",
-    unchecked_param_type = "something",
-    param_description = "somthing"
-)]
-struct B {}
-
-#[wasm_bindgen(
-    unchecked_return_type = "something",
-    return_description = "something",
-    unchecked_param_type = "something",
-    param_description = "somthing"
-)]
-impl B {
-    #[wasm_bindgen]
-    pub fn foo() {}
-}
-
-#[wasm_bindgen(
-    unchecked_return_type = "something",
-    return_description = "something",
-    unchecked_param_type = "something",
-    param_description = "somthing"
-)]
-pub enum D {
-    Variat
-}
-
-#[wasm_bindgen(
-    unchecked_return_type = "something",
-    return_description = "something",
-    unchecked_param_type = "something",
-    param_description = "somthing"
-)]
-impl D {
-    #[wasm_bindgen]
-    pub fn foo() {}
-}
-
 fn main() {}

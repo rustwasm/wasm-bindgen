@@ -10,7 +10,6 @@ use crate::wit::{JsImport, JsImportName, NonstandardWitSection, WasmBindgenAux};
 use crate::{reset_indentation, Bindgen, EncodeInto, OutputMode, PLACEHOLDER_MODULE};
 use anyhow::{anyhow, bail, Context as _, Error};
 use binding::TsReference;
-use identifier::is_valid_ident;
 use std::borrow::Cow;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fmt;
@@ -18,9 +17,9 @@ use std::fmt::Write;
 use std::fs;
 use std::path::{Path, PathBuf};
 use walrus::{FunctionId, ImportId, MemoryId, Module, TableId, ValType};
+use wasm_bindgen_shared::identifier::is_valid_ident;
 
 mod binding;
-pub mod identifier;
 
 pub struct Context<'a> {
     globals: String,

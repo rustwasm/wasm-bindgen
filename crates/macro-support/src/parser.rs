@@ -9,6 +9,7 @@ use backend::util::{ident_ty, ShortHash};
 use backend::Diagnostic;
 use proc_macro2::{Ident, Span, TokenStream, TokenTree};
 use quote::ToTokens;
+use shared::identifier::is_valid_ident;
 use syn::ext::IdentExt;
 use syn::parse::{Parse, ParseStream, Result as SynResult};
 use syn::spanned::Spanned;
@@ -101,6 +102,11 @@ fn is_js_keyword(keyword: &str) -> bool {
 /// imports should use this function to check for reserved keywords.
 fn is_non_value_js_keyword(keyword: &str) -> bool {
     JS_KEYWORDS.contains(&keyword) && !VALUE_LIKE_JS_KEYWORDS.contains(&keyword)
+}
+
+/// Checks if the given string contains JS/TS comment block close syntax
+fn contains_js_comment_close(str: &str) -> bool {
+    str.contains("*/")
 }
 
 #[derive(Default)]
@@ -1169,19 +1175,19 @@ fn function_from_decl(
             })?,
         }),
     };
-    // error if specified description or type override for return
-    // while the function doesn't return anything
+    // error if there were description or type override specified for
+    // function return while the it doesn't return anything
     if ret.is_none() && (ty_override.is_some() || desc.is_some()) {
         if let Some((_, span)) = ty_override {
             return Err(Diagnostic::span_error(
                 span,
-                "cannot specify type for a function that doesn't return",
+                "cannot specify return type for a function that doesn't return",
             ));
         }
         if let Some((_, span)) = desc {
             return Err(Diagnostic::span_error(
                 span,
-                "cannot specify description for a function that doesn't return",
+                "cannot specify return description for a function that doesn't return",
             ));
         }
     }
@@ -1215,11 +1221,11 @@ fn function_from_decl(
             arguments: arguments
                 .into_iter()
                 .zip(args_attrs.unwrap_or(vec![FnArgAttrs::default(); args_len]))
-                .map(|(arg_pat_type, arg_attrs)| FunctionArgumentData {
-                    pat_type: arg_pat_type,
-                    js_name: arg_attrs.name,
-                    desc: arg_attrs.desc,
-                    js_type: arg_attrs.ty,
+                .map(|(pat_type, attrs)| FunctionArgumentData {
+                    pat_type,
+                    js_name: attrs.js_name,
+                    js_type: attrs.js_type,
+                    desc: attrs.desc,
                 })
                 .collect::<Vec<_>>(),
         },
@@ -1227,11 +1233,12 @@ fn function_from_decl(
     ))
 }
 
+/// Helper struct to store extracted function argument attrs
 #[derive(Default, Clone)]
 struct FnArgAttrs {
-    ty: Option<String>,
+    js_name: Option<String>,
+    js_type: Option<String>,
     desc: Option<String>,
-    name: Option<String>,
 }
 
 /// Extracts function arguments attributes
@@ -1241,7 +1248,7 @@ fn extract_args_attrs(sig: &mut syn::Signature) -> Result<Vec<FnArgAttrs>, Diagn
         if let syn::FnArg::Typed(pat_type) = input {
             let attrs = BindgenAttrs::find(&mut pat_type.attrs)?;
             let arg_attrs = FnArgAttrs {
-                name: attrs
+                js_name: attrs
                     .js_name()
                     .map_or(Ok(None), |(js_name_override, span)| {
                         if is_js_keyword(js_name_override) {
@@ -1250,15 +1257,15 @@ fn extract_args_attrs(sig: &mut syn::Signature) -> Result<Vec<FnArgAttrs>, Diagn
                                 "collides with js/ts keyword",
                             ));
                         }
-                        if contains_js_comment_close(js_name_override) {
+                        if !is_valid_ident(js_name_override) {
                             return Err(Diagnostic::span_error(
                                 span,
-                                "contains illegal comment close syntax",
+                                "invalid js/ts argument identifier",
                             ));
                         }
                         Ok(Some(js_name_override.to_string()))
                     })?,
-                ty: attrs
+                js_type: attrs
                     .unchecked_param_type()
                     .map_or(Ok(None), |(ty, span)| {
                         if is_js_keyword(ty) {
@@ -1287,16 +1294,12 @@ fn extract_args_attrs(sig: &mut syn::Signature) -> Result<Vec<FnArgAttrs>, Diagn
                         Ok(Some(description.to_string()))
                     })?,
             };
+            // throw error for any unused attrs
             attrs.enforce_used()?;
             args_attrs.push(arg_attrs);
         }
     }
     Ok(args_attrs)
-}
-
-/// Checks if the given string contains JS/TS comment block close syntax
-fn contains_js_comment_close(str: &str) -> bool {
-    str.contains("*/")
 }
 
 pub(crate) trait MacroParse<Ctx> {

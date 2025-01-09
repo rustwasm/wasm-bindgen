@@ -220,7 +220,8 @@ fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Functi
             .iter()
             .enumerate()
             .map(|(idx, arg)| FunctionArgumentData {
-                // use argument's "js_name" if it was provided in attributes
+                // use argument's "js_name" if it was provided via attributes
+                // if not use the original Rust argument ident
                 name: arg.js_name.clone().unwrap_or(
                     if let syn::Pat::Ident(x) = &*arg.pat_type.pat {
                         x.ident.unraw().to_string()

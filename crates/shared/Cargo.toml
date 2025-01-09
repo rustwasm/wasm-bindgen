@@ -21,3 +21,6 @@ links = "wasm_bindgen"
 
 [lints]
 workspace = true
+
+[dependencies]
+unicode-ident = "1.0.5"

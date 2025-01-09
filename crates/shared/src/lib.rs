@@ -1,5 +1,6 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-shared/0.2")]
 
+pub mod identifier;
 #[cfg(test)]
 mod schema_hash_approval;
 

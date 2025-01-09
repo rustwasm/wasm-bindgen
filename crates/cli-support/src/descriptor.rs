@@ -1,6 +1,6 @@
 use std::char;
 
-use crate::js::identifier::is_valid_ident;
+use wasm_bindgen_shared::identifier::is_valid_ident;
 
 macro_rules! tys {
     ($($a:ident)*) => (tys! { @ ($($a)*) 0 });
