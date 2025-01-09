@@ -969,12 +969,12 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
     }
 }
 
-impl ConvertToAst<(BindgenAttrs, Option<Vec<FnArgAttrs>>)> for syn::ItemFn {
+impl ConvertToAst<(BindgenAttrs, Vec<FnArgAttrs>)> for syn::ItemFn {
     type Target = ast::Function;
 
     fn convert(
         self,
-        (attrs, args_attrs): (BindgenAttrs, Option<Vec<FnArgAttrs>>),
+        (attrs, args_attrs): (BindgenAttrs, Vec<FnArgAttrs>),
     ) -> Result<Self::Target, Diagnostic> {
         match self.vis {
             syn::Visibility::Public(_) => {}
@@ -995,7 +995,7 @@ impl ConvertToAst<(BindgenAttrs, Option<Vec<FnArgAttrs>>)> for syn::ItemFn {
             self.attrs,
             self.vis,
             FunctionPosition::Free,
-            args_attrs,
+            Some(args_attrs),
         )?;
         attrs.check_used();
 
@@ -1146,7 +1146,7 @@ fn function_from_decl(
         syn::ReturnType::Default => None,
         syn::ReturnType::Type(_, ty) => Some(ast::FunctionReturnData {
             r#type: replace_self(*ty),
-            ty_override: ty_override.as_ref().map_or(Ok(None), |(ty, span)| {
+            js_type: ty_override.as_ref().map_or(Ok(None), |(ty, span)| {
                 if is_js_keyword(ty) {
                     return Err(Diagnostic::span_error(*span, "collides with js/ts keyword"));
                 }
@@ -1219,7 +1219,7 @@ fn function_from_decl(
                     pat_type: arg_pat_type,
                     js_name: arg_attrs.name,
                     desc: arg_attrs.desc,
-                    ty_override: arg_attrs.ty,
+                    js_type: arg_attrs.ty,
                 })
                 .collect::<Vec<_>>(),
         },
@@ -1364,7 +1364,7 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
 
                 program.exports.push(ast::Export {
                     comments,
-                    function: f.convert((opts, Some(args_attrs)))?,
+                    function: f.convert((opts, args_attrs))?,
                     js_class: None,
                     method_kind,
                     method_self: None,

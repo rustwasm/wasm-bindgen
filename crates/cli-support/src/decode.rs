@@ -1,4 +1,4 @@
-use std::{fmt::Debug, ops::Deref, str};
+use std::{ops::Deref, str};
 
 pub trait Decode<'src>: Sized {
     fn decode(data: &mut &'src [u8]) -> Self;
@@ -91,25 +91,6 @@ impl<'src, T: Decode<'src>> Decode<'src> for Option<T> {
             1 => Some(Decode::decode(data)),
             _ => unreachable!(),
         }
-    }
-}
-
-impl Clone for FunctionArgumentData {
-    fn clone(&self) -> Self {
-        Self {
-            name: self.name.clone(),
-            desc: self.desc.clone(),
-            ty_override: self.ty_override.clone(),
-        }
-    }
-}
-
-impl Debug for FunctionArgumentData {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_fmt(format_args!(
-            "FunctionArgumentData {{ name: {:?}, ty_override: {:?}, desc: {:?} }}",
-            self.name, self.ty_override, self.desc
-        ))
     }
 }
 

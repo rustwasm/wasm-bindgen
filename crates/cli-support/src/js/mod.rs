@@ -2904,9 +2904,9 @@ __wbg_set_wasm(wasm);"
 
                 let ts_sig = export.generate_typescript.then_some(ts_sig.as_str());
 
-                // only include ts_doc for format if there was arguments or return var description
-                // this is because if there are no arguments or return var description, ts_doc
-                // provides no additional info on top of what ts_sig already does
+                // only include `ts_doc` for format if there were arguments or a return var description
+                // this is because if there are no arguments or return var description, `ts_doc`
+                // provides no additional value on top of what `ts_sig` already does
                 let ts_doc_opts = (ret_desc.is_some()
                     || args
                         .as_ref()

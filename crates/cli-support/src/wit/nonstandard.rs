@@ -1,4 +1,3 @@
-use crate::decode::FunctionArgumentData;
 use crate::intrinsic::Intrinsic;
 use crate::wit::AdapterId;
 use std::borrow::Cow;
@@ -74,9 +73,9 @@ pub struct AuxExport {
     pub debug_name: String,
     /// Comments parsed in Rust and forwarded here to show up in JS bindings.
     pub comments: String,
-    /// Argument names in Rust forwarded here to configure the names that show
-    /// up in TypeScript bindings.
-    pub args: Option<Vec<FunctionArgumentData>>,
+    /// Function's argument info in Rust forwarded here to configure the signature
+    /// that show up in bindings.
+    pub args: Option<Vec<AuxFunctionArgumentData>>,
     /// Whether this is an async function, to configure the TypeScript return value.
     pub asyncness: bool,
     /// What kind of function this is and where it shows up
@@ -91,6 +90,17 @@ pub struct AuxExport {
     pub fn_ret_ty_override: Option<String>,
     /// Function's return description
     pub fn_ret_desc: Option<String>,
+}
+
+/// Information about a functions' argument
+#[derive(Debug, Clone)]
+pub struct AuxFunctionArgumentData {
+    /// Specifies the argument name
+    pub name: String,
+    /// Specifies the function argument type override
+    pub ty_override: Option<String>,
+    /// Specifies the argument description
+    pub desc: Option<String>,
 }
 
 /// All possible kinds of exports from a Wasm module.

@@ -135,20 +135,20 @@ macro_rules! shared_api {
         }
 
         struct Function<'a> {
-            args: Vec<FunctionArgumentData>,
+            args: Vec<FunctionArgumentData<'a>>,
             asyncness: bool,
             name: &'a str,
             generate_typescript: bool,
             generate_jsdoc: bool,
             variadic: bool,
-            ret_ty_override: Option<String>,
-            ret_desc: Option<String>,
+            ret_ty_override: Option<&'a str>,
+            ret_desc: Option<&'a str>,
         }
 
-        struct FunctionArgumentData {
+        struct FunctionArgumentData<'a> {
             name: String,
-            ty_override: Option<String>,
-            desc: Option<String>,
+            ty_override: Option<&'a str>,
+            desc: Option<&'a str>,
         }
 
         struct Struct<'a> {

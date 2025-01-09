@@ -1,6 +1,6 @@
 # `function-attributes`
 
-By default, exported Rust functions and methods generate function signature from equivalent Rust types identifiers without any arguments and return variable documentations. However by using function attributes, it's possible to override a function's return type and arguments names and types for generated bindings, as well as the ability to write specific documentation for each of them individually as desired:
+By default, exported Rust functions and methods generate function signature from equivalent Rust types identifiers without any arguments and return variable documentations. However by using function attributes, it's possible to override a function's return type and argument names and types for generated bindings, as well as the ability to write specific documentation for each of them individually as desired:
 - `#[wasm_bindgen(unchecked_return_type)]` and `#[wasm_bindgen(return_description)]` used to override a function's return type and to specify descriptions for generated JS/TS bindings.
 - `#[wasm_bindgen(js_name)]`, `#[wasm_bindgen(unchecked_param_type)]` and `#[wasm_bindgen(param_description)]` applied to a Rust function argument to override that argument's name and type and to specify descriptions for generated JS/TS bindings.
 

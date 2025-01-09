@@ -215,28 +215,24 @@ fn shared_export<'a>(
 }
 
 fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Function<'a> {
-    let args = func
-        .arguments
-        .iter()
-        .enumerate()
-        .map(|(idx, arg)| FunctionArgumentData {
-            // use argument's "js_name" if it was provided in attributes
-            name: if let Some(name) = &arg.js_name {
-                name.clone()
-            } else if let syn::Pat::Ident(x) = &*arg.pat_type.pat {
-                x.ident.unraw().to_string()
-            } else {
-                format!("arg{}", idx)
-            },
-            ty_override: arg.ty_override.clone(),
-            desc: arg.desc.clone(),
-        })
-        .collect::<Vec<_>>();
-    let (ret_ty_override, ret_desc) = func
-        .ret
-        .as_ref()
-        .map(|ret| (ret.ty_override.clone(), ret.desc.clone()))
-        .unwrap_or((None, None));
+    let args =
+        func.arguments
+            .iter()
+            .enumerate()
+            .map(|(idx, arg)| FunctionArgumentData {
+                // use argument's "js_name" if it was provided in attributes
+                name: arg.js_name.clone().unwrap_or(
+                    if let syn::Pat::Ident(x) = &*arg.pat_type.pat {
+                        x.ident.unraw().to_string()
+                    } else {
+                        format!("arg{}", idx)
+                    },
+                ),
+                ty_override: arg.js_type.as_deref(),
+                desc: arg.desc.as_deref(),
+            })
+            .collect::<Vec<_>>();
+
     Function {
         args,
         asyncness: func.r#async,
@@ -244,8 +240,8 @@ fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Functi
         generate_typescript: func.generate_typescript,
         generate_jsdoc: func.generate_jsdoc,
         variadic: func.variadic,
-        ret_ty_override,
-        ret_desc,
+        ret_ty_override: func.ret.as_ref().and_then(|v| v.js_type.as_deref()),
+        ret_desc: func.ret.as_ref().and_then(|v| v.desc.as_deref()),
     }
 }
 

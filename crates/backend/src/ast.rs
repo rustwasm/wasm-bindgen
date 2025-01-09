@@ -400,8 +400,8 @@ pub struct Function {
 pub struct FunctionReturnData {
     /// Specifies the type of the function's return
     pub r#type: syn::Type,
-    /// Specifies the return type override provided by attributes
-    pub ty_override: Option<String>,
+    /// Specifies the JS return type override
+    pub js_type: Option<String>,
     /// Specifies the return description
     pub desc: Option<String>,
 }
@@ -410,12 +410,12 @@ pub struct FunctionReturnData {
 #[cfg_attr(feature = "extra-traits", derive(Debug))]
 #[derive(Clone)]
 pub struct FunctionArgumentData {
-    /// Specifies the argument name
-    pub js_name: Option<String>,
     /// Specifies the type of the function's argument
     pub pat_type: syn::PatType,
-    /// Specifies the argument type override provided by attributes
-    pub ty_override: Option<String>,
+    /// Specifies the JS argument name override
+    pub js_name: Option<String>,
+    /// Specifies the JS function argument type override
+    pub js_type: Option<String>,
     /// Specifies the argument description
     pub desc: Option<String>,
 }
