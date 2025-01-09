@@ -1140,10 +1140,7 @@ fn function_from_decl(
             r#type: replace_self(*ty),
             ty_override: ty_override.as_ref().map_or(Ok(None), |(ty, span)| {
                 if is_js_keyword(ty) {
-                    return Err(Diagnostic::span_error(
-                        *span,
-                        "collides with js/ts keyword",
-                    ));
+                    return Err(Diagnostic::span_error(*span, "collides with js/ts keyword"));
                 }
                 if contains_js_comment_close(ty) {
                     return Err(Diagnostic::span_error(
