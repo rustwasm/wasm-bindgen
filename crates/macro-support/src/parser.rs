@@ -1145,14 +1145,14 @@ fn function_from_decl(
                         "colliades with js/ts keyword",
                     ));
                 }
-                if contains_js_comment_syntax(ty) {
-                    return Err(Diagnostic::span_error(*span, "contains illegal chars"));
+                if contains_js_comment_close(ty) {
+                    return Err(Diagnostic::span_error(*span, "contains illegal comment close syntax"));
                 }
                 Ok(Some(ty.to_string()))
             })?,
             desc: desc.as_ref().map_or(Ok(None), |(desc, span)| {
-                if contains_js_comment_syntax(desc) {
-                    return Err(Diagnostic::span_error(*span, "contains illegal chars"));
+                if contains_js_comment_close(desc) {
+                    return Err(Diagnostic::span_error(*span, "contains illegal comment close syntax"));
                 }
                 Ok(Some(desc.to_string()))
             })?,
@@ -1239,8 +1239,8 @@ fn extract_args_attrs(sig: &mut syn::Signature) -> Result<Vec<FnArgAttrs>, Diagn
                                 "colliades with js/ts keyword",
                             ));
                         }
-                        if contains_js_comment_syntax(js_name_override) {
-                            return Err(Diagnostic::span_error(span, "contains illegal chars"));
+                        if contains_js_comment_close(js_name_override) {
+                            return Err(Diagnostic::span_error(span, "contains illegal comment close syntax"));
                         }
                         Ok(Some(js_name_override.to_string()))
                     })?,
@@ -1253,16 +1253,16 @@ fn extract_args_attrs(sig: &mut syn::Signature) -> Result<Vec<FnArgAttrs>, Diagn
                                 "colliades with js/ts keyword",
                             ));
                         }
-                        if contains_js_comment_syntax(ty) {
-                            return Err(Diagnostic::span_error(span, "contains illegal chars"));
+                        if contains_js_comment_close(ty) {
+                            return Err(Diagnostic::span_error(span, "contains illegal comment close syntax"));
                         }
                         Ok(Some(ty.to_string()))
                     })?,
                 desc: attrs
                     .param_description()
                     .map_or(Ok(None), |(description, span)| {
-                        if contains_js_comment_syntax(description) {
-                            return Err(Diagnostic::span_error(span, "contains illegal chars"));
+                        if contains_js_comment_close(description) {
+                            return Err(Diagnostic::span_error(span, "contains illegal comment close syntax"));
                         }
                         Ok(Some(description.to_string()))
                     })?,
@@ -1274,9 +1274,9 @@ fn extract_args_attrs(sig: &mut syn::Signature) -> Result<Vec<FnArgAttrs>, Diagn
     Ok(args_attrs)
 }
 
-/// Checks if the given string contains JS/TS comment block open/close syntax
-fn contains_js_comment_syntax(str: &str) -> bool {
-    str.contains("/*") || str.contains("*/")
+/// Checks if the given string contains JS/TS comment block close syntax
+fn contains_js_comment_close(str: &str) -> bool {
+    str.contains("*/")
 }
 
 pub(crate) trait MacroParse<Ctx> {
