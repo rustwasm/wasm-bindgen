@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use std::str::Chars;
 
 use ast::OperationKind;
-use backend::ast::{self, FunctionArgumentData, ThreadLocal};
+use backend::ast::{self, ThreadLocal};
 use backend::util::{ident_ty, ShortHash};
 use backend::Diagnostic;
 use proc_macro2::{Ident, Span, TokenStream, TokenTree};
@@ -1146,13 +1146,14 @@ fn function_from_decl(
         }
     }
 
-    let ty_override = opts.unchecked_return_type();
-    let desc = opts.return_description();
+    // process function return data
+    let ret_ty_override = opts.unchecked_return_type();
+    let ret_desc = opts.return_description();
     let ret = match output {
         syn::ReturnType::Default => None,
         syn::ReturnType::Type(_, ty) => Some(ast::FunctionReturnData {
             r#type: replace_self(*ty),
-            js_type: ty_override.as_ref().map_or(Ok(None), |(ty, span)| {
+            js_type: ret_ty_override.as_ref().map_or(Ok(None), |(ty, span)| {
                 if is_js_keyword(ty) {
                     return Err(Diagnostic::span_error(*span, "collides with js/ts keyword"));
                 }
@@ -1164,7 +1165,7 @@ fn function_from_decl(
                 }
                 Ok(Some(ty.to_string()))
             })?,
-            desc: desc.as_ref().map_or(Ok(None), |(desc, span)| {
+            desc: ret_desc.as_ref().map_or(Ok(None), |(desc, span)| {
                 if contains_js_comment_close(desc) {
                     return Err(Diagnostic::span_error(
                         *span,
@@ -1176,15 +1177,15 @@ fn function_from_decl(
         }),
     };
     // error if there were description or type override specified for
-    // function return while it doesn't return anything
-    if ret.is_none() && (ty_override.is_some() || desc.is_some()) {
-        if let Some((_, span)) = ty_override {
+    // function return while it doesn't actually return anything
+    if ret.is_none() && (ret_ty_override.is_some() || ret_desc.is_some()) {
+        if let Some((_, span)) = ret_ty_override {
             return Err(Diagnostic::span_error(
                 span,
                 "cannot specify return type for a function that doesn't return",
             ));
         }
-        if let Some((_, span)) = desc {
+        if let Some((_, span)) = ret_desc {
             return Err(Diagnostic::span_error(
                 span,
                 "cannot specify return description for a function that doesn't return",
@@ -1221,7 +1222,7 @@ fn function_from_decl(
             arguments: arguments
                 .into_iter()
                 .zip(args_attrs.unwrap_or(vec![FnArgAttrs::default(); args_len]))
-                .map(|(pat_type, attrs)| FunctionArgumentData {
+                .map(|(pat_type, attrs)| ast::FunctionArgumentData {
                     pat_type,
                     js_name: attrs.js_name,
                     js_type: attrs.js_type,
