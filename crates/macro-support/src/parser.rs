@@ -2216,7 +2216,7 @@ pub fn check_unused_attrs(tokens: &mut TokenStream) {
         if !unused_attrs.is_empty() {
             let unused_attrs = unused_attrs.iter().map(|UnusedState { error, ident }| {
                 if *error {
-                    let text = format!("invalid attribute {ident} in this position");
+                    let text = format!("invalid attribute {} in this position", ident);
                     quote::quote! { ::core::compile_error!(#text); }
                 } else {
                     quote::quote! { let #ident: (); }
