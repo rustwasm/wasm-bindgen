@@ -8,7 +8,7 @@
 // If the schema in this library has changed then:
 //  1. Bump the version in `crates/shared/Cargo.toml`
 //  2. Change the `SCHEMA_VERSION` in this library to this new Cargo.toml version
-const APPROVED_SCHEMA_FILE_HASH: &str = "10466730773526925892";
+const APPROVED_SCHEMA_FILE_HASH: &str = "3398053298395574572";
 
 #[test]
 fn schema_version() {

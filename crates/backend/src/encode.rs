@@ -215,43 +215,37 @@ fn shared_export<'a>(
 }
 
 fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Function<'a> {
-    let arg_names = func
+    let args = func
         .arguments
         .iter()
         .enumerate()
-        .map(|(idx, arg)| {
+        .map(|(idx, arg)| FunctionArgumentData {
             // use argument's "js_name" if it was provided in attributes
-            if let Some(name) = &arg.js_name {
-                return name.clone();
-            }
-            if let syn::Pat::Ident(x) = &*arg.pat_type.pat {
-                return x.ident.unraw().to_string();
-            }
-            format!("arg{}", idx)
+            name: if let Some(name) = &arg.js_name {
+                name.clone()
+            } else if let syn::Pat::Ident(x) = &*arg.pat_type.pat {
+                x.ident.unraw().to_string()
+            } else {
+                format!("arg{}", idx)
+            },
+            ty_override: arg.ty_override.clone(),
+            desc: arg.desc.clone(),
         })
         .collect::<Vec<_>>();
-    let fn_attrs = Some(FunctionAttributes {
-        ret: FunctionComponentAttributes {
-            ty: func.ret.ty_override.clone(),
-            desc: func.ret.desc.clone(),
-        },
-        args: func
-            .arguments
-            .iter()
-            .map(|arg_attr| FunctionComponentAttributes {
-                ty: arg_attr.ty_override.clone(),
-                desc: arg_attr.desc.clone(),
-            })
-            .collect::<Vec<_>>(),
-    });
+    let (ret_ty_override, ret_desc) = func
+        .ret
+        .as_ref()
+        .map(|ret| (ret.ty_override.clone(), ret.desc.clone()))
+        .unwrap_or((None, None));
     Function {
-        arg_names,
+        args,
         asyncness: func.r#async,
         name: &func.name,
         generate_typescript: func.generate_typescript,
         generate_jsdoc: func.generate_jsdoc,
         variadic: func.variadic,
-        fn_attrs,
+        ret_ty_override,
+        ret_desc,
     }
 }
 

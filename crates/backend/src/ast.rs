@@ -377,7 +377,7 @@ pub struct Function {
     /// The arguments to the function
     pub arguments: Vec<FunctionArgumentData>,
     /// The data of return type of the function
-    pub ret: FunctionReturnData,
+    pub ret: Option<FunctionReturnData>,
     /// Any custom attributes being applied to the function
     pub rust_attrs: Vec<syn::Attribute>,
     /// The visibility of this function in Rust
@@ -399,7 +399,7 @@ pub struct Function {
 #[derive(Clone)]
 pub struct FunctionReturnData {
     /// Specifies the type of the function's return
-    pub r#type: Option<syn::Type>,
+    pub r#type: syn::Type,
     /// Specifies the return type override provided by attributes
     pub ty_override: Option<String>,
     /// Specifies the return description

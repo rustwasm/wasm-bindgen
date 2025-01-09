@@ -527,13 +527,14 @@ impl<'a> Context<'a> {
             AuxExport {
                 debug_name: wasm_name,
                 comments: concatenate_comments(&export.comments),
-                arg_names: Some(export.function.arg_names),
+                args: Some(export.function.args),
                 asyncness: export.function.asyncness,
                 kind,
                 generate_typescript: export.function.generate_typescript,
                 generate_jsdoc: export.function.generate_jsdoc,
                 variadic: export.function.variadic,
-                export_fn_attrs: export.function.fn_attrs,
+                fn_ret_ty_override: export.function.ret_ty_override,
+                fn_ret_desc: export.function.ret_desc,
             },
         );
         Ok(())
@@ -947,7 +948,7 @@ impl<'a> Context<'a> {
                 getter_id,
                 AuxExport {
                     debug_name: format!("getter for `{}::{}`", struct_.name, field.name),
-                    arg_names: None,
+                    args: None,
                     asyncness: false,
                     comments: concatenate_comments(&field.comments),
                     kind: AuxExportKind::Method {
@@ -959,7 +960,8 @@ impl<'a> Context<'a> {
                     generate_typescript: field.generate_typescript,
                     generate_jsdoc: field.generate_jsdoc,
                     variadic: false,
-                    export_fn_attrs: None,
+                    fn_ret_ty_override: None,
+                    fn_ret_desc: None,
                 },
             );
 
@@ -980,7 +982,7 @@ impl<'a> Context<'a> {
                 setter_id,
                 AuxExport {
                     debug_name: format!("setter for `{}::{}`", struct_.name, field.name),
-                    arg_names: None,
+                    args: None,
                     asyncness: false,
                     comments: concatenate_comments(&field.comments),
                     kind: AuxExportKind::Method {
@@ -992,7 +994,8 @@ impl<'a> Context<'a> {
                     generate_typescript: field.generate_typescript,
                     generate_jsdoc: field.generate_jsdoc,
                     variadic: false,
-                    export_fn_attrs: None,
+                    fn_ret_ty_override: None,
+                    fn_ret_desc: None,
                 },
             );
         }

@@ -720,7 +720,12 @@ impl TryToTokens for ast::Export {
             elems: Default::default(),
             paren_token: Default::default(),
         });
-        let syn_ret = self.function.ret.r#type.as_ref().unwrap_or(&syn_unit);
+        let syn_ret = self
+            .function
+            .ret
+            .as_ref()
+            .map(|ret| &ret.r#type)
+            .unwrap_or(&syn_unit);
         if let syn::Type::Reference(_) = syn_ret {
             bail_span!(syn_ret, "cannot return a borrowed ref with #[wasm_bindgen]",)
         }
@@ -1323,7 +1328,7 @@ impl TryToTokens for ast::ImportFunction {
             ast::ImportFunctionKind::Normal => {}
         }
         let vis = &self.function.rust_vis;
-        let ret = match &self.function.ret.r#type {
+        let ret = match self.function.ret.as_ref().map(|ret| &ret.r#type) {
             Some(ty) => quote! { -> #ty },
             None => quote!(),
         };

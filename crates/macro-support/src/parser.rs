@@ -635,9 +635,9 @@ impl<'a> ConvertToAst<(&ast::Program, BindgenAttrs, &'a Option<ast::ImportModule
             // * The actual type is the first type parameter
             //
             // should probably fix this one day...
-            extract_first_ty_param(wasm.ret.r#type.as_ref())?
+            extract_first_ty_param(wasm.ret.as_ref().map(|ret| &ret.r#type))?
         } else {
-            wasm.ret.r#type.clone()
+            wasm.ret.as_ref().map(|ret| ret.r#type.clone())
         };
 
         let operation_kind = operation_kind(&opts);
@@ -1132,10 +1132,48 @@ fn function_from_decl(
         }
     }
 
+    let ty_override = opts.unchecked_return_type();
+    let desc = opts.return_description();
     let ret = match output {
         syn::ReturnType::Default => None,
-        syn::ReturnType::Type(_, ty) => Some(replace_self(*ty)),
+        syn::ReturnType::Type(_, ty) => Some(ast::FunctionReturnData {
+            r#type: replace_self(*ty),
+            ty_override: ty_override.as_ref().map_or(Ok(None), |(ty, span)| {
+                if is_js_keyword(ty) {
+                    return Err(Diagnostic::span_error(
+                        *span,
+                        "colliades with js/ts keyword",
+                    ));
+                }
+                if contains_js_comment_syntax(ty) {
+                    return Err(Diagnostic::span_error(*span, "contains illegal chars"));
+                }
+                Ok(Some(ty.to_string()))
+            })?,
+            desc: desc.as_ref().map_or(Ok(None), |(desc, span)| {
+                if contains_js_comment_syntax(desc) {
+                    return Err(Diagnostic::span_error(*span, "contains illegal chars"));
+                }
+                Ok(Some(desc.to_string()))
+            })?,
+        }),
     };
+    // error if specified description or type override for return
+    // while the function doesn't return anything
+    if ret.is_none() && (ty_override.is_some() || desc.is_some()) {
+        if let Some((_, span)) = ty_override {
+            return Err(Diagnostic::span_error(
+                span,
+                "cannot specify type for a function that doesn't return",
+            ));
+        }
+        if let Some((_, span)) = desc {
+            return Err(Diagnostic::span_error(
+                span,
+                "cannot specify description for a function that doesn't return",
+            ));
+        }
+    }
 
     let (name, name_span, renamed_via_js_name) =
         if let Some((js_name, js_name_span)) = opts.js_name() {
@@ -1148,9 +1186,6 @@ fn function_from_decl(
         } else {
             (decl_name.unraw().to_string(), decl_name.span(), false)
         };
-
-    let ret_ty_override = opts.unchecked_return_type().map(|v| v.0.to_string());
-    let ret_desc = opts.return_description().map(|v| v.0.to_string());
 
     let args_len = arguments.len();
     Ok((
@@ -1165,11 +1200,7 @@ fn function_from_decl(
             generate_typescript: opts.skip_typescript().is_none(),
             generate_jsdoc: opts.skip_jsdoc().is_none(),
             variadic: opts.variadic().is_some(),
-            ret: ast::FunctionReturnData {
-                r#type: ret,
-                ty_override: ret_ty_override,
-                desc: ret_desc,
-            },
+            ret,
             arguments: arguments
                 .into_iter()
                 .zip(args_attrs.unwrap_or(vec![FnArgAttrs::default(); args_len]))
@@ -1199,15 +1230,53 @@ fn extract_args_attrs(sig: &mut syn::Signature) -> Result<Vec<FnArgAttrs>, Diagn
         if let syn::FnArg::Typed(pat_type) = input {
             let attrs = BindgenAttrs::find(&mut pat_type.attrs)?;
             let arg_attrs = FnArgAttrs {
-                ty: attrs.unchecked_param_type().map(|v| v.0.to_string()),
-                desc: attrs.param_description().map(|v| v.0.to_string()),
-                name: attrs.js_name().map(|v| v.0.to_string()),
+                name: attrs
+                    .js_name()
+                    .map_or(Ok(None), |(js_name_override, span)| {
+                        if is_js_keyword(js_name_override) {
+                            return Err(Diagnostic::span_error(
+                                span,
+                                "colliades with js/ts keyword",
+                            ));
+                        }
+                        if contains_js_comment_syntax(js_name_override) {
+                            return Err(Diagnostic::span_error(span, "contains illegal chars"));
+                        }
+                        Ok(Some(js_name_override.to_string()))
+                    })?,
+                ty: attrs
+                    .unchecked_param_type()
+                    .map_or(Ok(None), |(ty, span)| {
+                        if is_js_keyword(ty) {
+                            return Err(Diagnostic::span_error(
+                                span,
+                                "colliades with js/ts keyword",
+                            ));
+                        }
+                        if contains_js_comment_syntax(ty) {
+                            return Err(Diagnostic::span_error(span, "contains illegal chars"));
+                        }
+                        Ok(Some(ty.to_string()))
+                    })?,
+                desc: attrs
+                    .param_description()
+                    .map_or(Ok(None), |(description, span)| {
+                        if contains_js_comment_syntax(description) {
+                            return Err(Diagnostic::span_error(span, "contains illegal chars"));
+                        }
+                        Ok(Some(description.to_string()))
+                    })?,
             };
-            attrs.check_used();
+            attrs.enforce_used()?;
             args_attrs.push(arg_attrs);
         }
     }
     Ok(args_attrs)
+}
+
+/// Checks if the given string contains JS/TS comment block open/close syntax
+fn contains_js_comment_syntax(str: &str) -> bool {
+    str.contains("/*") || str.contains("*/")
 }
 
 pub(crate) trait MacroParse<Ctx> {

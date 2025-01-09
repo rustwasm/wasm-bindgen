@@ -94,20 +94,21 @@ impl<'src, T: Decode<'src>> Decode<'src> for Option<T> {
     }
 }
 
-impl Debug for FunctionAttributes {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_fmt(format_args!(
-            "FunctionAttributes {{ ret: {:?}, args: {:?} }}",
-            self.ret, self.args
-        ))
+impl Clone for FunctionArgumentData {
+    fn clone(&self) -> Self {
+        Self {
+            name: self.name.clone(),
+            desc: self.desc.clone(),
+            ty_override: self.ty_override.clone(),
+        }
     }
 }
 
-impl Debug for FunctionComponentAttributes {
+impl Debug for FunctionArgumentData {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_fmt(format_args!(
-            "FunctionComponentAttributes {{ ty: {:?}, desc: {:?} }}",
-            self.ty, self.desc
+            "FunctionArgumentData {{ name: {:?}, ty_override: {:?}, desc: {:?} }}",
+            self.name, self.ty_override, self.desc
         ))
     }
 }

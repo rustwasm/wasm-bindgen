@@ -2829,18 +2829,20 @@ __wbg_set_wasm(wasm);"
             ContextAdapterKind::Import(_) => builder.cx.config.debug,
         });
         builder.catch(catch);
-        let mut arg_names = &None;
+        let mut args = &None;
         let mut asyncness = false;
         let mut variadic = false;
         let mut generate_jsdoc = false;
-        let mut export_fn_attrs = &None;
+        let mut ret_ty_override = &None;
+        let mut ret_desc = &None;
         match kind {
             ContextAdapterKind::Export(export) => {
-                arg_names = &export.arg_names;
+                args = &export.args;
                 asyncness = export.asyncness;
                 variadic = export.variadic;
                 generate_jsdoc = export.generate_jsdoc;
-                export_fn_attrs = &export.export_fn_attrs;
+                ret_ty_override = &export.fn_ret_ty_override;
+                ret_desc = &export.fn_ret_desc;
                 match &export.kind {
                     AuxExportKind::Function(_) => {}
                     AuxExportKind::Constructor(class) => builder.constructor(class),
@@ -2881,12 +2883,13 @@ __wbg_set_wasm(wasm);"
             .process(
                 adapter,
                 instrs,
-                arg_names,
+                args,
                 asyncness,
                 variadic,
                 generate_jsdoc,
                 &debug_name,
-                export_fn_attrs,
+                ret_ty_override,
+                ret_desc,
             )
             .with_context(|| "failed to generates bindings for ".to_string() + &debug_name)?;
 
@@ -2904,10 +2907,11 @@ __wbg_set_wasm(wasm);"
                 // only include ts_doc for format if there was arguments or return var description
                 // this is because if there are no arguments or return var description, ts_doc
                 // provides no additional info on top of what ts_sig already does
-                let ts_doc_opts = export_fn_attrs.as_ref().and_then(|v| {
-                    (v.ret.desc.is_some() || v.args.iter().any(|e| e.desc.is_some()))
-                        .then_some(ts_doc)
-                });
+                let ts_doc_opts = (ret_desc.is_some()
+                    || args
+                        .as_ref()
+                        .is_some_and(|v| v.iter().any(|arg| arg.desc.is_some())))
+                .then_some(ts_doc);
 
                 let js_docs = format_doc_comments(&export.comments, Some(js_doc));
                 let ts_docs = format_doc_comments(&export.comments, ts_doc_opts);

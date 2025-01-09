@@ -1,0 +1,29 @@
+error: contains illegal chars
+ --> ui-tests/illegal-char-fn-attrs.rs:5:30
+  |
+5 |     #[wasm_bindgen(js_name = "/*firstArg")] arg1: u32,
+  |                              ^^^^^^^^^^^^
+
+error: contains illegal chars
+  --> ui-tests/illegal-char-fn-attrs.rs:12:43
+   |
+12 |     #[wasm_bindgen(unchecked_param_type = "number*/")] arg1: u32,
+   |                                           ^^^^^^^^^^
+
+error: contains illegal chars
+  --> ui-tests/illegal-char-fn-attrs.rs:19:40
+   |
+19 |     #[wasm_bindgen(param_description = "/* some description */")] arg1: u32,
+   |                                        ^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: contains illegal chars
+  --> ui-tests/illegal-char-fn-attrs.rs:24:37
+   |
+24 | #[wasm_bindgen(return_description = "*/ some description")]
+   |                                     ^^^^^^^^^^^^^^^^^^^^^
+
+error: contains illegal chars
+  --> ui-tests/illegal-char-fn-attrs.rs:29:40
+   |
+29 | #[wasm_bindgen(unchecked_return_type = "*/ number")]
+   |                                        ^^^^^^^^^^^
