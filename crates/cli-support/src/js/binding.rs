@@ -234,16 +234,15 @@ impl<'a, 'b> Builder<'a, 'b> {
         code.push('(');
         if variadic {
             if let Some((last, non_variadic_args)) = function_args.split_last() {
-                code.push_str(&non_variadic_args.iter().enumerate().fold(
-                    String::new(),
-                    |acc, (i, v)| {
-                        if i == 0 {
-                            v.name.clone()
-                        } else {
-                            format!("{}, {}", acc, v.name.as_str())
-                        }
-                    },
-                ));
+                code.push_str(
+                    &non_variadic_args.iter().skip(1).fold(
+                        non_variadic_args
+                            .first()
+                            .map(|v| v.name.clone())
+                            .unwrap_or(String::new()),
+                        |acc, v| format!("{}, {}", acc, v.name),
+                    ),
+                );
                 if !non_variadic_args.is_empty() {
                     code.push_str(", ");
                 }
@@ -251,16 +250,13 @@ impl<'a, 'b> Builder<'a, 'b> {
             }
         } else {
             code.push_str(
-                &function_args
-                    .iter()
-                    .enumerate()
-                    .fold(String::new(), |acc, (i, v)| {
-                        if i == 0 {
-                            v.name.clone()
-                        } else {
-                            format!("{}, {}", acc, v.name.as_str())
-                        }
-                    }),
+                &function_args.iter().skip(1).fold(
+                    function_args
+                        .first()
+                        .map(|v| v.name.clone())
+                        .unwrap_or(String::new()),
+                    |acc, v| format!("{}, {}", acc, v.name),
+                ),
             );
         }
         code.push_str(") {\n");
