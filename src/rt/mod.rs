@@ -19,6 +19,8 @@ pub extern crate std;
 
 pub mod marker;
 
+pub use wasm_bindgen_macro::BindgenedStruct;
+
 /// Wrapper around [`Lazy`] adding `Send + Sync` when `atomics` is not enabled.
 pub struct LazyCell<T, F = fn() -> T>(Wrapper<Lazy<T, F>>);
 

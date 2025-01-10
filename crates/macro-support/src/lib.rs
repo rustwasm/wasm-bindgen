@@ -15,6 +15,7 @@ pub use crate::parser::BindgenAttrs;
 use crate::parser::{ConvertToAst, MacroParse};
 use backend::{Diagnostic, TryToTokens};
 use proc_macro2::TokenStream;
+use quote::quote;
 use quote::ToTokens;
 use quote::TokenStreamExt;
 use syn::parse::{Parse, ParseStream, Result as SynResult};
@@ -27,39 +28,22 @@ pub fn expand(attr: TokenStream, input: TokenStream) -> Result<TokenStream, Diag
     // if struct is encountered, add `derive` attribute and let everything happen there (workaround
     // to help parsing cfg_attr correctly).
     let item = syn::parse2::<syn::Item>(input)?;
-    if let syn::Item::Struct(mut s) = item {
-        s.attrs.insert(
-            0,
-            syn::Attribute {
-                pound_token: Default::default(),
-                style: syn::AttrStyle::Outer,
-                bracket_token: Default::default(),
-                meta: syn::parse_quote! {
-                    derive(wasm_bindgen::prelude::BindgenedStruct)
-                },
-            },
-        );
-        if !attr.is_empty() {
-            s.attrs.insert(
-                1,
-                syn::Attribute {
-                    pound_token: Default::default(),
-                    style: syn::AttrStyle::Outer,
-                    bracket_token: Default::default(),
-                    meta: syn::parse_quote! {
-                        wasm_bindgen(#attr)
-                    },
-                },
-            );
-        }
+    if let syn::Item::Struct(s) = item {
+        let opts: BindgenAttrs = syn::parse2(attr.clone())?;
+        let wasm_bindgen = opts
+            .wasm_bindgen()
+            .cloned()
+            .unwrap_or_else(|| syn::parse_quote! { wasm_bindgen });
 
-        let mut tokens = proc_macro2::TokenStream::new();
-        s.to_tokens(&mut tokens);
-        return Ok(tokens);
+        let item = quote! {
+            #[derive(#wasm_bindgen::__rt::BindgenedStruct)]
+            #[wasm_bindgen(#attr)]
+            #s
+        };
+        return Ok(item);
     }
 
     let opts = syn::parse2(attr)?;
-
     let mut tokens = proc_macro2::TokenStream::new();
     let mut program = backend::ast::Program::default();
     item.macro_parse(&mut program, (Some(opts), &mut tokens))?;

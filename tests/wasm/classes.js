@@ -170,6 +170,13 @@ exports.js_renamed_field = () => {
     x.foo();
 }
 
+exports.js_conditional_skip = () => {
+    const x = new wasm.ConditionalSkipClass();
+    assert.strictEqual(x.skipped_field, undefined);
+    assert.ok(x.not_skipped_field === 42);
+    assert.strictEqual(x.needs_clone, 'foo');
+}
+
 exports.js_conditional_bindings = () => {
     const x = new wasm.ConditionalBindings();
     x.free();

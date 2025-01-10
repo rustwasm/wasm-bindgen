@@ -216,7 +216,7 @@ macro_rules! methods {
     };
 
     (@method $name:ident, $variant:ident(Span, String, Span)) => {
-        fn $name(&self) -> Option<(&str, Span)> {
+        pub(crate) fn $name(&self) -> Option<(&str, Span)> {
             self.attrs
                 .iter()
                 .find_map(|a| match &a.1 {
@@ -230,7 +230,7 @@ macro_rules! methods {
     };
 
     (@method $name:ident, $variant:ident(Span, JsNamespace, Vec<Span>)) => {
-        fn $name(&self) -> Option<(JsNamespace, &[Span])> {
+        pub(crate) fn $name(&self) -> Option<(JsNamespace, &[Span])> {
             self.attrs
                 .iter()
                 .find_map(|a| match &a.1 {
@@ -245,7 +245,7 @@ macro_rules! methods {
 
     (@method $name:ident, $variant:ident(Span, $($other:tt)*)) => {
         #[allow(unused)]
-        fn $name(&self) -> Option<&$($other)*> {
+        pub(crate) fn $name(&self) -> Option<&$($other)*> {
             self.attrs
                 .iter()
                 .find_map(|a| match &a.1 {
@@ -260,7 +260,7 @@ macro_rules! methods {
 
     (@method $name:ident, $variant:ident($($other:tt)*)) => {
         #[allow(unused)]
-        fn $name(&self) -> Option<&$($other)*> {
+        pub(crate) fn $name(&self) -> Option<&$($other)*> {
             self.attrs
                 .iter()
                 .find_map(|a| match &a.1 {
@@ -513,10 +513,10 @@ impl ConvertToAst<&ast::Program> for &mut syn::ItemStruct {
                  type parameters currently"
             );
         }
-        let struct_attrs = BindgenAttrs::find(&mut self.attrs)?;
+        let attrs = BindgenAttrs::find(&mut self.attrs)?;
 
         let mut fields = Vec::new();
-        let js_name = struct_attrs
+        let js_name = attrs
             .js_name()
             .map(|s| s.0.to_string())
             .unwrap_or(self.ident.unraw().to_string());
@@ -528,8 +528,8 @@ impl ConvertToAst<&ast::Program> for &mut syn::ItemStruct {
             );
         }
 
-        let is_inspectable = struct_attrs.inspectable().is_some();
-        let getter_with_clone = struct_attrs.getter_with_clone();
+        let is_inspectable = attrs.inspectable().is_some();
+        let getter_with_clone = attrs.getter_with_clone();
         for (i, field) in self.fields.iter_mut().enumerate() {
             match field.vis {
                 syn::Visibility::Public(..) => {}
@@ -571,9 +571,9 @@ impl ConvertToAst<&ast::Program> for &mut syn::ItemStruct {
             });
             attrs.check_used();
         }
-        let generate_typescript = struct_attrs.skip_typescript().is_none();
+        let generate_typescript = attrs.skip_typescript().is_none();
         let comments: Vec<String> = extract_doc_comments(&self.attrs);
-        struct_attrs.check_used();
+        attrs.check_used();
         Ok(ast::Struct {
             rust_name: self.ident.clone(),
             js_name,

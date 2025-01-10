@@ -101,7 +101,6 @@ pub mod prelude {
     pub use crate::JsCast;
     pub use crate::JsValue;
     pub use crate::UnwrapThrowExt;
-    pub use wasm_bindgen_macro::BindgenedStruct;
     #[doc(hidden)]
     pub use wasm_bindgen_macro::__wasm_bindgen_class_marker;
     pub use wasm_bindgen_macro::wasm_bindgen;
