@@ -74,7 +74,7 @@ pub struct AuxExport {
     /// Comments parsed in Rust and forwarded here to show up in JS bindings.
     pub comments: String,
     /// Function's argument info in Rust forwarded here to configure the signature
-    /// that show up in bindings.
+    /// that shows up in bindings.
     pub args: Option<Vec<AuxFunctionArgumentData>>,
     /// Whether this is an async function, to configure the TypeScript return value.
     pub asyncness: bool,

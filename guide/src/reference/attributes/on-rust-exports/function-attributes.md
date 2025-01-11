@@ -5,7 +5,7 @@ By default, exported Rust functions and methods generate function signature from
 - `#[wasm_bindgen(js_name)]`, `#[wasm_bindgen(unchecked_param_type)]` and `#[wasm_bindgen(param_description)]` applied to a Rust function argument to override that argument's name and type and to specify descriptions for generated JS/TS bindings.
 
 > **NOTE**:
-> Types that are provided using `#[wasm_bindgen(unchecked_return_type)]` and `#[wasm_bindgen(unchecked_param_type)]` aren't checked as these attributes' identifiers entail, meaning they will end up in the function's signature and docs bindings exactly as they have been specified and there are no checks/validation for them in place, so only because a user uses `#[wasm_bindgen(unchecked_param_type = "number")]` for example, it doesn't necessarily mean it's actually going to be a value of number type, therefore validation and checks between the value and its type should be handled by the user and the responsibility of using them correctly and carefully relies solely on the user.
+> Types that are provided using `#[wasm_bindgen(unchecked_return_type)]` and `#[wasm_bindgen(unchecked_param_type)]` aren't checked for their contents. They will end up in function signature and JSDoc exactly as they have been specified. E.g. `#[wasm_bindgen(unchecked_return_type = "number")]` on a function returning `String` will return a `string`, not a `number`, even if the TS signature and JSDoc will say otherwise.
 
 Let's look at some exmaples:
 ```rust
