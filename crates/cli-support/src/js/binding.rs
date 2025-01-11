@@ -232,33 +232,23 @@ impl<'a, 'b> Builder<'a, 'b> {
 
         let mut code = String::new();
         code.push('(');
-        if variadic {
-            if let Some((last, non_variadic_args)) = function_args.split_last() {
-                code.push_str(
-                    &non_variadic_args.iter().skip(1).fold(
-                        non_variadic_args
-                            .first()
-                            .map(|v| v.name.clone())
-                            .unwrap_or(String::new()),
-                        |acc, v| format!("{}, {}", acc, v.name),
-                    ),
-                );
-                if !non_variadic_args.is_empty() {
-                    code.push_str(", ");
-                }
-                code.push_str((String::from("...") + &last.name).as_str())
-            }
-        } else {
-            code.push_str(
-                &function_args.iter().skip(1).fold(
-                    function_args
-                        .first()
-                        .map(|v| v.name.clone())
-                        .unwrap_or(String::new()),
-                    |acc, v| format!("{}, {}", acc, v.name),
-                ),
-            );
-        }
+        code.push_str(
+            &function_args
+                .iter()
+                .enumerate()
+                .fold(String::new(), |acc, (i, v)| {
+                    let arg = if variadic && i == function_args.len() - 1 {
+                        &format!("...{}", v.name)
+                    } else {
+                        &v.name
+                    };
+                    if i == 0 {
+                        arg.to_string()
+                    } else {
+                        format!("{}, {}", acc, arg)
+                    }
+                }),
+        );
         code.push_str(") {\n");
 
         let call = if !js.finally.is_empty() {
