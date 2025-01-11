@@ -1,7 +1,7 @@
 use std::cell::{Cell, RefCell};
-use std::char;
 use std::collections::HashMap;
 use std::str::Chars;
+use std::{char, iter};
 
 use ast::OperationKind;
 use backend::ast::{self, ThreadLocal};
@@ -1205,7 +1205,6 @@ fn function_from_decl(
             (decl_name.unraw().to_string(), decl_name.span(), false)
         };
 
-    let args_len = arguments.len();
     Ok((
         ast::Function {
             name_span,
@@ -1221,14 +1220,19 @@ fn function_from_decl(
             ret,
             arguments: arguments
                 .into_iter()
-                .zip(args_attrs.unwrap_or(vec![FnArgAttrs::default(); args_len]))
+                .zip(
+                    args_attrs
+                        .into_iter()
+                        .flatten()
+                        .chain(iter::repeat(FnArgAttrs::default())),
+                )
                 .map(|(pat_type, attrs)| ast::FunctionArgumentData {
                     pat_type,
                     js_name: attrs.js_name,
                     js_type: attrs.js_type,
                     desc: attrs.desc,
                 })
-                .collect::<Vec<_>>(),
+                .collect(),
         },
         method_self,
     ))

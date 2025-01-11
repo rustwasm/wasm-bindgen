@@ -232,23 +232,17 @@ impl<'a, 'b> Builder<'a, 'b> {
 
         let mut code = String::new();
         code.push('(');
-        code.push_str(
-            &function_args
-                .iter()
-                .enumerate()
-                .fold(String::new(), |acc, (i, v)| {
-                    let arg = if variadic && i == function_args.len() - 1 {
-                        &format!("...{}", v.name)
-                    } else {
-                        &v.name
-                    };
-                    if i == 0 {
-                        arg.to_string()
-                    } else {
-                        format!("{}, {}", acc, arg)
-                    }
-                }),
-        );
+        for (i, v) in function_args.iter().enumerate() {
+            if i != 0 {
+                code.push_str(", ");
+            }
+
+            if variadic && i == function_args.len() - 1 {
+                code.push_str("...");
+            }
+
+            code.push_str(&v.name);
+        }
         code.push_str(") {\n");
 
         let call = if !js.finally.is_empty() {
