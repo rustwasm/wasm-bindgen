@@ -11,13 +11,13 @@ license = "MIT OR Apache-2.0"
 name = "wasm-bindgen-wasm-interpreter"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/main/crates/wasm-interpreter"
 rust-version = "1.76"
-version = "0.2.99"
+version = "0.2.100"
 
 [dependencies]
 anyhow = "1.0"
 log = "0.4"
 walrus = "0.23"
-wasm-bindgen-wasm-conventions = { path = "../wasm-conventions", version = "0.2.99" }
+wasm-bindgen-wasm-conventions = { path = "../wasm-conventions", version = "0.2.100" }
 
 [dev-dependencies]
 tempfile = "3"
