@@ -1,12 +1,13 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-shared/0.2")]
 
+pub mod identifier;
 #[cfg(test)]
 mod schema_hash_approval;
 
 // This gets changed whenever our schema changes.
 // At this time versions of wasm-bindgen and wasm-bindgen-cli are required to have the exact same
 // SCHEMA_VERSION in order to work together.
-pub const SCHEMA_VERSION: &str = "0.2.98";
+pub const SCHEMA_VERSION: &str = "0.2.99";
 
 #[macro_export]
 macro_rules! shared_api {
@@ -135,12 +136,20 @@ macro_rules! shared_api {
         }
 
         struct Function<'a> {
-            arg_names: Vec<String>,
+            args: Vec<FunctionArgumentData<'a>>,
             asyncness: bool,
             name: &'a str,
             generate_typescript: bool,
             generate_jsdoc: bool,
             variadic: bool,
+            ret_ty_override: Option<&'a str>,
+            ret_desc: Option<&'a str>,
+        }
+
+        struct FunctionArgumentData<'a> {
+            name: String,
+            ty_override: Option<&'a str>,
+            desc: Option<&'a str>,
         }
 
         struct Struct<'a> {

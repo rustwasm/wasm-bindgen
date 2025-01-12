@@ -52,3 +52,51 @@ impl JsFoo {
     // ...
 }
 ```
+
+It can also be used to rename parameters of exported functions and methods:
+
+```rust
+#[wasm_bindgen]
+pub fn foo(
+    #[wasm_bindgen(js_name = "firstArg")]
+    arg1: String,
+) {
+    // function body
+}
+
+#[wasm_bindgen]
+pub struct Foo {
+    // properties
+}
+
+#[wasm_bindgen]
+impl Foo {
+    pub fn foo(
+        &self,
+        #[wasm_bindgen(js_name = "firstArg")]
+        arg1: u32,
+    ) {
+        // function body
+    }
+}
+```
+
+Which will generate the following JS bindings:
+
+```js
+/**
+ * @param {string} firstArg
+ */
+export function foo(firstArg) {
+    // ...
+}
+
+export class Foo {
+    /**
+     * @param {number} firstArg
+     */
+    foo(firstArg) {
+        // ...
+    }
+}
+```

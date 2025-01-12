@@ -1,0 +1,23 @@
+error: cannot specify return type for a function that doesn't return
+ --> ui-tests/no-ret-fn-attr.rs:3:40
+  |
+3 | #[wasm_bindgen(unchecked_return_type = "number")]
+  |                                        ^^^^^^^^
+
+error: cannot specify return description for a function that doesn't return
+ --> ui-tests/no-ret-fn-attr.rs:6:37
+  |
+6 | #[wasm_bindgen(return_description = "some description")]
+  |                                     ^^^^^^^^^^^^^^^^^^
+
+error: cannot specify return type for a function that doesn't return
+  --> ui-tests/no-ret-fn-attr.rs:14:44
+   |
+14 |     #[wasm_bindgen(unchecked_return_type = "number")]
+   |                                            ^^^^^^^^
+
+error: cannot specify return description for a function that doesn't return
+  --> ui-tests/no-ret-fn-attr.rs:17:41
+   |
+17 |     #[wasm_bindgen(return_description = "some description")]
+   |                                         ^^^^^^^^^^^^^^^^^^

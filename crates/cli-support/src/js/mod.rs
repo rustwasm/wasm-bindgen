@@ -10,7 +10,6 @@ use crate::wit::{JsImport, JsImportName, NonstandardWitSection, WasmBindgenAux};
 use crate::{reset_indentation, Bindgen, EncodeInto, OutputMode, PLACEHOLDER_MODULE};
 use anyhow::{anyhow, bail, Context as _, Error};
 use binding::TsReference;
-use identifier::is_valid_ident;
 use std::borrow::Cow;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fmt;
@@ -18,9 +17,9 @@ use std::fmt::Write;
 use std::fs;
 use std::path::{Path, PathBuf};
 use walrus::{FunctionId, ImportId, MemoryId, Module, TableId, ValType};
+use wasm_bindgen_shared::identifier::is_valid_ident;
 
 mod binding;
-pub mod identifier;
 
 pub struct Context<'a> {
     globals: String,
@@ -2829,16 +2828,20 @@ __wbg_set_wasm(wasm);"
             ContextAdapterKind::Import(_) => builder.cx.config.debug,
         });
         builder.catch(catch);
-        let mut arg_names = &None;
+        let mut args = &None;
         let mut asyncness = false;
         let mut variadic = false;
         let mut generate_jsdoc = false;
+        let mut ret_ty_override = &None;
+        let mut ret_desc = &None;
         match kind {
             ContextAdapterKind::Export(export) => {
-                arg_names = &export.arg_names;
+                args = &export.args;
                 asyncness = export.asyncness;
                 variadic = export.variadic;
                 generate_jsdoc = export.generate_jsdoc;
+                ret_ty_override = &export.fn_ret_ty_override;
+                ret_desc = &export.fn_ret_desc;
                 match &export.kind {
                     AuxExportKind::Function(_) => {}
                     AuxExportKind::Constructor(class) => builder.constructor(class),
@@ -2870,6 +2873,7 @@ __wbg_set_wasm(wasm);"
             ts_ret_ty,
             ts_refs,
             js_doc,
+            ts_doc,
             code,
             might_be_optional_field,
             catch,
@@ -2878,11 +2882,13 @@ __wbg_set_wasm(wasm);"
             .process(
                 adapter,
                 instrs,
-                arg_names,
+                args,
                 asyncness,
                 variadic,
                 generate_jsdoc,
                 &debug_name,
+                ret_ty_override,
+                ret_desc,
             )
             .with_context(|| "failed to generates bindings for ".to_string() + &debug_name)?;
 
@@ -2897,8 +2903,17 @@ __wbg_set_wasm(wasm);"
 
                 let ts_sig = export.generate_typescript.then_some(ts_sig.as_str());
 
+                // only include `ts_doc` for format if there were arguments or a return var description
+                // this is because if there are no arguments or return var description, `ts_doc`
+                // provides no additional value on top of what `ts_sig` already does
+                let ts_doc_opts = (ret_desc.is_some()
+                    || args
+                        .as_ref()
+                        .is_some_and(|v| v.iter().any(|arg| arg.desc.is_some())))
+                .then_some(ts_doc);
+
                 let js_docs = format_doc_comments(&export.comments, Some(js_doc));
-                let ts_docs = format_doc_comments(&export.comments, None);
+                let ts_docs = format_doc_comments(&export.comments, ts_doc_opts);
 
                 match &export.kind {
                     AuxExportKind::Function(name) => {

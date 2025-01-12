@@ -375,9 +375,9 @@ pub struct Function {
     /// Whether the function has a js_name attribute
     pub renamed_via_js_name: bool,
     /// The arguments to the function
-    pub arguments: Vec<syn::PatType>,
-    /// The return type of the function, if provided
-    pub ret: Option<syn::Type>,
+    pub arguments: Vec<FunctionArgumentData>,
+    /// The data of return type of the function
+    pub ret: Option<FunctionReturnData>,
     /// Any custom attributes being applied to the function
     pub rust_attrs: Vec<syn::Attribute>,
     /// The visibility of this function in Rust
@@ -392,6 +392,32 @@ pub struct Function {
     pub generate_jsdoc: bool,
     /// Whether this is a function with a variadict parameter
     pub variadic: bool,
+}
+
+/// Information about a function's return
+#[cfg_attr(feature = "extra-traits", derive(Debug))]
+#[derive(Clone)]
+pub struct FunctionReturnData {
+    /// Specifies the type of the function's return
+    pub r#type: syn::Type,
+    /// Specifies the JS return type override
+    pub js_type: Option<String>,
+    /// Specifies the return description
+    pub desc: Option<String>,
+}
+
+/// Information about a function's argument
+#[cfg_attr(feature = "extra-traits", derive(Debug))]
+#[derive(Clone)]
+pub struct FunctionArgumentData {
+    /// Specifies the type of the function's argument
+    pub pat_type: syn::PatType,
+    /// Specifies the JS argument name override
+    pub js_name: Option<String>,
+    /// Specifies the JS function argument type override
+    pub js_type: Option<String>,
+    /// Specifies the argument description
+    pub desc: Option<String>,
 }
 
 /// Information about a Struct being exported

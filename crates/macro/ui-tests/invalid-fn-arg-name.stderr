@@ -1,0 +1,71 @@
+error: invalid JS identifier
+ --> ui-tests/invalid-fn-arg-name.rs:5:30
+  |
+5 |     #[wasm_bindgen(js_name = "*firstArg")] arg: u32,
+  |                              ^^^^^^^^^^^
+
+error: invalid JS identifier
+  --> ui-tests/invalid-fn-arg-name.rs:12:30
+   |
+12 |     #[wasm_bindgen(js_name = "#firstArg")] arg: u32,
+   |                              ^^^^^^^^^^^
+
+error: invalid JS identifier
+  --> ui-tests/invalid-fn-arg-name.rs:19:30
+   |
+19 |     #[wasm_bindgen(js_name = "firstArg#")] arg: u32,
+   |                              ^^^^^^^^^^^
+
+error: invalid JS identifier
+  --> ui-tests/invalid-fn-arg-name.rs:26:30
+   |
+26 |     #[wasm_bindgen(js_name = "first-Arg")] arg: u32,
+   |                              ^^^^^^^^^^^
+
+error: invalid JS identifier
+  --> ui-tests/invalid-fn-arg-name.rs:33:30
+   |
+33 |     #[wasm_bindgen(js_name = "--firstArg")] arg: u32,
+   |                              ^^^^^^^^^^^^
+
+error: invalid JS identifier
+  --> ui-tests/invalid-fn-arg-name.rs:40:30
+   |
+40 |     #[wasm_bindgen(js_name = " first Arg")] arg: u32,
+   |                              ^^^^^^^^^^^^
+
+error: invalid JS identifier
+  --> ui-tests/invalid-fn-arg-name.rs:52:34
+   |
+52 |         #[wasm_bindgen(js_name = "(firstArg)")] arg: u32,
+   |                                  ^^^^^^^^^^^^
+
+error: invalid JS identifier
+  --> ui-tests/invalid-fn-arg-name.rs:59:34
+   |
+59 |         #[wasm_bindgen(js_name = "[firstArg]")] arg: u32,
+   |                                  ^^^^^^^^^^^^
+
+error: invalid JS identifier
+  --> ui-tests/invalid-fn-arg-name.rs:66:34
+   |
+66 |         #[wasm_bindgen(js_name = "<firstArg>")] arg: u32,
+   |                                  ^^^^^^^^^^^^
+
+error: invalid JS identifier
+  --> ui-tests/invalid-fn-arg-name.rs:73:34
+   |
+73 |         #[wasm_bindgen(js_name = "firstArg+")] arg: u32,
+   |                                  ^^^^^^^^^^^
+
+error: invalid JS identifier
+  --> ui-tests/invalid-fn-arg-name.rs:80:34
+   |
+80 |         #[wasm_bindgen(js_name = "@firstArg")] arg: u32,
+   |                                  ^^^^^^^^^^^
+
+error: invalid JS identifier
+  --> ui-tests/invalid-fn-arg-name.rs:87:34
+   |
+87 |         #[wasm_bindgen(js_name = "!firstArg")] arg: u32,
+   |                                  ^^^^^^^^^^^

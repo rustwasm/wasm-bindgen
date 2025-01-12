@@ -6,7 +6,9 @@
 
 use crate::js::Context;
 use crate::wit::InstructionData;
-use crate::wit::{Adapter, AdapterId, AdapterKind, AdapterType, Instruction};
+use crate::wit::{
+    Adapter, AdapterId, AdapterKind, AdapterType, AuxFunctionArgumentData, Instruction,
+};
 use anyhow::{anyhow, bail, Error};
 use std::collections::HashSet;
 use std::fmt::Write;
@@ -70,6 +72,7 @@ pub struct JsFunction {
     pub code: String,
     pub ts_sig: String,
     pub js_doc: String,
+    pub ts_doc: String,
     pub ts_arg_tys: Vec<String>,
     pub ts_ret_ty: Option<String>,
     pub ts_refs: HashSet<TsReference>,
@@ -120,11 +123,13 @@ impl<'a, 'b> Builder<'a, 'b> {
         &mut self,
         adapter: &Adapter,
         instructions: &[InstructionData],
-        explicit_arg_names: &Option<Vec<String>>,
+        args_data: &Option<Vec<AuxFunctionArgumentData>>,
         asyncness: bool,
         variadic: bool,
         generate_jsdoc: bool,
         debug_name: &str,
+        ret_ty_override: &Option<String>,
+        ret_desc: &Option<String>,
     ) -> Result<JsFunction, Error> {
         if self
             .cx
@@ -158,11 +163,15 @@ impl<'a, 'b> Builder<'a, 'b> {
             }
         }
         for (i, param) in params.enumerate() {
-            let arg = match explicit_arg_names {
+            let arg = match args_data {
                 Some(list) => list[i].clone(),
-                None => format!("arg{}", i),
+                None => AuxFunctionArgumentData {
+                    name: format!("arg{}", i),
+                    ty_override: None,
+                    desc: None,
+                },
             };
-            js.args.push(arg.clone());
+            js.args.push(arg.name.clone());
             function_args.push(arg);
             arg_tys.push(param);
         }
@@ -223,16 +232,16 @@ impl<'a, 'b> Builder<'a, 'b> {
 
         let mut code = String::new();
         code.push('(');
-        if variadic {
-            if let Some((last, non_variadic_args)) = function_args.split_last() {
-                code.push_str(&non_variadic_args.join(", "));
-                if !non_variadic_args.is_empty() {
-                    code.push_str(", ");
-                }
-                code.push_str((String::from("...") + last).as_str())
+        for (i, v) in function_args.iter().enumerate() {
+            if i != 0 {
+                code.push_str(", ");
             }
-        } else {
-            code.push_str(&function_args.join(", "));
+
+            if variadic && i == function_args.len() - 1 {
+                code.push_str("...");
+            }
+
+            code.push_str(&v.name);
         }
         code.push_str(") {\n");
 
@@ -272,17 +281,34 @@ impl<'a, 'b> Builder<'a, 'b> {
             &mut might_be_optional_field,
             asyncness,
             variadic,
+            ret_ty_override,
         );
         let js_doc = if generate_jsdoc {
-            self.js_doc_comments(&function_args, &arg_tys, &ts_ret_ty, variadic)
+            self.js_doc_comments(
+                &function_args,
+                &arg_tys,
+                &ts_ret_ty,
+                variadic,
+                ret_ty_override,
+                ret_desc,
+            )
         } else {
             String::new()
         };
+
+        // generate ts_doc
+        // ts doc is slightly different than js doc, where there is no
+        // arguments types followed after @param tag, as well as no special
+        // casings for arguments names such as "@param {string} [arg]" that
+        // tags the argument as optional, for ts doc we only need arg names
+        // and rest are just derived from function ts signature
+        let ts_doc = self.ts_doc_comments(&function_args, ret_desc);
 
         Ok(JsFunction {
             code,
             ts_sig,
             js_doc,
+            ts_doc,
             ts_arg_tys,
             ts_ret_ty,
             ts_refs,
@@ -299,19 +325,26 @@ impl<'a, 'b> Builder<'a, 'b> {
     /// return value, it doesn't include the function name in any way.
     fn typescript_signature(
         &self,
-        arg_names: &[String],
+        args_data: &[AuxFunctionArgumentData],
         arg_tys: &[&AdapterType],
         result_tys: &[AdapterType],
         might_be_optional_field: &mut bool,
         asyncness: bool,
         variadic: bool,
+        ret_ty_override: &Option<String>,
     ) -> (String, Vec<String>, Option<String>, HashSet<TsReference>) {
         // Build up the typescript signature as well
         let mut omittable = true;
         let mut ts_args = Vec::new();
         let mut ts_arg_tys = Vec::new();
         let mut ts_refs = HashSet::new();
-        for (name, ty) in arg_names.iter().zip(arg_tys).rev() {
+        for (
+            AuxFunctionArgumentData {
+                name, ty_override, ..
+            },
+            ty,
+        ) in args_data.iter().zip(arg_tys).rev()
+        {
             // In TypeScript, we can mark optional parameters as omittable
             // using the `?` suffix, but only if they're not followed by
             // non-omittable parameters. Therefore iterate the parameter list
@@ -319,17 +352,23 @@ impl<'a, 'b> Builder<'a, 'b> {
             // soon as a non-optional parameter is encountered.
             let mut arg = name.to_string();
             let mut ts = String::new();
-            match ty {
-                AdapterType::Option(ty) if omittable => {
-                    // e.g. `foo?: string | null`
-                    arg.push_str("?: ");
-                    adapter2ts(ty, TypePosition::Argument, &mut ts, Some(&mut ts_refs));
-                    ts.push_str(" | null");
-                }
-                ty => {
-                    omittable = false;
-                    arg.push_str(": ");
-                    adapter2ts(ty, TypePosition::Argument, &mut ts, Some(&mut ts_refs));
+            if let Some(v) = ty_override {
+                omittable = false;
+                arg.push_str(": ");
+                ts.push_str(v);
+            } else {
+                match ty {
+                    AdapterType::Option(ty) if omittable => {
+                        // e.g. `foo?: string | null`
+                        arg.push_str("?: ");
+                        adapter2ts(ty, TypePosition::Argument, &mut ts, Some(&mut ts_refs));
+                        ts.push_str(" | null");
+                    }
+                    ty => {
+                        adapter2ts(ty, TypePosition::Argument, &mut ts, Some(&mut ts_refs));
+                        omittable = false;
+                        arg.push_str(": ");
+                    }
                 }
             }
             arg.push_str(&ts);
@@ -363,15 +402,19 @@ impl<'a, 'b> Builder<'a, 'b> {
         if self.constructor.is_none() {
             ts.push_str(": ");
             let mut ret = String::new();
-            match result_tys.len() {
-                0 => ret.push_str("void"),
-                1 => adapter2ts(
-                    &result_tys[0],
-                    TypePosition::Return,
-                    &mut ret,
-                    Some(&mut ts_refs),
-                ),
-                _ => ret.push_str("[any]"),
+            if let Some(v) = &ret_ty_override {
+                ret.push_str(v);
+            } else {
+                match result_tys.len() {
+                    0 => ret.push_str("void"),
+                    1 => adapter2ts(
+                        &result_tys[0],
+                        TypePosition::Return,
+                        &mut ret,
+                        Some(&mut ts_refs),
+                    ),
+                    _ => ret.push_str("[any]"),
+                }
             }
             if asyncness {
                 ret = format!("Promise<{}>", ret);
@@ -386,36 +429,58 @@ impl<'a, 'b> Builder<'a, 'b> {
     /// and the return value.
     fn js_doc_comments(
         &self,
-        arg_names: &[String],
+        args_data: &[AuxFunctionArgumentData],
         arg_tys: &[&AdapterType],
         ts_ret: &Option<String>,
         variadic: bool,
+        ret_ty_override: &Option<String>,
+        ret_desc: &Option<String>,
     ) -> String {
-        let (variadic_arg, fn_arg_names) = match arg_names.split_last() {
+        let (variadic_arg, fn_arg_names) = match args_data.split_last() {
             Some((last, args)) if variadic => (Some(last), args),
-            _ => (None, arg_names),
+            _ => (None, args_data),
         };
 
         let mut omittable = true;
         let mut js_doc_args = Vec::new();
 
-        for (name, ty) in fn_arg_names.iter().zip(arg_tys).rev() {
+        for (
+            AuxFunctionArgumentData {
+                name,
+                ty_override,
+                desc,
+            },
+            ty,
+        ) in fn_arg_names.iter().zip(arg_tys).rev()
+        {
             let mut arg = "@param {".to_string();
 
-            match ty {
-                AdapterType::Option(ty) if omittable => {
-                    adapter2ts(ty, TypePosition::Argument, &mut arg, None);
-                    arg.push_str(" | null} ");
-                    arg.push('[');
-                    arg.push_str(name);
-                    arg.push(']');
+            if let Some(v) = ty_override {
+                omittable = false;
+                arg.push_str(v);
+                arg.push_str("} ");
+                arg.push_str(name);
+            } else {
+                match ty {
+                    AdapterType::Option(ty) if omittable => {
+                        adapter2ts(ty, TypePosition::Argument, &mut arg, None);
+                        arg.push_str(" | null} ");
+                        arg.push('[');
+                        arg.push_str(name);
+                        arg.push(']');
+                    }
+                    _ => {
+                        omittable = false;
+                        adapter2ts(ty, TypePosition::Argument, &mut arg, None);
+                        arg.push_str("} ");
+                        arg.push_str(name);
+                    }
                 }
-                _ => {
-                    omittable = false;
-                    adapter2ts(ty, TypePosition::Argument, &mut arg, None);
-                    arg.push_str("} ");
-                    arg.push_str(name);
-                }
+            }
+            // append description
+            if let Some(v) = desc {
+                arg.push_str(" - ");
+                arg.push_str(v);
             }
             arg.push('\n');
             js_doc_args.push(arg);
@@ -423,19 +488,72 @@ impl<'a, 'b> Builder<'a, 'b> {
 
         let mut ret: String = js_doc_args.into_iter().rev().collect();
 
-        if let (Some(name), Some(ty)) = (variadic_arg, arg_tys.last()) {
+        if let (
+            Some(AuxFunctionArgumentData {
+                name,
+                ty_override,
+                desc,
+            }),
+            Some(ty),
+        ) = (variadic_arg, arg_tys.last())
+        {
             ret.push_str("@param {...");
-            adapter2ts(ty, TypePosition::Argument, &mut ret, None);
+            if let Some(v) = ty_override {
+                ret.push_str(v);
+            } else {
+                adapter2ts(ty, TypePosition::Argument, &mut ret, None);
+            }
             ret.push_str("} ");
             ret.push_str(name);
+
+            // append desc
+            if let Some(v) = desc {
+                ret.push_str(" - ");
+                ret.push_str(v);
+            }
             ret.push('\n');
         }
-        if let Some(ts) = ts_ret {
-            if ts != "void" {
+        if let Some(ts) = ret_ty_override.as_ref().or(ts_ret.as_ref()) {
+            // skip if type is void and there is no description
+            if ts != "void" || ret_desc.is_some() {
                 ret.push_str(&format!("@returns {{{}}}", ts));
+            }
+            // append return description
+            if let Some(v) = ret_desc {
+                ret.push(' ');
+                ret.push_str(v);
             }
         }
         ret
+    }
+
+    /// Returns a helpful TS doc comment which lists all parameters and
+    /// the return value descriptions.
+    fn ts_doc_comments(
+        &self,
+        args_data: &[AuxFunctionArgumentData],
+        ret_desc: &Option<String>,
+    ) -> String {
+        let mut ts_doc = String::new();
+        // ofc we dont need arg type for ts doc, only arg name
+        for AuxFunctionArgumentData { name, desc, .. } in args_data.iter() {
+            ts_doc.push_str("@param ");
+            ts_doc.push_str(name);
+
+            // append desc
+            if let Some(v) = desc {
+                ts_doc.push_str(" - ");
+                ts_doc.push_str(v);
+            }
+            ts_doc.push('\n');
+        }
+
+        // only if there is return description, as we dont want empty @return tag
+        if let Some(ret_desc) = ret_desc {
+            ts_doc.push_str("@returns ");
+            ts_doc.push_str(ret_desc);
+        }
+        ts_doc
     }
 }
 

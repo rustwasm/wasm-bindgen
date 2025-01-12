@@ -637,7 +637,7 @@ impl TryToTokens for ast::Export {
 
         let mut argtys = Vec::new();
         for (i, arg) in self.function.arguments.iter().enumerate() {
-            argtys.push(&*arg.ty);
+            argtys.push(&*arg.pat_type.ty);
             let i = i + offset;
             let ident = Ident::new(&format!("arg{}", i), Span::call_site());
             fn unwrap_nested_types(ty: &syn::Type) -> &syn::Type {
@@ -647,7 +647,7 @@ impl TryToTokens for ast::Export {
                     _ => ty,
                 }
             }
-            let ty = unwrap_nested_types(&arg.ty);
+            let ty = unwrap_nested_types(&arg.pat_type.ty);
 
             match &ty {
                 syn::Type::Reference(syn::TypeReference {
@@ -720,7 +720,12 @@ impl TryToTokens for ast::Export {
             elems: Default::default(),
             paren_token: Default::default(),
         });
-        let syn_ret = self.function.ret.as_ref().unwrap_or(&syn_unit);
+        let syn_ret = self
+            .function
+            .ret
+            .as_ref()
+            .map(|ret| &ret.r#type)
+            .unwrap_or(&syn_unit);
         if let syn::Type::Reference(_) = syn_ret {
             bail_span!(syn_ret, "cannot return a borrowed ref with #[wasm_bindgen]",)
         }
@@ -1323,7 +1328,7 @@ impl TryToTokens for ast::ImportFunction {
             ast::ImportFunctionKind::Normal => {}
         }
         let vis = &self.function.rust_vis;
-        let ret = match &self.function.ret {
+        let ret = match self.function.ret.as_ref().map(|ret| &ret.r#type) {
             Some(ty) => quote! { -> #ty },
             None => quote!(),
         };
@@ -1337,8 +1342,8 @@ impl TryToTokens for ast::ImportFunction {
         let wasm_bindgen_futures = &self.wasm_bindgen_futures;
 
         for (i, arg) in self.function.arguments.iter().enumerate() {
-            let ty = &arg.ty;
-            let name = match &*arg.pat {
+            let ty = &arg.pat_type.ty;
+            let name = match &*arg.pat_type.pat {
                 syn::Pat::Ident(syn::PatIdent {
                     by_ref: None,
                     ident,
@@ -1347,7 +1352,7 @@ impl TryToTokens for ast::ImportFunction {
                 }) => ident.clone(),
                 syn::Pat::Wild(_) => syn::Ident::new(&format!("__genarg_{}", i), Span::call_site()),
                 _ => bail_span!(
-                    arg.pat,
+                    arg.pat_type.pat,
                     "unsupported pattern in #[wasm_bindgen] imported function",
                 ),
             };
@@ -1542,7 +1547,7 @@ impl ToTokens for DescribeImport<'_> {
             ast::ImportKind::Type(_) => return,
             ast::ImportKind::Enum(_) => return,
         };
-        let argtys = f.function.arguments.iter().map(|arg| &arg.ty);
+        let argtys = f.function.arguments.iter().map(|arg| &arg.pat_type.ty);
         let nargs = f.function.arguments.len() as u32;
         let inform_ret = match &f.js_ret {
             Some(ref t) => quote! { <#t as WasmDescribe>::describe(); },

@@ -5,6 +5,9 @@
 
 ### Added
 
+* Add attributes to overwrite return (``unchecked_return_type`) and parameter types (`unchecked_param_type`), descriptions (`return_description` and `param_description`) as well as parameter names (`js_name`) for exported functions and methods. See the guide for more details.
+  [#4394](https://github.com/rustwasm/wasm-bindgen/pull/4394)
+
 * Add a `copy_to_uninit()` method to all `TypedArray`s. It takes `&mut [MaybeUninit<T>]` and returns `&mut [T]`.
   [#4340](https://github.com/rustwasm/wasm-bindgen/pull/4340)
 
