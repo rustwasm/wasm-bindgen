@@ -250,7 +250,7 @@ macro_rules! methods {
     };
 
     (@method $name:ident, $variant:ident(Span, String, Span)) => {
-        fn $name(&self) -> Option<(&str, Span)> {
+        pub(crate) fn $name(&self) -> Option<(&str, Span)> {
             self.attrs
                 .iter()
                 .find_map(|a| match &a.1 {
@@ -264,7 +264,7 @@ macro_rules! methods {
     };
 
     (@method $name:ident, $variant:ident(Span, JsNamespace, Vec<Span>)) => {
-        fn $name(&self) -> Option<(JsNamespace, &[Span])> {
+        pub(crate) fn $name(&self) -> Option<(JsNamespace, &[Span])> {
             self.attrs
                 .iter()
                 .find_map(|a| match &a.1 {
@@ -279,7 +279,7 @@ macro_rules! methods {
 
     (@method $name:ident, $variant:ident(Span, $($other:tt)*)) => {
         #[allow(unused)]
-        fn $name(&self) -> Option<&$($other)*> {
+        pub(crate) fn $name(&self) -> Option<&$($other)*> {
             self.attrs
                 .iter()
                 .find_map(|a| match &a.1 {
@@ -294,7 +294,7 @@ macro_rules! methods {
 
     (@method $name:ident, $variant:ident($($other:tt)*)) => {
         #[allow(unused)]
-        fn $name(&self) -> Option<&$($other)*> {
+        pub(crate) fn $name(&self) -> Option<&$($other)*> {
             self.attrs
                 .iter()
                 .find_map(|a| match &a.1 {
@@ -527,7 +527,7 @@ impl Parse for AnyIdent {
 ///
 /// Used to convert syn tokens into an AST, that we can then use to generate glue code. The context
 /// (`Ctx`) is used to pass in the attributes from the `#[wasm_bindgen]`, if needed.
-trait ConvertToAst<Ctx> {
+pub(crate) trait ConvertToAst<Ctx> {
     /// What we are converting to.
     type Target;
     /// Convert into our target.
@@ -536,13 +536,10 @@ trait ConvertToAst<Ctx> {
     fn convert(self, context: Ctx) -> Result<Self::Target, Diagnostic>;
 }
 
-impl ConvertToAst<(&ast::Program, BindgenAttrs)> for &mut syn::ItemStruct {
+impl ConvertToAst<&ast::Program> for &mut syn::ItemStruct {
     type Target = ast::Struct;
 
-    fn convert(
-        self,
-        (program, attrs): (&ast::Program, BindgenAttrs),
-    ) -> Result<Self::Target, Diagnostic> {
+    fn convert(self, program: &ast::Program) -> Result<Self::Target, Diagnostic> {
         if !self.generics.params.is_empty() {
             bail_span!(
                 self.generics,
@@ -550,6 +547,8 @@ impl ConvertToAst<(&ast::Program, BindgenAttrs)> for &mut syn::ItemStruct {
                  type parameters currently"
             );
         }
+        let attrs = BindgenAttrs::find(&mut self.attrs)?;
+
         let mut fields = Vec::new();
         let js_name = attrs
             .js_name()
@@ -1365,11 +1364,6 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                     wasm_bindgen: program.wasm_bindgen.clone(),
                     wasm_bindgen_futures: program.wasm_bindgen_futures.clone(),
                 });
-            }
-            syn::Item::Struct(mut s) => {
-                let opts = opts.unwrap_or_default();
-                program.structs.push((&mut s).convert((program, opts))?);
-                s.to_tokens(tokens);
             }
             syn::Item::Impl(mut i) => {
                 let opts = opts.unwrap_or_default();

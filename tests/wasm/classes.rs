@@ -24,6 +24,7 @@ extern "C" {
     fn js_access_fields();
     fn js_renamed_export();
     fn js_renamed_field();
+    fn js_conditional_skip();
     fn js_conditional_bindings();
 
     fn js_assert_none(a: Option<OptionClass>);
@@ -478,6 +479,41 @@ impl RenamedField {
 #[wasm_bindgen_test]
 fn renamed_field() {
     js_renamed_field();
+}
+
+#[cfg_attr(
+    target_arch = "wasm32",
+    wasm_bindgen(inspectable, js_name = "ConditionalSkipClass")
+)]
+pub struct ConditionalSkip {
+    /// [u8; 8] cannot be passed to JS, so this won't compile without `skip`
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen(skip))]
+    pub skipped_field: [u8; 8],
+
+    /// this field shouldn't be skipped as predicate is false
+    #[cfg_attr(all(target_arch = "wasm32", target_arch = "x86"), wasm_bindgen(skip))]
+    pub not_skipped_field: u32,
+
+    /// String struct field requires `getter_with_clone` to compile
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen(getter_with_clone))]
+    pub needs_clone: String,
+}
+
+#[wasm_bindgen(js_class = "ConditionalSkipClass")]
+impl ConditionalSkip {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> ConditionalSkip {
+        ConditionalSkip {
+            skipped_field: [0u8; 8],
+            not_skipped_field: 42,
+            needs_clone: "foo".to_string(),
+        }
+    }
+}
+
+#[wasm_bindgen_test]
+fn conditional_skip() {
+    js_conditional_skip();
 }
 
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
