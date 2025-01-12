@@ -115,7 +115,7 @@ fn is_invalid_ident(str: &str) -> bool {
 }
 
 /// Immediately fail and return an Err if the given string
-/// contains illegal JS/TS comment close syntax ('*/')
+/// contains illegal JS/TS comment close syntax ("*/")
 macro_rules! bail_if_incl_illegal_char {
     ($str:expr, $span:expr) => {
         if contains_js_comment_close($str) {
