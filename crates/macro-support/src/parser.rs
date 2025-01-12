@@ -132,10 +132,7 @@ macro_rules! bail_if_incl_illegal_char {
 macro_rules! bail_if_invalid_ident {
     ($str:expr, $span:expr) => {
         if is_invalid_ident($str) {
-            return Err(Diagnostic::span_error(
-                $span,
-                "invalid js/ts argument identifier",
-            ));
+            return Err(Diagnostic::span_error($span, "invalid js/ts identifier"));
         }
     };
 }
