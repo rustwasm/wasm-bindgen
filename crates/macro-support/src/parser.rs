@@ -109,6 +109,48 @@ fn contains_js_comment_close(str: &str) -> bool {
     str.contains("*/")
 }
 
+/// Checks if the given string is an invalid JS/TS identifier
+fn is_invalid_ident(str: &str) -> bool {
+    is_js_keyword(str) || !is_valid_ident(str)
+}
+
+/// Immediately fail and return an Err if the given string
+/// contains illegal JS/TS comment close syntax ('*/')
+macro_rules! bail_if_incl_illegal_char {
+    ($str:expr, $span:expr) => {
+        if contains_js_comment_close($str) {
+            return Err(Diagnostic::span_error(
+                $span,
+                "contains illegal comment close syntax",
+            ));
+        }
+    };
+}
+
+/// Immediately fail and return an Err if the
+/// given string is not a valid JS/TS identifier
+macro_rules! bail_if_invalid_ident {
+    ($str:expr, $span:expr) => {
+        if is_invalid_ident($str) {
+            return Err(Diagnostic::span_error(
+                $span,
+                "invalid js/ts argument identifier",
+            ));
+        }
+    };
+}
+
+/// Immediately fail and return an Err if the
+/// given string is not a valid JS/TS type
+macro_rules! bail_if_invalid_type {
+    ($str:expr, $span:expr) => {
+        if is_js_keyword($str) {
+            return Err(Diagnostic::span_error($span, "collides with js/ts keyword"));
+        }
+        bail_if_incl_illegal_char!($str, $span);
+    };
+}
+
 #[derive(Default)]
 struct AttributeParseState {
     parsed: Cell<usize>,
@@ -1154,24 +1196,11 @@ fn function_from_decl(
         syn::ReturnType::Type(_, ty) => Some(ast::FunctionReturnData {
             r#type: replace_self(*ty),
             js_type: ret_ty_override.as_ref().map_or(Ok(None), |(ty, span)| {
-                if is_js_keyword(ty) {
-                    return Err(Diagnostic::span_error(*span, "collides with js/ts keyword"));
-                }
-                if contains_js_comment_close(ty) {
-                    return Err(Diagnostic::span_error(
-                        *span,
-                        "contains illegal comment close syntax",
-                    ));
-                }
+                bail_if_invalid_type!(ty, *span);
                 Ok(Some(ty.to_string()))
             })?,
             desc: ret_desc.as_ref().map_or(Ok(None), |(desc, span)| {
-                if contains_js_comment_close(desc) {
-                    return Err(Diagnostic::span_error(
-                        *span,
-                        "contains illegal comment close syntax",
-                    ));
-                }
+                bail_if_incl_illegal_char!(desc, *span);
                 Ok(Some(desc.to_string()))
             })?,
         }),
@@ -1256,46 +1285,19 @@ fn extract_args_attrs(sig: &mut syn::Signature) -> Result<Vec<FnArgAttrs>, Diagn
                 js_name: attrs
                     .js_name()
                     .map_or(Ok(None), |(js_name_override, span)| {
-                        if is_js_keyword(js_name_override) {
-                            return Err(Diagnostic::span_error(
-                                span,
-                                "collides with js/ts keyword",
-                            ));
-                        }
-                        if !is_valid_ident(js_name_override) {
-                            return Err(Diagnostic::span_error(
-                                span,
-                                "invalid js/ts argument identifier",
-                            ));
-                        }
+                        bail_if_invalid_ident!(js_name_override, span);
                         Ok(Some(js_name_override.to_string()))
                     })?,
                 js_type: attrs
                     .unchecked_param_type()
                     .map_or(Ok(None), |(ty, span)| {
-                        if is_js_keyword(ty) {
-                            return Err(Diagnostic::span_error(
-                                span,
-                                "collides with js/ts keyword",
-                            ));
-                        }
-                        if contains_js_comment_close(ty) {
-                            return Err(Diagnostic::span_error(
-                                span,
-                                "contains illegal comment close syntax",
-                            ));
-                        }
+                        bail_if_invalid_type!(ty, span);
                         Ok(Some(ty.to_string()))
                     })?,
                 desc: attrs
                     .param_description()
                     .map_or(Ok(None), |(description, span)| {
-                        if contains_js_comment_close(description) {
-                            return Err(Diagnostic::span_error(
-                                span,
-                                "contains illegal comment close syntax",
-                            ));
-                        }
+                        bail_if_incl_illegal_char!(description, span);
                         Ok(Some(description.to_string()))
                     })?,
             };
