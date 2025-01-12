@@ -5,7 +5,7 @@
 
 ### Added
 
-* Added Function Attributes, which are attributes that can be used on an exporting function to specify/override the function's argument name (`js_name`), type (`unchecked_param_type`) and description (`param_description`) as well as its return type (`unchecked_return_type`) and description (`return_description`) for its bindings.
+* Add attributes to overwrite return (``unchecked_return_type`) and parameter types (`unchecked_param_type`), descriptions (`return_description` and `param_description`) as well as parameter names (`js_name`) for exported functions and methods. See the guide for more details.
   [#4394](https://github.com/rustwasm/wasm-bindgen/pull/4394)
 
 * Add a `copy_to_uninit()` method to all `TypedArray`s. It takes `&mut [MaybeUninit<T>]` and returns `&mut [T]`.
@@ -21,9 +21,6 @@
   [#4356](https://github.com/rustwasm/wasm-bindgen/pull/4356)
 
 ### Changed
-
-* Moved `crates/cli-support/src/js/identifier.rs` to `crates/shared/src/identifier.rs` as well as `unicode-ident` dependency.
-  [#4394](https://github.com/rustwasm/wasm-bindgen/pull/4394)
 
 * Optional parameters are now typed as `T | undefined | null` to reflect the actual JS behavior.
   [#4188](https://github.com/rustwasm/wasm-bindgen/pull/4188)
