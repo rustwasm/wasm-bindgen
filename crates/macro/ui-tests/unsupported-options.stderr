@@ -1,4 +1,4 @@
-warning: use of deprecated function `RustStruct::new::{closure#0}::constructor`: async constructors are not supported
+warning: use of deprecated function `RustStruct::new::{closure#0}::_::constructor`: async constructors produce invalid TS code and support will be removed in the future
   --> ui-tests/unsupported-options.rs:15:18
    |
 15 |     pub async fn new() -> Self {

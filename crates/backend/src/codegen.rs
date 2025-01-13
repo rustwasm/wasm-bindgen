@@ -815,9 +815,11 @@ impl TryToTokens for ast::Export {
                     if self.function.r#async {
                         (quote_spanned! {
                             self.function.name_span =>
-                            #[deprecated(note = "async constructors are not supported")]
-                            fn constructor() {}
-                            constructor();
+                            const _: () = {
+                                #[deprecated(note = "async constructors produce invalid TS code and support will be removed in the future")]
+                                const fn constructor() {}
+                                constructor();
+                            };
                         })
                         .to_tokens(into);
                     }
