@@ -5,9 +5,10 @@
 
 ### Changed
 
-* Deprecation warning when using an async function as a constructor
+* Deprecate async constructors.
   [#4402](https://github.com/rustwasm/wasm-bindgen/pull/4402)
 
+--------------------------------------------------------------------------------
 
 ## [0.2.100](https://github.com/rustwasm/wasm-bindgen/compare/0.2.99...0.2.100)
 
@@ -35,7 +36,6 @@ Released 2025-01-12
 
 * `#[wasm_bindgen]` now correctly applies `#[cfg(...)]`s in `struct`s.
   [#4351](https://github.com/rustwasm/wasm-bindgen/pull/4351)
-
 
 ### Changed
 
