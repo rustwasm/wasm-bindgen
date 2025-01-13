@@ -811,6 +811,16 @@ impl TryToTokens for ast::Export {
                     add_check(quote! {
                         let _: #wasm_bindgen::__rt::marker::CheckSupportsConstructor<#class>;
                     });
+
+                    if self.function.r#async {
+                        (quote_spanned! {
+                            self.function.name_span =>
+                            #[deprecated(note = "async constructors are not supported")]
+                            fn constructor() {}
+                            constructor();
+                        })
+                        .to_tokens(into);
+                    }
                 }
                 ast::MethodKind::Operation(operation) => match operation.kind {
                     ast::OperationKind::Getter(_) | ast::OperationKind::Setter(_) => {
