@@ -124,6 +124,7 @@ pub struct AsyncStruct;
 #[wasm_bindgen]
 impl AsyncStruct {
     #[wasm_bindgen(constructor)]
+    #[allow(deprecated)]
     pub async fn new() -> AsyncStruct {
         AsyncStruct
     }

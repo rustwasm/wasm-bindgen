@@ -1,3 +1,11 @@
+warning: use of deprecated function `RustStruct::new::{closure#0}::_::constructor`: async constructors produce invalid TS code and support will be removed in the future
+  --> ui-tests/unsupported-options.rs:15:18
+   |
+15 |     pub async fn new() -> Self {
+   |                  ^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
 error[E0277]: JavaScript constructors are not supported for `RustEnum`
   --> ui-tests/unsupported-options.rs:56:12
    |

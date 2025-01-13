@@ -12,7 +12,7 @@ impl RustStruct {
     pub fn static_method() {}
 
     #[wasm_bindgen(constructor)]
-    pub fn new() -> Self {
+    pub async fn new() -> Self {
         Self { data: 0 }
     }
 
