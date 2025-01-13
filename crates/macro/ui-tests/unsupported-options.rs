@@ -79,8 +79,4 @@ impl NonWasmType {
     pub fn static_method() {}
 }
 
-fn main() {
-    async {
-        RustStruct::new().await;
-    };
-}
+fn main() {}
