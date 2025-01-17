@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-export function example(a: number, b: bigint, c: any, d: string): string;
+export function example(a: number, b: bigint | number, c: any, d: string): string;
 export function example_128(a: bigint): bigint | undefined;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;

@@ -214,20 +214,22 @@ export function echo_i32(a) {
 }
 
 /**
- * @param {bigint} a
+ * @param {bigint | number} a
  * @returns {bigint}
  */
 export function echo_u64(a) {
-    const ret = wasm.echo_u64(a);
+    const bigint0 = typeof a === 'number' ? BigInt(Math.trunc(a)) : a;
+    const ret = wasm.echo_u64(bigint0);
     return BigInt.asUintN(64, ret);
 }
 
 /**
- * @param {bigint} a
+ * @param {bigint | number} a
  * @returns {bigint}
  */
 export function echo_i64(a) {
-    const ret = wasm.echo_i64(a);
+    const bigint0 = typeof a === 'number' ? BigInt(Math.trunc(a)) : a;
+    const ret = wasm.echo_i64(bigint0);
     return ret;
 }
 
@@ -781,20 +783,22 @@ export function echo_option_i32(a) {
 }
 
 /**
- * @param {bigint | null} [a]
+ * @param {bigint | number | null} [a]
  * @returns {bigint | undefined}
  */
 export function echo_option_u64(a) {
-    const ret = wasm.echo_option_u64(!isLikeNone(a), isLikeNone(a) ? BigInt(0) : a);
+    const bigint0 = typeof a === 'number' ? BigInt(Math.trunc(a)) : a;
+    const ret = wasm.echo_option_u64(!isLikeNone(bigint0), isLikeNone(bigint0) ? BigInt(0) : bigint0);
     return ret[0] === 0 ? undefined : BigInt.asUintN(64, ret[1]);
 }
 
 /**
- * @param {bigint | null} [a]
+ * @param {bigint | number | null} [a]
  * @returns {bigint | undefined}
  */
 export function echo_option_i64(a) {
-    const ret = wasm.echo_option_i64(!isLikeNone(a), isLikeNone(a) ? BigInt(0) : a);
+    const bigint0 = typeof a === 'number' ? BigInt(Math.trunc(a)) : a;
+    const ret = wasm.echo_option_i64(!isLikeNone(bigint0), isLikeNone(bigint0) ? BigInt(0) : bigint0);
     return ret[0] === 0 ? undefined : ret[1];
 }
 
