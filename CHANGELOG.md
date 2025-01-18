@@ -8,6 +8,9 @@
 * Deprecate async constructors.
   [#4402](https://github.com/rustwasm/wasm-bindgen/pull/4402)
 
+* Update Update WebCodecs to 2024-12-12 and MediaRecorder to 2024-10-31.
+  [#4411](https://github.com/rustwasm/wasm-bindgen/pull/4411)
+
 --------------------------------------------------------------------------------
 
 ## [0.2.100](https://github.com/rustwasm/wasm-bindgen/compare/0.2.99...0.2.100)
